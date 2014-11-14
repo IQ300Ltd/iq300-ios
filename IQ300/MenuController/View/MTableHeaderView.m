@@ -33,7 +33,7 @@
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 0;
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [_titleLabel setText:NSLocalizedString(@"Tasks", nil)];
+        [_titleLabel setText:NSLocalizedString(@"Tasks", @"Tasks")];
         
         
         [self addSubview:_titleLabel];

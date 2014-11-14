@@ -98,8 +98,10 @@ CGFloat IQStatusBarHeight()
     }];
 }
 
+#pragma mark - UITableView DataSource
+
 - (BOOL)tableView:(UITableView *)tableView canExpandSection:(NSInteger)section {
-    return YES;
+    return [_model canExpandSection:section];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -158,36 +160,36 @@ CGFloat IQStatusBarHeight()
     [_tableView beginUpdates];
 }
 
-- (void)model:(id<IQMenuModel>)model didChangeSectionAtIndex:(NSUInteger)sectionIndex forChangeType:(IQModelChangeType)type {
+- (void)model:(id<IQMenuModel>)model didChangeSectionAtIndex:(NSUInteger)sectionIndex forChangeType:(NSUInteger)type {
     switch(type) {
-        case IQModelChangeInsert:
+        case NSFetchedResultsChangeInsert:
             [_tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
                                     withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
-        case IQModelChangeDelete:
+        case NSFetchedResultsChangeDelete:
             [_tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
                                     withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
     }
 }
 
-- (void)model:(id<IQMenuModel>)model didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(IQModelChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+- (void)model:(id<IQMenuModel>)model didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSUInteger)type newIndexPath:(NSIndexPath *)newIndexPath {
     switch(type) {
-        case IQModelChangeInsert:
+        case NSFetchedResultsChangeInsert:
             [_tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                                             withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
-        case IQModelChangeDelete:
+        case NSFetchedResultsChangeDelete:
             [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                                             withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
-        case IQModelChangeMove:
+        case NSFetchedResultsChangeMove:
             [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                                             withRowAnimation:UITableViewRowAnimationAutomatic];
             [_tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                                             withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
-        case IQModelChangeUpdate:
+        case NSFetchedResultsChangeUpdate:
             [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                                             withRowAnimation:UITableViewRowAnimationNone];
             break;
@@ -210,6 +212,9 @@ CGFloat IQStatusBarHeight()
     [headerView setActionBlock:^(MenuSectionHeader *header) {
         [_tableView expandCollapseSection:header.section animated:YES];
     }];
+    
+    BOOL isExpandable = [self tableView:_tableView canExpandSection:section];
+    [headerView setExpandable:isExpandable];
     
     return headerView;
 }

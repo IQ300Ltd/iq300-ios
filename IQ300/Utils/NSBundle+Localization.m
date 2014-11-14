@@ -8,12 +8,15 @@
 
 #import "NSBundle+Localization.h"
 
+#define DEFAULT_LOCALIZATION @"en"
+
 @implementation NSBundle (Localization)
 
 + (NSBundle*)localizedBundle {
+    NSArray * supportedLocale = [[NSBundle mainBundle] localizations];
     NSString *lang = [NSLocale preferredLanguages].firstObject;
-    if (![lang isEqualToString:@"ru"]) {
-        lang = @"en";
+    if (![supportedLocale containsObject:lang]) {
+        lang = DEFAULT_LOCALIZATION;
     }
     return [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:lang ofType:@"lproj"]];
 }

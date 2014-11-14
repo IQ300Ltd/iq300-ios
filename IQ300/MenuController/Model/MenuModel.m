@@ -67,6 +67,11 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return nil;
 }
 
+- (BOOL)canExpandSection:(NSInteger)section {
+    IQMenuSection * menuSection = _sections[section];
+    return menuSection.isExpandable;
+}
+
 - (Class)controllerClassForItemAtIndexPath:(NSIndexPath*)indexPath {
     return nil;
 }

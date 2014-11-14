@@ -10,7 +10,7 @@
 
 #import "IQMenuModel.h"
 
-@interface MenuViewController : UIViewController <IQModelDelegate>
+@interface MenuViewController : UIViewController <IQTableModelDelegate>
 
 @property (nonatomic, strong) id<IQMenuModel> model;
 

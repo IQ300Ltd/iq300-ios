@@ -17,5 +17,6 @@
 
 - (void)setActionBlock:(void (^)(MenuSectionHeader* header))block;
 - (void)setSelected:(BOOL)selected;
+- (void)setExpandable:(BOOL)expandable;
 
 @end

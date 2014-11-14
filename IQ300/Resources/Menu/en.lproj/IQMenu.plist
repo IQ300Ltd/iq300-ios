@@ -83,7 +83,7 @@
 		<key>title</key>
 		<string>Templates</string>
 		<key>isExpandable</key>
-		<true/>
+		<false/>
 		<key>items</key>
 		<array/>
 	</dict>

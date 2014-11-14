@@ -12,6 +12,6 @@
 
 @interface MenuModel : NSObject<IQMenuModel>
 
-@property (weak) id<IQModelDelegate> delegate;
+@property (weak) id<IQTableModelDelegate> delegate;
 
 @end

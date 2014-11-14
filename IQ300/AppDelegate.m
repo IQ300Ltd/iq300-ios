@@ -32,13 +32,15 @@
     
     UIViewController * projects = [[UIViewController alloc] init];
     UIImage * barImage = [[UIImage imageNamed:@"projects_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    projects.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:nil];
+    UIImage * barImageSelected = [[UIImage imageNamed:@"projects_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    projects.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSelected];
     projects.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
     IQNavigationController * projectsNav = [[IQNavigationController alloc] initWithRootViewController:projects];
 
     UIViewController * calendar = [[UIViewController alloc] init];
     barImage = [[UIImage imageNamed:@"calendar_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    calendar.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:nil];
+    barImageSelected = [[UIImage imageNamed:@"calendar_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    calendar.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSelected];
     calendar.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
     IQNavigationController * calendarNav = [[IQNavigationController alloc] initWithRootViewController:calendar];
 

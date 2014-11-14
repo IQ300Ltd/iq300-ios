@@ -12,4 +12,11 @@
 
 + (NSBundle*)localizedBundle;
 
+#if defined(NSLocalizedString)
+#undef NSLocalizedString
+#endif
+
+#define NSLocalizedString(key, comment) \
+[[NSBundle localizedBundle] localizedStringForKey:(key) value:@"" table:nil]
+
 @end

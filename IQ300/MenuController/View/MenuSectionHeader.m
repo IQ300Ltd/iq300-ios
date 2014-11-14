@@ -15,6 +15,7 @@
 @interface MenuSectionHeader() {
     ExtendedButton * _backgroundView;
     BOOL _isSelected;
+    BOOL _isExpandable;
     UIEdgeInsets _backgroundViewInsets;
 }
 
@@ -59,6 +60,11 @@
     [self updateUIForState];
 }
 
+- (void)setExpandable:(BOOL)expandable {
+    _isExpandable = expandable;
+    [self updateUIForState];
+}
+
 - (NSString*)title {
     return [_backgroundView titleForState:UIControlStateNormal];
 }
@@ -96,9 +102,16 @@
 - (void)updateUIForState {
     [_backgroundView setBackgroundColor:(_isSelected) ? SELECTED_BACKGROUND_COLOR : MENU_BACKGROUND_COLOR
                                forState:UIControlStateNormal];
+    
+    if(_isExpandable) {
     _backgroundView.titleEdgeInsets =  (_isSelected) ? UIEdgeInsetsMake(0, 5.0f, 0, 0) : UIEdgeInsetsMake(0, 10.0f, 0, 0);
     [_backgroundView setImage:(_isSelected) ? [UIImage imageNamed:@"menu_expanded.png"] : [UIImage imageNamed:@"menu_collapseed.png"]
                      forState:UIControlStateNormal];
+    }
+    else {
+        _backgroundView.titleEdgeInsets = UIEdgeInsetsZero;
+        [_backgroundView setImage:nil forState:UIControlStateNormal];
+    }
 }
 
 @end
