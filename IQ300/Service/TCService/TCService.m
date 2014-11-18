@@ -10,8 +10,6 @@
 #import "TCService.h"
 #import "RKMappingResult+Result.h"
 
-#define STORE_FILE_NAME @"Teametre"
-
 NSString * const TCServiceErrorDomain = @"com.tayphoon.TCService.ErrorDomain";
 
 static id _sharedService = nil;
@@ -28,45 +26,6 @@ static id _sharedService = nil;
 @end
 
 @implementation TCService
-
-+ (NSString *)executableName {
-    NSString *executableName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleExecutable"];
-    if (nil == executableName) {
-        NSLog(@"Unable to determine CFBundleExecutable: storing data under RestKit directory name.");
-    }
-    
-    return executableName;
-}
-
-+ (NSString *)applicationDataDirectory {
-    NSFileManager* sharedFM = [NSFileManager defaultManager];
-    
-    NSArray* possibleURLs = [sharedFM URLsForDirectory:NSApplicationSupportDirectory
-                                             inDomains:NSUserDomainMask];
-    NSURL* appSupportDir = nil;
-    NSURL* appDirectory = nil;
-    
-    if ([possibleURLs count] >= 1) {
-        appSupportDir = [possibleURLs objectAtIndex:0];
-    }
-    
-    if (appSupportDir) {
-        NSString *executableName = [self executableName];
-        appDirectory = [appSupportDir URLByAppendingPathComponent:executableName];
-        
-        
-        if(![sharedFM fileExistsAtPath:[appDirectory path]]) {
-            NSError* error = nil;
-            
-            if(![sharedFM createDirectoryAtURL:appDirectory withIntermediateDirectories:NO attributes:nil error:&error]) {
-                NSLog(@"Unable to create tmp directory: %@", error);
-            }
-        }
-        return [appDirectory path];
-    }
-    
-    return nil;
-}
 
 + (instancetype)sharedService {
     return _sharedService;
@@ -125,14 +84,12 @@ static id _sharedService = nil;
         NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
         [NSURLCache setSharedURLCache:sharedCache];
         
-        NSURL *modelURL = [[NSBundle mainBundle] URLForResource:STORE_FILE_NAME
-                                                  withExtension:@"mom"
-                                                   subdirectory:[NSString stringWithFormat:@"%@.momd", STORE_FILE_NAME]];
-        NSManagedObjectModel *managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+        NSURL *modelURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:self.storeFileName ofType:@"momd"]];
+        NSManagedObjectModel *managedObjectModel = [[[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL] mutableCopy];
         RKManagedObjectStore *managedObjectStore = [[RKManagedObjectStore alloc] initWithManagedObjectModel:managedObjectModel];
         [managedObjectStore createPersistentStoreCoordinator];
         
-        NSString * storePath = [[TCService applicationDataDirectory] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite", STORE_FILE_NAME]];
+        NSString * storePath = [RKApplicationDataDirectory() stringByAppendingPathComponent:self.storeFileName];
         NSError * error;
         
         BOOL isMigrationNeeded = [self isMigrationNeededForCoordinator:managedObjectStore.persistentStoreCoordinator

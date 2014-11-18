@@ -65,6 +65,10 @@
 		738FE7191A163C16009F26A2 /* NotificationsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7181A163C16009F26A2 /* NotificationsView.m */; };
 		738FE71E1A164875009F26A2 /* UIImage+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE71D1A164875009F26A2 /* UIImage+Extensions.m */; };
 		738FE7211A1652D2009F26A2 /* ExTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7201A1652D2009F26A2 /* ExTextField.m */; };
+		7393C40D1A1A2FCF00E9E944 /* login_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 7393C40B1A1A2FCF00E9E944 /* login_logo.png */; };
+		7393C40E1A1A2FCF00E9E944 /* login_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7393C40C1A1A2FCF00E9E944 /* login_logo@2x.png */; };
+		7393C4111A1A2FF400E9E944 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7393C4101A1A2FF400E9E944 /* LoginController.m */; };
+		7393C4141A1A300F00E9E944 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7393C4131A1A300F00E9E944 /* LoginView.m */; };
 		73BA98741A109117005AEC00 /* BottomLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA98731A109117005AEC00 /* BottomLineView.m */; };
 		73BA98771A1092DF005AEC00 /* MTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA98761A1092DF005AEC00 /* MTableHeaderView.m */; };
 		73BA987D1A10969E005AEC00 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 73BA987F1A10969E005AEC00 /* Localizable.strings */; };
@@ -77,6 +81,9 @@
 		73BA989A1A10A1AB005AEC00 /* IQMenuSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA98991A10A1AB005AEC00 /* IQMenuSection.m */; };
 		73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA989C1A10A29C005AEC00 /* IQMenuSerializator.m */; };
 		73BA98A01A10A531005AEC00 /* NSBundle+Localization.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA989F1A10A531005AEC00 /* NSBundle+Localization.m */; };
+		73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CE91A1B6B6D00225255 /* IQSession.m */; };
+		73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */; };
+		73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */; };
 		C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D006E3B70304215613C192 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -178,6 +185,13 @@
 		738FE71F1A1652D2009F26A2 /* ExTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExTextField.h; sourceTree = "<group>"; };
 		738FE7201A1652D2009F26A2 /* ExTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExTextField.m; sourceTree = "<group>"; };
 		738FE7221A165A00009F26A2 /* IQTableModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTableModel.h; sourceTree = "<group>"; };
+		7393C40B1A1A2FCF00E9E944 /* login_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = login_logo.png; sourceTree = "<group>"; };
+		7393C40C1A1A2FCF00E9E944 /* login_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login_logo@2x.png"; sourceTree = "<group>"; };
+		7393C40F1A1A2FF400E9E944 /* LoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginController.h; sourceTree = "<group>"; };
+		7393C4101A1A2FF400E9E944 /* LoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginController.m; sourceTree = "<group>"; };
+		7393C4121A1A300F00E9E944 /* LoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginView.h; sourceTree = "<group>"; };
+		7393C4131A1A300F00E9E944 /* LoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginView.m; sourceTree = "<group>"; };
+		7393C41A1A1A379400E9E944 /* IQFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQFonts.h; sourceTree = "<group>"; };
 		73BA98721A109117005AEC00 /* BottomLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottomLineView.h; sourceTree = "<group>"; };
 		73BA98731A109117005AEC00 /* BottomLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottomLineView.m; sourceTree = "<group>"; };
 		73BA98751A1092DF005AEC00 /* MTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTableHeaderView.h; sourceTree = "<group>"; };
@@ -199,6 +213,11 @@
 		73BA989C1A10A29C005AEC00 /* IQMenuSerializator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQMenuSerializator.m; sourceTree = "<group>"; };
 		73BA989E1A10A531005AEC00 /* NSBundle+Localization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+Localization.h"; sourceTree = "<group>"; };
 		73BA989F1A10A531005AEC00 /* NSBundle+Localization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
+		73F90CE81A1B6B6D00225255 /* IQSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSession.h; sourceTree = "<group>"; };
+		73F90CE91A1B6B6D00225255 /* IQSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSession.m; sourceTree = "<group>"; };
+		73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQServiceResponse.h; sourceTree = "<group>"; };
+		73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQServiceResponse.m; sourceTree = "<group>"; };
+		73F90CF91A1B981C00225255 /* IQ300.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IQ300.xcdatamodel; sourceTree = "<group>"; };
 		93D006E3B70304215613C192 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9B2A8B58D9801BD961060BB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -321,7 +340,10 @@
 				73BA98891A109E26005AEC00 /* Menu */,
 				737E7C591A0CC8A400E8BB81 /* top_header_bg.png */,
 				737E7C5A1A0CC8A400E8BB81 /* top_header_bg@2x.png */,
+				7393C40B1A1A2FCF00E9E944 /* login_logo.png */,
+				7393C40C1A1A2FCF00E9E944 /* login_logo@2x.png */,
 				736B6BCF1A0B5C0800034D9B /* Images.xcassets */,
+				73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -400,6 +422,10 @@
 				737DD2281A14EFE900CC4443 /* TCService */,
 				737DD22E1A14F00400CC4443 /* IQService.h */,
 				737DD22F1A14F00400CC4443 /* IQService.m */,
+				73F90CE81A1B6B6D00225255 /* IQSession.h */,
+				73F90CE91A1B6B6D00225255 /* IQSession.m */,
+				73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */,
+				73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -441,12 +467,13 @@
 			isa = PBXGroup;
 			children = (
 				736B6BE31A0B833900034D9B /* BaseUI */,
-				7379EEB41A11E3FF00D69BBD /* Notifications */,
-				736B6BC31A0B5B2800034D9B /* TasksController */,
+				7393C4071A1A2CCF00E9E944 /* LoginController */,
 				736B6BCA1A0B5BB600034D9B /* MenuController */,
+				7379EEB41A11E3FF00D69BBD /* Notifications */,
 				736B6BCE1A0B5BCB00034D9B /* Resources */,
 				737DD2111A14DEF100CC4443 /* Service */,
 				738CE1E31A0B3F4E0096B374 /* Supporting Files */,
+				736B6BC31A0B5B2800034D9B /* TasksController */,
 				736B6BE71A0BC08100034D9B /* Utils */,
 				738CE1E71A0B3F4E0096B374 /* AppDelegate.h */,
 				738CE1E81A0B3F4E0096B374 /* AppDelegate.m */,
@@ -461,6 +488,7 @@
 				738CE1E41A0B3F4E0096B374 /* Info.plist */,
 				738CE1E51A0B3F4E0096B374 /* main.m */,
 				73BA987F1A10969E005AEC00 /* Localizable.strings */,
+				7393C41A1A1A379400E9E944 /* IQFonts.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -513,6 +541,41 @@
 				738FE6FC1A162B10009F26A2 /* tbar_sel_indicator@2x.png */,
 			);
 			path = TabBar;
+			sourceTree = "<group>";
+		};
+		7393C4071A1A2CCF00E9E944 /* LoginController */ = {
+			isa = PBXGroup;
+			children = (
+				7393C4081A1A2CCF00E9E944 /* Controller */,
+				7393C4091A1A2CCF00E9E944 /* Model */,
+				7393C40A1A1A2CCF00E9E944 /* View */,
+			);
+			path = LoginController;
+			sourceTree = "<group>";
+		};
+		7393C4081A1A2CCF00E9E944 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				7393C40F1A1A2FF400E9E944 /* LoginController.h */,
+				7393C4101A1A2FF400E9E944 /* LoginController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		7393C4091A1A2CCF00E9E944 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		7393C40A1A1A2CCF00E9E944 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				7393C4121A1A300F00E9E944 /* LoginView.h */,
+				7393C4131A1A300F00E9E944 /* LoginView.m */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		73BA98891A109E26005AEC00 /* Menu */ = {
@@ -636,6 +699,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				738FE70A1A162B10009F26A2 /* notif_tab_selected@2x.png in Resources */,
+				7393C40E1A1A2FCF00E9E944 /* login_logo@2x.png in Resources */,
 				737E7C5C1A0CC8A400E8BB81 /* top_header_bg@2x.png in Resources */,
 				738FE7161A162B10009F26A2 /* tbar_sel_indicator@2x.png in Resources */,
 				738FE7141A162B10009F26A2 /* tasks_tab_sel@2x.png in Resources */,
@@ -669,6 +733,7 @@
 				738FE7041A162B10009F26A2 /* messgaes_tab_sel@2x.png in Resources */,
 				738FE7071A162B10009F26A2 /* notif_tab.png in Resources */,
 				738FE7111A162B10009F26A2 /* tasks_tab.png in Resources */,
+				7393C40D1A1A2FCF00E9E944 /* login_logo.png in Resources */,
 				738FE6FE1A162B10009F26A2 /* calendar_tab@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -722,12 +787,15 @@
 			files = (
 				738CE1E91A0B3F4E0096B374 /* AppDelegate.m in Sources */,
 				73BA98A01A10A531005AEC00 /* NSBundle+Localization.m in Sources */,
+				7393C4141A1A300F00E9E944 /* LoginView.m in Sources */,
 				73BA98851A109A49005AEC00 /* IQMenuItem.m in Sources */,
 				73BA989A1A10A1AB005AEC00 /* IQMenuSection.m in Sources */,
+				73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */,
 				737E7C551A0CA88E00E8BB81 /* MenuSectionHeader.m in Sources */,
 				737E7C5F1A0CD57E00E8BB81 /* AccountHeaderView.m in Sources */,
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,
 				73506ED61A137D070071B4CB /* TasksController.m in Sources */,
+				73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */,
 				736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */,
 				73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */,
 				73BA98771A1092DF005AEC00 /* MTableHeaderView.m in Sources */,
@@ -737,12 +805,14 @@
 				737DD2301A14F00400CC4443 /* IQService.m in Sources */,
 				738CE1E61A0B3F4E0096B374 /* main.m in Sources */,
 				736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */,
+				7393C4111A1A2FF400E9E944 /* LoginController.m in Sources */,
 				736B6BDE1A0B5F5900034D9B /* MenuModel.m in Sources */,
 				7379EEB31A11E26200D69BBD /* IQNavigationController.m in Sources */,
 				737DD22D1A14EFE900CC4443 /* TCService.m in Sources */,
 				736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */,
 				7379EEBA1A11E47700D69BBD /* NotificationsContoller.m in Sources */,
 				737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */,
+				73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */,
 				736B6BEA1A0BC09300034D9B /* UIColor+Extensions.m in Sources */,
 				738FE71E1A164875009F26A2 /* UIImage+Extensions.m in Sources */,
 				73BA98741A109117005AEC00 /* BottomLineView.m in Sources */,
@@ -960,6 +1030,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				73F90CF91A1B981C00225255 /* IQ300.xcdatamodel */,
+			);
+			currentVersion = 73F90CF91A1B981C00225255 /* IQ300.xcdatamodel */;
+			path = IQ300.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 738CE1D81A0B3F4E0096B374 /* Project object */;
 }

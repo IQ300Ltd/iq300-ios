@@ -14,6 +14,9 @@
 #import "IQNavigationController.h"
 #import "NotificationsContoller.h"
 #import "IQDrawerController.h"
+#import "IQService.h"
+#import "IQSession.h"
+#import "LoginController.h"
 
 @interface AppDelegate ()
 
@@ -22,6 +25,7 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];   
 
     NotificationsContoller * notifications = [[NotificationsContoller alloc] init];
@@ -83,7 +87,17 @@
     }];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = self.drawerController;
+    
     [self.window makeKeyAndVisible];
+
+    if (![IQSession defaultSession]) {
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+        LoginController * loginViewController = [[LoginController alloc] init];
+        [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+    }
+    else {
+        [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
+    }
     
     return YES;
 }
