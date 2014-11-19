@@ -10,7 +10,7 @@
 
 @interface IQSession : NSObject
 
-@property (nonatomic, strong) NSString * userName;
+@property (nonatomic, strong) NSString * email;
 @property (nonatomic, strong) NSString * password;
 @property (nonatomic, strong) NSString * tokenType;
 @property (nonatomic, strong) NSString * token;
@@ -18,7 +18,7 @@
 + (IQSession*)defaultSession;
 + (void)setDefaultSession:(IQSession*)defaultSession;
 
-+ (IQSession*)sessionWithUserName:(NSString *)userName andPassword:(NSString *)password token:(NSString*)token;
-- (instancetype)initWithUserName:(NSString *)userName andPassword:(NSString *)password token:(NSString*)token;
++ (IQSession*)sessionWithEmail:(NSString *)email andPassword:(NSString *)password token:(NSString*)token;
+- (instancetype)initWithEmail:(NSString *)email andPassword:(NSString *)password token:(NSString*)token;
 
 @end

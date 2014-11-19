@@ -21,7 +21,7 @@
     [objectMapping addAttributeMappingsFromDictionary:@{
                                                         @"ResultCode": @"resultCode",
                                                         @"ResultCodeName": @"resultDescription",
-                                                        @"ErrorMessage": @"errorMessage"
+                                                        @"error": @"errorMessage"
                                                         }];
     
     return objectMapping;

@@ -28,7 +28,7 @@
 #import "UIImage+Extensions.h"
 #import "IQFonts.h"
 
-#define SERVICE_URL @""
+#define SERVICE_URL @"http://edge.iq300.ru"
 
 #define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
 #define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)

@@ -36,6 +36,7 @@
     
         _passwordTextField = [[ExTextField alloc] init];
         _passwordContainer = [self makeContainerWithField:_passwordTextField placeholder:@"Password"];
+        _passwordTextField.secureTextEntry = YES;
         [self addSubview:_passwordContainer];
         
         _enterButton = [[UIButton alloc] init];

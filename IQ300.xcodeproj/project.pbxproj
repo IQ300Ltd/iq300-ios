@@ -69,6 +69,7 @@
 		7393C40E1A1A2FCF00E9E944 /* login_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7393C40C1A1A2FCF00E9E944 /* login_logo@2x.png */; };
 		7393C4111A1A2FF400E9E944 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7393C4101A1A2FF400E9E944 /* LoginController.m */; };
 		7393C4141A1A300F00E9E944 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7393C4131A1A300F00E9E944 /* LoginView.m */; };
+		73A113F01A1C722D00293EC5 /* notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = 73A113EF1A1C722D00293EC5 /* notifications.json */; };
 		73BA98741A109117005AEC00 /* BottomLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA98731A109117005AEC00 /* BottomLineView.m */; };
 		73BA98771A1092DF005AEC00 /* MTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA98761A1092DF005AEC00 /* MTableHeaderView.m */; };
 		73BA987D1A10969E005AEC00 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 73BA987F1A10969E005AEC00 /* Localizable.strings */; };
@@ -84,6 +85,7 @@
 		73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CE91A1B6B6D00225255 /* IQSession.m */; };
 		73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */; };
 		73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */; };
+		73F90CFF1A1B9F0500225255 /* IQFakeService.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CFE1A1B9F0500225255 /* IQFakeService.m */; };
 		C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D006E3B70304215613C192 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -192,6 +194,7 @@
 		7393C4121A1A300F00E9E944 /* LoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginView.h; sourceTree = "<group>"; };
 		7393C4131A1A300F00E9E944 /* LoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginView.m; sourceTree = "<group>"; };
 		7393C41A1A1A379400E9E944 /* IQFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQFonts.h; sourceTree = "<group>"; };
+		73A113EF1A1C722D00293EC5 /* notifications.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = notifications.json; sourceTree = "<group>"; };
 		73BA98721A109117005AEC00 /* BottomLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottomLineView.h; sourceTree = "<group>"; };
 		73BA98731A109117005AEC00 /* BottomLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottomLineView.m; sourceTree = "<group>"; };
 		73BA98751A1092DF005AEC00 /* MTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTableHeaderView.h; sourceTree = "<group>"; };
@@ -218,6 +221,8 @@
 		73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQServiceResponse.h; sourceTree = "<group>"; };
 		73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQServiceResponse.m; sourceTree = "<group>"; };
 		73F90CF91A1B981C00225255 /* IQ300.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IQ300.xcdatamodel; sourceTree = "<group>"; };
+		73F90CFD1A1B9F0500225255 /* IQFakeService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQFakeService.h; sourceTree = "<group>"; };
+		73F90CFE1A1B9F0500225255 /* IQFakeService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQFakeService.m; sourceTree = "<group>"; };
 		93D006E3B70304215613C192 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9B2A8B58D9801BD961060BB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -336,6 +341,7 @@
 		736B6BCE1A0B5BCB00034D9B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				73A113EE1A1C6F3100293EC5 /* FakeData */,
 				738FE6E21A162B10009F26A2 /* TabBar */,
 				73BA98891A109E26005AEC00 /* Menu */,
 				737E7C591A0CC8A400E8BB81 /* top_header_bg.png */,
@@ -422,6 +428,8 @@
 				737DD2281A14EFE900CC4443 /* TCService */,
 				737DD22E1A14F00400CC4443 /* IQService.h */,
 				737DD22F1A14F00400CC4443 /* IQService.m */,
+				73F90CFD1A1B9F0500225255 /* IQFakeService.h */,
+				73F90CFE1A1B9F0500225255 /* IQFakeService.m */,
 				73F90CE81A1B6B6D00225255 /* IQSession.h */,
 				73F90CE91A1B6B6D00225255 /* IQSession.m */,
 				73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */,
@@ -578,6 +586,14 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		73A113EE1A1C6F3100293EC5 /* FakeData */ = {
+			isa = PBXGroup;
+			children = (
+				73A113EF1A1C722D00293EC5 /* notifications.json */,
+			);
+			path = FakeData;
+			sourceTree = "<group>";
+		};
 		73BA98891A109E26005AEC00 /* Menu */ = {
 			isa = PBXGroup;
 			children = (
@@ -724,6 +740,7 @@
 				738FE70E1A162B10009F26A2 /* projects_tab_sel@2x.png in Resources */,
 				738FE7101A162B10009F26A2 /* tabbar_background@2x.png in Resources */,
 				738FE70F1A162B10009F26A2 /* tabbar_background.png in Resources */,
+				73A113F01A1C722D00293EC5 /* notifications.json in Resources */,
 				738FE7021A162B10009F26A2 /* messages_tab@2x.png in Resources */,
 				738FE7121A162B10009F26A2 /* tasks_tab@2x.png in Resources */,
 				73BA98911A109F4D005AEC00 /* menu_expanded@2x.png in Resources */,
@@ -797,6 +814,7 @@
 				73506ED61A137D070071B4CB /* TasksController.m in Sources */,
 				73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */,
 				736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */,
+				73F90CFF1A1B9F0500225255 /* IQFakeService.m in Sources */,
 				73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */,
 				73BA98771A1092DF005AEC00 /* MTableHeaderView.m in Sources */,
 				738FE7191A163C16009F26A2 /* NotificationsView.m in Sources */,

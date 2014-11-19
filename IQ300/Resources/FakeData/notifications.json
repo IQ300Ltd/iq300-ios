@@ -1,0 +1,32 @@
+{ "notifications":
+    [
+     {
+          "id": 1,
+          "created_at": "2014-11-18 06:37:04+00:00",
+          "readed": "2014-11-18 06:37:04+00:00",
+          "main_text": "",
+          "notificable": {
+               "id": 1,
+               "type": 2,
+               "title": ""
+          },
+          "user":
+          {
+               "id": 1,
+               "short_name": "test"
+               "photo":
+               {
+                    "thumb_url": "",
+                    "medium_url": "",
+                    "normal_url": ""
+               }
+          }
+     }
+    ],
+    "collection_info":
+    {
+        "current_page": 0,
+        "total_pages": 1,
+        "items_per_page": 1,
+    }
+}

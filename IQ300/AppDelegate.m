@@ -5,7 +5,7 @@
 //  Created by Tayphoon on 06.11.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-
+#import <RestKit/RestKit.h>
 #import <MMDrawerController/MMDrawerController.h>
 
 #import "AppDelegate.h"
@@ -25,8 +25,11 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
-    MenuViewController * leftDrawer = [[MenuViewController alloc] init];   
+    RKLogConfigureByName("RestKit/Support", RKLogLevelError);
+    RKLogConfigureByName("RestKit/Network", RKLogLevelError);
+    RKLogConfigureByName("RestKit/App", RKLogLevelError);
+
+    MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
     NotificationsContoller * notifications = [[NotificationsContoller alloc] init];
     IQNavigationController * notificationsNav = [[IQNavigationController alloc] initWithRootViewController:notifications];
