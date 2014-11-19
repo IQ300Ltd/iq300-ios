@@ -9,7 +9,11 @@
 #import "BottomLineView.h"
 
 @interface AccountHeaderView : BottomLineView {
-    UIEdgeInsets _bottomLineInsets;
+    UIEdgeInsets _contentInsets;
 }
+
+@property (nonatomic, readonly) UIImageView * userImageView;
+@property (nonatomic, readonly) UILabel * userNameLabel;
+@property (nonatomic, readonly) UIButton * editButton;
 
 @end

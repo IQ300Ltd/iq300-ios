@@ -28,7 +28,7 @@
 
 @protocol IQTableModel <NSObject>
 
-@property (weak) id<IQTableModelDelegate> delegate;
+@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (NSUInteger)numberOfSections;
 
@@ -36,9 +36,9 @@
 
 - (NSUInteger)numberOfItemsInSection:(NSInteger)section;
 
-- (NSString*)reuseIdentifierForSection:(NSInteger)section;
+- (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath;
 
-- (id)createCellForSection:(NSInteger)section;
+- (id)createCellForIndexPath:(NSIndexPath*)indexPath;
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath;
 

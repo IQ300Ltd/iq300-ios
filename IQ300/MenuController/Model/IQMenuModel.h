@@ -10,8 +10,9 @@
 
 @protocol IQMenuModel <IQTableModel>
 
-- (BOOL)canExpandSection:(NSInteger)section;
+@property (nonatomic, readonly) NSString * title;
 
+- (BOOL)canExpandSection:(NSInteger)section;
 - (Class)controllerClassForItemAtIndexPath:(NSIndexPath*)indexPath;
 
 @end

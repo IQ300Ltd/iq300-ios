@@ -10,8 +10,9 @@
 
 #import "IQMenuModel.h"
 
-@interface MenuModel : NSObject<IQMenuModel>
+@interface NotificationsMenuModel : NSObject<IQMenuModel>
 
-@property (weak) id<IQTableModelDelegate> delegate;
+@property (nonatomic, readonly) NSString * title;
+@property (nonatomic, weak)     id<IQTableModelDelegate> delegate;
 
 @end

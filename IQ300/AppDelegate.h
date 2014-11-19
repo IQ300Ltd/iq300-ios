@@ -15,5 +15,7 @@
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) MMDrawerController *drawerController;
 
++ (void)logout;
+
 @end
 

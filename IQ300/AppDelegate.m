@@ -24,6 +24,20 @@
 
 @implementation AppDelegate
 
++ (void)logout {
+    AppDelegate * delegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    LoginController * loginViewController = [[LoginController alloc] init];
+    [delegate.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+    UITabBarController * center = ((UITabBarController*)delegate.drawerController.centerViewController);
+    NSArray * controllers = [center viewControllers];
+    [center setSelectedIndex:0];
+    [controllers makeObjectsPerformSelector:@selector(popToRootViewControllerAnimated:) withObject:@(NO)];
+    [[IQService sharedService] logout];
+    [IQSession setDefaultSession:nil];
+    [delegate.drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:nil];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     RKLogConfigureByName("RestKit/Support", RKLogLevelError);
     RKLogConfigureByName("RestKit/Network", RKLogLevelError);
@@ -68,7 +82,7 @@
     self.drawerController = drawerController;
     [self.drawerController setRestorationIdentifier:@"MMDrawer"];
     [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
-    [self.drawerController setMaximumLeftDrawerWidth:265.0];
+    [self.drawerController setMaximumLeftDrawerWidth:274.0];
     [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModePanningDrawerView | MMCloseDrawerGestureModePanningCenterView];
     [self.drawerController setShowsShadow:YES];
     [self.drawerController setShouldStretchDrawer:NO];

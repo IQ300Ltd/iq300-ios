@@ -6,29 +6,35 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
-#import "MenuModel.h"
+#import "NotificationsMenuModel.h"
 #import "MenuCell.h"
 #import "IQMenuSerializator.h"
 #import "IQMenuSection.h"
+#import "IQMenuCellFactory.h"
+#import "IQMenuItem.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
-@interface MenuModel() {
+@interface NotificationsMenuModel() {
     NSArray * _sections;
 }
 
 @end
 
-@implementation MenuModel
+@implementation NotificationsMenuModel
 
 - (id)init {
     self = [super init];
     
     if (self) {
-        _sections = [IQMenuSerializator serializeMenuFromList:@"" error:nil];
+        _sections = [IQMenuSerializator serializeMenuFromList:@"notifications_menu" error:nil];
     }
     
     return self;
+}
+
+- (NSString*)title {
+    return NSLocalizedString(@"Tasks", @"Tasks");
 }
 
 - (NSUInteger)numberOfSections {
@@ -45,13 +51,17 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return [menuSection.menuItems count];
 }
 
-- (NSString*)reuseIdentifierForSection:(NSInteger)section {
-    return CellReuseIdentifier;
+- (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
+    IQMenuItem * item = [self itemAtIndexPath:indexPath];
+    return [IQMenuCellFactory cellIdentifierForItemType:[item.type integerValue]];
 }
 
-- (MenuCell*)createCellForSection:(NSInteger)section {
-    return [[MenuCell alloc] initWithStyle:UITableViewCellStyleDefault
-                           reuseIdentifier:[self reuseIdentifierForSection:section]];
+- (MenuCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
+    NSString * reuseIdentifier = [self reuseIdentifierForIndexPath:indexPath];
+    IQMenuItem * item = [self itemAtIndexPath:indexPath];
+    Class cellClass = [IQMenuCellFactory cellClassForItemType:[item.type integerValue]];
+    return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
+                           reuseIdentifier:reuseIdentifier];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
@@ -77,6 +87,9 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
+    if(completion) {
+        completion(nil);
+    }
 }
 
 - (void)clearModelData {

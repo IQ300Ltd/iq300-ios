@@ -10,11 +10,12 @@
 
 #import "MenuConsts.h"
 #import "MenuCell.h"
-#import "MenuModel.h"
+#import "NotificationsMenuModel.h"
 #import "ExpandableTableView.h"
 #import "MenuSectionHeader.h"
 #import "AccountHeaderView.h"
 #import "MTableHeaderView.h"
+#import "AppDelegate.h"
 
 #define SECTION_HEIGHT 39
 #define ACCOUNT_HEADER_HEIGHT 64.5
@@ -29,7 +30,9 @@ CGFloat IQStatusBarHeight()
 @interface MenuViewController () <ExpandableTableViewDataSource, ExpandableTableViewDelegate> {
     ExpandableTableView * _tableView;
     AccountHeaderView * _accountHeader;
-    UIView * _tableHaderView;
+    MTableHeaderView * _tableHaderView;
+    NSInteger _selectedSection;
+    NSMutableIndexSet * _expandedSections;
 }
 
 @end
@@ -39,7 +42,8 @@ CGFloat IQStatusBarHeight()
 - (id)init {
     self = [super init];
     if (self) {
-        _model = [[MenuModel alloc] init];
+        _selectedSection = NSNotFound;
+        _expandedSections = [[NSMutableIndexSet alloc] init];
     }
     return self;
 }
@@ -49,10 +53,14 @@ CGFloat IQStatusBarHeight()
     self.view.backgroundColor = MENU_BACKGROUND_COLOR;
     
     _accountHeader = [[AccountHeaderView alloc] init];
+    [_accountHeader.editButton addTarget:self
+                                  action:@selector(editButtonAction:)
+                        forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_accountHeader];
     
     _tableHaderView = [[MTableHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, TABLE_HEADER_HEIGHT)];
-
+    [_tableHaderView setHidden:YES];
+    
     _tableView = [[ExpandableTableView alloc] init];
     _tableView.backgroundColor = self.view.backgroundColor;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -87,15 +95,27 @@ CGFloat IQStatusBarHeight()
 - (void)setModel:(id<IQMenuModel>)model {
     [_model setDelegate:nil];
     _model = model;
+    _tableHaderView.title = _model.title;
+    [_tableHaderView setHidden:(_model == nil)];
     _model.delegate = self;
 }
 
-- (void)reloadDataWithHandler:(void (^)())handler {
-    [_model updateModelWithCompletion:^(NSError *error) {
-        if (handler) {
-            handler();
+- (void)reloadMenuWithCompletion:(void (^)())completion {
+    void (^completionBlock)(NSError *error) = ^(NSError *error) {
+        if(!error) {
+            [_tableView reloadData];
         }
-    }];
+        if (completion) {
+            completion();
+        }
+    };
+    
+    if(_model) {
+        [_model updateModelWithCompletion:completionBlock];
+    }
+    else {
+        completionBlock(nil);
+    }
 }
 
 #pragma mark - UITableView DataSource
@@ -113,10 +133,10 @@ CGFloat IQStatusBarHeight()
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    MenuCell * cell = [tableView dequeueReusableCellWithIdentifier:[_model reuseIdentifierForSection:indexPath.section]];
+    MenuCell * cell = [tableView dequeueReusableCellWithIdentifier:[_model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
-        cell = [_model createCellForSection:indexPath.section];
+        cell = [_model createCellForIndexPath:indexPath];
     }
     
     id item = [_model itemAtIndexPath:indexPath];
@@ -210,13 +230,37 @@ CGFloat IQStatusBarHeight()
     headerView.section = section;
     [headerView setTitle:title];
     [headerView setActionBlock:^(MenuSectionHeader *header) {
-        [_tableView expandCollapseSection:header.section animated:YES];
+        NSInteger oldSection = _selectedSection;
+        _selectedSection = (header.selected) ? header.section : NSNotFound;
+        if(oldSection != NSNotFound && oldSection != header.section) {
+            [_tableView reloadSections:[NSIndexSet indexSetWithIndex:oldSection]
+                      withRowAnimation:UITableViewRowAnimationNone];
+        }
+        
+        BOOL isExpandable = [self tableView:_tableView canExpandSection:header.section];
+        if(isExpandable) {
+            if(header.isExpanded) {
+                [_expandedSections addIndex:section];
+            }
+            else {
+                [_expandedSections removeIndex:section];
+            }
+            [_tableView expandCollapseSection:header.section animated:YES];
+        }
     }];
     
     BOOL isExpandable = [self tableView:_tableView canExpandSection:section];
     [headerView setExpandable:isExpandable];
+    if(isExpandable) {
+        [headerView setExpanded:[_expandedSections containsIndex:section]];
+    }
+    [headerView setSelected:(section == _selectedSection)];
     
     return headerView;
+}
+
+- (void)editButtonAction:(UIButton*)sender {
+    [AppDelegate logout];
 }
 
 @end

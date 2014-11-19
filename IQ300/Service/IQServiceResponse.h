@@ -15,7 +15,7 @@
 @interface IQServiceResponse : NSObject<TCResponse>
 
 @property (nonatomic, strong)   id returnedValue;
-@property (nonatomic, strong) NSNumber * statusCode;
+@property (nonatomic, strong)   NSNumber * statusCode;
 @property (nonatomic, strong)   NSString * statusMessage;
 @property (nonatomic, strong)   NSString * errorMessage;
 

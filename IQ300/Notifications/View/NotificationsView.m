@@ -36,7 +36,7 @@
         _searchBar.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Search", nil)
                                                                            attributes:@{NSForegroundColorAttributeName: [UIColor colorWithHexInt:0xa9a9a9]}];
 
-        [_searchBar setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:18]];
+        [_searchBar setFont:[UIFont fontWithName:IQ_HELVETICA size:18]];
         [_searchBar setTextColor:[UIColor blackColor]];
         [_searchBarContainer addSubview:_searchBar];
         

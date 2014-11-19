@@ -32,6 +32,8 @@
 			<dict>
 				<key>itemId</key>
 				<integer>3</integer>
+				<key>type</key>
+				<integer>1</integer>
 				<key>title</key>
 				<string>Overdue</string>
 			</dict>

@@ -8,9 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSUInteger, IQMenuItemType) {
+    IQMenuItemTypeDefault = 0,
+    IQMenuItemTypeImportant = 1,
+};
+
 @interface IQMenuItem : NSObject
 
 @property (nonatomic, strong) NSNumber * itemId;
 @property (nonatomic, strong) NSString * title;
+@property (nonatomic, strong) NSNumber * type;
 
 @end

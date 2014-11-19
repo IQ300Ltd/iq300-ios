@@ -8,6 +8,7 @@
 
 #import "NotificationsContoller.h"
 #import "NotificationsView.h"
+#import "NotificationsMenuModel.h"
 
 @interface NotificationsContoller() <UITableViewDelegate, UITableViewDataSource> {
     NotificationsView * _mainView;
@@ -43,6 +44,13 @@
     
     _mainView.tableView.delegate = self;
     _mainView.tableView.dataSource = self;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    NotificationsMenuModel * model = [[NotificationsMenuModel alloc] init];
+    [self.leftMenuController setModel:model];
+    [self.leftMenuController reloadMenuWithCompletion:nil];
 }
 
 #pragma mark - UITableView DataSource

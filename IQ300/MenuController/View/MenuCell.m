@@ -17,9 +17,7 @@
 
 @interface MenuCell() {
     UIView * _selectedBackgroundView;
-    UILabel * _titleLabel;
     UIEdgeInsets _selectedBackgroundInsets;
-    JSBadgeView * _badgeView;
 }
 
 @end
@@ -29,8 +27,6 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
-        [self setBackgroundColor:[UIColor colorWithHexInt:0x141515]];
-        
         _selectedBackgroundInsets = UIEdgeInsetsMake(0, 0, 1, 0);
         _contentInsets = UIEdgeInsetsMake(0, 44, 0, 10);
         _isBottomLineShown = YES;
@@ -41,11 +37,11 @@
        
         _cellContentView = [[BottomLineView alloc] init];
         [_cellContentView setBackgroundColor:BBACKGROUND_COLOR];
-        [((BottomLineView*)_cellContentView) setBottomLineColor:MENU_SEPARATOR_COLOR];
+        [((BottomLineView*)_cellContentView) setBottomLineColor:MENU_CELL_SEPARATOR_COLOR];
         [((BottomLineView*)_cellContentView) setBottomLineHeight:1.0f];
         
         _titleLabel = [[UILabel alloc] init];
-        [_titleLabel setFont:[UIFont fontWithName:@"Helvetica" size:13]];
+        [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:13]];
         [_titleLabel setTextColor:[UIColor whiteColor]];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];
@@ -56,9 +52,10 @@
         
         _badgeView = [[JSBadgeView alloc] initWithParentView:_cellContentView alignment:JSBadgeViewAlignmentCenterRight];
         _badgeView.badgePositionAdjustment = CGPointMake(-20, 0);
-        _badgeView.badgeBackgroundColor = [UIColor colorWithHexInt:0x33ae50];
-        _badgeView.badgeTextColor = [UIColor whiteColor];
-        _badgeView.badgeText = @"5";
+        _badgeView.badgeBackgroundColor = [UIColor whiteColor];
+        _badgeView.badgeTextColor = [UIColor colorWithHexInt:0x459dbe];
+        _badgeView.badgeStrokeColor = [UIColor colorWithHexInt:0x338cae];
+        _badgeView.badgeStrokeWidth = 1.0f;
         _badgeView.badgeTextFont = [UIFont fontWithName:@"Helvetica" size:16];
         
         [self.contentView addSubview:_cellContentView];

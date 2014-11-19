@@ -31,4 +31,10 @@
     self.view.backgroundColor = [UIColor whiteColor];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.leftMenuController setModel:nil];
+    [self.leftMenuController reloadMenuWithCompletion:nil];
+}
+
 @end

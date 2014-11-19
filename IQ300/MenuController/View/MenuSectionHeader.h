@@ -6,17 +6,21 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "BottomLineView.h"
 
-@interface MenuSectionHeader : UIView {
+@class JSBadgeView;
+
+@interface MenuSectionHeader : BottomLineView {
     void (^_actionBlock)(MenuSectionHeader* header);
 }
 
 @property (nonatomic, strong) NSString * title;
 @property (nonatomic, assign) NSInteger section;
+@property (nonatomic, readonly) JSBadgeView * badgeView;
+@property (nonatomic, assign, getter=isselected) BOOL selected;
+@property (nonatomic, assign, getter=isExpanded) BOOL expanded;
 
 - (void)setActionBlock:(void (^)(MenuSectionHeader* header))block;
-- (void)setSelected:(BOOL)selected;
 - (void)setExpandable:(BOOL)expandable;
 
 @end

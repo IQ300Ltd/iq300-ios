@@ -66,6 +66,14 @@
              }];
 }
 
+- (void)logout {
+    [self deleteObject:nil
+                  path:@"/api/v1/sessions"
+            parameters:@{ @"access_token" : self.session.token }
+               handler:nil];
+    self.session = nil;
+}
+
 #pragma mark - Private methods
 
 - (void)initDescriptors {
@@ -75,11 +83,13 @@
                                                                           fromKeyPath:nil
                                                                                 store:self.objectManager.managedObjectStore];
     
-//    RKResponseDescriptor * descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
-//                                                              method:RKRequestMethodPOST
-//                                                         pathPattern:@"/api/v1/sessions"
-//                                                             keyPath:nil
-//                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodDELETE
+                                                         pathPattern:@"/api/v1/sessions"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 }
 

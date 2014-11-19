@@ -14,4 +14,6 @@
 
 @property (nonatomic, strong) id<IQMenuModel> model;
 
+- (void)reloadMenuWithCompletion:(void (^)())completion;
+
 @end

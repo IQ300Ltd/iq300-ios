@@ -19,8 +19,8 @@
 + (RKObjectMapping*)objectMapping {
     RKObjectMapping* objectMapping = [RKObjectMapping mappingForClass:[IQServiceResponse class]];
     [objectMapping addAttributeMappingsFromDictionary:@{
-                                                        @"ResultCode": @"resultCode",
-                                                        @"ResultCodeName": @"resultDescription",
+                                                        @"ResultCode": @"statusCode",
+                                                        @"message": @"statusMessage",
                                                         @"error": @"errorMessage"
                                                         }];
     

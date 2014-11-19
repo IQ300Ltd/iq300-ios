@@ -11,5 +11,6 @@
 
 #define MENU_BACKGROUND_COLOR [UIColor colorWithHexInt:0x1d2124]
 #define MENU_SEPARATOR_COLOR [UIColor colorWithHexInt:0x161718]
+#define MENU_CELL_SEPARATOR_COLOR [UIColor colorWithHexInt:0x141515]
 
 #endif

@@ -27,15 +27,13 @@
         [self setBackgroundColor:MENU_BACKGROUND_COLOR];
         
         _titleLabel = [[UILabel alloc] init];
-        [_titleLabel setFont:[UIFont fontWithName:@"Helvetica" size:13]];
+        [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
         [_titleLabel setTextColor:[UIColor whiteColor]];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 0;
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [_titleLabel setText:NSLocalizedString(@"Tasks", @"Tasks")];
-        
-        
         [self addSubview:_titleLabel];
     }
     return self;
