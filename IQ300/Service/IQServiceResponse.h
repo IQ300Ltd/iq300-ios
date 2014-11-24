@@ -24,4 +24,7 @@
 + (RKResponseDescriptor*)responseDescriptorForClass:(Class)class method:(NSInteger)method pathPattern:(NSString*)pathPattern fromKeyPath:(NSString*)fromKeyPath
                                               store:(RKManagedObjectStore*)store;
 
++ (RKResponseDescriptor*)responseDescriptorForClasses:(NSArray*)classes method:(NSInteger)method pathPattern:(NSString*)pathPattern fromKeyPath:(NSString*)fromKeyPath
+                                                store:(RKManagedObjectStore*)store;
+
 @end

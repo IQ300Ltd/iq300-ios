@@ -48,6 +48,7 @@
                      handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)processError:(NSError*)error
+            response:(id<TCResponse>)response
         forOperation:(RKObjectRequestOperation*)operation
              handler:(ObjectLoaderCompletionHandler)handler;
 

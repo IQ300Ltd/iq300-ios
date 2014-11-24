@@ -40,7 +40,7 @@
         [self addSubview:_passwordContainer];
         
         _enterButton = [[UIButton alloc] init];
-        [_enterButton setBackgroundColor:[UIColor colorWithHexInt:0x338cae]];
+        [_enterButton setBackgroundColor:[UIColor colorWithHexInt:0x348dad]];
         [_enterButton.layer setCornerRadius:2.0f];
         [_enterButton setTitle:NSLocalizedString(@"Enter", nil) forState:UIControlStateNormal];
         [_enterButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
@@ -49,13 +49,13 @@
         _restorePassButton = [[UIButton alloc] init];
         [_restorePassButton setTitle:NSLocalizedString(@"Forgot your password?", nil) forState:UIControlStateNormal];
         [_restorePassButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
-        [_restorePassButton setTitleColor:[UIColor colorWithHexInt:0x338cae] forState:UIControlStateNormal];
+        [_restorePassButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
         [self addSubview:_restorePassButton];
         
         _registryButton = [[UIButton alloc] init];
         [_registryButton setTitle:NSLocalizedString(@"Registry", nil) forState:UIControlStateNormal];
         [_registryButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
-        [_registryButton setTitleColor:[UIColor colorWithHexInt:0x338cae] forState:UIControlStateNormal];
+        [_registryButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
         [self addSubview:_registryButton];
     }
     return self;

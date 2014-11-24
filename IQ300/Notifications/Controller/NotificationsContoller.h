@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
-#import "TabChildController.h"
+#import "IQTableBaseController.h"
 
-@interface NotificationsContoller : TabChildController
+@interface NotificationsContoller : IQTableBaseController
 
 @end

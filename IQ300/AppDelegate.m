@@ -17,6 +17,7 @@
 #import "IQService.h"
 #import "IQSession.h"
 #import "LoginController.h"
+#import "MenuConsts.h"
 
 @interface AppDelegate ()
 
@@ -43,6 +44,10 @@
     RKLogConfigureByName("RestKit/Network", RKLogLevelError);
     RKLogConfigureByName("RestKit/App", RKLogLevelError);
 
+    if ([IQSession defaultSession]) {
+        [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
+    }
+
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
     NotificationsContoller * notifications = [[NotificationsContoller alloc] init];
@@ -52,29 +57,23 @@
     IQNavigationController * tasksNav = [[IQNavigationController alloc] initWithRootViewController:tasksViewContoller];
     
     UIViewController * projects = [[UIViewController alloc] init];
+    projects.view.backgroundColor = [UIColor whiteColor];
     UIImage * barImage = [[UIImage imageNamed:@"projects_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     UIImage * barImageSelected = [[UIImage imageNamed:@"projects_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    projects.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSelected];
-    projects.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+    projects.tabBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Projects", nil) image:barImage selectedImage:barImageSelected];
     IQNavigationController * projectsNav = [[IQNavigationController alloc] initWithRootViewController:projects];
 
-    UIViewController * calendar = [[UIViewController alloc] init];
-    barImage = [[UIImage imageNamed:@"calendar_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    barImageSelected = [[UIImage imageNamed:@"calendar_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    calendar.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSelected];
-    calendar.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
-    IQNavigationController * calendarNav = [[IQNavigationController alloc] initWithRootViewController:calendar];
-
-    UIViewController * more = [[UIViewController alloc] init];
-    barImage = [[UIImage imageNamed:@"more_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    more.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:nil];
-    more.tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
-    IQNavigationController * moreNav = [[IQNavigationController alloc] initWithRootViewController:more];
+    UIViewController * messages = [[UIViewController alloc] init];
+    messages.view.backgroundColor = [UIColor whiteColor];
+    barImage = [[UIImage imageNamed:@"messages_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    barImageSelected = [[UIImage imageNamed:@"messgaes_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    messages.tabBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Messages", nil) image:barImage selectedImage:barImageSelected];
+    IQNavigationController * messagesNav = [[IQNavigationController alloc] initWithRootViewController:messages];
 
     UITabBarController * center = [[UITabBarController alloc] init];
     center.tabBar.layer.borderWidth = 0;
     
-    [center setViewControllers:@[notificationsNav, tasksNav, projectsNav, calendarNav, moreNav]];
+    [center setViewControllers:@[notificationsNav, tasksNav, projectsNav, messagesNav]];
     
     MMDrawerController * drawerController = [[IQDrawerController alloc]
                                              initWithCenterViewController:center
@@ -82,7 +81,7 @@
     self.drawerController = drawerController;
     [self.drawerController setRestorationIdentifier:@"MMDrawer"];
     [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
-    [self.drawerController setMaximumLeftDrawerWidth:274.0];
+    [self.drawerController setMaximumLeftDrawerWidth:MENU_WIDTH];
     [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModePanningDrawerView | MMCloseDrawerGestureModePanningCenterView];
     [self.drawerController setShowsShadow:YES];
     [self.drawerController setShouldStretchDrawer:NO];
@@ -106,16 +105,13 @@
     self.window.rootViewController = self.drawerController;
     
     [self.window makeKeyAndVisible];
-
-    if (![IQSession defaultSession]) {
+    
+    if(![IQSession defaultSession]) {
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
         LoginController * loginViewController = [[LoginController alloc] init];
         [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
     }
-    else {
-        [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
-    }
-    
+
     return YES;
 }
 
@@ -157,7 +153,17 @@
     UIImage* tabBarBackground = [UIImage imageNamed:@"tabbar_background.png"];
     [[UITabBar appearance] setBackgroundImage:tabBarBackground];
     [[UITabBar appearance] setShadowImage:[UIImage new]];
-    [[UITabBar appearance] setSelectionIndicatorImage:[UIImage imageNamed:@"tbar_sel_indicator.png"]];
+    
+    [[UITabBarItem appearance] setTitleTextAttributes:@{
+                                                        NSForegroundColorAttributeName : [UIColor colorWithHexInt:0xc1c1c1],
+                                                        NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:10]
+                                                       }
+                                             forState:UIControlStateNormal];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{
+                                                        NSForegroundColorAttributeName : [UIColor colorWithHexInt:0xf1f5f6],
+                                                        NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:10]
+                                                       }
+                                             forState:UIControlStateSelected];
 }
 
 @end

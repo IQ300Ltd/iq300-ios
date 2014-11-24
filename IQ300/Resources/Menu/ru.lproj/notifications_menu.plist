@@ -6,98 +6,24 @@
 		<key>sectionId</key>
 		<integer>0</integer>
 		<key>title</key>
-		<string>Входящие</string>
+		<string>Уведомления</string>
 		<key>isExpandable</key>
-		<true/>
+		<false/>
 		<key>items</key>
 		<array>
 			<dict>
 				<key>itemId</key>
 				<integer>0</integer>
 				<key>title</key>
-				<string>Новые</string>
+				<string>Все</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
 				<integer>1</integer>
 				<key>title</key>
-				<string>В работе</string>
-			</dict>
-			<dict>
-				<key>itemId</key>
-				<integer>2</integer>
-				<key>title</key>
-				<string>Неподтвержденные</string>
-			</dict>
-			<dict>
-				<key>itemId</key>
-				<integer>3</integer>
-				<key>type</key>
-				<integer>1</integer>
-				<key>title</key>
-				<string>Просроченные</string>
+				<string>Непрочитанные</string>
 			</dict>
 		</array>
-	</dict>
-	<dict>
-		<key>sectionId</key>
-		<integer>1</integer>
-		<key>title</key>
-		<string>Исходящие</string>
-		<key>isExpandable</key>
-		<true/>
-		<key>items</key>
-		<array/>
-	</dict>
-	<dict>
-		<key>sectionId</key>
-		<integer>2</integer>
-		<key>title</key>
-		<string>Личные</string>
-		<key>isExpandable</key>
-		<true/>
-		<key>items</key>
-		<array/>
-	</dict>
-	<dict>
-		<key>sectionId</key>
-		<integer>3</integer>
-		<key>title</key>
-		<string>Наблюдаемые</string>
-		<key>isExpandable</key>
-		<true/>
-		<key>items</key>
-		<array/>
-	</dict>
-	<dict>
-		<key>sectionId</key>
-		<integer>4</integer>
-		<key>title</key>
-		<string>Архив</string>
-		<key>isExpandable</key>
-		<true/>
-		<key>items</key>
-		<array/>
-	</dict>
-	<dict>
-		<key>sectionId</key>
-		<integer>5</integer>
-		<key>title</key>
-		<string>Шаблоны</string>
-		<key>isExpandable</key>
-		<false/>
-		<key>items</key>
-		<array/>
-	</dict>
-	<dict>
-		<key>sectionId</key>
-		<integer>6</integer>
-		<key>title</key>
-		<string>Фильтры</string>
-		<key>isExpandable</key>
-		<true/>
-		<key>items</key>
-		<array/>
 	</dict>
 </array>
 </plist>

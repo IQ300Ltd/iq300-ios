@@ -16,6 +16,15 @@
 
 @implementation IQServiceResponse
 
++ (RKMapping*)mappingForClass:(Class)class store:(RKManagedObjectStore*)store {
+    RKMapping * objectMapping = ([class respondsToSelector:@selector(objectMapping)]) ? [class objectMapping] : nil;
+    if(!objectMapping) {
+        BOOL isEntityMapping = [class respondsToSelector:@selector(objectMappingForManagedObjectStore:)];
+        objectMapping = (isEntityMapping) ? [class objectMappingForManagedObjectStore:store] : nil;
+    }
+    return objectMapping;
+}
+
 + (RKObjectMapping*)objectMapping {
     RKObjectMapping* objectMapping = [RKObjectMapping mappingForClass:[IQServiceResponse class]];
     [objectMapping addAttributeMappingsFromDictionary:@{
@@ -46,11 +55,7 @@
                                               store:(RKManagedObjectStore*)store {
     RKObjectMapping * serviceResponseMapping = [self objectMapping];
     
-    RKMapping * objectMapping = ([class respondsToSelector:@selector(objectMapping)]) ? [class objectMapping] : nil;
-    if(!objectMapping) {
-        BOOL isEntityMapping = [class respondsToSelector:@selector(objectMappingForManagedObjectStore:)];
-        objectMapping = (isEntityMapping) ? [class objectMappingForManagedObjectStore:store] : nil;
-    }
+    RKMapping * objectMapping = [IQServiceResponse mappingForClass:class store:store];
     
     if(objectMapping) {
         RKRelationshipMapping * relationship = [RKRelationshipMapping relationshipMappingFromKeyPath:fromKeyPath
@@ -58,6 +63,30 @@
                                                                                          withMapping:objectMapping];
         
         [serviceResponseMapping addPropertyMapping:relationship];
+    }
+    
+    RKResponseDescriptor * descriptor = [RKResponseDescriptor responseDescriptorWithMapping:serviceResponseMapping
+                                                                                     method:method
+                                                                                pathPattern:pathPattern
+                                                                                    keyPath:nil statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    return descriptor;
+}
+
++ (RKResponseDescriptor*)responseDescriptorForClasses:(NSArray *)classes
+                                               method:(NSInteger)method
+                                          pathPattern:(NSString *)pathPattern
+                                          fromKeyPath:(NSString *)fromKeyPath
+                                                store:(RKManagedObjectStore *)store {
+    RKObjectMapping * serviceResponseMapping = [self objectMapping];
+    
+    for (Class class in classes) {
+        RKMapping * objectMapping = [IQServiceResponse mappingForClass:class store:store];
+        if(objectMapping) {
+            RKRelationshipMapping * relationship = [RKRelationshipMapping relationshipMappingFromKeyPath:fromKeyPath
+                                                                                               toKeyPath:@"returnedValue"
+                                                                                             withMapping:objectMapping];
+            [serviceResponseMapping addPropertyMapping:relationship];
+        }
     }
     
     RKResponseDescriptor * descriptor = [RKResponseDescriptor responseDescriptorWithMapping:serviceResponseMapping

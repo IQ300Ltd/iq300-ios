@@ -27,7 +27,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     self = [super init];
     
     if (self) {
-        _sections = [IQMenuSerializator serializeMenuFromList:@"notifications_menu" error:nil];
     }
     
     return self;
@@ -87,12 +86,14 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
+    _sections = [IQMenuSerializator serializeMenuFromList:@"notifications_menu" error:nil];
     if(completion) {
         completion(nil);
     }
 }
 
 - (void)clearModelData {
+    _sections = nil;
 }
 
 @end

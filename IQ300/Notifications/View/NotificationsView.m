@@ -9,7 +9,7 @@
 #import "NotificationsView.h"
 #import "BottomLineView.h"
 
-#define SEARCH_HEIGHT 44
+#define SEARCH_HEIGHT 0//44
 
 @interface NotificationsView() {
     BottomLineView * _searchBarContainer;
@@ -22,23 +22,23 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        _searchBarContainer = [[BottomLineView alloc] init];
-        _searchBarContainer.backgroundColor = [UIColor colorWithHexInt:0xf1f5f6];
-        _searchBarContainer.bottomLineHeight = 0.5f;
-        _searchBarContainer.bottomLineColor = [UIColor colorWithHexInt:0xe0e1e2];
-        [self addSubview:_searchBarContainer];
-        
-        _searchBar = [[ExTextField alloc] init];
-        _searchBar.backgroundColor = [UIColor clearColor];
-        _searchBar.textAlignment = NSTextAlignmentLeft;
-        _searchBar.placeholderInsets = UIEdgeInsetsMake(0, 10, 0, 0);
-        _searchBar.textInsets = UIEdgeInsetsMake(0, 10, 0, 0);
-        _searchBar.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Search", nil)
-                                                                           attributes:@{NSForegroundColorAttributeName: [UIColor colorWithHexInt:0xa9a9a9]}];
-
-        [_searchBar setFont:[UIFont fontWithName:IQ_HELVETICA size:18]];
-        [_searchBar setTextColor:[UIColor blackColor]];
-        [_searchBarContainer addSubview:_searchBar];
+//        _searchBarContainer = [[BottomLineView alloc] init];
+//        _searchBarContainer.backgroundColor = [UIColor colorWithHexInt:0xf1f5f6];
+//        _searchBarContainer.bottomLineHeight = 0.5f;
+//        _searchBarContainer.bottomLineColor = [UIColor colorWithHexInt:0xe0e1e2];
+//        [self addSubview:_searchBarContainer];
+//        
+//        _searchBar = [[ExTextField alloc] init];
+//        _searchBar.backgroundColor = [UIColor clearColor];
+//        _searchBar.textAlignment = NSTextAlignmentLeft;
+//        _searchBar.placeholderInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+//        _searchBar.textInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+//        _searchBar.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Search", nil)
+//                                                                           attributes:@{NSForegroundColorAttributeName: [UIColor colorWithHexInt:0xa9a9a9]}];
+//
+//        [_searchBar setFont:[UIFont fontWithName:IQ_HELVETICA size:18]];
+//        [_searchBar setTextColor:[UIColor blackColor]];
+//        [_searchBarContainer addSubview:_searchBar];
         
         _tableView = [[UITableView alloc] init];
         _tableView.backgroundColor = [UIColor clearColor];

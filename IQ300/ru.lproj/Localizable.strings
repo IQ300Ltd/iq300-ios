@@ -16,3 +16,20 @@
 "Registry" = "Зарегистрироваться";
 "Change" = "Изменить";
 "Logout" = "Выйти";
+"Project" = "Проект";
+"Projects" = "Проекты";
+"Today" = "Сегодня";
+"Yesterday" = "Вчера";
+"Messages" = "Сообщения";
+"Notifications" = "Уведомления";
+"All" = " Все";
+"Unread" = "Непрочитанные";
+
+//Notification types
+"Attachment" = "Документ";
+"BaseTask" = "Задача";
+"BaseCommunity" = "Сообщество";
+"Project" = "Проект";
+"Contract" = "Контракт";
+"DocShare" = "Документ";
+"ErrorReport" = "Обратная связь";

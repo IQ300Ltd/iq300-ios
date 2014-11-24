@@ -27,8 +27,13 @@
 #import "NSBundle+Localization.h"
 #import "UIImage+Extensions.h"
 #import "IQFonts.h"
+#import "CGGeometry+Extensions.h"
 
 #define SERVICE_URL @"http://edge.iq300.ru"
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
+#import "NSString+SizeWith.h"
+#endif
 
 #define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
 #define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)

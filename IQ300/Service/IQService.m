@@ -9,8 +9,10 @@
 
 #import "IQService.h"
 #import "IQServiceResponse.h"
+#import "IQObjects.h"
 
-#define NSStringEmptyForNil(value) [value length] ? value : @""
+#define NSStringEmptyForNil(value) ([value length]) ? value : [NSNull null]
+#define NSObjectEmptyForNil(value) (value) ? value : [NSNull null]
 
 @interface IQToken : NSObject
 
@@ -74,6 +76,28 @@
     self.session = nil;
 }
 
+- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler {
+    NSMutableDictionary * parameters = [NSMutableDictionary dictionary];
+    
+    if (unread) {
+        parameters[@"unread"] = unread;
+    }
+    
+    if (page) {
+        parameters[@"page"] = page;
+    }
+    if (per) {
+        parameters[@"per"] = per;
+    }
+    if (search) {
+        parameters[@"search"] = unread;
+    }
+    
+    [self getObjectsAtPath:@"/api/v1/notifications"
+                parameters:parameters
+                   handler:handler];
+}
+
 #pragma mark - Private methods
 
 - (void)initDescriptors {
@@ -84,6 +108,14 @@
                                                                                 store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodAny
+                                                         pathPattern:nil
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassServerError)];
+    [self.objectManager addResponseDescriptor:descriptor];
+
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodDELETE
@@ -91,6 +123,15 @@
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsHolder class]//[IQNotification class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/notifications"
+                                                   fromKeyPath:nil//@"notifications"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
 }
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation *)operation {

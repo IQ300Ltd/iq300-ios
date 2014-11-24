@@ -155,7 +155,8 @@
 #pragma mark - UITableView DataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if([self canExpandSection:section] && [_expandedSections[@(section)] boolValue]) {
+    BOOL canExpandSection = [self canExpandSection:section];
+    if(!canExpandSection || (canExpandSection && [_expandedSections[@(section)] boolValue])) {
         return [_targetDataSource tableView:self numberOfRowsInSection:section];
     }
     return 0;

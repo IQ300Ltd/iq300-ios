@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
-#import "TabChildController.h"
+#import <UIKit/UIKit.h>
 
-@interface TasksController : TabChildController
+@interface TasksController : UIViewController
 
 
 @end

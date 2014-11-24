@@ -27,7 +27,7 @@
     self = [super initWithFrame:frame];
     if(self) {
         _backgroundViewInsets = UIEdgeInsetsMake(0, 0, 1, 0);
-        CGFloat spacing = 17;
+        CGFloat spacing = 13;
         
         [self setBottomLineColor:MENU_SEPARATOR_COLOR];
         [self setBottomLineHeight:1.0f];

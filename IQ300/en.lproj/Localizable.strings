@@ -16,3 +16,20 @@
 "Registry" = "Registry";
 "Change" = "Change";
 "Logout" = "Log out";
+"Project" = "Project";
+"Projects" = "Projects";
+"Today" = "Today";
+"Yesterday" = "Yesterday";
+"Messages" = "Messages";
+"Notifications" = "Notifications";
+"All" = "All";
+"Unread" = "Unread";
+
+//Notification types
+"Attachment" = "Document";
+"BaseTask" = "Task";
+"BaseCommunity" = "Community";
+"Project" = "Project";
+"Contract" = "Contract";
+"DocShare" = "Document";
+"ErrorReport" = "Feedback";

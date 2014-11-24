@@ -30,7 +30,6 @@ CGFloat IQStatusBarHeight()
 @interface MenuViewController () <ExpandableTableViewDataSource, ExpandableTableViewDelegate> {
     ExpandableTableView * _tableView;
     AccountHeaderView * _accountHeader;
-    MTableHeaderView * _tableHaderView;
     NSInteger _selectedSection;
     NSMutableIndexSet * _expandedSections;
 }
@@ -59,16 +58,22 @@ CGFloat IQStatusBarHeight()
     [self.view addSubview:_accountHeader];
     
     _tableHaderView = [[MTableHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, TABLE_HEADER_HEIGHT)];
-    [_tableHaderView setHidden:YES];
     
     _tableView = [[ExpandableTableView alloc] init];
     _tableView.backgroundColor = self.view.backgroundColor;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.tableHeaderView = _tableHaderView;
     _tableView.delegate = self;
     _tableView.dataSource = self;
     
     [self.view addSubview:_tableView];
+}
+
+- (void)setTableHaderHidden:(BOOL)tableHaderHidden {
+    _tableView.tableHeaderView = (!tableHaderHidden) ? _tableHaderView : nil;
+}
+
+- (BOOL)isTableHaderHidden {
+    return _tableView.tableHeaderView == nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -88,7 +93,7 @@ CGFloat IQStatusBarHeight()
     CGFloat tableViewOffset = _accountHeader.frame.origin.y + _accountHeader.frame.size.height;
     _tableView.frame = CGRectMake(0,
                                   tableViewOffset,
-                                  265,
+                                  MENU_WIDTH,
                                   actualBounds.size.height - tableViewOffset);
 }
 

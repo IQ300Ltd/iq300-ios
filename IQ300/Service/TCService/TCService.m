@@ -150,29 +150,8 @@ static id _sharedService = nil;
                                                                                                   path:path
                                                                                             parameters:requesParameters];
     
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        if(handler) {
-            
-            id<TCResponse> response = (id<TCResponse>)[mappingResult firstObject];
-            BOOL conformsToProtocol = [[mappingResult firstObject] conformsToProtocol:@protocol(TCResponse)];
-            if (conformsToProtocol && [response.statusCode integerValue] != 0) {
-                [self processErrorResponse:response handler:handler];
-                return;
-            }
-            
-            id returnedValue = (conformsToProtocol) ? response.returnedValue : [mappingResult result];
-            handler(YES, returnedValue, operation.HTTPRequestOperation.responseData, nil);
-        }
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", operation.HTTPRequestOperation.responseString);
-        NSLog(@"%@", error);
-        
-        [self updateServiceReachabilityByError:error];
-        
-        [self processError:error
-              forOperation:operation
-                   handler:handler];
-    }];
+    [operation setCompletionBlockWithSuccess:[self makeSuccessBlockForHandler:handler]
+                                     failure:[self makeFailureBlockForHandler:handler]];
     
     [self processAuthorizationForOperation:operation];
     
@@ -185,28 +164,8 @@ static id _sharedService = nil;
                                                                                                          path:path
                                                                                                    parameters:parameters];
     
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        if(handler) {
-            id<TCResponse> response = (id<TCResponse>)[mappingResult firstObject];
-            BOOL conformsToProtocol = [[mappingResult firstObject] conformsToProtocol:@protocol(TCResponse)];
-            if (conformsToProtocol && [response.statusCode integerValue] != 0) {
-                [self processErrorResponse:response handler:handler];
-                return;
-            }
-            
-            id returnedValue = (conformsToProtocol) ? response.returnedValue : [mappingResult result];
-            handler(YES, returnedValue, operation.HTTPRequestOperation.responseData, nil);
-        }
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", operation.HTTPRequestOperation.responseString);
-        NSLog(@"%@", error);
-        
-        [self updateServiceReachabilityByError:error];
-        
-        [self processError:error
-              forOperation:operation
-                   handler:handler];
-    }];
+    [operation setCompletionBlockWithSuccess:[self makeSuccessBlockForHandler:handler]
+                                     failure:[self makeFailureBlockForHandler:handler]];
     
     [self processAuthorizationForOperation:operation];
     
@@ -219,28 +178,8 @@ static id _sharedService = nil;
                                                                                                          path:path
                                                                                                    parameters:parameters];
     
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        if(handler) {
-            id<TCResponse> response = (id<TCResponse>)[mappingResult firstObject];
-            BOOL conformsToProtocol = [[mappingResult firstObject] conformsToProtocol:@protocol(TCResponse)];
-            if (conformsToProtocol && [response.statusCode integerValue] != 0) {
-                [self processErrorResponse:response handler:handler];
-                return;
-            }
-            
-            id returnedValue = (conformsToProtocol) ? response.returnedValue : [mappingResult result];
-            handler(YES, returnedValue, operation.HTTPRequestOperation.responseData, nil);
-        }
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", operation.HTTPRequestOperation.responseString);
-        NSLog(@"%@", error);
-        
-        [self updateServiceReachabilityByError:error];
-        
-        [self processError:error
-              forOperation:operation
-                   handler:handler];
-    }];
+    [operation setCompletionBlockWithSuccess:[self makeSuccessBlockForHandler:handler]
+                                     failure:[self makeFailureBlockForHandler:handler]];
     
     [self processAuthorizationForOperation:operation];
     
@@ -253,28 +192,8 @@ static id _sharedService = nil;
                                                                                                          path:path
                                                                                                    parameters:parameters];
     
-    [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        if(handler) {
-            id<TCResponse> response = (id<TCResponse>)[mappingResult firstObject];
-            BOOL conformsToProtocol = [[mappingResult firstObject] conformsToProtocol:@protocol(TCResponse)];
-            if (conformsToProtocol && [response.statusCode integerValue] != 0) {
-                [self processErrorResponse:response handler:handler];
-                return;
-            }
-            
-            id returnedValue = (conformsToProtocol) ? response.returnedValue : [mappingResult result];
-            handler(YES, returnedValue, operation.HTTPRequestOperation.responseData, nil);
-        }
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", operation.HTTPRequestOperation.responseString);
-        NSLog(@"%@", error);
-        
-        [self updateServiceReachabilityByError:error];
-        
-        [self processError:error
-              forOperation:operation
-                   handler:handler];
-    }];
+    [operation setCompletionBlockWithSuccess:[self makeSuccessBlockForHandler:handler]
+                                     failure:[self makeFailureBlockForHandler:handler]];
     
     [self processAuthorizationForOperation:operation];
     
@@ -304,36 +223,9 @@ static id _sharedService = nil;
     [request setValue:[NSString stringWithFormat:@"application/json; charset=utf-8"] forHTTPHeaderField:@"Content-Type"];
     [request setHTTPBody:data];
     
-    void (^success)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) = ^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        if(handler) {
-            id<TCResponse> response = (id<TCResponse>)[mappingResult firstObject];
-            BOOL conformsToProtocol = [[mappingResult firstObject] conformsToProtocol:@protocol(TCResponse)];
-            if (conformsToProtocol && [response.statusCode integerValue] != 0) {
-                [self processErrorResponse:response handler:handler];
-                return;
-            }
-            
-            id returnedValue = (conformsToProtocol) ? response.returnedValue : [mappingResult result];
-            handler(YES, returnedValue, operation.HTTPRequestOperation.responseData, nil);
-        }
-    };
-    
-    void (^failure)(RKObjectRequestOperation *operation, NSError *error) = ^(RKObjectRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", operation.HTTPRequestOperation.responseString);
-        NSLog(@"%@", error);
-        
-        [self updateServiceReachabilityByError:error];
-        
-        [self processError:error
-              forOperation:operation
-                   handler:handler];
-
-    };
-    
     RKObjectRequestOperation * operation = [_objectManager objectRequestOperationWithRequest:request
-                                                                                     success:success
-                                                                                     failure:failure];
-    
+                                                                                     success:[self makeSuccessBlockForHandler:handler]
+                                                                                     failure:[self makeFailureBlockForHandler:handler]];
     [self processAuthorizationForOperation:operation];
     
     [_objectManager.operationQueue addOperation:operation];
@@ -355,6 +247,7 @@ static id _sharedService = nil;
 }
 
 - (void)processError:(NSError*)error
+            response:(id<TCResponse>)response
         forOperation:(RKObjectRequestOperation*)operation
              handler:(ObjectLoaderCompletionHandler)handler {
     
@@ -382,6 +275,43 @@ static id _sharedService = nil;
                                           code:code
                                       userInfo:@{ @"NSLocalizedDescription" : (errorDescription) ? errorDescription : @"" }];
     return error;
+}
+
+- (void(^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))makeSuccessBlockForHandler:(ObjectLoaderCompletionHandler)handler {
+    void (^success)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) = ^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+        if(handler) {
+            BOOL conformsToProtocol = [[mappingResult firstObject] conformsToProtocol:@protocol(TCResponse)];
+            id<TCResponse> response = (conformsToProtocol) ? (id<TCResponse>)[mappingResult firstObject] : nil;
+            if (conformsToProtocol && [response.statusCode integerValue] != 0) {
+                [self processErrorResponse:response handler:handler];
+                return;
+            }
+            
+            id returnedValue = (conformsToProtocol) ? response.returnedValue : [mappingResult result];
+            handler(YES, returnedValue, operation.HTTPRequestOperation.responseData, nil);
+        }
+    };
+    return success;
+}
+
+- (void(^)(RKObjectRequestOperation *operation, NSError *error))makeFailureBlockForHandler:(ObjectLoaderCompletionHandler)handler {
+    void (^failure)(RKObjectRequestOperation *operation, NSError *error) = ^(RKObjectRequestOperation *operation, NSError *error) {
+        NSLog(@"%@", operation.HTTPRequestOperation.responseString);
+        NSLog(@"%@", error);
+        
+        [self updateServiceReachabilityByError:error];
+        
+        id errorResponseObject = error.userInfo[RKObjectMapperErrorObjectsKey];
+        errorResponseObject = ([[errorResponseObject class]isSubclassOfClass:[NSArray class]]) ? [errorResponseObject firstObject] : errorResponseObject;
+        BOOL conformsToProtocol = [ errorResponseObject conformsToProtocol:@protocol(TCResponse)];
+        id<TCResponse> response = (conformsToProtocol) ? (id<TCResponse>)errorResponseObject : nil;
+        
+        [self processError:error
+                  response:response
+              forOperation:operation
+                   handler:handler];
+    };
+    return failure;
 }
 
 #pragma mark - Private BD Helper methods
