@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "IQMenuItem.h"
 
-@class JSBadgeView;
+@class CustomBadge;
 
 @interface MenuCell : UITableViewCell {
     UIView * _cellContentView;
@@ -17,7 +17,9 @@
 }
 
 @property (nonatomic, strong) IQMenuItem * item;
-@property (nonatomic, readonly) JSBadgeView * badgeView;
+@property (nonatomic, strong) NSString * badgeText;
+
+@property (nonatomic, readonly) CustomBadge * badgeView;
 @property (nonatomic, readonly) UILabel * titleLabel;
 
 @property (nonatomic, assign, setter = setBottomLineShown:) BOOL isBottomLineShown;

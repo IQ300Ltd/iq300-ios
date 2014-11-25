@@ -31,6 +31,7 @@
 @property (nonatomic, strong) NSString * mainDescription;
 @property (nonatomic, strong) NSString * additionalDescription;
 @property (nonatomic, strong) IQUser * user;
+@property (nonatomic, strong) NSNumber * ownerId;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

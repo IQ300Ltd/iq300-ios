@@ -31,6 +31,8 @@
 
 #define SERVICE_URL @"http://edge.iq300.ru"
 
+static NSString * AccountDidChangedNotification = @"AccountDidChangedNotification";
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
 #import "NSString+SizeWith.h"
 #endif

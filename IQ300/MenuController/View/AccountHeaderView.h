@@ -8,6 +8,8 @@
 
 #import "BottomLineView.h"
 
+#define DEFAULT_AVATAR_IMAGE @"default_avatar.png"
+
 @interface AccountHeaderView : BottomLineView {
     UIEdgeInsets _contentInsets;
 }

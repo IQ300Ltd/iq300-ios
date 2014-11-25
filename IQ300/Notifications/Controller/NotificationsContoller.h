@@ -7,7 +7,11 @@
 //
 
 #import "IQTableBaseController.h"
+#import "NotificationsModel.h"
 
 @interface NotificationsContoller : IQTableBaseController
+
+@property (nonatomic, strong) NotificationsModel * model;
+
 
 @end

@@ -33,6 +33,7 @@
 		737E7C5F1A0CD57E00E8BB81 /* AccountHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C5E1A0CD57E00E8BB81 /* AccountHeaderView.m */; };
 		737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C611A0D027700E8BB81 /* ExtendedButton.m */; };
 		737F5DDA1A2315A00095040B /* IQRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 737F5DD91A2315A00095040B /* IQRefreshControl.m */; };
+		73882D8C1A247A0800B8BE90 /* IQBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73882D8B1A247A0800B8BE90 /* IQBadgeView.m */; };
 		738CE1E61A0B3F4E0096B374 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1E51A0B3F4E0096B374 /* main.m */; };
 		738CE1E91A0B3F4E0096B374 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1E81A0B3F4E0096B374 /* AppDelegate.m */; };
 		738CE2001A0B3F4E0096B374 /* IQ300Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1FF1A0B3F4E0096B374 /* IQ300Tests.m */; };
@@ -164,6 +165,9 @@
 		737F5DD41A22FC5F0095040B /* UITableView+BottomRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+BottomRefreshControl.m"; sourceTree = "<group>"; };
 		737F5DD81A2315A00095040B /* IQRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQRefreshControl.h; sourceTree = "<group>"; };
 		737F5DD91A2315A00095040B /* IQRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQRefreshControl.m; sourceTree = "<group>"; };
+		73882D891A24687300B8BE90 /* SuppressWarning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuppressWarning.h; sourceTree = "<group>"; };
+		73882D8A1A247A0800B8BE90 /* IQBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeView.h; sourceTree = "<group>"; };
+		73882D8B1A247A0800B8BE90 /* IQBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBadgeView.m; sourceTree = "<group>"; };
 		738CE1E01A0B3F4E0096B374 /* IQ300.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IQ300.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		738CE1E41A0B3F4E0096B374 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		738CE1E51A0B3F4E0096B374 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -379,6 +383,8 @@
 				736B6BDA1A0B5F1D00034D9B /* MenuCell.m */,
 				73A113F81A1C8D1B00293EC5 /* RMenuCell.h */,
 				73A113F91A1C8D1B00293EC5 /* RMenuCell.m */,
+				73882D8A1A247A0800B8BE90 /* IQBadgeView.h */,
+				73882D8B1A247A0800B8BE90 /* IQBadgeView.m */,
 				737E7C531A0CA88E00E8BB81 /* MenuSectionHeader.h */,
 				737E7C541A0CA88E00E8BB81 /* MenuSectionHeader.m */,
 				73BA98781A109369005AEC00 /* MenuConsts.h */,
@@ -434,6 +440,7 @@
 		736B6BE71A0BC08100034D9B /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				73882D891A24687300B8BE90 /* SuppressWarning.h */,
 				73C58C051A1F145200C83729 /* NSDate+CupertinoYankee.h */,
 				73C58C061A1F145200C83729 /* NSDate+CupertinoYankee.m */,
 				738FE7221A165A00009F26A2 /* IQTableModel.h */,
@@ -900,6 +907,7 @@
 				73BA98A01A10A531005AEC00 /* NSBundle+Localization.m in Sources */,
 				73C58C021A1F074900C83729 /* NotificationCell.m in Sources */,
 				7393C4141A1A300F00E9E944 /* LoginView.m in Sources */,
+				73882D8C1A247A0800B8BE90 /* IQBadgeView.m in Sources */,
 				738EA7B21A1DE15B0065D39F /* UIViewController+LeftMenu.m in Sources */,
 				73BA98851A109A49005AEC00 /* IQMenuItem.m in Sources */,
 				73BA989A1A10A1AB005AEC00 /* IQMenuSection.m in Sources */,

@@ -15,6 +15,8 @@
 
 @property (nonatomic, strong) NSNumber * userId;
 @property (nonatomic, strong) NSString * displayName;
+@property (nonatomic, strong) NSString * email;
+@property (nonatomic, strong) NSString * pusherChannel;
 @property (nonatomic, strong) NSString * thumbUrl;
 @property (nonatomic, strong) NSString * mediumUrl;
 @property (nonatomic, strong) NSString * normalUrl;

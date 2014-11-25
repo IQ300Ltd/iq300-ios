@@ -93,6 +93,14 @@
     return [_backgroundView titleForState:UIControlStateNormal];
 }
 
+- (NSString*)badgeText {
+    return _badgeView.badgeText;
+}
+
+- (void)setBadgeText:(NSString *)badgeText {
+    _badgeView.badgeText = badgeText;
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     
@@ -108,7 +116,9 @@
 }
 
 - (void)buttonAction:(UIButton*)sender {
-    _selected = !_selected;
+    if(_selectable) {
+        _selected = !_selected;
+    }
     _expanded = !_expanded;
     if(_actionBlock) {
         _actionBlock(self);
@@ -117,8 +127,10 @@
 }
 
 - (void)updateUIForState {
-    [_backgroundView setBackgroundColor:(_selected) ? SELECTED_BACKGROUND_COLOR : MENU_BACKGROUND_COLOR
-                               forState:UIControlStateNormal];
+    if (_selectable) {
+        [_backgroundView setBackgroundColor:(_selected) ? SELECTED_BACKGROUND_COLOR : MENU_BACKGROUND_COLOR
+                                   forState:UIControlStateNormal];
+    }
     
     if(_isExpandable) {
     _backgroundView.titleEdgeInsets = (_expanded) ? UIEdgeInsetsMake(0, 5.0f, 0, 0) : UIEdgeInsetsMake(0, 10.0f, 0, 0);

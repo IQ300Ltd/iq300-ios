@@ -76,6 +76,12 @@
     self.session = nil;
 }
 
+- (void)userInfoWithHandler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/users/current"
+                parameters:nil
+                   handler:handler];
+}
+
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * parameters = [NSMutableDictionary dictionary];
     
@@ -131,7 +137,14 @@
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
-
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQUser class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/users/current"
+                                                   fromKeyPath:@"user"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 }
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation *)operation {

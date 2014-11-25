@@ -21,6 +21,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     if(self.tableView) {
+        self.tableView.delegate = self;
+        self.tableView.dataSource = self;
         [self.view addSubview:self.tableView];
     }
 }
@@ -33,8 +35,6 @@
     if(!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
         _tableView.backgroundColor = [UIColor clearColor];
-        _tableView.delegate = self;
-        _tableView.dataSource = self;
         _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     }
     return _tableView;
@@ -56,8 +56,8 @@
         }
     };
     
-    if(_model) {
-        [_model updateModelWithCompletion:completionBlock];
+    if(self.model) {
+        [self.model updateModelWithCompletion:completionBlock];
     }
     else {
         completionBlock(nil);
@@ -67,18 +67,18 @@
 #pragma mark - UITableView DataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [_model numberOfSections];
+    return [self.model numberOfSections];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_model numberOfItemsInSection:section];
+    return [self.model numberOfItemsInSection:section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:[_model reuseIdentifierForIndexPath:indexPath]];
+    UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
-        cell = [_model createCellForIndexPath:indexPath];
+        cell = [self.model createCellForIndexPath:indexPath];
     }
     
     return cell;
@@ -87,7 +87,7 @@
 #pragma mark - UITableView Delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [_model heightForItemAtIndexPath:indexPath];
+    return [self.model heightForItemAtIndexPath:indexPath];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {

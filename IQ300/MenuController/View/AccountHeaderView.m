@@ -22,7 +22,7 @@
         [self setBackgroundColor:MENU_BACKGROUND_COLOR];
         
         _userImageView = [[UIImageView alloc] init];
-        [_userImageView setImage:[UIImage imageNamed:@"default_avatar.png"]];
+        [_userImageView setImage:[UIImage imageNamed:DEFAULT_AVATAR_IMAGE]];
         [self addSubview:_userImageView];
         
         _userNameLabel = [[UILabel alloc] init];
@@ -59,9 +59,9 @@
     CGFloat leftOffset = 11;
     CGFloat userNameLabelX = _userImageView.frame.origin.x + _userImageView.frame.size.width + leftOffset;
     _userNameLabel.frame = CGRectMake(userNameLabelX,
-                                      _userImageView.frame.origin.y + 5.0f,
+                                      _userImageView.frame.origin.y,
                                       mainRect.size.width - userNameLabelX,
-                                      11);
+                                      15);
     
     _editButton.frame = CGRectMake(_userNameLabel.frame.origin.x,
                                    _userNameLabel.frame.origin.y + _userNameLabel.frame.size.height + 7.0f,

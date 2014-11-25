@@ -24,6 +24,13 @@
 "Notifications" = "Уведомления";
 "All" = " Все";
 "Unread" = "Непрочитанные";
+"no_data_formart" = "Ни одного %@ не найдено";
+"Email and password fields is required" = "Эл. почта и пароль являются обязательными";
+"Email address is invalid" = "Неверный адрес эл. почты";
+"Wrong credentials" = "Неверный адрес эл. почты или пароль";
+"Pull to refresh..." = "Потяните, чтобы обновить";
+"Release to refresh..." = "Отпустите, чтобы обновить";
+"Loading..." = "Загрузка";
 
 //Notification types
 "Attachment" = "Документ";

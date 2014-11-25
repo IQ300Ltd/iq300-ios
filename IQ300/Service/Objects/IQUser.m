@@ -13,6 +13,8 @@
 
 @dynamic userId;
 @dynamic displayName;
+@dynamic email;
+@dynamic pusherChannel;
 @dynamic thumbUrl;
 @dynamic mediumUrl;
 @dynamic normalUrl;
@@ -23,6 +25,8 @@
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"               : @"userId",
                                                   @"short_name"       : @"displayName",
+                                                  @"email"            : @"email",
+                                                  @"pusher_channel"   : @"pusherChannel",
                                                   @"photo.thumb_url"  : @"thumbUrl",
                                                   @"photo.medium_url" : @"mediumUrl",
                                                   @"photo.normal_url" : @"normalUrl"

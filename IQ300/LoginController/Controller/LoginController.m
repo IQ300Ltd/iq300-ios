@@ -42,14 +42,16 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
     [super viewDidLoad];
     
     [_loginView.enterButton addTarget:self action:@selector(enterButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [_loginView.registryButton addTarget:self action:@selector(registryButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [_loginView.restorePassButton addTarget:self action:@selector(restorePassButtonAction:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)enterButtonAction:(UIButton*)sender {
     if([_loginView.emailTextField.text length] == 0 || [_loginView.passwordTextField.text length] == 0) {
-        [self showErrorMessage:NSLocalizedString(@"Email and password fields is required", nil)];
+        [self showErrorMessage:@"Email and password fields is required"];
     }
     else if(!NSStringIsValidEmail(_loginView.emailTextField.text)) {
-        [self showErrorMessage:NSLocalizedString(@"Email address is invalid", nil)];
+        [self showErrorMessage:@"Email address is invalid"];
     }
     else {
         [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
@@ -58,23 +60,28 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
                                           handler:^(BOOL success, NSData *responseData, NSError *error) {
                                               if(success) {
                                                   [IQSession setDefaultSession:[IQService sharedService].session];
+                                                  [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
+                                                                                                      object:nil];
                                                   [self dismissViewControllerAnimated:YES completion:nil];
                                               }
                                               else {
-                                                  [self showErrorMessage:NSLocalizedString(error.userInfo[NSLocalizedDescriptionKey], nil)];
+                                                  [self showErrorMessage:@"Wrong credentials"];
                                               }
                                           }];
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
     }
 }
 
+- (void)registryButtonAction:(UIButton*)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:SERVICE_REGISTRATION_URL]];
+}
+
+- (void)restorePassButtonAction:(UIButton*)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:SERVICE_RESET_PASSWORD_URL]];
+}
+
 - (void)showErrorMessage:(NSString*)errorMessage {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"IQ300"
-                                                     message:NSLocalizedString(errorMessage, nil)
-                                                    delegate:nil
-                                           cancelButtonTitle:@"OK"
-                                           otherButtonTitles:nil];
-    [alert show];
+    _loginView.errorLabel.text = NSLocalizedString(errorMessage, nil);
 }
 
 @end

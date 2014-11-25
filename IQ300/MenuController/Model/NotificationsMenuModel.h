@@ -13,6 +13,8 @@
 @interface NotificationsMenuModel : NSObject<IQMenuModel>
 
 @property (nonatomic, readonly) NSString * title;
+@property (nonatomic, assign)   NSInteger totalItemsCount;
+@property (nonatomic, assign)   NSInteger unreadItemsCount;
 @property (nonatomic, weak)     id<IQTableModelDelegate> delegate;
 
 @end

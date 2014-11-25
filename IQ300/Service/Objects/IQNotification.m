@@ -38,6 +38,7 @@
 @dynamic mainDescription;
 @dynamic additionalDescription;
 @dynamic user;
+@dynamic ownerId;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:@"IQNotification" inManagedObjectStore:store];

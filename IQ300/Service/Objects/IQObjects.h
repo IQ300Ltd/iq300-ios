@@ -10,5 +10,6 @@
 #define IQ300_IQObjects_h
 
 #import "IQNotificationsHolder.h"
+#import "IQUser.h"
 
 #endif

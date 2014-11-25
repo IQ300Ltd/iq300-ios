@@ -16,8 +16,12 @@
 
 @property (nonatomic, strong) NSString * title;
 @property (nonatomic, assign) NSInteger section;
+@property (nonatomic, strong) NSString * badgeText;
+
 @property (nonatomic, readonly) JSBadgeView * badgeView;
-@property (nonatomic, assign, getter=isselected) BOOL selected;
+
+@property (nonatomic, assign, getter=isSelectable) BOOL selectable;
+@property (nonatomic, assign, getter=isSelected) BOOL selected;
 @property (nonatomic, assign, getter=isExpanded) BOOL expanded;
 
 - (void)setActionBlock:(void (^)(MenuSectionHeader* header))block;

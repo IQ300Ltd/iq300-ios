@@ -5,6 +5,7 @@
 //  Created by Tayphoon on 06.11.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "MenuViewController.h"
 
@@ -16,6 +17,9 @@
 #import "AccountHeaderView.h"
 #import "MTableHeaderView.h"
 #import "AppDelegate.h"
+#import "SuppressWarning.h"
+#import "IQService.h"
+#import "IQUser.h"
 
 #define SECTION_HEIGHT 39
 #define ACCOUNT_HEADER_HEIGHT 64.5
@@ -66,18 +70,12 @@ CGFloat IQStatusBarHeight()
     _tableView.dataSource = self;
     
     [self.view addSubview:_tableView];
-}
-
-- (void)setTableHaderHidden:(BOOL)tableHaderHidden {
-    _tableView.tableHeaderView = (!tableHaderHidden) ? _tableHaderView : nil;
-}
-
-- (BOOL)isTableHaderHidden {
-    return _tableView.tableHeaderView == nil;
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateUserAccount)
+                                                 name:AccountDidChangedNotification
+                                               object:nil];
+    [self updateUserAccount];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -95,6 +93,18 @@ CGFloat IQStatusBarHeight()
                                   tableViewOffset,
                                   MENU_WIDTH,
                                   actualBounds.size.height - tableViewOffset);
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+
+- (void)setTableHaderHidden:(BOOL)tableHaderHidden {
+    _tableView.tableHeaderView = (!tableHaderHidden) ? _tableHaderView : nil;
+}
+
+- (BOOL)isTableHaderHidden {
+    return _tableView.tableHeaderView == nil;
 }
 
 - (void)setModel:(id<IQMenuModel>)model {
@@ -150,6 +160,14 @@ CGFloat IQStatusBarHeight()
     BOOL showBootomLine = !(indexPath.row == [_model numberOfItemsInSection:indexPath.section] - 1);
     [cell setBottomLineShown:showBootomLine];
     
+    cell.badgeText = [self.model badgeTextAtIndexPath:indexPath];
+    
+    NSIndexPath * selectedIndexPath = [self.model indexPathForSelectedItem];
+    BOOL isCellSelected = (selectedIndexPath && [selectedIndexPath compare:indexPath] == NSOrderedSame);
+    if(isCellSelected) {
+        [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    }
+    
     return cell;
 }
 
@@ -176,7 +194,11 @@ CGFloat IQStatusBarHeight()
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
+    [self.model selectItemAtIndexPath:indexPath];
+    SEL didSelect = @selector(menuController:didSelectMenuItemAtIndexPath:);
+    if([self.menuResponder respondsToSelector:didSelect]) {
+        SuppressPerformSelectorLeakWarning([self.menuResponder performSelector:didSelect withObject:self withObject:indexPath]);
+    }
 }
 
 #pragma mark - IQMenuModel Delegate
@@ -266,6 +288,23 @@ CGFloat IQStatusBarHeight()
 
 - (void)editButtonAction:(UIButton*)sender {
     [AppDelegate logout];
+}
+
+- (void)updateUserAccount {
+    [[IQService sharedService] userInfoWithHandler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
+        NSString * displayName = ([user.displayName length] > 0) ? user.displayName : @"Noname";
+        [_accountHeader.userNameLabel setText:displayName];
+        if([user.mediumUrl length] > 0) {
+            [_accountHeader.userImageView sd_setImageWithURL:[NSURL URLWithString:user.mediumUrl]];
+        }
+        else {
+            [_accountHeader.userImageView setImage:[UIImage imageNamed:DEFAULT_AVATAR_IMAGE]];
+        }
+    }];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

@@ -32,6 +32,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
         _sortDescriptors = @[descriptor];
         _loadUnreadOnly = NO;
+        _totalItemsCount = 0;
     }
     return self;
 }
@@ -101,7 +102,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self updateModelSourceControllerWithCompletion:completion];
-    [[IQService sharedService] notificationsUnread:nil
+    [[IQService sharedService] notificationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
                                                per:@(_portionLenght)
                                             search:nil
@@ -123,23 +124,40 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (NSInteger)totalItemsCount {
-    return _totalItemsCount;
+    NSManagedObjectContext * context = [IQService sharedService].context;
+    if(context) {
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        [request setEntity:[NSEntityDescription entityForName:@"IQNotification" inManagedObjectContext:context]];
+        [request setIncludesSubentities:NO];
+        
+        NSError * error;
+        NSUInteger count = [[IQService sharedService].context countForFetchRequest:request error:&error];
+        if(count == NSNotFound) {
+            NSLog(@"Request error:%@", error);
+        }
+        
+        return count;
+    }
+    return 0;
 }
 
 - (NSInteger)unreadItemsCount {
     NSManagedObjectContext * context = [IQService sharedService].context;
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:[NSEntityDescription entityForName:@"IQNotification" inManagedObjectContext:context]];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"readed == NO"]];
-    [request setIncludesSubentities:NO];
-    
-    NSError * error;
-    NSUInteger count = [[IQService sharedService].context countForFetchRequest:request error:&error];
-    if(count == NSNotFound) {
-        NSLog(@"Request error:%@", error);
-        return 0;
+    if(context) {
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        [request setEntity:[NSEntityDescription entityForName:@"IQNotification" inManagedObjectContext:context]];
+        [request setPredicate:[NSPredicate predicateWithFormat:@"readed == NO"]];
+        [request setIncludesSubentities:NO];
+        
+        NSError * error;
+        NSUInteger count = [[IQService sharedService].context countForFetchRequest:request error:&error];
+        if(count == NSNotFound) {
+            NSLog(@"Request error:%@", error);
+        }
+        
+        return count;
     }
-    return count;
+    return 0;
 }
 
 #pragma mark - Private methods
@@ -147,18 +165,23 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 - (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;
     
+    [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
+    
     if(!_fetchController && [IQService sharedService].context) {
         NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
         [fetchRequest setSortDescriptors:_sortDescriptors];
-        
-        if(_loadUnreadOnly) {
-            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO"]];
-        }
         
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                managedObjectContext:[IQService sharedService].context
                                                                  sectionNameKeyPath:nil
                                                                           cacheName:CACHE_FILE_NAME];
+    }
+    
+    if(_loadUnreadOnly) {
+        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO"]];
+    }
+    else {
+        [_fetchController.fetchRequest setPredicate:nil];
     }
     
     NSError * fetchError = nil;

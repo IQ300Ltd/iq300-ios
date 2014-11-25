@@ -14,6 +14,7 @@
 @property (nonatomic, readonly) UIImageView * logoImageView;
 @property (nonatomic, readonly) ExTextField * emailTextField;
 @property (nonatomic, readonly) ExTextField * passwordTextField;
+@property (nonatomic, readonly) UILabel * errorLabel;
 @property (nonatomic, readonly) UIButton * enterButton;
 @property (nonatomic, readonly) UIButton * restorePassButton;
 @property (nonatomic, readonly) UIButton * registryButton;

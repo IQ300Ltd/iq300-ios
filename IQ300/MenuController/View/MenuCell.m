@@ -5,13 +5,13 @@
 //  Created by Tayphoon on 06.11.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <JSBadgeView/JSBadgeView.h>
 
 #import "MenuCell.h"
 #import "BottomLineView.h"
 #import "MenuConsts.h"
+#import "IQBadgeView.h"
 
-#define BBACKGROUND_COLOR [UIColor colorWithHexInt:0x272d31]
+#define BACKGROUND_COLOR [UIColor colorWithHexInt:0x1d2124]
 #define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x272d31]
 #define BADGE_HEIGHT 25
 #define CONTENT_LEFT_INSET 12
@@ -38,7 +38,7 @@
         [self setSelectedBackgroundView:_selectedBackgroundView];
        
         _cellContentView = [[BottomLineView alloc] init];
-        [_cellContentView setBackgroundColor:BBACKGROUND_COLOR];
+        [_cellContentView setBackgroundColor:BACKGROUND_COLOR];
         [((BottomLineView*)_cellContentView) setBottomLineColor:MENU_CELL_SEPARATOR_COLOR];
         [((BottomLineView*)_cellContentView) setBottomLineHeight:1.0f];
         
@@ -52,13 +52,8 @@
         [_titleLabel setText:NSLocalizedString(@"Incoming", nil)];
         [_cellContentView addSubview:_titleLabel];
         
-        _badgeView = [[JSBadgeView alloc] initWithParentView:_cellContentView alignment:JSBadgeViewAlignmentCenterRight];
-        _badgeView.badgePositionAdjustment = CGPointMake(-20, 0);
-        _badgeView.badgeBackgroundColor = [UIColor whiteColor];
-        _badgeView.badgeTextColor = [UIColor colorWithHexInt:0x459dbe];
-        _badgeView.badgeStrokeColor = [UIColor colorWithHexInt:0x338cae];
-        _badgeView.badgeStrokeWidth = 1.0f;
-        _badgeView.badgeTextFont = [UIFont fontWithName:@"Helvetica" size:16];
+        _badgeView = [IQBadgeView customBadgeWithString:nil];
+        [_cellContentView addSubview:_badgeView];
         
         [self.contentView addSubview:_cellContentView];
     }
@@ -74,10 +69,10 @@
     CGRect actualBounds = _cellContentView.bounds;
     CGRect mainRect = UIEdgeInsetsInsetRect(actualBounds, _contentInsets);
     
-    _badgeView.frame = CGRectMake(mainRect.origin.x + mainRect.size.width - mainRect.size.height,
-                                  0,
-                                  mainRect.size.height,
-                                  mainRect.size.height);
+    _badgeView.frame = CGRectMake(mainRect.origin.x + mainRect.size.width - _badgeView.frame.size.width,
+                                  mainRect.origin.y + (mainRect.size.height - _badgeView.frame.size.height) / 2,
+                                  _badgeView.frame.size.width,
+                                  _badgeView.frame.size.height);
     
     _titleLabel.frame = CGRectMake(mainRect.origin.x,
                                    mainRect.origin.y,
@@ -97,10 +92,24 @@
     }
 }
 
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
+    
+   // [_cellContentView setBackgroundColor:(selected) ? SELECTED_BBACKGROUND_COLOR : BACKGROUND_COLOR];
+}
+
 - (void)setItem:(IQMenuItem *)item {
     _item = item;
     
     _titleLabel.text = item.title;
+}
+
+- (NSString*)badgeText {
+    return _badgeView.badgeText;
+}
+
+- (void)setBadgeText:(NSString *)badgeText {
+    [_badgeView autoBadgeSizeWithString:badgeText];
 }
 
 @end

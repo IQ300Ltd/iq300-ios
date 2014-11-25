@@ -15,4 +15,10 @@
 - (BOOL)canExpandSection:(NSInteger)section;
 - (Class)controllerClassForItemAtIndexPath:(NSIndexPath*)indexPath;
 
+- (NSString*)badgeTextForSection:(NSInteger)section;
+- (NSString*)badgeTextAtIndexPath:(NSIndexPath*)indexPath;
+
+- (NSIndexPath*)indexPathForSelectedItem;
+- (void)selectItemAtIndexPath:(NSIndexPath *)indexPath;
+
 @end

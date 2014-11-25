@@ -46,6 +46,18 @@
         [_tableView setSeparatorInset:UIEdgeInsetsZero];
         //_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         [self addSubview:_tableView];
+        
+        _noDataLabel = [[UILabel alloc] init];
+        [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
+        [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
+        _noDataLabel.textAlignment = NSTextAlignmentCenter;
+        _noDataLabel.backgroundColor = [UIColor clearColor];
+        _noDataLabel.numberOfLines = 0;
+        _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        [_noDataLabel setHidden:YES];
+        NSString * targetName = [NSLocalizedString(@"Notifications", @"Notifications") lowercaseString];
+        [_noDataLabel setText:NSLocalizedStringWithFormat(@"no_data_formart", targetName)];
+        [self addSubview:_noDataLabel];
     }
     return self;
 }
@@ -56,6 +68,7 @@
     _searchBarContainer.frame = CGRectMake(0, 0, self.bounds.size.width, SEARCH_HEIGHT);
     _searchBar.frame = _searchBarContainer.bounds;
     _tableView.frame = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(SEARCH_HEIGHT, 0, 0, 0));
+    _noDataLabel.frame = self.bounds;
 }
 
 @end

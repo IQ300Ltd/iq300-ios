@@ -19,4 +19,7 @@
 #define NSLocalizedString(key, comment) \
 [[NSBundle localizedBundle] localizedStringForKey:(key) value:@"" table:nil]
 
+#define NSLocalizedStringWithFormat(key, args...) \
+[NSString stringWithFormat:NSLocalizedString(key, nil), args]
+
 @end

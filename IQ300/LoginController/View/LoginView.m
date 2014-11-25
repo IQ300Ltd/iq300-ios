@@ -39,6 +39,15 @@
         _passwordTextField.secureTextEntry = YES;
         [self addSubview:_passwordContainer];
         
+        _errorLabel = [[UILabel alloc] init];
+        [_errorLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:13]];
+        [_errorLabel setTextColor:[UIColor colorWithHexInt:0xca301e]];
+        _errorLabel.textAlignment = NSTextAlignmentLeft;
+        _errorLabel.backgroundColor = [UIColor clearColor];
+        _errorLabel.numberOfLines = 0;
+        _errorLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        [self addSubview:_errorLabel];
+        
         _enterButton = [[UIButton alloc] init];
         [_enterButton setBackgroundColor:[UIColor colorWithHexInt:0x348dad]];
         [_enterButton.layer setCornerRadius:2.0f];
@@ -79,6 +88,11 @@
                                           _emailContainer.frame.origin.y + _emailContainer.frame.size.height + 18,
                                           self.bounds.size.width,
                                           LABEL_HEIGHT);
+    
+    _errorLabel.frame = CGRectMake(10,
+                                   _passwordContainer.frame.origin.y + _passwordContainer.frame.size.height + 8,
+                                   self.bounds.size.width,
+                                   20);
     
     CGFloat horizontalOffset = 10.0f;
     _enterButton.frame = CGRectMake(horizontalOffset,

@@ -9,12 +9,17 @@
 #import "TCService+Subclass.h"
 #import "IQSession.h"
 
+#define SERVICE_REGISTRATION_URL [NSString stringWithFormat:@"%@/%@", SERVICE_URL, @"users/sign_up"]
+#define SERVICE_RESET_PASSWORD_URL [NSString stringWithFormat:@"%@/%@", SERVICE_URL, @"users/password/new"]
+
 @interface IQService : TCService
 
 @property (nonatomic, strong) IQSession * session;
 
 - (void)loginWithEmail:(NSString*)email password:(NSString*)password handler:(RequestCompletionHandler)handler;
 - (void)logout;
+
+- (void)userInfoWithHandler:(ObjectLoaderCompletionHandler)handler;
 
 /**
  Request user notifications. There is an opportunity to receive notifications portions.

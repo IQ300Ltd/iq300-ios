@@ -24,6 +24,7 @@
 "Notifications" = "Notifications";
 "All" = "All";
 "Unread" = "Unread";
+"no_data_formart" = "No %@ found";
 
 //Notification types
 "Attachment" = "Document";
