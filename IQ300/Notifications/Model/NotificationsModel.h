@@ -8,6 +8,8 @@
 
 #import "IQTableModel.h"
 
+@class IQNotification;
+
 @interface NotificationsModel : NSObject<IQTableModel>
 
 @property (nonatomic, assign) BOOL loadUnreadOnly;
@@ -17,5 +19,7 @@
 
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
+
+- (void)markNotificationAsRead:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
 
 @end

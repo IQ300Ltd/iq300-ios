@@ -18,7 +18,7 @@
 //#import "UITableView+BottomRefreshControl.h"
 //#import "IQRefreshControl.h"
 
-@interface NotificationsContoller() <UITableViewDelegate, UITableViewDataSource> {
+@interface NotificationsContoller() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationsView * _mainView;
     NotificationsMenuModel * _menuModel;
 }
@@ -77,7 +77,7 @@
     
     UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mark_tab_item.png"]
                                                                   style:UIBarButtonItemStylePlain
-                                                                 target:self action:@selector(markSelectedReaded:)];
+                                                                 target:self action:@selector(markAllAsReaded:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
     [self.leftMenuController setMenuResponder:self];
@@ -102,7 +102,10 @@
     
     IQNotification * notification = [self.model itemAtIndexPath:indexPath];
     cell.item = notification;
-    
+    cell.markAsReadedButton.tag = indexPath.row;
+    cell.delegate = self;
+    cell.tag = indexPath.row;
+        
     return cell;
 }
 
@@ -144,8 +147,17 @@
 
 #pragma mark - Private methods
 
-- (void)markSelectedReaded:(id)sender {
-    
+- (void)markAllAsReaded:(id)sender {
+
+}
+
+- (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    NSIndexPath * itemIndexPath = [NSIndexPath indexPathForRow:cell.tag inSection:0];
+    IQNotification * item = [self.model itemAtIndexPath:itemIndexPath];
+    item.readed = @(YES);
+        
+    [self.model markNotificationAsRead:item completion:nil];
+    _menuModel.unreadItemsCount = self.model.unreadItemsCount;
 }
 
 - (void)refresh {

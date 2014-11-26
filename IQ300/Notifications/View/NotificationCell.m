@@ -25,30 +25,36 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
     if(self) {
+        UIView * contentView = [super valueForKey:@"_contentCellView"];
+        
+        _markAsReadedButton = [[UIButton alloc] init];
+        [_markAsReadedButton setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
+        [_markAsReadedButton setImage:[UIImage imageNamed:@"check_mark_medium"] forState:UIControlStateNormal];
+        
         _contentInsets = UIEdgeInsetsMake(5, 8, 5, 8);
         _contentBackgroundInsets = UIEdgeInsetsZero;
         
-        [self.contentView setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
+        [self setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
         
         _contentBackgroundView = [[UIView alloc] init];
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
-        [self.contentView addSubview:_contentBackgroundView];
+        [contentView addSubview:_contentBackgroundView];
         
         _typeLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
                                              font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                     localaizedKey:@"Project"];
-        [self.contentView addSubview:_typeLabel];
+        [contentView addSubview:_typeLabel];
         
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
                                              font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentRight;
-        [self.contentView addSubview:_dateLabel];
+        [contentView addSubview:_dateLabel];
         
         _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
                                               font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                      localaizedKey:nil];
-        [self.contentView addSubview:_titleLabel];
+        [contentView addSubview:_titleLabel];
         
         _userNameLabel = [self makeLabelWithTextColor:[UIColor whiteColor]
                                                  font:[UIFont fontWithName:IQ_HELVETICA size:13]
@@ -57,17 +63,17 @@
         _userNameLabel.layer.cornerRadius = 3;
         _userNameLabel.textAlignment = NSTextAlignmentCenter;
         _userNameLabel.clipsToBounds = YES;
-        [self.contentView addSubview:_userNameLabel];
+        [contentView addSubview:_userNameLabel];
         
         _actionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
                                                font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                       localaizedKey:nil];
-        [self.contentView addSubview:_actionLabel];
+        [contentView addSubview:_actionLabel];
         
         _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9b9c9e]
                                                     font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                            localaizedKey:nil];
-        [self.contentView addSubview:_descriptionLabel];
+        [contentView addSubview:_descriptionLabel];
     }
     
     return self;
@@ -140,6 +146,7 @@
     _contentBackgroundInsets = ([_item.readed boolValue]) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, 4, 0, 0);
     _contentBackgroundView.backgroundColor = ([_item.readed boolValue]) ? CONTEN_BACKGROUND_COLOR_R :
                                                                           CONTEN_BACKGROUND_COLOR;
+    self.rightUtilityButtons = ([_item.readed boolValue]) ? nil : @[_markAsReadedButton];
     
     _typeLabel.text = NSLocalizedString(_item.notificable.type, nil);
     _dateLabel.text = [self dateToString:_item.createdAt];

@@ -32,4 +32,6 @@
  */
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
+
 @end

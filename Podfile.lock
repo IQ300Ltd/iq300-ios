@@ -41,6 +41,7 @@ PODS:
   - SDWebImage/Core (3.7.1)
   - SOCKit (1.1)
   - SVPullToRefresh (HEAD based on 0.4.1)
+  - SWTableViewCell (0.3.6)
   - TransitionKit (2.1.0)
 
 DEPENDENCIES:
@@ -50,6 +51,7 @@ DEPENDENCIES:
   - RestKit
   - SDWebImage
   - SVPullToRefresh (HEAD)
+  - SWTableViewCell (~> 0.3.6)
 
 SPEC CHECKSUMS:
   AFNetworking: 80c4e0652b08eb34e25b9c0ff3c82556fe5967b4
@@ -62,6 +64,7 @@ SPEC CHECKSUMS:
   SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
   SOCKit: d8d0dd3688ae1026c12367570da8fa8e1a6980fb
   SVPullToRefresh: d5161ebc833a38b465364412e5e307ca80bbb190
+  SWTableViewCell: f5cbe30c49c4e5b97231c076f17331caaf3f6244
   TransitionKit: 6a6f3ddda38ae758778aa889dcb930e4f8d64edc
 
 COCOAPODS: 0.35.0

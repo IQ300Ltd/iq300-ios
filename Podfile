@@ -7,3 +7,4 @@ pod 'JSBadgeView'
 pod 'CustomBadge'
 pod 'SDWebImage'
 pod 'SVPullToRefresh', :head
+pod 'SWTableViewCell', '~> 0.3.6'

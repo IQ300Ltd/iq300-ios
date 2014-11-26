@@ -104,6 +104,17 @@
                    handler:handler];
 }
 
+- (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/notifications/%@", notificationId]
+         parameters:nil
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if(handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
 #pragma mark - Private methods
 
 - (void)initDescriptors {
@@ -144,6 +155,13 @@
                                                    fromKeyPath:@"user"
                                                          store:self.objectManager.managedObjectStore];
     
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/notifications/:id"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 }
 

@@ -160,6 +160,15 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     return 0;
 }
 
+- (void)markNotificationAsRead:(IQNotification*)notification completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] markNotificationAsRead:notification.notificationId
+                                              handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                  if(completion) {
+                                                      completion(error);
+                                                  }
+                                              }];
+}
+
 #pragma mark - Private methods
 
 - (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {

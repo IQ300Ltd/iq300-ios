@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <SWTableViewCell/SWTableViewCell.h>
 
 @class IQNotification;
 
-@interface NotificationCell : UITableViewCell {
+@interface NotificationCell : SWTableViewCell {
     UIEdgeInsets _contentInsets;
     UIEdgeInsets _contentBackgroundInsets;
 }
@@ -22,6 +22,7 @@
 @property (nonatomic, strong) UILabel * userNameLabel;
 @property (nonatomic, strong) UILabel * actionLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;
+@property (nonatomic, strong) UIButton * markAsReadedButton;
 
 @property (nonatomic, strong) IQNotification * item;
 
