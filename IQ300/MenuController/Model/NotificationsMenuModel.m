@@ -108,10 +108,10 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (NSString*)badgeTextAtIndexPath:(NSIndexPath*)indexPath {
     if (indexPath.row == 0 && _totalItemsCount != -1) {
-        return [NSString stringWithFormat:@"%d", _totalItemsCount];
+        return [NSString stringWithFormat:@"%ld", (long)_totalItemsCount];
     }
     else if (indexPath.row == 1 && _unreadItemsCount != -1) {
-        return [NSString stringWithFormat:@"%d", _unreadItemsCount];
+        return [NSString stringWithFormat:@"%ld", (long)_unreadItemsCount];
     }
     return nil;
 }

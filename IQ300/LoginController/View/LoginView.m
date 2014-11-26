@@ -119,6 +119,7 @@
     
     textField.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     textField.font = [UIFont fontWithName:IQ_HELVETICA size:16];
+    textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(placeholder, nil)
                                                                       attributes:@{NSForegroundColorAttributeName: [UIColor colorWithHexInt:0xb6b6b6]}];
     [textField setPlaceholderInsets:UIEdgeInsetsMake(0, 10, 1, 0)];
