@@ -31,6 +31,7 @@
         [self addSubview:_logoImageView];
         
         _emailTextField = [[ExTextField alloc] init];
+        _emailTextField.keyboardType = UIKeyboardTypeEmailAddress;
         _emailContainer = [self makeContainerWithField:_emailTextField placeholder:@"Email"];
         [self addSubview:_emailContainer];
     
