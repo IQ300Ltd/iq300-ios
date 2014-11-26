@@ -56,7 +56,8 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     _menuModel = [[NotificationsMenuModel alloc] init];
-    [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:(self.model.loadUnreadOnly) ? 1 : 0
+                                                         inSection:0]];
     
 //    IQRefreshControl *bottomRefreshControl = [IQRefreshControl new];
 //    [bottomRefreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
@@ -69,6 +70,11 @@
          [weakSelf.tableView.pullToRefreshView stopAnimating];
      }
      position:SVPullToRefreshPositionBottom];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(accountDidChanged)
+                                                 name:AccountDidChangedNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -85,10 +91,8 @@
     [self.leftMenuController setModel:_menuModel];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    [self reloadDataWithCompletion:^{
-        _menuModel.totalItemsCount = [self.model totalItemsCount];
-        _menuModel.unreadItemsCount = [self.model unreadItemsCount];
-    }];
+    [self updateCounters];
+    [self reloadDataWithCompletion:nil];
 }
 
 #pragma mark - UITableView DataSource
@@ -117,13 +121,49 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 //    IQNotification * notification = [self.model itemAtIndexPath:indexPath];
-  
 }
 
 #pragma mark - Menu Responder Delegate
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
     self.model.loadUnreadOnly = (indexPath.row == 1);
+    [self reloadModel];
+}
+
+#pragma mark - Private methods
+
+- (void)markAllAsReaded:(id)sender {
+    [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self updateCounters];
+        }
+    }];
+}
+
+- (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
+    
+    [self.model markNotificationAsReadAtIndexPath:itemIndexPath completion:^(NSError *error) {
+        if(!error) {
+            [self updateCounters];
+        }
+    }];
+}
+
+- (void)updateCounters {
+    [self.model updateCountersWithCompletion:^(NSError *error) {
+        if(!error) {
+            _menuModel.totalItemsCount = self.model.totalItemsCount;
+            _menuModel.unreadItemsCount = self.model.unreadItemsCount;
+        }
+    }];
+}
+
+- (void)accountDidChanged {
+    [self reloadModel];
+}
+
+- (void)reloadModel {
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
@@ -141,27 +181,9 @@
                     }
                 }];
             }
+            [self updateCounters];
         }
     }];
-}
-
-#pragma mark - Private methods
-
-- (void)markAllAsReaded:(id)sender {
-
-}
-
-- (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
-    NSIndexPath * itemIndexPath = [NSIndexPath indexPathForRow:cell.tag inSection:0];
-    IQNotification * item = [self.model itemAtIndexPath:itemIndexPath];
-    item.readed = @(YES);
-        
-    [self.model markNotificationAsRead:item completion:nil];
-    _menuModel.unreadItemsCount = self.model.unreadItemsCount;
-}
-
-- (void)refresh {
-    [self reloadDataWithCompletion:nil];
 }
 
 @end

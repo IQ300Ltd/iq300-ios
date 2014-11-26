@@ -5,11 +5,11 @@
 //  Created by Tayphoon on 07.11.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <JSBadgeView/JSBadgeView.h>
 
 #import "MenuSectionHeader.h"
 #import "ExtendedButton.h"
 #import "MenuConsts.h"
+#import "IQBadgeView.h"
 
 #define SELECTED_BACKGROUND_COLOR [UIColor colorWithHexInt:0x272d31]
 
@@ -45,13 +45,8 @@
         [_backgroundView addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_backgroundView];
         
-        _badgeView = [[JSBadgeView alloc] initWithParentView:self alignment:JSBadgeViewAlignmentCenterRight];
-        _badgeView.badgePositionAdjustment = CGPointMake(-20, 0);
-        _badgeView.badgeBackgroundColor = [UIColor whiteColor];
-        _badgeView.badgeTextColor = [UIColor colorWithHexInt:0x459dbe];
-        _badgeView.badgeStrokeColor = [UIColor colorWithHexInt:0x338cae];
-        _badgeView.badgeStrokeWidth = 1.0f;
-        _badgeView.badgeTextFont = [UIFont fontWithName:@"Helvetica" size:16];
+        _badgeView = [IQBadgeView customBadgeWithString:nil];
+        [self addSubview:_backgroundView];
         
         _selected = NO;
         _expanded = NO;
@@ -108,10 +103,10 @@
     CGRect backgroundViewRect = UIEdgeInsetsInsetRect(actualBounds, _backgroundViewInsets);
     _backgroundView.frame = backgroundViewRect;
     
-    _badgeView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - actualBounds.size.height,
-                                  0,
-                                  actualBounds.size.height,
-                                  actualBounds.size.height);
+    _badgeView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - _badgeView.frame.size.width,
+                                  actualBounds.origin.y + (actualBounds.size.height - _badgeView.frame.size.height) / 2,
+                                  _badgeView.frame.size.width,
+                                  _badgeView.frame.size.height);
 
 }
 

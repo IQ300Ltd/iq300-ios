@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B25" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="IQNotificable" syncable="YES">
+    <entity name="IQNotificable" representedClassName="IQNotificable" syncable="YES">
         <attribute name="notificableId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
@@ -17,7 +17,7 @@
         <relationship name="notificable" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQNotificable" inverseName="notifications" inverseEntity="IQNotificable" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="notifications" inverseEntity="IQUser" syncable="YES"/>
     </entity>
-    <entity name="IQUser" syncable="YES">
+    <entity name="IQUser" representedClassName="IQUser" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mediumUrl" optional="YES" attributeType="String" syncable="YES"/>

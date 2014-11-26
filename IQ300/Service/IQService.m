@@ -79,7 +79,14 @@
 - (void)userInfoWithHandler:(ObjectLoaderCompletionHandler)handler {
     [self getObjectsAtPath:@"/api/v1/users/current"
                 parameters:nil
-                   handler:handler];
+                   handler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
+                       if(success) {
+                           self.session.userId = user.userId;
+                       }
+                       if(handler) {
+                           handler(success, user, responseData, error);
+                       }
+                   }];
 }
 
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler {
@@ -113,6 +120,23 @@
                     handler(success, responseData, error);
                 }
             }];
+}
+
+- (void)marAllkNotificationAsReadWithHandler:(RequestCompletionHandler)handler {
+    [self putObject:nil
+               path:@"/api/v1/notifications/read_all"
+         parameters:nil
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if(handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
+- (void)notificationsCountWithHandler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/notifications/counters"
+                parameters:nil
+                   handler:handler];
 }
 
 #pragma mark - Private methods
@@ -163,6 +187,22 @@
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/notifications/read_all"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[NotificationsCount class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/notifications/counters"
+                                                   fromKeyPath:@"notification_counters"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
 }
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation *)operation {

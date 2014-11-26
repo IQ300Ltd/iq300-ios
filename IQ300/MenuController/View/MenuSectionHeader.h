@@ -8,7 +8,7 @@
 
 #import "BottomLineView.h"
 
-@class JSBadgeView;
+@class CustomBadge;
 
 @interface MenuSectionHeader : BottomLineView {
     void (^_actionBlock)(MenuSectionHeader* header);
@@ -18,7 +18,7 @@
 @property (nonatomic, assign) NSInteger section;
 @property (nonatomic, strong) NSString * badgeText;
 
-@property (nonatomic, readonly) JSBadgeView * badgeView;
+@property (nonatomic, readonly) CustomBadge * badgeView;
 
 @property (nonatomic, assign, getter=isSelectable) BOOL selectable;
 @property (nonatomic, assign, getter=isSelected) BOOL selected;

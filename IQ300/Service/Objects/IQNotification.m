@@ -49,7 +49,8 @@
                                                    @"created_at"       : @"createdAt",
                                                    @"has_actions"      : @"hasActions",
                                                    @"main_text"        : @"mainDescription",
-                                                   @"additional_text"  : @"additionalDescription"
+                                                   @"additional_text"  : @"additionalDescription",
+                                                   @"recipient_id"     : @"ownerId"
                                                    }];
     
     RKRelationshipMapping * notificableRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"notificable"

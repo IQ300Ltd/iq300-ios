@@ -33,6 +33,8 @@
 		737E7C5F1A0CD57E00E8BB81 /* AccountHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C5E1A0CD57E00E8BB81 /* AccountHeaderView.m */; };
 		737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C611A0D027700E8BB81 /* ExtendedButton.m */; };
 		737F5DDA1A2315A00095040B /* IQRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 737F5DD91A2315A00095040B /* IQRefreshControl.m */; };
+		7386B3B41A25D6FF0061B921 /* NotificationsCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386B3B31A25D6FF0061B921 /* NotificationsCount.m */; };
+		7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386B3B81A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m */; };
 		73882D8C1A247A0800B8BE90 /* IQBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73882D8B1A247A0800B8BE90 /* IQBadgeView.m */; };
 		73882D901A24B62500B8BE90 /* check_mark_medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 73882D8E1A24B62500B8BE90 /* check_mark_medium.png */; };
 		73882D911A24B62500B8BE90 /* check_mark_medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73882D8F1A24B62500B8BE90 /* check_mark_medium@2x.png */; };
@@ -167,6 +169,10 @@
 		737F5DD41A22FC5F0095040B /* UITableView+BottomRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+BottomRefreshControl.m"; sourceTree = "<group>"; };
 		737F5DD81A2315A00095040B /* IQRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQRefreshControl.h; sourceTree = "<group>"; };
 		737F5DD91A2315A00095040B /* IQRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQRefreshControl.m; sourceTree = "<group>"; };
+		7386B3B21A25D6FF0061B921 /* NotificationsCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsCount.h; sourceTree = "<group>"; };
+		7386B3B31A25D6FF0061B921 /* NotificationsCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsCount.m; sourceTree = "<group>"; };
+		7386B3B71A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+AsyncFetch.h"; sourceTree = "<group>"; };
+		7386B3B81A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+AsyncFetch.m"; sourceTree = "<group>"; };
 		73882D891A24687300B8BE90 /* SuppressWarning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuppressWarning.h; sourceTree = "<group>"; };
 		73882D8A1A247A0800B8BE90 /* IQBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeView.h; sourceTree = "<group>"; };
 		73882D8B1A247A0800B8BE90 /* IQBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBadgeView.m; sourceTree = "<group>"; };
@@ -444,6 +450,8 @@
 		736B6BE71A0BC08100034D9B /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				7386B3B71A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.h */,
+				7386B3B81A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m */,
 				73882D891A24687300B8BE90 /* SuppressWarning.h */,
 				73C58C051A1F145200C83729 /* NSDate+CupertinoYankee.h */,
 				73C58C061A1F145200C83729 /* NSDate+CupertinoYankee.m */,
@@ -613,6 +621,8 @@
 				738EA7A41A1DD0570065D39F /* IQObjects.h */,
 				738EA7A71A1DD5450065D39F /* IQNotificationsHolder.h */,
 				738EA7A81A1DD5450065D39F /* IQNotificationsHolder.m */,
+				7386B3B21A25D6FF0061B921 /* NotificationsCount.h */,
+				7386B3B31A25D6FF0061B921 /* NotificationsCount.m */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -921,12 +931,14 @@
 				73BA989A1A10A1AB005AEC00 /* IQMenuSection.m in Sources */,
 				73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */,
 				737E7C551A0CA88E00E8BB81 /* MenuSectionHeader.m in Sources */,
+				7386B3B41A25D6FF0061B921 /* NotificationsCount.m in Sources */,
 				738EA7AC1A1DD69F0065D39F /* NotificationsModel.m in Sources */,
 				737E7C5F1A0CD57E00E8BB81 /* AccountHeaderView.m in Sources */,
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,
 				73C58C071A1F145200C83729 /* NSDate+CupertinoYankee.m in Sources */,
 				73506ED61A137D070071B4CB /* TasksController.m in Sources */,
 				73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */,
+				7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */,
 				736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */,
 				73F90CFF1A1B9F0500225255 /* IQFakeService.m in Sources */,
 				738EA7A91A1DD5450065D39F /* IQNotificationsHolder.m in Sources */,

@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSString * tokenType;
 @property (nonatomic, strong) NSString * token;
 @property (nonatomic, strong) NSString * userName;
+@property (nonatomic, strong) NSNumber * userId;
 
 + (IQSession*)defaultSession;
 + (void)setDefaultSession:(IQSession*)defaultSession;

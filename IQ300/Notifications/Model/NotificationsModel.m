@@ -5,10 +5,14 @@
 //  Created by Tayphoon on 20.11.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
+#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+
 #import "NotificationsModel.h"
 #import "IQService.h"
 #import "IQNotificationsHolder.h"
 #import "NotificationCell.h"
+#import "NotificationsCount.h"
+#import "NSManagedObjectContext+AsyncFetch.h"
 
 #define CACHE_FILE_NAME @"NotificationsModelcache"
 
@@ -20,6 +24,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
     NSInteger _totalItemsCount;
+    NSInteger _unreadItemsCount;
 }
 
 @end
@@ -33,6 +38,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         _sortDescriptors = @[descriptor];
         _loadUnreadOnly = NO;
         _totalItemsCount = 0;
+        _unreadItemsCount = 0;
     }
     return self;
 }
@@ -124,49 +130,62 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (NSInteger)totalItemsCount {
-    NSManagedObjectContext * context = [IQService sharedService].context;
-    if(context) {
-        NSFetchRequest *request = [[NSFetchRequest alloc] init];
-        [request setEntity:[NSEntityDescription entityForName:@"IQNotification" inManagedObjectContext:context]];
-        [request setIncludesSubentities:NO];
-        
-        NSError * error;
-        NSUInteger count = [[IQService sharedService].context countForFetchRequest:request error:&error];
-        if(count == NSNotFound) {
-            NSLog(@"Request error:%@", error);
-        }
-        
-        return count;
-    }
-    return 0;
+    return _totalItemsCount;
 }
 
 - (NSInteger)unreadItemsCount {
-    NSManagedObjectContext * context = [IQService sharedService].context;
-    if(context) {
-        NSFetchRequest *request = [[NSFetchRequest alloc] init];
-        [request setEntity:[NSEntityDescription entityForName:@"IQNotification" inManagedObjectContext:context]];
-        [request setPredicate:[NSPredicate predicateWithFormat:@"readed == NO"]];
-        [request setIncludesSubentities:NO];
-        
-        NSError * error;
-        NSUInteger count = [[IQService sharedService].context countForFetchRequest:request error:&error];
-        if(count == NSNotFound) {
-            NSLog(@"Request error:%@", error);
-        }
-        
-        return count;
-    }
-    return 0;
+    return _unreadItemsCount;
 }
 
-- (void)markNotificationAsRead:(IQNotification*)notification completion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] markNotificationAsRead:notification.notificationId
+- (void)markNotificationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
+    IQNotification * item = [self itemAtIndexPath:indexPath];
+    item.readed = @(YES);
+    
+    NSError *saveError = nil;
+    if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
+        NSLog(@"Save error: %@", saveError);
+    }
+    
+    [[IQService sharedService] markNotificationAsRead:item.notificationId
                                               handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                   if(completion) {
                                                       completion(error);
                                                   }
                                               }];
+}
+
+- (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion {
+    NSManagedObjectContext * context = _fetchController.managedObjectContext;
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@", [IQSession defaultSession].userId]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+        if ([objects count] > 0) {
+            [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
+            NSError *saveError = nil;
+            
+            if(![context saveToPersistentStore:&saveError]) {
+                NSLog(@"Save error: %@", saveError);
+            }
+        }
+    }];
+    
+    [[IQService sharedService] marAllkNotificationAsReadWithHandler:^(BOOL success, NSData *responseData, NSError *error) {
+        if(completion) {
+            completion(error);
+        }
+    }];
+}
+
+- (void)updateCountersWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] notificationsCountWithHandler:^(BOOL success, NotificationsCount * counter, NSData *responseData, NSError *error) {
+        if(success) {
+            _totalItemsCount = [counter.totalCount integerValue];
+            _unreadItemsCount = [counter.unreadCount integerValue];
+        }
+        if(completion) {
+            completion(error);
+        }
+    }];
 }
 
 #pragma mark - Private methods
@@ -187,10 +206,10 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     }
     
     if(_loadUnreadOnly) {
-        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO"]];
+        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@", [IQSession defaultSession].userId]];
     }
     else {
-        [_fetchController.fetchRequest setPredicate:nil];
+        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
     }
     
     NSError * fetchError = nil;

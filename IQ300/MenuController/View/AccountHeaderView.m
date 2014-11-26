@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "AccountHeaderView.h"
 #import "MenuConsts.h"
 
@@ -22,7 +24,9 @@
         [self setBackgroundColor:MENU_BACKGROUND_COLOR];
         
         _userImageView = [[UIImageView alloc] init];
+        _userImageView.layer.cornerRadius = USER_ICON_SEZE / 2.0f;
         [_userImageView setImage:[UIImage imageNamed:DEFAULT_AVATAR_IMAGE]];
+        [_userImageView setClipsToBounds:YES];
         [self addSubview:_userImageView];
         
         _userNameLabel = [[UILabel alloc] init];

@@ -25,13 +25,29 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "IQ300/Notifications/Model/NotificationsModel.m"
-            timestampString = "438615246.933348"
+            filePath = "IQ300/BaseUI/IQTableBaseController.m"
+            timestampString = "438680879.721331"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
-            landmarkName = "-updateModelWithCompletion:"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "-tableView:numberOfRowsInSection:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "IQ300/BaseUI/IQTableBaseController.m"
+            timestampString = "438680917.04346"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
+            landmarkName = "-modelDidChanged:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,13 +57,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "IQ300/BaseUI/IQTableBaseController.m"
-            timestampString = "438616523.793433"
+            filePath = "IQ300/Notifications/Model/NotificationsModel.m"
+            timestampString = "438691877.411621"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
-            landmarkName = "-model:didChangeObject:atIndexPath:forChangeType:newIndexPath:"
+            startingLineNumber = "194"
+            endingLineNumber = "194"
+            landmarkName = "-updateModelSourceControllerWithCompletion:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

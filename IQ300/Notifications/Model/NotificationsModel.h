@@ -20,6 +20,9 @@
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
 
-- (void)markNotificationAsRead:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
+- (void)markNotificationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
+- (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion;
+
+- (void)updateCountersWithCompletion:(void (^)(NSError * error))completion;
 
 @end

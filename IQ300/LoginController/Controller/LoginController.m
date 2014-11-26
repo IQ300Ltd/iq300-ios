@@ -9,6 +9,7 @@
 #import "LoginController.h"
 #import "LoginView.h"
 #import "IQService.h"
+#import "IQUser.h"
 
 BOOL NSStringIsValidEmail(NSString * checkString) {
     BOOL stricterFilter = NO;
@@ -59,10 +60,7 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
                                          password:_loginView.passwordTextField.text
                                           handler:^(BOOL success, NSData *responseData, NSError *error) {
                                               if(success) {
-                                                  [IQSession setDefaultSession:[IQService sharedService].session];
-                                                  [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
-                                                                                                      object:nil];
-                                                  [self dismissViewControllerAnimated:YES completion:nil];
+                                                  [self continueLoginProccess];
                                               }
                                               else {
                                                   [self showErrorMessage:@"Wrong credentials"];
@@ -82,6 +80,17 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
 
 - (void)showErrorMessage:(NSString*)errorMessage {
     _loginView.errorLabel.text = NSLocalizedString(errorMessage, nil);
+}
+
+- (void)continueLoginProccess {
+    [[IQService sharedService] userInfoWithHandler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
+        if(success) {
+            [IQSession setDefaultSession:[IQService sharedService].session];
+            [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
+                                                                object:nil];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }];
 }
 
 @end

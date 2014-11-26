@@ -11,5 +11,6 @@
 
 #import "IQNotificationsHolder.h"
 #import "IQUser.h"
+#import "NotificationsCount.h"
 
 #endif

@@ -34,4 +34,8 @@
 
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
+- (void)marAllkNotificationAsReadWithHandler:(RequestCompletionHandler)handler;
+
+- (void)notificationsCountWithHandler:(ObjectLoaderCompletionHandler)handler;
+
 @end
