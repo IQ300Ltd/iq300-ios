@@ -40,7 +40,6 @@
 		73882D911A24B62500B8BE90 /* check_mark_medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73882D8F1A24B62500B8BE90 /* check_mark_medium@2x.png */; };
 		738CE1E61A0B3F4E0096B374 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1E51A0B3F4E0096B374 /* main.m */; };
 		738CE1E91A0B3F4E0096B374 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1E81A0B3F4E0096B374 /* AppDelegate.m */; };
-		738CE2001A0B3F4E0096B374 /* IQ300Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1FF1A0B3F4E0096B374 /* IQ300Tests.m */; };
 		738EA7A01A1DC7A40065D39F /* IQNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA79F1A1DC7A40065D39F /* IQNotification.m */; };
 		738EA7A31A1DC91C0065D39F /* IQUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7A21A1DC91C0065D39F /* IQUser.m */; };
 		738EA7A91A1DD5450065D39F /* IQNotificationsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7A81A1DD5450065D39F /* IQNotificationsHolder.m */; };
@@ -110,16 +109,6 @@
 		C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D006E3B70304215613C192 /* libPods.a */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		738CE1FA1A0B3F4E0096B374 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 738CE1D81A0B3F4E0096B374 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 738CE1DF1A0B3F4E0096B374;
-			remoteInfo = IQ300;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		3C453A1313F35DF8AD783316 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		736B6BC51A0B5B7500034D9B /* TasksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TasksController.h; sourceTree = "<group>"; };
@@ -183,9 +172,6 @@
 		738CE1E51A0B3F4E0096B374 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		738CE1E71A0B3F4E0096B374 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		738CE1E81A0B3F4E0096B374 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		738CE1F91A0B3F4E0096B374 /* IQ300Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IQ300Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		738CE1FE1A0B3F4E0096B374 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		738CE1FF1A0B3F4E0096B374 /* IQ300Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IQ300Tests.m; sourceTree = "<group>"; };
 		738EA79E1A1DC7A40065D39F /* IQNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotification.h; sourceTree = "<group>"; };
 		738EA79F1A1DC7A40065D39F /* IQNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotification.m; sourceTree = "<group>"; };
 		738EA7A11A1DC91C0065D39F /* IQUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQUser.h; sourceTree = "<group>"; };
@@ -303,13 +289,6 @@
 				737DD2191A14E38100CC4443 /* CoreData.framework in Frameworks */,
 				737DD2171A14E08000CC4443 /* SystemConfiguration.framework in Frameworks */,
 				C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		738CE1F61A0B3F4E0096B374 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,7 +527,6 @@
 			isa = PBXGroup;
 			children = (
 				738CE1E21A0B3F4E0096B374 /* IQ300 */,
-				738CE1FC1A0B3F4E0096B374 /* IQ300Tests */,
 				738CE1E11A0B3F4E0096B374 /* Products */,
 				85BD036ECED6FF5A04643D4A /* Pods */,
 				92D92564226C89FA43DB3131 /* Frameworks */,
@@ -559,7 +537,6 @@
 			isa = PBXGroup;
 			children = (
 				738CE1E01A0B3F4E0096B374 /* IQ300.app */,
-				738CE1F91A0B3F4E0096B374 /* IQ300Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -590,23 +567,6 @@
 				738CE1E51A0B3F4E0096B374 /* main.m */,
 				73BA987F1A10969E005AEC00 /* Localizable.strings */,
 				7393C41A1A1A379400E9E944 /* IQFonts.h */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		738CE1FC1A0B3F4E0096B374 /* IQ300Tests */ = {
-			isa = PBXGroup;
-			children = (
-				738CE1FF1A0B3F4E0096B374 /* IQ300Tests.m */,
-				738CE1FD1A0B3F4E0096B374 /* Supporting Files */,
-			);
-			path = IQ300Tests;
-			sourceTree = "<group>";
-		};
-		738CE1FD1A0B3F4E0096B374 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				738CE1FE1A0B3F4E0096B374 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -764,24 +724,6 @@
 			productReference = 738CE1E01A0B3F4E0096B374 /* IQ300.app */;
 			productType = "com.apple.product-type.application";
 		};
-		738CE1F81A0B3F4E0096B374 /* IQ300Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 738CE2061A0B3F4E0096B374 /* Build configuration list for PBXNativeTarget "IQ300Tests" */;
-			buildPhases = (
-				738CE1F51A0B3F4E0096B374 /* Sources */,
-				738CE1F61A0B3F4E0096B374 /* Frameworks */,
-				738CE1F71A0B3F4E0096B374 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				738CE1FB1A0B3F4E0096B374 /* PBXTargetDependency */,
-			);
-			name = IQ300Tests;
-			productName = IQ300Tests;
-			productReference = 738CE1F91A0B3F4E0096B374 /* IQ300Tests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -793,10 +735,6 @@
 				TargetAttributes = {
 					738CE1DF1A0B3F4E0096B374 = {
 						CreatedOnToolsVersion = 6.1;
-					};
-					738CE1F81A0B3F4E0096B374 = {
-						CreatedOnToolsVersion = 6.1;
-						TestTargetID = 738CE1DF1A0B3F4E0096B374;
 					};
 				};
 			};
@@ -815,7 +753,6 @@
 			projectRoot = "";
 			targets = (
 				738CE1DF1A0B3F4E0096B374 /* IQ300 */,
-				738CE1F81A0B3F4E0096B374 /* IQ300Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -869,13 +806,6 @@
 				73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */,
 				7393C40D1A1A2FCF00E9E944 /* login_logo.png in Resources */,
 				738FE6FE1A162B10009F26A2 /* calendar_tab@2x.png in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		738CE1F71A0B3F4E0096B374 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -969,23 +899,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		738CE1F51A0B3F4E0096B374 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				738CE2001A0B3F4E0096B374 /* IQ300Tests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		738CE1FB1A0B3F4E0096B374 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 738CE1DF1A0B3F4E0096B374 /* IQ300 */;
-			targetProxy = 738CE1FA1A0B3F4E0096B374 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		73BA987F1A10969E005AEC00 /* Localizable.strings */ = {
@@ -1117,40 +1031,6 @@
 			};
 			name = Release;
 		};
-		738CE2071A0B3F4E0096B374 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = IQ300Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IQ300.app/IQ300";
-			};
-			name = Debug;
-		};
-		738CE2081A0B3F4E0096B374 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = IQ300Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IQ300.app/IQ300";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1168,15 +1048,6 @@
 			buildConfigurations = (
 				738CE2041A0B3F4E0096B374 /* Debug */,
 				738CE2051A0B3F4E0096B374 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		738CE2061A0B3F4E0096B374 /* Build configuration list for PBXNativeTarget "IQ300Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				738CE2071A0B3F4E0096B374 /* Debug */,
-				738CE2081A0B3F4E0096B374 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
