@@ -129,8 +129,6 @@
     textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(placeholder, nil)
                                                                       attributes:@{NSForegroundColorAttributeName: [UIColor colorWithHexInt:0xb6b6b6]}];
-//    [textField setPlaceholderInsets:UIEdgeInsetsMake(0, 10, 1, 0)];
-//    [textField setTextInsets:UIEdgeInsetsMake(0, 10, 1, 0)];
 
     [containerView addSubview:textField];
     return containerView;
