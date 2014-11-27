@@ -33,11 +33,13 @@
         [self addSubview:_logoImageView];
         
         _emailTextField = [[ExTextField alloc] init];
+        _emailTextField.tag = 0;
         _emailTextField.keyboardType = UIKeyboardTypeEmailAddress;
         _emailContainer = [self makeContainerWithField:_emailTextField placeholder:@"Email"];
         [self addSubview:_emailContainer];
     
         _passwordTextField = [[ExTextField alloc] init];
+        _passwordTextField.tag = 1;
         _passwordContainer = [self makeContainerWithField:_passwordTextField placeholder:@"Password"];
         _passwordTextField.secureTextEntry = YES;
         [self addSubview:_passwordContainer];

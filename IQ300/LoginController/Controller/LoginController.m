@@ -20,7 +20,7 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
     return [emailTest evaluateWithObject:checkString];
 }
 
-@interface LoginController() {
+@interface LoginController() <UITextFieldDelegate> {
     LoginView * _loginView;
 }
 
@@ -41,6 +41,9 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _loginView.emailTextField.delegate = self;
+    _loginView.passwordTextField.delegate = self;
     
     [_loginView.enterButton addTarget:self action:@selector(enterButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [_loginView.registryButton addTarget:self action:@selector(registryButtonAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -90,6 +93,22 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
             [[UIApplication sharedApplication] setStatusBarHidden:NO];
         }
     }];
+}
+
+#pragma mark - TextField Delegate
+
+- (BOOL)textFieldShouldReturn:(UITextField*)textField {
+    NSInteger nextTag = textField.tag + 1;
+    // Try to find next responder
+    UIResponder* nextResponder = [textField.superview.superview viewWithTag:nextTag];
+    if (nextResponder) {
+        // Found next responder, so set it.
+        [nextResponder becomeFirstResponder];
+    } else {
+        // Not found, so remove keyboard.
+        [textField resignFirstResponder];
+    }
+    return NO; // We do not want UITextField to insert line-breaks.
 }
 
 @end
