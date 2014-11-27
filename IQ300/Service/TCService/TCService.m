@@ -98,6 +98,7 @@ static id _sharedService = nil;
             [[NSFileManager defaultManager] removeItemAtPath:storePath error:nil];
         }
         
+#ifdef DEBUG
         NSPersistentStore * persistentStore = [managedObjectStore addSQLitePersistentStoreAtPath:storePath
                                                                           fromSeedDatabaseAtPath:nil
                                                                                withConfiguration:nil
@@ -105,7 +106,13 @@ static id _sharedService = nil;
                                                                                            error:&error];
         
         NSAssert(persistentStore, @"Failed to add persistent store with error: %@ for file %@", error, storePath);
-        
+#else
+        [managedObjectStore addSQLitePersistentStoreAtPath:storePath
+                                    fromSeedDatabaseAtPath:nil
+                                         withConfiguration:nil
+                                                   options:nil
+                                                     error:&error];
+#endif
         // Create the managed object contexts
         [managedObjectStore createManagedObjectContexts];
         _objectManager.managedObjectStore = managedObjectStore;
