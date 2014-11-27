@@ -15,6 +15,7 @@
 #import "NotificationsModel.h"
 #import "IQNotification.h"
 #import "NotificationCell.h"
+#import "IQSession.h"
 
 //#import "UITableView+BottomRefreshControl.h"
 //#import "IQRefreshControl.h"
@@ -71,11 +72,6 @@
          [weakSelf.tableView.pullToRefreshView stopAnimating];
      }
      position:SVPullToRefreshPositionBottom];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(accountDidChanged)
-                                                 name:AccountDidChangedNotification
-                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -92,8 +88,10 @@
     [self.leftMenuController setModel:_menuModel];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    [self updateCounters];
-    [self reloadDataWithCompletion:nil];
+    if([IQSession defaultSession]) {
+        [self updateCounters];
+        [self reloadModel];
+    }
 }
 
 #pragma mark - UITableView DataSource
@@ -138,7 +136,7 @@
     [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
         if(!error) {
             [self updateCounters];
-            [_mainView.noDataLabel setHidden:YES];
+            [self updateNoDataLabelVisibility];
         }
     }];
 }
@@ -149,7 +147,7 @@
     [self.model markNotificationAsReadAtIndexPath:itemIndexPath completion:^(NSError *error) {
         if(!error) {
             [self updateCounters];
-            [_mainView.noDataLabel setHidden:YES];
+            [self updateNoDataLabelVisibility];
         }
     }];
 }
@@ -161,10 +159,6 @@
             _menuModel.unreadItemsCount = self.model.unreadItemsCount;
         }
     }];
-}
-
-- (void)accountDidChanged {
-    [self reloadModel];
 }
 
 - (void)reloadModel {
@@ -188,6 +182,15 @@
             [self updateCounters];
         }
     }];
+}
+
+- (void)updateNoDataLabelVisibility {
+    if([self.model numberOfItemsInSection:0] > 0) {
+        [_mainView.noDataLabel setHidden:YES];
+    }
+    else {
+        [_mainView.noDataLabel setHidden:NO];
+    }
 }
 
 @end

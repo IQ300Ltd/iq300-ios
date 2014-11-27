@@ -90,6 +90,10 @@
 }
 
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler {
+    [self notificationsUnread:unread page:page per:per search:search sort:IQSortDirectionNo handler:handler];
+}
+
+- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * parameters = [NSMutableDictionary dictionary];
     
     if (unread) {
@@ -106,9 +110,15 @@
         parameters[@"search"] = unread;
     }
     
-    [self getObjectsAtPath:@"/api/v1/notifications"
+    NSString * sortDirection = (sort == IQSortDirectionAscending) ? @"?sort=asc" : @"?sort=desc";
+    
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/notifications%@", (sort != IQSortDirectionNo) ? sortDirection : @""]
                 parameters:parameters
                    handler:handler];
+}
+
+- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
+    [self notificationsUnread:unread page:page per:per search:nil sort:sort handler:handler];
 }
 
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {

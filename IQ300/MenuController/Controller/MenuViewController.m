@@ -291,16 +291,18 @@ CGFloat IQStatusBarHeight()
 }
 
 - (void)updateUserAccount {
-    [[IQService sharedService] userInfoWithHandler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
-        NSString * displayName = ([user.displayName length] > 0) ? user.displayName : @"Noname";
-        [_accountHeader.userNameLabel setText:displayName];
-        if([user.mediumUrl length] > 0) {
-            [_accountHeader.userImageView sd_setImageWithURL:[NSURL URLWithString:user.mediumUrl]];
-        }
-        else {
-            [_accountHeader.userImageView setImage:[UIImage imageNamed:DEFAULT_AVATAR_IMAGE]];
-        }
-    }];
+    if([IQSession defaultSession]) {
+        [[IQService sharedService] userInfoWithHandler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
+            NSString * displayName = ([user.displayName length] > 0) ? user.displayName : @"Noname";
+            [_accountHeader.userNameLabel setText:displayName];
+            if([user.mediumUrl length] > 0) {
+                [_accountHeader.userImageView sd_setImageWithURL:[NSURL URLWithString:user.mediumUrl]];
+            }
+            else {
+                [_accountHeader.userImageView setImage:[UIImage imageNamed:DEFAULT_AVATAR_IMAGE]];
+            }
+        }];
+    }
 }
 
 - (void)dealloc {

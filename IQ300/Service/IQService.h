@@ -12,6 +12,12 @@
 #define SERVICE_REGISTRATION_URL [NSString stringWithFormat:@"%@/%@", SERVICE_URL, @"users/sign_up"]
 #define SERVICE_RESET_PASSWORD_URL [NSString stringWithFormat:@"%@/%@", SERVICE_URL, @"users/password/new"]
 
+typedef NS_ENUM(NSUInteger, IQSortDirection) {
+    IQSortDirectionNo = -1,
+    IQSortDirectionAscending  = 0,
+    IQSortDirectionDescending = 1,
+};
+
 @interface IQService : TCService
 
 @property (nonatomic, strong) IQSession * session;
@@ -31,6 +37,8 @@
  @param handler Handler block. Look `ObjectLoaderCompletionHandler`.
  */
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 

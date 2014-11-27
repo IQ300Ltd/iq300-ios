@@ -96,7 +96,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         [[IQService sharedService] notificationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                                   page:@(page)
                                                    per:@(_portionLenght)
-                                                search:nil
+                                                  sort:IQSortDirectionDescending
                                                handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
                                                    if(completion) {
                                                        completion(error);
@@ -111,7 +111,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     [[IQService sharedService] notificationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
                                                per:@(_portionLenght)
-                                            search:nil
+                                              sort:IQSortDirectionDescending
                                            handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
                                                if(completion) {
                                                    completion(error);
