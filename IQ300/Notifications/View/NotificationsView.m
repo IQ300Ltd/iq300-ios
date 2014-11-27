@@ -43,9 +43,12 @@
         _tableView = [[UITableView alloc] init];
         _tableView.backgroundColor = [UIColor clearColor];
         _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-        [_tableView setSeparatorInset:UIEdgeInsetsZero];
-        [_tableView setLayoutMargins:UIEdgeInsetsZero];
-        //_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        if([_tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+            [_tableView setSeparatorInset:UIEdgeInsetsZero];
+        }
+        if([_tableView respondsToSelector:@selector(setLayoutMargins:)]) {
+            [_tableView setLayoutMargins:UIEdgeInsetsZero];
+        }
         [self addSubview:_tableView];
         
         _noDataLabel = [[UILabel alloc] init];

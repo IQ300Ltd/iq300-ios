@@ -36,7 +36,12 @@
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
         _tableView.backgroundColor = [UIColor clearColor];
         _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        _tableView.separatorInset = UIEdgeInsetsZero;
+        if([_tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+            [_tableView setSeparatorInset:UIEdgeInsetsZero];
+        }
+        if([_tableView respondsToSelector:@selector(setLayoutMargins:)]) {
+            [_tableView setLayoutMargins:UIEdgeInsetsZero];
+        }
     }
     return _tableView;
 }
