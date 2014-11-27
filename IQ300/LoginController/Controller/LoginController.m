@@ -55,7 +55,6 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
         [self showErrorMessage:@"Email address is invalid"];
     }
     else {
-        [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
         [[IQService sharedService] loginWithEmail:_loginView.emailTextField.text
                                          password:_loginView.passwordTextField.text
                                           handler:^(BOOL success, NSData *responseData, NSError *error) {
@@ -66,7 +65,6 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
                                                   [self showErrorMessage:@"Wrong credentials"];
                                               }
                                           }];
-        [[UIApplication sharedApplication] setStatusBarHidden:NO];
     }
 }
 
@@ -89,6 +87,7 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
             [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
                                                                 object:nil];
             [self dismissViewControllerAnimated:YES completion:nil];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
         }
     }];
 }

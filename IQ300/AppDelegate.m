@@ -44,9 +44,7 @@
     RKLogConfigureByName("RestKit/Network", RKLogLevelError);
     RKLogConfigureByName("RestKit/App", RKLogLevelError);
 
-    if ([IQSession defaultSession]) {
-        [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
-    }
+    [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
 
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
