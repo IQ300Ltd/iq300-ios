@@ -138,6 +138,7 @@
     [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
         if(!error) {
             [self updateCounters];
+            [_mainView.noDataLabel setHidden:YES];
         }
     }];
 }
@@ -148,6 +149,7 @@
     [self.model markNotificationAsReadAtIndexPath:itemIndexPath completion:^(NSError *error) {
         if(!error) {
             [self updateCounters];
+            [_mainView.noDataLabel setHidden:YES];
         }
     }];
 }
