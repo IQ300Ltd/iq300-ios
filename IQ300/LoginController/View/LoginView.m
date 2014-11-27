@@ -15,6 +15,7 @@
 @interface LoginView() {
     BottomLineView * _emailContainer;
     BottomLineView * _passwordContainer;
+    UIEdgeInsets _fieldsInsets;
 }
 
 @end
@@ -24,7 +25,8 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setBackgroundColor:[UIColor colorWithHexInt:0xf1f5f6]];
+        [self setBackgroundColor:[UIColor whiteColor]];
+        _fieldsInsets = UIEdgeInsetsMake(0, 12, 0, 12);
         
         _logoImageView = [[UIImageView alloc] init];
         [_logoImageView setImage:[UIImage imageNamed:@"login_logo.png"]];
@@ -80,19 +82,21 @@
                                       logoSize.width,
                                       logoSize.height);
     
-    _emailContainer.frame = CGRectMake(0,
+    CGRect fieldsRect = UIEdgeInsetsInsetRect(self.bounds, _fieldsInsets);
+    
+    _emailContainer.frame = CGRectMake(fieldsRect.origin.x,
                                        _logoImageView.frame.origin.y + _logoImageView.frame.size.height + 44,
-                                       self.bounds.size.width,
+                                       fieldsRect.size.width,
                                        LABEL_HEIGHT);
     
-    _passwordContainer.frame = CGRectMake(0,
+    _passwordContainer.frame = CGRectMake(fieldsRect.origin.x,
                                           _emailContainer.frame.origin.y + _emailContainer.frame.size.height + 18,
-                                          self.bounds.size.width,
+                                          fieldsRect.size.width,
                                           LABEL_HEIGHT);
     
-    _errorLabel.frame = CGRectMake(10,
+    _errorLabel.frame = CGRectMake(fieldsRect.origin.x,
                                    _passwordContainer.frame.origin.y + _passwordContainer.frame.size.height + 8,
-                                   self.bounds.size.width,
+                                   fieldsRect.size.width,
                                    20);
     
     CGFloat horizontalOffset = 10.0f;
@@ -123,8 +127,8 @@
     textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(placeholder, nil)
                                                                       attributes:@{NSForegroundColorAttributeName: [UIColor colorWithHexInt:0xb6b6b6]}];
-    [textField setPlaceholderInsets:UIEdgeInsetsMake(0, 10, 1, 0)];
-    [textField setTextInsets:UIEdgeInsetsMake(0, 10, 1, 0)];
+//    [textField setPlaceholderInsets:UIEdgeInsetsMake(0, 10, 1, 0)];
+//    [textField setTextInsets:UIEdgeInsetsMake(0, 10, 1, 0)];
 
     [containerView addSubview:textField];
     return containerView;

@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 #import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
+#import <MMDrawerController/UIViewController+MMDrawerController.h>
 
 #import "NotificationsContoller.h"
 #import "NotificationsView.h"
@@ -54,7 +55,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-    
+        
     _menuModel = [[NotificationsMenuModel alloc] init];
     [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:(self.model.loadUnreadOnly) ? 1 : 0
                                                          inSection:0]];
@@ -128,6 +129,7 @@
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
     self.model.loadUnreadOnly = (indexPath.row == 1);
     [self reloadModel];
+    [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
 
 #pragma mark - Private methods
