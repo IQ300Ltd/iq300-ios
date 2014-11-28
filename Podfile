@@ -7,3 +7,5 @@ pod 'CustomBadge'
 pod 'SDWebImage'
 pod 'SVPullToRefresh', :head
 pod 'SWTableViewCell', '~> 0.3.6'
+pod 'libPusher', '~> 1.5'
+pod 'Reachability', '~> 3.1'

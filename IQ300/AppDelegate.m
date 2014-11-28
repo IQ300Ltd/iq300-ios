@@ -18,6 +18,8 @@
 #import "IQSession.h"
 #import "LoginController.h"
 #import "MenuConsts.h"
+#import "IQNotificationCenter.h"
+#import "IQUser.h"
 
 @interface AppDelegate ()
 
@@ -36,7 +38,17 @@
     [controllers makeObjectsPerformSelector:@selector(popToRootViewControllerAnimated:) withObject:@(NO)];
     [[IQService sharedService] logout];
     [IQSession setDefaultSession:nil];
+    [IQNotificationCenter setDefaultCenter:nil];
     [delegate.drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:nil];
+}
+
++ (void)setupNotificationCenter {
+    if([IQSession defaultSession]) {
+        IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
+                                 inContext:[IQService sharedService].context];
+        NSString * token = [NSString stringWithFormat:@"%@ %@", [IQSession defaultSession].tokenType, [IQSession defaultSession].token];
+        [IQNotificationCenter centerWithKey:PUSHER_APP_KEY token:token channelName:user.pusherChannel];
+    }
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -109,6 +121,8 @@
         LoginController * loginViewController = [[LoginController alloc] init];
         [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
     }
+    
+    [AppDelegate setupNotificationCenter];
 
     return YES;
 }

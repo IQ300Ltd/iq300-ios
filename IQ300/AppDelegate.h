@@ -16,6 +16,7 @@
 @property (nonatomic, strong) MMDrawerController *drawerController;
 
 + (void)logout;
++ (void)setupNotificationCenter;
 
 @end
 

@@ -22,5 +22,6 @@
 @property (nonatomic, strong) NSString * normalUrl;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
++ (IQUser*)userWithId:(NSNumber*)userId inContext:(NSManagedObjectContext*)context;
 
 @end

@@ -8,6 +8,7 @@
 #import <RestKit/RestKit.h>
 
 #import "IQUser.h"
+#import "NSManagedObject+ActiveRecord.h"
 
 @implementation IQUser
 
@@ -32,6 +33,11 @@
                                                   @"photo.normal_url" : @"normalUrl"
                                                   }];
     return mapping;
+}
+
++ (IQUser*)userWithId:(NSNumber *)userId inContext:(NSManagedObjectContext *)context {
+    IQUser * user = [IQUser objectWithPredicate:[NSPredicate predicateWithFormat:@"userId == %@", userId] inContext:context];
+    return user;
 }
 
 @end

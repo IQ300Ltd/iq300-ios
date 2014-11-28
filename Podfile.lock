@@ -3,6 +3,10 @@ PODS:
   - CustomBadge (3.0.0)
   - ISO8601DateFormatterValueTransformer (0.6.0):
     - RKValueTransformers (~> 1.1.0)
+  - libPusher (1.5):
+    - libPusher/Core (= 1.5)
+  - libPusher/Core (1.5):
+    - SocketRocket (= 0.3.1-beta2)
   - MMDrawerController (0.5.7):
     - MMDrawerController/Core (= 0.5.7)
     - MMDrawerController/MMDrawerBarButtonItem (= 0.5.7)
@@ -15,6 +19,7 @@ PODS:
     - MMDrawerController/Core
   - MMDrawerController/Subclass (0.5.7):
     - MMDrawerController/Core
+  - Reachability (3.2)
   - RestKit (0.23.3):
     - RestKit/Core (= 0.23.3)
   - RestKit/Core (0.23.3):
@@ -38,6 +43,7 @@ PODS:
   - SDWebImage (3.7.1):
     - SDWebImage/Core (= 3.7.1)
   - SDWebImage/Core (3.7.1)
+  - SocketRocket (0.3.1-beta2)
   - SOCKit (1.1)
   - SVPullToRefresh (HEAD based on 0.4.1)
   - SWTableViewCell (0.3.6)
@@ -45,7 +51,9 @@ PODS:
 
 DEPENDENCIES:
   - CustomBadge
+  - libPusher (~> 1.5)
   - MMDrawerController (~> 0.5.7)
+  - Reachability (~> 3.1)
   - RestKit
   - SDWebImage
   - SVPullToRefresh (HEAD)
@@ -55,10 +63,13 @@ SPEC CHECKSUMS:
   AFNetworking: 80c4e0652b08eb34e25b9c0ff3c82556fe5967b4
   CustomBadge: c60738d213e7ef019b0bf1caa7948333f280ea9b
   ISO8601DateFormatterValueTransformer: a705384ea6531255258e25b6480ba1180db703a0
+  libPusher: 583326327a72ab7cd0f38692f61f9061cf4be3d9
   MMDrawerController: c3ab7a318ddc7e2bcd133139c3161af08c6e1197
+  Reachability: 1ef8adf5c4e3d362f96515d4278f68dad3c26930
   RestKit: 193a35cddae5198388977abaedad129f8acb978b
   RKValueTransformers: b705e7b4651b9206b94600408462b74554bba969
   SDWebImage: 116e88633b5b416ea0ca4b334a4ac59cf72dd38d
+  SocketRocket: 79a68ae186063c65e1fe6f638b1ae2927aa5f304
   SOCKit: d8d0dd3688ae1026c12367570da8fa8e1a6980fb
   SVPullToRefresh: d5161ebc833a38b465364412e5e307ca80bbb190
   SWTableViewCell: f5cbe30c49c4e5b97231c076f17331caaf3f6244

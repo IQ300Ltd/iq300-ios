@@ -10,6 +10,8 @@
 #import "LoginView.h"
 #import "IQService.h"
 #import "IQUser.h"
+#import "IQNotificationCenter.h"
+#import "AppDelegate.h"
 
 BOOL NSStringIsValidEmail(NSString * checkString) {
     BOOL stricterFilter = NO;
@@ -87,8 +89,11 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
     [[IQService sharedService] userInfoWithHandler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
         if(success) {
             [IQSession setDefaultSession:[IQService sharedService].session];
+            [AppDelegate setupNotificationCenter];
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
                                                                 object:nil];
+            
             [self dismissViewControllerAnimated:YES completion:nil];
             [[UIApplication sharedApplication] setStatusBarHidden:NO];
         }
