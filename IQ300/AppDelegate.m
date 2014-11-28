@@ -18,7 +18,6 @@
 #import "IQSession.h"
 #import "LoginController.h"
 #import "MenuConsts.h"
-#import "TestFlight.h"
 
 @interface AppDelegate ()
 
@@ -163,10 +162,6 @@
                                                         NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:10]
                                                        }
                                              forState:UIControlStateSelected];
-}
-
-- (void)initTestflight {
-    [TestFlight takeOff:@"4199575c-9d82-4315-bd8c-903cfb11b553"];
 }
 
 @end
