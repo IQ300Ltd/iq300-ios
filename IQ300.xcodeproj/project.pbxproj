@@ -1037,7 +1037,7 @@
 					"$(PROJECT_DIR)/Dependencies/TestFlightSDK",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "84eb6075-67f2-4ca6-b06b-ea119d4ca32c";
+				PROVISIONING_PROFILE = "f265b4f0-e771-444c-8fb6-d5224e09fd8a";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1063,7 +1063,7 @@
 					"$(PROJECT_DIR)/Dependencies/TestFlightSDK",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "6e23ae62-538f-4fad-8147-fb5c1a49be54";
+				PROVISIONING_PROFILE = "08061958-f480-47ce-a58a-047dd272a0b5";
 				SDKROOT = iphoneos;
 			};
 			name = Release;
