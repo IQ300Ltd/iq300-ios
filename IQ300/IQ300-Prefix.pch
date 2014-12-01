@@ -1,0 +1,51 @@
+//
+// Prefix header for all source files of the 'OBI' target in the 'OBI' project
+//
+
+#import <Availability.h>
+
+#ifndef __IPHONE_7_0
+#warning "This project uses features only available in iOS SDK 7.0 and later."
+#endif
+
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#endif
+
+#import <Availability.h>
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#import <SystemConfiguration/SystemConfiguration.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#else
+#import <SystemConfiguration/SystemConfiguration.h>
+#import <CoreServices/CoreServices.h>
+#endif
+
+#import <CoreData/CoreData.h>
+#import "UIColor+Extensions.h"
+#import "NSBundle+Localization.h"
+#import "UIImage+Extensions.h"
+#import "IQFonts.h"
+#import "CGGeometry+Extensions.h"
+#import "UIAlertView+Blocks.h"
+
+#define SERVICE_URL @"http://edge.iq300.ru"
+
+#define PUSHER_APP_KEY @"2d3e4d45c8824ea2d1b0"
+
+static NSString * AccountDidChangedNotification = @"AccountDidChangedNotification";
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
+#import "NSString+SizeWith.h"
+#endif
+
+#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+#define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+
+#define frandom (float)arc4random()/UINT64_C(0x100000000)
+#define frandom_range(low,high) ((high-low)*frandom)+low
+#define random_range(low,high) (arc4random()%(high-low+1))+low

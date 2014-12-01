@@ -1,0 +1,46 @@
+/* 
+  Localizable.strings
+  IQ300
+
+  Created by Tayphoon on 10.11.14.
+  Copyright (c) 2014 Tayphoon. All rights reserved.
+*/
+
+"Incoming" = "Входящие";
+"Tasks" = "Задачи";
+"Search" = "Поиск";
+"Email" = "Email";
+"Password" = "Пароль";
+"Enter" = "Войти";
+"Forgot your password?" = "Забыли пароль?";
+"Registry" = "Зарегистрироваться";
+"Change" = "Изменить";
+"Logout" = "Выйти";
+"Project" = "Проект";
+"Projects" = "Проекты";
+"Today" = "Сегодня";
+"Yesterday" = "Вчера";
+"Messages" = "Сообщения";
+"Notifications" = "Уведомления";
+"All" = " Все";
+"Unread" = "Непрочитанные";
+"no_data_formart" = "Ни одного %@ не найдено";
+"Email and password fields is required" = "Эл. почта и пароль являются обязательными";
+"Email address is invalid" = "Неверный адрес эл. почты";
+"Wrong credentials" = "Неверный адрес эл. почты или пароль";
+"Pull to refresh..." = "Потяните, чтобы обновить";
+"Release to refresh..." = "Отпустите, чтобы обновить";
+"Loading..." = "Загрузка";
+"There are no unread notifications" = "Непрочитанные уведомления отсутствуют";
+"mark_all_readed_question" = "Все Ваши уведомления будут отмечены как прочитанные. Продолжить?";
+"OK" = "OK";
+"Cancel" = "Отмена";
+
+//Notification types
+"Attachment" = "Документ";
+"BaseTask" = "Задача";
+"BaseCommunity" = "Сообщество";
+"Project" = "Проект";
+"Contract" = "Контракт";
+"DocShare" = "Документ";
+"ErrorReport" = "Обратная связь";
