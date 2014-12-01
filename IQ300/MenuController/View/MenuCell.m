@@ -109,7 +109,13 @@
 }
 
 - (void)setBadgeText:(NSString *)badgeText {
-    [_badgeView autoBadgeSizeWithString:badgeText];
+    if([badgeText length] > 0) {
+        [_badgeView setHidden:NO];
+        [_badgeView autoBadgeSizeWithString:badgeText];
+    }
+    else {
+        [_badgeView setHidden:YES];
+    }
 }
 
 @end

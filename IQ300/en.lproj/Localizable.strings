@@ -25,6 +25,10 @@
 "All" = "All";
 "Unread" = "Unread";
 "no_data_formart" = "No %@ found";
+"There are no unread notifications" = "There are no unread notifications";
+"mark_all_readed_question" = "All your messages will be marked as read. Continue?";
+"OK" = "OK";
+"Cancel" = "Cancel";
 
 //Notification types
 "Attachment" = "Document";

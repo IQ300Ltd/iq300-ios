@@ -28,6 +28,7 @@
 #import "UIImage+Extensions.h"
 #import "IQFonts.h"
 #import "CGGeometry+Extensions.h"
+#import "UIAlertView+Blocks.h"
 
 #define SERVICE_URL @"http://edge.iq300.ru"
 

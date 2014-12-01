@@ -33,10 +33,13 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     
     if (self) {
+        self.title = NSLocalizedString(@"Notifications", nil);
         UIImage * barImage = [[UIImage imageNamed:@"notif_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIImage * barImageSel = [[UIImage imageNamed:@"notif_tab_selected.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         
-        self.tabBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Notifications", nil) image:barImage selectedImage:barImageSel];
+        self.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:barImage selectedImage:barImageSel];
+        float imageOffset = 6;
+        self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
         self.model = [[NotificationsModel alloc] init];
     }
     
@@ -60,10 +63,6 @@
     _menuModel = [[NotificationsMenuModel alloc] init];
     [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:(self.model.loadUnreadOnly) ? 1 : 0
                                                          inSection:0]];
-    
-//    IQRefreshControl *bottomRefreshControl = [IQRefreshControl new];
-//    [bottomRefreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-//    self.tableView.bottomRefreshControl = bottomRefreshControl;
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
@@ -133,12 +132,19 @@
 #pragma mark - Private methods
 
 - (void)markAllAsReaded:(id)sender {
-    [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self updateCounters];
-            [self updateNoDataLabelVisibility];
-        }
-    }];
+    [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_readed_question", nil)
+             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+             otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                          if(buttonIndex == 1) {
+                              [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
+                                  if(!error) {
+                                      [self updateCounters];
+                                      [self updateNoDataLabelVisibility];
+                                  }
+                              }];
+                          }
+                      }];
 }
 
 - (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {

@@ -43,12 +43,12 @@
 }
 
 + (void)setupNotificationCenter {
-    if([IQSession defaultSession]) {
-        IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
-                                 inContext:[IQService sharedService].context];
-        NSString * token = [NSString stringWithFormat:@"%@ %@", [IQSession defaultSession].tokenType, [IQSession defaultSession].token];
-        [IQNotificationCenter centerWithKey:PUSHER_APP_KEY token:token channelName:user.pusherChannel];
-    }
+//    if([IQSession defaultSession]) {
+//        IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
+//                                 inContext:[IQService sharedService].context];
+//        NSString * token = [NSString stringWithFormat:@"%@ %@", [IQSession defaultSession].tokenType, [IQSession defaultSession].token];
+//        [IQNotificationCenter centerWithKey:PUSHER_APP_KEY token:token channelName:user.pusherChannel];
+//    }
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -66,20 +66,25 @@
     TasksController * tasksViewContoller = [[TasksController alloc] init];
     IQNavigationController * tasksNav = [[IQNavigationController alloc] initWithRootViewController:tasksViewContoller];
     
+    float imageOffset = 6;
     UIViewController * projects = [[UIViewController alloc] init];
+    projects.title = NSLocalizedString(@"Projects", nil);
     projects.view.backgroundColor = [UIColor whiteColor];
     UIImage * barImage = [[UIImage imageNamed:@"projects_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     UIImage * barImageSelected = [[UIImage imageNamed:@"projects_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    projects.tabBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Projects", nil) image:barImage selectedImage:barImageSelected];
+    projects.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSelected];
+    projects.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
     IQNavigationController * projectsNav = [[IQNavigationController alloc] initWithRootViewController:projects];
-
+    
     UIViewController * messages = [[UIViewController alloc] init];
     messages.view.backgroundColor = [UIColor whiteColor];
+    messages.title = NSLocalizedString(@"Messages", nil);
     barImage = [[UIImage imageNamed:@"messages_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     barImageSelected = [[UIImage imageNamed:@"messgaes_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    messages.tabBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Messages", nil) image:barImage selectedImage:barImageSelected];
+    messages.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSelected];
+    messages.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
     IQNavigationController * messagesNav = [[IQNavigationController alloc] initWithRootViewController:messages];
-
+    
     UITabBarController * center = [[UITabBarController alloc] init];
     center.tabBar.layer.borderWidth = 0;
     
@@ -152,6 +157,11 @@
 - (void)applyCustomizations {
     //set status bar black color
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    [[UINavigationBar appearance] setTitleTextAttributes:@{
+                                                           NSForegroundColorAttributeName : [UIColor whiteColor],
+                                                           NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:15]
+                                                           }];
     
     //custromize navigation bar background
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];

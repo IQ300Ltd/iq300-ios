@@ -31,6 +31,10 @@
 "Pull to refresh..." = "Потяните, чтобы обновить";
 "Release to refresh..." = "Отпустите, чтобы обновить";
 "Loading..." = "Загрузка";
+"There are no unread notifications" = "Непрочитанные уведомления отсутствуют";
+"mark_all_readed_question" = "Все Ваши уведомления будут отмечены как прочитанные. Продолжить?";
+"OK" = "OK";
+"Cancel" = "Отмена";
 
 //Notification types
 "Attachment" = "Документ";

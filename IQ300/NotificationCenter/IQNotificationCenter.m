@@ -9,6 +9,75 @@
 #import <Reachability/Reachability.h>
 
 #import "IQNotificationCenter.h"
+#import "DispatchAfterExecution.h"
+
+NSString * const IQNotificationsDidChanged = @"com.tayphoon.IQNotification.NotfChanged";
+NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
+
+@class IQCNotification;
+
+@interface IQNotificationObserver : NSObject {
+    dispatch_queue_t _queue;
+    void(^_dispatchBlock)(IQCNotification * notf);
+}
+
++ (IQNotificationObserver*)observerWithQueue:(dispatch_queue_t)queue dispatchBlock:(void(^)(IQCNotification * notf))dispatchBlock;
+
+- (void)dispatchNotification:(IQCNotification*)notf;
+
+@end
+
+@implementation IQNotificationObserver
+
++ (IQNotificationObserver*)observerWithQueue:(dispatch_queue_t)queue dispatchBlock:(void (^)(IQCNotification *))dispatchBlock {
+    return [[self alloc] initWithQueue:queue dispatchBlock:dispatchBlock];
+}
+
+- (instancetype)initWithQueue:(dispatch_queue_t)queue dispatchBlock:(void (^)(IQCNotification *))dispatchBlock {
+    self = [super init];
+    
+    if(self) {
+        _queue = queue;
+        _dispatchBlock = dispatchBlock;
+    }
+    
+    return self;
+}
+
+- (void)dispatchNotification:(IQCNotification*)notf {
+    if(_dispatchBlock) {
+        dispatch_async(_queue, ^{
+            _dispatchBlock(notf);
+        });
+    }
+}
+
+@end
+
+@implementation IQCNotification
+
++ (instancetype)notificationWithName:(NSString *)aName object:(id)anObject {
+    return [IQCNotification notificationWithName:aName object:anObject userInfo:nil];
+}
+
++ (instancetype)notificationWithName:(NSString *)aName object:(id)anObject userInfo:(NSDictionary *)aUserInfo {
+    IQCNotification * notf = [[self alloc] initWithName:aName object:anObject userInfo:aUserInfo];
+    return notf;
+}
+
+- (instancetype)initWithName:(NSString *)name object:(id)object userInfo:(NSDictionary *)userInfo {
+    self = [super init];
+    
+    if(self) {
+        _name = [name copy];
+        _object = object;
+        _userInfo = userInfo;
+    }
+    
+    return self;
+}
+
+@end
 
 static IQNotificationCenter * _defaultCenter = nil;
 
@@ -18,6 +87,10 @@ static IQNotificationCenter * _defaultCenter = nil;
     NSString * _token;
     NSString * _key;
     NSString * _channelName;
+    UIBackgroundTaskIdentifier _backgroundIdentifier;
+    NSMutableDictionary * _observers;
+    BOOL _shouldReconnect;
+    __weak id _notfObserver;
 }
 
 @end
@@ -51,38 +124,132 @@ static IQNotificationCenter * _defaultCenter = nil;
         _channelName = channelName;
         _client = [PTPusher pusherWithKey:key delegate:self encrypted:YES];
         _client.authorizationURL = [NSURL URLWithString:authURLString];
+        _shouldReconnect = YES;
+        _observers = [NSMutableDictionary dictionary];
         
 #ifdef kLOG_ALL_EVENTS
         __weak typeof (self) weakSelf = self;
-        [[NSNotificationCenter defaultCenter] addObserverForName:PTPusherEventReceivedNotification
-                                                          object:nil
-                                                           queue:nil
-                                                      usingBlock:^(NSNotification *note) {
-                                                         PTPusherEvent * event = note.userInfo[PTPusherEventUserInfoKey];
-                                                          if(event) {
-                                                              [weakSelf pusher:_client didReceiveEvent:event];
-                                                          }
-                                                      }];
+        _notfObserver = [[NSNotificationCenter defaultCenter] addObserverForName:PTPusherEventReceivedNotification
+                                                                          object:nil
+                                                                           queue:nil
+                                                                      usingBlock:^(NSNotification *note) {
+                                                                          PTPusherEvent * event = note.userInfo[PTPusherEventUserInfoKey];
+                                                                          if(event) {
+                                                                              [weakSelf pusher:_client didReceiveEvent:event];
+                                                                          }
+                                                                      }];
 #endif
 
         _channel = [_client subscribeToChannelNamed:_channelName];
-        [_channel bindToEventNamed:@"notifications" handleWithBlock:^(PTPusherEvent *channelEvent) {
-            DNSLog(@"[IQNotificationCenter] Received notification data:%@", channelEvent.data);
-        }];
+        
+        [self subscribeToEvents];
+        
         [_client connect];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(disconnect)
+                                                     name:UIApplicationDidEnterBackgroundNotification
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reconnect)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
     }
     
     return self;
 }
 
+- (void)addObserverForName:(NSString *)name queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * note))block {
+    NSParameterAssert(block);
+    dispatch_queue_t dispatchQueue = (queue) ? queue : dispatch_get_main_queue();
+    IQNotificationObserver * observer = [IQNotificationObserver observerWithQueue:dispatchQueue dispatchBlock:block];
+    [self addObserver:observer forName:name];
+}
+
+- (void)removeObserver:(id)observer {
+    [self removeObserver:observer name:nil];
+}
+
+- (void)removeObserver:(id)observer name:(NSString *)aName {
+    if ([aName length] > 0) {
+        
+    }
+}
+
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:_notfObserver];
     _client.delegate = nil;
     [_client disconnect];
     _client = nil;
 }
 
 #pragma mark - Private methods
+
+- (void)subscribeToEvents {
+    __weak typeof(self) weakSelf = self;
+    [_channel bindToEventNamed:@"notifications" handleWithBlock:^(PTPusherEvent *channelEvent) {
+        IQCNotification * notf = [[IQCNotification alloc] initWithName:IQNotificationsDidChanged
+                                                                object:self
+                                                              userInfo:@{ IQNotificationDataKey : channelEvent.data }];
+        [weakSelf dispatchNotification:notf];
+    }];
+}
+
+- (void)reconnect {
+    dispatch_after_delay(1, dispatch_get_main_queue(), ^{
+        NSInteger connectionState = [[_client.connection valueForKey:@"state"] integerValue];
+        if(connectionState < PTPusherConnectionConnecting) {
+            _shouldReconnect = YES;
+            [_client connect];
+        }
+    });
+}
+
+- (void)disconnect {
+    [self beginBackgroundDisconnectTaskWithBlock:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _shouldReconnect = NO;
+            [_client disconnect];
+        });
+    }];
+}
+
+- (void)beginBackgroundDisconnectTaskWithBlock:(void(^)(void))backgroundBlock  {
+    if(backgroundBlock) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            _backgroundIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+                [self endBackgroundDisconnectTask];
+            }];
+            backgroundBlock();
+        });
+    }
+}
+
+- (void)endBackgroundDisconnectTask {
+    [[UIApplication sharedApplication] endBackgroundTask:_backgroundIdentifier];
+    _backgroundIdentifier = UIBackgroundTaskInvalid;
+}
+
+#pragma mark - Dispatch Notifications
+
+- (void)addObserver:(IQNotificationObserver*)observer forName:(NSString*)name {
+    NSMutableArray * observers = _observers[name];
+
+    if(!observers) {
+        observers = [NSMutableArray array];
+        _observers[name] = observers;
+    }
+    
+    [observers addObject:observer];
+}
+
+- (void)dispatchNotification:(IQCNotification*)notf {
+    NSArray * observers = _observers[notf.name];
+    for (IQNotificationObserver * observer in observers) {
+        [observer dispatchNotification:notf];
+    }
+}
 
 #pragma mark - Reachability
 
@@ -124,8 +291,7 @@ static IQNotificationCenter * _defaultCenter = nil;
     DNSLog(@"[IQNotificationCenter-%@] Pusher client connected", connection.socketID);
 }
 
-- (void)pusher:(PTPusher *)pusher connection:(PTPusherConnection *)connection failedWithError:(NSError *)error
-{
+- (void)pusher:(PTPusher *)pusher connection:(PTPusherConnection *)connection failedWithError:(NSError *)error {
     DNSLog(@"[IQNotificationCenter] Pusher Connection failed with error: %@", error);
     if ([error.domain isEqualToString:(NSString *)kCFErrorDomainCFNetwork]) {
         [self startReachabilityCheck];
@@ -143,11 +309,17 @@ static IQNotificationCenter * _defaultCenter = nil;
             [self startReachabilityCheck];
         }
     }
+    
+    if(_backgroundIdentifier != UIBackgroundTaskInvalid) {
+        [self endBackgroundDisconnectTask];
+    }
 }
 
 - (BOOL)pusher:(PTPusher *)pusher connectionWillAutomaticallyReconnect:(PTPusherConnection *)connection afterDelay:(NSTimeInterval)delay {
-    DNSLog(@"[IQNotificationCenter-%@] Client automatically reconnecting after %d seconds...", pusher.connection.socketID, (int)delay);
-    return YES;
+    if(_shouldReconnect) {
+        DNSLog(@"[IQNotificationCenter-%@] Client automatically reconnecting after %d seconds...", pusher.connection.socketID, (int)delay);
+    }
+    return _shouldReconnect;
 }
 
 - (void)pusher:(PTPusher *)pusher didSubscribeToChannel:(PTPusherChannel *)channel {
