@@ -72,6 +72,11 @@
          }];
      }
      position:SVPullToRefreshPositionBottom];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadFirstPart)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -191,13 +196,17 @@
     }];
 }
 
+- (void)reloadFirstPart {
+    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self updateNoDataLabelVisibility];
+            [self updateCounters];
+        }
+    }];
+}
+
 - (void)updateNoDataLabelVisibility {
-    if([self.model numberOfItemsInSection:0] > 0) {
-        [_mainView.noDataLabel setHidden:YES];
-    }
-    else {
-        [_mainView.noDataLabel setHidden:NO];
-    }
+    [_mainView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
 }
 
 @end

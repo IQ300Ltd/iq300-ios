@@ -132,6 +132,18 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                            }];
 }
 
+- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] notificationsUnread:nil
+                                              page:@(1)
+                                               per:@(_portionLenght)
+                                              sort:IQSortDirectionDescending
+                                           handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                               if(completion) {
+                                                   completion(error);
+                                               }
+                                           }];
+}
+
 - (void)clearModelData {
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
     if(_fetchController) {
