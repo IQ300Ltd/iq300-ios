@@ -67,8 +67,9 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      addPullToRefreshWithActionHandler:^{
-         [weakSelf.model updateModelWithCompletion:nil];
-         [weakSelf.tableView.pullToRefreshView stopAnimating];
+         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+             [weakSelf.tableView.pullToRefreshView stopAnimating];
+         }];
      }
      position:SVPullToRefreshPositionBottom];
 }

@@ -13,6 +13,7 @@
 #import "NotificationCell.h"
 #import "NotificationsCount.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
+#import "IQNotificationCenter.h"
 
 #define CACHE_FILE_NAME @"NotificationsModelcache"
 
@@ -25,6 +26,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     NSFetchedResultsController * _fetchController;
     NSInteger _totalItemsCount;
     NSInteger _unreadItemsCount;
+    __weak id _notfObserver;
 }
 
 @end
@@ -39,6 +41,17 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         _loadUnreadOnly = NO;
         _totalItemsCount = 0;
         _unreadItemsCount = 0;
+        
+    
+        void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+            NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
+            if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
+                NSLog(@"Notifications with id did changed:%@", changedIds);
+            }
+        };
+        _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
+                                                                           queue:nil
+                                                                      usingBlock:block];
     }
     return self;
 }
@@ -281,6 +294,10 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     if([self.delegate respondsToSelector:@selector(modelDidChanged:)]) {
         [self.delegate modelDidChanged:self];
     }
+}
+
+- (void)dealloc {
+    [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
 }
 
 @end

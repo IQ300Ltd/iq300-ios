@@ -43,12 +43,12 @@
 }
 
 + (void)setupNotificationCenter {
-//    if([IQSession defaultSession]) {
-//        IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
-//                                 inContext:[IQService sharedService].context];
-//        NSString * token = [NSString stringWithFormat:@"%@ %@", [IQSession defaultSession].tokenType, [IQSession defaultSession].token];
-//        [IQNotificationCenter centerWithKey:PUSHER_APP_KEY token:token channelName:user.pusherChannel];
-//    }
+    if([IQSession defaultSession]) {
+        IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
+                                 inContext:[IQService sharedService].context];
+        NSString * token = [NSString stringWithFormat:@"%@ %@", [IQSession defaultSession].tokenType, [IQSession defaultSession].token];
+        [IQNotificationCenter centerWithKey:PUSHER_APP_KEY token:token channelName:user.pusherChannel];
+    }
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -57,6 +57,7 @@
     RKLogConfigureByName("RestKit/App", RKLogLevelError);
 
     [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
+    [AppDelegate setupNotificationCenter];
 
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
@@ -127,8 +128,6 @@
         [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
     }
     
-    [AppDelegate setupNotificationCenter];
-
     return YES;
 }
 
