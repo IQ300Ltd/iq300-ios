@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQAttachment.m */; };
 		73506ED61A137D070071B4CB /* TasksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BC61A0B5B7500034D9B /* TasksController.m */; };
 		736B6BD01A0B5C0800034D9B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 736B6BCF1A0B5C0800034D9B /* Images.xcassets */; };
 		736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BD21A0B5C1E00034D9B /* MenuViewController.m */; };
@@ -34,7 +35,6 @@
 		737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C611A0D027700E8BB81 /* ExtendedButton.m */; };
 		7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4AC1A288ED2000B94BD /* IQNotificationCenter.m */; };
 		7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4BD1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m */; };
-		7386B3B41A25D6FF0061B921 /* NotificationsCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386B3B31A25D6FF0061B921 /* NotificationsCount.m */; };
 		7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386B3B81A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m */; };
 		73882D8C1A247A0800B8BE90 /* IQBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73882D8B1A247A0800B8BE90 /* IQBadgeView.m */; };
 		73882D901A24B62500B8BE90 /* check_mark_medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 73882D8E1A24B62500B8BE90 /* check_mark_medium.png */; };
@@ -42,9 +42,7 @@
 		73891FF51A2C97ED008D8885 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */; };
 		738CE1E61A0B3F4E0096B374 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1E51A0B3F4E0096B374 /* main.m */; };
 		738CE1E91A0B3F4E0096B374 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1E81A0B3F4E0096B374 /* AppDelegate.m */; };
-		738EA7A01A1DC7A40065D39F /* IQNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA79F1A1DC7A40065D39F /* IQNotification.m */; };
 		738EA7A31A1DC91C0065D39F /* IQUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7A21A1DC91C0065D39F /* IQUser.m */; };
-		738EA7A91A1DD5450065D39F /* IQNotificationsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7A81A1DD5450065D39F /* IQNotificationsHolder.m */; };
 		738EA7AC1A1DD69F0065D39F /* NotificationsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7AB1A1DD69F0065D39F /* NotificationsModel.m */; };
 		738EA7AF1A1DDEC20065D39F /* IQTableBaseController.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7AE1A1DDEC20065D39F /* IQTableBaseController.m */; };
 		738EA7B21A1DE15B0065D39F /* UIViewController+LeftMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7B11A1DE15B0065D39F /* UIViewController+LeftMenu.m */; };
@@ -88,7 +86,13 @@
 		739850C31A2DB1C100DB5B21 /* search_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 739850C11A2DB1C000DB5B21 /* search_icon@2x.png */; };
 		739850C61A2DC22F00DB5B21 /* createNewMessage.png in Resources */ = {isa = PBXBuildFile; fileRef = 739850C41A2DC22F00DB5B21 /* createNewMessage.png */; };
 		739850C71A2DC22F00DB5B21 /* createNewMessage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 739850C51A2DC22F00DB5B21 /* createNewMessage@2x.png */; };
-		739850CA1A2DC34000DB5B21 /* ConversationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850C91A2DC34000DB5B21 /* ConversationCell.m */; };
+		739850CA1A2DC34000DB5B21 /* DiscussionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850C91A2DC34000DB5B21 /* DiscussionCell.m */; };
+		739850D31A2DD30E00DB5B21 /* IQNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850CE1A2DD30E00DB5B21 /* IQNotification.m */; };
+		739850D41A2DD30E00DB5B21 /* IQNotificationsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850D01A2DD30E00DB5B21 /* IQNotificationsHolder.m */; };
+		739850D51A2DD30E00DB5B21 /* NotificationsCount.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850D21A2DD30E00DB5B21 /* NotificationsCount.m */; };
+		739850D81A2DD32E00DB5B21 /* IQConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850D71A2DD32E00DB5B21 /* IQConversation.m */; };
+		739850DC1A2DD35C00DB5B21 /* IQDiscussion.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850DB1A2DD35C00DB5B21 /* IQDiscussion.m */; };
+		739850DF1A2DD4D700DB5B21 /* IQComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850DE1A2DD4D700DB5B21 /* IQComment.m */; };
 		73A113F01A1C722D00293EC5 /* notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = 73A113EF1A1C722D00293EC5 /* notifications.json */; };
 		73A113F71A1C88DD00293EC5 /* IQMenuCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A113F61A1C88DD00293EC5 /* IQMenuCellFactory.m */; };
 		73A113FA1A1C8D1B00293EC5 /* RMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A113F91A1C8D1B00293EC5 /* RMenuCell.m */; };
@@ -121,6 +125,8 @@
 
 /* Begin PBXFileReference section */
 		3C453A1313F35DF8AD783316 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		734433631A2DEBF300102FC8 /* IQAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachment.h; sourceTree = "<group>"; };
+		734433641A2DEBF300102FC8 /* IQAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachment.m; sourceTree = "<group>"; };
 		736B6BC51A0B5B7500034D9B /* TasksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TasksController.h; sourceTree = "<group>"; };
 		736B6BC61A0B5B7500034D9B /* TasksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TasksController.m; sourceTree = "<group>"; };
 		736B6BCF1A0B5C0800034D9B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -170,8 +176,6 @@
 		7385D4AC1A288ED2000B94BD /* IQNotificationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationCenter.m; sourceTree = "<group>"; };
 		7385D4BC1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+ActiveRecord.h"; sourceTree = "<group>"; };
 		7385D4BD1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+ActiveRecord.m"; sourceTree = "<group>"; };
-		7386B3B21A25D6FF0061B921 /* NotificationsCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsCount.h; sourceTree = "<group>"; };
-		7386B3B31A25D6FF0061B921 /* NotificationsCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsCount.m; sourceTree = "<group>"; };
 		7386B3B71A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+AsyncFetch.h"; sourceTree = "<group>"; };
 		7386B3B81A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+AsyncFetch.m"; sourceTree = "<group>"; };
 		73882D891A24687300B8BE90 /* SuppressWarning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuppressWarning.h; sourceTree = "<group>"; };
@@ -187,13 +191,9 @@
 		738CE1E51A0B3F4E0096B374 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		738CE1E71A0B3F4E0096B374 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		738CE1E81A0B3F4E0096B374 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		738EA79E1A1DC7A40065D39F /* IQNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotification.h; sourceTree = "<group>"; };
-		738EA79F1A1DC7A40065D39F /* IQNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotification.m; sourceTree = "<group>"; };
 		738EA7A11A1DC91C0065D39F /* IQUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQUser.h; sourceTree = "<group>"; };
 		738EA7A21A1DC91C0065D39F /* IQUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQUser.m; sourceTree = "<group>"; };
 		738EA7A41A1DD0570065D39F /* IQObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQObjects.h; sourceTree = "<group>"; };
-		738EA7A71A1DD5450065D39F /* IQNotificationsHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationsHolder.h; sourceTree = "<group>"; };
-		738EA7A81A1DD5450065D39F /* IQNotificationsHolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationsHolder.m; sourceTree = "<group>"; };
 		738EA7AA1A1DD69F0065D39F /* NotificationsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsModel.h; sourceTree = "<group>"; };
 		738EA7AB1A1DD69F0065D39F /* NotificationsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsModel.m; sourceTree = "<group>"; };
 		738EA7AD1A1DDEC20065D39F /* IQTableBaseController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTableBaseController.h; sourceTree = "<group>"; };
@@ -251,8 +251,20 @@
 		739850C11A2DB1C000DB5B21 /* search_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "search_icon@2x.png"; sourceTree = "<group>"; };
 		739850C41A2DC22F00DB5B21 /* createNewMessage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = createNewMessage.png; sourceTree = "<group>"; };
 		739850C51A2DC22F00DB5B21 /* createNewMessage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "createNewMessage@2x.png"; sourceTree = "<group>"; };
-		739850C81A2DC34000DB5B21 /* ConversationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationCell.h; sourceTree = "<group>"; };
-		739850C91A2DC34000DB5B21 /* ConversationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationCell.m; sourceTree = "<group>"; };
+		739850C81A2DC34000DB5B21 /* DiscussionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscussionCell.h; sourceTree = "<group>"; };
+		739850C91A2DC34000DB5B21 /* DiscussionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscussionCell.m; sourceTree = "<group>"; };
+		739850CD1A2DD30E00DB5B21 /* IQNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotification.h; sourceTree = "<group>"; };
+		739850CE1A2DD30E00DB5B21 /* IQNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotification.m; sourceTree = "<group>"; };
+		739850CF1A2DD30E00DB5B21 /* IQNotificationsHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationsHolder.h; sourceTree = "<group>"; };
+		739850D01A2DD30E00DB5B21 /* IQNotificationsHolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationsHolder.m; sourceTree = "<group>"; };
+		739850D11A2DD30E00DB5B21 /* NotificationsCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsCount.h; sourceTree = "<group>"; };
+		739850D21A2DD30E00DB5B21 /* NotificationsCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsCount.m; sourceTree = "<group>"; };
+		739850D61A2DD32E00DB5B21 /* IQConversation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQConversation.h; sourceTree = "<group>"; };
+		739850D71A2DD32E00DB5B21 /* IQConversation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQConversation.m; sourceTree = "<group>"; };
+		739850DA1A2DD35C00DB5B21 /* IQDiscussion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQDiscussion.h; sourceTree = "<group>"; };
+		739850DB1A2DD35C00DB5B21 /* IQDiscussion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQDiscussion.m; sourceTree = "<group>"; };
+		739850DD1A2DD4D700DB5B21 /* IQComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQComment.h; sourceTree = "<group>"; };
+		739850DE1A2DD4D700DB5B21 /* IQComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQComment.m; sourceTree = "<group>"; };
 		73A113EF1A1C722D00293EC5 /* notifications.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = notifications.json; sourceTree = "<group>"; };
 		73A113F51A1C88DD00293EC5 /* IQMenuCellFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQMenuCellFactory.h; sourceTree = "<group>"; };
 		73A113F61A1C88DD00293EC5 /* IQMenuCellFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQMenuCellFactory.m; sourceTree = "<group>"; };
@@ -622,15 +634,11 @@
 		738EA79D1A1DC5B40065D39F /* Objects */ = {
 			isa = PBXGroup;
 			children = (
-				738EA79E1A1DC7A40065D39F /* IQNotification.h */,
-				738EA79F1A1DC7A40065D39F /* IQNotification.m */,
+				739850CB1A2DD30E00DB5B21 /* Messages */,
+				739850CC1A2DD30E00DB5B21 /* Notifications */,
 				738EA7A11A1DC91C0065D39F /* IQUser.h */,
 				738EA7A21A1DC91C0065D39F /* IQUser.m */,
 				738EA7A41A1DD0570065D39F /* IQObjects.h */,
-				738EA7A71A1DD5450065D39F /* IQNotificationsHolder.h */,
-				738EA7A81A1DD5450065D39F /* IQNotificationsHolder.m */,
-				7386B3B21A25D6FF0061B921 /* NotificationsCount.h */,
-				7386B3B31A25D6FF0061B921 /* NotificationsCount.m */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -734,10 +742,38 @@
 			children = (
 				739850BD1A2DB05400DB5B21 /* MessagesView.h */,
 				739850BE1A2DB05400DB5B21 /* MessagesView.m */,
-				739850C81A2DC34000DB5B21 /* ConversationCell.h */,
-				739850C91A2DC34000DB5B21 /* ConversationCell.m */,
+				739850C81A2DC34000DB5B21 /* DiscussionCell.h */,
+				739850C91A2DC34000DB5B21 /* DiscussionCell.m */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		739850CB1A2DD30E00DB5B21 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				739850D61A2DD32E00DB5B21 /* IQConversation.h */,
+				739850D71A2DD32E00DB5B21 /* IQConversation.m */,
+				739850DA1A2DD35C00DB5B21 /* IQDiscussion.h */,
+				739850DB1A2DD35C00DB5B21 /* IQDiscussion.m */,
+				739850DD1A2DD4D700DB5B21 /* IQComment.h */,
+				739850DE1A2DD4D700DB5B21 /* IQComment.m */,
+				734433631A2DEBF300102FC8 /* IQAttachment.h */,
+				734433641A2DEBF300102FC8 /* IQAttachment.m */,
+			);
+			path = Messages;
+			sourceTree = "<group>";
+		};
+		739850CC1A2DD30E00DB5B21 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				739850CD1A2DD30E00DB5B21 /* IQNotification.h */,
+				739850CE1A2DD30E00DB5B21 /* IQNotification.m */,
+				739850CF1A2DD30E00DB5B21 /* IQNotificationsHolder.h */,
+				739850D01A2DD30E00DB5B21 /* IQNotificationsHolder.m */,
+				739850D11A2DD30E00DB5B21 /* NotificationsCount.h */,
+				739850D21A2DD30E00DB5B21 /* NotificationsCount.m */,
+			);
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 		73A113EE1A1C6F3100293EC5 /* FakeData */ = {
@@ -953,22 +989,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				73C58C0A1A1F17FD00C83729 /* NSString+SizeWith.m in Sources */,
+				739850DC1A2DD35C00DB5B21 /* IQDiscussion.m in Sources */,
 				738EA7A31A1DC91C0065D39F /* IQUser.m in Sources */,
 				738CE1E91A0B3F4E0096B374 /* AppDelegate.m in Sources */,
 				739850BF1A2DB05400DB5B21 /* MessagesView.m in Sources */,
+				739850D41A2DD30E00DB5B21 /* IQNotificationsHolder.m in Sources */,
 				7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */,
+				739850D51A2DD30E00DB5B21 /* NotificationsCount.m in Sources */,
 				73BA98A01A10A531005AEC00 /* NSBundle+Localization.m in Sources */,
 				73C58C021A1F074900C83729 /* NotificationCell.m in Sources */,
 				7393C4141A1A300F00E9E944 /* LoginView.m in Sources */,
 				73882D8C1A247A0800B8BE90 /* IQBadgeView.m in Sources */,
+				739850DF1A2DD4D700DB5B21 /* IQComment.m in Sources */,
 				738EA7B21A1DE15B0065D39F /* UIViewController+LeftMenu.m in Sources */,
 				739850BC1A2DADF000DB5B21 /* MessagesController.m in Sources */,
 				73BA98851A109A49005AEC00 /* IQMenuItem.m in Sources */,
-				739850CA1A2DC34000DB5B21 /* ConversationCell.m in Sources */,
+				739850CA1A2DC34000DB5B21 /* DiscussionCell.m in Sources */,
 				73BA989A1A10A1AB005AEC00 /* IQMenuSection.m in Sources */,
 				73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */,
 				737E7C551A0CA88E00E8BB81 /* MenuSectionHeader.m in Sources */,
-				7386B3B41A25D6FF0061B921 /* NotificationsCount.m in Sources */,
 				738EA7AC1A1DD69F0065D39F /* NotificationsModel.m in Sources */,
 				737E7C5F1A0CD57E00E8BB81 /* AccountHeaderView.m in Sources */,
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,
@@ -977,24 +1016,25 @@
 				73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */,
 				7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */,
 				736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */,
+				734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */,
 				73F90CFF1A1B9F0500225255 /* IQFakeService.m in Sources */,
-				738EA7A91A1DD5450065D39F /* IQNotificationsHolder.m in Sources */,
 				73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */,
 				73BA98771A1092DF005AEC00 /* MTableHeaderView.m in Sources */,
 				738FE7191A163C16009F26A2 /* NotificationsView.m in Sources */,
 				738FE7211A1652D2009F26A2 /* ExTextField.m in Sources */,
 				738FE6D11A15F119009F26A2 /* RKMappingResult+Result.m in Sources */,
+				739850D31A2DD30E00DB5B21 /* IQNotification.m in Sources */,
 				7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */,
 				737DD2301A14F00400CC4443 /* IQService.m in Sources */,
 				73A113FA1A1C8D1B00293EC5 /* RMenuCell.m in Sources */,
 				738CE1E61A0B3F4E0096B374 /* main.m in Sources */,
+				739850D81A2DD32E00DB5B21 /* IQConversation.m in Sources */,
 				736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */,
 				7393C4111A1A2FF400E9E944 /* LoginController.m in Sources */,
 				736B6BDE1A0B5F5900034D9B /* NotificationsMenuModel.m in Sources */,
 				7379EEB31A11E26200D69BBD /* IQNavigationController.m in Sources */,
 				737DD22D1A14EFE900CC4443 /* TCService.m in Sources */,
 				736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */,
-				738EA7A01A1DC7A40065D39F /* IQNotification.m in Sources */,
 				7379EEBA1A11E47700D69BBD /* NotificationsContoller.m in Sources */,
 				737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */,
 				73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */,

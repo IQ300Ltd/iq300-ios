@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ConversationCell : UITableViewCell {
+@class CustomBadge;
+@class IQDiscussion;
+
+@interface DiscussionCell : UITableViewCell {
     UIEdgeInsets _contentInsets;
     UIEdgeInsets _contentBackgroundInsets;
 }
@@ -17,5 +20,8 @@
 @property (nonatomic, strong) UILabel * dateLabel;
 @property (nonatomic, strong) UILabel * userNameLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;
+@property (nonatomic, readonly) CustomBadge * badgeView;
+
+@property (nonatomic, strong) IQDiscussion * item;
 
 @end

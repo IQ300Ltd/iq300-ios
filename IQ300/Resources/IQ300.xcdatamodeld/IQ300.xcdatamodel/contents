@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B25" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="IQAttachment" representedClassName="IQAttachment" syncable="YES">
+        <attribute name="atDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attachmentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="contentType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="originalURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="previewURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unifiedContentType" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQComment" inverseName="attachments" inverseEntity="IQComment" syncable="YES"/>
+    </entity>
+    <entity name="IQComment" representedClassName="IQComment" syncable="YES">
+        <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="commentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQAttachment" inverseName="comments" inverseEntity="IQAttachment" syncable="YES"/>
+        <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="comments" inverseEntity="IQUser" syncable="YES"/>
+        <relationship name="conversation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="lastComment" inverseEntity="IQConversation" syncable="YES"/>
+    </entity>
+    <entity name="IQConversation" representedClassName="IQConversation" syncable="YES">
+        <attribute name="conversationId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="creatorId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="discussion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="conversations" inverseEntity="IQDiscussion" syncable="YES"/>
+        <relationship name="lastComment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQComment" inverseName="conversation" inverseEntity="IQComment" syncable="YES"/>
+    </entity>
+    <entity name="IQDiscussion" representedClassName="IQDiscussion" syncable="YES">
+        <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="pusherChannel" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updateDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="conversations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="discussion" inverseEntity="IQConversation" syncable="YES"/>
+        <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQUser" inverseName="discussions" inverseEntity="IQUser" syncable="YES"/>
+    </entity>
     <entity name="IQNotificable" representedClassName="IQNotificable" syncable="YES">
         <attribute name="notificableId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
@@ -25,11 +62,17 @@
         <attribute name="pusherChannel" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thumbUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQComment" inverseName="author" inverseEntity="IQComment" syncable="YES"/>
+        <relationship name="discussions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="users" inverseEntity="IQDiscussion" syncable="YES"/>
         <relationship name="notifications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQNotification" inverseName="user" inverseEntity="IQNotification" syncable="YES"/>
     </entity>
     <elements>
+        <element name="IQAttachment" positionX="-27" positionY="108" width="128" height="193"/>
+        <element name="IQComment" positionX="-36" positionY="99" width="128" height="148"/>
+        <element name="IQConversation" positionX="-54" positionY="81" width="128" height="135"/>
+        <element name="IQDiscussion" positionX="-45" positionY="90" width="128" height="133"/>
         <element name="IQNotificable" positionX="-63" positionY="-9" width="128" height="105"/>
         <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="178"/>
-        <element name="IQUser" positionX="-45" positionY="45" width="128" height="165"/>
+        <element name="IQUser" positionX="-45" positionY="45" width="128" height="193"/>
     </elements>
 </model>
