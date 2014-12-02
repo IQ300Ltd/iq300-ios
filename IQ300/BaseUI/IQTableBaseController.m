@@ -114,7 +114,7 @@
     }
 }
 
-#pragma mark - IQMenuModel Delegate
+#pragma mark - IQTableModel Delegate
 
 - (void)modelWillChangeContent:(id<IQTableModel>)model {
     [self.tableView beginUpdates];

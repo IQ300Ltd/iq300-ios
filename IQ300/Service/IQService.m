@@ -121,6 +121,12 @@
     [self notificationsUnread:unread page:page per:per search:nil sort:sort handler:handler];
 }
 
+- (void)notificationsWithIds:(NSArray*)ids handler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/notifications"
+                parameters:@{ @"by_ids" : ids }
+                   handler:handler];
+}
+
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
                path:[NSString stringWithFormat:@"/api/v1/notifications/%@", notificationId]

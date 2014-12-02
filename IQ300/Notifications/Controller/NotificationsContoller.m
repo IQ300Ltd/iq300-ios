@@ -72,11 +72,6 @@
          }];
      }
      position:SVPullToRefreshPositionBottom];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadFirstPart)
-                                                 name:UIApplicationWillEnterForegroundNotification
-                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -94,7 +89,6 @@
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
     if([IQSession defaultSession]) {
-        [self updateCounters];
         [self reloadModel];
     }
 }
@@ -124,7 +118,18 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    IQNotification * notification = [self.model itemAtIndexPath:indexPath];
+}
+
+#pragma mark - IQTableModel Delegate
+
+- (void)modelDidChangeContent:(id<IQTableModel>)model {
+    [super modelDidChangeContent:model];
+    [self updateNoDataLabelVisibility];
+}
+
+- (void)modelDidChanged:(id<IQTableModel>)model {
+    [super modelDidChanged:model];
+    [self updateNoDataLabelVisibility];
 }
 
 #pragma mark - Menu Responder Delegate
@@ -144,10 +149,6 @@
                       tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                           if(buttonIndex == 1) {
                               [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
-                                  if(!error) {
-                                      [self updateCounters];
-                                      [self updateNoDataLabelVisibility];
-                                  }
                               }];
                           }
                       }];
@@ -157,19 +158,6 @@
     NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
     
     [self.model markNotificationAsReadAtIndexPath:itemIndexPath completion:^(NSError *error) {
-        if(!error) {
-            [self updateCounters];
-            [self updateNoDataLabelVisibility];
-        }
-    }];
-}
-
-- (void)updateCounters {
-    [self.model updateCountersWithCompletion:^(NSError *error) {
-        if(!error) {
-            _menuModel.totalItemsCount = self.model.totalItemsCount;
-            _menuModel.unreadItemsCount = self.model.unreadItemsCount;
-        }
     }];
 }
 
@@ -191,22 +179,17 @@
                     }
                 }];
             }
-            [self updateCounters];
-        }
-    }];
-}
-
-- (void)reloadFirstPart {
-    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self updateNoDataLabelVisibility];
-            [self updateCounters];
         }
     }];
 }
 
 - (void)updateNoDataLabelVisibility {
     [_mainView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
+}
+
+- (void)modelCountersDidChanged:(id<IQTableModel>)model {
+    _menuModel.totalItemsCount = self.model.totalItemsCount;
+    _menuModel.unreadItemsCount = self.model.unreadItemsCount;
 }
 
 @end

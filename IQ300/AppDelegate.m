@@ -10,6 +10,7 @@
 
 #import "AppDelegate.h"
 #import "TasksController.h"
+#import "MessagesController.h"
 #import "MenuViewController.h"
 #import "IQNavigationController.h"
 #import "NotificationsContoller.h"
@@ -77,13 +78,7 @@
     projects.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
     IQNavigationController * projectsNav = [[IQNavigationController alloc] initWithRootViewController:projects];
     
-    UIViewController * messages = [[UIViewController alloc] init];
-    messages.view.backgroundColor = [UIColor whiteColor];
-    messages.title = NSLocalizedString(@"Messages", nil);
-    barImage = [[UIImage imageNamed:@"messages_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    barImageSelected = [[UIImage imageNamed:@"messgaes_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    messages.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSelected];
-    messages.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
+    MessagesController * messages = [[MessagesController alloc] init];
     IQNavigationController * messagesNav = [[IQNavigationController alloc] initWithRootViewController:messages];
     
     UITabBarController * center = [[UITabBarController alloc] init];

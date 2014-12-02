@@ -6,14 +6,14 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
-#import "IQTableModel.h"
+#import "NotificationsModelDelegate.h"
 
 @class IQNotification;
 
 @interface NotificationsModel : NSObject<IQTableModel>
 
 @property (nonatomic, assign) BOOL loadUnreadOnly;
-@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+@property (nonatomic, weak) id<NotificationsModelDelegate> delegate;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;

@@ -42,16 +42,17 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         _totalItemsCount = 0;
         _unreadItemsCount = 0;
         
-    
-        void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-            NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
-            if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
-                NSLog(@"Notifications with id did changed:%@", changedIds);
-            }
-        };
-        _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
-                                                                           queue:nil
-                                                                      usingBlock:block];
+        [self resubscribeToIQNotifications];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reloadFirstPart)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(resubscribeToIQNotifications)
+                                                     name:AccountDidChangedNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -126,8 +127,8 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                per:@(_portionLenght)
                                               sort:IQSortDirectionDescending
                                            handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
-                                               if(completion) {
-                                                   completion(error);
+                                               if(success) {
+                                                   [self updateCounters];
                                                }
                                            }];
 }
@@ -140,6 +141,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                            handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
                                                if(completion) {
                                                    completion(error);
+                                               }
+                                               if(success) {
+                                                   [self updateCounters];
                                                }
                                            }];
 }
@@ -176,6 +180,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                   if(completion) {
                                                       completion(error);
                                                   }
+                                                  if(success) {
+                                                      [self updateCounters];
+                                                  }
                                               }];
 }
 
@@ -197,6 +204,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     [[IQService sharedService] marAllkNotificationAsReadWithHandler:^(BOOL success, NSData *responseData, NSError *error) {
         if(completion) {
             completion(error);
+        }
+        if(success) {
+            [self updateCounters];
         }
     }];
 }
@@ -245,6 +255,45 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     if(completion) {
         completion(fetchError);
     }
+}
+
+- (void)loadNotificationsWithIds:(NSArray*)ids {
+    [[IQService sharedService] notificationsWithIds:ids
+                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                if(success) {
+                                                    [self updateCounters];
+                                                }
+                                            }];
+}
+
+- (void)updateCounters {
+    [self updateCountersWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self modelCountersDidChanged];
+        }
+    }];
+}
+
+- (void)reloadFirstPart {
+    [self reloadFirstPartWithCompletion:^(NSError *error) {
+        
+    }];
+}
+
+- (void)resubscribeToIQNotifications {
+    if(_notfObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    }
+    
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
+        if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
+            [self loadNotificationsWithIds:changedIds];
+        }
+    };
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
+                                                                       queue:nil
+                                                                  usingBlock:block];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -308,8 +357,15 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     }
 }
 
+- (void)modelCountersDidChanged {
+    if([self.delegate respondsToSelector:@selector(modelCountersDidChanged:)]) {
+        [self.delegate modelCountersDidChanged:self];
+    }
+}
+
 - (void)dealloc {
     [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

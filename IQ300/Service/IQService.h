@@ -40,6 +40,8 @@ typedef NS_ENUM(NSUInteger, IQSortDirection) {
 
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)notificationsWithIds:(NSArray*)ids handler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
 - (void)marAllkNotificationAsReadWithHandler:(RequestCompletionHandler)handler;
