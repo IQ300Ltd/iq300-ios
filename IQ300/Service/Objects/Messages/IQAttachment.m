@@ -25,14 +25,15 @@
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"attachmentId"]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"id"               : @"attachmentId",
-                                                  @"short_name"       : @"createDate",
-                                                  @"email"            : @"displayName",
-                                                  @"pusher_channel"   : @"atDescription",
-                                                  @"photo.thumb_url"  : @"contentType",
-                                                  @"photo.medium_url" : @"unifiedContentType",
-                                                  @"photo.normal_url" : @"originalURL",
-                                                  @"photo.normal_url" : @"previewURL"
+                                                  @"id"                   : @"attachmentId",
+                                                  @"created_at"           : @"createDate",
+                                                  @"display_name"         : @"displayName",
+                                                  @"description"          : @"atDescription",
+                                                  @"author_id"            : @"ownerId",
+                                                  @"content_type"         : @"contentType",
+                                                  @"unified_content_type" : @"unifiedContentType",
+                                                  @"urls.original"        : @"originalURL",
+                                                  @"urls.preview"         : @"previewURL"
                                                   }];
     return mapping;
 }

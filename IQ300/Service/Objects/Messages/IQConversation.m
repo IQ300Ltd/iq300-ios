@@ -22,11 +22,22 @@
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"conversationId"]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"id"               : @"conversationId",
-                                                  @"short_name"       : @"createDate",
-                                                  @"email"            : @"creatorId",
-                                                  @"pusher_channel"   : @"type"
+                                                  @"id"         : @"conversationId",
+                                                  @"created_at" : @"createDate",
+                                                  @"creator_id" : @"creatorId",
+                                                  @"kind"       : @"type"
                                                   }];
+    
+    RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"discussion"
+                                                                                   toKeyPath:@"discussion"
+                                                                                 withMapping:[IQDiscussion objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+    
+    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"latest_comment"
+                                                           toKeyPath:@"lastComment"
+                                                         withMapping:[IQComment objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+
     return mapping;
 }
 

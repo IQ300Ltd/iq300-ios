@@ -8,6 +8,7 @@
 #import <RestKit/RestKit.h>
 
 #import "IQDiscussion.h"
+#import "IQUser.h"
 
 @implementation IQDiscussion
 
@@ -23,10 +24,16 @@
     [mapping setIdentificationAttributes:@[@"discussionId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"               : @"discussionId",
-                                                  @"short_name"       : @"createDate",
-                                                  @"email"            : @"updateDate",
+                                                  @"created_at"       : @"createDate",
+                                                  @"updated_at"       : @"updateDate",
                                                   @"pusher_channel"   : @"pusherChannel"
                                                   }];
+    
+    RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"users"
+                                                                                   toKeyPath:@"users"
+                                                                                 withMapping:[IQUser objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+
     return mapping;
 }
 
