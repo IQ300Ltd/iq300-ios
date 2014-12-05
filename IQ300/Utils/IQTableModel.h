@@ -24,6 +24,8 @@
 
 - (void)modelDidChangeContent:(id<IQTableModel>)model;
 
+- (void)modelCountersDidChanged:(id<IQTableModel>)model;
+
 @end
 
 @protocol IQTableModel <NSObject>

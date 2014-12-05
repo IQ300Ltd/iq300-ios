@@ -8,14 +8,15 @@
 #import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
+#import "UIViewController+LeftMenu.h"
+#import "IQSession.h"
+
 #import "NotificationsContoller.h"
 #import "NotificationsView.h"
 #import "NotificationsMenuModel.h"
-#import "UIViewController+LeftMenu.h"
 #import "NotificationsModel.h"
 #import "IQNotification.h"
 #import "NotificationCell.h"
-#import "IQSession.h"
 
 //#import "UITableView+BottomRefreshControl.h"
 //#import "IQRefreshControl.h"
@@ -91,6 +92,13 @@
     if([IQSession defaultSession]) {
         [self reloadModel];
     }
+    
+    [self.model setSubscribedToSystemWakeNotifications:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.model setSubscribedToSystemWakeNotifications:NO];
 }
 
 #pragma mark - UITableView DataSource
@@ -112,10 +120,6 @@
 }
 
 #pragma mark - UITableView Delegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 105;
-}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }

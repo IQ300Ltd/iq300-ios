@@ -29,6 +29,8 @@
 "mark_all_readed_question" = "All your messages will be marked as read. Continue?";
 "OK" = "OK";
 "Cancel" = "Cancel";
+"I" = "I";
+"Send" = "Send";
 
 //Notification types
 "Attachment" = "Document";

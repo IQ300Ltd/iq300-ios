@@ -17,8 +17,8 @@
 @property (nonatomic, strong) NSDate * createDate;
 @property (nonatomic, strong) NSDate * updateDate;
 @property (nonatomic, strong) NSString * pusherChannel;
-@property (nonatomic, strong) NSArray * users;
-@property (nonatomic, strong) NSArray * userViews;
+@property (nonatomic, strong) NSSet * users;
+@property (nonatomic, strong) NSSet * userViews;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

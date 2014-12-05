@@ -19,7 +19,7 @@
 @property (nonatomic, strong) NSDate * createDate;
 @property (nonatomic, strong) NSString * body;
 @property (nonatomic, strong) IQUser * author;
-@property (nonatomic, strong) NSArray * attachments;
+@property (nonatomic, strong) NSSet * attachments;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

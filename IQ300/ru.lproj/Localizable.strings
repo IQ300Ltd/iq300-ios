@@ -35,6 +35,8 @@
 "mark_all_readed_question" = "Все Ваши уведомления будут отмечены как прочитанные. Продолжить?";
 "OK" = "OK";
 "Cancel" = "Отмена";
+"I" = "Я";
+"Send" = "Отправить";
 
 //Notification types
 "Attachment" = "Документ";

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B25" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B25" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="IQAttachment" representedClassName="IQAttachment" syncable="YES">
         <attribute name="atDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="attachmentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -15,7 +15,7 @@
     <entity name="IQComment" representedClassName="IQComment" syncable="YES">
         <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="commentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="createDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQAttachment" inverseName="comments" inverseEntity="IQAttachment" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="comments" inverseEntity="IQUser" syncable="YES"/>
@@ -25,7 +25,9 @@
         <attribute name="conversationId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="creatorId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="totalCommentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unreadCommentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="discussion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="conversations" inverseEntity="IQDiscussion" syncable="YES"/>
         <relationship name="lastComment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQComment" inverseName="conversation" inverseEntity="IQComment" syncable="YES"/>
     </entity>
@@ -68,8 +70,8 @@
     </entity>
     <elements>
         <element name="IQAttachment" positionX="-27" positionY="108" width="128" height="193"/>
-        <element name="IQComment" positionX="-36" positionY="99" width="128" height="148"/>
-        <element name="IQConversation" positionX="-54" positionY="81" width="128" height="135"/>
+        <element name="IQComment" positionX="-36" positionY="99" width="128" height="150"/>
+        <element name="IQConversation" positionX="-54" positionY="81" width="128" height="165"/>
         <element name="IQDiscussion" positionX="-45" positionY="90" width="128" height="133"/>
         <element name="IQNotificable" positionX="-63" positionY="-9" width="128" height="105"/>
         <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="178"/>

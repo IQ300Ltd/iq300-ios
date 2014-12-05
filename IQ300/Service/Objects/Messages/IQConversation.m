@@ -15,6 +15,8 @@
 @dynamic createDate;
 @dynamic creatorId;
 @dynamic type;
+@dynamic unreadCommentsCount;
+@dynamic totalCommentsCount;
 @dynamic discussion;
 @dynamic lastComment;
 
@@ -22,10 +24,12 @@
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"conversationId"]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"id"         : @"conversationId",
-                                                  @"created_at" : @"createDate",
-                                                  @"creator_id" : @"creatorId",
-                                                  @"kind"       : @"type"
+                                                  @"id"                     : @"conversationId",
+                                                  @"created_at"             : @"createDate",
+                                                  @"creator_id"             : @"creatorId",
+                                                  @"kind"                   : @"type",
+                                                  @"newest_comments_count"  : @"unreadCommentsCount",
+                                                  @"comments_count"         : @"totalCommentsCount"
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"discussion"

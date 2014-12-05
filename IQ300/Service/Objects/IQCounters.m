@@ -7,9 +7,9 @@
 //
 #import <RestKit/RestKit.h>
 
-#import "NotificationsCount.h"
+#import "IQCounters.h"
 
-@implementation NotificationsCount
+@implementation IQCounters
 
 + (RKObjectMapping*)objectMapping {
     RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];

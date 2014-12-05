@@ -10,7 +10,7 @@
 
 @class RKObjectMapping;
 
-@interface NotificationsCount : NSObject
+@interface IQCounters : NSObject
 
 @property (nonatomic, strong) NSNumber * totalCount;
 @property (nonatomic, strong) NSNumber * unreadCount;

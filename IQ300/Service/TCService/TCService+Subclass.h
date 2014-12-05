@@ -40,6 +40,11 @@
 
 - (void)postData:(NSData*)data path:(NSString *)path handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)postData:(NSData*)fileData path:(NSString *)path parameters:(NSDictionary *)parameters fileAttributeName:(NSString*)fileAttributeName
+        fileName:(NSString*)fileName
+        mimeType:(NSString*)mimeType
+         handler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)initDescriptors;
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation*)operation;

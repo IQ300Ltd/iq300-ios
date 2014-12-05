@@ -1,27 +1,25 @@
 //
-//  NotificationsModel.m
+//  MessagesModel.m
 //  IQ300
 //
-//  Created by Tayphoon on 20.11.14.
+//  Created by Tayphoon on 03.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
-#import "NotificationsModel.h"
-#import "IQService.h"
-#import "IQNotificationsHolder.h"
-#import "NotificationCell.h"
+#import "MessagesModel.h"
+#import "IQService+Messages.h"
+#import "ConversationCell.h"
+#import "IQConversation.h"
+#import "IQUser.h"
 #import "IQCounters.h"
-#import "NSManagedObjectContext+AsyncFetch.h"
-#import "IQNotificationCenter.h"
 
-#define CACHE_FILE_NAME @"NotificationsModelcache"
+#define CACHE_FILE_NAME @"ConversationModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
 
-static NSString * NReuseIdentifier = @"NReuseIdentifier";
+static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
-@interface NotificationsModel() <NSFetchedResultsControllerDelegate> {
-    NSInteger _totalCount;
+@interface MessagesModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;
     NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
@@ -32,23 +30,15 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
 @end
 
-@implementation NotificationsModel
+@implementation MessagesModel
 
 - (id)init {
     if(self) {
         _portionLenght = 20;
-        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:SORT_DIRECTION == IQSortDirectionAscending];
+        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"lastComment.createDate" ascending:SORT_DIRECTION == IQSortDirectionAscending];
         _sortDescriptors = @[descriptor];
-        _loadUnreadOnly = NO;
         _totalItemsCount = 0;
         _unreadItemsCount = 0;
-        
-        [self resubscribeToIQNotifications];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(resubscribeToIQNotifications)
-                                                     name:AccountDidChangedNotification
-                                                   object:nil];
     }
     return self;
 }
@@ -67,17 +57,17 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
-    return NReuseIdentifier;
+    return MReuseIdentifier;
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = [NotificationCell class];
+    Class cellClass = [ConversationCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
-                            reuseIdentifier:NReuseIdentifier];
+                            reuseIdentifier:MReuseIdentifier];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return 105;
+    return [ConversationCell heightForItem:[self itemAtIndexPath:indexPath] andCellWidth:320.0f];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
@@ -103,11 +93,11 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     else {
         NSInteger count = [self numberOfItemsInSection:0];
         NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
-        [[IQService sharedService] notificationsUnread:(_loadUnreadOnly) ? @(YES) : nil
+        [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                                   page:@(page)
                                                    per:@(_portionLenght)
-                                                  sort:SORT_DIRECTION
-                                               handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                                  sort:IQSortDirectionAscending
+                                               handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                    if(completion) {
                                                        completion(error);
                                                    }
@@ -118,28 +108,26 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self updateModelSourceControllerWithCompletion:completion];
-    [[IQService sharedService] notificationsUnread:(_loadUnreadOnly) ? @(YES) : nil
+    [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
                                                per:@(_portionLenght)
-                                              sort:SORT_DIRECTION
-                                           handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                              sort:IQSortDirectionAscending
+                                           handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                if(success) {
-                                                   [self updateCounters];
                                                }
                                            }];
 }
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] notificationsUnread:nil
+    [[IQService sharedService] conversationsUnread:nil
                                               page:@(1)
                                                per:@(_portionLenght)
-                                              sort:SORT_DIRECTION
-                                           handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                              sort:IQSortDirectionAscending
+                                           handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                if(completion) {
                                                    completion(error);
                                                }
                                                if(success) {
-                                                   [self updateCounters];
                                                }
                                            }];
 }
@@ -162,53 +150,8 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     return _unreadItemsCount;
 }
 
-- (void)markNotificationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
-    IQNotification * item = [self itemAtIndexPath:indexPath];
-    item.readed = @(YES);
-    
-    NSError *saveError = nil;
-    if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
-        NSLog(@"Save error: %@", saveError);
-    }
-    
-    [[IQService sharedService] markNotificationAsRead:item.notificationId
-                                              handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                  if(completion) {
-                                                      completion(error);
-                                                  }
-                                                  if(success) {
-                                                      [self updateCounters];
-                                                  }
-                                              }];
-}
-
-- (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion {
-    NSManagedObjectContext * context = _fetchController.managedObjectContext;
-    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@", [IQSession defaultSession].userId]];
-    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
-        if ([objects count] > 0) {
-            [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
-            NSError *saveError = nil;
-            
-            if(![context saveToPersistentStore:&saveError]) {
-                NSLog(@"Save error: %@", saveError);
-            }
-        }
-    }];
-    
-    [[IQService sharedService] marAllkNotificationAsReadWithHandler:^(BOOL success, NSData *responseData, NSError *error) {
-        if(completion) {
-            completion(error);
-        }
-        if(success) {
-            [self updateCounters];
-        }
-    }];
-}
-
 - (void)updateCountersWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] notificationsCountWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
+    [[IQService sharedService] conversationsCountersWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
         if(success) {
             _totalItemsCount = [counter.totalCount integerValue];
             _unreadItemsCount = [counter.unreadCount integerValue];
@@ -233,6 +176,23 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     }
 }
 
+- (void)markConversationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
+    IQConversation * item = [self itemAtIndexPath:indexPath];
+    item.unreadCommentsCount = @(0);
+    
+    NSError *saveError = nil;
+    if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
+        NSLog(@"Save error: %@", saveError);
+    }
+    
+    [[IQService sharedService] markDiscussionAsReadedWithId:item.discussion.discussionId
+                                                    handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                        if(completion) {
+                                                            completion(error);
+                                                        }
+                                                    }];
+}
+
 #pragma mark - Private methods
 
 - (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
@@ -241,23 +201,15 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
     
     if(!_fetchController && [IQService sharedService].context) {
-        NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
+        NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQConversation"];
         [fetchRequest setSortDescriptors:_sortDescriptors];
-        
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                managedObjectContext:[IQService sharedService].context
                                                                  sectionNameKeyPath:nil
                                                                           cacheName:CACHE_FILE_NAME];
     }
     
-    if(_loadUnreadOnly) {
-        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@", [IQSession defaultSession].userId]];
-    }
-    else {
-        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
-    }
-    
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId];
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ANY discussion.users.userId == %@", [IQSession defaultSession].userId];
     if(_loadUnreadOnly) {
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"readed == NO"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
@@ -274,43 +226,10 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     }
 }
 
-- (void)loadNotificationsWithIds:(NSArray*)ids {
-    [[IQService sharedService] notificationsWithIds:ids
-                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                                if(success) {
-                                                    [self updateCounters];
-                                                }
-                                            }];
-}
-
-- (void)updateCounters {
-    [self updateCountersWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self modelCountersDidChanged];
-        }
-    }];
-}
-
 - (void)reloadFirstPart {
     [self reloadFirstPartWithCompletion:^(NSError *error) {
         
     }];
-}
-
-- (void)resubscribeToIQNotifications {
-    if(_notfObserver) {
-        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
-    }
-    
-    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
-        if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
-            [self loadNotificationsWithIds:changedIds];
-        }
-    };
-    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
-                                                                       queue:nil
-                                                                  usingBlock:block];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -381,7 +300,6 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (void)dealloc {
-    [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

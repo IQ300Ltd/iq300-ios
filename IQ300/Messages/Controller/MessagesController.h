@@ -6,8 +6,11 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "IQTableBaseController.h"
+#import "MessagesModel.h"
 
-@interface MessagesController : UIViewController
+@interface MessagesController : IQTableBaseController
+
+@property (nonatomic, strong) MessagesModel * model;
 
 @end

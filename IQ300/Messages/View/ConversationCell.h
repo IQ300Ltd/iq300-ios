@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@class CustomBadge;
-@class IQDiscussion;
+@class IQBadgeView;
+@class IQConversation;
 
-@interface DiscussionCell : UITableViewCell {
+#define CONVERSATION_CELL_MAX_HEIGHT 86.0f
+#define CONVERSATION_CELL_MIN_HEIGHT 55.0f
+
+@interface ConversationCell : UITableViewCell {
     UIEdgeInsets _contentInsets;
     UIEdgeInsets _contentBackgroundInsets;
 }
@@ -20,8 +23,12 @@
 @property (nonatomic, strong) UILabel * dateLabel;
 @property (nonatomic, strong) UILabel * userNameLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;
-@property (nonatomic, readonly) CustomBadge * badgeView;
+@property (nonatomic, readonly) IQBadgeView * badgeView;
 
-@property (nonatomic, strong) IQDiscussion * item;
+@property (nonatomic, strong) IQConversation * item;
+
+@property (nonatomic, readonly) NSString * companionName;
+
++ (CGFloat)heightForItem:(IQConversation *)item andCellWidth:(CGFloat)cellWidth;
 
 @end
