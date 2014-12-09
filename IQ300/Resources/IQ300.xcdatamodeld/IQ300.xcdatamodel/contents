@@ -22,6 +22,12 @@
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="comments" inverseEntity="IQUser" syncable="YES"/>
         <relationship name="conversation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="lastComment" inverseEntity="IQConversation" syncable="YES"/>
     </entity>
+    <entity name="IQContact" representedClassName="IQContact" syncable="YES">
+        <attribute name="contactId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="contacts" inverseEntity="IQUser" syncable="YES"/>
+    </entity>
     <entity name="IQConversation" representedClassName="IQConversation" syncable="YES">
         <attribute name="conversationId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -31,6 +37,7 @@
         <attribute name="unreadCommentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="discussion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="conversations" inverseEntity="IQDiscussion" syncable="YES"/>
         <relationship name="lastComment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQComment" inverseName="conversation" inverseEntity="IQComment" syncable="YES"/>
+        <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQUser" inverseName="onversations" inverseEntity="IQUser" syncable="YES"/>
     </entity>
     <entity name="IQDiscussion" representedClassName="IQDiscussion" syncable="YES">
         <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -66,16 +73,19 @@
         <attribute name="thumbUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQComment" inverseName="author" inverseEntity="IQComment" syncable="YES"/>
+        <relationship name="contacts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQContact" inverseName="user" inverseEntity="IQContact" syncable="YES"/>
         <relationship name="discussions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="users" inverseEntity="IQDiscussion" syncable="YES"/>
         <relationship name="notifications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQNotification" inverseName="user" inverseEntity="IQNotification" syncable="YES"/>
+        <relationship name="onversations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="users" inverseEntity="IQConversation" syncable="YES"/>
     </entity>
     <elements>
         <element name="IQAttachment" positionX="-27" positionY="108" width="128" height="210"/>
         <element name="IQComment" positionX="-36" positionY="99" width="128" height="150"/>
-        <element name="IQConversation" positionX="-54" positionY="81" width="128" height="165"/>
+        <element name="IQConversation" positionX="-54" positionY="81" width="128" height="178"/>
         <element name="IQDiscussion" positionX="-45" positionY="90" width="128" height="133"/>
         <element name="IQNotificable" positionX="-63" positionY="-9" width="128" height="105"/>
         <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="178"/>
-        <element name="IQUser" positionX="-45" positionY="45" width="128" height="193"/>
+        <element name="IQUser" positionX="-45" positionY="45" width="128" height="223"/>
+        <element name="IQContact" positionX="-45" positionY="135" width="128" height="103"/>
     </elements>
 </model>
