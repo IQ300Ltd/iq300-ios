@@ -9,6 +9,7 @@
 #import "IQTableModel.h"
 
 @class IQDiscussion;
+@class ALAsset;
 
 @interface DiscussionModel : NSObject<IQTableModel>
 
@@ -23,6 +24,6 @@
 
 - (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed;
 
-- (void)sendComment:(NSString*)comment attachmentData:(NSData*)data attachmentType:(NSString*)type withCompletion:(void (^)(NSError * error))completion;
+- (void)sendComment:(NSString*)comment attachmentAsset:(ALAsset*)asset fileName:(NSString*)fileName attachmentType:(NSString*)type withCompletion:(void (^)(NSError * error))completion;
 
 @end

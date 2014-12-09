@@ -71,33 +71,25 @@
                    handler:handler];
 }
 
-- (void)createComment:(NSString*)comment discussionId:(NSNumber*)discussionId attachmentIds:(NSArray*)attachmentIds handler:(RequestCompletionHandler)handler {
+- (void)createComment:(NSString*)comment discussionId:(NSNumber*)discussionId attachmentIds:(NSArray*)attachmentIds handler:(ObjectLoaderCompletionHandler)handler {
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"body"           : NSStringNullForNil(comment),
                                                            @"attachment_ids" : NSObjectNullForNil(attachmentIds)
                                                           });
     [self postObject:nil
                 path:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments", discussionId]
-          parameters:parameters
-             handler:^(BOOL success, id object, NSData * responseData, NSError *error) {
-                 if(handler) {
-                     handler(success, responseData, error);
-                 }
-             }];
+          parameters:@{ @"comment" : parameters }
+             handler:handler];
 }
 
-- (void)createAttachment:(NSData *)attachmentData fileName:(NSString*)fileName title:(NSString*)title mimeType:(NSString *)mimeType handler:(RequestCompletionHandler)handler {
-    [self postData:attachmentData
-              path:@"/api/v1/attachments"
-        parameters:@{ @"attachment[title]" : NSStringNullForNil(title) }
- fileAttributeName:@"attachment[file]"
-          fileName:fileName
-          mimeType:mimeType
-           handler:^(BOOL success, id object, NSData * responseData, NSError *error) {
-               if(handler) {
-                   handler(success, responseData, error);
-               }
-           }];
+- (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler {
+    [self postAsset:asset
+               path:@"/api/v1/attachments"
+         parameters:nil
+  fileAttributeName:@"attachment[file]"
+           fileName:fileName
+           mimeType:mimeType
+            handler:handler];
 }
 
 #pragma mark - Private methods

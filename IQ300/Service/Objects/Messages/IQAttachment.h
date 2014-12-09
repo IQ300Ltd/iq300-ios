@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSString * contentType;
 @property (nonatomic, strong) NSString * unifiedContentType;
 @property (nonatomic, strong) NSString * originalURL;
+@property (nonatomic, strong) NSString * localURL;
 @property (nonatomic, strong) NSString * previewURL;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;

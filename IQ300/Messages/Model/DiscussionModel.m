@@ -158,14 +158,34 @@ static NSString * CReuseIdentifier = @"MReuseIdentifier";
     }
 }
 
-- (void)sendComment:(NSString*)comment attachmentData:(NSData*)data attachmentType:(NSString*)type withCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] createComment:comment
-                                discussionId:_discussion.discussionId attachmentIds:nil
-                                     handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                         if (completion) {
-                                             completion(error);
-                                         }
-                                     }];
+- (void)sendComment:(NSString*)comment attachmentAsset:(ALAsset*)asset fileName:(NSString*)fileName attachmentType:(NSString*)type withCompletion:(void (^)(NSError * error))completion {
+    void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachmentIds) {
+        [[IQService sharedService] createComment:comment
+                                    discussionId:_discussion.discussionId
+                                   attachmentIds:attachmentIds
+                                         handler:^(BOOL success, IQComment * comment, NSData *responseData, NSError *error) {
+                                             if (completion) {
+                                                 completion(error);
+                                             }
+                                         }];
+    };
+    
+    if(asset) {
+        [[IQService sharedService] createAttachmentWithAsset:asset
+                                                    fileName:fileName
+                                                    mimeType:type
+                                                     handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
+                                                        if(success) {
+                                                            sendCommentBlock(@[attachment.attachmentId]);
+                                                        }
+                                                        else if(completion) {
+                                                            completion(error);
+                                                        }
+                                                    }];
+    }
+    else {
+        sendCommentBlock(nil);
+    }
 }
 
 #pragma mark - Private methods

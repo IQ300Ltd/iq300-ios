@@ -69,7 +69,7 @@
         [self addSubview:_inputHolderView];
         
         _attachButton = [[UIButton alloc] init];
-        [_attachButton setImage:[UIImage imageNamed:@"attachment_img.png"] forState:UIControlStateNormal];
+        [_attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG] forState:UIControlStateNormal];
         [[_attachButton imageView] setContentMode:UIViewContentModeCenter];
         [_inputHolderView addSubview:_attachButton];
       
@@ -88,6 +88,7 @@
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
         [_sendButton setBackgroundColor:[UIColor colorWithHexInt:0x40b549]];
         [_sendButton setBackgroundColor:[UIColor colorWithHexInt:0x348f3b] forState:UIControlStateHighlighted];
+        [_sendButton setBackgroundColor:[UIColor colorWithHexInt:0x7fba83] forState:UIControlStateDisabled];
         _sendButton.layer.borderColor = _sendButton.backgroundColor.CGColor;
         [_sendButton setClipsToBounds:YES];
         [self addSubview:_sendButton];

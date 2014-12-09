@@ -16,8 +16,15 @@
 #undef NSLocalizedString
 #endif
 
+#if defined(NSLocalizedStringFromTable)
+#undef NSLocalizedStringFromTable
+#endif
+
 #define NSLocalizedString(key, comment) \
 [[NSBundle localizedBundle] localizedStringForKey:(key) value:@"" table:nil]
+
+#define NSLocalizedStringFromTable(key, tbl, comment) \
+[[NSBundle localizedBundle] localizedStringForKey:(key) value:@"" table:tbl]
 
 #define NSLocalizedStringWithFormat(key, args...) \
 [NSString stringWithFormat:NSLocalizedString(key, nil), args]

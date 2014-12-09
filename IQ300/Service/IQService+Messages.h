@@ -19,8 +19,12 @@
 - (void)markDiscussionAsReadedWithId:(NSNumber*)discussionId handler:(RequestCompletionHandler)handler;
 
 - (void)commentsForDiscussionWithId:(NSNumber*)discussionId page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler;
-- (void)createComment:(NSString*)comment discussionId:(NSNumber*)discussionId attachmentIds:(NSArray*)attachmentIds handler:(RequestCompletionHandler)handler;
 
-- (void)createAttachment:(NSData *)attachmentData fileName:(NSString*)fileName title:(NSString*)title mimeType:(NSString *)mimeType handler:(RequestCompletionHandler)handler;
+- (void)createComment:(NSString*)comment
+         discussionId:(NSNumber*)discussionId
+        attachmentIds:(NSArray*)attachmentIds
+              handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler;
 
 @end

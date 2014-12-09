@@ -1,0 +1,37 @@
+/* 
+  CTAssetsPickerController.strings
+  IQ300
+
+  Created by Tayphoon on 08.12.14.
+  Copyright (c) 2014 Tayphoon. All rights reserved.
+*/
+
+"Cancel" = "Cancel";
+"Done" = "Done";
+"Not available" = "Not available";
+"Video" = "Video";
+"Photo" = "Photo";
+"Portrait" = "Portrait";
+"Landscape" = "Landscape";
+"Play" = "Play";
+"%ld Photos" = "%ld Photos";
+"%ld Videos" = "%ld Videos";
+"Photos" = "Photos";
+"%ld of %ld" = "%ld of %ld";
+"You can take photos and videos using the camera, or sync photos and videos onto your %@\nusing iTunes." = "You can take photos and videos using the camera, or sync photos and videos onto your %@\nusing iTunes.";
+"You can sync photos and videos onto your %@ using iTunes." = "You can sync photos and videos onto your %@ using iTunes.";
+"This app does not have access to your photos or videos." = "This app does not have access to your photos or videos.";
+"You can enable access in Privacy Settings." = "You can enable access in Privacy Settings.";
+"No Photos or Videos" = "No Photos or Videos";
+"%ld Items Selected" = "%ld Items Selected";
+"%ld Photos Selected" = "%ld Photos Selected";
+"%ld Photo Selected" = "%ld Photo Selected";
+"%ld Videos Selected" = "%ld Videos Selected";
+"%ld Video Selected" = "%ld Video Selected";
+"%ld Photos, %ld Videos" = "%ld Photos, %ld Videos";
+"hours" = "hours";
+"hour" = "hour";
+"minutes" = "minutes";
+"minute" = "minute";
+"seconds" = "seconds";
+"second" = "second";

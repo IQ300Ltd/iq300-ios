@@ -21,6 +21,7 @@
 @property (nonatomic, strong) UILabel * dateLabel;
 @property (nonatomic, strong) UILabel * userNameLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;
+@property (nonatomic, strong) UIButton * attachButton;
 
 @property (nonatomic, strong) IQComment * item;
 

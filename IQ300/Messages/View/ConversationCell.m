@@ -13,6 +13,7 @@
 #import "IQConversation.h"
 #import "IQSession.h"
 
+#define ATTACHMENT_VIEW_HEIGHT 15.0f
 #define HEIGHT_DELTA 1.0f
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
@@ -26,15 +27,23 @@
 + (CGFloat)heightForItem:(IQConversation *)item andCellWidth:(CGFloat)cellWidth {
     CGFloat descriptionY = CELL_HEADER_MIN_HEIGHT;
     CGFloat descriptionWidth = cellWidth;
+    CGFloat height = CONVERSATION_CELL_MIN_HEIGHT;
 
     if([item.lastComment.body length] > 0) {
         CGSize descriptionSize = [item.lastComment.body sizeWithFont:DESCRIPTION_LABEL_FONT
                                                    constrainedToSize:CGSizeMake(descriptionWidth, CONVERSATION_CELL_MAX_HEIGHT)
                                                        lineBreakMode:NSLineBreakByWordWrapping];
-        return MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
-                   CONVERSATION_CELL_MIN_HEIGHT);
+        height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
+                     CONVERSATION_CELL_MIN_HEIGHT);
     }
-    return CONVERSATION_CELL_MIN_HEIGHT;
+
+    BOOL hasDescription = ([item.lastComment.body length] > 0);
+    BOOL hasAttachment = ([item.lastComment.attachments count] > 0);
+    if(hasAttachment && hasDescription) {
+        height += ATTACHMENT_VIEW_HEIGHT;
+    }
+
+    return height;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -81,6 +90,18 @@
         _badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:10];
         [_badgeView setHidden:YES];
         [contentView addSubview:_badgeView];
+        
+        _attachButton = [[UIButton alloc] init];
+        [_attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
+        [_attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateDisabled];
+        [_attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+        [_attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
+        [_attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateDisabled];
+        [_attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
+        _attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [_attachButton setHidden:YES];
+        [_attachButton setEnabled:NO];
+        [contentView addSubview:_attachButton];
     }
     
     return self;
@@ -107,11 +128,20 @@
                                   topLabelSize.width,
                                   topLabelSize.height);
     
+    BOOL hasDescription = ([_item.lastComment.body length] > 0);
+    BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);
+    CGFloat descriptionInset = (hasAttachment) ? ATTACHMENT_VIEW_HEIGHT : 0.0f;
+
     CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
                                          actualBounds.size.width,
-                                         actualBounds.size.height - descriptionY);
+                                         (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f);
+    
+    _attachButton.frame = CGRectMake(_descriptionLabel.frame.origin.x,
+                                     CGRectBottom(_descriptionLabel.frame) + 5.0f,
+                                     actualBounds.size.width,
+                                     15.0f);
     
     _badgeView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - _badgeView.frame.size.width,
                                   actualBounds.origin.y + (actualBounds.size.height - _badgeView.frame.size.height) / 2,
@@ -137,8 +167,18 @@
     _companionName = companion.displayName;
     
     NSString * descriptionAuthor = (lastCommentIsMine) ? [NSString stringWithFormat:@"%@:", NSLocalizedString(@"I", nil)] : @"";
-    _descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", descriptionAuthor, _item.lastComment.body];
+    NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";
+   _descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", descriptionAuthor, body];
     [self setBadgeText:(hasUnreadComments) ? [_item.unreadCommentsCount stringValue] : nil];
+    
+    BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);
+    [_attachButton setHidden:(!hasAttachment)];
+    
+    if(hasAttachment) {
+        IQAttachment * attachment = [[_item.lastComment.attachments allObjects] lastObject];
+        [_attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
+    }
+
     [self setNeedsLayout];
 }
 
@@ -157,7 +197,7 @@
     label.textAlignment = NSTextAlignmentLeft;
     label.backgroundColor = [UIColor clearColor];
     label.numberOfLines = 0;
-    label.lineBreakMode = NSLineBreakByWordWrapping;
+    label.lineBreakMode = NSLineBreakByTruncatingTail;
     if(localaizedKey) {
         [label setText:NSLocalizedString(localaizedKey, nil)];
     }

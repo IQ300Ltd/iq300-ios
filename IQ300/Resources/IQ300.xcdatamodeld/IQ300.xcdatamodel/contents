@@ -6,6 +6,7 @@
         <attribute name="contentType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="originalURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="previewURL" optional="YES" attributeType="String" syncable="YES"/>
@@ -69,7 +70,7 @@
         <relationship name="notifications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQNotification" inverseName="user" inverseEntity="IQNotification" syncable="YES"/>
     </entity>
     <elements>
-        <element name="IQAttachment" positionX="-27" positionY="108" width="128" height="193"/>
+        <element name="IQAttachment" positionX="-27" positionY="108" width="128" height="210"/>
         <element name="IQComment" positionX="-36" positionY="99" width="128" height="150"/>
         <element name="IQConversation" positionX="-54" positionY="81" width="128" height="165"/>
         <element name="IQDiscussion" positionX="-45" positionY="90" width="128" height="133"/>

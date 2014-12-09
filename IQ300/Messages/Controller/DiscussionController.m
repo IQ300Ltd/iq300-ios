@@ -17,10 +17,13 @@
 #import "CommentCell.h"
 #import "IQComment.h"
 #import "DispatchAfterExecution.h"
+#import "ALAsset+Extension.h"
 
 @interface DiscussionController() {
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
+    ALAsset * _attachment;
+    UIDocumentInteractionController * _documentController;
 }
 
 @end
@@ -111,10 +114,23 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
+    [cell.attachButton addTarget:self
+                          action:@selector(attachViewButtonAction:)
+                forControlEvents:UIControlEventTouchUpInside];
+    [cell.attachButton setTag:indexPath.row];
+    
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    IQComment * comment = [self.model itemAtIndexPath:indexPath];
+    NSArray * attachments = [comment.attachments allObjects];
+    for (IQAttachment * attachment in attachments) {
+        NSLog(@"%@", attachment.originalURL);
+    }
 }
 
 #pragma mark - UIScroll Delegate
@@ -162,17 +178,23 @@
 - (void)sendButtonAction:(UIButton*)sender {
     [_mainView.inputView.sendButton setEnabled:NO];
     [_mainView.inputView.attachButton setEnabled:NO];
+    [_mainView.inputView.commentTextView setEditable:NO];
     [_mainView.inputView.commentTextView resignFirstResponder];
     
     [self.model sendComment:_mainView.inputView.commentTextView.text
-             attachmentData:nil
-             attachmentType:nil
+            attachmentAsset:_attachment
+                   fileName:[_attachment fileName]
+             attachmentType:[_attachment MIMEType]
              withCompletion:^(NSError *error) {
                  if(!error) {
                      _mainView.inputView.commentTextView.text = nil;
+                     [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG]
+                                                       forState:UIControlStateNormal];
+                     _attachment = nil;
+                     [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                  }
-                 [_mainView.inputView.sendButton setEnabled:YES];
                  [_mainView.inputView.attachButton setEnabled:YES];
+                 [_mainView.inputView.commentTextView setEditable:YES];
              }];
 }
 
@@ -182,8 +204,18 @@
     picker.showsCancelButton = YES;
     picker.delegate = (id<CTAssetsPickerControllerDelegate>)self;
     picker.showsNumberOfAssets = NO;
-//    picker.
     [self presentViewController:picker animated:YES completion:nil];
+}
+
+- (void)attachViewButtonAction:(UIButton*)sender {
+    IQComment * comment = [self.model itemAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
+    IQAttachment * attachment = [[comment.attachments allObjects] lastObject];
+    
+    if ([attachment.localURL length] > 0) {
+        _documentController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL URLWithString:attachment.localURL]];
+        [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
+        [_documentController presentOpenInMenuFromRect:[sender frame] inView:self.view animated:YES];
+    }
 }
 
 - (void)reloadModel {
@@ -273,28 +305,39 @@
 
 #pragma mark - Assets Picker Delegate
 
-- (BOOL)assetsPickerController:(CTAssetsPickerController *)picker isDefaultAssetsGroup:(ALAssetsGroup *)group
-{
-    return ([[group valueForProperty:ALAssetsGroupPropertyType] integerValue] == ALAssetsGroupSavedPhotos);
+- (BOOL)assetsPickerController:(CTAssetsPickerController *)picker isDefaultAssetsGroup:(ALAssetsGroup *)group {
+    return ([[group valueForProperty:ALAssetsGroupPropertyType] integerValue] == ALAssetsGroupAll);
 }
 
-- (BOOL)assetsPickerController:(CTAssetsPickerController *)picker shouldEnableAsset:(ALAsset *)asset
-{
+- (BOOL)assetsPickerController:(CTAssetsPickerController *)picker shouldEnableAsset:(ALAsset *)asset {
     // Enable video clips if they are at least 5s
-    if ([[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo])
-    {
+    if ([[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo]) {
         NSTimeInterval duration = [[asset valueForProperty:ALAssetPropertyDuration] doubleValue];
         return lround(duration) >= 5;
     }
-    else
-    {
-        return YES;
-    }
+    return YES;
 }
 
-- (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset
-{
+- (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
+    _attachment = asset;
+    [_mainView.inputView.sendButton setEnabled:(_attachment != nil)];
+    [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
+                                      forState:UIControlStateNormal];
     [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - UIDocumentInteractionController Delegate Methods
+
+- (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
+    return  self;
+}
+
+- (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(NSString *)application {
+    NSLog(@"Starting to send this item to %@", application);
+}
+
+- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
+    _documentController = nil;
 }
 
 @end

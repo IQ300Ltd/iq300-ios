@@ -13,6 +13,7 @@
 #import "IQConversation.h"
 #import "IQSession.h"
 
+#define ATTACHMENT_VIEW_HEIGHT 15.0f
 #define HEIGHT_DELTA 1.0f
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
@@ -26,15 +27,23 @@
 + (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
     CGFloat descriptionY = CELL_HEADER_MIN_HEIGHT;
     CGFloat descriptionWidth = cellWidth;
+    CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
         CGSize descriptionSize = [item.body sizeWithFont:DESCRIPTION_LABEL_FONT
                                                    constrainedToSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
                                                        lineBreakMode:NSLineBreakByWordWrapping];
-        return MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
+        height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
                    COMMENT_CELL_MIN_HEIGHT);
     }
-    return COMMENT_CELL_MIN_HEIGHT;
+    
+    BOOL hasDescription = ([item.body length] > 0);
+    BOOL hasAttachment = ([item.attachments count] > 0);
+    if(hasAttachment && hasDescription) {
+        height += ATTACHMENT_VIEW_HEIGHT;
+    }
+    
+    return height;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -64,6 +73,16 @@
                                                     font:DESCRIPTION_LABEL_FONT
                                            localaizedKey:nil];
         [contentView addSubview:_descriptionLabel];
+
+        _attachButton = [[UIButton alloc] init];
+        [_attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
+        [_attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+        [_attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
+        [_attachButton setTitleColor:[UIColor colorWithHexInt:0x446b7a] forState:UIControlStateHighlighted];
+        [_attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
+        _attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [_attachButton setHidden:YES];
+        [contentView addSubview:_attachButton];
     }
     
     return self;
@@ -87,11 +106,20 @@
                                   topLabelSize.width,
                                   topLabelSize.height);
     
+    BOOL hasDescription = ([_item.body length] > 0);
+    BOOL hasAttachment = ([_item.attachments count] > 0);
+    
+    CGFloat descriptionInset = (hasAttachment) ? ATTACHMENT_VIEW_HEIGHT : 0.0f;
     CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
                                          actualBounds.size.width,
-                                         actualBounds.size.height - descriptionY);
+                                         (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f);
+    
+    _attachButton.frame = CGRectMake(_descriptionLabel.frame.origin.x,
+                                       CGRectBottom(_descriptionLabel.frame) + 5.0f,
+                                     actualBounds.size.width,
+                                     15.0f);
 }
 
 - (void)setItem:(IQComment *)item {
@@ -104,12 +132,25 @@
     _userNameLabel.text = _item.author.displayName;
     
     NSString * descriptionAuthor = (commentIsMine) ? [NSString stringWithFormat:@"%@:", NSLocalizedString(@"I", nil)] : @"";
-    _descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", descriptionAuthor, _item.body];
+    NSString * body = ([_item.body length] > 0) ? _item.body : @"";
+    _descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", descriptionAuthor, body];
+    
+    BOOL hasAttachment = ([_item.attachments count] > 0);
+    [_attachButton setHidden:(!hasAttachment)];
+    
+    if(hasAttachment) {
+        IQAttachment * attachment = [[_item.attachments allObjects] lastObject];
+        [_attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
+    }
+
     [self setNeedsLayout];
 }
 
 - (void)prepareForReuse {
     [super prepareForReuse];
+    [_attachButton removeTarget:nil
+                         action:NULL
+               forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {
@@ -119,7 +160,7 @@
     label.textAlignment = NSTextAlignmentLeft;
     label.backgroundColor = [UIColor clearColor];
     label.numberOfLines = 0;
-    label.lineBreakMode = NSLineBreakByWordWrapping;
+    label.lineBreakMode = NSLineBreakByTruncatingTail;
     if(localaizedKey) {
         [label setText:NSLocalizedString(localaizedKey, nil)];
     }
