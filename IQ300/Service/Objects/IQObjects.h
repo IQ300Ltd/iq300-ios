@@ -16,5 +16,6 @@
 #import "IQDiscussion.h"
 #import "IQComment.h"
 #import "IQAttachment.h"
+#import "IQContact.h"
 
 #endif

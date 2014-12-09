@@ -37,6 +37,9 @@
 "Cancel" = "Отмена";
 "I" = "Я";
 "Send" = "Отправить";
+"User name or email" = "Имя пользователя или email";
+"No contacts" = "Контакты отсутствуют";
+"No messages" = "Сообщения отсутствуют";
 
 //Notification types
 "Attachment" = "Документ";

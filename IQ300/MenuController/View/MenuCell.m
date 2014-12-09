@@ -11,8 +11,8 @@
 #import "MenuConsts.h"
 #import "IQBadgeView.h"
 
-#define BACKGROUND_COLOR [UIColor colorWithHexInt:0x1d2124]
-#define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x272d31]
+#define BACKGROUND_COLOR [UIColor colorWithHexInt:0x272d31]
+#define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x383e43]
 #define BADGE_HEIGHT 25
 #define CONTENT_LEFT_INSET 12
 #define CONTENT_LEFT_RIGHT 10

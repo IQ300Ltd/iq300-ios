@@ -111,13 +111,19 @@
     
     CGFloat descriptionInset = (hasAttachment) ? ATTACHMENT_VIEW_HEIGHT : 0.0f;
     CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
+    CGFloat descriptionHeight = (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f;
+    
+    if(hasAttachment && !hasDescription) {
+        descriptionHeight = 16.5f;
+    }
+
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
-                                         actualBounds.size.width,
-                                         (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f);
+                                         (hasDescription) ? actualBounds.size.width : 10.0f,
+                                         descriptionHeight);
     
-    _attachButton.frame = CGRectMake(_descriptionLabel.frame.origin.x,
-                                       CGRectBottom(_descriptionLabel.frame) + 5.0f,
+    _attachButton.frame = CGRectMake((hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) + 5.0f : _descriptionLabel.frame.origin.x,
+                                     (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y : CGRectBottom(_descriptionLabel.frame) + 5.0f,
                                      actualBounds.size.width,
                                      15.0f);
 }
@@ -143,6 +149,13 @@
         [_attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
     }
 
+    [self setNeedsLayout];
+}
+
+- (void)setAuthor:(NSString *)author {
+    _author = author;
+    _userNameLabel.hidden = ([author length] == 0);
+    _userNameLabel.text = author;
     [self setNeedsLayout];
 }
 

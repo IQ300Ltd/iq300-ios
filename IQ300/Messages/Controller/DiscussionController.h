@@ -9,6 +9,8 @@
 #import "IQTableBaseController.h"
 #import "DiscussionModel.h"
 
+@class IQConversation;
+
 @interface DiscussionController : IQTableBaseController
 
 @property (nonatomic, strong) NSString * companionName;

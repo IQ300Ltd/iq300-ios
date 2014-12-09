@@ -11,8 +11,7 @@
 @interface IQService (Messages)
 
 - (void)conversationsWithHandler:(ObjectLoaderCompletionHandler)handler;
-- (void)conversationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler;
-- (void)conversationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler;
+- (void)conversationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler;
 - (void)conversationWithId:(NSNumber*)conversationid handler:(ObjectLoaderCompletionHandler)handler;
 - (void)conversationsCountersWithHandler:(ObjectLoaderCompletionHandler)handler;
 - (void)createConversationWithRecipientId:(NSNumber*)recipientId handler:(ObjectLoaderCompletionHandler)handler;
@@ -26,5 +25,7 @@
               handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)contactsWithPage:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler;
 
 @end

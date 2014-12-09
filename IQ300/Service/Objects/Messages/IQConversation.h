@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NSString * type;
 @property (nonatomic, strong) NSNumber * unreadCommentsCount;
 @property (nonatomic, strong) NSNumber * totalCommentsCount;
+@property (nonatomic, strong) NSSet * users;
 @property (nonatomic, strong) IQDiscussion * discussion;
 @property (nonatomic, strong) IQComment * lastComment;
 

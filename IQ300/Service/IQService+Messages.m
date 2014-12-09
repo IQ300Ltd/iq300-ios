@@ -14,12 +14,21 @@
     [self conversationsUnread:nil page:nil per:nil search:nil sort:IQSortDirectionNo handler:handler];
 }
 
-- (void)conversationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler {
-    [self conversationsUnread:unread page:page per:per search:search sort:IQSortDirectionNo handler:handler];
-}
-
-- (void)conversationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
-    [self conversationsUnread:unread page:page per:per search:nil sort:sort handler:handler];
+- (void)conversationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"unread" : NSObjectNullForNil(unread),
+                                                                  @"page"   : NSObjectNullForNil(page),
+                                                                  @"per"    : NSObjectNullForNil(per),
+                                                                  @"search" : NSStringNullForNil(search)
+                                                                  }).mutableCopy;
+    
+    if(sort == IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+    
+    [self getObjectsAtPath:@"/api/v1/conversations"
+                parameters:parameters
+                   handler:handler];
 }
 
 - (void)conversationWithId:(NSNumber*)conversationid handler:(ObjectLoaderCompletionHandler)handler {
@@ -92,11 +101,8 @@
             handler:handler];
 }
 
-#pragma mark - Private methods
-
-- (void)conversationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
+- (void)contactsWithPage:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"unread" : NSObjectNullForNil(unread),
                                                                   @"page"   : NSObjectNullForNil(page),
                                                                   @"per"    : NSObjectNullForNil(per),
                                                                   @"search" : NSStringNullForNil(search)
@@ -106,9 +112,10 @@
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     
-    [self getObjectsAtPath:@"/api/v1/conversations"
+    [self getObjectsAtPath:@"/api/v1/contacts"
                 parameters:parameters
                    handler:handler];
+
 }
 
 @end

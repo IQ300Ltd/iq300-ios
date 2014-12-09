@@ -31,6 +31,9 @@
 "Cancel" = "Cancel";
 "I" = "I";
 "Send" = "Send";
+"User name or email" = "User name or email";
+"No contacts" = "No contacts";
+"No messages" = "No messages";
 
 //Notification types
 "Attachment" = "Document";

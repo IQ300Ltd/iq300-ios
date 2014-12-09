@@ -13,13 +13,18 @@
 
 #import "MessagesController.h"
 #import "MessagesView.h"
-#import "ConversationCell.h"
+#import "CommentCell.h"
 #import "IQConversation.h"
 
 #import "DiscussionController.h"
+#import "CreateConversationController.h"
+#import "DispatchAfterExecution.h"
+
+#define DISPATCH_DELAY 0.7
 
 @interface MessagesController() {
     MessagesView * _messagesView;
+    dispatch_after_block _cancelBlock;
 }
 
 @end
@@ -54,7 +59,10 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    _messagesView.searchBar.delegate = (id<UITextFieldDelegate>)self;
+    [_messagesView.searchBar addTarget:self
+                                action:@selector(textFieldDidChange:)
+                      forControlEvents:UIControlEventEditingChanged];
+
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
@@ -93,14 +101,20 @@
 #pragma mark - UITableView DataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ConversationCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    CommentCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
     IQConversation * conversation = [self.model itemAtIndexPath:indexPath];
-    cell.item = conversation;
+    cell.item = conversation.lastComment;
+    [cell.attachButton setEnabled:NO];
+    
+    NSPredicate * companionsPredicate = [NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId];
+    NSArray * companions = [[conversation.users filteredSetUsingPredicate:companionsPredicate] allObjects];
+    IQUser * companion = [companions lastObject];
+    cell.author = companion.displayName;
     
     return cell;
 }
@@ -108,17 +122,18 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    ConversationCell * cell = (ConversationCell*)[tableView cellForRowAtIndexPath:indexPath];
+    CommentCell * cell = (CommentCell*)[tableView cellForRowAtIndexPath:indexPath];
     IQConversation * conver = [self.model itemAtIndexPath:indexPath];
     DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
     
     DiscussionController * controller = [[DiscussionController alloc] init];
     controller.title = NSLocalizedString(@"Messages", nil);
     controller.model = model;
-    controller.companionName = cell.companionName;
+    controller.companionName = cell.author;
+
     [self.navigationController pushViewController:controller animated:YES];
     
-    [self.model markConversationAsReadAtIndexPath:indexPath completion:nil];
+    [MessagesModel markConversationAsRead:conver completion:nil];
 }
 
 #pragma mark - IQTableModel Delegate
@@ -146,10 +161,18 @@
     return YES;
 }
 
+#pragma mark - TextField Delegate
+
+- (void)textFieldDidChange:(UITextField *)textField {
+    [self filterWithText:textField.text];
+}
+
 #pragma mark - Private methods
 
 - (void)createNewAction:(id)sender {
-    
+    CreateConversationController * controller = [[CreateConversationController alloc] init];
+    controller.model = [[UsersModel alloc] init];
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 - (void)reloadModel {
@@ -178,9 +201,24 @@
     [_messagesView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
 }
 
-- (void)modelCountersDidChanged:(id<IQTableModel>)model {
-//    _menuModel.totalItemsCount = self.model.totalItemsCount;
-//    _menuModel.unreadItemsCount = self.model.unreadItemsCount;
+- (void)filterWithText:(NSString *)text {
+    if(_cancelBlock) {
+        cancel_dispatch_after_block(_cancelBlock);
+    }
+    
+    void(^compleationBlock)(NSError * error) = ^(NSError * error) {
+        if(!error) {
+            [self.tableView reloadData];
+            [self updateNoDataLabelVisibility];
+        }
+    };
+    
+    [self.model setFilter:text];
+    [self.model updateModelSourceControllerWithCompletion:compleationBlock];
+    
+    _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
+        [self.model reloadFirstPartWithCompletion:compleationBlock];
+    });
 }
 
 @end

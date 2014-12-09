@@ -296,6 +296,14 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQContact class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/contacts"
+                                                   fromKeyPath:@"contacts"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 }
 
 @end

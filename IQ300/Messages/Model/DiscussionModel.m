@@ -15,7 +15,7 @@
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionAscending
 
-static NSString * CReuseIdentifier = @"MReuseIdentifier";
+static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 @interface DiscussionModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;

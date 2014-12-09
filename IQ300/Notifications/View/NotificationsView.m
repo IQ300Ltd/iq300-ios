@@ -59,8 +59,7 @@
         _noDataLabel.numberOfLines = 0;
         _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [_noDataLabel setHidden:YES];
-        NSString * targetName = [NSLocalizedString(@"Notifications", @"Notifications") lowercaseString];
-        [_noDataLabel setText:NSLocalizedStringWithFormat(@"There are no unread notifications", targetName)];
+        [_noDataLabel setText:NSLocalizedString(@"There are no unread notifications", nil)];
         [self addSubview:_noDataLabel];
     }
     return self;

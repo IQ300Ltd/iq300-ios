@@ -20,6 +20,7 @@
 @dynamic unifiedContentType;
 @dynamic originalURL;
 @dynamic previewURL;
+@dynamic localURL;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];

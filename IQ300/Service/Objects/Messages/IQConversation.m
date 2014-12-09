@@ -19,6 +19,7 @@
 @dynamic totalCommentsCount;
 @dynamic discussion;
 @dynamic lastComment;
+@dynamic users;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
@@ -40,6 +41,11 @@
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"latest_comment"
                                                            toKeyPath:@"lastComment"
                                                          withMapping:[IQComment objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+    
+    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"discussion.users"
+                                                           toKeyPath:@"users"
+                                                         withMapping:[IQUser objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:relation];
 
     return mapping;

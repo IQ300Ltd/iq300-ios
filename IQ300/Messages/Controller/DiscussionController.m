@@ -18,6 +18,8 @@
 #import "IQComment.h"
 #import "DispatchAfterExecution.h"
 #import "ALAsset+Extension.h"
+#import "IQConversation.h"
+#import "PhotoViewController.h"
 
 @interface DiscussionController() {
     DiscussionView * _mainView;
@@ -215,6 +217,12 @@
         _documentController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL URLWithString:attachment.localURL]];
         [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
         [_documentController presentOpenInMenuFromRect:[sender frame] inView:self.view animated:YES];
+    }
+    else if([attachment.unifiedContentType rangeOfString:@"image"].location != NSNotFound &&
+            [attachment.originalURL length] > 0) {
+        PhotoViewController * controller = [[PhotoViewController alloc] init];
+        controller.imageURL = [NSURL URLWithString:attachment.originalURL];
+        [self.navigationController pushViewController:controller animated:YES];
     }
 }
 

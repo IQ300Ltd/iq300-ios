@@ -9,7 +9,7 @@
 
 #import "MessagesModel.h"
 #import "IQService+Messages.h"
-#import "ConversationCell.h"
+#import "CommentCell.h"
 #import "IQConversation.h"
 #import "IQUser.h"
 #import "IQCounters.h"
@@ -31,6 +31,36 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 @end
 
 @implementation MessagesModel
+
++ (void)createConversationWithRecipientId:(NSNumber*)recipientId completion:(void (^)(IQConversation * conv, NSError * error))completion {
+    [[IQService sharedService] createConversationWithRecipientId:recipientId
+                                                         handler:^(BOOL success, IQConversation * conv, NSData *responseData, NSError *error) {
+                                                             if(completion) {
+                                                                 completion(conv, error);
+                                                             }
+                                                         }];
+}
+
++ (void)markConversationAsRead:(IQConversation *)conversation completion:(void (^)(NSError *))completion {
+    if(conversation) {
+        
+        if([conversation.unreadCommentsCount integerValue] > 0) {
+            conversation.unreadCommentsCount = @(0);
+            
+            NSError *saveError = nil;
+            if(![conversation.managedObjectContext saveToPersistentStore:&saveError] ) {
+                NSLog(@"Save error: %@", saveError);
+            }
+        }
+        
+        [[IQService sharedService] markDiscussionAsReadedWithId:conversation.discussion.discussionId
+                                                        handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                            if(completion) {
+                                                                completion(error);
+                                                            }
+                                                        }];
+    }
+}
 
 - (id)init {
     if(self) {
@@ -61,13 +91,14 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = [ConversationCell class];
+    Class cellClass = [CommentCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
                             reuseIdentifier:MReuseIdentifier];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return [ConversationCell heightForItem:[self itemAtIndexPath:indexPath] andCellWidth:320.0f];
+    IQConversation * item = [self itemAtIndexPath:indexPath];
+    return [CommentCell heightForItem:item.lastComment andCellWidth:320.0f];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
@@ -96,6 +127,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                                   page:@(page)
                                                    per:@(_portionLenght)
+                                                search:_filter
                                                   sort:IQSortDirectionAscending
                                                handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                    if(completion) {
@@ -111,6 +143,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
                                                per:@(_portionLenght)
+                                            search:_filter
                                               sort:IQSortDirectionAscending
                                            handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                if(success) {
@@ -122,6 +155,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     [[IQService sharedService] conversationsUnread:nil
                                               page:@(1)
                                                per:@(_portionLenght)
+                                            search:_filter
                                               sort:IQSortDirectionAscending
                                            handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                if(completion) {
@@ -130,6 +164,45 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                if(success) {
                                                }
                                            }];
+}
+
+
+- (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
+    _fetchController.delegate = nil;
+    
+    [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
+    _fetchController = nil;
+    
+    if(!_fetchController && [IQService sharedService].context) {
+        NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQConversation"];
+        [fetchRequest setSortDescriptors:_sortDescriptors];
+        _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                               managedObjectContext:[IQService sharedService].context
+                                                                 sectionNameKeyPath:nil
+                                                                          cacheName:CACHE_FILE_NAME];
+    }
+    
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ANY users.userId == %@", [IQSession defaultSession].userId];
+    if(_loadUnreadOnly) {
+        NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"readed == NO"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
+    }
+    
+    if([_filter length] > 0) {
+        NSString * format = @"SUBQUERY(users, $user, $user.userId != %@ AND $user.displayName CONTAINS[cd] %@).@count > 0";
+        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:format, [IQSession defaultSession].userId, _filter];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, filterPredicate]];
+    }
+    
+    NSError * fetchError = nil;
+    [_fetchController.fetchRequest setPredicate:predicate];
+    [_fetchController.fetchRequest setSortDescriptors:_sortDescriptors];
+    [_fetchController setDelegate:self];
+    [_fetchController performFetch:&fetchError];
+    
+    if(completion) {
+        completion(fetchError);
+    }
 }
 
 - (void)clearModelData {
@@ -176,55 +249,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     }
 }
 
-- (void)markConversationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
-    IQConversation * item = [self itemAtIndexPath:indexPath];
-    item.unreadCommentsCount = @(0);
-    
-    NSError *saveError = nil;
-    if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
-        NSLog(@"Save error: %@", saveError);
-    }
-    
-    [[IQService sharedService] markDiscussionAsReadedWithId:item.discussion.discussionId
-                                                    handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                        if(completion) {
-                                                            completion(error);
-                                                        }
-                                                    }];
-}
-
 #pragma mark - Private methods
-
-- (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
-    _fetchController.delegate = nil;
-    
-    [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
-    
-    if(!_fetchController && [IQService sharedService].context) {
-        NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQConversation"];
-        [fetchRequest setSortDescriptors:_sortDescriptors];
-        _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                               managedObjectContext:[IQService sharedService].context
-                                                                 sectionNameKeyPath:nil
-                                                                          cacheName:CACHE_FILE_NAME];
-    }
-    
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ANY discussion.users.userId == %@", [IQSession defaultSession].userId];
-    if(_loadUnreadOnly) {
-        NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"readed == NO"];
-        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
-    }
-    
-    NSError * fetchError = nil;
-    [_fetchController.fetchRequest setPredicate:predicate];
-    [_fetchController.fetchRequest setSortDescriptors:_sortDescriptors];
-    [_fetchController setDelegate:self];
-    [_fetchController performFetch:&fetchError];
-    
-    if(completion) {
-        completion(fetchError);
-    }
-}
 
 - (void)reloadFirstPart {
     [self reloadFirstPartWithCompletion:^(NSError *error) {

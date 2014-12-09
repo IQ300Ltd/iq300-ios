@@ -8,13 +8,20 @@
 
 #import "IQTableModel.h"
 
+@class IQConversation;
+
 @interface MessagesModel : NSObject<IQTableModel>
 
 @property (nonatomic, assign) BOOL loadUnreadOnly;
+@property (nonatomic, strong) NSString * filter;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+
++ (void)createConversationWithRecipientId:(NSNumber*)recipientId completion:(void (^)(IQConversation * conv, NSError * error))completion;
++ (void)markConversationAsRead:(IQConversation*)conversation completion:(void (^)(NSError * error))completion;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
+- (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion;
 
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
@@ -22,7 +29,5 @@
 - (void)updateCountersWithCompletion:(void (^)(NSError * error))completion;
 
 - (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed;
-
-- (void)markConversationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 
 @end
