@@ -261,14 +261,14 @@
                 }];
             }
         }
-        [self scrollToBottomAnimated:NO delay:0.0f];
+        [self scrollToBottomAnimated:NO delay:0.01f];
     }];
 }
 
 #pragma mark - Keyboard Helpers
 
 - (void)onKeyboardWillShow:(NSNotification *)notification {
-    [self makeInputViewTransitionWithDownDirection:NO notification:notification];
+   [self makeInputViewTransitionWithDownDirection:NO notification:notification];
     _enterCommentProcessing = YES;
 }
 
@@ -325,9 +325,14 @@
         
         if (itemsCount > 0) {
             NSIndexPath * indexPath = [NSIndexPath indexPathForRow:itemsCount - 1 inSection:section - 1];
-            dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
+            if(delay > 0.0f) {
+                dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
+                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                });
+            }
+            else {
                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
-            });
+            }
         }
     }
 }
