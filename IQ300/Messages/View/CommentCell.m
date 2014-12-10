@@ -142,9 +142,9 @@
     _userNameLabel.hidden = ([_item.author.displayName length] == 0);
     _userNameLabel.text = _item.author.displayName;
     
-    NSString * descriptionAuthor = (commentIsMine) ? [NSString stringWithFormat:@"%@:", NSLocalizedString(@"I", nil)] : @"";
     NSString * body = ([_item.body length] > 0) ? _item.body : @"";
-    _descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", descriptionAuthor, body];
+    body = (commentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
+    _descriptionLabel.text = body;
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
     [_attachButton setHidden:(!hasAttachment)];

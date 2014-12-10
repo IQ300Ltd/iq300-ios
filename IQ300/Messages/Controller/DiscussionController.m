@@ -74,7 +74,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
     [_mainView.titleLabel setText:self.companionName];
     
     [self.leftMenuController setModel:nil];
@@ -111,6 +110,11 @@
 
 #pragma mark - UITableView DataSource
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.model.cellWidth = tableView.frame.size.width;
+    return [self.model heightForItemAtIndexPath:indexPath];
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CommentCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
@@ -144,14 +148,12 @@
 
 - (void)modelDidChangeContent:(id<IQTableModel>)model {
     [super modelDidChangeContent:model];
-    dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
-        [self scrollToBottomAnimated:YES];
-    });
+    [self scrollToBottomAnimated:YES delay:0.5f];
 }
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
     [super modelDidChanged:model];
-    [self scrollToBottomAnimated:NO];
+    [self scrollToBottomAnimated:NO delay:0.0f];
 }
 
 #pragma mark - Private methods
@@ -250,19 +252,16 @@
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
-            if([self.model numberOfItemsInSection:0] > 0) {
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                      atScrollPosition:UITableViewScrollPositionTop
-                                              animated:NO];
-            }
-            else {
+            NSInteger numberOfItems = [self.model numberOfItemsInSection:0];
+            if(numberOfItems == 0) {
                 [self.model updateModelWithCompletion:^(NSError *error) {
                     if([self.model numberOfItemsInSection:0] > 0) {
+                        [self scrollToBottomAnimated:NO delay:0.0f];
                     }
                 }];
             }
         }
-        [self scrollToBottomAnimated:NO];
+        [self scrollToBottomAnimated:NO delay:0.0f];
     }];
 }
 
@@ -298,7 +297,7 @@
     [UIView setAnimationCurve:animationCurve];
     
     [_mainView setInputOffset:down ? 0.0f : keyboardRect.origin.y - _mainView.inputView.frame.size.height];
-    [self scrollToBottomAnimated:NO];
+    [self scrollToBottomAnimated:NO delay:0.0f];
     
     [UIView commitAnimations];
 }
@@ -318,15 +317,17 @@
     [_mainView setInputHeight:messageTextViewHeight];
 }
 
-- (void)scrollToBottomAnimated:(BOOL)animated {
+- (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay {
     NSInteger section = [self.tableView numberOfSections];
     
     if (section > 0) {
-        NSInteger itemsCount = [self.tableView numberOfRowsInSection:--section];
+        NSInteger itemsCount = [self.tableView numberOfRowsInSection:section-1];
         
         if (itemsCount > 0) {
-            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:itemsCount - 1 inSection:section];
-            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:itemsCount - 1 inSection:section - 1];
+            dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+            });
         }
     }
 }

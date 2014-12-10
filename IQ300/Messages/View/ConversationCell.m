@@ -177,9 +177,9 @@
     _userNameLabel.text = companion.displayName;
     _companionName = companion.displayName;
     
-    NSString * descriptionAuthor = (lastCommentIsMine) ? [NSString stringWithFormat:@"%@:", NSLocalizedString(@"I", nil)] : @"";
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";
-   _descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", descriptionAuthor, body];
+    body = (lastCommentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
+    _descriptionLabel.text = body;
     [self setBadgeText:(hasUnreadComments) ? [_item.unreadCommentsCount stringValue] : nil];
     
     BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);

@@ -18,7 +18,7 @@
                                   NSParagraphStyleAttributeName : paragraphStyle};
     
     return [self boundingRectWithSize:size
-                              options:NSStringDrawingUsesLineFragmentOrigin
+                              options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
                            attributes:attributes
                               context:nil].size;
 }
@@ -31,7 +31,7 @@
                                   NSParagraphStyleAttributeName : paragraphStyle};
     
     return [self boundingRectWithSize:(CGSize){width, CGFLOAT_MAX}
-                              options:NSStringDrawingUsesLineFragmentOrigin
+                              options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
                            attributes:attributes
                               context:nil].size;
 }
@@ -40,7 +40,7 @@
     NSDictionary * attributes = @{NSFontAttributeName : font};
     
     return [self boundingRectWithSize:size
-                              options:NSStringDrawingUsesLineFragmentOrigin
+                              options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
                            attributes:attributes
                               context:nil].size;
 }

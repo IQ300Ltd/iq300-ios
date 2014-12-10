@@ -15,6 +15,7 @@
 
 @property (nonatomic, weak) IQDiscussion * discussion;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+@property (nonatomic, assign) CGFloat cellWidth;
 
 - (id)initWithDiscussion:(IQDiscussion*)discussion;
 
@@ -24,6 +25,10 @@
 
 - (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed;
 
-- (void)sendComment:(NSString*)comment attachmentAsset:(ALAsset*)asset fileName:(NSString*)fileName attachmentType:(NSString*)type withCompletion:(void (^)(NSError * error))completion;
+- (void)sendComment:(NSString*)comment
+    attachmentAsset:(ALAsset*)asset
+           fileName:(NSString*)fileName
+     attachmentType:(NSString*)type
+     withCompletion:(void (^)(NSError * error))completion;
 
 @end

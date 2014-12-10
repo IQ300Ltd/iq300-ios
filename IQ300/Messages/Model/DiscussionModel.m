@@ -71,7 +71,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return [CommentCell heightForItem:[self itemAtIndexPath:indexPath] andCellWidth:320.0f];
+    return [CommentCell heightForItem:[self itemAtIndexPath:indexPath] andCellWidth:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
