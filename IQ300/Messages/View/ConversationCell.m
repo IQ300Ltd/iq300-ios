@@ -141,7 +141,7 @@
     
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
-                                         (hasDescription) ? actualBounds.size.width - 22.0f : 10.0f,
+                                         (hasDescription) ? actualBounds.size.width - 30.0f : 10.0f,
                                          descriptionHeight);
     if(hasAttachment) {
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width,
