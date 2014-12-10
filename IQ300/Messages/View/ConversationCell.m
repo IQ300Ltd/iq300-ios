@@ -135,7 +135,7 @@
     CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
-                                         actualBounds.size.width,
+                                         actualBounds.size.width - 20.0f,
                                          (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f);
     
     if(hasAttachment) {

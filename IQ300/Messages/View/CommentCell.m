@@ -27,7 +27,7 @@
 + (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
     CGFloat descriptionY = CELL_HEADER_MIN_HEIGHT;
     CGFloat descriptionWidth = cellWidth;
-    CGFloat height = COMMENT_CELL_MIN_HEIGHT;
+    CGFloat height = COMMENT_CELL_MIN_HEIGHT; 
     
     if([item.body length] > 0) {
         CGSize descriptionSize = [item.body sizeWithFont:DESCRIPTION_LABEL_FONT
