@@ -162,6 +162,11 @@
     NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
     
     [self.model markNotificationAsReadAtIndexPath:itemIndexPath completion:^(NSError *error) {
+        if([self.model numberOfItemsInSection:0] == 0) {
+            [self.model updateModelWithCompletion:^(NSError *error) {
+                [self updateNoDataLabelVisibility];
+            }];
+        }
     }];
 }
 
@@ -178,9 +183,7 @@
             else {
                 [_mainView.noDataLabel setHidden:NO];
                 [self.model updateModelWithCompletion:^(NSError *error) {
-                    if([self.model numberOfItemsInSection:0] > 0) {
-                        [_mainView.noDataLabel setHidden:YES];
-                    }
+                    [self updateNoDataLabelVisibility];
                 }];
             }
         }

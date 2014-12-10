@@ -128,11 +128,6 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQComment * comment = [self.model itemAtIndexPath:indexPath];
-    NSArray * attachments = [comment.attachments allObjects];
-    for (IQAttachment * attachment in attachments) {
-        NSLog(@"%@", attachment.originalURL);
-    }
 }
 
 #pragma mark - UIScroll Delegate
@@ -222,6 +217,7 @@
             [attachment.originalURL length] > 0) {
         PhotoViewController * controller = [[PhotoViewController alloc] init];
         controller.imageURL = [NSURL URLWithString:attachment.originalURL];
+        controller.fileName = attachment.displayName;
         [self.navigationController pushViewController:controller animated:YES];
     }
 }

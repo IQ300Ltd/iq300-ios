@@ -34,7 +34,7 @@
         _contentInsets = UIEdgeInsetsMake(5, 8, 5, 8);
         _contentBackgroundInsets = UIEdgeInsetsZero;
         
-        [self.contentView setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
+        [self setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
         
         _contentBackgroundView = [[UIView alloc] init];
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;

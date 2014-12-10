@@ -15,6 +15,7 @@
     UIImageView * _imageView;
     UIView * _headerView;
     UIButton * _backButton;
+    UILabel * _titleLabel;
     UIActivityIndicatorView * _activityIndicator;
 }
 
@@ -37,9 +38,18 @@
     [self.view addSubview:_headerView];
  
     _backButton = [[UIButton alloc] init];
-    [_backButton setImage:[UIImage imageNamed:@"backArrow.png"] forState:UIControlStateNormal];
+    [_backButton setImage:[UIImage imageNamed:@"backWhiteArrow.png"] forState:UIControlStateNormal];
     [[_backButton imageView] setContentMode:UIViewContentModeCenter];
     [_headerView addSubview:_backButton];
+    
+    _titleLabel = [[UILabel alloc] init];
+    [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
+    [_titleLabel setTextColor:[UIColor whiteColor]];
+    _titleLabel.textAlignment = NSTextAlignmentCenter;
+    _titleLabel.backgroundColor = [UIColor clearColor];
+    _titleLabel.numberOfLines = 0;
+    _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [_headerView addSubview:_titleLabel];
     
     _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     [_activityIndicator setHidesWhenStopped:YES];
@@ -50,6 +60,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    _titleLabel.text = self.fileName;
     
     [_activityIndicator startAnimating];
     if(self.imageURL) {
@@ -62,6 +74,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     _imageView.image = nil;
+    [_imageView sd_cancelCurrentImageLoad];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -78,6 +91,8 @@
                                    (_headerView.frame.size.height - backButtonImageSize.height) / 2,
                                    backButtonImageSize.width,
                                    backButtonImageSize.height);
+    
+    _titleLabel.frame = _headerView.bounds;
     
     //CGFloat imageY = CGRectBottom(_headerView.frame);
     _imageView.frame = actualBounds;
