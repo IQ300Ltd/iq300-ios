@@ -63,6 +63,7 @@
                                 action:@selector(textFieldDidChange:)
                       forControlEvents:UIControlEventEditingChanged];
 
+    _messagesView.searchBar.delegate = (id<UITextFieldDelegate>)self;
     
     __weak typeof(self) weakSelf = self;
     [self.tableView

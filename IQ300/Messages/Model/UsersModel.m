@@ -62,7 +62,7 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
     Class cellClass = [ContactCell class];
-    return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
+    return [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
                             reuseIdentifier:UReuseIdentifier];
 }
 

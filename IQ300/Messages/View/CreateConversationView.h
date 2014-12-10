@@ -16,6 +16,7 @@
 
 @property (nonatomic, readonly) BottomLineView * headerView;
 @property (nonatomic, readonly) UIButton * backButton;
+@property (nonatomic, readonly) UILabel * titleLabel;
 
 @property (nonatomic, readonly) ExTextField * userTextField;
 @property (nonatomic, strong) UITableView * tableView;

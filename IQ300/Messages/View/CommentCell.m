@@ -121,11 +121,16 @@
                                          descriptionY,
                                          (hasDescription) ? actualBounds.size.width : 10.0f,
                                          descriptionHeight);
-    
-    _attachButton.frame = CGRectMake((hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) + 5.0f : _descriptionLabel.frame.origin.x,
-                                     (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y : CGRectBottom(_descriptionLabel.frame) + 5.0f,
-                                     actualBounds.size.width,
-                                     15.0f);
+    if(hasAttachment) {
+        CGSize constrainedSize = CGSizeMake(actualBounds.size.width,
+                                            15.0f);
+        CGSize attachmentSize = [_attachButton sizeThatFits:constrainedSize];
+        
+        _attachButton.frame = CGRectMake((hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) + 5.0f : _descriptionLabel.frame.origin.x,
+                                         (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y : CGRectBottom(_descriptionLabel.frame) + 5.0f,
+                                         attachmentSize.width + 5.0f,
+                                         attachmentSize.height);
+    }
 }
 
 - (void)setItem:(IQComment *)item {

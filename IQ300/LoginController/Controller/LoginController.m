@@ -66,6 +66,9 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
                                               if(success) {
                                                   [self continueLoginProccess];
                                               }
+                                              else if([IQService sharedService].serviceReachabilityStatus == TCServicekReachabilityStatusNotReachable) {
+                                                  [self showErrorMessage:@"Internet connection is unavailable"];
+                                              }
                                               else {
                                                   [self showErrorMessage:@"Wrong credentials"];
                                               }

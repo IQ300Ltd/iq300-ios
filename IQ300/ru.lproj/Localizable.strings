@@ -13,6 +13,7 @@
 "Password" = "Пароль";
 "Enter" = "Войти";
 "Forgot your password?" = "Забыли пароль?";
+"Internet connection is unavailable" = "Интернет соединение недоступно";
 "Registry" = "Зарегистрироваться";
 "Change" = "Изменить";
 "Logout" = "Выйти";
@@ -40,6 +41,7 @@
 "User name or email" = "Имя пользователя или email";
 "No contacts" = "Контакты отсутствуют";
 "No messages" = "Сообщения отсутствуют";
+"Сontacts" = "Контакты";
 
 //Notification types
 "Attachment" = "Документ";

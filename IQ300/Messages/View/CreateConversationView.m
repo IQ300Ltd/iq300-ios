@@ -39,6 +39,16 @@
         [[_backButton imageView] setContentMode:UIViewContentModeCenter];
         [_headerView addSubview:_backButton];
         
+        _titleLabel = [[UILabel alloc] init];
+        [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
+        [_titleLabel setTextColor:[UIColor colorWithHexInt:0x9f9f9f]];
+        _titleLabel.textAlignment = NSTextAlignmentCenter;
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.numberOfLines = 0;
+        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        [_titleLabel setText:NSLocalizedString(@"Сontacts", nil)];
+        [_headerView addSubview:_titleLabel];
+
         _userTextField = [[ExTextField alloc] init];
         _userNamelContainer = [self makeContainerWithField:_userTextField placeholder:@"User name or email"];
         [self addSubview:_userNamelContainer];
@@ -87,6 +97,8 @@
                                    actualBounds.origin.y + (_headerView.frame.size.height - backButtonImageSize.height) / 2,
                                    backButtonImageSize.width,
                                    backButtonImageSize.height);
+
+    _titleLabel.frame = _headerView.bounds;
     
     CGRect containerRect = CGRectMake(actualBounds.origin.x,
                                       CGRectBottom(_headerView.frame),
