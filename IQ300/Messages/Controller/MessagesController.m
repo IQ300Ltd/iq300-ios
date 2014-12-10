@@ -13,7 +13,7 @@
 
 #import "MessagesController.h"
 #import "MessagesView.h"
-#import "CommentCell.h"
+#import "ConversationCell.h"
 #import "IQConversation.h"
 
 #import "DiscussionController.h"
@@ -102,20 +102,14 @@
 #pragma mark - UITableView DataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CommentCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    ConversationCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
     IQConversation * conversation = [self.model itemAtIndexPath:indexPath];
-    cell.item = conversation.lastComment;
-    [cell.attachButton setEnabled:NO];
-    
-    NSPredicate * companionsPredicate = [NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId];
-    NSArray * companions = [[conversation.users filteredSetUsingPredicate:companionsPredicate] allObjects];
-    IQUser * companion = [companions lastObject];
-    cell.author = companion.displayName;
+    cell.item = conversation;
     
     return cell;
 }
@@ -123,14 +117,14 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    CommentCell * cell = (CommentCell*)[tableView cellForRowAtIndexPath:indexPath];
+    ConversationCell * cell = (ConversationCell*)[tableView cellForRowAtIndexPath:indexPath];
     IQConversation * conver = [self.model itemAtIndexPath:indexPath];
     DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
     
     DiscussionController * controller = [[DiscussionController alloc] init];
     controller.title = NSLocalizedString(@"Messages", nil);
     controller.model = model;
-    controller.companionName = cell.author;
+    controller.companionName = cell.companionName;
 
     [self.navigationController pushViewController:controller animated:YES];
     

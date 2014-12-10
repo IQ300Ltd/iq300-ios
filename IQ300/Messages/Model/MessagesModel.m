@@ -9,8 +9,8 @@
 
 #import "MessagesModel.h"
 #import "IQService+Messages.h"
-#import "CommentCell.h"
 #import "IQConversation.h"
+#import "ConversationCell.h"
 #import "IQUser.h"
 #import "IQCounters.h"
 
@@ -91,14 +91,14 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = [CommentCell class];
+    Class cellClass = [ConversationCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
                             reuseIdentifier:MReuseIdentifier];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
     IQConversation * item = [self itemAtIndexPath:indexPath];
-    return [CommentCell heightForItem:item.lastComment andCellWidth:320.0f];
+    return [ConversationCell heightForItem:item andCellWidth:320.0f];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {

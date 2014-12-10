@@ -8,6 +8,7 @@
 #import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 #import <CTAssetsPickerController/CTAssetsPickerController.h>
+#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
 #import "UIViewController+LeftMenu.h"
 #import "IQSession.h"
@@ -20,6 +21,7 @@
 #import "ALAsset+Extension.h"
 #import "IQConversation.h"
 #import "PhotoViewController.h"
+#import "DownloadManager.h"
 
 @interface DiscussionController() {
     DiscussionView * _mainView;
@@ -208,17 +210,39 @@
     IQComment * comment = [self.model itemAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
     IQAttachment * attachment = [[comment.attachments allObjects] lastObject];
     
-    if ([attachment.localURL length] > 0) {
-        _documentController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL URLWithString:attachment.localURL]];
-        [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
-        [_documentController presentOpenInMenuFromRect:[sender frame] inView:self.view animated:YES];
-    }
-    else if([attachment.unifiedContentType rangeOfString:@"image"].location != NSNotFound &&
-            [attachment.originalURL length] > 0) {
+    CGRect rectForAppearing = [sender.superview convertRect:sender.frame toView:self.view];
+    if([attachment.unifiedContentType rangeOfString:@"image"].location != NSNotFound &&
+       [attachment.originalURL length] > 0) {
         PhotoViewController * controller = [[PhotoViewController alloc] init];
         controller.imageURL = [NSURL URLWithString:attachment.originalURL];
         controller.fileName = attachment.displayName;
         [self.navigationController pushViewController:controller animated:YES];
+    }
+    else if ([attachment.localURL length] > 0) {
+        [self showOpenInForURL:attachment.localURL fromRect:rectForAppearing];
+    }
+    else {
+        [[DownloadManager sharedManager] downloadDataFromURL:attachment.originalURL
+                                                     success:^(NSOperation *operation, NSString * storedURL, NSData *responseData) {
+                                                         attachment.localURL = storedURL;
+                                                         NSError *saveError = nil;
+                                                         if(![attachment.managedObjectContext saveToPersistentStore:&saveError] ) {
+                                                             NSLog(@"Save error: %@", saveError);
+                                                         }
+                                                         [self showOpenInForURL:storedURL fromRect:rectForAppearing];
+                                                     }
+                                                     failure:^(NSOperation *operation, NSError *error) {
+                                                         
+                                                     }];
+    }
+}
+
+- (void)showOpenInForURL:(NSString*)localURL fromRect:(CGRect)rect {
+    NSURL * documentURL = [NSURL fileURLWithPath:localURL isDirectory:NO];
+    _documentController = [UIDocumentInteractionController interactionControllerWithURL:documentURL];
+    [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
+    if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
+        NSLog(@"Can't open this type");
     }
 }
 
@@ -337,7 +361,7 @@
 }
 
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(NSString *)application {
-    NSLog(@"Starting to send this item to %@", application);
+
 }
 
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
