@@ -86,7 +86,7 @@
         style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
      
         _badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
-        _badgeView.badgeMinSize = 15;
+        _badgeView.badgeMinSize = 17;
         _badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:10];
         [_badgeView setHidden:YES];
         [contentView addSubview:_badgeView];
@@ -141,7 +141,7 @@
     
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
-                                         (hasDescription) ? actualBounds.size.width - 30.0f : 10.0f,
+                                         (hasDescription) ? actualBounds.size.width - 40.0f : 10.0f,
                                          descriptionHeight);
     if(hasAttachment) {
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width,
@@ -180,7 +180,8 @@
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";
     body = (lastCommentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
     _descriptionLabel.text = body;
-    [self setBadgeText:(hasUnreadComments) ? [_item.unreadCommentsCount stringValue] : nil];
+    NSString * badgeValue = ([_item.unreadCommentsCount integerValue] > 99.0f) ? @"99+" : [_item.unreadCommentsCount stringValue];
+    [self setBadgeText:(hasUnreadComments) ?  badgeValue : nil];
     
     BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);
     [_attachButton setHidden:(!hasAttachment)];
