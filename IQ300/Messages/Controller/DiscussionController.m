@@ -213,7 +213,7 @@
     IQAttachment * attachment = [[comment.attachments allObjects] lastObject];
     
     CGRect rectForAppearing = [sender.superview convertRect:sender.frame toView:self.view];
-    if([attachment.unifiedContentType rangeOfString:@"image"].location != NSNotFound &&
+    if([attachment.contentType rangeOfString:@"image"].location != NSNotFound &&
        [attachment.originalURL length] > 0) {
         PhotoViewController * controller = [[PhotoViewController alloc] init];
         controller.imageURL = [NSURL URLWithString:attachment.originalURL];
