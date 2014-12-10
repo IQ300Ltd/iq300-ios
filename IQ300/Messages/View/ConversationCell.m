@@ -130,21 +130,26 @@
     
     BOOL hasDescription = ([_item.lastComment.body length] > 0);
     BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);
+    
     CGFloat descriptionInset = (hasAttachment) ? ATTACHMENT_VIEW_HEIGHT : 0.0f;
-
     CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
+    CGFloat descriptionHeight = (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f;
+    
+    if(hasAttachment && !hasDescription) {
+        descriptionHeight = 16.5f;
+    }
+    
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
-                                         actualBounds.size.width - 20.0f,
-                                         (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f);
-    
+                                         (hasDescription) ? actualBounds.size.width : 10.0f,
+                                         descriptionHeight);
     if(hasAttachment) {
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width,
                                             15.0f);
         CGSize attachmentSize = [_attachButton sizeThatFits:constrainedSize];
         
         _attachButton.frame = CGRectMake((hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) + 5.0f : _descriptionLabel.frame.origin.x,
-                                         (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y : CGRectBottom(_descriptionLabel.frame) + 5.0f,
+                                         (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f,
                                          attachmentSize.width + 5.0f,
                                          attachmentSize.height);
     }

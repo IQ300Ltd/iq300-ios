@@ -27,7 +27,7 @@
 + (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
     CGFloat descriptionY = CELL_HEADER_MIN_HEIGHT;
     CGFloat descriptionWidth = cellWidth;
-    CGFloat height = COMMENT_CELL_MIN_HEIGHT; 
+    CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
         CGSize descriptionSize = [item.body sizeWithFont:DESCRIPTION_LABEL_FONT
@@ -127,7 +127,7 @@
         CGSize attachmentSize = [_attachButton sizeThatFits:constrainedSize];
         
         _attachButton.frame = CGRectMake((hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) + 5.0f : _descriptionLabel.frame.origin.x,
-                                         (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y : CGRectBottom(_descriptionLabel.frame) + 5.0f,
+                                         (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f,
                                          attachmentSize.width + 5.0f,
                                          attachmentSize.height);
     }
