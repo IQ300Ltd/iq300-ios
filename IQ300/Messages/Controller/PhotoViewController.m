@@ -65,9 +65,12 @@
     
     [_activityIndicator startAnimating];
     if(self.imageURL) {
-        [_imageView sd_setImageWithURL:self.imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            [_activityIndicator stopAnimating];
-        }];
+        [_imageView sd_setImageWithURL:self.imageURL
+                      placeholderImage:nil
+                               options:SDWebImageCacheMemoryOnly
+                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                 [_activityIndicator stopAnimating];
+                             }];
     }
 }
 
