@@ -111,13 +111,14 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self updateModelSourceControllerWithCompletion:completion];
+    [self updateModelSourceControllerWithCompletion:nil];
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
                                                       sort:SORT_DIRECTION
                                                    handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
-                                                       if(success) {
+                                                       if(completion) {
+                                                           completion(error);
                                                        }
                                                    }];
 }

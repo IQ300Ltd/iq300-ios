@@ -139,14 +139,15 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self updateModelSourceControllerWithCompletion:completion];
+    [self updateModelSourceControllerWithCompletion:nil];
     [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
                                                per:@(_portionLenght)
                                             search:_filter
                                               sort:IQSortDirectionAscending
                                            handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
-                                               if(success) {
+                                               if(completion) {
+                                                   completion(error);
                                                }
                                            }];
 }
@@ -160,8 +161,6 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                            handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                if(completion) {
                                                    completion(error);
-                                               }
-                                               if(success) {
                                                }
                                            }];
 }

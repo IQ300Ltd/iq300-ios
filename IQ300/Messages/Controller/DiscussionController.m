@@ -147,16 +147,6 @@
     }
 }
 
-- (void)modelDidChangeContent:(id<IQTableModel>)model {
-    [super modelDidChangeContent:model];
-    [self scrollToBottomAnimated:YES delay:0.5f];
-}
-
-- (void)modelDidChanged:(id<IQTableModel>)model {
-    [super modelDidChanged:model];
-    [self scrollToBottomAnimated:NO delay:0.0f];
-}
-
 #pragma mark - Private methods
 
 - (BOOL)isValidText:(NSString *)text {
@@ -267,16 +257,8 @@
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
-            NSInteger numberOfItems = [self.model numberOfItemsInSection:0];
-            if(numberOfItems == 0) {
-                [self.model updateModelWithCompletion:^(NSError *error) {
-                    if([self.model numberOfItemsInSection:0] > 0) {
-                        [self scrollToBottomAnimated:NO delay:0.0f];
-                    }
-                }];
-            }
         }
-        [self scrollToBottomAnimated:NO delay:0.01f];
+        [self scrollToBottomAnimated:NO delay:0.0f];
     }];
 }
 

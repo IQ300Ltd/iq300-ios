@@ -140,6 +140,7 @@
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
     self.model.loadUnreadOnly = (indexPath.row == 1);
+    _mainView.noDataLabel.text = NSLocalizedString((indexPath.row == 0) ? NoNotificationFound : NoUnreadNotificationFound, nil);
     [self reloadModel];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
@@ -147,15 +148,17 @@
 #pragma mark - Private methods
 
 - (void)markAllAsReaded:(id)sender {
-    [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_readed_question", nil)
-             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-             otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
-                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                          if(buttonIndex == 1) {
-                              [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
-                              }];
-                          }
-                      }];
+    if(self.model.unreadItemsCount > 0) {
+        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_readed_question", nil)
+                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                              if(buttonIndex == 1) {
+                                  [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
+                                  }];
+                              }
+                          }];
+    }
 }
 
 - (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {

@@ -9,6 +9,9 @@
 #import "NotificationsView.h"
 #import "BottomLineView.h"
 
+NSString * const NoNotificationFound = @"There are no notifications";
+NSString * const NoUnreadNotificationFound = @"There are no unread notifications";
+
 #define SEARCH_HEIGHT 0//44
 
 @interface NotificationsView() {
@@ -59,7 +62,7 @@
         _noDataLabel.numberOfLines = 0;
         _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [_noDataLabel setHidden:YES];
-        [_noDataLabel setText:NSLocalizedString(@"There are no unread notifications", nil)];
+        [_noDataLabel setText:NSLocalizedString(NoNotificationFound, nil)];
         [self addSubview:_noDataLabel];
     }
     return self;

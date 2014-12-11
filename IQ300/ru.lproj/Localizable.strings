@@ -33,6 +33,7 @@
 "Release to refresh..." = "Отпустите, чтобы обновить";
 "Loading..." = "Загрузка";
 "There are no unread notifications" = "Непрочитанные уведомления отсутствуют";
+"There are no notifications" = "Уведомления отсутствуют";
 "mark_all_readed_question" = "Все Ваши уведомления будут отмечены как прочитанные. Продолжить?";
 "OK" = "OK";
 "Cancel" = "Отмена";
