@@ -151,6 +151,7 @@
 		73C58C0A1A1F17FD00C83729 /* NSString+SizeWith.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C58C091A1F17FD00C83729 /* NSString+SizeWith.m */; };
 		73C58C101A1F532500C83729 /* mark_tab_item.png in Resources */ = {isa = PBXBuildFile; fileRef = 73C58C0E1A1F532500C83729 /* mark_tab_item.png */; };
 		73C58C111A1F532500C83729 /* mark_tab_item@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73C58C0F1A1F532500C83729 /* mark_tab_item@2x.png */; };
+		73F2A5401A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2A53F1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m */; };
 		73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CE91A1B6B6D00225255 /* IQSession.m */; };
 		73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */; };
 		73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */; };
@@ -396,6 +397,8 @@
 		73C58C0D1A1F3B8000C83729 /* CGGeometry+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CGGeometry+Extensions.h"; sourceTree = "<group>"; };
 		73C58C0E1A1F532500C83729 /* mark_tab_item.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mark_tab_item.png; sourceTree = "<group>"; };
 		73C58C0F1A1F532500C83729 /* mark_tab_item@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mark_tab_item@2x.png"; sourceTree = "<group>"; };
+		73F2A53E1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ScreenActivityIndicator.h"; sourceTree = "<group>"; };
+		73F2A53F1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+ScreenActivityIndicator.m"; sourceTree = "<group>"; };
 		73F90CE81A1B6B6D00225255 /* IQSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSession.h; sourceTree = "<group>"; };
 		73F90CE91A1B6B6D00225255 /* IQSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSession.m; sourceTree = "<group>"; };
 		73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQServiceResponse.h; sourceTree = "<group>"; };
@@ -611,6 +614,8 @@
 				739C3B641A3077320032C057 /* NSDate+IQFormater.m */,
 				73A798371A359D79006F5721 /* ALAsset+Extension.h */,
 				73A798381A359D79006F5721 /* ALAsset+Extension.m */,
+				73F2A53E1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.h */,
+				73F2A53F1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1159,6 +1164,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73F2A5401A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m in Sources */,
 				73C58C0A1A1F17FD00C83729 /* NSString+SizeWith.m in Sources */,
 				73A798391A359D79006F5721 /* ALAsset+Extension.m in Sources */,
 				7395C50D1A31848700A6D5DA /* UIView+RoundedCorners.m in Sources */,

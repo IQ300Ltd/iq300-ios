@@ -36,6 +36,7 @@
 "No contacts" = "No contacts";
 "No messages" = "No messages";
 "Сontacts" = "Сontacts";
+"You do not have an application installed to view files of this type" = "You do not have an application installed to view files of this type";
 
 //Notification types
 "Attachment" = "Document";

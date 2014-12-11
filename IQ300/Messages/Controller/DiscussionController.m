@@ -22,6 +22,7 @@
 #import "IQConversation.h"
 #import "PhotoViewController.h"
 #import "DownloadManager.h"
+#import "UIViewController+ScreenActivityIndicator.h"
 
 @interface DiscussionController() {
     DiscussionView * _mainView;
@@ -224,14 +225,22 @@
         [self showOpenInForURL:attachment.localURL fromRect:rectForAppearing];
     }
     else {
+        [self showActivityIndicator];
+        NSArray * urlComponents = [attachment.originalURL componentsSeparatedByString:@"?"];
+        NSString * fileExtension = [[urlComponents firstObject] pathExtension];
         [[DownloadManager sharedManager] downloadDataFromURL:attachment.originalURL
                                                      success:^(NSOperation *operation, NSString * storedURL, NSData *responseData) {
-                                                         attachment.localURL = storedURL;
+                                                         NSString * destinationURL = [storedURL stringByAppendingPathExtension:fileExtension];
+                                                         [[NSFileManager defaultManager] moveItemAtURL:[NSURL fileURLWithPath:storedURL]
+                                                                                                 toURL:[NSURL fileURLWithPath:destinationURL]
+                                                                                                 error:nil];
+                                                         attachment.localURL = destinationURL;
+                                                         
                                                          NSError *saveError = nil;
                                                          if(![attachment.managedObjectContext saveToPersistentStore:&saveError] ) {
                                                              NSLog(@"Save error: %@", saveError);
                                                          }
-                                                         [self showOpenInForURL:storedURL fromRect:rectForAppearing];
+                                                         [self showOpenInForURL:destinationURL fromRect:rectForAppearing];
                                                      }
                                                      failure:^(NSOperation *operation, NSError *error) {
                                                          
@@ -240,11 +249,17 @@
 }
 
 - (void)showOpenInForURL:(NSString*)localURL fromRect:(CGRect)rect {
+    [self hideActivityIndicator];
     NSURL * documentURL = [NSURL fileURLWithPath:localURL isDirectory:NO];
     _documentController = [UIDocumentInteractionController interactionControllerWithURL:documentURL];
     [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
     if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
-        NSLog(@"Can't open this type");
+        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
+                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                 otherButtonTitles:nil
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                              
+                          }];
     }
 }
 

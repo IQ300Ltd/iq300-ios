@@ -13,7 +13,7 @@
 #import "IQComment.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
-#define SORT_DIRECTION IQSortDirectionAscending
+#define SORT_DIRECTION IQSortDirectionDescending
 
 static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
@@ -31,7 +31,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (id)init {
     if(self) {
         _portionLenght = 20;
-        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createDate" ascending:SORT_DIRECTION == IQSortDirectionAscending];
+        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createDate" ascending:YES];
         _sortDescriptors = @[descriptor];
     }
     return self;

@@ -42,6 +42,7 @@
 "No contacts" = "Контакты отсутствуют";
 "No messages" = "Сообщения отсутствуют";
 "Сontacts" = "Контакты";
+"You do not have an application installed to view files of this type" = "У вас не установлено приложение для просмотра файлов данного типа";
 
 //Notification types
 "Attachment" = "Документ";

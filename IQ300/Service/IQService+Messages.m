@@ -22,7 +22,7 @@
                                                                   @"search" : NSStringNullForNil(search)
                                                                   }).mutableCopy;
     
-    if(sort == IQSortDirectionNo) {
+    if(sort != IQSortDirectionNo) {
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     
@@ -71,7 +71,7 @@
                                                                   @"per"    : NSObjectNullForNil(per),
                                                                   }).mutableCopy;
     
-    if(sort == IQSortDirectionNo) {
+    if(sort != IQSortDirectionNo) {
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
 
@@ -108,7 +108,7 @@
                                                                   @"search" : NSStringNullForNil(search)
                                                                   }).mutableCopy;
     
-    if(sort == IQSortDirectionNo) {
+    if(sort != IQSortDirectionNo) {
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     

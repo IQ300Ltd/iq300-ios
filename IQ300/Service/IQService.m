@@ -116,7 +116,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                                   @"search" : NSStringNullForNil(search)
                                                                   }).mutableCopy;
     
-    if(sort == IQSortDirectionNo) {
+    if(sort != IQSortDirectionNo) {
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     

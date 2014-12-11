@@ -47,8 +47,10 @@
     if([IQSession defaultSession]) {
         IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
                                  inContext:[IQService sharedService].context];
-        NSString * token = [NSString stringWithFormat:@"%@ %@", [IQSession defaultSession].tokenType, [IQSession defaultSession].token];
-        [IQNotificationCenter centerWithKey:PUSHER_APP_KEY token:token channelName:user.pusherChannel];
+        if(user) {
+            NSString * token = [NSString stringWithFormat:@"%@ %@", [IQSession defaultSession].tokenType, [IQSession defaultSession].token];
+            [IQNotificationCenter centerWithKey:PUSHER_APP_KEY token:token channelName:user.pusherChannel];
+        }
     }
 }
 
