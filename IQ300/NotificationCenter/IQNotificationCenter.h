@@ -47,7 +47,7 @@ extern NSString * const IQNotificationDataKey;
 
 - (id)initWithKey:(NSString*)key token:(NSString*)token channelName:(NSString*)channelName;
 
-- (void)addObserverForName:(NSString *)name queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * note))block;
+- (id<NSObject>)addObserverForName:(NSString *)name queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * notf))block;
 
 - (void)removeObserver:(id)observer;
 - (void)removeObserver:(id)observer name:(NSString *)aName;

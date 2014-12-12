@@ -9,6 +9,7 @@
 #import "TCService.h"
 
 @class RKObjectRequestOperation;
+@class ALAsset;
 
 @interface TCService(Subclass)
 
@@ -39,6 +40,22 @@
 - (void)postObjects:(NSArray*)objects path:(NSString *)path handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)postData:(NSData*)data path:(NSString *)path handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)postData:(NSData*)fileData
+            path:(NSString *)path
+      parameters:(NSDictionary *)parameters
+fileAttributeName:(NSString*)fileAttributeName
+        fileName:(NSString*)fileName
+        mimeType:(NSString*)mimeType
+         handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)postAsset:(ALAsset*)asset
+             path:(NSString *)path
+       parameters:(NSDictionary *)parameters
+fileAttributeName:(NSString*)fileAttributeName
+         fileName:(NSString*)fileName
+         mimeType:(NSString*)mimeType
+          handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)initDescriptors;
 

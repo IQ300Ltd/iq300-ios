@@ -13,6 +13,7 @@
 "Password" = "Password";
 "Enter" = "Enter";
 "Forgot your password?" = "Forgot your password?";
+"Internet connection is unavailable" = "Internet connection is unavailable";
 "Registry" = "Registry";
 "Change" = "Change";
 "Logout" = "Log out";
@@ -26,9 +27,18 @@
 "Unread" = "Unread";
 "no_data_formart" = "No %@ found";
 "There are no unread notifications" = "There are no unread notifications";
+"There are no notifications" = "There are no notifications";
 "mark_all_readed_question" = "All your messages will be marked as read. Continue?";
 "OK" = "OK";
 "Cancel" = "Cancel";
+"I" = "I";
+"Send" = "Send";
+"User name or email" = "User name or email";
+"No contacts" = "No contacts";
+"No messages" = "No messages";
+"Сontacts" = "Сontacts";
+"You do not have an application installed to view files of this type" = "You do not have an application installed to view files of this type";
+"Message has not been sent. Send again?" = "Message has not been sent. Send again?";
 
 //Notification types
 "Attachment" = "Document";

@@ -13,12 +13,17 @@
 @implementation NSBundle (Localization)
 
 + (NSBundle*)localizedBundle {
-//    NSArray * supportedLocale = [[NSBundle mainBundle] localizations];
-//    NSString *lang = [NSLocale preferredLanguages].firstObject;
-//    if (![supportedLocale containsObject:lang]) {
-//        lang = DEFAULT_LOCALIZATION;
-//    }
+
+#ifndef USE_DEFAULT_LOCALIZATION
+    NSArray * supportedLocale = [[NSBundle mainBundle] localizations];
+    NSString *lang = [NSLocale preferredLanguages].firstObject;
+    if (![supportedLocale containsObject:lang]) {
+        lang = DEFAULT_LOCALIZATION;
+    }
+#else
     NSString * lang = @"ru";
+#endif
+
     return [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:lang ofType:@"lproj"]];
 }
 

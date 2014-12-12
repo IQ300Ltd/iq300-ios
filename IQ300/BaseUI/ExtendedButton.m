@@ -86,6 +86,11 @@
     [self checkState];
 }
 
+- (void)setEnabled:(BOOL)enabled {
+    super.enabled = enabled;
+    [self checkState];
+}
+
 #pragma mark - Private methods
 
 - (void)setBorderColor:(CGColorRef)borderColor {

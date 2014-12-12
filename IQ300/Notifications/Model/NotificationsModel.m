@@ -11,10 +11,12 @@
 #import "IQService.h"
 #import "IQNotificationsHolder.h"
 #import "NotificationCell.h"
-#import "NotificationsCount.h"
+#import "IQCounters.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
+#import "IQNotificationCenter.h"
 
 #define CACHE_FILE_NAME @"NotificationsModelcache"
+#define SORT_DIRECTION IQSortDirectionDescending
 
 static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
@@ -25,6 +27,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     NSFetchedResultsController * _fetchController;
     NSInteger _totalItemsCount;
     NSInteger _unreadItemsCount;
+    __weak id _notfObserver;
 }
 
 @end
@@ -34,11 +37,18 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 - (id)init {
     if(self) {
         _portionLenght = 20;
-        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
+        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:SORT_DIRECTION == IQSortDirectionAscending];
         _sortDescriptors = @[descriptor];
         _loadUnreadOnly = NO;
         _totalItemsCount = 0;
         _unreadItemsCount = 0;
+        
+        [self resubscribeToIQNotifications];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(resubscribeToIQNotifications)
+                                                     name:AccountDidChangedNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -67,7 +77,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return 119;
+    return 105;
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
@@ -96,7 +106,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         [[IQService sharedService] notificationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                                   page:@(page)
                                                    per:@(_portionLenght)
-                                                  sort:IQSortDirectionDescending
+                                                  sort:SORT_DIRECTION
                                                handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
                                                    if(completion) {
                                                        completion(error);
@@ -111,10 +121,25 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     [[IQService sharedService] notificationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
                                                per:@(_portionLenght)
-                                              sort:IQSortDirectionDescending
+                                              sort:SORT_DIRECTION
+                                           handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                               if(success) {
+                                                   [self updateCounters];
+                                               }
+                                           }];
+}
+
+- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] notificationsUnread:nil
+                                              page:@(1)
+                                               per:@(_portionLenght)
+                                              sort:SORT_DIRECTION
                                            handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
                                                if(completion) {
                                                    completion(error);
+                                               }
+                                               if(success) {
+                                                   [self updateCounters];
                                                }
                                            }];
 }
@@ -143,13 +168,16 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     
     NSError *saveError = nil;
     if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
-        NSLog(@"Save error: %@", saveError);
+        NSLog(@"Save notification error: %@", saveError);
     }
     
     [[IQService sharedService] markNotificationAsRead:item.notificationId
                                               handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                   if(completion) {
                                                       completion(error);
+                                                  }
+                                                  if(success) {
+                                                      [self updateCounters];
                                                   }
                                               }];
 }
@@ -164,7 +192,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
             NSError *saveError = nil;
             
             if(![context saveToPersistentStore:&saveError]) {
-                NSLog(@"Save error: %@", saveError);
+                NSLog(@"Save notifications error: %@", saveError);
             }
         }
     }];
@@ -173,11 +201,14 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         if(completion) {
             completion(error);
         }
+        if(success) {
+            [self updateCounters];
+        }
     }];
 }
 
 - (void)updateCountersWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] notificationsCountWithHandler:^(BOOL success, NotificationsCount * counter, NSData *responseData, NSError *error) {
+    [[IQService sharedService] notificationsCountWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
         if(success) {
             _totalItemsCount = [counter.totalCount integerValue];
             _unreadItemsCount = [counter.unreadCount integerValue];
@@ -186,6 +217,20 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
             completion(error);
         }
     }];
+}
+
+- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed {
+    if(subscribed) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reloadFirstPart)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIApplicationWillEnterForegroundNotification
+                                                      object:nil];
+    }
 }
 
 #pragma mark - Private methods
@@ -212,7 +257,14 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
     }
     
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId];
+    if(_loadUnreadOnly) {
+        NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"readed == NO"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
+    }
+    
     NSError * fetchError = nil;
+    [_fetchController.fetchRequest setPredicate:predicate];
     [_fetchController.fetchRequest setSortDescriptors:_sortDescriptors];
     [_fetchController setDelegate:self];
     [_fetchController performFetch:&fetchError];
@@ -220,6 +272,45 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     if(completion) {
         completion(fetchError);
     }
+}
+
+- (void)loadNotificationsWithIds:(NSArray*)ids {
+    [[IQService sharedService] notificationsWithIds:ids
+                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                if(success) {
+                                                    [self updateCounters];
+                                                }
+                                            }];
+}
+
+- (void)updateCounters {
+    [self updateCountersWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self modelCountersDidChanged];
+        }
+    }];
+}
+
+- (void)reloadFirstPart {
+    [self reloadFirstPartWithCompletion:^(NSError *error) {
+        
+    }];
+}
+
+- (void)resubscribeToIQNotifications {
+    if(_notfObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    }
+    
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
+        if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
+            [self loadNotificationsWithIds:changedIds];
+        }
+    };
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
+                                                                       queue:nil
+                                                                  usingBlock:block];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -281,6 +372,17 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     if([self.delegate respondsToSelector:@selector(modelDidChanged:)]) {
         [self.delegate modelDidChanged:self];
     }
+}
+
+- (void)modelCountersDidChanged {
+    if([self.delegate respondsToSelector:@selector(modelCountersDidChanged:)]) {
+        [self.delegate modelCountersDidChanged:self];
+    }
+}
+
+- (void)dealloc {
+    [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

@@ -29,10 +29,16 @@
 #import "IQFonts.h"
 #import "CGGeometry+Extensions.h"
 #import "UIAlertView+Blocks.h"
+#import "UIEdgeInsetsExtend.h"
 
 #define SERVICE_URL @"http://edge.iq300.ru"
 
 #define PUSHER_APP_KEY @"2d3e4d45c8824ea2d1b0"
+
+#define NSStringNullForNil(value) ([value length]) ? value : [NSNull null]
+#define NSObjectNullForNil(value) (value) ? value : [NSNull null]
+
+#define USE_DEFAULT_LOCALIZATION
 
 static NSString * AccountDidChangedNotification = @"AccountDidChangedNotification";
 

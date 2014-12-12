@@ -18,6 +18,16 @@ typedef NS_ENUM(NSUInteger, IQSortDirection) {
     IQSortDirectionDescending = 1,
 };
 
+/**
+ ParametersExcludeEmpty.
+ 
+ @param parameters. Look `NSDictionary`.
+ @return Dictionary with out empty parameters
+ */
+extern NSDictionary * IQParametersExcludeEmpty(NSDictionary * parameters);
+
+extern NSString * IQSortDirectionToString(IQSortDirection direction);
+
 @interface IQService : TCService
 
 @property (nonatomic, strong) IQSession * session;
@@ -39,6 +49,8 @@ typedef NS_ENUM(NSUInteger, IQSortDirection) {
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)notificationsWithIds:(NSArray*)ids handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 

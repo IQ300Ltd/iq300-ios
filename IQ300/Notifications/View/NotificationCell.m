@@ -9,7 +9,7 @@
 
 #import "NotificationCell.h"
 #import "IQNotification.h"
-#import "NSDate+CupertinoYankee.h"
+#import "NSDate+IQFormater.h"
 
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
@@ -149,7 +149,7 @@
     self.rightUtilityButtons = ([_item.readed boolValue]) ? nil : @[_markAsReadedButton];
     
     _typeLabel.text = NSLocalizedString(_item.notificable.type, nil);
-    _dateLabel.text = [self dateToString:_item.createdAt];
+    _dateLabel.text = [_item.createdAt dateToDayTimeString];
     _titleLabel.text = _item.notificable.title;
     _userNameLabel.hidden = ([_item.user.displayName length] == 0);
     _userNameLabel.text = _item.user.displayName;
@@ -177,40 +177,6 @@
         [label setText:NSLocalizedString(localaizedKey, nil)];
     }
     return label;
-}
-
-- (NSString*)dateToString:(NSDate*)date {
-    NSString * stringDate = nil;
-    NSDate * today = [[NSDate date] beginningOfDay];
-    NSDate * yesterday = [today prevDay];
-    NSDate * beginningOfDay = [date beginningOfDay];
-    
-    if([beginningOfDay compare:today] == NSOrderedSame) {
-        NSDateFormatter * timeFormatter = [self dateFormater];
-        [timeFormatter setDateFormat:@"hh:mm"];
-        stringDate = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"Today", nil), [timeFormatter stringFromDate:date]];
-    }
-    else if([beginningOfDay compare:yesterday] == NSOrderedSame) {
-        stringDate = NSLocalizedString(@"Yesterday", nil);
-    }
-    else {
-        NSDateFormatter *dateFormatter = [self dateFormater];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-        stringDate = [dateFormatter stringFromDate:date];
-    }
-    
-    return stringDate;
-}
-
-- (NSDateFormatter *)dateFormater {
-    static NSDateFormatter *dateFormatter = nil;
-    
-    if (!dateFormatter) {
-        dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
-    }
-    
-    return dateFormatter;
 }
 
 @end

@@ -13,6 +13,7 @@
 "Password" = "Пароль";
 "Enter" = "Войти";
 "Forgot your password?" = "Забыли пароль?";
+"Internet connection is unavailable" = "Интернет соединение недоступно";
 "Registry" = "Зарегистрироваться";
 "Change" = "Изменить";
 "Logout" = "Выйти";
@@ -32,9 +33,18 @@
 "Release to refresh..." = "Отпустите, чтобы обновить";
 "Loading..." = "Загрузка";
 "There are no unread notifications" = "Непрочитанные уведомления отсутствуют";
+"There are no notifications" = "Уведомления отсутствуют";
 "mark_all_readed_question" = "Все Ваши уведомления будут отмечены как прочитанные. Продолжить?";
 "OK" = "OK";
 "Cancel" = "Отмена";
+"I" = "Я";
+"Send" = "Отправить";
+"User name or email" = "Имя пользователя или email";
+"No contacts" = "Контакты отсутствуют";
+"No messages" = "Сообщения отсутствуют";
+"Сontacts" = "Контакты";
+"You do not have an application installed to view files of this type" = "У вас не установлено приложение для просмотра файлов данного типа";
+"Message has not been sent. Send again?" = "Сообщение не был отправлен. Отправить еще раз?";
 
 //Notification types
 "Attachment" = "Документ";

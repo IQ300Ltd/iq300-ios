@@ -11,9 +11,6 @@
 #import "IQServiceResponse.h"
 #import "IQObjects.h"
 
-#define NSStringEmptyForNil(value) ([value length]) ? value : [NSNull null]
-#define NSObjectEmptyForNil(value) (value) ? value : [NSNull null]
-
 @interface IQToken : NSObject
 
 @property (nonatomic, strong) NSString * token;
@@ -35,6 +32,24 @@
 
 @end
 
+NSDictionary * IQParametersExcludeEmpty(NSDictionary * parameters) {
+    NSMutableDictionary * param = [NSMutableDictionary dictionaryWithDictionary:parameters];
+    for (NSString * key in [parameters allKeys]) {
+        id value = parameters[key];
+        if(!value || [value isEqual:[NSNull null]]) {
+            [param removeObjectForKey:key];
+        }
+    }
+    return [param copy];
+}
+
+NSString * IQSortDirectionToString(IQSortDirection direction) {
+    if(direction != IQSortDirectionNo) {
+        return (direction == IQSortDirectionAscending) ? @"asc" : @"desc";
+    }
+    return nil;
+}
+
 @implementation IQService
 
 - (id)initWithURL:(NSString *)url andSession:(id)session {
@@ -52,8 +67,8 @@
 }
 
 - (void)loginWithEmail:(NSString*)email password:(NSString*)password handler:(RequestCompletionHandler)handler {
-    NSDictionary * parameters = @{ @"email"    : NSStringEmptyForNil(email),
-                                   @"password" : NSStringEmptyForNil(password) };
+    NSDictionary * parameters = @{ @"email"    : NSStringNullForNil(email),
+                                   @"password" : NSStringNullForNil(password) };
     [self postObject:nil
                 path:@"/api/v1/sessions"
           parameters:parameters
@@ -94,31 +109,30 @@
 }
 
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
-    NSMutableDictionary * parameters = [NSMutableDictionary dictionary];
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"unread" : NSObjectNullForNil(unread),
+                                                                  @"page"   : NSObjectNullForNil(page),
+                                                                  @"per"    : NSObjectNullForNil(per),
+                                                                  @"search" : NSStringNullForNil(search)
+                                                                  }).mutableCopy;
     
-    if (unread) {
-        parameters[@"unread"] = unread;
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     
-    if (page) {
-        parameters[@"page"] = page;
-    }
-    if (per) {
-        parameters[@"per"] = per;
-    }
-    if (search) {
-        parameters[@"search"] = unread;
-    }
-    
-    NSString * sortDirection = (sort == IQSortDirectionAscending) ? @"?sort=asc" : @"?sort=desc";
-    
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/notifications%@", (sort != IQSortDirectionNo) ? sortDirection : @""]
+    [self getObjectsAtPath:@"/api/v1/notifications"
                 parameters:parameters
                    handler:handler];
 }
 
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
     [self notificationsUnread:unread page:page per:per search:nil sort:sort handler:handler];
+}
+
+- (void)notificationsWithIds:(NSArray*)ids handler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/notifications"
+                parameters:@{ @"by_ids" : ids }
+                   handler:handler];
 }
 
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
@@ -151,6 +165,13 @@
 
 #pragma mark - Private methods
 
+- (void)processAuthorizationForOperation:(RKObjectRequestOperation *)operation {
+    if(self.session) {
+        NSString * token = [NSString stringWithFormat:@"%@ %@", self.session.tokenType, self.session.token];
+        [((NSMutableURLRequest*)operation.HTTPRequestOperation.request) addValue:token forHTTPHeaderField:@"Authorization"];
+    }
+}
+
 - (void)initDescriptors {
     RKResponseDescriptor * descriptor = [IQServiceResponse responseDescriptorForClass:[IQToken class]
                                                                                method:RKRequestMethodPOST
@@ -175,10 +196,10 @@
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsHolder class]//[IQNotification class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsHolder class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/notifications"
-                                                   fromKeyPath:nil//@"notifications"
+                                                   fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
@@ -205,21 +226,84 @@
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[NotificationsCount class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/notifications/counters"
                                                    fromKeyPath:@"notification_counters"
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/conversations"
+                                                   fromKeyPath:@"conversations"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 
-}
-
-- (void)processAuthorizationForOperation:(RKObjectRequestOperation *)operation {
-    if(self.session) {
-        NSString * token = [NSString stringWithFormat:@"%@ %@", self.session.tokenType, self.session.token];
-        [((NSMutableURLRequest*)operation.HTTPRequestOperation.request) addValue:token forHTTPHeaderField:@"Authorization"];
-    }
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/conversations/:id"
+                                                   fromKeyPath:@"conversations"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/conversations"
+                                                   fromKeyPath:@"conversation"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/discussions/:id"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/conversations/counters"
+                                                   fromKeyPath:@"conversation_counters"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQComment class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/discussions/:id/comments"
+                                                   fromKeyPath:@"comments"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQComment class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/discussions/:id/comments"
+                                                   fromKeyPath:@"comment"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/attachments"
+                                                   fromKeyPath:@"attachment"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQContact class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/contacts"
+                                                   fromKeyPath:@"contacts"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 }
 
 @end

@@ -11,7 +11,7 @@
 #import "IQNotificationCenter.h"
 #import "DispatchAfterExecution.h"
 
-NSString * const IQNotificationsDidChanged = @"com.tayphoon.IQNotification.NotfChanged";
+NSString * const IQNotificationsDidChanged = @"IQNotificationsDidChanged";
 NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
 
 @class IQCNotification;
@@ -160,20 +160,31 @@ static IQNotificationCenter * _defaultCenter = nil;
     return self;
 }
 
-- (void)addObserverForName:(NSString *)name queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * note))block {
+- (id<NSObject>)addObserverForName:(NSString *)name queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * notf))block {
     NSParameterAssert(block);
     dispatch_queue_t dispatchQueue = (queue) ? queue : dispatch_get_main_queue();
     IQNotificationObserver * observer = [IQNotificationObserver observerWithQueue:dispatchQueue dispatchBlock:block];
     [self addObserver:observer forName:name];
+    return observer;
 }
 
 - (void)removeObserver:(id)observer {
     [self removeObserver:observer name:nil];
 }
 
-- (void)removeObserver:(id)observer name:(NSString *)aName {
-    if ([aName length] > 0) {
-        
+- (void)removeObserver:(id)observer name:(NSString *)name {
+    if ([name length] > 0) {
+        NSMutableArray * observers = _observers[name];
+        if([observers containsObject:observer]) {
+            [observers removeObject:observer];
+        }
+    }
+    else {
+        for (NSMutableArray * observers in [_observers allValues]) {
+            if([observers containsObject:observer]) {
+                [observers removeObject:observer];
+            }
+        }
     }
 }
 

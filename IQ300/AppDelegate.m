@@ -10,6 +10,7 @@
 
 #import "AppDelegate.h"
 #import "TasksController.h"
+#import "MessagesController.h"
 #import "MenuViewController.h"
 #import "IQNavigationController.h"
 #import "NotificationsContoller.h"
@@ -43,12 +44,14 @@
 }
 
 + (void)setupNotificationCenter {
-//    if([IQSession defaultSession]) {
-//        IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
-//                                 inContext:[IQService sharedService].context];
-//        NSString * token = [NSString stringWithFormat:@"%@ %@", [IQSession defaultSession].tokenType, [IQSession defaultSession].token];
-//        [IQNotificationCenter centerWithKey:PUSHER_APP_KEY token:token channelName:user.pusherChannel];
-//    }
+    if([IQSession defaultSession]) {
+        IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
+                                 inContext:[IQService sharedService].context];
+        if(user) {
+            NSString * token = [NSString stringWithFormat:@"%@ %@", [IQSession defaultSession].tokenType, [IQSession defaultSession].token];
+            [IQNotificationCenter centerWithKey:PUSHER_APP_KEY token:token channelName:user.pusherChannel];
+        }
+    }
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -57,6 +60,7 @@
     RKLogConfigureByName("RestKit/App", RKLogLevelError);
 
     [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
+    [AppDelegate setupNotificationCenter];
 
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
@@ -76,13 +80,7 @@
     projects.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
     IQNavigationController * projectsNav = [[IQNavigationController alloc] initWithRootViewController:projects];
     
-    UIViewController * messages = [[UIViewController alloc] init];
-    messages.view.backgroundColor = [UIColor whiteColor];
-    messages.title = NSLocalizedString(@"Messages", nil);
-    barImage = [[UIImage imageNamed:@"messages_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    barImageSelected = [[UIImage imageNamed:@"messgaes_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    messages.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSelected];
-    messages.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
+    MessagesController * messages = [[MessagesController alloc] init];
     IQNavigationController * messagesNav = [[IQNavigationController alloc] initWithRootViewController:messages];
     
     UITabBarController * center = [[UITabBarController alloc] init];
@@ -127,8 +125,6 @@
         [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
     }
     
-    [AppDelegate setupNotificationCenter];
-
     return YES;
 }
 

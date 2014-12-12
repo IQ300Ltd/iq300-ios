@@ -16,6 +16,7 @@
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
+- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
 
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
@@ -24,5 +25,7 @@
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion;
 
 - (void)updateCountersWithCompletion:(void (^)(NSError * error))completion;
+
+- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed;
 
 @end

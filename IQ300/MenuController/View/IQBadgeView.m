@@ -10,14 +10,52 @@
 
 #define BADGE_MIN_SIZE 25
 
+@interface IQBadgeView() {
+    UIFont * _badgeTextFont;
+}
+
+@end
+
 @implementation IQBadgeView
-+ (CustomBadge*)customBadgeWithString:(NSString *)badgeString {
+
++ (IQBadgeView*)customBadgeWithString:(NSString *)badgeString {
+    return [self customBadgeWithString:badgeString badgeMinSize:BADGE_MIN_SIZE];
+}
+
++ (IQBadgeView*)customBadgeWithString:(NSString *)badgeString badgeMinSize:(CGFloat)badgeMinSize {
     BadgeStyle * style = [BadgeStyle defaultStyle];
     style.badgeTextColor = [UIColor colorWithHexInt:0x459dbe];
     style.badgeFrameColor = [UIColor colorWithHexInt:0x338cae];
     style.badgeInsetColor = [UIColor whiteColor];
     style.badgeFrame = YES;
-   return [IQBadgeView customBadgeWithString:badgeString withScale:1.0 withStyle:style];
+    
+    IQBadgeView * badge = [IQBadgeView customBadgeWithString:badgeString withStyle:style];
+    badge.badgeMinSize = badgeMinSize;
+    
+   return badge;
+}
+
++ (IQBadgeView*)customBadgeWithString:(NSString *)badgeString withStyle:(BadgeStyle*)style {
+    return (IQBadgeView*)[super customBadgeWithString:badgeString withStyle:style];
+}
+
+- (void)setBadgeMinSize:(CGFloat)badgeMinSize {
+    if (_badgeMinSize != badgeMinSize) {
+        _badgeMinSize = badgeMinSize;
+        [self autoBadgeSizeWithString:self.badgeText];
+    }
+}
+
+- (void)setBadgeTextFont:(UIFont *)badgeTextFont {
+    _badgeTextFont = badgeTextFont;
+    [self autoBadgeSizeWithString:self.badgeText];
+}
+
+- (UIFont*)badgeTextFont {
+    if(!_badgeTextFont) {
+        _badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:12];
+    }
+    return _badgeTextFont;
 }
 
 - (void)autoBadgeSizeWithString:(NSString *)badgeString {
@@ -28,10 +66,10 @@
     CGFloat flexSpace;
     if ([badgeString length]>2) {
         flexSpace = [badgeString length];
-        rectWidth = BADGE_MIN_SIZE + (stringSize.width + flexSpace); rectHeight = BADGE_MIN_SIZE;
+        rectWidth = self.badgeMinSize + (stringSize.width + flexSpace); rectHeight = self.badgeMinSize;
         retValue = CGSizeMake(rectWidth * badgeScaleFactor, rectHeight * badgeScaleFactor);
     } else {
-        retValue = CGSizeMake(BADGE_MIN_SIZE * badgeScaleFactor, BADGE_MIN_SIZE * badgeScaleFactor);
+        retValue = CGSizeMake(self.badgeMinSize * badgeScaleFactor, self.badgeMinSize * badgeScaleFactor);
     }
     self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, retValue.width, retValue.height);
     self.badgeText = badgeString;
@@ -65,7 +103,7 @@
 }
 
 - (UIFont*)fontForBadgeWithSize:(CGFloat)size {
-    return [UIFont fontWithName:IQ_HELVETICA size:size];
+    return self.badgeTextFont;
 }
 
 @end

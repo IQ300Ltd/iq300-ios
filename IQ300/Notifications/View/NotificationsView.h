@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "ExTextField.h"
 
+extern NSString * const NoNotificationFound;
+extern NSString * const NoUnreadNotificationFound;
+
 @interface NotificationsView : UIView
 
 @property (nonatomic, strong) ExTextField * searchBar;
