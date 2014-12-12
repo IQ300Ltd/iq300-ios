@@ -10,6 +10,7 @@
 
 @class IQBadgeView;
 @class IQConversation;
+@class IQUser;
 
 #define CONVERSATION_CELL_MAX_HEIGHT 86.0f
 #define CONVERSATION_CELL_MIN_HEIGHT 55.0f
@@ -28,7 +29,7 @@
 
 @property (nonatomic, strong) IQConversation * item;
 
-@property (nonatomic, readonly) NSString * companionName;
+@property (nonatomic, readonly) IQUser * companion;
 
 + (CGFloat)heightForItem:(IQConversation *)item andCellWidth:(CGFloat)cellWidth;
 

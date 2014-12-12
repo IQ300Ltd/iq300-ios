@@ -5,12 +5,14 @@
 //  Created by Tayphoon on 04.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
+#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
 #import "DiscussionModel.h"
 #import "IQService+Messages.h"
 #import "CommentCell.h"
 #import "IQDiscussion.h"
 #import "IQComment.h"
+#import "CViewInfo.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -22,6 +24,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
     __weak id _notfObserver;
+    NSDate * _lastViewDate;
 }
 
 @end
@@ -45,6 +48,13 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
     
     return self;
+}
+
+- (void)setCompanionId:(NSNumber *)companionId {
+    if(![_companionId isEqualToNumber:companionId]) {
+        _companionId = companionId;
+        [self updateLastViewedDate];
+    }
 }
 
 - (NSUInteger)numberOfSections {
@@ -101,7 +111,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                           page:@(page)
                                                            per:@(_portionLenght)
                                                           sort:SORT_DIRECTION
-                                                       handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                       handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                           if(!error) {
+                                                               [self updateDefaultStatusesForComments:comments];
+                                                           }
                                                            if(completion) {
                                                                completion(error);
                                                            }
@@ -109,14 +122,16 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self updateModelSourceControllerWithCompletion:nil];
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
                                                       sort:SORT_DIRECTION
-                                                   handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
+                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                       if(!error) {
+                                                           [self updateDefaultStatusesForComments:comments];
+                                                       }
                                                        if(completion) {
                                                            completion(error);
                                                        }
@@ -128,7 +143,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                       page:@(1)
                                                        per:@(_portionLenght)
                                                       sort:SORT_DIRECTION
-                                                   handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
+                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                       if(!error) {
+                                                           [self updateDefaultStatusesForComments:comments];
+                                                       }
                                                        if(completion) {
                                                            completion(error);
                                                        }
@@ -159,14 +177,38 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)sendComment:(NSString*)comment attachmentAsset:(ALAsset*)asset fileName:(NSString*)fileName attachmentType:(NSString*)type withCompletion:(void (^)(NSError * error))completion {
-    void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachmentIds) {
+- (void)sendComment:(NSString*)comment
+    attachmentAsset:(ALAsset*)asset
+      attachmentIds:(NSArray*)attachmentIds
+           fileName:(NSString*)fileName
+     attachmentType:(NSString*)type
+     withCompletion:(void (^)(NSError * error))completion {
+    
+    void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachments) {
+        NSArray * attachmentIds = [attachments valueForKey:@"attachmentId"];
         [[IQService sharedService] createComment:comment
                                     discussionId:_discussion.discussionId
                                    attachmentIds:attachmentIds
-                                         handler:^(BOOL success, IQComment * comment, NSData *responseData, NSError *error) {
-                                             if (completion) {
-                                                 completion(error);
+                                         handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
+                                             NSError * saveError = nil;
+                                            if (!success) {
+                                                [self createLocalComment:comment attachments:attachments error:&saveError];
+                                                if(saveError) {
+                                                    NSLog(@"Create comment error: %@", saveError);
+                                                }
+                                                if (completion) {
+                                                    completion(saveError);
+                                                }
+                                             }
+                                             else {
+                                                 item.commentStatus = @(IQCommentStatusSent);
+                                                 [item.managedObjectContext saveToPersistentStore:&saveError];
+                                                 if(saveError) {
+                                                     NSLog(@"Create comment status error: %@", saveError);
+                                                 }
+                                                 if (completion) {
+                                                     completion(error);
+                                                 }
                                              }
                                          }];
     };
@@ -177,19 +219,78 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                     mimeType:type
                                                      handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
                                                         if(success) {
-                                                            sendCommentBlock(@[attachment.attachmentId]);
-                                                        }
-                                                        else if(completion) {
-                                                            completion(error);
+                                                            sendCommentBlock(@[attachment]);
                                                         }
                                                     }];
     }
     else {
-        sendCommentBlock(nil);
+        sendCommentBlock(attachmentIds);
     }
 }
 
+- (void)deleteComment:(IQComment *)comment {
+    [comment.managedObjectContext deleteObject:comment];
+    NSError *saveError = nil;
+    if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
+        NSLog(@"Save delete comment error: %@", saveError);
+    }
+
+}
+
 #pragma mark - Private methods
+
+- (void)updateLastViewedDate {
+    if(_companionId) {
+        NSPredicate * predicate = [NSPredicate predicateWithFormat:@"userId == %@", _companionId];
+        CViewInfo * viewInfo = [[[_discussion.userViews filteredSetUsingPredicate:predicate] allObjects] firstObject];
+        _lastViewDate = viewInfo.viewDate;
+    }
+}
+
+- (void)updateDefaultStatusesForComments:(NSArray*)comments {
+    for (IQComment * comment in comments) {
+        if([comment.commentStatus integerValue] != IQCommentStatusSendError) {
+            BOOL isViewed = [comment.createDate compare:_lastViewDate] == NSOrderedAscending;
+            IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
+            if([comment.commentStatus integerValue] != status) {
+                comment.commentStatus = @(status);
+            }
+        }
+    }
+    
+    if([[IQService sharedService].context hasChanges]) {
+        NSError *saveError = nil;
+        if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
+            NSLog(@"Save comment statuses error: %@", saveError);
+        }
+    }
+}
+
+- (IQComment*)createLocalComment:(NSString*)text attachments:(NSArray*)attachments error:(NSError**)error {
+    NSManagedObjectContext * context = [IQService sharedService].context;
+    NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass([IQComment class])
+                                               inManagedObjectContext:context];
+    NSNumber * uniqId = [IQComment uniqueLocalIdInContext:context error:error];
+    IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
+                             inContext:[IQService sharedService].context];
+
+    if(uniqId && user) {
+        IQComment * comment = (IQComment*)[[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
+        
+        comment.localId = uniqId;
+        comment.discussionId = _discussion.discussionId;
+        comment.createDate = [NSDate date];
+        comment.body = text;
+        comment.attachments = [NSSet setWithArray:attachments];
+        comment.author = user;
+        comment.commentStatus = @(IQCommentStatusSendError);
+        
+        if([comment.managedObjectContext saveToPersistentStore:error] ) {
+            return comment;
+        }
+    }
+    return nil;
+}
 
 - (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;

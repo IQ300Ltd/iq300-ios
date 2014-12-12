@@ -21,8 +21,27 @@
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#define STATUS_IMAGE_SIZE 11
 
 @implementation CommentCell
+
++ (NSString*)statusImageForStatus:(NSInteger)type {
+    static NSDictionary * _statusImages = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _statusImages = @{
+                          @(IQCommentStatusViewed)    : @"msg_viewed.png",
+                          @(IQCommentStatusSent)      : @"msg_sent.png",
+                          @(IQCommentStatusSendError) : @"msg_error.png"
+                        };
+    });
+    
+    if([_statusImages objectForKey:@(type)]) {
+        return [_statusImages objectForKey:@(type)];
+    }
+    
+    return nil;
+}
 
 + (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
     CGFloat descriptionY = CELL_HEADER_MIN_HEIGHT;
@@ -62,6 +81,11 @@
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
+        _statusImageView = [[UIImageView alloc] init];
+        _statusImageView.contentMode = UIViewContentModeCenter;
+        [_statusImageView setBackgroundColor:[UIColor clearColor]];
+        [contentView addSubview:_statusImageView];
+
         _userNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x358bae]
                                                  font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                         localaizedKey:nil];
@@ -101,10 +125,19 @@
                                       topLabelSize.width,
                                       topLabelSize.height);
     
-    _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - topLabelSize.width,
+    CGSize dateSize = [_dateLabel.text sizeWithFont:_dateLabel.font
+                                  constrainedToSize:CGSizeMake(topLabelSize.width, topLabelSize.height)
+                                      lineBreakMode:NSLineBreakByWordWrapping];
+    
+    _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - dateSize.width,
                                   actualBounds.origin.y,
-                                  topLabelSize.width,
-                                  topLabelSize.height);
+                                  dateSize.width,
+                                  dateSize.height);
+    
+    _statusImageView.frame = CGRectMake(_dateLabel.frame.origin.x - STATUS_IMAGE_SIZE - 5.0f,
+                                        actualBounds.origin.y + (topLabelSize.height - STATUS_IMAGE_SIZE) / 2,
+                                        STATUS_IMAGE_SIZE,
+                                        STATUS_IMAGE_SIZE);
     
     BOOL hasDescription = ([_item.body length] > 0);
     BOOL hasAttachment = ([_item.attachments count] > 0);
@@ -133,6 +166,16 @@
     }
 }
 
+- (void)setStatus:(IQCommentStatus)status {
+    NSString * statusImageName = [CommentCell statusImageForStatus:status];
+    if([statusImageName length] > 0) {
+        [_statusImageView setImage:[UIImage imageNamed:statusImageName]];
+    }
+    else {
+        [_statusImageView setImage:nil];
+    }
+}
+
 - (void)setItem:(IQComment *)item {
     _item = item;
     
@@ -154,6 +197,8 @@
         [_attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
     }
 
+    [self setStatus:[_item.commentStatus integerValue]];
+    
     [self setNeedsLayout];
 }
 
@@ -166,6 +211,9 @@
 
 - (void)prepareForReuse {
     [super prepareForReuse];
+
+    [self setStatus:IQCommentStatusUnknown];
+    [_attachButton setHidden:YES];
     [_attachButton removeTarget:nil
                          action:NULL
                forControlEvents:UIControlEventTouchUpInside];

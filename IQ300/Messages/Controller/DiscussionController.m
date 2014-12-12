@@ -135,6 +135,26 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    IQComment * comment = [self.model itemAtIndexPath:indexPath];
+    if([comment.commentStatus integerValue] == IQCommentStatusSendError) {
+        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"Message has not been sent. Send again?", nil)
+                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                              if(buttonIndex == 1) {
+                                  [self.model sendComment:comment.body
+                                          attachmentAsset:nil
+                                            attachmentIds:[comment.attachments allObjects]
+                                                 fileName:nil
+                                           attachmentType:nil
+                                           withCompletion:^(NSError *error) {
+                                               if(!error) {
+                                                   [self.model deleteComment:comment];
+                                               }
+                                           }];
+                              }
+                          }];
+    }
 }
 
 #pragma mark - UIScroll Delegate
@@ -175,6 +195,7 @@
     
     [self.model sendComment:_mainView.inputView.commentTextView.text
             attachmentAsset:_attachment
+              attachmentIds:nil
                    fileName:[_attachment fileName]
              attachmentType:[_attachment MIMEType]
              withCompletion:^(NSError *error) {
@@ -187,6 +208,7 @@
                  }
                  [_mainView.inputView.attachButton setEnabled:YES];
                  [_mainView.inputView.commentTextView setEditable:YES];
+                 [self scrollToBottomAnimated:YES delay:0.0f];
              }];
 }
 
@@ -228,7 +250,7 @@
                                                          
                                                          NSError *saveError = nil;
                                                          if(![attachment.managedObjectContext saveToPersistentStore:&saveError] ) {
-                                                             NSLog(@"Save error: %@", saveError);
+                                                             NSLog(@"Save attachment error: %@", saveError);
                                                          }
                                                          [self showOpenInForURL:destinationURL fromRect:rectForAppearing];
                                                      }

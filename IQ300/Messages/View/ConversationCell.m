@@ -175,7 +175,7 @@
     _dateLabel.text = [_item.lastComment.createDate dateToDayTimeString];
     _userNameLabel.hidden = ([companion.displayName length] == 0);
     _userNameLabel.text = companion.displayName;
-    _companionName = companion.displayName;
+    _companion = companion;
     
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";
     body = (lastCommentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
@@ -199,7 +199,7 @@
     
     _contentBackgroundInsets = UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR_R;
-    _companionName = nil;
+    _companion = nil;
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {

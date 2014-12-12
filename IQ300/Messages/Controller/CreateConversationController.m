@@ -86,12 +86,16 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQContact * contact = [self.model itemAtIndexPath:indexPath];
     NSString * companionName = contact.user.displayName;
-    [MessagesModel createConversationWithRecipientId:contact.user.userId
+    NSNumber * userId = contact.user.userId;
+    [MessagesModel createConversationWithRecipientId:userId
                                           completion:^(IQConversation * conv, NSError *error) {
                                               if(!error) {
+                                                  DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conv.discussion];
+                                                  model.companionId = userId;
+                                                  
                                                   DiscussionController * controller = [[DiscussionController alloc] init];
                                                   controller.title = NSLocalizedString(@"Messages", nil);
-                                                  controller.model = [[DiscussionModel alloc] initWithDiscussion:conv.discussion];
+                                                  controller.model = model;
                                                   controller.companionName = companionName;
 
                                                   [MessagesModel markConversationAsRead:conv completion:nil];

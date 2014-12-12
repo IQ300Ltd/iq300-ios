@@ -22,8 +22,9 @@
 @property (nonatomic, strong) UILabel * userNameLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;
 @property (nonatomic, strong) UIButton * attachButton;
-@property (nonatomic, strong) NSString * author;
+@property (nonatomic, strong) UIImageView * statusImageView;
 
+@property (nonatomic, strong) NSString * author;
 @property (nonatomic, strong) IQComment * item;
 
 + (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth;

@@ -120,11 +120,12 @@
     ConversationCell * cell = (ConversationCell*)[tableView cellForRowAtIndexPath:indexPath];
     IQConversation * conver = [self.model itemAtIndexPath:indexPath];
     DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
-    
+    model.companionId = cell.companion.userId;
+
     DiscussionController * controller = [[DiscussionController alloc] init];
     controller.title = NSLocalizedString(@"Messages", nil);
     controller.model = model;
-    controller.companionName = cell.companionName;
+    controller.companionName = cell.companion.displayName;
 
     [self.navigationController pushViewController:controller animated:YES];
     

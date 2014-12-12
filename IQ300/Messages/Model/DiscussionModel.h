@@ -9,13 +9,15 @@
 #import "IQTableModel.h"
 
 @class IQDiscussion;
+@class IQComment;
 @class ALAsset;
 
 @interface DiscussionModel : NSObject<IQTableModel>
 
 @property (nonatomic, weak) IQDiscussion * discussion;
-@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+@property (nonatomic, strong) NSNumber * companionId;
 @property (nonatomic, assign) CGFloat cellWidth;
+@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (id)initWithDiscussion:(IQDiscussion*)discussion;
 
@@ -27,8 +29,11 @@
 
 - (void)sendComment:(NSString*)comment
     attachmentAsset:(ALAsset*)asset
+      attachmentIds:(NSArray*)attachmentIds
            fileName:(NSString*)fileName
      attachmentType:(NSString*)type
      withCompletion:(void (^)(NSError * error))completion;
+
+- (void)deleteComment:(IQComment*)comment;
 
 @end

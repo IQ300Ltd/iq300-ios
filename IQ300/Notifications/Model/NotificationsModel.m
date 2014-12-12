@@ -168,7 +168,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     
     NSError *saveError = nil;
     if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
-        NSLog(@"Save error: %@", saveError);
+        NSLog(@"Save notification error: %@", saveError);
     }
     
     [[IQService sharedService] markNotificationAsRead:item.notificationId
@@ -192,7 +192,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
             NSError *saveError = nil;
             
             if(![context saveToPersistentStore:&saveError]) {
-                NSLog(@"Save error: %@", saveError);
+                NSLog(@"Save notifications error: %@", saveError);
             }
         }
     }];

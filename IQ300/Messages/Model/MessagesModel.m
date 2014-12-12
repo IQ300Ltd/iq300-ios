@@ -49,7 +49,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
             
             NSError *saveError = nil;
             if(![conversation.managedObjectContext saveToPersistentStore:&saveError] ) {
-                NSLog(@"Save error: %@", saveError);
+                NSLog(@"Save conversation error: %@", saveError);
             }
         }
         
