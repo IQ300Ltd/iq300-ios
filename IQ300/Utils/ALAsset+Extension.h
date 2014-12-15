@@ -13,4 +13,6 @@
 @property (nonatomic, readonly) NSString * MIMEType;
 @property (nonatomic, readonly) NSString * fileName;
 
+- (BOOL)writeToFile:(NSURL*)fileUrl error:(NSError**)error;
+
 @end

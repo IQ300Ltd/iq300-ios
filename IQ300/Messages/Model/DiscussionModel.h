@@ -29,10 +29,11 @@
 
 - (void)sendComment:(NSString*)comment
     attachmentAsset:(ALAsset*)asset
-      attachmentIds:(NSArray*)attachmentIds
            fileName:(NSString*)fileName
      attachmentType:(NSString*)type
      withCompletion:(void (^)(NSError * error))completion;
+
+- (void)resendLocalComment:(IQComment*)comment withCompletion:(void (^)(NSError * error))completion;
 
 - (void)deleteComment:(IQComment*)comment;
 

@@ -13,6 +13,8 @@
 #import "IQDiscussion.h"
 #import "IQComment.h"
 #import "CViewInfo.h"
+#import "ALAsset+Extension.h"
+#import "NSString+UUID.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -179,7 +181,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)sendComment:(NSString*)comment
     attachmentAsset:(ALAsset*)asset
-      attachmentIds:(NSArray*)attachmentIds
            fileName:(NSString*)fileName
      attachmentType:(NSString*)type
      withCompletion:(void (^)(NSError * error))completion {
@@ -221,15 +222,66 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                         if(success) {
                                                             sendCommentBlock(@[attachment]);
                                                         }
+                                                        else {
+                                                            [self crecreateLocalAttachmentWithAsset:asset completion:^(IQAttachment * attachment, NSError *error) {
+                                                                if(attachment) {
+                                                                    sendCommentBlock(@[attachment]);
+                                                                }
+                                                                else if (completion) {
+                                                                    completion(error);
+                                                                }
+                                                            }];
+                                                        }
                                                     }];
     }
-    else {
-        sendCommentBlock(attachmentIds);
+}
+
+- (void)resendLocalComment:(IQComment*)comment withCompletion:(void (^)(NSError * error))completion {
+    void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachments) {
+        NSArray * attachmentIds = [attachments valueForKey:@"attachmentId"];
+        [[IQService sharedService] createComment:comment.body
+                                    discussionId:comment.discussionId
+                                   attachmentIds:attachmentIds
+                                         handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
+                                             NSError * saveError = nil;
+                                             item.commentStatus = @(IQCommentStatusSent);
+                                             [item.managedObjectContext saveToPersistentStore:&saveError];
+                                             if(saveError) {
+                                                 NSLog(@"Create comment status error: %@", saveError);
+                                             }
+                                             if (completion) {
+                                                 completion(error);
+                                             }
+                                         }];
+    };
+
+    IQAttachment * localAttachment = [[comment.attachments allObjects] firstObject];
+    if([localAttachment.originalURL length] > 0) {
+        [[IQService sharedService] createAttachmentWithFileAtPath:localAttachment.localURL
+                                                         fileName:localAttachment.displayName
+                                                         mimeType:localAttachment.contentType
+                                                          handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
+                                                              if(success) {
+                                                                  sendCommentBlock(@[attachment]);
+                                                              }
+                                                              else if (completion) {
+                                                                  completion(error);
+                                                              }
+                                                          }];
     }
 }
 
 - (void)deleteComment:(IQComment *)comment {
+    NSArray * attachments = [comment.attachments allObjects];
+    for (IQAttachment * attachment in attachments) {
+        NSError * removeError = nil;
+        if(![[NSFileManager defaultManager] removeItemAtPath:attachment.localURL error:&removeError]) {
+            NSLog(@"Failed delete tmp attachment file with error: %@", removeError);
+        }
+    }
+    
     [comment.managedObjectContext deleteObject:comment];
+    
     NSError *saveError = nil;
     if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
         NSLog(@"Save delete comment error: %@", saveError);
@@ -292,6 +344,53 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     return nil;
 }
 
+- (void)crecreateLocalAttachmentWithAsset:(ALAsset*)asset completion:(void (^)(IQAttachment * attachment, NSError * error))completion {
+    NSError * error = nil;
+    NSString * diskCachePath = [self createCacheDirIfNeedWithError:&error];
+    NSURL * filePath = [NSURL fileURLWithPath:[[diskCachePath stringByAppendingPathComponent:[NSString UUIDString]]
+                                               stringByAppendingPathExtension:[asset.fileName pathExtension]]];
+    NSManagedObjectContext * context = [IQService sharedService].context;
+    NSNumber * uniqId = (!error) ? [IQAttachment uniqueLocalIdInContext:context error:&error] : nil;
+    
+    if (uniqId && !error) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSError * exportAssetError = nil;
+            
+            if([asset writeToFile:filePath error:&exportAssetError]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSError * saveError = nil;
+                    NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass([IQAttachment class])
+                                                               inManagedObjectContext:context];
+                    
+                    IQAttachment * attachment = (IQAttachment*)[[NSManagedObject alloc] initWithEntity:entity
+                                                                        insertIntoManagedObjectContext:context];
+                    
+                    attachment.localId = uniqId;
+                    attachment.createDate = [NSDate date];
+                    attachment.displayName = [asset fileName];
+                    attachment.ownerId = [IQSession defaultSession].userId;
+                    attachment.contentType = [asset MIMEType];
+                    attachment.originalURL = [filePath absoluteString];
+                    attachment.localURL = [filePath path];
+                    attachment.previewURL = [filePath absoluteString];
+                    
+                    if([attachment.managedObjectContext saveToPersistentStore:&saveError] ) {
+                        if(completion) {
+                            completion(attachment, nil);
+                        }
+                    }
+                });
+            }
+            else if(completion) {
+                completion(nil, error);
+            }
+        });
+    }
+    else if(completion) {
+        completion(nil, error);
+    }
+}
+
 - (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;
     
@@ -324,6 +423,22 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     [self reloadFirstPartWithCompletion:^(NSError *error) {
         
     }];
+}
+
+- (NSString*)createCacheDirIfNeedWithError:(NSError**)error {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString * namespace = @"com.iq300.FileStore.Share";
+    NSString * diskCachePath = [paths[0] stringByAppendingPathComponent:namespace];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:diskCachePath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:diskCachePath withIntermediateDirectories:YES attributes:nil error:error];
+    }
+    
+    if(!*error) {
+        return diskCachePath;
+    }
+    
+    return nil;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

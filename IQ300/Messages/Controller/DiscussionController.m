@@ -142,16 +142,14 @@
                  otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if(buttonIndex == 1) {
-                                  [self.model sendComment:comment.body
-                                          attachmentAsset:nil
-                                            attachmentIds:[comment.attachments allObjects]
-                                                 fileName:nil
-                                           attachmentType:nil
-                                           withCompletion:^(NSError *error) {
-                                               if(!error) {
-                                                   [self.model deleteComment:comment];
-                                               }
-                                           }];
+                                  [self.model resendLocalComment:comment withCompletion:^(NSError *error) {
+                                      if(!error) {
+                                          [self.model deleteComment:comment];
+                                      }
+                                      else {
+                                          NSLog(@"Resend local comment error");
+                                      }
+                                  }];
                               }
                           }];
     }
@@ -195,7 +193,6 @@
     
     [self.model sendComment:_mainView.inputView.commentTextView.text
             attachmentAsset:_attachment
-              attachmentIds:nil
                    fileName:[_attachment fileName]
              attachmentType:[_attachment MIMEType]
              withCompletion:^(NSError *error) {

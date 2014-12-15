@@ -101,6 +101,16 @@
             handler:handler];
 }
 
+- (void)createAttachmentWithFileAtPath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler {
+    [self postFileAtPath:[NSURL fileURLWithPath:filePath]
+                    path:@"/api/v1/attachments"
+              parameters:nil
+       fileAttributeName:@"attachment[file]"
+                fileName:fileName
+                mimeType:mimeType
+                 handler:handler];
+}
+
 - (void)contactsWithPage:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"page"   : NSObjectNullForNil(page),

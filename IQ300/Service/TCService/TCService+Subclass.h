@@ -57,6 +57,14 @@ fileAttributeName:(NSString*)fileAttributeName
          mimeType:(NSString*)mimeType
           handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)postFileAtPath:(NSURL*)filePath
+                  path:(NSString*)path
+            parameters:(NSDictionary*)parameters
+     fileAttributeName:(NSString*)fileAttributeName
+              fileName:(NSString*)fileName
+              mimeType:(NSString*)mimeType
+               handler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)initDescriptors;
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation*)operation;
