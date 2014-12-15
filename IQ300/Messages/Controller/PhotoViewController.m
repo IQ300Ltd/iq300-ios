@@ -35,6 +35,7 @@
     _headerView.backgroundColor = [UIColor blackColor];
     _headerView.opaque = NO;
     _headerView.alpha = 0.7f;
+    _imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.view addSubview:_headerView];
  
     _backButton = [[UIButton alloc] init];
@@ -69,8 +70,26 @@
                       placeholderImage:nil
                                options:SDWebImageCacheMemoryOnly
                              completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                 if (_imageView.image.size.height <= _imageView.frame.size.height &&
+                                     _imageView.image.size.width <= _imageView.frame.size.width) {
+                                     _imageView.contentMode = UIViewContentModeCenter;
+                                 }
+                                 else {
+                                     _imageView.contentMode = UIViewContentModeScaleAspectFit;
+                                 }
                                  [_activityIndicator stopAnimating];
                              }];
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (_imageView.image.size.height <= _imageView.frame.size.height &&
+        _imageView.image.size.width <= _imageView.frame.size.width) {
+        _imageView.contentMode = UIViewContentModeCenter;
+    }
+    else {
+        _imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
 }
 

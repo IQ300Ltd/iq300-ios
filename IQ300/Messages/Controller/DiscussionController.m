@@ -277,7 +277,7 @@
         if(!error) {
             [self.tableView reloadData];
         }
-        [self scrollToBottomAnimated:NO delay:0.0f];
+        [self scrollToBottomAnimated:NO delay:0.1f];
     }];
 }
 
