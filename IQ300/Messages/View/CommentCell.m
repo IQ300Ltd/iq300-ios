@@ -23,6 +23,12 @@
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define STATUS_IMAGE_SIZE 11
 
+@interface CommentCell() {
+    BOOL _commentIsMine;
+}
+
+@end
+
 @implementation CommentCell
 
 + (NSString*)statusImageForStatus:(NSInteger)type {
@@ -152,7 +158,7 @@
 
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
-                                         (hasDescription) ? actualBounds.size.width : 10.0f,
+                                         (hasDescription) ? actualBounds.size.width : (_commentIsMine) ? 10.0f : 0.0f,
                                          descriptionHeight);
     if(hasAttachment) {
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width,
@@ -179,14 +185,14 @@
 - (void)setItem:(IQComment *)item {
     _item = item;
     
-    BOOL commentIsMine = ([_item.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
+    _commentIsMine = ([_item.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
     
     _dateLabel.text = [_item.createDate dateToDayTimeString];
     _userNameLabel.hidden = ([_item.author.displayName length] == 0);
     _userNameLabel.text = _item.author.displayName;
     
     NSString * body = ([_item.body length] > 0) ? _item.body : @"";
-    body = (commentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
+    body = (_commentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
     _descriptionLabel.text = body;
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
@@ -211,7 +217,7 @@
 
 - (void)prepareForReuse {
     [super prepareForReuse];
-
+    _commentIsMine = NO;
     [self setStatus:IQCommentStatusUnknown];
     [_attachButton setHidden:YES];
     [_attachButton removeTarget:nil

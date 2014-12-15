@@ -22,6 +22,12 @@
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 
+@interface ConversationCell() {
+    BOOL _lastCommentIsMine;
+}
+
+@end
+
 @implementation ConversationCell
 
 + (CGFloat)heightForItem:(IQConversation *)item andCellWidth:(CGFloat)cellWidth {
@@ -141,14 +147,14 @@
     
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
-                                         (hasDescription) ? actualBounds.size.width - 40.0f : 10.0f,
+                                         (hasDescription) ? actualBounds.size.width - 40.0f :  (_lastCommentIsMine) ? 15.0f : 0.0f,
                                          descriptionHeight);
     if(hasAttachment) {
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width,
                                             15.0f);
         CGSize attachmentSize = [_attachButton sizeThatFits:constrainedSize];
         
-        _attachButton.frame = CGRectMake((hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) + 5.0f : _descriptionLabel.frame.origin.x,
+        _attachButton.frame = CGRectMake((hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) : _descriptionLabel.frame.origin.x,
                                          (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f,
                                          attachmentSize.width + 5.0f,
                                          attachmentSize.height);
@@ -164,7 +170,7 @@
     _item = item;
     
     BOOL hasUnreadComments = ([_item.unreadCommentsCount integerValue] > 0);
-    BOOL lastCommentIsMine = ([_item.lastComment.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
+    _lastCommentIsMine = ([_item.lastComment.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
     _contentBackgroundInsets = (hasUnreadComments) ? UIEdgeInsetsMake(0, 4, 0, 0) : UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = (hasUnreadComments) ? CONTEN_BACKGROUND_COLOR :
                                                                    CONTEN_BACKGROUND_COLOR_R;
@@ -178,7 +184,7 @@
     _companion = companion;
     
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";
-    body = (lastCommentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
+    body = (_lastCommentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
     _descriptionLabel.text = body;
     NSString * badgeValue = ([_item.unreadCommentsCount integerValue] > 99.0f) ? @"99+" : [_item.unreadCommentsCount stringValue];
     [self setBadgeText:(hasUnreadComments) ?  badgeValue : nil];
@@ -200,6 +206,7 @@
     _contentBackgroundInsets = UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR_R;
     _companion = nil;
+    _lastCommentIsMine = NO;
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {
