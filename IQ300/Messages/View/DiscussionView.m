@@ -211,7 +211,7 @@
                                    HEADER_HEIGHT);
     
     CGSize backButtonImageSize = [_backButton imageForState:UIControlStateNormal].size;
-    _backButton.frame = CGRectMake(13.0f,
+    _backButton.frame = CGRectMake(-4.0f,
                                    actualBounds.origin.y + (_headerView.frame.size.height - backButtonImageSize.height) / 2,
                                    backButtonImageSize.width,
                                    backButtonImageSize.height);
