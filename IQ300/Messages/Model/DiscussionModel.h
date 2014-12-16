@@ -33,7 +33,7 @@
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
 
-- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed;
+- (void)setSubscribedToNotifications:(BOOL)subscribed;
 
 - (void)sendComment:(NSString*)comment
     attachmentAsset:(ALAsset*)asset

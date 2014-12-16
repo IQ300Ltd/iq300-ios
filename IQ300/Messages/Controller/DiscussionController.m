@@ -84,7 +84,7 @@
         [self reloadModel];
     }
     
-    [self.model setSubscribedToSystemWakeNotifications:YES];
+    [self.model setSubscribedToNotifications:YES];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillShow:)
@@ -104,7 +104,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToSystemWakeNotifications:NO];
+    [self.model setSubscribedToNotifications:NO];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

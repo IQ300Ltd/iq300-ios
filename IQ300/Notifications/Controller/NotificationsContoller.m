@@ -93,12 +93,12 @@
         [self reloadModel];
     }
     
-    [self.model setSubscribedToSystemWakeNotifications:YES];
+    [self.model setSubscribedToNotifications:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToSystemWakeNotifications:NO];
+    [self.model setSubscribedToNotifications:NO];
 }
 
 #pragma mark - UITableView DataSource

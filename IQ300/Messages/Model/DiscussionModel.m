@@ -54,7 +54,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     
     if(self) {
         _discussion = discussion;
-        [self resubscribeToIQNotifications];
     }
     
     return self;
@@ -173,17 +172,20 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed {
+- (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reloadFirstPart)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
+        [self resubscribeToIQNotifications];
     }
     else {
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:UIApplicationWillEnterForegroundNotification
                                                       object:nil];
+        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+        [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
     }
 }
 

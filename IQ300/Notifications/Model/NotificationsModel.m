@@ -43,8 +43,6 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         _totalItemsCount = 0;
         _unreadItemsCount = 0;
         
-        [self resubscribeToIQNotifications];
-
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(resubscribeToIQNotifications)
                                                      name:AccountDidChangedNotification
@@ -219,17 +217,19 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     }];
 }
 
-- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed {
+- (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reloadFirstPart)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
+        [self resubscribeToIQNotifications];
     }
     else {
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:UIApplicationWillEnterForegroundNotification
                                                       object:nil];
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
     }
 }
 
