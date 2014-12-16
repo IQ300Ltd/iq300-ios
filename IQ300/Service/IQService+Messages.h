@@ -24,6 +24,8 @@
         attachmentIds:(NSArray*)attachmentIds
               handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)commentWithId:(NSNumber*)commentId discussionId:(NSNumber*)discussionId handler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler;
 - (void)createAttachmentWithFileAtPath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler;
 

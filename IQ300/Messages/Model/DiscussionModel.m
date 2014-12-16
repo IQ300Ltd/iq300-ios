@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+#import <RestKit/RestKit.h>
 
 #import "DiscussionModel.h"
 #import "IQService+Messages.h"
@@ -15,6 +16,10 @@
 #import "CViewInfo.h"
 #import "ALAsset+Extension.h"
 #import "NSString+UUID.h"
+#import "IQNotificationCenter.h"
+#import "ObjectSerializator.h"
+#import "MessagesModel.h"
+#import "NSManagedObjectContext+AsyncFetch.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -25,8 +30,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     NSInteger _portionLenght;
     NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
-    __weak id _notfObserver;
+    __weak id _newMessageObserver;
+    __weak id _messageViewedObserver;
     NSDate * _lastViewDate;
+    NSDateFormatter * _dateFormatter;
 }
 
 @end
@@ -47,6 +54,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     
     if(self) {
         _discussion = discussion;
+        [self resubscribeToIQNotifications];
     }
     
     return self;
@@ -233,6 +241,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                             }];
                                                         }
                                                     }];
+    }
+    else {
+        sendCommentBlock(nil);
     }
 }
 
@@ -441,6 +452,91 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     return nil;
 }
 
+- (void)resubscribeToIQNotifications {
+        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+        [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
+    
+    void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
+        NSNumber * authorId = commentData[@"author"][@"id"];
+        if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId]) {
+            NSError * serializeError = nil;
+            Class commentClass = [IQComment class];
+            IQComment * comment = [ObjectSerializator objectFromDictionary:@{ NSStringFromClass(commentClass) : commentData }
+                                                          destinationClass:[IQComment class]
+                                                        managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
+                                                                     error:&serializeError];
+            comment.commentStatus = IQCommentStatusViewed;
+            NSError *saveError = nil;
+            if(![comment.managedObjectContext saveToPersistentStore:&saveError] ) {
+                NSLog(@"Save comment statuses error: %@", saveError);
+            }
+            [self modelNewComment:comment];
+            [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
+                                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                if(!success) {
+                                                                    NSLog(@"Mark conversation as read fail with error:%@", error);
+                                                                }
+                                                            }];
+        }
+    };
+    _newMessageObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNewMessageNotification
+                                                                       channelName:_discussion.pusherChannel
+                                                                             queue:nil
+                                                                        usingBlock:newMessageBlock];
+    
+    void (^messageViewedBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSDictionary * viewData = notf.userInfo[IQNotificationDataKey][@"user_view"];
+        NSNumber * userId = viewData[@"user_id"];
+        
+        if(userId && [_companionId isEqualToNumber:userId]) {
+            NSNumber * discussionId = viewData[@"discussion_id"];
+            NSString * viewedDateString = viewData[@"viewed_at"];
+            NSDate * viewedDate = [[self dateFormater] dateFromString:viewedDateString];
+            
+            NSManagedObjectContext * context = [IQService sharedService].context;
+            NSString * format = @"discussionId == %@ AND author.userId == %@ AND commentStatus == %d";
+            NSPredicate * predicate = [NSPredicate predicateWithFormat:format, discussionId, [IQSession defaultSession].userId, IQCommentStatusSent];
+            NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:NSStringFromClass([IQComment class])];
+            [request setPredicate:predicate];
+            [context executeFetchRequest:request completion:^(NSArray *objects, NSError *error) {
+                if([objects count] > 0) {
+                    for (IQComment * comment in objects) {
+                        BOOL isViewed = [comment.createDate compare:viewedDate] == NSOrderedAscending;
+                        IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
+                        if(status != [comment.commentStatus integerValue]) {
+                            comment.commentStatus = @(status);
+                        }
+                    }
+                    
+                    if([[IQService sharedService].context hasChanges]) {
+                        NSError *saveError = nil;
+                        if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
+                            NSLog(@"Save comment statuses error: %@", saveError);
+                        }
+                    }
+                }
+            }];
+        }
+    };
+    
+    _messageViewedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQMessageViewedByUserNotification
+                                                                          channelName:_discussion.pusherChannel
+                                                                                queue:nil
+                                                                           usingBlock:messageViewedBlock];
+}
+
+- (NSDateFormatter *)dateFormater {
+    if (!_dateFormatter) {
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+        
+        [_dateFormatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ssZZZ"];
+    }
+    
+    return _dateFormatter;
+}
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController*)controller {
@@ -490,6 +586,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
+- (void)modelNewComment:(IQComment*)comment {
+    if ([self.delegate respondsToSelector:@selector(model:newComment:)]) {
+        [self.delegate model:self newComment:comment];
+    }
+}
+
 - (void)modelDidChangeContent {
     if ([self.delegate respondsToSelector:@selector(modelDidChangeContent:)]) {
         [self.delegate modelDidChangeContent:self];
@@ -509,6 +611,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)dealloc {
+    [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+    [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

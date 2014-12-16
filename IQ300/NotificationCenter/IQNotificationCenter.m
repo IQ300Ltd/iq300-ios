@@ -11,7 +11,9 @@
 #import "IQNotificationCenter.h"
 #import "DispatchAfterExecution.h"
 
-NSString * const IQNotificationsDidChanged = @"IQNotificationsDidChanged";
+NSString * const IQNotificationsDidChanged = @"notifications";
+NSString * const IQNewMessageNotification = @"comment_created";
+NSString * const IQMessageViewedByUserNotification = @"viewed";
 NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
 
 @class IQCNotification;
@@ -83,10 +85,11 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 @interface IQNotificationCenter() <PTPusherDelegate> {
     PTPusher * _client;
-    PTPusherChannel * _channel;
+    NSString * _defaultChannelName;
+    NSMutableDictionary * _channels;
+    NSMutableDictionary * _channelBindings;
     NSString * _token;
     NSString * _key;
-    NSString * _channelName;
     UIBackgroundTaskIdentifier _backgroundIdentifier;
     NSMutableDictionary * _observers;
     BOOL _shouldReconnect;
@@ -121,11 +124,13 @@ static IQNotificationCenter * _defaultCenter = nil;
         
         _key = key;
         _token = token;
-        _channelName = channelName;
         _client = [PTPusher pusherWithKey:key delegate:self encrypted:YES];
         _client.authorizationURL = [NSURL URLWithString:authURLString];
         _shouldReconnect = YES;
         _observers = [NSMutableDictionary dictionary];
+        _channels = [NSMutableDictionary dictionary];
+        _channelBindings = [NSMutableDictionary dictionary];
+        _defaultChannelName = channelName;
         
 #ifdef kLOG_ALL_EVENTS
         __weak typeof (self) weakSelf = self;
@@ -140,10 +145,11 @@ static IQNotificationCenter * _defaultCenter = nil;
                                                                       }];
 #endif
 
-        _channel = [_client subscribeToChannelNamed:_channelName];
-        
-        [self subscribeToEvents];
-        
+        if(channelName) {
+            PTPusherChannel * channel = [_client subscribeToChannelNamed:channelName];
+            _channels[channelName] = channel;
+        }
+                
         [_client connect];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -161,15 +167,23 @@ static IQNotificationCenter * _defaultCenter = nil;
 }
 
 - (id<NSObject>)addObserverForName:(NSString *)name queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * notf))block {
+    return [self addObserverForName:name channelName:_defaultChannelName queue:queue usingBlock:block];
+}
+
+- (id<NSObject>)addObserverForName:(NSString *)name channelName:(NSString*)channelName queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * notf))block {
     NSParameterAssert(block);
     dispatch_queue_t dispatchQueue = (queue) ? queue : dispatch_get_main_queue();
     IQNotificationObserver * observer = [IQNotificationObserver observerWithQueue:dispatchQueue dispatchBlock:block];
-    [self addObserver:observer forName:name];
+    [self addObserver:observer forChannel:channelName forEventName:name];
+    [self subscribeChannelWithName:channelName toEventNamed:name];
     return observer;
 }
 
+
 - (void)removeObserver:(id)observer {
-    [self removeObserver:observer name:nil];
+    if (observer) {
+        [self removeObserver:observer name:nil];
+    }
 }
 
 - (void)removeObserver:(id)observer name:(NSString *)name {
@@ -197,14 +211,24 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 #pragma mark - Private methods
 
-- (void)subscribeToEvents {
-    __weak typeof(self) weakSelf = self;
-    [_channel bindToEventNamed:@"notifications" handleWithBlock:^(PTPusherEvent *channelEvent) {
-        IQCNotification * notf = [[IQCNotification alloc] initWithName:IQNotificationsDidChanged
-                                                                object:self
-                                                              userInfo:@{ IQNotificationDataKey : channelEvent.data }];
-        [weakSelf dispatchNotification:notf];
-    }];
+- (void)subscribeChannelWithName:(NSString*)channelName toEventNamed:(NSString*)eventName {
+    PTPusherChannel * channel = _channels[channelName];
+    if(!channel) {
+        channel = [_client subscribeToChannelNamed:channelName];
+        _channels[channelName] = channel;
+    }
+    
+    if(!_channelBindings[eventName]) {
+        __weak typeof(self) weakSelf = self;
+        PTPusherEventBinding * binding = [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
+            IQCNotification * notf = [[IQCNotification alloc] initWithName:eventName
+                                                                    object:self
+                                                                  userInfo:@{ IQNotificationDataKey : channelEvent.data }];
+            [weakSelf dispatchNotification:notf formChannel:channelName];
+        }];
+        
+        _channelBindings[eventName] = binding;
+    }
 }
 
 - (void)reconnect {
@@ -244,19 +268,21 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 #pragma mark - Dispatch Notifications
 
-- (void)addObserver:(IQNotificationObserver*)observer forName:(NSString*)name {
-    NSMutableArray * observers = _observers[name];
+- (void)addObserver:(IQNotificationObserver*)observer forChannel:(NSString*)channelName forEventName:(NSString*)eventName {
+    NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, eventName];
+    NSMutableArray * observers = _observers[key];
 
     if(!observers) {
         observers = [NSMutableArray array];
-        _observers[name] = observers;
+        _observers[key] = observers;
     }
     
     [observers addObject:observer];
 }
 
-- (void)dispatchNotification:(IQCNotification*)notf {
-    NSArray * observers = _observers[notf.name];
+- (void)dispatchNotification:(IQCNotification*)notf formChannel:(NSString*)channelName {
+    NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, notf.name];
+    NSArray * observers = _observers[key];
     for (IQNotificationObserver * observer in observers) {
         [observer dispatchNotification:notf];
     }

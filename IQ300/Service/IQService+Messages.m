@@ -91,6 +91,12 @@
              handler:handler];
 }
 
+- (void)commentWithId:(NSNumber*)commentId discussionId:(NSNumber*)discussionId handler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/%@", discussionId, commentId]
+                parameters:nil
+                   handler:handler];
+}
+
 - (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler {
     [self postAsset:asset
                path:@"/api/v1/attachments"

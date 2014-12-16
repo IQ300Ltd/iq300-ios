@@ -19,6 +19,8 @@
 
 
 extern NSString * const IQNotificationsDidChanged;
+extern NSString * const IQNewMessageNotification;
+extern NSString * const IQMessageViewedByUserNotification;
 extern NSString * const IQNotificationDataKey;
 
 @interface IQCNotification : NSObject
@@ -48,6 +50,7 @@ extern NSString * const IQNotificationDataKey;
 - (id)initWithKey:(NSString*)key token:(NSString*)token channelName:(NSString*)channelName;
 
 - (id<NSObject>)addObserverForName:(NSString *)name queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * notf))block;
+- (id<NSObject>)addObserverForName:(NSString *)name channelName:(NSString*)channelName queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * notf))block;
 
 - (void)removeObserver:(id)observer;
 - (void)removeObserver:(id)observer name:(NSString *)aName;

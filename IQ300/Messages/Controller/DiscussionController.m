@@ -165,6 +165,12 @@
     }
 }
 
+#pragma mark - DiscussionModelDelegate Delegate
+
+- (void)model:(DiscussionModel*)model newComment:(IQComment*)comment {
+    [self scrollToBottomAnimated:YES delay:0.0f];
+}
+
 #pragma mark - Private methods
 
 - (BOOL)isValidText:(NSString *)text {
@@ -203,7 +209,6 @@
                      _attachment = nil;
                      [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                  }
-                 [_mainView.inputView.attachButton setEnabled:YES];
                  [_mainView.inputView.commentTextView setEditable:YES];
                  [self scrollToBottomAnimated:YES delay:0.0f];
              }];

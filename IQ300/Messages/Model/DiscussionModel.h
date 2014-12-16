@@ -8,16 +8,24 @@
 
 #import "IQTableModel.h"
 
+@class DiscussionModel;
 @class IQDiscussion;
 @class IQComment;
 @class ALAsset;
+
+@protocol DiscussionModelDelegate <IQTableModelDelegate>
+
+@optional
+- (void)model:(DiscussionModel*)model newComment:(IQComment*)comment;
+
+@end
 
 @interface DiscussionModel : NSObject<IQTableModel>
 
 @property (nonatomic, weak) IQDiscussion * discussion;
 @property (nonatomic, strong) NSNumber * companionId;
 @property (nonatomic, assign) CGFloat cellWidth;
-@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+@property (nonatomic, weak) id<DiscussionModelDelegate> delegate;
 
 - (id)initWithDiscussion:(IQDiscussion*)discussion;
 

@@ -289,6 +289,14 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQComment class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/discussions/:id/comments/:id"
+                                                   fromKeyPath:@"comment"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
                                                         method:RKRequestMethodPOST
                                                    pathPattern:@"/api/v1/attachments"

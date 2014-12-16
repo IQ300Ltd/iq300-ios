@@ -35,6 +35,7 @@
 		737E7C5C1A0CC8A400E8BB81 /* top_header_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 737E7C5A1A0CC8A400E8BB81 /* top_header_bg@2x.png */; };
 		737E7C5F1A0CD57E00E8BB81 /* AccountHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C5E1A0CD57E00E8BB81 /* AccountHeaderView.m */; };
 		737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C611A0D027700E8BB81 /* ExtendedButton.m */; };
+		7380E9751A4020FA00128BD9 /* ObjectSerializator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7380E9741A4020FA00128BD9 /* ObjectSerializator.m */; };
 		7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4AC1A288ED2000B94BD /* IQNotificationCenter.m */; };
 		7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4BD1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m */; };
 		7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386B3B81A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m */; };
@@ -220,6 +221,8 @@
 		737E7C611A0D027700E8BB81 /* ExtendedButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtendedButton.m; sourceTree = "<group>"; };
 		737F5DD31A22FC5F0095040B /* UITableView+BottomRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+BottomRefreshControl.h"; sourceTree = "<group>"; };
 		737F5DD41A22FC5F0095040B /* UITableView+BottomRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+BottomRefreshControl.m"; sourceTree = "<group>"; };
+		7380E9731A4020FA00128BD9 /* ObjectSerializator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectSerializator.h; sourceTree = "<group>"; };
+		7380E9741A4020FA00128BD9 /* ObjectSerializator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectSerializator.m; sourceTree = "<group>"; };
 		7385D4AB1A288ED2000B94BD /* IQNotificationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationCenter.h; sourceTree = "<group>"; };
 		7385D4AC1A288ED2000B94BD /* IQNotificationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationCenter.m; sourceTree = "<group>"; };
 		7385D4BC1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+ActiveRecord.h"; sourceTree = "<group>"; };
@@ -779,6 +782,8 @@
 				73ADA8E61A36EE180032C1FA /* IQContact.m */,
 				731DEEC91A2F27AE002F5FEB /* IQCounters.h */,
 				731DEECA1A2F27AE002F5FEB /* IQCounters.m */,
+				7380E9731A4020FA00128BD9 /* ObjectSerializator.h */,
+				7380E9741A4020FA00128BD9 /* ObjectSerializator.m */,
 				738EA7A41A1DD0570065D39F /* IQObjects.h */,
 			);
 			path = Objects;
@@ -1209,6 +1214,7 @@
 				73AF73E11A3AFEBA001B8E42 /* CViewInfo.m in Sources */,
 				73F2A5401A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m in Sources */,
 				73C58C0A1A1F17FD00C83729 /* NSString+SizeWith.m in Sources */,
+				7380E9751A4020FA00128BD9 /* ObjectSerializator.m in Sources */,
 				73A798391A359D79006F5721 /* ALAsset+Extension.m in Sources */,
 				7395C50D1A31848700A6D5DA /* UIView+RoundedCorners.m in Sources */,
 				739850DC1A2DD35C00DB5B21 /* IQDiscussion.m in Sources */,
