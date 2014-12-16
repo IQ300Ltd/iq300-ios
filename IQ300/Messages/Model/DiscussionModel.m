@@ -458,6 +458,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
         [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
     
+    __weak typeof(self) weakSelf = self;
     void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
         NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
         NSNumber * authorId = commentData[@"author"][@"id"];
@@ -473,7 +474,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
             if(![comment.managedObjectContext saveToPersistentStore:&saveError] ) {
                 NSLog(@"Save comment statuses error: %@", saveError);
             }
-            [self modelNewComment:comment];
+            [weakSelf modelNewComment:comment];
             [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
                                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                                 if(!success) {
@@ -494,7 +495,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         if(userId && [_companionId isEqualToNumber:userId]) {
             NSNumber * discussionId = viewData[@"discussion_id"];
             NSString * viewedDateString = viewData[@"viewed_at"];
-            NSDate * viewedDate = [[self dateFormater] dateFromString:viewedDateString];
+            NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
             
             NSManagedObjectContext * context = [IQService sharedService].context;
             NSString * format = @"discussionId == %@ AND author.userId == %@ AND commentStatus == %d";

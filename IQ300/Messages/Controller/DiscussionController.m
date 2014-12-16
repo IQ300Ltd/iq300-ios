@@ -105,6 +105,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.model setSubscribedToNotifications:NO];
+    [self.model setDelegate:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
