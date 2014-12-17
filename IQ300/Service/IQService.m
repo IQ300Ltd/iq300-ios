@@ -163,6 +163,25 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                    handler:handler];
 }
 
+- (void)registerDeviceForRemoteNotificationsWithToken:(NSString*)token handler:(RequestCompletionHandler)handler {
+    if([token length] > 0) {
+        NSDictionary * parameters = @{ @"device" :
+                                           @{
+                                               @"platform" : @"ios",
+                                               @"token"    : token
+                                            }
+                                     };
+        [self postObject:nil
+                    path:@"/api/v1/devices"
+              parameters:parameters
+                 handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                     if(handler) {
+                         handler(success, responseData, error);
+                     }
+                 }];
+    }
+}
+
 #pragma mark - Private methods
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation *)operation {
@@ -312,6 +331,14 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPOST
+                                                         pathPattern:@"/api/v1/devices"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+
 }
 
 @end

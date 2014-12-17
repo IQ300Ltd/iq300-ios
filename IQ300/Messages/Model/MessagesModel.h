@@ -28,6 +28,6 @@
 
 - (void)updateCountersWithCompletion:(void (^)(NSError * error))completion;
 
-- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed;
+- (void)setSubscribedToNotifications:(BOOL)subscribed;
 
 @end

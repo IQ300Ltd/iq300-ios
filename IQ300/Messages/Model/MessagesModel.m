@@ -234,7 +234,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     }];
 }
 
-- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed {
+- (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reloadFirstPart)

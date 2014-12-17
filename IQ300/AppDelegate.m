@@ -41,6 +41,7 @@
     [IQSession setDefaultSession:nil];
     [IQNotificationCenter setDefaultCenter:nil];
     [delegate.drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:nil];
+    [[UIApplication sharedApplication] unregisterForRemoteNotifications];
 }
 
 + (void)setupNotificationCenter {
@@ -54,6 +55,31 @@
     }
 }
 
++ (BOOL)pushNotificationsEnabled {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+        return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
+#else
+        return ([[UIApplication sharedApplication] enabledRemoteNotificationTypes] & UIRemoteNotificationTypeAlert);
+#endif
+}
+
++ (void)registerForRemoteNotification {
+    if([IQSession defaultSession] && ![AppDelegate pushNotificationsEnabled]) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+        UIUserNotificationType types = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings
+                                                                             settingsForTypes:types
+                                                                             categories:nil]];
+        
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+#else
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                                                               UIRemoteNotificationTypeSound |
+                                                                               UIRemoteNotificationTypeAlert)];
+#endif
+    }
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     RKLogConfigureByName("RestKit/Support", RKLogLevelError);
     RKLogConfigureByName("RestKit/Network", RKLogLevelError);
@@ -61,6 +87,7 @@
 
     [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
     [AppDelegate setupNotificationCenter];
+    [AppDelegate registerForRemoteNotification];
 
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
@@ -120,9 +147,20 @@
     [self.window makeKeyAndVisible];
     
     if(![IQSession defaultSession]) {
+        [[UIApplication sharedApplication] unregisterForRemoteNotifications];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
         LoginController * loginViewController = [[LoginController alloc] init];
         [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+    }
+    else {
+        //Notifications
+     }
+    
+    if (launchOptions != nil) {
+        NSDictionary* dictionary = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+        if (dictionary != nil) {
+            NSLog(@"Launched from push notification: %@", dictionary);
+        }
     }
     
     return YES;
@@ -149,6 +187,31 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+#pragma mark - Notifications
+
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {
+    NSLog(@"Device token is: %@", deviceToken);
+    
+    if ([IQSession defaultSession]) {
+        [[IQService sharedService] registerDeviceForRemoteNotificationsWithToken:[deviceToken description]
+                                                                         handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                             if(!success) {
+                                                                                 NSLog(@"Failed registry device on server with error:%@", error);
+                                                                             }
+                                                                         }];
+    }
+}
+
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
+    NSLog(@"Failed to get token, error: %@", error);
+}
+
+- (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary*)userInfo {
+    NSLog(@"Received notification: %@", userInfo);
+}
+
+#pragma mark - Private methods
 
 - (void)applyCustomizations {
     //set status bar black color

@@ -17,6 +17,7 @@
 
 + (void)logout;
 + (void)setupNotificationCenter;
++ (void)registerForRemoteNotification;
 
 @end
 

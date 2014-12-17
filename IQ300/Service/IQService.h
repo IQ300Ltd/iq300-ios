@@ -58,4 +58,6 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 
 - (void)notificationsCountWithHandler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)registerDeviceForRemoteNotificationsWithToken:(NSString*)token handler:(RequestCompletionHandler)handler;
+
 @end
