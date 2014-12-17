@@ -92,7 +92,7 @@
     RKLogConfigureByName("RestKit/Network", RKLogLevelError);
     RKLogConfigureByName("RestKit/App", RKLogLevelError);
     
-    NSLog(@"Service adress is:%@", SERVICE_URL);
+    NSLog(@"\n\nService adress is %@\n\n", SERVICE_URL);
 
     [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
     [AppDelegate setupNotificationCenter];

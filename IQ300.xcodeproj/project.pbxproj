@@ -1424,45 +1424,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-l\"Pods-AFNetworking\"",
-					"-l\"Pods-CTAssetsPickerController\"",
-					"-l\"Pods-CustomBadge\"",
-					"-l\"Pods-ISO8601DateFormatterValueTransformer\"",
-					"-l\"Pods-MMDrawerController\"",
-					"-l\"Pods-RKValueTransformers\"",
-					"-l\"Pods-Reachability\"",
-					"-l\"Pods-RestKit\"",
-					"-l\"Pods-SDWebImage\"",
-					"-l\"Pods-SOCKit\"",
-					"-l\"Pods-SVPullToRefresh\"",
-					"-l\"Pods-SWTableViewCell\"",
-					"-l\"Pods-SocketRocket\"",
-					"-l\"Pods-TransitionKit\"",
-					"-l\"Pods-libPusher\"",
-					"-l\"icucore\"",
-					"-framework",
-					"\"AssetsLibrary\"",
-					"-framework",
-					"\"CFNetwork\"",
-					"-framework",
-					"\"CoreData\"",
-					"-framework",
-					"\"CoreGraphics\"",
-					"-framework",
-					"\"ImageIO\"",
-					"-framework",
-					"\"MediaPlayer\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"QuartzCore\"",
-					"-framework",
-					"\"Security\"",
-					"-framework",
-					"\"SystemConfiguration\"",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "12d2bb19-f155-4b04-900c-599796feca6d";
 				SDKROOT = iphoneos;
@@ -1486,153 +1447,11 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-l\"Pods-AFNetworking\"",
-					"-l\"Pods-CTAssetsPickerController\"",
-					"-l\"Pods-CustomBadge\"",
-					"-l\"Pods-ISO8601DateFormatterValueTransformer\"",
-					"-l\"Pods-MMDrawerController\"",
-					"-l\"Pods-RKValueTransformers\"",
-					"-l\"Pods-Reachability\"",
-					"-l\"Pods-RestKit\"",
-					"-l\"Pods-SDWebImage\"",
-					"-l\"Pods-SOCKit\"",
-					"-l\"Pods-SVPullToRefresh\"",
-					"-l\"Pods-SWTableViewCell\"",
-					"-l\"Pods-SocketRocket\"",
-					"-l\"Pods-TransitionKit\"",
-					"-l\"Pods-libPusher\"",
-					"-l\"icucore\"",
-					"-framework",
-					"\"AssetsLibrary\"",
-					"-framework",
-					"\"CFNetwork\"",
-					"-framework",
-					"\"CoreData\"",
-					"-framework",
-					"\"CoreGraphics\"",
-					"-framework",
-					"\"ImageIO\"",
-					"-framework",
-					"\"MediaPlayer\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"QuartzCore\"",
-					"-framework",
-					"\"Security\"",
-					"-framework",
-					"\"SystemConfiguration\"",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "8645e826-a683-485a-b2fd-902c15915b8e";
 				SDKROOT = iphoneos;
 			};
 			name = Release;
-		};
-		73DE81E01A41AF3B00197D21 /* Production */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = iphoneos7.1;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Production;
-		};
-		73DE81E11A41AF3B00197D21 /* Production */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3C453A1313F35DF8AD783316 /* Pods.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Inostudio Solutions (2375DJV45D)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Inostudio Solutions (2375DJV45D)";
-				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
-				COPY_PHASE_STRIP = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "IQ300/IQ300-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"COCOAPODS=1",
-					"kPTPusherClientLibraryVersion=@\\\"1.5\\\"",
-					"PROD=1",
-				);
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
-				INFOPLIST_FILE = IQ300/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-l\"Pods-AFNetworking\"",
-					"-l\"Pods-CTAssetsPickerController\"",
-					"-l\"Pods-CustomBadge\"",
-					"-l\"Pods-ISO8601DateFormatterValueTransformer\"",
-					"-l\"Pods-MMDrawerController\"",
-					"-l\"Pods-RKValueTransformers\"",
-					"-l\"Pods-Reachability\"",
-					"-l\"Pods-RestKit\"",
-					"-l\"Pods-SDWebImage\"",
-					"-l\"Pods-SOCKit\"",
-					"-l\"Pods-SVPullToRefresh\"",
-					"-l\"Pods-SWTableViewCell\"",
-					"-l\"Pods-SocketRocket\"",
-					"-l\"Pods-TransitionKit\"",
-					"-l\"Pods-libPusher\"",
-					"-l\"icucore\"",
-					"-framework",
-					"\"AssetsLibrary\"",
-					"-framework",
-					"\"CFNetwork\"",
-					"-framework",
-					"\"CoreData\"",
-					"-framework",
-					"\"CoreGraphics\"",
-					"-framework",
-					"\"ImageIO\"",
-					"-framework",
-					"\"MediaPlayer\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"QuartzCore\"",
-					"-framework",
-					"\"Security\"",
-					"-framework",
-					"\"SystemConfiguration\"",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8645e826-a683-485a-b2fd-902c15915b8e";
-				SDKROOT = iphoneos;
-			};
-			name = Production;
 		};
 /* End XCBuildConfiguration section */
 
@@ -1642,7 +1461,6 @@
 			buildConfigurations = (
 				738CE2011A0B3F4E0096B374 /* Debug */,
 				738CE2021A0B3F4E0096B374 /* Release */,
-				73DE81E01A41AF3B00197D21 /* Production */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1652,7 +1470,6 @@
 			buildConfigurations = (
 				738CE2041A0B3F4E0096B374 /* Debug */,
 				738CE2051A0B3F4E0096B374 /* Release */,
-				73DE81E11A41AF3B00197D21 /* Production */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
