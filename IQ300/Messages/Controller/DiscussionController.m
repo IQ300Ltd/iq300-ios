@@ -167,7 +167,7 @@
 #pragma mark - DiscussionModelDelegate Delegate
 
 - (void)model:(DiscussionModel*)model newComment:(IQComment*)comment {
-    [self scrollToBottomAnimated:YES delay:0.0f];
+    [self scrollToBottomAnimated:YES delay:0.1f];
 }
 
 #pragma mark - Private methods

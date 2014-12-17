@@ -484,7 +484,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     };
     
     _newMessageObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNewMessageNotification
-                                                                       channelName:_discussion.pusherChannel
                                                                              queue:nil
                                                                         usingBlock:newMessageBlock];
     
@@ -525,7 +524,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     };
     
     _messageViewedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQMessageViewedByUserNotification
-                                                                          channelName:_discussion.pusherChannel
                                                                                 queue:nil
                                                                            usingBlock:messageViewedBlock];
 }
