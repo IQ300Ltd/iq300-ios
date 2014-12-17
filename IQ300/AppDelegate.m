@@ -15,12 +15,17 @@
 #import "IQNavigationController.h"
 #import "NotificationsContoller.h"
 #import "IQDrawerController.h"
-#import "IQService.h"
+#import "IQService+Messages.h"
 #import "IQSession.h"
 #import "LoginController.h"
 #import "MenuConsts.h"
 #import "IQNotificationCenter.h"
 #import "IQUser.h"
+#import "DiscussionController.h"
+#import "IQConversation.h"
+
+#define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
+
 
 @interface AppDelegate ()
 
@@ -56,27 +61,29 @@
 }
 
 + (BOOL)pushNotificationsEnabled {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
         return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
-#else
+    }
+    else {
         return ([[UIApplication sharedApplication] enabledRemoteNotificationTypes] & UIRemoteNotificationTypeAlert);
-#endif
+    }
 }
 
 + (void)registerForRemoteNotification {
     if([IQSession defaultSession] && ![AppDelegate pushNotificationsEnabled]) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-        UIUserNotificationType types = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
-        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings
-                                                                             settingsForTypes:types
-                                                                             categories:nil]];
-        
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-#else
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
-                                                                               UIRemoteNotificationTypeSound |
-                                                                               UIRemoteNotificationTypeAlert)];
-#endif
+        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+            UIUserNotificationType types = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
+            [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings
+                                                                                 settingsForTypes:types
+                                                                                 categories:nil]];
+            
+            [[UIApplication sharedApplication] registerForRemoteNotifications];
+        }
+        else {
+            [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                                                                   UIRemoteNotificationTypeSound |
+                                                                                   UIRemoteNotificationTypeAlert)];
+        }
     }
 }
 
@@ -158,10 +165,13 @@
     
     if (launchOptions != nil) {
         NSDictionary* dictionary = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-        if (dictionary != nil) {
-            NSLog(@"Launched from push notification: %@", dictionary);
+        NSLog(@"Launch by remoute notification %@", dictionary);
+        if (dictionary != nil && [IQSession defaultSession]) {
+            [self showControllerForNotification:dictionary];
         }
     }
+    
+    [UIApplication sharedApplication].applicationIconBadgeNumber = -1;
     
     return YES;
 }
@@ -194,7 +204,11 @@
     NSLog(@"Device token is: %@", deviceToken);
     
     if ([IQSession defaultSession]) {
-        [[IQService sharedService] registerDeviceForRemoteNotificationsWithToken:[deviceToken description]
+        NSString* newToken = [deviceToken description];
+        newToken = [newToken stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
+        newToken = [newToken stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+        [[IQService sharedService] registerDeviceForRemoteNotificationsWithToken:newToken
                                                                          handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                                              if(!success) {
                                                                                  NSLog(@"Failed registry device on server with error:%@", error);
@@ -208,7 +222,49 @@
 }
 
 - (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary*)userInfo {
-    NSLog(@"Received notification: %@", userInfo);
+    [self showControllerForNotification:userInfo];
+}
+
+- (void)showControllerForNotification:(NSDictionary*)notfObject {
+    NSDictionary * notificable = notfObject[@"notificable"];
+    NSNumber * objectId = notificable[@"id"];
+    NSString * objectType = notificable[@"type"];
+    NSInteger messagesTab = 3;
+    
+    UITabBarController * tabController = ((UITabBarController*)self.drawerController.centerViewController);
+    if([objectType isEqualToString:@"Conversation"]) {
+        UINavigationController * navController = tabController.viewControllers[messagesTab];
+        BOOL isDiscussionOpen = ([navController isKindOfClass:[DiscussionController class]]);
+        DiscussionController * controller = (isDiscussionOpen) ? (DiscussionController*)navController.topViewController : [[DiscussionController alloc] init];
+        
+        ObjectLoaderCompletionHandler handler = ^(BOOL success, IQConversation * conver, NSData *responseData, NSError *error) {
+            if(success) {
+                NSPredicate * companionsPredicate = [NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId];
+                NSArray * companions = [[conver.discussion.users filteredSetUsingPredicate:companionsPredicate] allObjects];
+                IQUser * companion = [companions lastObject];
+                
+                DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
+                model.companionId = companion.userId;
+                
+                controller.title = NSLocalizedString(@"Messages", nil);
+                controller.model = model;
+                controller.companionName = companion.displayName;
+                
+                if(!isDiscussionOpen) {
+                    [tabController setSelectedIndex:messagesTab];
+                    [navController pushViewController:controller animated:NO];
+                }
+                else {
+                    [controller reloadDataWithCompletion:nil];
+                }
+            }
+        };
+        
+        [[IQService sharedService] conversationWithId:objectId  handler:handler];
+    }
+    else {
+        [tabController setSelectedIndex:0];
+    }
 }
 
 #pragma mark - Private methods

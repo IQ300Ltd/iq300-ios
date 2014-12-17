@@ -104,8 +104,6 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToNotifications:NO];
-    [self.model setDelegate:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -394,6 +392,11 @@
 
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
     _documentController = nil;
+}
+
+- (void)dealloc {
+    [self.model setSubscribedToNotifications:NO];
+    [self.model setDelegate:nil];
 }
 
 @end

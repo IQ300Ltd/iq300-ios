@@ -264,7 +264,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/conversations/:id"
-                                                   fromKeyPath:@"conversations"
+                                                   fromKeyPath:@"conversation"
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];

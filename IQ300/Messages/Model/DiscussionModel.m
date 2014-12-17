@@ -313,11 +313,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)updateDefaultStatusesForComments:(NSArray*)comments {
+    NSNumber * userId = [IQSession defaultSession].userId;
     for (IQComment * comment in comments) {
         if([comment.commentStatus integerValue] != IQCommentStatusSendError) {
             BOOL isViewed = [comment.createDate compare:_lastViewDate] == NSOrderedAscending;
             IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
-            if([comment.commentStatus integerValue] != status) {
+            if([comment.commentStatus integerValue] != status && [comment.author.userId isEqualToNumber:userId]) {
                 comment.commentStatus = @(status);
             }
         }
@@ -469,11 +470,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                           destinationClass:[IQComment class]
                                                         managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
                                                                      error:&serializeError];
-            comment.commentStatus = IQCommentStatusViewed;
-            NSError *saveError = nil;
-            if(![comment.managedObjectContext saveToPersistentStore:&saveError] ) {
-                NSLog(@"Save comment statuses error: %@", saveError);
-            }
             [weakSelf modelNewComment:comment];
             [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
                                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
@@ -483,6 +479,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                             }];
         }
     };
+    
     _newMessageObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNewMessageNotification
                                                                        channelName:_discussion.pusherChannel
                                                                              queue:nil
@@ -507,7 +504,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                     for (IQComment * comment in objects) {
                         BOOL isViewed = [comment.createDate compare:viewedDate] == NSOrderedAscending;
                         IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
-                        if(status != [comment.commentStatus integerValue]) {
+                        if(status != [comment.commentStatus integerValue] &&
+                           [comment.commentStatus integerValue] != IQCommentStatusSendError) {
                             comment.commentStatus = @(status);
                         }
                     }
