@@ -209,6 +209,7 @@
                      [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                  }
                  [_mainView.inputView.commentTextView setEditable:YES];
+                 [_mainView.inputView.attachButton setEnabled:YES];
                  [self scrollToBottomAnimated:YES delay:0.0f];
              }];
 }
