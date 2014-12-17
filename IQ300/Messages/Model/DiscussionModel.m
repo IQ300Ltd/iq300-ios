@@ -282,6 +282,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                               }
                                                           }];
     }
+    else {
+        sendCommentBlock(nil);
+    }
 }
 
 - (void)deleteComment:(IQComment *)comment {
