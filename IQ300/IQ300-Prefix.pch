@@ -31,7 +31,11 @@
 #import "UIAlertView+Blocks.h"
 #import "UIEdgeInsetsExtend.h"
 
+#ifdef PROD
+#define SERVICE_URL @"https://app.iq300.ru"
+#else
 #define SERVICE_URL @"http://edge.iq300.ru"
+#endif
 
 #define PUSHER_APP_KEY @"2d3e4d45c8824ea2d1b0"
 

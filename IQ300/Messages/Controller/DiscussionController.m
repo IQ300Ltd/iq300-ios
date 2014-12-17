@@ -257,7 +257,7 @@
                                                          [self showOpenInForURL:destinationURL fromRect:rectForAppearing];
                                                      }
                                                      failure:^(NSOperation *operation, NSError *error) {
-                                                         
+                                                         [self hideActivityIndicator];
                                                      }];
     }
 }
