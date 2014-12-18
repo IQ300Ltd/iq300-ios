@@ -192,6 +192,9 @@
 }
 
 - (void)sendButtonAction:(UIButton*)sender {
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+
     [_mainView.inputView.sendButton setEnabled:NO];
     [_mainView.inputView.attachButton setEnabled:NO];
     [_mainView.inputView.commentTextView setEditable:NO];
@@ -211,7 +214,9 @@
                  }
                  [_mainView.inputView.commentTextView setEditable:YES];
                  [_mainView.inputView.attachButton setEnabled:YES];
-                 [self scrollToBottomIfNeedAnimated:YES delay:0.0f];
+                 if(isTableScrolledToBottom) {
+                 [self scrollToBottomAnimated:YES delay:0.0f];
+                 }
              }];
 }
 
@@ -307,6 +312,8 @@
 }
 
 - (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     NSDictionary *userInfo = [notification userInfo];
     NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
@@ -322,7 +329,9 @@
     [UIView setAnimationCurve:animationCurve];
     
     [_mainView setInputOffset:down ? 0.0f : keyboardRect.origin.y - _mainView.inputView.frame.size.height];
-    [self scrollToBottomIfNeedAnimated:NO delay:0.0f];
+    if(isTableScrolledToBottom) {
+        [self scrollToBottomAnimated:NO delay:0.0f];
+    }
     
     [UIView commitAnimations];
 }
@@ -342,12 +351,9 @@
     [_mainView setInputHeight:messageTextViewHeight];
 }
 
-- (void)scrollToBottomIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
+- (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay {
     NSInteger section = [self.tableView numberOfSections];
-    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.5f;
-    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
-    
-    if (section > 0 && (isTableScrolledToBottom || _needFullReload)) {
+    if (section > 0) {
         NSInteger itemsCount = [self.tableView numberOfRowsInSection:section-1];
         
         if (itemsCount > 0) {
@@ -361,6 +367,14 @@
                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
             }
         }
+    }
+}
+
+- (void)scrollToBottomIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+    if(isTableScrolledToBottom || _needFullReload) {
+        [self scrollToBottomAnimated:animated delay:delay];
     }
 }
 
