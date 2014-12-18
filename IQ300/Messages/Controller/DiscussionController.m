@@ -29,6 +29,7 @@
     BOOL _enterCommentProcessing;
     ALAsset * _attachment;
     UIDocumentInteractionController * _documentController;
+    BOOL _needFullReload;
 }
 
 @end
@@ -48,6 +49,8 @@
     [super viewDidLoad];
     
     _enterCommentProcessing = NO;
+    _needFullReload = YES;
+
     [_mainView.inputView.sendButton setEnabled:NO];
     [_mainView.backButton addTarget:self
                              action:@selector(backButtonAction:)
@@ -70,7 +73,6 @@
      position:SVPullToRefreshPositionTop];
     
     [_mainView.inputView.commentTextView setDelegate:(id<UITextViewDelegate>)self];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -79,10 +81,6 @@
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
-    
-    if([IQSession defaultSession]) {
-        [self reloadModel];
-    }
     
     [self.model setSubscribedToNotifications:YES];
     
@@ -100,6 +98,9 @@
                                              selector:@selector(onKeyboardDidHide:)
                                                  name:UIKeyboardDidHideNotification
                                                object:nil];
+    if([IQSession defaultSession]) {
+        [self reloadModel];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -167,7 +168,7 @@
 #pragma mark - DiscussionModelDelegate Delegate
 
 - (void)model:(DiscussionModel*)model newComment:(IQComment*)comment {
-    [self scrollToBottomAnimated:YES delay:0.1f];
+    [self scrollToBottomIfNeedAnimated:YES delay:0.1f];
 }
 
 #pragma mark - Private methods
@@ -210,7 +211,7 @@
                  }
                  [_mainView.inputView.commentTextView setEditable:YES];
                  [_mainView.inputView.attachButton setEnabled:YES];
-                 [self scrollToBottomAnimated:YES delay:0.0f];
+                 [self scrollToBottomIfNeedAnimated:YES delay:0.0f];
              }];
 }
 
@@ -278,11 +279,14 @@
 }
 
 - (void)reloadModel {
-    [self.model reloadModelWithCompletion:^(NSError *error) {
+    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
         }
-        [self scrollToBottomAnimated:NO delay:0.1f];
+        if(_needFullReload) {
+            [self scrollToBottomIfNeedAnimated:NO delay:0.1f];
+        }
+        _needFullReload = NO;
     }];
 }
 
@@ -318,7 +322,7 @@
     [UIView setAnimationCurve:animationCurve];
     
     [_mainView setInputOffset:down ? 0.0f : keyboardRect.origin.y - _mainView.inputView.frame.size.height];
-    [self scrollToBottomAnimated:NO delay:0.0f];
+    [self scrollToBottomIfNeedAnimated:NO delay:0.0f];
     
     [UIView commitAnimations];
 }
@@ -338,10 +342,12 @@
     [_mainView setInputHeight:messageTextViewHeight];
 }
 
-- (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay {
+- (void)scrollToBottomIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
     NSInteger section = [self.tableView numberOfSections];
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.5f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
-    if (section > 0) {
+    if (section > 0 && (isTableScrolledToBottom || _needFullReload)) {
         NSInteger itemsCount = [self.tableView numberOfRowsInSection:section-1];
         
         if (itemsCount > 0) {

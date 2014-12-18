@@ -148,6 +148,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
+    if([_fetchController.fetchedObjects count] == 0) {
+        [self updateModelSourceControllerWithCompletion:nil];
+    }
+    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
