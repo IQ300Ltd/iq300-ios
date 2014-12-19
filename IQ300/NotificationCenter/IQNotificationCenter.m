@@ -203,7 +203,9 @@ static IQNotificationCenter * _defaultCenter = nil;
 }
 
 - (void)dealloc {
+#ifdef kLOG_ALL_EVENTS
     [[NSNotificationCenter defaultCenter] removeObserver:_notfObserver];
+#endif
     _client.delegate = nil;
     [_client disconnect];
     _client = nil;

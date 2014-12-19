@@ -13,4 +13,6 @@
 
 @property (nonatomic, strong) MessagesModel * model;
 
+- (void)updateGlobalCounter;
+
 @end

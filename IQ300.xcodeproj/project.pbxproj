@@ -39,7 +39,6 @@
 		7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4AC1A288ED2000B94BD /* IQNotificationCenter.m */; };
 		7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4BD1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m */; };
 		7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386B3B81A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m */; };
-		73882D8C1A247A0800B8BE90 /* IQBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73882D8B1A247A0800B8BE90 /* IQBadgeView.m */; };
 		73882D901A24B62500B8BE90 /* check_mark_medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 73882D8E1A24B62500B8BE90 /* check_mark_medium.png */; };
 		73882D911A24B62500B8BE90 /* check_mark_medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73882D8F1A24B62500B8BE90 /* check_mark_medium@2x.png */; };
 		73891FF51A2C97ED008D8885 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */; };
@@ -107,6 +106,8 @@
 		73A113FA1A1C8D1B00293EC5 /* RMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A113F91A1C8D1B00293EC5 /* RMenuCell.m */; };
 		73A113FD1A1CAA5900293EC5 /* default_avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A113FB1A1CAA5900293EC5 /* default_avatar.png */; };
 		73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A113FC1A1CAA5900293EC5 /* default_avatar@2x.png */; };
+		73A20C771A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */; };
+		73A20C7A1A42F62C006433C5 /* IQBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A20C791A42F62C006433C5 /* IQBadgeView.m */; };
 		73A798331A3585FF006F5721 /* CTAssetsPickerController.strings in Resources */ = {isa = PBXBuildFile; fileRef = 73A798351A3585FF006F5721 /* CTAssetsPickerController.strings */; };
 		73A798391A359D79006F5721 /* ALAsset+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A798381A359D79006F5721 /* ALAsset+Extension.m */; };
 		73A7983C1A35B96F006F5721 /* ALAssetInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A7983B1A35B96F006F5721 /* ALAssetInputStream.m */; };
@@ -230,8 +231,6 @@
 		7386B3B71A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+AsyncFetch.h"; sourceTree = "<group>"; };
 		7386B3B81A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+AsyncFetch.m"; sourceTree = "<group>"; };
 		73882D891A24687300B8BE90 /* SuppressWarning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuppressWarning.h; sourceTree = "<group>"; };
-		73882D8A1A247A0800B8BE90 /* IQBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeView.h; sourceTree = "<group>"; };
-		73882D8B1A247A0800B8BE90 /* IQBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBadgeView.m; sourceTree = "<group>"; };
 		73882D8E1A24B62500B8BE90 /* check_mark_medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check_mark_medium.png; sourceTree = "<group>"; };
 		73882D8F1A24B62500B8BE90 /* check_mark_medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check_mark_medium@2x.png"; sourceTree = "<group>"; };
 		73891FF11A2C4F40008D8885 /* DispatchAfterExecution.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DispatchAfterExecution.h; sourceTree = "<group>"; };
@@ -335,6 +334,10 @@
 		73A113F91A1C8D1B00293EC5 /* RMenuCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMenuCell.m; sourceTree = "<group>"; };
 		73A113FB1A1CAA5900293EC5 /* default_avatar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = default_avatar.png; sourceTree = "<group>"; };
 		73A113FC1A1CAA5900293EC5 /* default_avatar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default_avatar@2x.png"; sourceTree = "<group>"; };
+		73A20C751A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITabBarItem+CustomBadgeView.h"; sourceTree = "<group>"; };
+		73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarItem+CustomBadgeView.m"; sourceTree = "<group>"; };
+		73A20C781A42F62C006433C5 /* IQBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeView.h; sourceTree = "<group>"; };
+		73A20C791A42F62C006433C5 /* IQBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBadgeView.m; sourceTree = "<group>"; };
 		73A798341A3585FF006F5721 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/CTAssetsPickerController.strings; sourceTree = "<group>"; };
 		73A798361A358601006F5721 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CTAssetsPickerController.strings; sourceTree = "<group>"; };
 		73A798371A359D79006F5721 /* ALAsset+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAsset+Extension.h"; sourceTree = "<group>"; };
@@ -532,8 +535,6 @@
 				736B6BDA1A0B5F1D00034D9B /* MenuCell.m */,
 				73A113F81A1C8D1B00293EC5 /* RMenuCell.h */,
 				73A113F91A1C8D1B00293EC5 /* RMenuCell.m */,
-				73882D8A1A247A0800B8BE90 /* IQBadgeView.h */,
-				73882D8B1A247A0800B8BE90 /* IQBadgeView.m */,
 				737E7C531A0CA88E00E8BB81 /* MenuSectionHeader.h */,
 				737E7C541A0CA88E00E8BB81 /* MenuSectionHeader.m */,
 				73BA98781A109369005AEC00 /* MenuConsts.h */,
@@ -589,6 +590,8 @@
 				738EA7B11A1DE15B0065D39F /* UIViewController+LeftMenu.m */,
 				738EA7AD1A1DDEC20065D39F /* IQTableBaseController.h */,
 				738EA7AE1A1DDEC20065D39F /* IQTableBaseController.m */,
+				73A20C781A42F62C006433C5 /* IQBadgeView.h */,
+				73A20C791A42F62C006433C5 /* IQBadgeView.m */,
 				738FE71F1A1652D2009F26A2 /* ExTextField.h */,
 				738FE7201A1652D2009F26A2 /* ExTextField.m */,
 			);
@@ -633,6 +636,8 @@
 				73A798381A359D79006F5721 /* ALAsset+Extension.m */,
 				73F2A53E1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.h */,
 				73F2A53F1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m */,
+				73A20C751A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.h */,
+				73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1233,10 +1238,10 @@
 				73C58C021A1F074900C83729 /* NotificationCell.m in Sources */,
 				73ADA8EC1A36FD680032C1FA /* ContactCell.m in Sources */,
 				7393C4141A1A300F00E9E944 /* LoginView.m in Sources */,
-				73882D8C1A247A0800B8BE90 /* IQBadgeView.m in Sources */,
 				739850DF1A2DD4D700DB5B21 /* IQComment.m in Sources */,
 				739C3B651A3077320032C057 /* NSDate+IQFormater.m in Sources */,
 				738EA7B21A1DE15B0065D39F /* UIViewController+LeftMenu.m in Sources */,
+				73A20C771A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m in Sources */,
 				739C3B5F1A3075D90032C057 /* DiscussionModel.m in Sources */,
 				739850BC1A2DADF000DB5B21 /* MessagesController.m in Sources */,
 				73BA98851A109A49005AEC00 /* IQMenuItem.m in Sources */,
@@ -1259,6 +1264,7 @@
 				73ADA8F11A373B010032C1FA /* PhotoViewController.m in Sources */,
 				73506ED61A137D070071B4CB /* TasksController.m in Sources */,
 				73A949A91A38632C008EC469 /* ConversationCell.m in Sources */,
+				73A20C7A1A42F62C006433C5 /* IQBadgeView.m in Sources */,
 				73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */,
 				7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */,
 				736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */,

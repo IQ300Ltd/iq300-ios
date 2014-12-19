@@ -37,16 +37,18 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 - (id)init {
     if(self) {
         _portionLenght = 20;
-        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:SORT_DIRECTION == IQSortDirectionAscending];
+        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt"
+                                                                    ascending:SORT_DIRECTION == IQSortDirectionAscending];
         _sortDescriptors = @[descriptor];
         _loadUnreadOnly = NO;
         _totalItemsCount = 0;
         _unreadItemsCount = 0;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(resubscribeToIQNotifications)
+                                                 selector:@selector(accountDidChanged)
                                                      name:AccountDidChangedNotification
                                                    object:nil];
+        [self resubscribeToIQNotifications];
     }
     return self;
 }
@@ -205,14 +207,14 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     }];
 }
 
-- (void)updateCountersWithCompletion:(void (^)(NSError * error))completion {
+- (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion {
     [[IQService sharedService] notificationsCountWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
         if(success) {
             _totalItemsCount = [counter.totalCount integerValue];
             _unreadItemsCount = [counter.unreadCount integerValue];
         }
         if(completion) {
-            completion(error);
+            completion(counter, error);
         }
     }];
 }
@@ -223,13 +225,11 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                  selector:@selector(reloadFirstPart)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
-        [self resubscribeToIQNotifications];
     }
     else {
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:UIApplicationWillEnterForegroundNotification
                                                       object:nil];
-        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
     }
 }
 
@@ -284,7 +284,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (void)updateCounters {
-    [self updateCountersWithCompletion:^(NSError *error) {
+    [self updateCountersWithCompletion:^(IQCounters * counter, NSError *error) {
         if(!error) {
             [self modelCountersDidChanged];
         }
@@ -298,9 +298,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (void)resubscribeToIQNotifications {
-    if(_notfObserver) {
-        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
-    }
+    [self unsubscribeFromIQNotifications];
     
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
         NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
@@ -311,6 +309,22 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
                                                                        queue:nil
                                                                   usingBlock:block];
+}
+
+- (void)unsubscribeFromIQNotifications {
+    if(_notfObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    }
+}
+
+- (void)accountDidChanged {
+    if([IQSession defaultSession]) {
+        [self resubscribeToIQNotifications];
+        [self updateCounters];
+    }
+    else {
+        [self unsubscribeFromIQNotifications];
+    }
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

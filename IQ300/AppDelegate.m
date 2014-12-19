@@ -103,26 +103,13 @@
     NotificationsContoller * notifications = [[NotificationsContoller alloc] init];
     IQNavigationController * notificationsNav = [[IQNavigationController alloc] initWithRootViewController:notifications];
     
-    TasksController * tasksViewContoller = [[TasksController alloc] init];
-    IQNavigationController * tasksNav = [[IQNavigationController alloc] initWithRootViewController:tasksViewContoller];
-    
-    float imageOffset = 6;
-    UIViewController * projects = [[UIViewController alloc] init];
-    projects.title = NSLocalizedString(@"Projects", nil);
-    projects.view.backgroundColor = [UIColor whiteColor];
-    UIImage * barImage = [[UIImage imageNamed:@"projects_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    UIImage * barImageSelected = [[UIImage imageNamed:@"projects_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    projects.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSelected];
-    projects.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
-    IQNavigationController * projectsNav = [[IQNavigationController alloc] initWithRootViewController:projects];
-    
     MessagesController * messages = [[MessagesController alloc] init];
     IQNavigationController * messagesNav = [[IQNavigationController alloc] initWithRootViewController:messages];
     
     UITabBarController * center = [[UITabBarController alloc] init];
     center.tabBar.layer.borderWidth = 0;
     
-    [center setViewControllers:@[notificationsNav, tasksNav, projectsNav, messagesNav]];
+    [center setViewControllers:@[notificationsNav, messagesNav]];
     
     MMDrawerController * drawerController = [[IQDrawerController alloc]
                                              initWithCenterViewController:center
@@ -162,8 +149,8 @@
         [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
     }
     else {
-        //Notifications
-     }
+        [self updateGlobalCounters];
+    }
     
     if (launchOptions != nil) {
         NSDictionary* dictionary = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -303,6 +290,17 @@
                                                         NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:10]
                                                        }
                                              forState:UIControlStateSelected];
+}
+
+- (void)updateGlobalCounters {
+    UITabBarController * tabBarController = (UITabBarController*)self.drawerController.centerViewController;
+    
+    for (UINavigationController * navController in tabBarController.viewControllers) {
+        UIViewController * controller = [navController.viewControllers objectAtIndex:0];
+        if([controller respondsToSelector:@selector(updateGlobalCounter)]) {
+            [controller performSelector:@selector(updateGlobalCounter)];
+        }
+    }
 }
 
 @end

@@ -19,6 +19,9 @@
 #import "DiscussionController.h"
 #import "CreateConversationController.h"
 #import "DispatchAfterExecution.h"
+#import "UITabBarItem+CustomBadgeView.h"
+#import "IQBadgeView.h"
+#import "IQCounters.h"
 
 #define DISPATCH_DELAY 0.7
 
@@ -34,14 +37,29 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        self.model = [[MessagesModel alloc] init];
         self.title = NSLocalizedString(@"Messages", nil);
+
         UIImage * barImage = [[UIImage imageNamed:@"messages_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIImage * barImageSel = [[UIImage imageNamed:@"messgaes_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         
         float imageOffset = 6;
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSel];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
-        self.model = [[MessagesModel alloc] init];
+        
+        BadgeStyle * style = [BadgeStyle defaultStyle];
+        style.badgeTextColor = [UIColor whiteColor];
+        style.badgeFrameColor = [UIColor whiteColor];
+        style.badgeInsetColor = [UIColor colorWithHexInt:0xe74545];
+        style.badgeFrame = YES;
+        
+        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
+        badgeView.badgeMinSize = 18;
+        badgeView.frameLineHeight = 1.0f;
+        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        
+        self.tabBarItem.customBadgeView = badgeView;
+        self.tabBarItem.badgeOrigin = CGPointMake(90, 7);
     }
     return self;
 }
@@ -99,6 +117,13 @@
     [self.model setSubscribedToNotifications:NO];
 }
 
+- (void)updateGlobalCounter {
+    __weak typeof(self) weakSelf = self;
+    [self.model updateCountersWithCompletion:^(IQCounters *counter, NSError *error) {
+        [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue]];
+    }];
+}
+
 #pragma mark - UITableView DataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -129,7 +154,10 @@
 
     [self.navigationController pushViewController:controller animated:YES];
     
-    [MessagesModel markConversationAsRead:conver completion:nil];
+    __weak typeof(self) weakSelf = self;
+    [MessagesModel markConversationAsRead:conver completion:^(NSError *error) {
+        [weakSelf updateGlobalCounter];
+    }];
 }
 
 #pragma mark - IQTableModel Delegate
@@ -142,6 +170,10 @@
 - (void)modelDidChanged:(id<IQTableModel>)model {
     [super modelDidChanged:model];
     [self updateNoDataLabelVisibility];
+}
+
+- (void)modelCountersDidChanged:(id<IQTableModel>)model {
+    [self updateBarBadgeWithValue:self.model.unreadItemsCount];
 }
 
 #pragma mark - Menu Responder Delegate
@@ -224,6 +256,12 @@
     _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
         [self.model reloadFirstPartWithCompletion:compleationBlock];
     });
+}
+
+- (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
+    BOOL hasUnreadNotf = (badgeValue > 0);
+    NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%d", badgeValue];
+    self.tabBarItem.badgeValue = (hasUnreadNotf) ? badgeStringValue : nil;
 }
 
 @end

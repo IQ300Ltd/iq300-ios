@@ -17,9 +17,9 @@
 #import "NotificationsModel.h"
 #import "IQNotification.h"
 #import "NotificationCell.h"
-
-//#import "UITableView+BottomRefreshControl.h"
-//#import "IQRefreshControl.h"
+#import "IQCounters.h"
+#import "UITabBarItem+CustomBadgeView.h"
+#import "IQBadgeView.h"
 
 @interface NotificationsContoller() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationsView * _mainView;
@@ -34,6 +34,8 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     
     if (self) {
+        self.model = [[NotificationsModel alloc] init];
+
         self.title = NSLocalizedString(@"Notifications", nil);
         UIImage * barImage = [[UIImage imageNamed:@"notif_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIImage * barImageSel = [[UIImage imageNamed:@"notif_tab_selected.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -41,7 +43,20 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:barImage selectedImage:barImageSel];
         float imageOffset = 6;
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
-        self.model = [[NotificationsModel alloc] init];
+        
+        BadgeStyle * style = [BadgeStyle defaultStyle];
+        style.badgeTextColor = [UIColor whiteColor];
+        style.badgeFrameColor = [UIColor whiteColor];
+        style.badgeInsetColor = [UIColor colorWithHexInt:0xe74545];
+        style.badgeFrame = YES;
+        
+        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
+        badgeView.badgeMinSize = 18;
+        badgeView.frameLineHeight = 1.0f;
+        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        
+        self.tabBarItem.customBadgeView = badgeView;
+        self.tabBarItem.badgeOrigin = CGPointMake(88, 7);
     }
     
     return self;
@@ -80,8 +95,9 @@
     
     
     UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mark_tab_item.png"]
-                                                                  style:UIBarButtonItemStylePlain
-                                                                 target:self action:@selector(markAllAsReaded:)];
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(markAllAsReaded:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
     [self.leftMenuController setMenuResponder:self];
@@ -99,6 +115,13 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.model setSubscribedToNotifications:NO];
+}
+
+- (void)updateGlobalCounter {
+    __weak typeof(self) weakSelf = self;
+    [self.model updateCountersWithCompletion:^(IQCounters *counter, NSError *error) {
+        [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue]];
+    }];
 }
 
 #pragma mark - UITableView DataSource
@@ -208,6 +231,13 @@
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.totalItemsCount = self.model.totalItemsCount;
     _menuModel.unreadItemsCount = self.model.unreadItemsCount;
+    [self updateBarBadgeWithValue:self.model.unreadItemsCount];
+}
+
+- (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
+    BOOL hasUnreadNotf = (badgeValue > 0);
+    NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%d", badgeValue];
+    self.tabBarItem.badgeValue = (hasUnreadNotf) ? badgeStringValue : nil;
 }
 
 @end

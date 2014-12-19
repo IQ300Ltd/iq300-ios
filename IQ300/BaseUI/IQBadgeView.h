@@ -12,6 +12,8 @@
 
 @property (nonatomic, strong) UIFont * badgeTextFont;
 @property (nonatomic, assign) CGFloat badgeMinSize;
+@property (nonatomic, assign) CGFloat frameLineHeight;
+@property(nonatomic,copy) NSString *badgeValue;    // default is nil
 
 + (IQBadgeView*)customBadgeWithString:(NSString *)badgeString;
 + (IQBadgeView*)customBadgeWithString:(NSString *)badgeString badgeMinSize:(CGFloat)badgeMinSize;

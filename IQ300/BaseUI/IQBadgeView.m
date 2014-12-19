@@ -19,7 +19,7 @@
 @implementation IQBadgeView
 
 + (IQBadgeView*)customBadgeWithString:(NSString *)badgeString {
-    return [self customBadgeWithString:badgeString badgeMinSize:BADGE_MIN_SIZE];
+    return [self customBadgeWithString:badgeString badgeMinSize:BADGE_MIN_SIZE];;
 }
 
 + (IQBadgeView*)customBadgeWithString:(NSString *)badgeString badgeMinSize:(CGFloat)badgeMinSize {
@@ -36,7 +36,17 @@
 }
 
 + (IQBadgeView*)customBadgeWithString:(NSString *)badgeString withStyle:(BadgeStyle*)style {
-    return (IQBadgeView*)[super customBadgeWithString:badgeString withStyle:style];
+    IQBadgeView * badgeView = (IQBadgeView*)[super customBadgeWithString:badgeString withStyle:style];
+    badgeView.frameLineHeight = 1.5f;
+    return badgeView;
+}
+
+- (void)setBadgeValue:(NSString *)badgeValue {
+    [self autoBadgeSizeWithString:badgeValue];
+}
+
+- (NSString*)badgeValue {
+    return self.badgeText;
 }
 
 - (void)setBadgeMinSize:(CGFloat)badgeMinSize {
@@ -63,7 +73,7 @@
     CGFloat rectWidth, rectHeight;
     NSDictionary *fontAttr = @{ NSFontAttributeName : [self fontForBadgeWithSize:12] };
     CGSize stringSize = [badgeString sizeWithAttributes:fontAttr];
-    CGFloat flexSpace;
+    CGFloat flexSpace = 1.0f;
     if ([badgeString length]>2) {
         flexSpace = [badgeString length];
         rectWidth = self.badgeMinSize + (stringSize.width + flexSpace); rectHeight = self.badgeMinSize;
@@ -88,7 +98,7 @@
     
     
     CGContextBeginPath(context);
-    CGFloat lineSize = 1.5f;
+    CGFloat lineSize = self.frameLineHeight;
     if(self.badgeScaleFactor>1) {
         lineSize += self.badgeScaleFactor*0.25;
     }
