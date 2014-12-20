@@ -14,5 +14,6 @@
 @property (nonatomic, strong) ExTextField * searchBar;
 @property (nonatomic, strong) UITableView * tableView;
 @property (nonatomic, strong) UILabel * noDataLabel;
+@property (nonatomic, assign) CGFloat tableBottomMargin;
 
 @end

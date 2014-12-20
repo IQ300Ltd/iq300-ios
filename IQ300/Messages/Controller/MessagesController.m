@@ -91,6 +91,16 @@
          }];
      }
      position:SVPullToRefreshPositionBottom];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onKeyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onKeyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -195,7 +205,36 @@
     [self filterWithText:textField.text];
 }
 
+#pragma mark - Keyboard Helpers
+
+- (void)onKeyboardWillShow:(NSNotification *)notification {
+    [self makeInputViewTransitionWithDownDirection:NO notification:notification];
+}
+
+- (void)onKeyboardWillHide:(NSNotification *)notification {
+    [self makeInputViewTransitionWithDownDirection:YES notification:notification];
+}
+
 #pragma mark - Private methods
+
+- (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    NSTimeInterval animationDuration;
+    UIViewAnimationCurve animationCurve;
+    
+    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
+    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
+    
+    CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:animationDuration];
+    [UIView setAnimationCurve:animationCurve];
+    
+    [_messagesView setTableBottomMargin:down ? 0.0f : MIN(keyboardRect.size.width, keyboardRect.size.height) - 50.0f];
+    
+    [UIView commitAnimations];
+}
 
 - (void)createNewAction:(id)sender {
     CreateConversationController * controller = [[CreateConversationController alloc] init];
