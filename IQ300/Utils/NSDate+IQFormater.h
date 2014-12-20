@@ -11,5 +11,7 @@
 @interface NSDate (IQFormater)
 
 - (NSString*)dateToDayTimeString;
+- (NSString*)dateToTimeString;
+- (NSString*)dateToStringWithFormat:(NSString*)format;
 
 @end

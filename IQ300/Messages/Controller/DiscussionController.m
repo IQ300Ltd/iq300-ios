@@ -23,6 +23,9 @@
 #import "PhotoViewController.h"
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
+#import "CSectionHeaderView.h"
+
+#define SECTION_HEIGHT 12
 
 @interface DiscussionController() {
     DiscussionView * _mainView;
@@ -116,6 +119,17 @@
     return [self.model heightForItemAtIndexPath:indexPath];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return SECTION_HEIGHT;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    CSectionHeaderView * sectionView = [[CSectionHeaderView alloc] init];
+    sectionView.title = [self.model titleForSection:section];
+    
+    return sectionView;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CommentCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
@@ -126,7 +140,6 @@
     [cell.attachButton addTarget:self
                           action:@selector(attachViewButtonAction:)
                 forControlEvents:UIControlEventTouchUpInside];
-    [cell.attachButton setTag:indexPath.row];
     
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
@@ -230,7 +243,8 @@
 }
 
 - (void)attachViewButtonAction:(UIButton*)sender {
-    IQComment * comment = [self.model itemAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
+    CommentCell * cell = (CommentCell*)sender.superview.superview;
+    IQComment * comment = cell.item;
     IQAttachment * attachment = [[comment.attachments allObjects] lastObject];
     
     CGRect rectForAppearing = [sender.superview convertRect:sender.frame toView:self.view];

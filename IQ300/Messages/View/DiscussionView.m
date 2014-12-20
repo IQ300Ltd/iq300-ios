@@ -183,7 +183,7 @@
         _tableView = [[UITableView alloc] init];
         _tableView.backgroundColor = [UIColor clearColor];
         _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         [_tableView setClipsToBounds:YES];
         if([_tableView respondsToSelector:@selector(setSeparatorInset:)]) {
             [_tableView setSeparatorInset:UIEdgeInsetsZero];
@@ -226,7 +226,7 @@
                                   self.inputHeight);
     
     _tableView.frame = CGRectMake(actualBounds.origin.x,
-                                  tableViewY,
+                                  tableViewY - 1.0f,
                                   actualBounds.size.width,
                                   _inputView.frame.origin.y - tableViewY);
 }

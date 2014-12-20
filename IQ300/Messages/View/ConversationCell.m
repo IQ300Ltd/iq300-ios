@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 #import <QuartzCore/QuartzCore.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ConversationCell.h"
 #import "NSDate+IQFormater.h"
@@ -13,11 +14,13 @@
 #import "IQConversation.h"
 #import "IQSession.h"
 
+#define DEFAULT_AVATAR_IMAGE @"default_avatar.png"
+#define USER_ICON_SEZE 20
 #define ATTACHMENT_VIEW_HEIGHT 15.0f
 #define HEIGHT_DELTA 1.0f
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
-#define CELL_HEADER_MIN_HEIGHT 15
+#define CELL_HEADER_MIN_HEIGHT USER_ICON_SEZE
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
@@ -68,6 +71,12 @@
         _contentBackgroundView = [[UIView alloc] init];
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR_R;
         [contentView addSubview:_contentBackgroundView];
+        
+        _userImageView = [[UIImageView alloc] init];
+        _userImageView.layer.cornerRadius = USER_ICON_SEZE / 2.0f;
+        [_userImageView setImage:[UIImage imageNamed:DEFAULT_AVATAR_IMAGE]];
+        [_userImageView setClipsToBounds:YES];
+        [contentView addSubview:_userImageView];
         
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
                                              font:[UIFont fontWithName:IQ_HELVETICA size:13]
@@ -122,17 +131,24 @@
     
     CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
     _contentBackgroundView.frame = contentBackgroundBounds;
+
+    CGFloat nameOffset = 6;
+    CGFloat halfWidth = actualBounds.size.width / 2.0f;
+    _userImageView.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+                                      actualBounds.origin.y,
+                                      USER_ICON_SEZE,
+                                      USER_ICON_SEZE);
+
+    _userNameLabel.frame = CGRectMake(CGRectRight(_userImageView.frame) + nameOffset,
+                                      actualBounds.origin.y,
+                                      halfWidth,
+                                      CELL_HEADER_MIN_HEIGHT);
     
-    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, CELL_HEADER_MIN_HEIGHT);
-    _userNameLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+    CGFloat dateLabelX = actualBounds.origin.x + actualBounds.size.width - _userNameLabel.frame.size.width;
+    _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - _userNameLabel.frame.size.width,
                                   actualBounds.origin.y,
-                                  topLabelSize.width,
-                                  topLabelSize.height);
-    
-    _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - topLabelSize.width,
-                                  actualBounds.origin.y,
-                                  topLabelSize.width,
-                                  topLabelSize.height);
+                                  actualBounds.size.width - dateLabelX,
+                                  CELL_HEADER_MIN_HEIGHT);
     
     BOOL hasDescription = ([_item.lastComment.body length] > 0);
     BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);
@@ -182,6 +198,10 @@
     _userNameLabel.hidden = ([companion.displayName length] == 0);
     _userNameLabel.text = companion.displayName;
     _companion = companion;
+    
+    if([companion.thumbUrl length] > 0) {
+        [_userImageView sd_setImageWithURL:[NSURL URLWithString:companion.thumbUrl]];
+    }
     
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";
     body = (_lastCommentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;

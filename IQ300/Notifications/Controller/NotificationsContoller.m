@@ -236,7 +236,7 @@
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
     BOOL hasUnreadNotf = (badgeValue > 0);
-    NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%d", badgeValue];
+    NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%ld", (long)badgeValue];
     self.tabBarItem.badgeValue = (hasUnreadNotf) ? badgeStringValue : nil;
 }
 

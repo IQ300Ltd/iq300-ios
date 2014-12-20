@@ -20,6 +20,8 @@
 #import "ObjectSerializator.h"
 #import "MessagesModel.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
+#import "NSDate+IQFormater.h"
+#import "NSDate+CupertinoYankee.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -71,7 +73,24 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
-    return nil;
+    IQComment * comment = [self itemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:section]];
+    NSString * stringDate = nil;
+    NSDate * today = [[NSDate date] beginningOfDay];
+    NSDate * yesterday = [today prevDay];
+    NSDate * beginningOfDay = comment.createShortDate;
+    
+    if([beginningOfDay compare:today] == NSOrderedSame) {
+        stringDate =  NSLocalizedString(@"Today", nil);
+    }
+    else if([beginningOfDay compare:yesterday] == NSOrderedSame) {
+        stringDate = NSLocalizedString(@"Yesterday", nil);
+    }
+    else {
+        stringDate = [comment.createShortDate dateToStringWithFormat:@"dd.mm.yyyy"];
+    }
+    
+    return stringDate;
+
 }
 
 - (NSUInteger)numberOfItemsInSection:(NSInteger)section {
@@ -423,7 +442,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                managedObjectContext:[IQService sharedService].context
-                                                                 sectionNameKeyPath:nil
+                                                                 sectionNameKeyPath:@"createShortDate"
                                                                           cacheName:CACHE_FILE_NAME];
     }
     
