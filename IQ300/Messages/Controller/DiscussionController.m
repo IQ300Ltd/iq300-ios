@@ -303,7 +303,7 @@
             [self.tableView reloadData];
         }
         if(_needFullReload) {
-            [self scrollToBottomIfNeedAnimated:NO delay:0.1f];
+            [self scrollToBottomIfNeedAnimated:NO delay:0];
         }
         _needFullReload = NO;
     }];

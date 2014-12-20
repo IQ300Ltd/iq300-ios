@@ -63,15 +63,16 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
         _bubbleImages = @{
-                          @(CommentCellStyleLeft)  : [UIImage imageNamed:@"bubble_gray.png"],
-                          @(CommentCellStyleRight) : [UIImage imageNamed:@"bubble_green.png"]
+                          @(CommentCellStyleLeft)  : [[UIImage imageNamed:@"bubble_gray.png"] stretchableImageWithLeftCapWidth:5
+                                                                                                                  topCapHeight:5],
+                          @(CommentCellStyleRight) : [[UIImage imageNamed:@"bubble_green.png"] stretchableImageWithLeftCapWidth:5
+                                                                                                                   topCapHeight:5]
                           };
     });
     
     UIImage * bubbleImage = [_bubbleImages objectForKey:@(type)];
     if(bubbleImage) {
-        return [bubbleImage stretchableImageWithLeftCapWidth:5
-                                                topCapHeight:5];
+        return bubbleImage;
     }
     
     return nil;
