@@ -20,6 +20,7 @@
 
 @property (nonatomic, readonly) ExTextField * userTextField;
 @property (nonatomic, strong) UITableView * tableView;
+@property (nonatomic, assign) CGFloat tableBottomMargin;
 
 @property (nonatomic, strong) UILabel * noDataLabel;
 

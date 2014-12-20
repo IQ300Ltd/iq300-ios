@@ -110,7 +110,22 @@
     _tableView.frame = CGRectMake(actualBounds.origin.x,
                                   tableViewY,
                                   actualBounds.size.width,
-                                  actualBounds.size.height - tableViewY);
+                                  actualBounds.size.height - tableViewY - _tableBottomMargin);
+    _noDataLabel.frame = _tableView.frame;
+}
+
+- (void)setTableBottomMargin:(CGFloat)tableBottomMargin {
+    _tableBottomMargin = tableBottomMargin;
+    [self layoutTableView];
+}
+
+- (void)layoutTableView {
+    CGRect actualBounds = UIEdgeInsetsInsetRect(self.bounds, _contentInsets);
+    CGFloat tableViewY = CGRectBottom(_userNamelContainer.frame);
+    _tableView.frame = CGRectMake(actualBounds.origin.x,
+                                  tableViewY,
+                                  actualBounds.size.width,
+                                  actualBounds.size.height - tableViewY - _tableBottomMargin);
     _noDataLabel.frame = _tableView.frame;
 }
 
