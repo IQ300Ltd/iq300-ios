@@ -27,7 +27,9 @@
 #define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
 
 
-@interface AppDelegate ()
+@interface AppDelegate () {
+    UIBackgroundTaskIdentifier _backgroundIdentifier;
+}
 
 @end
 
@@ -160,31 +162,29 @@
         }
     }
     
-    [UIApplication sharedApplication].applicationIconBadgeNumber = -1;
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+
+#ifdef DEBUG
+    [self instalCrashSignalCatchers];
+#endif
     
     return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
 #pragma mark - Notifications
@@ -211,20 +211,27 @@
 }
 
 - (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary*)userInfo {
-    [self showControllerForNotification:userInfo];
+    if (application.applicationState == UIApplicationStateInactive ||
+        application.applicationState == UIApplicationStateBackground) {
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+        [[UIApplication sharedApplication] cancelAllLocalNotifications];
+        [self showControllerForNotification:userInfo];    }
 }
+
+#pragma mark - Private methods
 
 - (void)showControllerForNotification:(NSDictionary*)notfObject {
     NSDictionary * notificable = notfObject[@"notificable"];
     NSNumber * objectId = notificable[@"id"];
     NSString * objectType = notificable[@"type"];
-    NSInteger messagesTab = 3;
+    NSInteger messagesTab = 1;
     
     UITabBarController * tabController = ((UITabBarController*)self.drawerController.centerViewController);
     if([objectType isEqualToString:@"Conversation"]) {
         UINavigationController * navController = tabController.viewControllers[messagesTab];
         BOOL isDiscussionOpen = ([navController isKindOfClass:[DiscussionController class]]);
         DiscussionController * controller = (isDiscussionOpen) ? (DiscussionController*)navController.topViewController : [[DiscussionController alloc] init];
+        MessagesController * messagesController = navController.viewControllers[0];
         
         ObjectLoaderCompletionHandler handler = ^(BOOL success, IQConversation * conver, NSData *responseData, NSError *error) {
             if(success) {
@@ -246,17 +253,20 @@
                 else {
                     [controller reloadDataWithCompletion:nil];
                 }
+                
+                [MessagesModel markConversationAsRead:conver completion:^(NSError *error) {
+                    [messagesController updateGlobalCounter];
+                }];
             }
         };
         
         [[IQService sharedService] conversationWithId:objectId  handler:handler];
     }
-    else {
+    else if([objectType length] > 0) {
+        [self updateGlobalCounters];
         [tabController setSelectedIndex:0];
     }
 }
-
-#pragma mark - Private methods
 
 - (void)applyCustomizations {
     //set status bar black color
@@ -302,5 +312,58 @@
         }
     }
 }
+
+- (void)beginBackgroundTaskWithBlock:(void(^)(void))backgroundBlock  {
+    if(backgroundBlock) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            _backgroundIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+                [self endBackgroundTask];
+            }];
+            backgroundBlock();
+        });
+    }
+}
+
+- (void)endBackgroundTask {
+    [[UIApplication sharedApplication] endBackgroundTask:_backgroundIdentifier];
+    _backgroundIdentifier = UIBackgroundTaskInvalid;
+}
+
+#ifdef DEBUG
+
+/*
+ Custom uncaught exception catcher
+ */
+void UncaughtExceptionHandler(NSException *exception) {
+    NSString * crashReport = [NSString stringWithFormat:@"\n\n*** Terminating app due to uncaught exception '%@', reason:\n'%@'\n\n*** First throw call stack:\n%@\n\n", [exception class],
+                              exception,
+                              [exception callStackSymbols]];
+    NSLog(@"%@", crashReport);
+}
+
+/*
+ Custom signal catcher
+ */
+void SignalHandler(int sig) {
+    NSLog(@"Application resive a signal %i", sig);
+}
+
+- (void)instalCrashSignalCatchers {
+    // installs HandleExceptions as the Uncaught Exception Handler
+    NSSetUncaughtExceptionHandler(&UncaughtExceptionHandler);
+    // create the signal action structure
+    struct sigaction appSignalAction;
+    // initialize the signal action structure
+    memset(&appSignalAction, 0, sizeof(appSignalAction));
+    // set SignalHandler as the handler in the signal action structure
+    appSignalAction.sa_handler = &SignalHandler;
+    // set SignalHandler as the handlers for SIGABRT, SIGILL and SIGBUS
+    sigaction(SIGABRT, &appSignalAction, NULL);
+    sigaction(SIGILL, &appSignalAction, NULL);
+    sigaction(SIGBUS, &appSignalAction, NULL);
+    sigaction(SIGKILL, &appSignalAction, NULL);
+}
+
+#endif
 
 @end
