@@ -81,6 +81,8 @@
 		738FE7191A163C16009F26A2 /* NotificationsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7181A163C16009F26A2 /* NotificationsView.m */; };
 		738FE71E1A164875009F26A2 /* UIImage+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE71D1A164875009F26A2 /* UIImage+Extensions.m */; };
 		738FE7211A1652D2009F26A2 /* ExTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7201A1652D2009F26A2 /* ExTextField.m */; };
+		739073A51A486A560057BA18 /* ActionNotificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 739073A41A486A560057BA18 /* ActionNotificationCell.m */; };
+		739073BC1A4877860057BA18 /* IQUtilityButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739073BB1A4877860057BA18 /* IQUtilityButtonView.m */; };
 		7393C40D1A1A2FCF00E9E944 /* login_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 7393C40B1A1A2FCF00E9E944 /* login_logo.png */; };
 		7393C40E1A1A2FCF00E9E944 /* login_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7393C40C1A1A2FCF00E9E944 /* login_logo@2x.png */; };
 		7393C4111A1A2FF400E9E944 /* LoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7393C4101A1A2FF400E9E944 /* LoginController.m */; };
@@ -294,6 +296,10 @@
 		738FE71F1A1652D2009F26A2 /* ExTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExTextField.h; sourceTree = "<group>"; };
 		738FE7201A1652D2009F26A2 /* ExTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExTextField.m; sourceTree = "<group>"; };
 		738FE7221A165A00009F26A2 /* IQTableModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTableModel.h; sourceTree = "<group>"; };
+		739073A31A486A560057BA18 /* ActionNotificationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionNotificationCell.h; sourceTree = "<group>"; };
+		739073A41A486A560057BA18 /* ActionNotificationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionNotificationCell.m; sourceTree = "<group>"; };
+		739073BA1A4877860057BA18 /* IQUtilityButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQUtilityButtonView.h; sourceTree = "<group>"; };
+		739073BB1A4877860057BA18 /* IQUtilityButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQUtilityButtonView.m; sourceTree = "<group>"; };
 		7393C40B1A1A2FCF00E9E944 /* login_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = login_logo.png; sourceTree = "<group>"; };
 		7393C40C1A1A2FCF00E9E944 /* login_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login_logo@2x.png"; sourceTree = "<group>"; };
 		7393C40F1A1A2FF400E9E944 /* LoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginController.h; sourceTree = "<group>"; };
@@ -603,6 +609,8 @@
 				738EA7AE1A1DDEC20065D39F /* IQTableBaseController.m */,
 				73A20C781A42F62C006433C5 /* IQBadgeView.h */,
 				73A20C791A42F62C006433C5 /* IQBadgeView.m */,
+				739073BA1A4877860057BA18 /* IQUtilityButtonView.h */,
+				739073BB1A4877860057BA18 /* IQUtilityButtonView.m */,
 				738FE71F1A1652D2009F26A2 /* ExTextField.h */,
 				738FE7201A1652D2009F26A2 /* ExTextField.m */,
 			);
@@ -688,6 +696,8 @@
 				738FE7181A163C16009F26A2 /* NotificationsView.m */,
 				73C58C001A1F074900C83729 /* NotificationCell.h */,
 				73C58C011A1F074900C83729 /* NotificationCell.m */,
+				739073A31A486A560057BA18 /* ActionNotificationCell.h */,
+				739073A41A486A560057BA18 /* ActionNotificationCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1278,6 +1288,7 @@
 				738EA7AC1A1DD69F0065D39F /* NotificationsModel.m in Sources */,
 				737E7C5F1A0CD57E00E8BB81 /* AccountHeaderView.m in Sources */,
 				73A9499F1A3832D7008EC469 /* DownloadTaskDelegate.m in Sources */,
+				739073A51A486A560057BA18 /* ActionNotificationCell.m in Sources */,
 				73ADA8DC1A36DBEF0032C1FA /* CreateConversationView.m in Sources */,
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,
 				73C58C071A1F145200C83729 /* NSDate+CupertinoYankee.m in Sources */,
@@ -1302,6 +1313,7 @@
 				738FE6D11A15F119009F26A2 /* RKMappingResult+Result.m in Sources */,
 				739850D31A2DD30E00DB5B21 /* IQNotification.m in Sources */,
 				7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */,
+				739073BC1A4877860057BA18 /* IQUtilityButtonView.m in Sources */,
 				737DD2301A14F00400CC4443 /* IQService.m in Sources */,
 				73A113FA1A1C8D1B00293EC5 /* RMenuCell.m in Sources */,
 				738CE1E61A0B3F4E0096B374 /* main.m in Sources */,

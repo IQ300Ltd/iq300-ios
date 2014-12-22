@@ -11,6 +11,7 @@
 #import "IQService.h"
 #import "IQNotificationsHolder.h"
 #import "NotificationCell.h"
+#import "ActionNotificationCell.h"
 #import "IQCounters.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "IQNotificationCenter.h"
