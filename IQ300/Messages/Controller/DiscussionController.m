@@ -243,7 +243,12 @@
 }
 
 - (void)attachViewButtonAction:(UIButton*)sender {
-    CommentCell * cell = (CommentCell*)sender.superview.superview;
+    CommentCell * cell = [self cellForView:sender];
+    
+    if(!cell) {
+        return;
+    }
+    
     IQComment * comment = cell.item;
     IQAttachment * attachment = [[comment.attachments allObjects] lastObject];
     
@@ -427,6 +432,14 @@
 
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
     _documentController = nil;
+}
+
+- (CommentCell*)cellForView:(UIView*)view {
+    if ([view.superview isKindOfClass:[CommentCell class]] || !view.superview) {
+        return (CommentCell*)view.superview;
+    }
+    
+    return [self cellForView:view.superview];
 }
 
 - (void)dealloc {
