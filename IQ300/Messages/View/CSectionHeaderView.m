@@ -9,10 +9,11 @@
 #import "CSectionHeaderView.h"
 
 #define CENTER_LINE_COLOR [UIColor colorWithHexInt:0xcccccc]
-#define CENTER_LINE_HEIGHT 0.5f
+#define CENTER_LINE_HEIGHT 0.25f
 
 @interface CSectionHeaderView() {
     UILabel * _titleLabel;
+    CALayer * _layer;
 }
 
 @end
@@ -24,6 +25,10 @@
     if(self) {
         _contentInsets = UIEdgeInsetsZero;
         [self setBackgroundColor:[UIColor whiteColor]];
+      
+        _layer = [CALayer layer];
+        _layer.backgroundColor = CENTER_LINE_COLOR.CGColor;
+        [self.layer addSublayer:_layer];
         
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
@@ -33,27 +38,9 @@
         _titleLabel.numberOfLines = 0;
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_titleLabel];
-
     }
     return self;
 }
-
-- (void)drawRect:(CGRect)rect {
-    CGRect mainRect = UIEdgeInsetsInsetRect(rect, _contentInsets);
-    
-    CGContextRef contex = UIGraphicsGetCurrentContext();
-    
-    CGRect bottomLine = CGRectMake(mainRect.origin.x,
-                                   mainRect.origin.y + rect.size.height / 2.0f + CENTER_LINE_HEIGHT * 0.5f,
-                                   mainRect.size.width,
-                                   CENTER_LINE_HEIGHT);
-    
-    //Draw bottom line
-    CGContextSetStrokeColorWithColor(contex, [CENTER_LINE_COLOR CGColor]);
-    CGContextSetLineWidth(contex, CENTER_LINE_HEIGHT);
-    CGContextStrokeRect(contex, bottomLine);
-}
-
 
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -66,6 +53,12 @@
                                    mainRect.origin.y,
                                    titleSize,
                                    mainRect.size.height);
+
+    CGFloat centerY = mainRect.origin.y + (mainRect.size.height - CENTER_LINE_HEIGHT) / 2.0f;
+    _layer.frame = CGRectMake(mainRect.origin.x,
+                              centerY,
+                              mainRect.size.width,
+                              CENTER_LINE_HEIGHT);
 }
 
 - (void)setTitle:(NSString *)title {
