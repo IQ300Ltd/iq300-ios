@@ -86,7 +86,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         stringDate = NSLocalizedString(@"Yesterday", nil);
     }
     else {
-        stringDate = [comment.createShortDate dateToStringWithFormat:@"dd.mm.yyyy"];
+        stringDate = [comment.createShortDate dateToStringWithFormat:@"dd.MM.yyyy"];
     }
     
     return stringDate;

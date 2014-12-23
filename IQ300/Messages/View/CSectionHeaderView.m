@@ -9,7 +9,7 @@
 #import "CSectionHeaderView.h"
 
 #define CENTER_LINE_COLOR [UIColor colorWithHexInt:0xcccccc]
-#define CENTER_LINE_HEIGHT 1.0f
+#define CENTER_LINE_HEIGHT 0.5f
 
 @interface CSectionHeaderView() {
     UILabel * _titleLabel;
@@ -41,15 +41,17 @@
 - (void)drawRect:(CGRect)rect {
     CGRect mainRect = UIEdgeInsetsInsetRect(rect, _contentInsets);
     
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetStrokeColorWithColor(context, CENTER_LINE_COLOR.CGColor);
+    CGContextRef contex = UIGraphicsGetCurrentContext();
     
-    CGContextSetLineWidth(context, CENTER_LINE_HEIGHT);
-    CGFloat centerY = mainRect.origin.y + (mainRect.size.height - CENTER_LINE_HEIGHT) / 2.0f;
-    CGContextMoveToPoint(context, mainRect.origin.x, centerY);
-    CGContextAddLineToPoint(context, mainRect.origin.x + mainRect.size.width, centerY);
+    CGRect bottomLine = CGRectMake(mainRect.origin.x,
+                                   mainRect.origin.y + rect.size.height / 2.0f + CENTER_LINE_HEIGHT * 0.5f,
+                                   mainRect.size.width,
+                                   CENTER_LINE_HEIGHT);
     
-    CGContextStrokePath(context);
+    //Draw bottom line
+    CGContextSetStrokeColorWithColor(contex, [CENTER_LINE_COLOR CGColor]);
+    CGContextSetLineWidth(contex, CENTER_LINE_HEIGHT);
+    CGContextStrokeRect(contex, bottomLine);
 }
 
 
