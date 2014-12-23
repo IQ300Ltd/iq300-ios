@@ -133,7 +133,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        NSInteger count = [self numberOfItemsInSection:0];
+        NSInteger count = [_fetchController.fetchedObjects count];
         NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
         [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                           page:@(page)
