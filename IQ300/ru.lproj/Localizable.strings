@@ -45,6 +45,10 @@
 "Сontacts" = "Контакты";
 "You do not have an application installed to view files of this type" = "У вас не установлено приложение для просмотра файлов данного типа";
 "Message has not been sent. Send again?" = "Сообщение не было отправлено. Отправить еще раз?";
+"Refuse" = "Отказаться";
+"Accept" = "Принять";
+"To refine" = "На доработку";
+"Complete" = "Завершить";
 
 //Notification types
 "Attachment" = "Документ";

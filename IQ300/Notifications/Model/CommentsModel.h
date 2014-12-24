@@ -1,31 +1,30 @@
 //
-//  DiscussionModel.h
+//  CommentsModel.h
 //  IQ300
 //
-//  Created by Tayphoon on 04.12.14.
+//  Created by Tayphoon on 24.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
 #import "IQTableModel.h"
 
-@class DiscussionModel;
+@class CommentsModel;
 @class IQDiscussion;
 @class IQComment;
 @class ALAsset;
 
-@protocol DiscussionModelDelegate <IQTableModelDelegate>
+@protocol CommentsModelDelegate <IQTableModelDelegate>
 
 @optional
-- (void)model:(DiscussionModel*)model newComment:(IQComment*)comment;
+- (void)model:(CommentsModel*)model newComment:(IQComment*)comment;
 
 @end
 
-@interface DiscussionModel : NSObject<IQTableModel>
+@interface CommentsModel : NSObject<IQTableModel>
 
 @property (nonatomic, strong) IQDiscussion * discussion;
-@property (nonatomic, strong) NSNumber * companionId;
 @property (nonatomic, assign) CGFloat cellWidth;
-@property (nonatomic, weak) id<DiscussionModelDelegate> delegate;
+@property (nonatomic, weak) id<CommentsModelDelegate> delegate;
 
 - (id)initWithDiscussion:(IQDiscussion*)discussion;
 

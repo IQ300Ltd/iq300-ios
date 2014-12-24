@@ -20,6 +20,9 @@
 #import "IQCounters.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQBadgeView.h"
+#import "IQService+Messages.h"
+#import "IQDiscussion.h"
+#import "CommentsController.h"
 
 @interface NotificationsContoller() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationsView * _mainView;
@@ -145,6 +148,22 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    IQNotification * notification = [self.model itemAtIndexPath:indexPath];
+    if(notification.discussionId) {
+        NSString * title = notification.notificable.title;
+        [[IQService sharedService] discussionWithId:notification.discussionId
+                                            handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
+                                                if(success) {
+                                                    CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];                                                    
+                                                    CommentsController * controller = [[CommentsController alloc] init];
+                                                    controller.title = NSLocalizedString(@"Notifications", nil);
+                                                    controller.model = model;
+                                                    controller.subTitle = title;
+                                                    
+                                                    [self.navigationController pushViewController:controller animated:YES];
+                                                }
+                                            }];
+    }
 }
 
 #pragma mark - IQTableModel Delegate
@@ -166,6 +185,33 @@
     _mainView.noDataLabel.text = NSLocalizedString((indexPath.row == 0) ? NoNotificationFound : NoUnreadNotificationFound, nil);
     [self reloadModel];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
+}
+
+#pragma mark - SWTableViewCell Delegate
+
+- (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    __weak typeof (self) weakSelf = self;
+    void(^completion)(NSError *error) = ^(NSError *error) {
+        if([weakSelf.model numberOfItemsInSection:0] == 0) {
+            [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+                [weakSelf updateNoDataLabelVisibility];
+            }];
+        }
+    };
+    
+    if(![cell.item.hasActions boolValue]) {
+        NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
+        
+        [self.model markNotificationAsReadAtIndexPath:itemIndexPath completion:completion];
+    }
+    else {
+        if(index == 0) {
+            [self.model acceptNotification:cell.item completion:completion];
+        }
+        else {
+            [self.model declineNotification:cell.item completion:completion];
+        }
+    }
 }
 
 #pragma mark - Private methods
@@ -190,18 +236,6 @@
                               
                           }];
     }
-}
-
-- (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
-    NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
-    
-    [self.model markNotificationAsReadAtIndexPath:itemIndexPath completion:^(NSError *error) {
-        if([self.model numberOfItemsInSection:0] == 0) {
-            [self.model updateModelWithCompletion:^(NSError *error) {
-                [self updateNoDataLabelVisibility];
-            }];
-        }
-    }];
 }
 
 - (void)reloadModel {

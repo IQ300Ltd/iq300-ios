@@ -215,7 +215,8 @@
         application.applicationState == UIApplicationStateBackground) {
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
-        [self showControllerForNotification:userInfo];    }
+        [self showControllerForNotification:userInfo];
+    }
 }
 
 #pragma mark - Private methods

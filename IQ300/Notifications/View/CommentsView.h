@@ -1,15 +1,16 @@
 //
-//  DiscussionView.h
+//  CommentsView.h
 //  IQ300
 //
-//  Created by Tayphoon on 04.12.14.
+//  Created by Tayphoon on 24.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import "BottomLineView.h"
 #import "CommentInputView.h"
 
-@interface DiscussionView : UIView
+@interface CommentsView : UIView
 
 @property (nonatomic, readonly) BottomLineView * headerView;
 @property (nonatomic, readonly) UILabel * titleLabel;

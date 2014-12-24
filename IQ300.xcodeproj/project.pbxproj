@@ -100,6 +100,12 @@
 		739850DC1A2DD35C00DB5B21 /* IQDiscussion.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850DB1A2DD35C00DB5B21 /* IQDiscussion.m */; };
 		739850DF1A2DD4D700DB5B21 /* IQComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850DE1A2DD4D700DB5B21 /* IQComment.m */; };
 		739850E61A2E023D00DB5B21 /* IQService+Messages.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850E51A2E023D00DB5B21 /* IQService+Messages.m */; };
+		7399A4D81A499ED30098DA67 /* ArrayTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7399A4D71A499ED30098DA67 /* ArrayTransformer.m */; };
+		739BC7981A4A9DC7007FC95C /* CommentsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC7971A4A9DC7007FC95C /* CommentsController.m */; };
+		739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC79A1A4A9E63007FC95C /* CommentsModel.m */; };
+		739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC79D1A4A9E86007FC95C /* CommentsView.m */; };
+		739BC7A11A4A9F21007FC95C /* CommentInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC7A01A4A9F21007FC95C /* CommentInputView.m */; };
+		739BC7A41A4AA516007FC95C /* CCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC7A31A4AA516007FC95C /* CCommentCell.m */; };
 		739C3B5C1A3075B00032C057 /* DiscussionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C3B5B1A3075B00032C057 /* DiscussionController.m */; };
 		739C3B5F1A3075D90032C057 /* DiscussionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C3B5E1A3075D90032C057 /* DiscussionModel.m */; };
 		739C3B621A3076D60032C057 /* CommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C3B611A3076D60032C057 /* CommentCell.m */; };
@@ -330,6 +336,18 @@
 		739850DE1A2DD4D700DB5B21 /* IQComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQComment.m; sourceTree = "<group>"; };
 		739850E41A2E023D00DB5B21 /* IQService+Messages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IQService+Messages.h"; sourceTree = "<group>"; };
 		739850E51A2E023D00DB5B21 /* IQService+Messages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IQService+Messages.m"; sourceTree = "<group>"; };
+		7399A4D61A499ED30098DA67 /* ArrayTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArrayTransformer.h; sourceTree = "<group>"; };
+		7399A4D71A499ED30098DA67 /* ArrayTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArrayTransformer.m; sourceTree = "<group>"; };
+		739BC7961A4A9DC7007FC95C /* CommentsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsController.h; sourceTree = "<group>"; };
+		739BC7971A4A9DC7007FC95C /* CommentsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsController.m; sourceTree = "<group>"; };
+		739BC7991A4A9E63007FC95C /* CommentsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsModel.h; sourceTree = "<group>"; };
+		739BC79A1A4A9E63007FC95C /* CommentsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsModel.m; sourceTree = "<group>"; };
+		739BC79C1A4A9E86007FC95C /* CommentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsView.h; sourceTree = "<group>"; };
+		739BC79D1A4A9E86007FC95C /* CommentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsView.m; sourceTree = "<group>"; };
+		739BC79F1A4A9F21007FC95C /* CommentInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentInputView.h; sourceTree = "<group>"; };
+		739BC7A01A4A9F21007FC95C /* CommentInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentInputView.m; sourceTree = "<group>"; };
+		739BC7A21A4AA516007FC95C /* CCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCommentCell.h; sourceTree = "<group>"; };
+		739BC7A31A4AA516007FC95C /* CCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCommentCell.m; sourceTree = "<group>"; };
 		739C3B5A1A3075B00032C057 /* DiscussionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscussionController.h; sourceTree = "<group>"; };
 		739C3B5B1A3075B00032C057 /* DiscussionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscussionController.m; sourceTree = "<group>"; };
 		739C3B5D1A3075D90032C057 /* DiscussionModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscussionModel.h; sourceTree = "<group>"; };
@@ -620,6 +638,8 @@
 		736B6BE71A0BC08100034D9B /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				7399A4D61A499ED30098DA67 /* ArrayTransformer.h */,
+				7399A4D71A499ED30098DA67 /* ArrayTransformer.m */,
 				73891FF31A2C97ED008D8885 /* UIAlertView+Blocks.h */,
 				73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */,
 				73C4A6801A3EFB4E003E1242 /* NSString+UUID.h */,
@@ -676,6 +696,8 @@
 			children = (
 				7379EEB81A11E47700D69BBD /* NotificationsContoller.h */,
 				7379EEB91A11E47700D69BBD /* NotificationsContoller.m */,
+				739BC7961A4A9DC7007FC95C /* CommentsController.h */,
+				739BC7971A4A9DC7007FC95C /* CommentsController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -685,6 +707,8 @@
 			children = (
 				738EA7AA1A1DD69F0065D39F /* NotificationsModel.h */,
 				738EA7AB1A1DD69F0065D39F /* NotificationsModel.m */,
+				739BC7991A4A9E63007FC95C /* CommentsModel.h */,
+				739BC79A1A4A9E63007FC95C /* CommentsModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -698,6 +722,10 @@
 				73C58C011A1F074900C83729 /* NotificationCell.m */,
 				739073A31A486A560057BA18 /* ActionNotificationCell.h */,
 				739073A41A486A560057BA18 /* ActionNotificationCell.m */,
+				739BC79C1A4A9E86007FC95C /* CommentsView.h */,
+				739BC79D1A4A9E86007FC95C /* CommentsView.m */,
+				739BC7A21A4AA516007FC95C /* CCommentCell.h */,
+				739BC7A31A4AA516007FC95C /* CCommentCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -939,6 +967,8 @@
 				73ADA8EB1A36FD680032C1FA /* ContactCell.m */,
 				73ADA8DA1A36DBEF0032C1FA /* CreateConversationView.h */,
 				73ADA8DB1A36DBEF0032C1FA /* CreateConversationView.m */,
+				739BC79F1A4A9F21007FC95C /* CommentInputView.h */,
+				739BC7A01A4A9F21007FC95C /* CommentInputView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1257,6 +1287,7 @@
 				73C58C0A1A1F17FD00C83729 /* NSString+SizeWith.m in Sources */,
 				7380E9751A4020FA00128BD9 /* ObjectSerializator.m in Sources */,
 				73A798391A359D79006F5721 /* ALAsset+Extension.m in Sources */,
+				7399A4D81A499ED30098DA67 /* ArrayTransformer.m in Sources */,
 				7395C50D1A31848700A6D5DA /* UIView+RoundedCorners.m in Sources */,
 				739850DC1A2DD35C00DB5B21 /* IQDiscussion.m in Sources */,
 				738EA7A31A1DC91C0065D39F /* IQUser.m in Sources */,
@@ -1289,6 +1320,7 @@
 				737E7C5F1A0CD57E00E8BB81 /* AccountHeaderView.m in Sources */,
 				73A9499F1A3832D7008EC469 /* DownloadTaskDelegate.m in Sources */,
 				739073A51A486A560057BA18 /* ActionNotificationCell.m in Sources */,
+				739BC7A11A4A9F21007FC95C /* CommentInputView.m in Sources */,
 				73ADA8DC1A36DBEF0032C1FA /* CreateConversationView.m in Sources */,
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,
 				73C58C071A1F145200C83729 /* NSDate+CupertinoYankee.m in Sources */,
@@ -1299,6 +1331,7 @@
 				73A20C7A1A42F62C006433C5 /* IQBadgeView.m in Sources */,
 				73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */,
 				7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */,
+				739BC7981A4A9DC7007FC95C /* CommentsController.m in Sources */,
 				736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */,
 				734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */,
 				731DEEC81A2F11A1002F5FEB /* MessagesModel.m in Sources */,
@@ -1320,16 +1353,19 @@
 				7382CA951A4566BD00D5EE1F /* CSectionHeaderView.m in Sources */,
 				739850D81A2DD32E00DB5B21 /* IQConversation.m in Sources */,
 				736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */,
+				739BC7A41A4AA516007FC95C /* CCommentCell.m in Sources */,
 				7393C4111A1A2FF400E9E944 /* LoginController.m in Sources */,
 				739C3B621A3076D60032C057 /* CommentCell.m in Sources */,
 				736B6BDE1A0B5F5900034D9B /* NotificationsMenuModel.m in Sources */,
 				7379EEB31A11E26200D69BBD /* IQNavigationController.m in Sources */,
 				739C3B681A3086BA0032C057 /* DiscussionView.m in Sources */,
 				737DD22D1A14EFE900CC4443 /* TCService.m in Sources */,
+				739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */,
 				736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */,
 				7379EEBA1A11E47700D69BBD /* NotificationsContoller.m in Sources */,
 				73A9499E1A3832D7008EC469 /* BackgroundDownloadManager.m in Sources */,
 				737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */,
+				739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */,
 				73ADA8D91A36DB8D0032C1FA /* CreateConversationController.m in Sources */,
 				73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */,
 				738EA7AF1A1DDEC20065D39F /* IQTableBaseController.m in Sources */,

@@ -9,127 +9,155 @@
 
 #import "ActionNotificationCell.h"
 #import "IQUtilityButtonView.h"
+#import "IQNotification.h"
 
 static NSString * const kTableViewCellContentView = @"UITableViewCellContentView";
 
-@interface ActionNotificationCell()
-
-@property (nonatomic, strong) SWUtilityButtonView *leftUtilityButtonsView, *rightUtilityButtonsView;
-@property (nonatomic, readonly) UIView *leftUtilityClipView, *rightUtilityClipView;
-@property (nonatomic, readonly) NSLayoutConstraint *leftUtilityClipConstraint, *rightUtilityClipConstraint;
-@property (nonatomic, readonly) UIScrollView *cellScrollView;
+@interface ActionNotificationCell() {
+    IQUtilityButtonView * _leftButtonsView;
+    IQUtilityButtonView * _rightButtonsView;
+    UIView * _readFlagView;
+}
 
 @end
 
 @implementation ActionNotificationCell
 
++ (NSString*)displayNameForActionType:(NSString*)type {
+    static NSDictionary * _actionDisplayNames = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _actionDisplayNames = @{
+                                @"refuse"                 : @"Refuse",
+                                @"accept"                 : @"Accept",
+                                @"decline"                : @"Refuse",
+                                @"refuse"                 : @"Refuse",
+                                
+                                @"basetask_browse"        : @"Accept",
+                                @"basetask_accept"        : @"Accept",
+                                @"basetask_refuse"        : @"Refuse",
+                                @"basetask_decline"       : @"To refine",
+                                
+                                @"basecommunity_accept"   : @"Accept",
+                                @"basecommunity_decline"  : @"Refuse",
+                                };
+    });
+    
+    if([_actionDisplayNames objectForKey:type]) {
+        return [_actionDisplayNames objectForKey:type];
+    }
+    
+    return nil;
+}
+
++ (BOOL)isPositiveActionWithType:(NSString*)type {
+    static NSArray * _positiveActionTypes = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _positiveActionTypes = @[@"accept", @"browse", @"work", @"complete"];
+    });
+    
+    return [_positiveActionTypes containsObject:type];
+}
+
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    [self initUtilityButtonViews];
+    
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
         [self setBackgroundColor:[UIColor colorWithHexInt:0xf6f6f6]];
         
-        [self.leftUtilityButtonsView removeFromSuperview];
-        self.leftUtilityButtonsView = [[IQUtilityButtonView alloc] initWithUtilityButtons:nil
-                                                                               parentCell:self
-                                                                    utilityButtonSelector:@selector(leftUtilityButtonHandler:)];
-
-        [self.rightUtilityButtonsView removeFromSuperview];
-        self.rightUtilityButtonsView = [[IQUtilityButtonView alloc] initWithUtilityButtons:nil
-                                                                                parentCell:self
-                                                                     utilityButtonSelector:@selector(rightUtilityButtonHandler:)];
-        
-        UIView *contentViewParent = self;
-        UIView *clipViewParent = self.cellScrollView;
-        if (![NSStringFromClass([[self.subviews objectAtIndex:0] class]) isEqualToString:kTableViewCellContentView])
-        {
-            // iOS 7
-            contentViewParent = [self.subviews objectAtIndex:0];
-            clipViewParent = self;
-        }
-
-        UIView *clipViews[] = { self.rightUtilityClipView, self.leftUtilityClipView };
-        NSLayoutConstraint *clipConstraints[] = { self.rightUtilityClipConstraint, self.leftUtilityClipConstraint };
-        UIView *buttonViews[] = { self.rightUtilityButtonsView, self.leftUtilityButtonsView };
-        NSLayoutAttribute alignmentAttributes[] = { NSLayoutAttributeRight, NSLayoutAttributeLeft };
-        
-        for (NSUInteger i = 0; i < 2; ++i)
-        {
-            UIView *clipView = clipViews[i];
-            NSLayoutConstraint *clipConstraint = clipConstraints[i];
-            UIView *buttonView = buttonViews[i];
-            NSLayoutAttribute alignmentAttribute = alignmentAttributes[i];
-            
-            clipConstraint.priority = UILayoutPriorityDefaultHigh;
-            
-            clipView.translatesAutoresizingMaskIntoConstraints = NO;
-            clipView.clipsToBounds = YES;
-            
-            [clipViewParent addSubview:clipView];
-            [self addConstraints:@[
-                                   // Pin the clipping view to the appropriate outer edges of the cell.
-                                   [NSLayoutConstraint constraintWithItem:clipView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0],
-                                   [NSLayoutConstraint constraintWithItem:clipView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0],
-                                   [NSLayoutConstraint constraintWithItem:clipView attribute:alignmentAttribute relatedBy:NSLayoutRelationEqual toItem:self attribute:alignmentAttribute multiplier:1.0 constant:0.0],
-                                   clipConstraint,
-                                   ]];
-            
-            [clipView addSubview:buttonView];
-            [self addConstraints:@[
-                                   // Pin the button view to the appropriate outer edges of its clipping view.
-                                   [NSLayoutConstraint constraintWithItem:buttonView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:clipView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0],
-                                   [NSLayoutConstraint constraintWithItem:buttonView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:clipView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0],
-                                   [NSLayoutConstraint constraintWithItem:buttonView attribute:alignmentAttribute relatedBy:NSLayoutRelationEqual toItem:clipView attribute:alignmentAttribute multiplier:1.0 constant:0.0],
-                                   
-                                   // Constrain the maximum button width so that at least a button's worth of contentView is left visible. (The button view will shrink accordingly.)
-                                   [NSLayoutConstraint constraintWithItem:buttonView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:-kUtilityButtonWidthDefault],
-                                   ]];
-        }
-
+        _readFlagView = [[UIView alloc] init];
+        [_readFlagView setBackgroundColor:READ_FLAG_COLOR];
+        [self insertSubview:_readFlagView atIndex:0];
     }
     return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGRect bounds = self.contentView.bounds;
+    _readFlagView.frame = CGRectMake(0.0f,
+                                     0.0f,
+                                     READ_FLAG_WIDTH,
+                                     bounds.size.height);
 }
 
 - (void)setItem:(IQNotification *)item {
     [super setItem:item];
     
-    UIButton * okButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 99.0f, 31.0f)];
-    okButton.layer.cornerRadius = 3.0f;
-    [okButton setClipsToBounds:YES];
-    okButton.titleLabel.font = [UIFont fontWithName:IQ_HELVETICA size:10];
-    [okButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [okButton setBackgroundColor:[UIColor colorWithHexInt:0x40b549]];
-    [okButton setTitle:@"На доработку" forState:UIControlStateNormal];
-    
-    UIButton * cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 99.0f, 31.0f)];
-    cancelButton.layer.cornerRadius = 3.0f;
-    [cancelButton setClipsToBounds:YES];
-    cancelButton.titleLabel.font = [UIFont fontWithName:IQ_HELVETICA size:10];
-    [cancelButton setTitleColor:[UIColor colorWithHexInt:0x338cae] forState:UIControlStateNormal];
-    [cancelButton setBackgroundColor:[UIColor whiteColor]];
-    [cancelButton setTitle:@"На доработку" forState:UIControlStateNormal];
+    _contentBackgroundInsets = (![item.hasActions boolValue]) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);
+    self.contentBackgroundView.backgroundColor = (![item.hasActions boolValue]) ? CONTEN_BACKGROUND_COLOR_R :
+                                                                                  CONTEN_BACKGROUND_COLOR;
 
-    self.rightUtilityButtons = @[okButton , cancelButton];
+    if([item.hasActions boolValue]) {
+        NSMutableArray * actionButtons = [NSMutableArray array];
+        NSMutableArray * availableActions = [NSMutableArray array];
+        
+        //Set right order for actions
+        for (NSString * actionType in item.availableActions) {
+            BOOL isPositiveAction = [ActionNotificationCell isPositiveActionWithType:actionType];
+            if(isPositiveAction) {
+                [availableActions insertObject:actionType atIndex:0];
+            }
+            else {
+                [availableActions addObject:actionType];
+            }
+        }
+        
+        for (NSString * actionType in availableActions) {
+            BOOL isPositiveAction = [ActionNotificationCell isPositiveActionWithType:actionType];
+            NSString * combineType = ([item.notificable.type length] > 0) ? [NSString stringWithFormat:@"%@_%@", item.notificable.type, actionType] :
+            actionType;
+            NSString * localizeKey = [ActionNotificationCell displayNameForActionType:[combineType lowercaseString]];
+            UIButton * actionButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 99.0f, 31.0f)];
+            actionButton.layer.cornerRadius = 3.0f;
+            if(!isPositiveAction) {
+                actionButton.layer.borderWidth = 0.5f;
+                actionButton.layer.borderColor = [UIColor colorWithHexInt:0xd0d0d0].CGColor;
+                [actionButton setTitleColor:[UIColor colorWithHexInt:0x338cae] forState:UIControlStateNormal];
+                [actionButton setBackgroundColor:[UIColor whiteColor]];
+            }
+            else {
+                [actionButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                [actionButton setBackgroundColor:[UIColor colorWithHexInt:0x40b549]];
+            }
+            
+            actionButton.titleLabel.font = [UIFont fontWithName:IQ_HELVETICA size:10];
+            [actionButton setTitle:NSLocalizedString(localizeKey, nil) forState:UIControlStateNormal];
+            [actionButton setClipsToBounds:YES];
+            [actionButtons addObject:actionButton];
+        }
+        
+        [self setRightUtilityButtons:actionButtons WithButtonWidth:116.0f];
+    }
     [self setNeedsLayout];
 }
 
-- (UIView*)leftUtilityClipView {
-    return [super valueForKey:@"_leftUtilityClipView"];
+- (SWUtilityButtonView*)leftUtilityButtonsView {
+    return _leftButtonsView;
 }
 
-- (UIView*)rightUtilityClipView {
-    return [super valueForKey:@"_rightUtilityClipView"];
+- (SWUtilityButtonView*)rightUtilityButtonsView {
+    return _rightButtonsView;
 }
 
-- (UIScrollView*)cellScrollView {
-    return [super valueForKey:@"_cellScrollView"];
-}
+#pragma mark - Private methods
 
-- (NSLayoutConstraint*)leftUtilityClipConstraint {
-    return [super valueForKey:@"_leftUtilityClipConstraint"];
-}
-
-- (NSLayoutConstraint*)rightUtilityClipConstraint {
-    return [super valueForKey:@"_rightUtilityClipConstraint"];
+- (void)initUtilityButtonViews {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+    _leftButtonsView = [[IQUtilityButtonView alloc] initWithUtilityButtons:nil
+                                                                parentCell:self
+                                                     utilityButtonSelector:@selector(leftUtilityButtonHandler:)];
+    _leftButtonsView.buttonOffset = CGPointMake(10.0f, 0.0f);
+    
+    _rightButtonsView = [[IQUtilityButtonView alloc] initWithUtilityButtons:nil
+                                                                 parentCell:self
+                                                      utilityButtonSelector:@selector(rightUtilityButtonHandler:)];
+    _rightButtonsView.buttonOffset = CGPointMake(10.0f, 0.0f);
+#pragma clang diagnostic pop
 }
 
 @end

@@ -1,8 +1,8 @@
 //
-//  DiscussionController.m
+//  DiscussionViewController.m
 //  IQ300
 //
-//  Created by Tayphoon on 04.12.14.
+//  Created by Tayphoon on 24.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 #import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
@@ -13,9 +13,9 @@
 #import "UIViewController+LeftMenu.h"
 #import "IQSession.h"
 
-#import "DiscussionController.h"
-#import "DiscussionView.h"
-#import "CommentCell.h"
+#import "CommentsController.h"
+#import "CommentsView.h"
+#import "CCommentCell.h"
 #import "IQComment.h"
 #import "DispatchAfterExecution.h"
 #import "ALAsset+Extension.h"
@@ -23,12 +23,9 @@
 #import "PhotoViewController.h"
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
-#import "CSectionHeaderView.h"
 
-#define SECTION_HEIGHT 12
-
-@interface DiscussionController() {
-    DiscussionView * _mainView;
+@interface CommentsController() {
+    CommentsView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachment;
     UIDocumentInteractionController * _documentController;
@@ -37,14 +34,14 @@
 
 @end
 
-@implementation DiscussionController
+@implementation CommentsController
 
 - (UITableView*)tableView {
     return _mainView.tableView;
 }
 
 - (void)loadView {
-    _mainView = [[DiscussionView alloc] init];
+    _mainView = [[CommentsView alloc] init];
     self.view = _mainView;
 }
 
@@ -53,7 +50,7 @@
     
     _enterCommentProcessing = NO;
     _needFullReload = YES;
-
+    
     [_mainView.inputView.sendButton setEnabled:NO];
     [_mainView.backButton addTarget:self
                              action:@selector(backButtonAction:)
@@ -61,11 +58,11 @@
     [_mainView.inputView.sendButton addTarget:self
                                        action:@selector(sendButtonAction:)
                              forControlEvents:UIControlEventTouchUpInside];
-
+    
     [_mainView.inputView.attachButton addTarget:self
-                                       action:@selector(attachButtonAction:)
-                             forControlEvents:UIControlEventTouchUpInside];
-
+                                         action:@selector(attachButtonAction:)
+                               forControlEvents:UIControlEventTouchUpInside];
+    
     __weak typeof(self) weakSelf = self;
     [self.tableView
      addPullToRefreshWithActionHandler:^{
@@ -80,7 +77,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [_mainView.titleLabel setText:self.companionName];
+    [_mainView.titleLabel setText:self.subTitle];
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
@@ -119,19 +116,8 @@
     return [self.model heightForItemAtIndexPath:indexPath];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return SECTION_HEIGHT;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    CSectionHeaderView * sectionView = [[CSectionHeaderView alloc] init];
-    sectionView.title = [self.model titleForSection:section];
-    
-    return sectionView;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CommentCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    CCommentCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
@@ -140,6 +126,7 @@
     [cell.attachButton addTarget:self
                           action:@selector(attachViewButtonAction:)
                 forControlEvents:UIControlEventTouchUpInside];
+    [cell.attachButton setTag:indexPath.row];
     
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
@@ -148,24 +135,24 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQComment * comment = [self.model itemAtIndexPath:indexPath];
-    if([comment.commentStatus integerValue] == IQCommentStatusSendError) {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"Message has not been sent. Send again?", nil)
-                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
-                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              if(buttonIndex == 1) {
-                                  [self.model resendLocalComment:comment withCompletion:^(NSError *error) {
-                                      if(!error) {
-                                          [self.model deleteComment:comment];
-                                      }
-                                      else {
-                                          NSLog(@"Resend local comment error");
-                                      }
-                                  }];
-                              }
-                          }];
-    }
+//    IQComment * comment = [self.model itemAtIndexPath:indexPath];
+//    if([comment.commentStatus integerValue] == IQCommentStatusSendError) {
+//        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"Message has not been sent. Send again?", nil)
+//                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+//                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+//                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+//                              if(buttonIndex == 1) {
+//                                  [self.model resendLocalComment:comment withCompletion:^(NSError *error) {
+//                                      if(!error) {
+//                                          [self.model deleteComment:comment];
+//                                      }
+//                                      else {
+//                                          NSLog(@"Resend local comment error");
+//                                      }
+//                                  }];
+//                              }
+//                          }];
+//    }
 }
 
 #pragma mark - UIScroll Delegate
@@ -180,7 +167,7 @@
 
 #pragma mark - DiscussionModelDelegate Delegate
 
-- (void)model:(DiscussionModel*)model newComment:(IQComment*)comment {
+- (void)model:(CommentsModel*)model newComment:(IQComment*)comment {
     [self scrollToBottomIfNeedAnimated:YES delay:0.1f];
 }
 
@@ -243,13 +230,7 @@
 }
 
 - (void)attachViewButtonAction:(UIButton*)sender {
-    CommentCell * cell = [self cellForView:sender];
-    
-    if(!cell) {
-        return;
-    }
-    
-    IQComment * comment = cell.item;
+    IQComment * comment = [self.model itemAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
     IQAttachment * attachment = [[comment.attachments allObjects] lastObject];
     
     CGRect rectForAppearing = [sender.superview convertRect:sender.frame toView:self.view];
@@ -308,7 +289,7 @@
             [self.tableView reloadData];
         }
         if(_needFullReload) {
-            [self scrollToBottomIfNeedAnimated:NO delay:0];
+            [self scrollToBottomIfNeedAnimated:NO delay:0.1f];
         }
         _needFullReload = NO;
     }];
@@ -317,7 +298,7 @@
 #pragma mark - Keyboard Helpers
 
 - (void)onKeyboardWillShow:(NSNotification *)notification {
-   [self makeInputViewTransitionWithDownDirection:NO notification:notification];
+    [self makeInputViewTransitionWithDownDirection:NO notification:notification];
     _enterCommentProcessing = YES;
 }
 
@@ -410,6 +391,7 @@
 }
 
 - (BOOL)assetsPickerController:(CTAssetsPickerController *)picker shouldEnableAsset:(ALAsset *)asset {
+    // Enable video clips if they are at least 5s
     if ([[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo]) {
         NSTimeInterval duration = [[asset valueForProperty:ALAssetPropertyDuration] doubleValue];
         return lround(duration) >= 5;
@@ -432,19 +414,11 @@
 }
 
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(NSString *)application {
-
+    
 }
 
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
     _documentController = nil;
-}
-
-- (CommentCell*)cellForView:(UIView*)view {
-    if ([view.superview isKindOfClass:[CommentCell class]] || !view.superview) {
-        return (CommentCell*)view.superview;
-    }
-    
-    return [self cellForView:view.superview];
 }
 
 - (void)dealloc {

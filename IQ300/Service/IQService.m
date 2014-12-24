@@ -146,7 +146,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
             }];
 }
 
-- (void)marAllkNotificationAsReadWithHandler:(RequestCompletionHandler)handler {
+- (void)markAllNotificationAsReadWithHandler:(RequestCompletionHandler)handler {
     [self putObject:nil
                path:@"/api/v1/notifications/read_all"
          parameters:nil
@@ -180,6 +180,28 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                      }
                  }];
     }
+}
+
+- (void)acceptNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/notifications/%@/accept", notificationId]
+         parameters:nil
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if(handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
+- (void)declineNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/notifications/%@/decline", notificationId]
+         parameters:nil
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if(handler) {
+                    handler(success, responseData, error);
+                }
+            }];
 }
 
 #pragma mark - Private methods
@@ -284,6 +306,14 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQDiscussion class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/discussions/:id"
+                                                   fromKeyPath:@"discussion"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/conversations/counters"
@@ -339,6 +369,19 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/notifications/:id/accept"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/notifications/:id/decline"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
 }
 
 @end

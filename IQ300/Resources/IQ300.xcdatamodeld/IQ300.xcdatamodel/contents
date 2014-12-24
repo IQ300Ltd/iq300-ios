@@ -66,8 +66,11 @@
     </entity>
     <entity name="IQNotification" representedClassName="IQNotification" syncable="YES">
         <attribute name="additionalDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="availableActions" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="hasActions" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="hasDiscussion" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="mainDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notificationId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -96,8 +99,8 @@
         <element name="IQContact" positionX="-45" positionY="135" width="128" height="103"/>
         <element name="IQConversation" positionX="-54" positionY="81" width="128" height="178"/>
         <element name="IQDiscussion" positionX="-45" positionY="90" width="128" height="148"/>
-        <element name="IQNotificable" positionX="-63" positionY="-9" width="128" height="105"/>
-        <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="178"/>
+        <element name="IQNotificable" positionX="-63" positionY="-9" width="128" height="103"/>
+        <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="223"/>
         <element name="IQUser" positionX="-45" positionY="45" width="128" height="223"/>
     </elements>
 </model>

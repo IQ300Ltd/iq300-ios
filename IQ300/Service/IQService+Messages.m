@@ -52,6 +52,15 @@
              handler:handler];
 }
 
+#pragma mark - Discussion methods
+
+- (void)discussionWithId:(NSNumber*)discussionId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(discussionId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@", discussionId]
+                parameters:nil
+                   handler:handler];
+}
+
 - (void)markDiscussionAsReadedWithId:(NSNumber *)discussionId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
                path:[NSString stringWithFormat:@"/api/v1/discussions/%@", discussionId]
@@ -62,8 +71,6 @@
                 }
             }];
 }
-
-#pragma mark - Comments methods
 
 - (void)commentsForDiscussionWithId:(NSNumber*)discussionId page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{

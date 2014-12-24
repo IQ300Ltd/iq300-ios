@@ -20,6 +20,7 @@
 #define SORT_DIRECTION IQSortDirectionDescending
 
 static NSString * NReuseIdentifier = @"NReuseIdentifier";
+static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 @interface NotificationsModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _totalCount;
@@ -68,13 +69,15 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
-    return NReuseIdentifier;
+    IQNotification * item = [self itemAtIndexPath:indexPath];
+    return ([item.hasActions boolValue]) ? NActionReuseIdentifier : NReuseIdentifier;
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = [NotificationCell class];
+    IQNotification * item = [self itemAtIndexPath:indexPath];
+    Class cellClass = ([item.hasActions boolValue]) ? [ActionNotificationCell class] : [NotificationCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
-                            reuseIdentifier:NReuseIdentifier];
+                            reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
@@ -198,7 +201,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         }
     }];
     
-    [[IQService sharedService] marAllkNotificationAsReadWithHandler:^(BOOL success, NSData *responseData, NSError *error) {
+    [[IQService sharedService] markAllNotificationAsReadWithHandler:^(BOOL success, NSData *responseData, NSError *error) {
         if(completion) {
             completion(error);
         }
@@ -234,7 +237,44 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     }
 }
 
+- (void)acceptNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] acceptNotificationWithId:notification.notificationId
+                                                handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                    if(completion) {
+                                                        completion(error);
+                                                    }
+                                                    if(success) {
+                                                        [self resetActionsForNotification:notification];
+                                                        [self updateCounters];
+                                                    }
+                                                }];
+}
+
+- (void)declineNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] declineNotificationWithId:notification.notificationId
+                                                 handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                     if(completion) {
+                                                         completion(error);
+                                                     }
+                                                     if(success) {
+                                                         [self resetActionsForNotification:notification];
+                                                         [self updateCounters];
+                                                     }
+                                                 }];
+}
+
 #pragma mark - Private methods
+
+- (void)resetActionsForNotification:(IQNotification*)notification {
+    notification.hasActions = @(NO);
+    notification.availableActions = nil;
+    notification.readed = @(YES);
+    
+    NSError *saveError = nil;
+    if(![notification.managedObjectContext saveToPersistentStore:&saveError] ) {
+        NSLog(@"Save notification error: %@", saveError);
+    }
+}
 
 - (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;

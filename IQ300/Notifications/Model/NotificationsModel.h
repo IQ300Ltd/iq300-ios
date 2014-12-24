@@ -29,4 +29,8 @@
 
 - (void)setSubscribedToNotifications:(BOOL)subscribed;
 
+- (void)acceptNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
+
+- (void)declineNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
+
 @end

@@ -10,4 +10,6 @@
 
 @interface IQUtilityButtonView : SWUtilityButtonView
 
+@property (nonatomic, assign) CGPoint buttonOffset;
+
 @end

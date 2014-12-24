@@ -54,10 +54,14 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
-- (void)marAllkNotificationAsReadWithHandler:(RequestCompletionHandler)handler;
+- (void)markAllNotificationAsReadWithHandler:(RequestCompletionHandler)handler;
 
 - (void)notificationsCountWithHandler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)registerDeviceForRemoteNotificationsWithToken:(NSString*)token handler:(RequestCompletionHandler)handler;
+
+- (void)acceptNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
+
+- (void)declineNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
 @end

@@ -1,18 +1,17 @@
 //
-//  DiscussionView.m
+//  CommentsView.m
 //  IQ300
 //
-//  Created by Tayphoon on 04.12.14.
+//  Created by Tayphoon on 24.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <QuartzCore/QuartzCore.h>
 
-#import "DiscussionView.h"
+#import "CommentsView.h"
 
 #define HEADER_HEIGHT 52.0f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
 
-@implementation DiscussionView
+@implementation CommentsView
 
 - (id)init {
     self = [super init];
@@ -45,7 +44,7 @@
         _tableView = [[UITableView alloc] init];
         _tableView.backgroundColor = [UIColor clearColor];
         _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
         [_tableView setClipsToBounds:YES];
         if([_tableView respondsToSelector:@selector(setSeparatorInset:)]) {
             [_tableView setSeparatorInset:UIEdgeInsetsZero];
@@ -54,9 +53,9 @@
             [_tableView setLayoutMargins:UIEdgeInsetsZero];
         }
         [self addSubview:_tableView];
-
+        
         [self addSubview:_headerView];
-
+        
         _inputView = [[CommentInputView alloc] init];
         [self addSubview:_inputView];
     }
@@ -65,7 +64,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-
+    
     CGRect actualBounds = self.bounds;
     _headerView.frame = CGRectMake(actualBounds.origin.x,
                                    actualBounds.origin.y,
@@ -88,7 +87,7 @@
                                   self.inputHeight);
     
     _tableView.frame = CGRectMake(actualBounds.origin.x,
-                                  tableViewY - 1.0f,
+                                  tableViewY,
                                   actualBounds.size.width,
                                   _inputView.frame.origin.y - tableViewY);
 }
@@ -109,7 +108,7 @@
                                   actualBounds.origin.y + (actualBounds.size.height - self.inputHeight) + _inputOffset,
                                   actualBounds.size.width,
                                   self.inputHeight);
-
+    
     CGFloat tableViewY = CGRectBottom(_headerView.frame);
     _tableView.frame = CGRectMake(actualBounds.origin.x,
                                   tableViewY,

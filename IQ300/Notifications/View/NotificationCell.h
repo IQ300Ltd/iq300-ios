@@ -8,6 +8,11 @@
 
 #import <SWTableViewCell/SWTableViewCell.h>
 
+#define READ_FLAG_WIDTH 4.0f
+#define READ_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
+#define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
+#define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
+
 @class IQNotification;
 
 @interface NotificationCell : SWTableViewCell {
