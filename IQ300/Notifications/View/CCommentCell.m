@@ -19,8 +19,8 @@
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
 #define CELL_HEADER_MIN_HEIGHT 15
-#define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
-#define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
+#define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
+#define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED [UIColor colorWithHexInt:0xe9faff]
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define ATTACHMENT_VIEW_Y_OFFSET 7.0f
 
@@ -62,7 +62,7 @@
     
     if(self) {
         UIView * contentView = self.contentView;
-        [self setBackgroundColor:[UIColor clearColor]];
+        [self setBackgroundColor:CONTEN_BACKGROUND_COLOR];
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
         
         _contentInsets = UIEdgeInsetsMake(VERTICAL_PADDING, CONTENT_INSET, 0.0f, CONTENT_INSET);
@@ -194,6 +194,11 @@
     [self setNeedsLayout];
 }
 
+- (void)setCommentHighlighted:(BOOL)commentHighlighted {
+    _commentHighlighted = commentHighlighted;
+    [self setBackgroundColor:(_commentHighlighted) ? CONTEN_BACKGROUND_COLOR_HIGHLIGHTED : CONTEN_BACKGROUND_COLOR];
+}
+
 - (void)prepareForReuse {
     [super prepareForReuse];
     _commentIsMine = NO;
@@ -206,6 +211,7 @@
     
     [_attachButtons makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [_attachButtons removeAllObjects];
+    [self setCommentHighlighted:NO];
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {

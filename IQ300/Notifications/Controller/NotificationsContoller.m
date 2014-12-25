@@ -155,6 +155,7 @@
     IQNotification * notification = [self.model itemAtIndexPath:indexPath];
     if(notification.discussionId) {
         NSString * title = notification.notificable.title;
+        NSNumber * commentId = notification.notificable.notificableId;
         [[IQService sharedService] discussionWithId:notification.discussionId
                                             handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
                                                 if(success) {
@@ -163,8 +164,11 @@
                                                     controller.title = NSLocalizedString(@"Notifications", nil);
                                                     controller.model = model;
                                                     controller.subTitle = title;
+                                                    controller.highlightedCommentId = commentId;
                                                     
                                                     [self.navigationController pushViewController:controller animated:YES];
+                                                    
+                                                    [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
                                                 }
                                             }];
     }

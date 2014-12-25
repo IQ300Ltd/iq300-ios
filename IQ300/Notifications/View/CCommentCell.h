@@ -25,6 +25,7 @@
 
 @property (nonatomic, strong) NSString * author;
 @property (nonatomic, strong) IQComment * item;
+@property (nonatomic, assign, getter=isCommentHighlighted) BOOL commentHighlighted;
 
 + (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth;
 

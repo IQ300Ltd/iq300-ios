@@ -134,6 +134,10 @@
         [attachButton setTag:buttonIndex];
         buttonIndex ++;
     }
+    
+    if(self.highlightedCommentId && [comment.commentId isEqualToNumber:self.highlightedCommentId]) {
+        [cell setCommentHighlighted:YES];
+    }
   
     return cell;
 }
