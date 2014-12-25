@@ -105,13 +105,13 @@
 }
 
 - (NSString*)badgeText {
-    return _badgeView.badgeText;
+    return _badgeView.badgeValue;
 }
 
 - (void)setBadgeText:(NSString *)badgeText {
     if([badgeText length] > 0) {
         [_badgeView setHidden:NO];
-        [_badgeView autoBadgeSizeWithString:badgeText];
+        [_badgeView setBadgeValue:badgeText];
     }
     else {
         [_badgeView setHidden:YES];

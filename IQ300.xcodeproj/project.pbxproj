@@ -38,6 +38,7 @@
 		737E7C5F1A0CD57E00E8BB81 /* AccountHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C5E1A0CD57E00E8BB81 /* AccountHeaderView.m */; };
 		737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C611A0D027700E8BB81 /* ExtendedButton.m */; };
 		7380E9751A4020FA00128BD9 /* ObjectSerializator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7380E9741A4020FA00128BD9 /* ObjectSerializator.m */; };
+		7381137C1A4C2A260061280F /* IQBadgeStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381137B1A4C2A260061280F /* IQBadgeStyle.m */; };
 		7382CA951A4566BD00D5EE1F /* CSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7382CA941A4566BD00D5EE1F /* CSectionHeaderView.m */; };
 		7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4AC1A288ED2000B94BD /* IQNotificationCenter.m */; };
 		7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4BD1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m */; };
@@ -239,6 +240,8 @@
 		737F5DD41A22FC5F0095040B /* UITableView+BottomRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+BottomRefreshControl.m"; sourceTree = "<group>"; };
 		7380E9731A4020FA00128BD9 /* ObjectSerializator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectSerializator.h; sourceTree = "<group>"; };
 		7380E9741A4020FA00128BD9 /* ObjectSerializator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectSerializator.m; sourceTree = "<group>"; };
+		7381137A1A4C2A260061280F /* IQBadgeStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeStyle.h; sourceTree = "<group>"; };
+		7381137B1A4C2A260061280F /* IQBadgeStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBadgeStyle.m; sourceTree = "<group>"; };
 		7382CA931A4566BD00D5EE1F /* CSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSectionHeaderView.h; sourceTree = "<group>"; };
 		7382CA941A4566BD00D5EE1F /* CSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSectionHeaderView.m; sourceTree = "<group>"; };
 		7385D4AB1A288ED2000B94BD /* IQNotificationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationCenter.h; sourceTree = "<group>"; };
@@ -627,6 +630,8 @@
 				738EA7AE1A1DDEC20065D39F /* IQTableBaseController.m */,
 				73A20C781A42F62C006433C5 /* IQBadgeView.h */,
 				73A20C791A42F62C006433C5 /* IQBadgeView.m */,
+				7381137A1A4C2A260061280F /* IQBadgeStyle.h */,
+				7381137B1A4C2A260061280F /* IQBadgeStyle.m */,
 				739073BA1A4877860057BA18 /* IQUtilityButtonView.h */,
 				739073BB1A4877860057BA18 /* IQUtilityButtonView.m */,
 				738FE71F1A1652D2009F26A2 /* ExTextField.h */,
@@ -1347,6 +1352,7 @@
 				739850D31A2DD30E00DB5B21 /* IQNotification.m in Sources */,
 				7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */,
 				739073BC1A4877860057BA18 /* IQUtilityButtonView.m in Sources */,
+				7381137C1A4C2A260061280F /* IQBadgeStyle.m in Sources */,
 				737DD2301A14F00400CC4443 /* IQService.m in Sources */,
 				73A113FA1A1C8D1B00293EC5 /* RMenuCell.m in Sources */,
 				738CE1E61A0B3F4E0096B374 /* main.m in Sources */,

@@ -96,7 +96,7 @@
                                            localaizedKey:nil];
         [contentView addSubview:_descriptionLabel];
         
-        BadgeStyle * style = [BadgeStyle defaultStyle];
+        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
         style.badgeTextColor = [UIColor whiteColor];
         style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
      
@@ -246,7 +246,7 @@
 - (void)setBadgeText:(NSString *)badgeText {
     if([badgeText length] > 0) {
         [_badgeView setHidden:NO];
-        [_badgeView autoBadgeSizeWithString:badgeText];
+        [_badgeView setBadgeValue:badgeText];
     }
     else {
         [_badgeView setHidden:YES];
