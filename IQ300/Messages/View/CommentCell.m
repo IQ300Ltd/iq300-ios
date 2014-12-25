@@ -227,16 +227,18 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
     if(hasAttachment) {
+        UIColor * titleColor = (_commentIsMine) ? [UIColor whiteColor] : [UIColor colorWithHexInt:0x7f7f7f];
+        UIColor * titleHighlightedColor = (_commentIsMine) ? [UIColor colorWithHexInt:0x818D83] : [UIColor colorWithHexInt:0x615f5f];
+        UIImage * bacgroundImage = (_commentIsMine) ? [UIImage imageNamed:@"attach_white_ico.png"] : [UIImage imageNamed:@"attach_gray_ico.png"];
         for (IQAttachment * attachment in _item.attachments) {
             UIButton * attachButton = [[UIButton alloc] init];
-            [attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
+            [attachButton setImage:bacgroundImage forState:UIControlStateNormal];
             [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
-            [attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
-            [attachButton setTitleColor:[UIColor colorWithHexInt:0x446b7a] forState:UIControlStateHighlighted];
+            [attachButton setTitleColor:titleColor forState:UIControlStateNormal];
+            [attachButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
             [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
             attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
             [attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
-            [attachButton sizeToFit];
             [self.contentView addSubview:attachButton];
             [_attachButtons addObject:attachButton];
         }
