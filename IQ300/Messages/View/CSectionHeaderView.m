@@ -9,7 +9,7 @@
 #import "CSectionHeaderView.h"
 
 #define CENTER_LINE_COLOR [UIColor colorWithHexInt:0xcccccc]
-#define CENTER_LINE_HEIGHT 0.25f
+#define CENTER_LINE_HEIGHT 0.5f
 
 @interface CSectionHeaderView() {
     UILabel * _titleLabel;

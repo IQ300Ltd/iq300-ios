@@ -28,6 +28,7 @@
 @interface MessagesController() {
     MessagesView * _messagesView;
     dispatch_after_block _cancelBlock;
+    BOOL _needFullReload;
 }
 
 @end
@@ -39,6 +40,8 @@
     if (self) {
         self.model = [[MessagesModel alloc] init];
         self.title = NSLocalizedString(@"Messages", nil);
+        
+        _needFullReload = YES;
 
         UIImage * barImage = [[UIImage imageNamed:@"messages_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIImage * barImageSel = [[UIImage imageNamed:@"messgaes_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -248,12 +251,21 @@
             [self.tableView reloadData];
         }
         [self updateNoDataLabelVisibility];
-        [self scrollToTopAnimated:NO delay:0.0f];
-    }];
+        [self scrollToTopIfNeedAnimated:NO delay:0.0f];
+        _needFullReload = NO;
+   }];
 }
 
 - (void)updateNoDataLabelVisibility {
     [_messagesView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
+}
+
+- (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
+    CGFloat bottomPosition = 0.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y <= bottomPosition);
+    if(isTableScrolledToBottom || _needFullReload) {
+        [self scrollToTopAnimated:animated delay:delay];
+    }
 }
 
 - (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay {

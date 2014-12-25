@@ -167,13 +167,14 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    if([_fetchController.fetchedObjects count] == 0) {
+    BOOL hasObjects = ([_fetchController.fetchedObjects count] == 0);
+    if(hasObjects) {
         [self updateModelSourceControllerWithCompletion:nil];
     }
     
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
-                                                       per:@(_portionLenght)
+                                                       per:@(40)
                                                       sort:SORT_DIRECTION
                                                    handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
                                                        if(!error) {

@@ -13,7 +13,7 @@
 
 NSString * const IQNotificationsDidChanged = @"notifications";
 NSString * const IQNewMessageNotification = @"comment_created";
-NSString * const IQMessageViewedByUserNotification = @"viewed";
+NSString * const IQMessageViewedByUserNotification = @"discussion_viewed";
 NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
 
 @class IQCNotification;
@@ -22,6 +22,8 @@ NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
     dispatch_queue_t _queue;
     void(^_dispatchBlock)(IQCNotification * notf);
 }
+
+@property (nonatomic, strong) NSString * eventName;
 
 + (IQNotificationObserver*)observerWithQueue:(dispatch_queue_t)queue dispatchBlock:(void(^)(IQCNotification * notf))dispatchBlock;
 
@@ -174,6 +176,7 @@ static IQNotificationCenter * _defaultCenter = nil;
     NSParameterAssert(block);
     dispatch_queue_t dispatchQueue = (queue) ? queue : dispatch_get_main_queue();
     IQNotificationObserver * observer = [IQNotificationObserver observerWithQueue:dispatchQueue dispatchBlock:block];
+    observer.eventName = name;
     [self addObserver:observer forChannel:channelName forEventName:name];
     [self subscribeChannelWithName:channelName toEventNamed:name];
     return observer;
@@ -187,25 +190,50 @@ static IQNotificationCenter * _defaultCenter = nil;
 }
 
 - (void)removeObserver:(id)observer name:(NSString *)name {
-    if ([name length] > 0) {
-        NSMutableArray * observers = _observers[name];
+    [self removeObserver:observer name:name channelName:_defaultChannelName];
+}
+
+- (void)removeObserver:(id)observer name:(NSString *)eventName channelName:(NSString*)channelName {
+    NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, eventName];
+    
+    if ([eventName length] > 0) {
+        NSMutableArray * observers = _observers[key];
         if([observers containsObject:observer]) {
             [observers removeObject:observer];
+            [self unsubscribeChannelWithName:channelName toEventNamed:eventName];
         }
     }
     else {
-        for (NSMutableArray * observers in [_observers allValues]) {
+        for (NSString * observerKey in [_observers allKeys]) {
+            NSMutableArray * observers = _observers[observerKey];
             if([observers containsObject:observer]) {
                 [observers removeObject:observer];
+                eventName = ([observer respondsToSelector:@selector(eventName)]) ? [observer valueForKey:@"eventName"] : nil;
+                if([eventName length] > 0) {
+                    [self unsubscribeChannelWithName:channelName toEventNamed:eventName];
+                }
             }
         }
     }
+}
+
+- (void)resetAllObservers {
+    [_observers removeAllObjects];
+    
+    for (PTPusherChannel * channel in [_channels allValues]) {
+        [channel unsubscribe];
+    }
+    
+    [_channels removeAllObjects];
+    [_channelBindings removeAllObjects];
 }
 
 - (void)dealloc {
 #ifdef kLOG_ALL_EVENTS
     [[NSNotificationCenter defaultCenter] removeObserver:_notfObserver];
 #endif
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     _client.delegate = nil;
     [_client disconnect];
     _client = nil;
@@ -214,13 +242,14 @@ static IQNotificationCenter * _defaultCenter = nil;
 #pragma mark - Private methods
 
 - (void)subscribeChannelWithName:(NSString*)channelName toEventNamed:(NSString*)eventName {
+    NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, eventName];
     PTPusherChannel * channel = _channels[channelName];
     if(!channel) {
         channel = [_client subscribeToChannelNamed:channelName];
         _channels[channelName] = channel;
     }
     
-    if(!_channelBindings[eventName]) {
+    if(!_channelBindings[key]) {
         __weak typeof(self) weakSelf = self;
         PTPusherEventBinding * binding = [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
             IQCNotification * notf = [[IQCNotification alloc] initWithName:eventName
@@ -229,7 +258,18 @@ static IQNotificationCenter * _defaultCenter = nil;
             [weakSelf dispatchNotification:notf formChannel:channelName];
         }];
         
-        _channelBindings[eventName] = binding;
+        _channelBindings[key] = binding;
+    }
+}
+
+- (void)unsubscribeChannelWithName:(NSString*)channelName toEventNamed:(NSString*)eventName {
+    NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, eventName];
+    PTPusherChannel * channel = _channels[channelName];
+    
+    if(_channelBindings[key]) {
+        PTPusherEventBinding * binding = _channelBindings[key];
+        [channel removeBinding:binding];
+        [_channelBindings removeObjectForKey:eventName];
     }
 }
 

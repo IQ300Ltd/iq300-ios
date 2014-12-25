@@ -23,10 +23,12 @@
 #import "IQService+Messages.h"
 #import "IQDiscussion.h"
 #import "CommentsController.h"
+#import "DispatchAfterExecution.h"
 
 @interface NotificationsContoller() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationsView * _mainView;
     NotificationsMenuModel * _menuModel;
+    BOOL _needFullReload;
 }
 
 @end
@@ -37,6 +39,8 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     
     if (self) {
+        _needFullReload = YES;
+
         self.model = [[NotificationsModel alloc] init];
 
         self.title = NSLocalizedString(@"Notifications", nil);
@@ -109,7 +113,7 @@
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
     if([IQSession defaultSession]) {
-        [self reloadModel];
+        [self reloadFirstPart];
     }
     
     [self.model setSubscribedToNotifications:YES];
@@ -242,20 +246,49 @@
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
-            if([self.model numberOfItemsInSection:0] > 0) {
-                [_mainView.noDataLabel setHidden:YES];
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                      atScrollPosition:UITableViewScrollPositionTop
-                                              animated:NO];
+        }
+        [self scrollToTopIfNeedAnimated:NO delay:0.5];
+        [self updateNoDataLabelVisibility];
+    }];
+}
+
+- (void)reloadFirstPart {
+    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self.tableView reloadData];
+        }
+
+        [self scrollToTopIfNeedAnimated:NO delay:0.5];
+        [self updateNoDataLabelVisibility];
+        _needFullReload = NO;
+    }];
+}
+
+- (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
+    CGFloat bottomPosition = 0.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y <= bottomPosition);
+    if(isTableScrolledToBottom || _needFullReload) {
+        [self scrollToTopAnimated:animated delay:delay];
+    }
+}
+
+- (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay {
+    NSInteger section = [self.tableView numberOfSections];
+    if (section > 0) {
+        NSInteger itemsCount = [self.tableView numberOfRowsInSection:0];
+        
+        if (itemsCount > 0) {
+            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            if(delay > 0.0f) {
+                dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
+                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                });
             }
             else {
-                [_mainView.noDataLabel setHidden:NO];
-                [self.model updateModelWithCompletion:^(NSError *error) {
-                    [self updateNoDataLabelVisibility];
-                }];
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
             }
         }
-    }];
+    }
 }
 
 - (void)updateNoDataLabelVisibility {

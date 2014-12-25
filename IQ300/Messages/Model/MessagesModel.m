@@ -308,6 +308,9 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     if([IQSession defaultSession]) {
         [self resubscribeToNewMessageNotification];
         [self updateCounters];
+        [self reloadModelWithCompletion:^(NSError *error) {
+            [self modelDidChanged];
+        }];
     }
     else {
         [self unsubscribeFromNewMessageNotification];

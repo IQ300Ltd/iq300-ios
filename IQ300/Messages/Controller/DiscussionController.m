@@ -137,13 +137,18 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    [cell.attachButton addTarget:self
-                          action:@selector(attachViewButtonAction:)
-                forControlEvents:UIControlEventTouchUpInside];
-    
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
-    
+
+    NSInteger buttonIndex = 0;
+    for (UIButton * attachButton in cell.attachButtons) {
+        [attachButton addTarget:self
+                         action:@selector(attachViewButtonAction:)
+               forControlEvents:UIControlEventTouchUpInside];
+        [attachButton setTag:buttonIndex];
+        buttonIndex ++;
+    }
+
     return cell;
 }
 
@@ -250,7 +255,7 @@
     }
     
     IQComment * comment = cell.item;
-    IQAttachment * attachment = [[comment.attachments allObjects] lastObject];
+    IQAttachment * attachment = [[comment.attachments allObjects] objectAtIndex:sender.tag];
     
     CGRect rectForAppearing = [sender.superview convertRect:sender.frame toView:self.view];
     if([attachment.contentType rangeOfString:@"image"].location != NSNotFound &&
@@ -307,9 +312,7 @@
         if(!error) {
             [self.tableView reloadData];
         }
-        if(_needFullReload) {
-            [self scrollToBottomIfNeedAnimated:NO delay:0];
-        }
+        [self scrollToBottomIfNeedAnimated:NO delay:0.5];
         _needFullReload = NO;
     }];
 }

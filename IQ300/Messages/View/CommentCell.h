@@ -20,7 +20,7 @@
 @property (nonatomic, strong) UILabel * timeLabel;
 @property (nonatomic, strong) UIView * contentBackgroundView;
 @property (nonatomic, strong) UILabel * descriptionLabel;
-@property (nonatomic, strong) UIButton * attachButton;
+@property (nonatomic, readonly) NSArray * attachButtons;
 @property (nonatomic, strong) UIImageView * statusImageView;
 
 @property (nonatomic, strong) IQComment * item;

@@ -46,6 +46,7 @@
     [controllers makeObjectsPerformSelector:@selector(popToRootViewControllerAnimated:) withObject:@(NO)];
     [[IQService sharedService] logout];
     [IQSession setDefaultSession:nil];
+    [[IQNotificationCenter defaultCenter] resetAllObservers];
     [IQNotificationCenter setDefaultCenter:nil];
     [delegate.drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:nil];
     [[UIApplication sharedApplication] unregisterForRemoteNotifications];
@@ -179,6 +180,8 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {

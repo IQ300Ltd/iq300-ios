@@ -74,11 +74,14 @@
     
     CGSize backButtonImageSize = [_backButton imageForState:UIControlStateNormal].size;
     _backButton.frame = CGRectMake(-4.0f,
-                                   actualBounds.origin.y + (_headerView.frame.size.height - backButtonImageSize.height) / 2,
+                                   (_headerView.frame.size.height - backButtonImageSize.height) / 2,
                                    backButtonImageSize.width,
                                    backButtonImageSize.height);
     
-    _titleLabel.frame = _headerView.bounds;
+    _titleLabel.frame = CGRectMake(CGRectRight(_backButton.frame),
+                                   0.0f,
+                                   _headerView.frame.size.width - CGRectRight(_backButton.frame) * 2.0f,
+                                   _headerView.frame.size.height);
     
     CGFloat tableViewY = CGRectBottom(_headerView.frame);
     

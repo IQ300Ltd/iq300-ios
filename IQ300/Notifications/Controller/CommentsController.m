@@ -123,36 +123,22 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    [cell.attachButton addTarget:self
-                          action:@selector(attachViewButtonAction:)
-                forControlEvents:UIControlEventTouchUpInside];
-    [cell.attachButton setTag:indexPath.row];
-    
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
     
+    NSInteger buttonIndex = 0;
+    for (UIButton * attachButton in cell.attachButtons) {
+        [attachButton addTarget:self
+                         action:@selector(attachViewButtonAction:)
+               forControlEvents:UIControlEventTouchUpInside];
+        [attachButton setTag:buttonIndex];
+        buttonIndex ++;
+    }
+  
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    IQComment * comment = [self.model itemAtIndexPath:indexPath];
-//    if([comment.commentStatus integerValue] == IQCommentStatusSendError) {
-//        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"Message has not been sent. Send again?", nil)
-//                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-//                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
-//                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-//                              if(buttonIndex == 1) {
-//                                  [self.model resendLocalComment:comment withCompletion:^(NSError *error) {
-//                                      if(!error) {
-//                                          [self.model deleteComment:comment];
-//                                      }
-//                                      else {
-//                                          NSLog(@"Resend local comment error");
-//                                      }
-//                                  }];
-//                              }
-//                          }];
-//    }
 }
 
 #pragma mark - UIScroll Delegate
@@ -172,6 +158,14 @@
 }
 
 #pragma mark - Private methods
+
+- (CCommentCell*)cellForView:(UIView*)view {
+    if ([view.superview isKindOfClass:[CCommentCell class]] || !view.superview) {
+        return (CCommentCell*)view.superview;
+    }
+    
+    return [self cellForView:view.superview];
+}
 
 - (BOOL)isValidText:(NSString *)text {
     if (text == nil || [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
@@ -230,8 +224,14 @@
 }
 
 - (void)attachViewButtonAction:(UIButton*)sender {
-    IQComment * comment = [self.model itemAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
-    IQAttachment * attachment = [[comment.attachments allObjects] lastObject];
+    CCommentCell * cell = [self cellForView:sender];
+    
+    if(!cell) {
+        return;
+    }
+    
+    IQComment * comment = cell.item;
+    IQAttachment * attachment = [[comment.attachments allObjects] objectAtIndex:sender.tag];
     
     CGRect rectForAppearing = [sender.superview convertRect:sender.frame toView:self.view];
     if([attachment.contentType rangeOfString:@"image"].location != NSNotFound &&
@@ -288,9 +288,7 @@
         if(!error) {
             [self.tableView reloadData];
         }
-        if(_needFullReload) {
-            [self scrollToBottomIfNeedAnimated:NO delay:0.1f];
-        }
+        [self scrollToBottomIfNeedAnimated:NO delay:0.1f];
         _needFullReload = NO;
     }];
 }

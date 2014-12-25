@@ -77,7 +77,10 @@
                                    backButtonImageSize.width,
                                    backButtonImageSize.height);
     
-    _titleLabel.frame = _headerView.bounds;
+    _titleLabel.frame = CGRectMake(CGRectRight(_backButton.frame),
+                                   0.0f,
+                                   _headerView.frame.size.width - CGRectRight(_backButton.frame) * 2.0f,
+                                   _headerView.frame.size.height);
     
     CGFloat tableViewY = CGRectBottom(_headerView.frame);
     

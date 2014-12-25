@@ -54,5 +54,7 @@ extern NSString * const IQNotificationDataKey;
 
 - (void)removeObserver:(id)observer;
 - (void)removeObserver:(id)observer name:(NSString *)aName;
+- (void)removeObserver:(id)observer name:(NSString *)aName channelName:(NSString*)channelName;
+- (void)resetAllObservers;
 
 @end

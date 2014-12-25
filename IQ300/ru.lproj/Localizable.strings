@@ -29,9 +29,11 @@
 "Email and password fields is required" = "Эл. почта и пароль являются обязательными";
 "Email address is invalid" = "Неверный адрес эл. почты";
 "Wrong credentials" = "Неверный адрес эл. почты или пароль";
-"Pull to refresh..." = "Потяните, чтобы обновить";
-"Release to refresh..." = "Отпустите, чтобы обновить";
-"Loading..." = "Загрузка";
+"Pull to refresh..." = "Потяните, чтобы обновить...";
+"Release to refresh..." = "Отпустите, чтобы обновить...";
+"Loading..." = "Загрузка...";
+"Last Updated: %@" = "Последнее обновление: %@";
+"Never" = "Никогда";
 "There are no unread notifications" = "Непрочитанные уведомления отсутствуют";
 "There are no notifications" = "Уведомления отсутствуют";
 "mark_all_readed_question" = "Все Ваши уведомления будут отмечены как прочитанные. Продолжить?";

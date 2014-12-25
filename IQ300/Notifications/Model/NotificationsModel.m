@@ -134,9 +134,14 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] notificationsUnread:nil
+    BOOL hasObjects = ([_fetchController.fetchedObjects count] == 0);
+    if(hasObjects) {
+        [self updateModelSourceControllerWithCompletion:nil];
+    }
+    
+    [[IQService sharedService] notificationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
-                                               per:@(_portionLenght)
+                                               per:@(40)
                                               sort:SORT_DIRECTION
                                            handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
                                                if(completion) {
@@ -362,6 +367,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     if([IQSession defaultSession]) {
         [self resubscribeToIQNotifications];
         [self updateCounters];
+        [self reloadModelWithCompletion:^(NSError *error) {
+            [self modelDidChanged];
+        }];
     }
     else {
         [self unsubscribeFromIQNotifications];

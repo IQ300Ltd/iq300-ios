@@ -22,9 +22,11 @@
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#define ATTACHMENT_VIEW_Y_OFFSET 7.0f
 
 @interface CCommentCell() {
     BOOL _commentIsMine;
+    NSMutableArray * _attachButtons;
 }
 
 @end
@@ -43,11 +45,13 @@
         height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
     }
-    
-    BOOL hasDescription = ([item.body length] > 0);
+    else {
+        height = descriptionY + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA;
+    }
+
     BOOL hasAttachment = ([item.attachments count] > 0);
-    if(hasAttachment && hasDescription) {
-        height += ATTACHMENT_VIEW_HEIGHT;
+    if(hasAttachment) {
+        height += (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * item.attachments.count - ATTACHMENT_VIEW_Y_OFFSET;
     }
     
     return height;
@@ -84,18 +88,14 @@
                                            localaizedKey:nil];
         [contentView addSubview:_descriptionLabel];
         
-        _attachButton = [[UIButton alloc] init];
-        [_attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
-        [_attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
-        [_attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
-        [_attachButton setTitleColor:[UIColor colorWithHexInt:0x446b7a] forState:UIControlStateHighlighted];
-        [_attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
-        _attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        [_attachButton setHidden:YES];
-        [contentView addSubview:_attachButton];
+        _attachButtons = [NSMutableArray array];
     }
     
     return self;
+}
+
+- (NSArray*)attachButtons {
+    return [_attachButtons copy];
 }
 
 - (void)layoutSubviews {
@@ -126,7 +126,8 @@
                                   topLabelSize.width,
                                   topLabelSize.height);
     
-    CGFloat descriptionInset = (hasAttachment) ? ATTACHMENT_VIEW_HEIGHT : 0.0f;
+    CGFloat attachmentRectHeight = (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [_attachButtons count] - ATTACHMENT_VIEW_Y_OFFSET;
+    CGFloat descriptionInset = (hasAttachment) ? attachmentRectHeight : 0.0f;
     CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
     CGFloat descriptionHeight = (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f;
     
@@ -139,14 +140,17 @@
                                          (hasDescription) ? actualBounds.size.width : 10.0f,
                                          descriptionHeight);
     if(hasAttachment) {
-        CGSize constrainedSize = CGSizeMake(actualBounds.size.width,
-                                            15.0f);
-        CGSize attachmentSize = [_attachButton sizeThatFits:constrainedSize];
-        
-        _attachButton.frame = CGRectMake(_descriptionLabel.frame.origin.x,
-                                         (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f,
-                                         attachmentSize.width + 5.0f,
-                                         attachmentSize.height);
+        CGFloat attachmentY = (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f;
+        for (UIButton * attachButton in _attachButtons) {
+            CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
+            CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
+            attachButton.frame = CGRectMake(_descriptionLabel.frame.origin.x,
+                                            attachmentY,
+                                            attachmentSize.width + 5.0f,
+                                            attachmentSize.height);
+            
+            attachmentY = CGRectBottom(attachButton.frame) + 7.0f;
+        }
     }
 }
 
@@ -163,11 +167,21 @@
     _descriptionLabel.text = body;
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
-    [_attachButton setHidden:(!hasAttachment)];
     
     if(hasAttachment) {
-        IQAttachment * attachment = [[_item.attachments allObjects] lastObject];
-        [_attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
+        for (IQAttachment * attachment in _item.attachments) {
+            UIButton * attachButton = [[UIButton alloc] init];
+            [attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
+            [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+            [attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
+            [attachButton setTitleColor:[UIColor colorWithHexInt:0x446b7a] forState:UIControlStateHighlighted];
+            [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
+            attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+            [attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
+            [attachButton sizeToFit];
+            [self.contentView addSubview:attachButton];
+            [_attachButtons addObject:attachButton];
+        }
     }
     
     [self setNeedsLayout];
@@ -183,10 +197,15 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     _commentIsMine = NO;
-    [_attachButton setHidden:YES];
-    [_attachButton removeTarget:nil
-                         action:NULL
-               forControlEvents:UIControlEventTouchUpInside];
+    
+    for (UIButton * attachButton in _attachButtons) {
+        [attachButton removeTarget:nil
+                            action:NULL
+                  forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [_attachButtons makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [_attachButtons removeAllObjects];
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {
