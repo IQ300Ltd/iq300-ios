@@ -514,9 +514,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     void (^messageViewedBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
         NSDictionary * viewData = notf.userInfo[IQNotificationDataKey][@"user_view"];
         NSNumber * userId = viewData[@"user_id"];
-        
-        if(userId && [_companionId isEqualToNumber:userId]) {
-            NSNumber * discussionId = viewData[@"discussion_id"];
+        NSNumber * discussionId = viewData[@"discussion_id"];
+       
+        if(userId && [_companionId isEqualToNumber:userId] &&
+           discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
             NSString * viewedDateString = viewData[@"viewed_at"];
             NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
             
