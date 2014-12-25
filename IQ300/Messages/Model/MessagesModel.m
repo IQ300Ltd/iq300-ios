@@ -82,7 +82,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (NSUInteger)numberOfSections {
-    return [_fetchController.sections count];
+    return 1;//[_fetchController.sections count];
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
@@ -197,7 +197,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                                           cacheName:CACHE_FILE_NAME];
     }
     
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"(ANY users.userId == %@) AND (lastComment != NULL)", [IQSession defaultSession].userId];
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@ AND (lastComment != NULL)", [IQSession defaultSession].userId];
     if(_loadUnreadOnly) {
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"readed == NO"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
@@ -308,12 +308,11 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     if([IQSession defaultSession]) {
         [self resubscribeToNewMessageNotification];
         [self updateCounters];
-        [self reloadModelWithCompletion:^(NSError *error) {
-            [self modelDidChanged];
-        }];
     }
     else {
         [self unsubscribeFromNewMessageNotification];
+        [self clearModelData];
+        [self modelDidChanged];
     }
 }
 

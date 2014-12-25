@@ -56,7 +56,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (NSUInteger)numberOfSections {
-    return [_fetchController.sections count];
+    return 1;//[_fetchController.sections count];
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
@@ -367,12 +367,11 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     if([IQSession defaultSession]) {
         [self resubscribeToIQNotifications];
         [self updateCounters];
-        [self reloadModelWithCompletion:^(NSError *error) {
-            [self modelDidChanged];
-        }];
     }
     else {
         [self unsubscribeFromIQNotifications];
+        [self clearModelData];
+        [self modelDidChanged];
     }
 }
 
