@@ -395,11 +395,11 @@
             NSIndexPath * indexPath = [NSIndexPath indexPathForRow:itemsCount - 1 inSection:section - 1];
             if(delay > 0.0f) {
                 dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
                 });
             }
             else {
-                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
             }
         }
     }
