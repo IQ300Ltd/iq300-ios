@@ -39,18 +39,26 @@
 @dynamic additionalDescription;
 @dynamic user;
 @dynamic ownerId;
+@dynamic availableActions;
+@dynamic hasDiscussion;
+@dynamic discussionId;
+@dynamic commentId;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:@"IQNotification" inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"notificationId"]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                   @"id"               : @"notificationId",
-                                                   @"readed"           : @"readed",
-                                                   @"created_at"       : @"createdAt",
-                                                   @"has_actions"      : @"hasActions",
-                                                   @"main_text"        : @"mainDescription",
-                                                   @"additional_text"  : @"additionalDescription",
-                                                   @"recipient_id"     : @"ownerId"
+                                                   @"id"                : @"notificationId",
+                                                   @"readed"            : @"readed",
+                                                   @"created_at"        : @"createdAt",
+                                                   @"has_actions"       : @"hasActions",
+                                                   @"main_text"         : @"mainDescription",
+                                                   @"additional_text"   : @"additionalDescription",
+                                                   @"recipient_id"      : @"ownerId",
+                                                   @"available_actions" : @"availableActions",
+                                                   @"has_discussion"    : @"hasDiscussion",
+                                                   @"discussion_id"     : @"discussionId",
+                                                   @"comment_id"        : @"commentId"
                                                    }];
     
     RKRelationshipMapping * notificableRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"notificable"

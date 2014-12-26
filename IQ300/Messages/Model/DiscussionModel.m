@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+#import <RestKit/RestKit.h>
 
 #import "DiscussionModel.h"
 #import "IQService+Messages.h"
@@ -13,6 +14,14 @@
 #import "IQDiscussion.h"
 #import "IQComment.h"
 #import "CViewInfo.h"
+#import "ALAsset+Extension.h"
+#import "NSString+UUID.h"
+#import "IQNotificationCenter.h"
+#import "ObjectSerializator.h"
+#import "MessagesModel.h"
+#import "NSManagedObjectContext+AsyncFetch.h"
+#import "NSDate+IQFormater.h"
+#import "NSDate+CupertinoYankee.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -23,8 +32,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     NSInteger _portionLenght;
     NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
-    __weak id _notfObserver;
+    __weak id _newMessageObserver;
+    __weak id _messageViewedObserver;
     NSDate * _lastViewDate;
+    NSDateFormatter * _dateFormatter;
 }
 
 @end
@@ -62,7 +73,24 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
-    return nil;
+    IQComment * comment = [self itemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:section]];
+    NSString * stringDate = nil;
+    NSDate * today = [[NSDate date] beginningOfDay];
+    NSDate * yesterday = [today prevDay];
+    NSDate * beginningOfDay = comment.createShortDate;
+    
+    if([beginningOfDay compare:today] == NSOrderedSame) {
+        stringDate =  NSLocalizedString(@"Today", nil);
+    }
+    else if([beginningOfDay compare:yesterday] == NSOrderedSame) {
+        stringDate = NSLocalizedString(@"Yesterday", nil);
+    }
+    else {
+        stringDate = [comment.createShortDate dateToStringWithFormat:@"dd.MM.yyyy"];
+    }
+    
+    return stringDate;
+
 }
 
 - (NSUInteger)numberOfItemsInSection:(NSInteger)section {
@@ -105,7 +133,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        NSInteger count = [self numberOfItemsInSection:0];
+        NSInteger count = [_fetchController.fetchedObjects count];
         NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
         [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                           page:@(page)
@@ -139,9 +167,14 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
+    BOOL hasObjects = ([_fetchController.fetchedObjects count] == 0);
+    if(hasObjects) {
+        [self updateModelSourceControllerWithCompletion:nil];
+    }
+    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
-                                                       per:@(_portionLenght)
+                                                       per:@(40)
                                                       sort:SORT_DIRECTION
                                                    handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
                                                        if(!error) {
@@ -163,23 +196,25 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed {
+- (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reloadFirstPart)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
+        [self resubscribeToIQNotifications];
     }
     else {
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:UIApplicationWillEnterForegroundNotification
                                                       object:nil];
+        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+        [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
     }
 }
 
 - (void)sendComment:(NSString*)comment
     attachmentAsset:(ALAsset*)asset
-      attachmentIds:(NSArray*)attachmentIds
            fileName:(NSString*)fileName
      attachmentType:(NSString*)type
      withCompletion:(void (^)(NSError * error))completion {
@@ -221,15 +256,72 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                         if(success) {
                                                             sendCommentBlock(@[attachment]);
                                                         }
+                                                        else {
+                                                            [self crecreateLocalAttachmentWithAsset:asset completion:^(IQAttachment * attachment, NSError *error) {
+                                                                if(attachment) {
+                                                                    sendCommentBlock(@[attachment]);
+                                                                }
+                                                                else if (completion) {
+                                                                    completion(error);
+                                                                }
+                                                            }];
+                                                        }
                                                     }];
     }
     else {
-        sendCommentBlock(attachmentIds);
+        sendCommentBlock(nil);
+    }
+}
+
+- (void)resendLocalComment:(IQComment*)comment withCompletion:(void (^)(NSError * error))completion {
+    void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachments) {
+        NSArray * attachmentIds = [attachments valueForKey:@"attachmentId"];
+        [[IQService sharedService] createComment:comment.body
+                                    discussionId:comment.discussionId
+                                   attachmentIds:attachmentIds
+                                         handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
+                                             NSError * saveError = nil;
+                                             item.commentStatus = @(IQCommentStatusSent);
+                                             [item.managedObjectContext saveToPersistentStore:&saveError];
+                                             if(saveError) {
+                                                 NSLog(@"Create comment status error: %@", saveError);
+                                             }
+                                             if (completion) {
+                                                 completion(error);
+                                             }
+                                         }];
+    };
+
+    IQAttachment * localAttachment = [[comment.attachments allObjects] firstObject];
+    if([localAttachment.originalURL length] > 0) {
+        [[IQService sharedService] createAttachmentWithFileAtPath:localAttachment.localURL
+                                                         fileName:localAttachment.displayName
+                                                         mimeType:localAttachment.contentType
+                                                          handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
+                                                              if(success) {
+                                                                  sendCommentBlock(@[attachment]);
+                                                              }
+                                                              else if (completion) {
+                                                                  completion(error);
+                                                              }
+                                                          }];
+    }
+    else {
+        sendCommentBlock(nil);
     }
 }
 
 - (void)deleteComment:(IQComment *)comment {
+    NSArray * attachments = [comment.attachments allObjects];
+    for (IQAttachment * attachment in attachments) {
+        NSError * removeError = nil;
+        if(![[NSFileManager defaultManager] removeItemAtPath:attachment.localURL error:&removeError]) {
+            NSLog(@"Failed delete tmp attachment file with error: %@", removeError);
+        }
+    }
+    
     [comment.managedObjectContext deleteObject:comment];
+    
     NSError *saveError = nil;
     if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
         NSLog(@"Save delete comment error: %@", saveError);
@@ -248,11 +340,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)updateDefaultStatusesForComments:(NSArray*)comments {
+    NSNumber * userId = [IQSession defaultSession].userId;
     for (IQComment * comment in comments) {
         if([comment.commentStatus integerValue] != IQCommentStatusSendError) {
             BOOL isViewed = [comment.createDate compare:_lastViewDate] == NSOrderedAscending;
             IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
-            if([comment.commentStatus integerValue] != status) {
+            if([comment.commentStatus integerValue] != status && [comment.author.userId isEqualToNumber:userId]) {
                 comment.commentStatus = @(status);
             }
         }
@@ -292,6 +385,53 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     return nil;
 }
 
+- (void)crecreateLocalAttachmentWithAsset:(ALAsset*)asset completion:(void (^)(IQAttachment * attachment, NSError * error))completion {
+    NSError * error = nil;
+    NSString * diskCachePath = [self createCacheDirIfNeedWithError:&error];
+    NSURL * filePath = [NSURL fileURLWithPath:[[diskCachePath stringByAppendingPathComponent:[NSString UUIDString]]
+                                               stringByAppendingPathExtension:[asset.fileName pathExtension]]];
+    NSManagedObjectContext * context = [IQService sharedService].context;
+    NSNumber * uniqId = (!error) ? [IQAttachment uniqueLocalIdInContext:context error:&error] : nil;
+    
+    if (uniqId && !error) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSError * exportAssetError = nil;
+            
+            if([asset writeToFile:filePath error:&exportAssetError]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSError * saveError = nil;
+                    NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass([IQAttachment class])
+                                                               inManagedObjectContext:context];
+                    
+                    IQAttachment * attachment = (IQAttachment*)[[NSManagedObject alloc] initWithEntity:entity
+                                                                        insertIntoManagedObjectContext:context];
+                    
+                    attachment.localId = uniqId;
+                    attachment.createDate = [NSDate date];
+                    attachment.displayName = [asset fileName];
+                    attachment.ownerId = [IQSession defaultSession].userId;
+                    attachment.contentType = [asset MIMEType];
+                    attachment.originalURL = [filePath absoluteString];
+                    attachment.localURL = [filePath path];
+                    attachment.previewURL = [filePath absoluteString];
+                    
+                    if([attachment.managedObjectContext saveToPersistentStore:&saveError] ) {
+                        if(completion) {
+                            completion(attachment, nil);
+                        }
+                    }
+                });
+            }
+            else if(completion) {
+                completion(nil, error);
+            }
+        });
+    }
+    else if(completion) {
+        completion(nil, error);
+    }
+}
+
 - (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;
     
@@ -303,7 +443,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                managedObjectContext:[IQService sharedService].context
-                                                                 sectionNameKeyPath:nil
+                                                                 sectionNameKeyPath:@"createShortDate"
                                                                           cacheName:CACHE_FILE_NAME];
     }
     
@@ -324,6 +464,104 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     [self reloadFirstPartWithCompletion:^(NSError *error) {
         
     }];
+}
+
+- (NSString*)createCacheDirIfNeedWithError:(NSError**)error {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString * namespace = @"com.iq300.FileStore.Share";
+    NSString * diskCachePath = [paths[0] stringByAppendingPathComponent:namespace];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:diskCachePath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:diskCachePath withIntermediateDirectories:YES attributes:nil error:error];
+    }
+    
+    if(!*error) {
+        return diskCachePath;
+    }
+    
+    return nil;
+}
+
+- (void)resubscribeToIQNotifications {
+        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+        [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
+        NSNumber * authorId = commentData[@"author"][@"id"];
+        if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId]) {
+            NSError * serializeError = nil;
+            Class commentClass = [IQComment class];
+            IQComment * comment = [ObjectSerializator objectFromDictionary:@{ NSStringFromClass(commentClass) : commentData }
+                                                          destinationClass:[IQComment class]
+                                                        managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
+                                                                     error:&serializeError];
+            [weakSelf modelNewComment:comment];
+            [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
+                                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                if(!success) {
+                                                                    NSLog(@"Mark conversation as read fail with error:%@", error);
+                                                                }
+                                                            }];
+        }
+    };
+    
+    _newMessageObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNewMessageNotification
+                                                                             queue:nil
+                                                                        usingBlock:newMessageBlock];
+    
+    void (^messageViewedBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSDictionary * viewData = notf.userInfo[IQNotificationDataKey][@"user_view"];
+        NSNumber * userId = viewData[@"user_id"];
+        NSNumber * discussionId = viewData[@"discussion_id"];
+       
+        if(userId && [_companionId isEqualToNumber:userId] &&
+           discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
+            NSString * viewedDateString = viewData[@"viewed_at"];
+            NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
+            
+            NSManagedObjectContext * context = [IQService sharedService].context;
+            NSString * format = @"discussionId == %@ AND author.userId == %@ AND commentStatus == %d";
+            NSPredicate * predicate = [NSPredicate predicateWithFormat:format, discussionId, [IQSession defaultSession].userId, IQCommentStatusSent];
+            NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:NSStringFromClass([IQComment class])];
+            [request setPredicate:predicate];
+            [context executeFetchRequest:request completion:^(NSArray *objects, NSError *error) {
+                if([objects count] > 0) {
+                    for (IQComment * comment in objects) {
+                        BOOL isViewed = [comment.createDate compare:viewedDate] == NSOrderedAscending;
+                        IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
+                        if(status != [comment.commentStatus integerValue] &&
+                           [comment.commentStatus integerValue] != IQCommentStatusSendError) {
+                            comment.commentStatus = @(status);
+                        }
+                    }
+                    
+                    if([[IQService sharedService].context hasChanges]) {
+                        NSError *saveError = nil;
+                        if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
+                            NSLog(@"Save comment statuses error: %@", saveError);
+                        }
+                    }
+                }
+            }];
+        }
+    };
+    
+    _messageViewedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQMessageViewedByUserNotification
+                                                                                queue:nil
+                                                                           usingBlock:messageViewedBlock];
+}
+
+- (NSDateFormatter *)dateFormater {
+    if (!_dateFormatter) {
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+        
+        [_dateFormatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ssZZZ"];
+    }
+    
+    return _dateFormatter;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -375,6 +613,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
+- (void)modelNewComment:(IQComment*)comment {
+    if ([self.delegate respondsToSelector:@selector(model:newComment:)]) {
+        [self.delegate model:self newComment:comment];
+    }
+}
+
 - (void)modelDidChangeContent {
     if ([self.delegate respondsToSelector:@selector(modelDidChangeContent:)]) {
         [self.delegate modelDidChangeContent:self];
@@ -394,6 +638,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)dealloc {
+    [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+    [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

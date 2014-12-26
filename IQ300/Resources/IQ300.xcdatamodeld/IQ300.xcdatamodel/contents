@@ -12,6 +12,7 @@
         <attribute name="contentType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="localURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="originalURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -24,9 +25,10 @@
         <attribute name="commentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="commentStatus" optional="YES" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
         <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="createShortDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQAttachment" inverseName="comments" inverseEntity="IQAttachment" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="IQAttachment" inverseName="comments" inverseEntity="IQAttachment" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="comments" inverseEntity="IQUser" syncable="YES"/>
         <relationship name="conversation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="lastComment" inverseEntity="IQConversation" syncable="YES"/>
     </entity>
@@ -40,10 +42,11 @@
         <attribute name="conversationId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="creatorId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="totalCommentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="unreadCommentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="discussion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="conversations" inverseEntity="IQDiscussion" syncable="YES"/>
+        <relationship name="discussion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="conversation" inverseEntity="IQDiscussion" syncable="YES"/>
         <relationship name="lastComment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQComment" inverseName="conversation" inverseEntity="IQComment" syncable="YES"/>
         <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQUser" inverseName="onversations" inverseEntity="IQUser" syncable="YES"/>
     </entity>
@@ -52,7 +55,7 @@
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="pusherChannel" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updateDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="conversations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="discussion" inverseEntity="IQConversation" syncable="YES"/>
+        <relationship name="conversation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="discussion" inverseEntity="IQConversation" syncable="YES"/>
         <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQUser" inverseName="discussions" inverseEntity="IQUser" syncable="YES"/>
         <relationship name="userViews" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CViewInfo" inverseName="discussions" inverseEntity="CViewInfo" syncable="YES"/>
     </entity>
@@ -64,8 +67,12 @@
     </entity>
     <entity name="IQNotification" representedClassName="IQNotification" syncable="YES">
         <attribute name="additionalDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="availableActions" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
+        <attribute name="commentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="hasActions" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="hasDiscussion" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="mainDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notificationId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -89,13 +96,13 @@
     </entity>
     <elements>
         <element name="CViewInfo" positionX="-45" positionY="135" width="128" height="105"/>
-        <element name="IQAttachment" positionX="-27" positionY="108" width="128" height="210"/>
-        <element name="IQComment" positionX="-36" positionY="99" width="128" height="180"/>
+        <element name="IQAttachment" positionX="-27" positionY="108" width="128" height="225"/>
+        <element name="IQComment" positionX="-36" positionY="99" width="128" height="195"/>
         <element name="IQContact" positionX="-45" positionY="135" width="128" height="103"/>
-        <element name="IQConversation" positionX="-54" positionY="81" width="128" height="178"/>
+        <element name="IQConversation" positionX="-54" positionY="81" width="128" height="195"/>
         <element name="IQDiscussion" positionX="-45" positionY="90" width="128" height="148"/>
-        <element name="IQNotificable" positionX="-63" positionY="-9" width="128" height="105"/>
-        <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="178"/>
+        <element name="IQNotificable" positionX="-63" positionY="-9" width="128" height="103"/>
+        <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="240"/>
         <element name="IQUser" positionX="-45" positionY="45" width="128" height="223"/>
     </elements>
 </model>

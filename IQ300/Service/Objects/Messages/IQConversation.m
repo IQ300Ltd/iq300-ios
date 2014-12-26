@@ -12,6 +12,7 @@
 @implementation IQConversation
 
 @dynamic conversationId;
+@dynamic ownerId;
 @dynamic createDate;
 @dynamic creatorId;
 @dynamic type;
@@ -26,6 +27,7 @@
     [mapping setIdentificationAttributes:@[@"conversationId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"                     : @"conversationId",
+                                                  @"recipient_id"           : @"ownerId",
                                                   @"created_at"             : @"createDate",
                                                   @"creator_id"             : @"creatorId",
                                                   @"kind"                   : @"type",

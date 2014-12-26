@@ -8,6 +8,7 @@
 #import <RestKit/RestKit.h>
 
 #import "IQComment.h"
+#import "NSDate+CupertinoYankee.h"
 
 @implementation IQComment
 
@@ -15,6 +16,7 @@
 @dynamic localId;
 @dynamic discussionId;
 @dynamic createDate;
+@dynamic createShortDate;
 @dynamic body;
 @dynamic author;
 @dynamic attachments;
@@ -65,6 +67,13 @@
         return @(0);
     }
     return nil;
+}
+
+- (void)setCreateDate:(NSDate *)createDate {
+    [self willChangeValueForKey:@"createDate"];
+    [self setPrimitiveValue:createDate forKey:@"createDate"];
+    self.createShortDate = [createDate beginningOfDay];
+    [self didChangeValueForKey:@"createDate"];
 }
 
 @end

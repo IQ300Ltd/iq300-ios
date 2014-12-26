@@ -14,7 +14,7 @@
     CGContextRef contex = UIGraphicsGetCurrentContext();
     
     CGRect bottomLine = CGRectMake(rect.origin.x,
-                                   rect.origin.y + rect.size.height - 0.5f,
+                                   rect.origin.y + rect.size.height - _bottomLineHeight + 0.5f,
                                    rect.size.width,
                                    _bottomLineHeight);
     

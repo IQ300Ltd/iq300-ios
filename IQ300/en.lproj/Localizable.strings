@@ -39,6 +39,10 @@
 "Сontacts" = "Сontacts";
 "You do not have an application installed to view files of this type" = "You do not have an application installed to view files of this type";
 "Message has not been sent. Send again?" = "Message has not been sent. Send again?";
+"Refuse" = "Refuse";
+"Accept" = "Accept";
+"To refine" = "To refine";
+"Complete" = "Complete";
 
 //Notification types
 "Attachment" = "Document";

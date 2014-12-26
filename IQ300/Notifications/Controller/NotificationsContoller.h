@@ -13,5 +13,6 @@
 
 @property (nonatomic, strong) NotificationsModel * model;
 
+- (void)updateGlobalCounter;
 
 @end

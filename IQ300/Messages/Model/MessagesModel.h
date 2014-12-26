@@ -9,6 +9,7 @@
 #import "IQTableModel.h"
 
 @class IQConversation;
+@class IQCounters;
 
 @interface MessagesModel : NSObject<IQTableModel>
 
@@ -25,9 +26,7 @@
 
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
-
-- (void)updateCountersWithCompletion:(void (^)(NSError * error))completion;
-
-- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed;
+- (void)setSubscribedToNotifications:(BOOL)subscribed;
+- (void)updateCountersWithCompletion:(void (^)(IQCounters * counter, NSError * error))completion;
 
 @end

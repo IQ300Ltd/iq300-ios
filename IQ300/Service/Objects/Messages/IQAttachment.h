@@ -14,7 +14,8 @@
 @interface IQAttachment : NSManagedObject
 
 @property (nonatomic, strong) NSNumber * attachmentId;
-@property (nonatomic, strong) NSDate * createDate;
+@property (nonatomic, strong) NSNumber * localId;
+@property (nonatomic, strong) NSDate   * createDate;
 @property (nonatomic, strong) NSString * displayName;
 @property (nonatomic, strong) NSString * atDescription;
 @property (nonatomic, strong) NSNumber * ownerId;
@@ -25,5 +26,7 @@
 @property (nonatomic, strong) NSString * previewURL;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
+
++ (NSNumber*)uniqueLocalIdInContext:(NSManagedObjectContext*)context error:(NSError**)error;
 
 @end

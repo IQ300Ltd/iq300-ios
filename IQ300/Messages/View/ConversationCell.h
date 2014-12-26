@@ -21,6 +21,7 @@
 }
 
 @property (nonatomic, strong) UIView * contentBackgroundView;
+@property (nonatomic, strong) UIImageView * userImageView;
 @property (nonatomic, strong) UILabel * dateLabel;
 @property (nonatomic, strong) UILabel * userNameLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;

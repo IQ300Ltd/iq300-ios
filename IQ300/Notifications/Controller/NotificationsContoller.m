@@ -17,13 +17,18 @@
 #import "NotificationsModel.h"
 #import "IQNotification.h"
 #import "NotificationCell.h"
-
-//#import "UITableView+BottomRefreshControl.h"
-//#import "IQRefreshControl.h"
+#import "IQCounters.h"
+#import "UITabBarItem+CustomBadgeView.h"
+#import "IQBadgeView.h"
+#import "IQService+Messages.h"
+#import "IQDiscussion.h"
+#import "CommentsController.h"
+#import "DispatchAfterExecution.h"
 
 @interface NotificationsContoller() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationsView * _mainView;
     NotificationsMenuModel * _menuModel;
+    BOOL _needFullReload;
 }
 
 @end
@@ -34,6 +39,10 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     
     if (self) {
+        _needFullReload = YES;
+
+        self.model = [[NotificationsModel alloc] init];
+
         self.title = NSLocalizedString(@"Notifications", nil);
         UIImage * barImage = [[UIImage imageNamed:@"notif_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIImage * barImageSel = [[UIImage imageNamed:@"notif_tab_selected.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -41,7 +50,20 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:barImage selectedImage:barImageSel];
         float imageOffset = 6;
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
-        self.model = [[NotificationsModel alloc] init];
+        
+        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
+        style.badgeTextColor = [UIColor whiteColor];
+        style.badgeFrameColor = [UIColor whiteColor];
+        style.badgeInsetColor = [UIColor colorWithHexInt:0xe74545];
+        style.badgeFrame = YES;
+        
+        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
+        badgeView.badgeMinSize = 20;
+        badgeView.frameLineHeight = 1.0f;
+        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        
+        self.tabBarItem.customBadgeView = badgeView;
+        self.tabBarItem.badgeOrigin = CGPointMake(88, 7);
     }
     
     return self;
@@ -80,8 +102,9 @@
     
     
     UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mark_tab_item.png"]
-                                                                  style:UIBarButtonItemStylePlain
-                                                                 target:self action:@selector(markAllAsReaded:)];
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(markAllAsReaded:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
     [self.leftMenuController setMenuResponder:self];
@@ -90,15 +113,22 @@
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
     if([IQSession defaultSession]) {
-        [self reloadModel];
+        [self reloadFirstPart];
     }
     
-    [self.model setSubscribedToSystemWakeNotifications:YES];
+    [self.model setSubscribedToNotifications:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToSystemWakeNotifications:NO];
+    [self.model setSubscribedToNotifications:NO];
+}
+
+- (void)updateGlobalCounter {
+    __weak typeof(self) weakSelf = self;
+    [self.model updateCountersWithCompletion:^(IQCounters *counter, NSError *error) {
+        [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue]];
+    }];
 }
 
 #pragma mark - UITableView DataSource
@@ -122,6 +152,26 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    IQNotification * notification = [self.model itemAtIndexPath:indexPath];
+    if(notification.discussionId) {
+        NSString * title = notification.notificable.title;
+        NSNumber * commentId = notification.commentId;
+        [[IQService sharedService] discussionWithId:notification.discussionId
+                                            handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
+                                                if(success) {
+                                                    CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];                                                    
+                                                    CommentsController * controller = [[CommentsController alloc] init];
+                                                    controller.title = NSLocalizedString(@"Notifications", nil);
+                                                    controller.model = model;
+                                                    controller.subTitle = title;
+                                                    controller.highlightedCommentId = commentId;
+                                                    
+                                                    [self.navigationController pushViewController:controller animated:YES];
+                                                    
+                                                    [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                                }
+                                            }];
+    }
 }
 
 #pragma mark - IQTableModel Delegate
@@ -143,6 +193,33 @@
     _mainView.noDataLabel.text = NSLocalizedString((indexPath.row == 0) ? NoNotificationFound : NoUnreadNotificationFound, nil);
     [self reloadModel];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
+}
+
+#pragma mark - SWTableViewCell Delegate
+
+- (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    __weak typeof (self) weakSelf = self;
+    void(^completion)(NSError *error) = ^(NSError *error) {
+        if([weakSelf.model numberOfItemsInSection:0] == 0) {
+            [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+                [weakSelf updateNoDataLabelVisibility];
+            }];
+        }
+    };
+    
+    if(![cell.item.hasActions boolValue]) {
+        NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
+        
+        [self.model markNotificationAsReadAtIndexPath:itemIndexPath completion:completion];
+    }
+    else {
+        if(index == 0) {
+            [self.model acceptNotification:cell.item completion:completion];
+        }
+        else {
+            [self.model declineNotification:cell.item completion:completion];
+        }
+    }
 }
 
 #pragma mark - Private methods
@@ -169,36 +246,53 @@
     }
 }
 
-- (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
-    NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
-    
-    [self.model markNotificationAsReadAtIndexPath:itemIndexPath completion:^(NSError *error) {
-        if([self.model numberOfItemsInSection:0] == 0) {
-            [self.model updateModelWithCompletion:^(NSError *error) {
-                [self updateNoDataLabelVisibility];
-            }];
-        }
-    }];
-}
-
 - (void)reloadModel {
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
-            if([self.model numberOfItemsInSection:0] > 0) {
-                [_mainView.noDataLabel setHidden:YES];
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                      atScrollPosition:UITableViewScrollPositionTop
-                                              animated:NO];
+        }
+        [self scrollToTopIfNeedAnimated:NO delay:0.5];
+        [self updateNoDataLabelVisibility];
+    }];
+}
+
+- (void)reloadFirstPart {
+    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self.tableView reloadData];
+        }
+
+        [self scrollToTopIfNeedAnimated:NO delay:0.5];
+        [self updateNoDataLabelVisibility];
+        _needFullReload = NO;
+    }];
+}
+
+- (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
+    CGFloat bottomPosition = 0.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y <= bottomPosition);
+    if(isTableScrolledToBottom || _needFullReload) {
+        [self scrollToTopAnimated:animated delay:delay];
+    }
+}
+
+- (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay {
+    NSInteger section = [self.tableView numberOfSections];
+    if (section > 0) {
+        NSInteger itemsCount = [self.tableView numberOfRowsInSection:0];
+        
+        if (itemsCount > 0) {
+            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            if(delay > 0.0f) {
+                dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
+                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                });
             }
             else {
-                [_mainView.noDataLabel setHidden:NO];
-                [self.model updateModelWithCompletion:^(NSError *error) {
-                    [self updateNoDataLabelVisibility];
-                }];
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
             }
         }
-    }];
+    }
 }
 
 - (void)updateNoDataLabelVisibility {
@@ -208,6 +302,13 @@
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.totalItemsCount = self.model.totalItemsCount;
     _menuModel.unreadItemsCount = self.model.unreadItemsCount;
+    [self updateBarBadgeWithValue:self.model.unreadItemsCount];
+}
+
+- (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
+    BOOL hasUnreadNotf = (badgeValue > 0);
+    NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%ld", (long)badgeValue];
+    self.tabBarItem.badgeValue = (hasUnreadNotf) ? badgeStringValue : nil;
 }
 
 @end

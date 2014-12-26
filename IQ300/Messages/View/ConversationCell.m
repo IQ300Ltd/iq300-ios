@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 #import <QuartzCore/QuartzCore.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ConversationCell.h"
 #import "NSDate+IQFormater.h"
@@ -13,14 +14,22 @@
 #import "IQConversation.h"
 #import "IQSession.h"
 
+#define DEFAULT_AVATAR_IMAGE @"default_avatar.png"
+#define USER_ICON_SEZE 20
 #define ATTACHMENT_VIEW_HEIGHT 15.0f
 #define HEIGHT_DELTA 1.0f
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
-#define CELL_HEADER_MIN_HEIGHT 15
+#define CELL_HEADER_MIN_HEIGHT USER_ICON_SEZE
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+
+@interface ConversationCell() {
+    BOOL _lastCommentIsMine;
+}
+
+@end
 
 @implementation ConversationCell
 
@@ -63,6 +72,12 @@
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR_R;
         [contentView addSubview:_contentBackgroundView];
         
+        _userImageView = [[UIImageView alloc] init];
+        _userImageView.layer.cornerRadius = USER_ICON_SEZE / 2.0f;
+        [_userImageView setImage:[UIImage imageNamed:DEFAULT_AVATAR_IMAGE]];
+        [_userImageView setClipsToBounds:YES];
+        [contentView addSubview:_userImageView];
+        
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
                                              font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                     localaizedKey:nil];
@@ -81,7 +96,7 @@
                                            localaizedKey:nil];
         [contentView addSubview:_descriptionLabel];
         
-        BadgeStyle * style = [BadgeStyle defaultStyle];
+        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
         style.badgeTextColor = [UIColor whiteColor];
         style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
      
@@ -116,17 +131,24 @@
     
     CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
     _contentBackgroundView.frame = contentBackgroundBounds;
+
+    CGFloat nameOffset = 6;
+    CGFloat halfWidth = actualBounds.size.width / 2.0f;
+    _userImageView.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+                                      actualBounds.origin.y,
+                                      USER_ICON_SEZE,
+                                      USER_ICON_SEZE);
+
+    _userNameLabel.frame = CGRectMake(CGRectRight(_userImageView.frame) + nameOffset,
+                                      actualBounds.origin.y,
+                                      halfWidth,
+                                      CELL_HEADER_MIN_HEIGHT);
     
-    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, CELL_HEADER_MIN_HEIGHT);
-    _userNameLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+    CGFloat dateLabelX = actualBounds.origin.x + actualBounds.size.width - _userNameLabel.frame.size.width;
+    _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - _userNameLabel.frame.size.width,
                                   actualBounds.origin.y,
-                                  topLabelSize.width,
-                                  topLabelSize.height);
-    
-    _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - topLabelSize.width,
-                                  actualBounds.origin.y,
-                                  topLabelSize.width,
-                                  topLabelSize.height);
+                                  actualBounds.size.width - dateLabelX,
+                                  CELL_HEADER_MIN_HEIGHT);
     
     BOOL hasDescription = ([_item.lastComment.body length] > 0);
     BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);
@@ -141,16 +163,16 @@
     
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
-                                         (hasDescription) ? actualBounds.size.width - 40.0f : 10.0f,
+                                         (hasDescription) ? actualBounds.size.width - 40.0f :  (_lastCommentIsMine) ? 15.0f : 0.0f,
                                          descriptionHeight);
     if(hasAttachment) {
-        CGSize constrainedSize = CGSizeMake(actualBounds.size.width,
-                                            15.0f);
+        CGFloat attachmentX = (hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) : _descriptionLabel.frame.origin.x;
+        CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
         CGSize attachmentSize = [_attachButton sizeThatFits:constrainedSize];
         
-        _attachButton.frame = CGRectMake((hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) + 5.0f : _descriptionLabel.frame.origin.x,
+        _attachButton.frame = CGRectMake(attachmentX,
                                          (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f,
-                                         attachmentSize.width + 5.0f,
+                                         MIN(attachmentSize.width + 5.0f, actualBounds.size.width - attachmentX),
                                          attachmentSize.height);
     }
     
@@ -164,7 +186,7 @@
     _item = item;
     
     BOOL hasUnreadComments = ([_item.unreadCommentsCount integerValue] > 0);
-    BOOL lastCommentIsMine = ([_item.lastComment.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
+    _lastCommentIsMine = ([_item.lastComment.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
     _contentBackgroundInsets = (hasUnreadComments) ? UIEdgeInsetsMake(0, 4, 0, 0) : UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = (hasUnreadComments) ? CONTEN_BACKGROUND_COLOR :
                                                                    CONTEN_BACKGROUND_COLOR_R;
@@ -177,8 +199,12 @@
     _userNameLabel.text = companion.displayName;
     _companion = companion;
     
+    if([companion.thumbUrl length] > 0) {
+        [_userImageView sd_setImageWithURL:[NSURL URLWithString:companion.thumbUrl]];
+    }
+    
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";
-    body = (lastCommentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
+    body = (_lastCommentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
     _descriptionLabel.text = body;
     NSString * badgeValue = ([_item.unreadCommentsCount integerValue] > 99.0f) ? @"99+" : [_item.unreadCommentsCount stringValue];
     [self setBadgeText:(hasUnreadComments) ?  badgeValue : nil];
@@ -200,6 +226,7 @@
     _contentBackgroundInsets = UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR_R;
     _companion = nil;
+    _lastCommentIsMine = NO;
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {
@@ -219,7 +246,7 @@
 - (void)setBadgeText:(NSString *)badgeText {
     if([badgeText length] > 0) {
         [_badgeView setHidden:NO];
-        [_badgeView autoBadgeSizeWithString:badgeText];
+        [_badgeView setBadgeValue:badgeText];
     }
     else {
         [_badgeView setHidden:YES];

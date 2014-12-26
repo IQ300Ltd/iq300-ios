@@ -77,7 +77,17 @@
     
     _searchBarContainer.frame = CGRectMake(0, 0, self.bounds.size.width, SEARCH_HEIGHT);
     _searchBar.frame = _searchBarContainer.bounds;
-    _tableView.frame = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(SEARCH_HEIGHT, 0, 0, 0));
+    _tableView.frame = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(SEARCH_HEIGHT, 0, _tableBottomMargin, 0));
+    _noDataLabel.frame = self.bounds;
+}
+
+- (void)setTableBottomMargin:(CGFloat)tableBottomMargin {
+    _tableBottomMargin = tableBottomMargin;
+    [self layoutTableView];
+}
+
+- (void)layoutTableView {
+    _tableView.frame = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(SEARCH_HEIGHT, 0, _tableBottomMargin, 0));
     _noDataLabel.frame = self.bounds;
 }
 

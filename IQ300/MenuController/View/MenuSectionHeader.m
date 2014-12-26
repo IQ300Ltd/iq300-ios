@@ -89,11 +89,11 @@
 }
 
 - (NSString*)badgeText {
-    return _badgeView.badgeText;
+    return _badgeView.badgeValue;
 }
 
 - (void)setBadgeText:(NSString *)badgeText {
-    _badgeView.badgeText = badgeText;
+    _badgeView.badgeValue = badgeText;
 }
 
 - (void)layoutSubviews {

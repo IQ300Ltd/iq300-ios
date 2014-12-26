@@ -93,7 +93,8 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
         if(success) {
             [IQSession setDefaultSession:[IQService sharedService].session];
             [AppDelegate setupNotificationCenter];
-            
+            [AppDelegate registerForRemoteNotification];
+                    
             [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
                                                                 object:nil];
             

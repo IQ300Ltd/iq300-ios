@@ -23,12 +23,16 @@
 #import "PhotoViewController.h"
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
+#import "CSectionHeaderView.h"
+
+#define SECTION_HEIGHT 12
 
 @interface DiscussionController() {
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachment;
     UIDocumentInteractionController * _documentController;
+    BOOL _needFullReload;
 }
 
 @end
@@ -48,6 +52,8 @@
     [super viewDidLoad];
     
     _enterCommentProcessing = NO;
+    _needFullReload = YES;
+
     [_mainView.inputView.sendButton setEnabled:NO];
     [_mainView.backButton addTarget:self
                              action:@selector(backButtonAction:)
@@ -70,7 +76,6 @@
      position:SVPullToRefreshPositionTop];
     
     [_mainView.inputView.commentTextView setDelegate:(id<UITextViewDelegate>)self];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -80,11 +85,7 @@
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    if([IQSession defaultSession]) {
-        [self reloadModel];
-    }
-    
-    [self.model setSubscribedToSystemWakeNotifications:YES];
+    [self.model setSubscribedToNotifications:YES];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillShow:)
@@ -100,11 +101,13 @@
                                              selector:@selector(onKeyboardDidHide:)
                                                  name:UIKeyboardDidHideNotification
                                                object:nil];
+    if([IQSession defaultSession]) {
+        [self reloadModel];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToSystemWakeNotifications:NO];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -116,6 +119,17 @@
     return [self.model heightForItemAtIndexPath:indexPath];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return SECTION_HEIGHT;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    CSectionHeaderView * sectionView = [[CSectionHeaderView alloc] init];
+    sectionView.title = [self.model titleForSection:section];
+    
+    return sectionView;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CommentCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
@@ -123,14 +137,18 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    [cell.attachButton addTarget:self
-                          action:@selector(attachViewButtonAction:)
-                forControlEvents:UIControlEventTouchUpInside];
-    [cell.attachButton setTag:indexPath.row];
-    
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
-    
+
+    NSInteger buttonIndex = 0;
+    for (UIButton * attachButton in cell.attachButtons) {
+        [attachButton addTarget:self
+                         action:@selector(attachViewButtonAction:)
+               forControlEvents:UIControlEventTouchUpInside];
+        [attachButton setTag:buttonIndex];
+        buttonIndex ++;
+    }
+
     return cell;
 }
 
@@ -142,16 +160,14 @@
                  otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if(buttonIndex == 1) {
-                                  [self.model sendComment:comment.body
-                                          attachmentAsset:nil
-                                            attachmentIds:[comment.attachments allObjects]
-                                                 fileName:nil
-                                           attachmentType:nil
-                                           withCompletion:^(NSError *error) {
-                                               if(!error) {
-                                                   [self.model deleteComment:comment];
-                                               }
-                                           }];
+                                  [self.model resendLocalComment:comment withCompletion:^(NSError *error) {
+                                      if(!error) {
+                                          [self.model deleteComment:comment];
+                                      }
+                                      else {
+                                          NSLog(@"Resend local comment error");
+                                      }
+                                  }];
                               }
                           }];
     }
@@ -167,9 +183,19 @@
     }
 }
 
+#pragma mark - DiscussionModelDelegate Delegate
+
+- (void)model:(DiscussionModel*)model newComment:(IQComment*)comment {
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+    if(isTableScrolledToBottom) {
+        [self scrollToBottomAnimated:YES delay:0.5f];
+    }
+}
+
 #pragma mark - Private methods
 
-- (BOOL)isValidText:(NSString *)text {
+- (BOOL)isTextValid:(NSString *)text {
     if (text == nil || [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
         return NO;
     }
@@ -178,7 +204,7 @@
 }
 
 - (void)updateUserInteraction:(NSString *)text {
-    BOOL isSendButtonEnabled = [self isValidText:text];
+    BOOL isSendButtonEnabled = [self isTextValid:text];
     [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
 }
 
@@ -188,28 +214,35 @@
 }
 
 - (void)sendButtonAction:(UIButton*)sender {
-    [_mainView.inputView.sendButton setEnabled:NO];
-    [_mainView.inputView.attachButton setEnabled:NO];
-    [_mainView.inputView.commentTextView setEditable:NO];
-    [_mainView.inputView.commentTextView resignFirstResponder];
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
-    [self.model sendComment:_mainView.inputView.commentTextView.text
-            attachmentAsset:_attachment
-              attachmentIds:nil
-                   fileName:[_attachment fileName]
-             attachmentType:[_attachment MIMEType]
-             withCompletion:^(NSError *error) {
-                 if(!error) {
-                     _mainView.inputView.commentTextView.text = nil;
-                     [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG]
-                                                       forState:UIControlStateNormal];
-                     _attachment = nil;
-                     [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
-                 }
-                 [_mainView.inputView.attachButton setEnabled:YES];
-                 [_mainView.inputView.commentTextView setEditable:YES];
-                 [self scrollToBottomAnimated:YES delay:0.0f];
-             }];
+    BOOL isTextValid = [self isTextValid:_mainView.inputView.commentTextView.text];
+    if(isTextValid) {
+        [_mainView.inputView.sendButton setEnabled:NO];
+        [_mainView.inputView.attachButton setEnabled:NO];
+        [_mainView.inputView.commentTextView setEditable:NO];
+        [_mainView.inputView.commentTextView resignFirstResponder];
+        
+        [self.model sendComment:_mainView.inputView.commentTextView.text
+                attachmentAsset:_attachment
+                       fileName:[_attachment fileName]
+                 attachmentType:[_attachment MIMEType]
+                 withCompletion:^(NSError *error) {
+                     if(!error) {
+                         _mainView.inputView.commentTextView.text = nil;
+                         [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG]
+                                                           forState:UIControlStateNormal];
+                         _attachment = nil;
+                         [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
+                     }
+                     [_mainView.inputView.commentTextView setEditable:YES];
+                     [_mainView.inputView.attachButton setEnabled:YES];
+                     if(isTableScrolledToBottom) {
+                         [self scrollToBottomAnimated:YES delay:0.5f];
+                     }
+                 }];
+    }
 }
 
 - (void)attachButtonAction:(UIButton*)sender {
@@ -222,8 +255,14 @@
 }
 
 - (void)attachViewButtonAction:(UIButton*)sender {
-    IQComment * comment = [self.model itemAtIndexPath:[NSIndexPath indexPathForRow:sender.tag inSection:0]];
-    IQAttachment * attachment = [[comment.attachments allObjects] lastObject];
+    CommentCell * cell = [self cellForView:sender];
+    
+    if(!cell) {
+        return;
+    }
+    
+    IQComment * comment = cell.item;
+    IQAttachment * attachment = [[comment.attachments allObjects] objectAtIndex:sender.tag];
     
     CGRect rectForAppearing = [sender.superview convertRect:sender.frame toView:self.view];
     if([attachment.contentType rangeOfString:@"image"].location != NSNotFound &&
@@ -255,7 +294,7 @@
                                                          [self showOpenInForURL:destinationURL fromRect:rectForAppearing];
                                                      }
                                                      failure:^(NSOperation *operation, NSError *error) {
-                                                         
+                                                         [self hideActivityIndicator];
                                                      }];
     }
 }
@@ -276,11 +315,12 @@
 }
 
 - (void)reloadModel {
-    [self.model reloadModelWithCompletion:^(NSError *error) {
+    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
         }
-        [self scrollToBottomAnimated:NO delay:0.0f];
+        [self scrollToBottomIfNeedAnimated:NO delay:0.5];
+        _needFullReload = NO;
     }];
 }
 
@@ -301,6 +341,8 @@
 }
 
 - (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     NSDictionary *userInfo = [notification userInfo];
     NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
@@ -316,7 +358,9 @@
     [UIView setAnimationCurve:animationCurve];
     
     [_mainView setInputOffset:down ? 0.0f : keyboardRect.origin.y - _mainView.inputView.frame.size.height];
-    [self scrollToBottomAnimated:NO delay:0.0f];
+    if(isTableScrolledToBottom) {
+        [self scrollToBottomAnimated:NO delay:0.0f];
+    }
     
     [UIView commitAnimations];
 }
@@ -324,6 +368,9 @@
 #pragma mark - PlaceholderTextViewDelegate Methods
 
 - (void)textViewDidChange:(UITextView *)textView {
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+
     [self updateUserInteraction:textView.text];
     [textView scrollRangeToVisible:textView.selectedRange];
     
@@ -334,11 +381,13 @@
                                         MAX_INPUT_VIEW_HEIGHT);
     
     [_mainView setInputHeight:messageTextViewHeight];
+    if (isTableScrolledToBottom) {
+        [self scrollToBottomAnimated:NO delay:0.0f];
+    }
 }
 
 - (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay {
     NSInteger section = [self.tableView numberOfSections];
-    
     if (section > 0) {
         NSInteger itemsCount = [self.tableView numberOfRowsInSection:section-1];
         
@@ -346,13 +395,21 @@
             NSIndexPath * indexPath = [NSIndexPath indexPathForRow:itemsCount - 1 inSection:section - 1];
             if(delay > 0.0f) {
                 dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
                 });
             }
             else {
-                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
             }
         }
+    }
+}
+
+- (void)scrollToBottomIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+    if(isTableScrolledToBottom || _needFullReload) {
+        [self scrollToBottomAnimated:animated delay:delay];
     }
 }
 
@@ -363,7 +420,6 @@
 }
 
 - (BOOL)assetsPickerController:(CTAssetsPickerController *)picker shouldEnableAsset:(ALAsset *)asset {
-    // Enable video clips if they are at least 5s
     if ([[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo]) {
         NSTimeInterval duration = [[asset valueForProperty:ALAssetPropertyDuration] doubleValue];
         return lround(duration) >= 5;
@@ -391,6 +447,19 @@
 
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
     _documentController = nil;
+}
+
+- (CommentCell*)cellForView:(UIView*)view {
+    if ([view.superview isKindOfClass:[CommentCell class]] || !view.superview) {
+        return (CommentCell*)view.superview;
+    }
+    
+    return [self cellForView:view.superview];
+}
+
+- (void)dealloc {
+    [self.model setSubscribedToNotifications:NO];
+    [self.model setDelegate:nil];
 }
 
 @end

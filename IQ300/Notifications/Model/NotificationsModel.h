@@ -9,6 +9,7 @@
 #import "IQTableModel.h"
 
 @class IQNotification;
+@class IQCounters;
 
 @interface NotificationsModel : NSObject<IQTableModel>
 
@@ -24,8 +25,12 @@
 - (void)markNotificationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion;
 
-- (void)updateCountersWithCompletion:(void (^)(NSError * error))completion;
+- (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
 
-- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed;
+- (void)setSubscribedToNotifications:(BOOL)subscribed;
+
+- (void)acceptNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
+
+- (void)declineNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
 
 @end

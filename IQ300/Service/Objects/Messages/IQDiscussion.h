@@ -10,6 +10,7 @@
 
 @class RKObjectMapping;
 @class RKManagedObjectStore;
+@class IQConversation;
 
 @interface IQDiscussion : NSManagedObject
 
@@ -19,6 +20,8 @@
 @property (nonatomic, strong) NSString * pusherChannel;
 @property (nonatomic, strong) NSSet * users;
 @property (nonatomic, strong) NSSet * userViews;
+
+@property (nonatomic, strong) IQConversation * conversation;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

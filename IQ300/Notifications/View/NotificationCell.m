@@ -11,8 +11,6 @@
 #import "IQNotification.h"
 #import "NSDate+IQFormater.h"
 
-#define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
-#define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
 
 @interface NotificationCell() {
 }
@@ -26,6 +24,7 @@
     
     if(self) {
         UIView * contentView = [super valueForKey:@"_contentCellView"];
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         
         _markAsReadedButton = [[UIButton alloc] init];
         [_markAsReadedButton setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
@@ -34,7 +33,7 @@
         _contentInsets = UIEdgeInsetsMake(5, 8, 5, 8);
         _contentBackgroundInsets = UIEdgeInsetsZero;
         
-        [self setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
+        [self setBackgroundColor:READ_FLAG_COLOR];
         
         _contentBackgroundView = [[UIView alloc] init];
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
@@ -143,7 +142,7 @@
 - (void)setItem:(IQNotification *)item {
     _item = item;
     
-    _contentBackgroundInsets = ([_item.readed boolValue]) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, 4, 0, 0);
+    _contentBackgroundInsets = ([_item.readed boolValue]) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);
     _contentBackgroundView.backgroundColor = ([_item.readed boolValue]) ? CONTEN_BACKGROUND_COLOR_R :
                                                                           CONTEN_BACKGROUND_COLOR;
     self.rightUtilityButtons = ([_item.readed boolValue]) ? nil : @[_markAsReadedButton];

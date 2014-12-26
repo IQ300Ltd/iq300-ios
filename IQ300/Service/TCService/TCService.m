@@ -249,42 +249,19 @@ fileAttributeName:(NSString*)fileAttributeName
         mimeType:(NSString*)mimeType
          handler:(ObjectLoaderCompletionHandler)handler {
     
-    RKManagedObjectRequestOperation * operation = (RKManagedObjectRequestOperation *)[self createOperationPostData:fileData
-                                                                                                              path:path
-                                                                                                        parameters:parameters
-                                                                                                 fileAttributeName:fileAttributeName
-                                                                                                          fileName:fileName
-                                                                                                          mimeType:mimeType
-                                                                                                           handler:handler];
+    void(^dataBlock)(id<AFMultipartFormData> formData) = ^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithFileData:fileData
+                                    name:fileAttributeName
+                                fileName:fileName
+                                mimeType:mimeType];
+    };
+    
+    NSOperation * operation = [self createPostOperationAtPath:path
+                                                   parameters:parameters
+                                    constructingBodyWithBlock:dataBlock
+                                                      handler:handler];
     // enqueue operation
-    [_objectManager enqueueObjectRequestOperation:operation];
-}
-
-- (NSOperation *)createOperationPostData:(NSData*)fileData
-                                    path:(NSString *)path
-                              parameters:(NSDictionary *)parameters
-                       fileAttributeName:(NSString*)fileAttributeName
-                                fileName:(NSString*)fileName
-                                mimeType:(NSString*)mimeType
-                                 handler:(ObjectLoaderCompletionHandler)handler {
-    NSMutableURLRequest * postRequest = [_objectManager multipartFormRequestWithObject:[self emptyResponse]
-                                                                                method:RKRequestMethodPOST
-                                                                                  path:path
-                                                                            parameters:parameters
-                                                             constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-                                                                 [formData appendPartWithFileData:fileData
-                                                                                             name:fileAttributeName
-                                                                                         fileName:fileName
-                                                                                         mimeType:mimeType];
-                                                             }];
-    
-    RKManagedObjectRequestOperation *postOperation = [_objectManager managedObjectRequestOperationWithRequest:postRequest
-                                                                                         managedObjectContext:_objectManager.managedObjectStore.mainQueueManagedObjectContext
-                                                                                                      success:[self makeSuccessBlockForHandler:handler]
-                                                                                                      failure:[self makeFailureBlockForHandler:handler]];
-    [self processAuthorizationForOperation:postOperation];
-    
-    return postOperation;
+    [_objectManager enqueueObjectRequestOperation:(RKManagedObjectRequestOperation*)operation];
 }
 
 - (void)postAsset:(ALAsset*)asset
@@ -296,37 +273,58 @@ fileAttributeName:(NSString*)fileAttributeName
           handler:(ObjectLoaderCompletionHandler)handler {
     ALAssetRepresentation * rep = [asset defaultRepresentation];
     ALAssetInputStream * stream = [[ALAssetInputStream alloc] initWithAsset:asset];
-    RKManagedObjectRequestOperation * operation = (RKManagedObjectRequestOperation *)[self createOperationPostStream:stream
-                                                                                                                path:path
-                                                                                                          parameters:parameters
-                                                                                                   fileAttributeName:fileAttributeName
-                                                                                                            fileName:fileName
-                                                                                                              length:rep.size
-                                                                                                            mimeType:mimeType
-                                                                                                             handler:handler];
+    
+    
+    void(^dataBlock)(id<AFMultipartFormData> formData) = ^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithInputStream:stream
+                                       name:fileAttributeName
+                                   fileName:fileName
+                                     length:rep.size
+                                   mimeType:mimeType];
+    };
+    
+    NSOperation * operation = [self createPostOperationAtPath:path
+                                                   parameters:parameters
+                                    constructingBodyWithBlock:dataBlock
+                                                      handler:handler];
     // enqueue operation
-    [_objectManager enqueueObjectRequestOperation:operation];
+    [_objectManager enqueueObjectRequestOperation:(RKManagedObjectRequestOperation*)operation];
 }
 
-- (NSOperation *)createOperationPostStream:(NSInputStream*)stream
-                                      path:(NSString *)path
+- (void)postFileAtPath:(NSURL*)filePath
+                  path:(NSString*)path
+            parameters:(NSDictionary*)parameters
+     fileAttributeName:(NSString*)fileAttributeName
+              fileName:(NSString*)fileName
+              mimeType:(NSString*)mimeType
+               handler:(ObjectLoaderCompletionHandler)handler {
+    
+    __block NSError * error = nil;
+    void(^dataBlock)(id<AFMultipartFormData> formData) = ^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithFileURL:filePath
+                                   name:fileAttributeName
+                               fileName:fileName
+                               mimeType:mimeType
+                                  error:&error];
+    };
+    
+    NSOperation * operation = [self createPostOperationAtPath:path
+                                                   parameters:parameters
+                                    constructingBodyWithBlock:dataBlock
+                                                      handler:handler];
+    // enqueue operation
+    [_objectManager enqueueObjectRequestOperation:(RKManagedObjectRequestOperation*)operation];
+}
+
+- (NSOperation *)createPostOperationAtPath:(NSString *)path
                                 parameters:(NSDictionary *)parameters
-                         fileAttributeName:(NSString*)fileAttributeName
-                                  fileName:(NSString*)fileName
-                                    length:(unsigned long long)length
-                                  mimeType:(NSString*)mimeType
+                 constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
                                    handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableURLRequest * postRequest = [_objectManager multipartFormRequestWithObject:[self emptyResponse]
                                                                                 method:RKRequestMethodPOST
                                                                                   path:path
                                                                             parameters:parameters
-                                                             constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-                                                                 [formData appendPartWithInputStream:stream
-                                                                                                name:fileAttributeName
-                                                                                            fileName:fileName
-                                                                                              length:length
-                                                                                            mimeType:mimeType];
-                                                             }];
+                                                             constructingBodyWithBlock:block];
     
     RKManagedObjectRequestOperation *postOperation = [_objectManager managedObjectRequestOperationWithRequest:postRequest
                                                                                          managedObjectContext:_objectManager.managedObjectStore.mainQueueManagedObjectContext

@@ -8,16 +8,24 @@
 
 #import "IQTableModel.h"
 
+@class DiscussionModel;
 @class IQDiscussion;
 @class IQComment;
 @class ALAsset;
 
+@protocol DiscussionModelDelegate <IQTableModelDelegate>
+
+@optional
+- (void)model:(DiscussionModel*)model newComment:(IQComment*)comment;
+
+@end
+
 @interface DiscussionModel : NSObject<IQTableModel>
 
-@property (nonatomic, weak) IQDiscussion * discussion;
+@property (nonatomic, strong) IQDiscussion * discussion;
 @property (nonatomic, strong) NSNumber * companionId;
 @property (nonatomic, assign) CGFloat cellWidth;
-@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+@property (nonatomic, weak) id<DiscussionModelDelegate> delegate;
 
 - (id)initWithDiscussion:(IQDiscussion*)discussion;
 
@@ -25,14 +33,15 @@
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
 
-- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed;
+- (void)setSubscribedToNotifications:(BOOL)subscribed;
 
 - (void)sendComment:(NSString*)comment
     attachmentAsset:(ALAsset*)asset
-      attachmentIds:(NSArray*)attachmentIds
            fileName:(NSString*)fileName
      attachmentType:(NSString*)type
      withCompletion:(void (^)(NSError * error))completion;
+
+- (void)resendLocalComment:(IQComment*)comment withCompletion:(void (^)(NSError * error))completion;
 
 - (void)deleteComment:(IQComment*)comment;
 

@@ -13,6 +13,7 @@
 #import "ConversationCell.h"
 #import "IQUser.h"
 #import "IQCounters.h"
+#import "IQNotificationCenter.h"
 
 #define CACHE_FILE_NAME @"ConversationModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -25,7 +26,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     NSFetchedResultsController * _fetchController;
     NSInteger _totalItemsCount;
     NSInteger _unreadItemsCount;
-    __weak id _notfObserver;
+    __weak id _newMessageObserver;
 }
 
 @end
@@ -69,12 +70,19 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         _sortDescriptors = @[descriptor];
         _totalItemsCount = 0;
         _unreadItemsCount = 0;
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(accountDidChanged)
+                                                     name:AccountDidChangedNotification
+                                                   object:nil];
+
+        [self resubscribeToNewMessageNotification];
     }
     return self;
 }
 
 - (NSUInteger)numberOfSections {
-    return [_fetchController.sections count];
+    return 1;//[_fetchController.sections count];
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
@@ -133,10 +141,12 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                    if(completion) {
                                                        completion(error);
                                                    }
+                                                   if(success) {
+                                                       [self updateCounters];
+                                                   }
                                                }];
     }
 }
-
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self updateModelSourceControllerWithCompletion:nil];
@@ -148,6 +158,9 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                            handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                if(completion) {
                                                    completion(error);
+                                               }
+                                               if(success) {
+                                                   [self updateCounters];
                                                }
                                            }];
 }
@@ -161,6 +174,9 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                            handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                if(completion) {
                                                    completion(error);
+                                               }
+                                               if(success) {
+                                                   [self updateCounters];
                                                }
                                            }];
 }
@@ -181,7 +197,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                                           cacheName:CACHE_FILE_NAME];
     }
     
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"(ANY users.userId == %@) AND (lastComment != NULL)", [IQSession defaultSession].userId];
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@ AND (lastComment != NULL)", [IQSession defaultSession].userId];
     if(_loadUnreadOnly) {
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"readed == NO"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
@@ -222,19 +238,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     return _unreadItemsCount;
 }
 
-- (void)updateCountersWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] conversationsCountersWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
-        if(success) {
-            _totalItemsCount = [counter.totalCount integerValue];
-            _unreadItemsCount = [counter.unreadCount integerValue];
-        }
-        if(completion) {
-            completion(error);
-        }
-    }];
-}
-
-- (void)setSubscribedToSystemWakeNotifications:(BOOL)subscribed {
+- (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reloadFirstPart)
@@ -248,12 +252,68 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     }
 }
 
+- (void)updateCountersWithCompletion:(void (^)(IQCounters * counter, NSError * error))completion {
+    [[IQService sharedService] conversationsCountersWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
+        if(counter) {
+            _totalItemsCount = [counter.totalCount integerValue];
+            _unreadItemsCount = [counter.unreadCount integerValue];
+        }
+        if(completion) {
+            completion(counter, error);
+        }
+    }];
+}
+
 #pragma mark - Private methods
 
 - (void)reloadFirstPart {
     [self reloadFirstPartWithCompletion:^(NSError *error) {
         
     }];
+}
+
+- (void)updateCounters {
+    [self updateCountersWithCompletion:^(IQCounters * counter, NSError *error) {
+        if(!error) {
+            [self modelCountersDidChanged];
+        }
+    }];
+}
+
+- (void)resubscribeToNewMessageNotification {
+    [self unsubscribeFromNewMessageNotification];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
+        NSNumber * authorId = commentData[@"author"][@"id"];
+        
+        if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId]) {
+            [weakSelf reloadFirstPart];
+        }
+    };
+    
+    _newMessageObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNewMessageNotification
+                                                                             queue:nil
+                                                                        usingBlock:block];
+}
+
+- (void)unsubscribeFromNewMessageNotification {
+    if(_newMessageObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+    }
+}
+
+- (void)accountDidChanged {
+    if([IQSession defaultSession]) {
+        [self resubscribeToNewMessageNotification];
+        [self updateCounters];
+    }
+    else {
+        [self unsubscribeFromNewMessageNotification];
+        [self clearModelData];
+        [self modelDidChanged];
+    }
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -325,6 +385,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
 }
 
 @end

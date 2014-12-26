@@ -288,6 +288,8 @@ CGFloat IQStatusBarHeight()
 
 - (void)editButtonAction:(UIButton*)sender {
     [AppDelegate logout];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
+                                                        object:nil];
 }
 
 - (void)updateUserAccount {

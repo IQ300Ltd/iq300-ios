@@ -32,6 +32,10 @@
 @property (nonatomic, strong) NSString * additionalDescription;
 @property (nonatomic, strong) IQUser * user;
 @property (nonatomic, strong) NSNumber * ownerId;
+@property (nonatomic, strong) NSSet * availableActions;
+@property (nonatomic, strong) NSNumber * hasDiscussion;
+@property (nonatomic, strong) NSNumber * discussionId;
+@property (nonatomic, strong) NSNumber * commentId;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

@@ -19,6 +19,7 @@
 @dynamic pusherChannel;
 @dynamic users;
 @dynamic userViews;
+@dynamic conversation;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];

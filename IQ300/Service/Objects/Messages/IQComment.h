@@ -25,6 +25,7 @@ typedef NS_ENUM(NSUInteger, IQCommentStatus) {
 @property (nonatomic, strong) NSNumber * localId;
 @property (nonatomic, strong) NSNumber * discussionId;
 @property (nonatomic, strong) NSDate * createDate;
+@property (nonatomic, strong) NSDate * createShortDate;
 @property (nonatomic, strong) NSString * body;
 @property (nonatomic, strong) IQUser * author;
 @property (nonatomic, strong) NSSet * attachments;

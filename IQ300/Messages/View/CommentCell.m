@@ -13,15 +13,32 @@
 #import "IQConversation.h"
 #import "IQSession.h"
 
+#define CONTENT_INSET 8.0f
 #define ATTACHMENT_VIEW_HEIGHT 15.0f
 #define HEIGHT_DELTA 1.0f
-#define VERTICAL_PADDING 10
-#define DESCRIPTION_Y_OFFSET 3.0f
-#define CELL_HEADER_MIN_HEIGHT 15
-#define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
-#define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
+#define DESCRIPTION_PADDING 7
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#define DESCRIPTION_LEFT_TEXT_COLOR [UIColor whiteColor]
+#define DESCRIPTION_RIGHT_TEXT_COLOR [UIColor colorWithHexInt:0x8b8b8b]
 #define STATUS_IMAGE_SIZE 11
+#define CELL_HEADER_HEIGHT 12
+#define ATTACHMENT_VIEW_Y_OFFSET 5.0f
+
+#define BUBBLE_WIDTH 205
+#define BUBBLE_BOTTOM_OFFSET 6.0f
+
+typedef NS_ENUM(NSInteger, CommentCellStyle) {
+    CommentCellStyleLeft,
+    CommentCellStyleRight
+};
+
+@interface CommentCell() {
+    BOOL _commentIsMine;
+    UIImageView * _bubbleImageView;
+    NSMutableArray * _attachButtons;
+}
+
+@end
 
 @implementation CommentCell
 
@@ -43,23 +60,44 @@
     return nil;
 }
 
++ (UIImage*)bubbleImageForCommentStyle:(NSInteger)type {
+    static NSDictionary * _bubbleImages = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _bubbleImages = @{
+                          @(CommentCellStyleLeft)  : [[UIImage imageNamed:@"bubble_gray.png"] stretchableImageWithLeftCapWidth:5
+                                                                                                                  topCapHeight:5],
+                          @(CommentCellStyleRight) : [[UIImage imageNamed:@"bubble_green.png"] stretchableImageWithLeftCapWidth:5
+                                                                                                                   topCapHeight:5]
+                          };
+    });
+    
+    UIImage * bubbleImage = [_bubbleImages objectForKey:@(type)];
+    if(bubbleImage) {
+        return bubbleImage;
+    }
+    
+    return nil;
+}
+
 + (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
-    CGFloat descriptionY = CELL_HEADER_MIN_HEIGHT;
-    CGFloat descriptionWidth = cellWidth;
+    CGFloat descriptionWidth = cellWidth - CONTENT_INSET * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
         CGSize descriptionSize = [item.body sizeWithFont:DESCRIPTION_LABEL_FONT
                                                    constrainedToSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
                                                        lineBreakMode:NSLineBreakByWordWrapping];
-        height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
-                   COMMENT_CELL_MIN_HEIGHT);
+        height = MAX(descriptionSize.height + CELL_HEADER_HEIGHT + DESCRIPTION_PADDING * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA,
+                     COMMENT_CELL_MIN_HEIGHT);
+    }
+    else {
+        height = CELL_HEADER_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA;
     }
     
-    BOOL hasDescription = ([item.body length] > 0);
     BOOL hasAttachment = ([item.attachments count] > 0);
-    if(hasAttachment && hasDescription) {
-        height += ATTACHMENT_VIEW_HEIGHT;
+    if(hasAttachment) {
+        height += (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * item.attachments.count - ATTACHMENT_VIEW_Y_OFFSET;
     }
     
     return height;
@@ -73,96 +111,95 @@
         [self setBackgroundColor:[UIColor clearColor]];
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
        
-        _contentInsets = UIEdgeInsetsMake(VERTICAL_PADDING, 8, 0.0f, 8);
+        _contentInsets = UIEdgeInsetsMake(0.0f, CONTENT_INSET, 0.0f, CONTENT_INSET);
         
-        _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:13]
+        _timeLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
+                                             font:[UIFont fontWithName:IQ_HELVETICA size:9]
                                     localaizedKey:nil];
-        _dateLabel.textAlignment = NSTextAlignmentRight;
-        [contentView addSubview:_dateLabel];
+        _timeLabel.textAlignment = NSTextAlignmentRight;
+        [contentView addSubview:_timeLabel];
+        
+        _bubbleImageView = [UIImageView new];
+        [contentView addSubview:_bubbleImageView];
         
         _statusImageView = [[UIImageView alloc] init];
         _statusImageView.contentMode = UIViewContentModeCenter;
         [_statusImageView setBackgroundColor:[UIColor clearColor]];
         [contentView addSubview:_statusImageView];
-
-        _userNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x358bae]
-                                                 font:[UIFont fontWithName:IQ_HELVETICA size:13]
-                                        localaizedKey:nil];
-        _userNameLabel.backgroundColor = [UIColor clearColor];
-        _userNameLabel.textAlignment = NSTextAlignmentLeft;
-        [contentView addSubview:_userNameLabel];
         
         _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x8b8b8b]
                                                     font:DESCRIPTION_LABEL_FONT
                                            localaizedKey:nil];
         [contentView addSubview:_descriptionLabel];
 
-        _attachButton = [[UIButton alloc] init];
-        [_attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
-        [_attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
-        [_attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
-        [_attachButton setTitleColor:[UIColor colorWithHexInt:0x446b7a] forState:UIControlStateHighlighted];
-        [_attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
-        _attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        [_attachButton setHidden:YES];
-        [contentView addSubview:_attachButton];
+        _attachButtons = [NSMutableArray array];
     }
     
     return self;
 }
 
+- (NSArray*)attachButtons {
+    return [_attachButtons copy];
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGRect bounds = self.contentView.bounds;
-    CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
-    CGFloat labelsOffset = 5.0f;
-    
-    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, CELL_HEADER_MIN_HEIGHT);
-    _userNameLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
-                                      actualBounds.origin.y,
-                                      topLabelSize.width,
-                                      topLabelSize.height);
-    
-    CGSize dateSize = [_dateLabel.text sizeWithFont:_dateLabel.font
-                                  constrainedToSize:CGSizeMake(topLabelSize.width, topLabelSize.height)
-                                      lineBreakMode:NSLineBreakByWordWrapping];
-    
-    _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - dateSize.width,
-                                  actualBounds.origin.y,
-                                  dateSize.width,
-                                  dateSize.height);
-    
-    _statusImageView.frame = CGRectMake(_dateLabel.frame.origin.x - STATUS_IMAGE_SIZE - 5.0f,
-                                        actualBounds.origin.y + (topLabelSize.height - STATUS_IMAGE_SIZE) / 2,
-                                        STATUS_IMAGE_SIZE,
-                                        STATUS_IMAGE_SIZE);
-    
     BOOL hasDescription = ([_item.body length] > 0);
     BOOL hasAttachment = ([_item.attachments count] > 0);
+    CGRect bounds = self.contentView.bounds;
+    CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
+    CGFloat bubleOffset = 5.0f;
+    CGFloat bubleTailWidth = 2.0f;
+ 
+    _timeLabel.frame = CGRectMake(actualBounds.origin.x,
+                                  actualBounds.origin.y,
+                                  actualBounds.size.width,
+                                  7);
     
-    CGFloat descriptionInset = (hasAttachment) ? ATTACHMENT_VIEW_HEIGHT : 0.0f;
-    CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
-    CGFloat descriptionHeight = (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f;
-    
-    if(hasAttachment && !hasDescription) {
-        descriptionHeight = 16.5f;
-    }
+    CGFloat bubdleImageY = CGRectBottom(_timeLabel.frame) + 5.0f;
 
-    _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
-                                         descriptionY,
-                                         (hasDescription) ? actualBounds.size.width : 10.0f,
-                                         descriptionHeight);
+    if(_commentIsMine) {
+        _statusImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - bubleOffset - BUBBLE_WIDTH - STATUS_IMAGE_SIZE,
+                                            bubdleImageY + 10.0f,
+                                            STATUS_IMAGE_SIZE,
+                                            STATUS_IMAGE_SIZE);
+    }
+    else {
+        _statusImageView.frame = CGRectZero;
+    }
+    
+    CGFloat bubdleImageX = (_commentIsMine) ? CGRectRight(_statusImageView.frame) + bubleOffset : actualBounds.origin.x;
+    _bubbleImageView.frame = CGRectMake(bubdleImageX,
+                                        CGRectBottom(_timeLabel.frame) + 5.0f,
+                                        BUBBLE_WIDTH,
+                                        actualBounds.size.height - bubdleImageY - BUBBLE_BOTTOM_OFFSET);
+    
+    CGFloat attachmentRectHeight = (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [_attachButtons count] - ATTACHMENT_VIEW_Y_OFFSET;
+    CGFloat descriptioHeight = (hasAttachment) ? _bubbleImageView.frame.size.height - attachmentRectHeight - DESCRIPTION_PADDING * 2 :
+                                                 _bubbleImageView.frame.size.height - DESCRIPTION_PADDING * 2;
+    
+    _descriptionLabel.frame = CGRectMake(_bubbleImageView.frame.origin.x + DESCRIPTION_PADDING,
+                                         _bubbleImageView.frame.origin.y + DESCRIPTION_PADDING - bubleTailWidth,
+                                         _bubbleImageView.frame.size.width - DESCRIPTION_PADDING * 2.0f,
+                                         (hasDescription) ? descriptioHeight : 0.0f);
+    
     if(hasAttachment) {
-        CGSize constrainedSize = CGSizeMake(actualBounds.size.width,
-                                            15.0f);
-        CGSize attachmentSize = [_attachButton sizeThatFits:constrainedSize];
+        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionLabel.frame) + 2.0f :
+                                                    _bubbleImageView.frame.origin.y + ATTACHMENT_VIEW_Y_OFFSET;
         
-        _attachButton.frame = CGRectMake((hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) + 5.0f : _descriptionLabel.frame.origin.x,
-                                         (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f,
-                                         attachmentSize.width + 5.0f,
-                                         attachmentSize.height);
+        CGSize constrainedSize = CGSizeMake(_bubbleImageView.frame.size.width, 15.0f);
+        for (UIButton * attachButton in _attachButtons) {
+            CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
+            CGFloat attachmentX = _descriptionLabel.frame.origin.x;
+            attachButton.frame = CGRectMake(attachmentX,
+                                            attachButtonY,
+                                            MIN(attachmentSize.width + 5.0f, _bubbleImageView.frame.size.width - attachmentX),
+                                            attachmentSize.height);
+            
+            attachButtonY = CGRectBottom(attachButton.frame) + 7.0f;
+        }
+        
     }
 }
 
@@ -179,44 +216,54 @@
 - (void)setItem:(IQComment *)item {
     _item = item;
     
-    BOOL commentIsMine = ([_item.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
+    _commentIsMine = ([_item.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
     
-    _dateLabel.text = [_item.createDate dateToDayTimeString];
-    _userNameLabel.hidden = ([_item.author.displayName length] == 0);
-    _userNameLabel.text = _item.author.displayName;
+    _timeLabel.text = [_item.createDate dateToTimeString];
+    _timeLabel.textAlignment = (_commentIsMine) ? NSTextAlignmentRight : NSTextAlignmentLeft;
     
     NSString * body = ([_item.body length] > 0) ? _item.body : @"";
-    body = (commentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
     _descriptionLabel.text = body;
+    _descriptionLabel.textColor = (_commentIsMine) ? DESCRIPTION_LEFT_TEXT_COLOR :
+                                                     DESCRIPTION_RIGHT_TEXT_COLOR;
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
-    [_attachButton setHidden:(!hasAttachment)];
-    
     if(hasAttachment) {
-        IQAttachment * attachment = [[_item.attachments allObjects] lastObject];
-        [_attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
+        UIColor * titleColor = (_commentIsMine) ? [UIColor whiteColor] : [UIColor colorWithHexInt:0x7f7f7f];
+        UIColor * titleHighlightedColor = (_commentIsMine) ? [UIColor colorWithHexInt:0x818D83] : [UIColor colorWithHexInt:0x615f5f];
+        UIImage * bacgroundImage = (_commentIsMine) ? [UIImage imageNamed:@"attach_white_ico.png"] : [UIImage imageNamed:@"attach_gray_ico.png"];
+        for (IQAttachment * attachment in _item.attachments) {
+            UIButton * attachButton = [[UIButton alloc] init];
+            [attachButton setImage:bacgroundImage forState:UIControlStateNormal];
+            [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+            [attachButton setTitleColor:titleColor forState:UIControlStateNormal];
+            [attachButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
+            [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
+            attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+            [attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
+            [self.contentView addSubview:attachButton];
+            [_attachButtons addObject:attachButton];
+        }
     }
 
     [self setStatus:[_item.commentStatus integerValue]];
+    [_statusImageView setHidden:!_commentIsMine];
+    [self setBubbleImageForStyle:(_commentIsMine) ? CommentCellStyleRight : CommentCellStyleLeft];
     
-    [self setNeedsLayout];
-}
-
-- (void)setAuthor:(NSString *)author {
-    _author = author;
-    _userNameLabel.hidden = ([author length] == 0);
-    _userNameLabel.text = author;
     [self setNeedsLayout];
 }
 
 - (void)prepareForReuse {
     [super prepareForReuse];
-
+    _commentIsMine = NO;
     [self setStatus:IQCommentStatusUnknown];
-    [_attachButton setHidden:YES];
-    [_attachButton removeTarget:nil
-                         action:NULL
-               forControlEvents:UIControlEventTouchUpInside];
+    for (UIButton * attachButton in _attachButtons) {
+        [attachButton removeTarget:nil
+                            action:NULL
+                  forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [_attachButtons makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [_attachButtons removeAllObjects];
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {
@@ -226,11 +273,14 @@
     label.textAlignment = NSTextAlignmentLeft;
     label.backgroundColor = [UIColor clearColor];
     label.numberOfLines = 0;
-    label.lineBreakMode = NSLineBreakByTruncatingTail;
     if(localaizedKey) {
         [label setText:NSLocalizedString(localaizedKey, nil)];
     }
     return label;
+}
+
+- (void)setBubbleImageForStyle:(CommentCellStyle)style {
+    _bubbleImageView.image = [CommentCell bubbleImageForCommentStyle:style];
 }
 
 @end

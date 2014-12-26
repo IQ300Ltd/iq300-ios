@@ -19,12 +19,16 @@
 #import "DiscussionController.h"
 #import "CreateConversationController.h"
 #import "DispatchAfterExecution.h"
+#import "UITabBarItem+CustomBadgeView.h"
+#import "IQBadgeView.h"
+#import "IQCounters.h"
 
 #define DISPATCH_DELAY 0.7
 
 @interface MessagesController() {
     MessagesView * _messagesView;
     dispatch_after_block _cancelBlock;
+    BOOL _needFullReload;
 }
 
 @end
@@ -34,14 +38,31 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        self.model = [[MessagesModel alloc] init];
         self.title = NSLocalizedString(@"Messages", nil);
+        
+        _needFullReload = YES;
+
         UIImage * barImage = [[UIImage imageNamed:@"messages_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIImage * barImageSel = [[UIImage imageNamed:@"messgaes_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         
         float imageOffset = 6;
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSel];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
-        self.model = [[MessagesModel alloc] init];
+        
+        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
+        style.badgeTextColor = [UIColor whiteColor];
+        style.badgeFrameColor = [UIColor whiteColor];
+        style.badgeInsetColor = [UIColor colorWithHexInt:0xe74545];
+        style.badgeFrame = YES;
+        
+        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
+        badgeView.badgeMinSize = 18;
+        badgeView.frameLineHeight = 1.0f;
+        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        
+        self.tabBarItem.customBadgeView = badgeView;
+        self.tabBarItem.badgeOrigin = CGPointMake(90, 7);
     }
     return self;
 }
@@ -73,6 +94,16 @@
          }];
      }
      position:SVPullToRefreshPositionBottom];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onKeyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onKeyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -91,12 +122,19 @@
         [self reloadModel];
     }
     
-    [self.model setSubscribedToSystemWakeNotifications:YES];
+    [self.model setSubscribedToNotifications:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToSystemWakeNotifications:NO];
+    [self.model setSubscribedToNotifications:NO];
+}
+
+- (void)updateGlobalCounter {
+    __weak typeof(self) weakSelf = self;
+    [self.model updateCountersWithCompletion:^(IQCounters *counter, NSError *error) {
+        [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue]];
+    }];
 }
 
 #pragma mark - UITableView DataSource
@@ -129,7 +167,10 @@
 
     [self.navigationController pushViewController:controller animated:YES];
     
-    [MessagesModel markConversationAsRead:conver completion:nil];
+    __weak typeof(self) weakSelf = self;
+    [MessagesModel markConversationAsRead:conver completion:^(NSError *error) {
+        [weakSelf updateGlobalCounter];
+    }];
 }
 
 #pragma mark - IQTableModel Delegate
@@ -142,6 +183,10 @@
 - (void)modelDidChanged:(id<IQTableModel>)model {
     [super modelDidChanged:model];
     [self updateNoDataLabelVisibility];
+}
+
+- (void)modelCountersDidChanged:(id<IQTableModel>)model {
+    [self updateBarBadgeWithValue:self.model.unreadItemsCount];
 }
 
 #pragma mark - Menu Responder Delegate
@@ -163,7 +208,36 @@
     [self filterWithText:textField.text];
 }
 
+#pragma mark - Keyboard Helpers
+
+- (void)onKeyboardWillShow:(NSNotification *)notification {
+    [self makeInputViewTransitionWithDownDirection:NO notification:notification];
+}
+
+- (void)onKeyboardWillHide:(NSNotification *)notification {
+    [self makeInputViewTransitionWithDownDirection:YES notification:notification];
+}
+
 #pragma mark - Private methods
+
+- (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    NSTimeInterval animationDuration;
+    UIViewAnimationCurve animationCurve;
+    
+    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
+    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
+    
+    CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:animationDuration];
+    [UIView setAnimationCurve:animationCurve];
+    
+    [_messagesView setTableBottomMargin:down ? 0.0f : MIN(keyboardRect.size.width, keyboardRect.size.height) - 50.0f];
+    
+    [UIView commitAnimations];
+}
 
 - (void)createNewAction:(id)sender {
     CreateConversationController * controller = [[CreateConversationController alloc] init];
@@ -177,12 +251,21 @@
             [self.tableView reloadData];
         }
         [self updateNoDataLabelVisibility];
-        [self scrollToTopAnimated:NO delay:0.0f];
-    }];
+        [self scrollToTopIfNeedAnimated:NO delay:0.0f];
+        _needFullReload = NO;
+   }];
 }
 
 - (void)updateNoDataLabelVisibility {
     [_messagesView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
+}
+
+- (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
+    CGFloat bottomPosition = 0.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y <= bottomPosition);
+    if(isTableScrolledToBottom || _needFullReload) {
+        [self scrollToTopAnimated:animated delay:delay];
+    }
 }
 
 - (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay {
@@ -224,6 +307,12 @@
     _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
         [self.model reloadFirstPartWithCompletion:compleationBlock];
     });
+}
+
+- (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
+    BOOL hasUnreadNotf = (badgeValue > 0);
+    NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%ld", (long)badgeValue];
+    self.tabBarItem.badgeValue = (hasUnreadNotf) ? badgeStringValue : nil;
 }
 
 @end
