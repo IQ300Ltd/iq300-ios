@@ -186,7 +186,11 @@
 #pragma mark - DiscussionModelDelegate Delegate
 
 - (void)model:(DiscussionModel*)model newComment:(IQComment*)comment {
-    [self scrollToBottomIfNeedAnimated:YES delay:0.1f];
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+    if(isTableScrolledToBottom) {
+        [self scrollToBottomAnimated:YES delay:0.5f];
+    }
 }
 
 #pragma mark - Private methods
@@ -391,11 +395,11 @@
             NSIndexPath * indexPath = [NSIndexPath indexPathForRow:itemsCount - 1 inSection:section - 1];
             if(delay > 0.0f) {
                 dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
+                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
                 });
             }
             else {
-                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
             }
         }
     }

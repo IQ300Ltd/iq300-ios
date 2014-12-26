@@ -158,7 +158,11 @@
 #pragma mark - DiscussionModelDelegate Delegate
 
 - (void)model:(CommentsModel*)model newComment:(IQComment*)comment {
-    [self scrollToBottomIfNeedAnimated:YES delay:0.1f];
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+    if(isTableScrolledToBottom) {
+        [self scrollToBottomAnimated:YES delay:0.5f];
+    }
 }
 
 #pragma mark - Private methods
