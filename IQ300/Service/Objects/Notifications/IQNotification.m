@@ -42,6 +42,7 @@
 @dynamic availableActions;
 @dynamic hasDiscussion;
 @dynamic discussionId;
+@dynamic commentId;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:@"IQNotification" inManagedObjectStore:store];
@@ -56,7 +57,8 @@
                                                    @"recipient_id"      : @"ownerId",
                                                    @"available_actions" : @"availableActions",
                                                    @"has_discussion"    : @"hasDiscussion",
-                                                   @"discussion_id"     : @"discussionId"
+                                                   @"discussion_id"     : @"discussionId",
+                                                   @"comment_id"        : @"commentId"
                                                    }];
     
     RKRelationshipMapping * notificableRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"notificable"

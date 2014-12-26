@@ -44,4 +44,6 @@
 
 - (void)deleteComment:(IQComment*)comment;
 
+- (NSIndexPath*)indexPathForCommentWithId:(NSNumber*)commentId;
+
 @end

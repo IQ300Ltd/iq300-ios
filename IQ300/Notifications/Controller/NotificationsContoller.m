@@ -155,7 +155,7 @@
     IQNotification * notification = [self.model itemAtIndexPath:indexPath];
     if(notification.discussionId) {
         NSString * title = notification.notificable.title;
-        NSNumber * commentId = notification.notificable.notificableId;
+        NSNumber * commentId = notification.commentId;
         [[IQService sharedService] discussionWithId:notification.discussionId
                                             handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
                                                 if(success) {

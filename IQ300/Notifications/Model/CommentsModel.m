@@ -183,25 +183,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                     discussionId:_discussion.discussionId
                                    attachmentIds:attachmentIds
                                          handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
-                                             NSError * saveError = nil;
-                                             if (!success) {
-                                                 [self createLocalComment:comment attachments:attachments error:&saveError];
-                                                 if(saveError) {
-                                                     NSLog(@"Create comment error: %@", saveError);
-                                                 }
-                                                 if (completion) {
-                                                     completion(saveError);
-                                                 }
-                                             }
-                                             else {
-                                                 item.commentStatus = @(IQCommentStatusSent);
-                                                 [item.managedObjectContext saveToPersistentStore:&saveError];
-                                                 if(saveError) {
-                                                     NSLog(@"Create comment status error: %@", saveError);
-                                                 }
-                                                 if (completion) {
-                                                     completion(error);
-                                                 }
+                                             if (completion) {
+                                                 completion(error);
                                              }
                                          }];
     };
@@ -214,15 +197,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                          if(success) {
                                                              sendCommentBlock(@[attachment]);
                                                          }
-                                                         else {
-                                                             [self crecreateLocalAttachmentWithAsset:asset completion:^(IQAttachment * attachment, NSError *error) {
-                                                                 if(attachment) {
-                                                                     sendCommentBlock(@[attachment]);
-                                                                 }
-                                                                 else if (completion) {
-                                                                     completion(error);
-                                                                 }
-                                                             }];
+                                                         else if (completion) {
+                                                             completion(error);
                                                          }
                                                      }];
     }
@@ -285,6 +261,15 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSLog(@"Save delete comment error: %@", saveError);
     }
     
+}
+
+- (NSIndexPath*)indexPathForCommentWithId:(NSNumber*)commentId {
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"commentId == %@", commentId];
+    NSArray * filteredItems = [_fetchController.fetchedObjects filteredArrayUsingPredicate:predicate];
+    if([filteredItems count] > 0) {
+        return [_fetchController indexPathForObject:[filteredItems lastObject]];
+    }
+    return nil;
 }
 
 #pragma mark - Private methods

@@ -35,6 +35,7 @@
 @property (nonatomic, strong) NSSet * availableActions;
 @property (nonatomic, strong) NSNumber * hasDiscussion;
 @property (nonatomic, strong) NSNumber * discussionId;
+@property (nonatomic, strong) NSNumber * commentId;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 
