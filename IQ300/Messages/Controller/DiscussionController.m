@@ -339,7 +339,6 @@
 - (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
-    NSLog(@"Table is %@", (isTableScrolledToBottom) ? @"scrolled to bottom" : @"not scrolled to bottom");
     NSDictionary *userInfo = [notification userInfo];
     NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
@@ -348,7 +347,6 @@
     [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
     
     CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    NSLog(@"Keyboard height is %f", keyboardRect.size.height);
     keyboardRect = [_mainView.inputView convertRect:keyboardRect fromView:nil];
     
     [UIView beginAnimations:nil context:nil];
