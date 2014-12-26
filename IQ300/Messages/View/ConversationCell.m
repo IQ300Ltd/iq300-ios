@@ -166,13 +166,13 @@
                                          (hasDescription) ? actualBounds.size.width - 40.0f :  (_lastCommentIsMine) ? 15.0f : 0.0f,
                                          descriptionHeight);
     if(hasAttachment) {
-        CGSize constrainedSize = CGSizeMake(actualBounds.size.width,
-                                            15.0f);
+        CGFloat attachmentX = (hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) : _descriptionLabel.frame.origin.x;
+        CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
         CGSize attachmentSize = [_attachButton sizeThatFits:constrainedSize];
         
-        _attachButton.frame = CGRectMake((hasAttachment && !hasDescription) ? CGRectRight(_descriptionLabel.frame) : _descriptionLabel.frame.origin.x,
+        _attachButton.frame = CGRectMake(attachmentX,
                                          (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f,
-                                         attachmentSize.width + 5.0f,
+                                         MIN(attachmentSize.width + 5.0f, actualBounds.size.width - attachmentX),
                                          attachmentSize.height);
     }
     

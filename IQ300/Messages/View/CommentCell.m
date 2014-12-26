@@ -188,12 +188,13 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionLabel.frame) + 2.0f :
                                                     _bubbleImageView.frame.origin.y + ATTACHMENT_VIEW_Y_OFFSET;
         
+        CGSize constrainedSize = CGSizeMake(_bubbleImageView.frame.size.width, 15.0f);
         for (UIButton * attachButton in _attachButtons) {
-            CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
-            attachButton.frame = CGRectMake(_descriptionLabel.frame.origin.x,
+            CGFloat attachmentX = _descriptionLabel.frame.origin.x;
+            attachButton.frame = CGRectMake(attachmentX,
                                             attachButtonY,
-                                            attachmentSize.width + 5.0f,
+                                            MIN(attachmentSize.width + 5.0f, _bubbleImageView.frame.size.width - attachmentX),
                                             attachmentSize.height);
             
             attachButtonY = CGRectBottom(attachButton.frame) + 7.0f;

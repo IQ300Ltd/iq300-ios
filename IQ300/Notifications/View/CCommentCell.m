@@ -141,12 +141,13 @@
                                          descriptionHeight);
     if(hasAttachment) {
         CGFloat attachmentY = (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f;
+        CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
         for (UIButton * attachButton in _attachButtons) {
-            CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
+            CGFloat attachmentX = _descriptionLabel.frame.origin.x;
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
-            attachButton.frame = CGRectMake(_descriptionLabel.frame.origin.x,
+            attachButton.frame = CGRectMake(attachmentX,
                                             attachmentY,
-                                            attachmentSize.width + 5.0f,
+                                            MIN(attachmentSize.width + 5.0f, actualBounds.size.width - attachmentX),
                                             attachmentSize.height);
             
             attachmentY = CGRectBottom(attachButton.frame) + 7.0f;
