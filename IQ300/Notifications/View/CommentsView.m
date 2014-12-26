@@ -77,7 +77,7 @@
                                    backButtonImageSize.width,
                                    backButtonImageSize.height);
     
-    CGFloat labelX = _backButton.frame.origin.x + 15.0f;
+    CGFloat labelX = _backButton.frame.origin.x + 35.0f;
     _titleLabel.frame = CGRectMake(labelX,
                                    0.0f,
                                    _headerView.frame.size.width - labelX * 2.0f,
