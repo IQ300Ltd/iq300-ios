@@ -209,7 +209,7 @@ static IQNotificationCenter * _defaultCenter = nil;
             if([observers containsObject:observer]) {
                 [observers removeObject:observer];
                 eventName = ([observer respondsToSelector:@selector(eventName)]) ? [observer valueForKey:@"eventName"] : nil;
-                if([eventName length] > 0) {
+                if([eventName length] > 0 && [observers count] == 0) {
                     [self unsubscribeChannelWithName:channelName toEventNamed:eventName];
                 }
             }
