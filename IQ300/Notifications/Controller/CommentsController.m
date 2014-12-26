@@ -171,7 +171,7 @@
     return [self cellForView:view.superview];
 }
 
-- (BOOL)isValidText:(NSString *)text {
+- (BOOL)isTextValid:(NSString *)text {
     if (text == nil || [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
         return NO;
     }
@@ -180,7 +180,7 @@
 }
 
 - (void)updateUserInteraction:(NSString *)text {
-    BOOL isSendButtonEnabled = [self isValidText:text];
+    BOOL isSendButtonEnabled = [self isTextValid:text];
     [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
 }
 
@@ -193,29 +193,32 @@
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
-    [_mainView.inputView.sendButton setEnabled:NO];
-    [_mainView.inputView.attachButton setEnabled:NO];
-    [_mainView.inputView.commentTextView setEditable:NO];
-    [_mainView.inputView.commentTextView resignFirstResponder];
-    
-    [self.model sendComment:_mainView.inputView.commentTextView.text
-            attachmentAsset:_attachment
-                   fileName:[_attachment fileName]
-             attachmentType:[_attachment MIMEType]
-             withCompletion:^(NSError *error) {
-                 if(!error) {
-                     _mainView.inputView.commentTextView.text = nil;
-                     [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG]
-                                                       forState:UIControlStateNormal];
-                     _attachment = nil;
-                     [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
-                 }
-                 [_mainView.inputView.commentTextView setEditable:YES];
-                 [_mainView.inputView.attachButton setEnabled:YES];
-                 if(isTableScrolledToBottom) {
-                     [self scrollToBottomAnimated:YES delay:0.5f];
-                 }
-             }];
+    BOOL isTextValid = [self isTextValid:_mainView.inputView.commentTextView.text];
+    if(isTextValid) {
+        [_mainView.inputView.sendButton setEnabled:NO];
+        [_mainView.inputView.attachButton setEnabled:NO];
+        [_mainView.inputView.commentTextView setEditable:NO];
+        [_mainView.inputView.commentTextView resignFirstResponder];
+        
+        [self.model sendComment:_mainView.inputView.commentTextView.text
+                attachmentAsset:_attachment
+                       fileName:[_attachment fileName]
+                 attachmentType:[_attachment MIMEType]
+                 withCompletion:^(NSError *error) {
+                     if(!error) {
+                         _mainView.inputView.commentTextView.text = nil;
+                         [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG]
+                                                           forState:UIControlStateNormal];
+                         _attachment = nil;
+                         [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
+                     }
+                     [_mainView.inputView.commentTextView setEditable:YES];
+                     [_mainView.inputView.attachButton setEnabled:YES];
+                     if(isTableScrolledToBottom) {
+                         [self scrollToBottomAnimated:YES delay:0.5f];
+                     }
+                 }];
+    }
 }
 
 - (void)attachButtonAction:(UIButton*)sender {

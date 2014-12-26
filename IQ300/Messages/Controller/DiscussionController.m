@@ -191,7 +191,7 @@
 
 #pragma mark - Private methods
 
-- (BOOL)isValidText:(NSString *)text {
+- (BOOL)isTextValid:(NSString *)text {
     if (text == nil || [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
         return NO;
     }
@@ -200,7 +200,7 @@
 }
 
 - (void)updateUserInteraction:(NSString *)text {
-    BOOL isSendButtonEnabled = [self isValidText:text];
+    BOOL isSendButtonEnabled = [self isTextValid:text];
     [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
 }
 
@@ -213,29 +213,32 @@
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
-    [_mainView.inputView.sendButton setEnabled:NO];
-    [_mainView.inputView.attachButton setEnabled:NO];
-    [_mainView.inputView.commentTextView setEditable:NO];
-    [_mainView.inputView.commentTextView resignFirstResponder];
-    
-    [self.model sendComment:_mainView.inputView.commentTextView.text
-            attachmentAsset:_attachment
-                   fileName:[_attachment fileName]
-             attachmentType:[_attachment MIMEType]
-             withCompletion:^(NSError *error) {
-                 if(!error) {
-                     _mainView.inputView.commentTextView.text = nil;
-                     [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG]
-                                                       forState:UIControlStateNormal];
-                     _attachment = nil;
-                     [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
-                 }
-                 [_mainView.inputView.commentTextView setEditable:YES];
-                 [_mainView.inputView.attachButton setEnabled:YES];
-                 if(isTableScrolledToBottom) {
-                     [self scrollToBottomAnimated:YES delay:0.5f];
-                 }
-             }];
+    BOOL isTextValid = [self isTextValid:_mainView.inputView.commentTextView.text];
+    if(isTextValid) {
+        [_mainView.inputView.sendButton setEnabled:NO];
+        [_mainView.inputView.attachButton setEnabled:NO];
+        [_mainView.inputView.commentTextView setEditable:NO];
+        [_mainView.inputView.commentTextView resignFirstResponder];
+        
+        [self.model sendComment:_mainView.inputView.commentTextView.text
+                attachmentAsset:_attachment
+                       fileName:[_attachment fileName]
+                 attachmentType:[_attachment MIMEType]
+                 withCompletion:^(NSError *error) {
+                     if(!error) {
+                         _mainView.inputView.commentTextView.text = nil;
+                         [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG]
+                                                           forState:UIControlStateNormal];
+                         _attachment = nil;
+                         [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
+                     }
+                     [_mainView.inputView.commentTextView setEditable:YES];
+                     [_mainView.inputView.attachButton setEnabled:YES];
+                     if(isTableScrolledToBottom) {
+                         [self scrollToBottomAnimated:YES delay:0.5f];
+                     }
+                 }];
+    }
 }
 
 - (void)attachButtonAction:(UIButton*)sender {
@@ -336,6 +339,7 @@
 - (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+    NSLog(@"Table is %@", (isTableScrolledToBottom) ? @"scrolled to bottom" : @"not scrolled to bottom");
     NSDictionary *userInfo = [notification userInfo];
     NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
@@ -344,6 +348,7 @@
     [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
     
     CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    NSLog(@"Keyboard height is %f", keyboardRect.size.height);
     keyboardRect = [_mainView.inputView convertRect:keyboardRect fromView:nil];
     
     [UIView beginAnimations:nil context:nil];
@@ -388,11 +393,11 @@
             NSIndexPath * indexPath = [NSIndexPath indexPathForRow:itemsCount - 1 inSection:section - 1];
             if(delay > 0.0f) {
                 dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
                 });
             }
             else {
-                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
             }
         }
     }
