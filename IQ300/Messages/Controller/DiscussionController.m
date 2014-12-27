@@ -387,18 +387,21 @@
 }
 
 - (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay {
-    NSInteger section = [self.tableView numberOfSections];
+    NSInteger section = [self.tableView numberOfSections] - 1;
     if (section > 0) {
-        NSInteger itemsCount = [self.tableView numberOfRowsInSection:section-1];
+        NSInteger row = [self.tableView numberOfRowsInSection:section] - 1;
         
-        if (itemsCount > 0) {
-            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:itemsCount - 1 inSection:section - 1];
+        if (row > 0) {
             if(delay > 0.0f) {
                 dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
+                    NSIndexPath * indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+                    [self.tableView scrollToRowAtIndexPath:indexPath
+                                          atScrollPosition:UITableViewScrollPositionBottom
+                                                  animated:animated];
                 });
             }
             else {
+                NSIndexPath * indexPath = [NSIndexPath indexPathForRow:row inSection:section];
                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
             }
         }
