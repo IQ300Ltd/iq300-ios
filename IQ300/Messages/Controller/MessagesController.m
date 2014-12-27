@@ -291,7 +291,7 @@
             NSIndexPath * indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
             if(delay > 0.0f) {
                 dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                    [self scrollToTopAnimated:animated delay:0.0f];
                 });
             }
             else {

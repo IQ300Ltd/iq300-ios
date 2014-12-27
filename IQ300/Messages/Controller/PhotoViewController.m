@@ -114,7 +114,11 @@
                                    backButtonImageSize.width,
                                    backButtonImageSize.height);
     
-    _titleLabel.frame = _headerView.bounds;
+    CGFloat labelX = _backButton.frame.origin.x + 35.0f;
+    _titleLabel.frame = CGRectMake(labelX,
+                                   0.0f,
+                                   _headerView.frame.size.width - labelX * 2.0f,
+                                   _headerView.frame.size.height);
     
     //CGFloat imageY = CGRectBottom(_headerView.frame);
     _imageView.frame = actualBounds;
