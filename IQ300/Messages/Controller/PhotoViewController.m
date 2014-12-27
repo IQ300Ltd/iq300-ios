@@ -48,8 +48,8 @@
     [_titleLabel setTextColor:[UIColor whiteColor]];
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     _titleLabel.backgroundColor = [UIColor clearColor];
-    _titleLabel.numberOfLines = 0;
-    _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    _titleLabel.numberOfLines = 1;
+    _titleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
     [_headerView addSubview:_titleLabel];
     
     _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
