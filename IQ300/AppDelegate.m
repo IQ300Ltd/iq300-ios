@@ -72,8 +72,8 @@
     }
 }
 
-+ (void)registerForRemoteNotification {
-    if([IQSession defaultSession] && ![AppDelegate pushNotificationsEnabled]) {
++ (void)registerForRemoteNotifications {
+    if([IQSession defaultSession]) {
         if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
             UIUserNotificationType types = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
             [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings
@@ -99,7 +99,7 @@
 
     [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
     [AppDelegate setupNotificationCenter];
-    [AppDelegate registerForRemoteNotification];
+    [AppDelegate registerForRemoteNotifications];
 
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
