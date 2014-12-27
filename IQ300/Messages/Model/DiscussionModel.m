@@ -571,6 +571,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                     [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
                                                                                                                         object:nil
                                                                                                                       userInfo:userInfo];
+                                                                    [self modelDidChanged];
                                                                 }
                                                             }];
         }

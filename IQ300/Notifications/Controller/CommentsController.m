@@ -163,6 +163,10 @@
     }
 }
 
+- (void)modelDidChanged:(id<IQTableModel>)model {
+    [self scrollToBottomIfNeedAnimated:YES delay:1.0f];
+}
+
 #pragma mark - Scroll Gesture Delegate
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {

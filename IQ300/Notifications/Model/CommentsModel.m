@@ -404,7 +404,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)applicationWillEnterForeground {
-    [self reloadFirstPartWithCompletion:nil];
+    [self reloadFirstPartWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self modelDidChanged];
+        }
+    }];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
