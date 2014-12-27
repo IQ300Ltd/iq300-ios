@@ -218,7 +218,7 @@
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
     BOOL isTextValid = [self isTextValid:_mainView.inputView.commentTextView.text];
-    if(isTextValid) {
+    if(isTextValid || _attachment) {
         [_mainView.inputView.sendButton setEnabled:NO];
         [_mainView.inputView.attachButton setEnabled:NO];
         [_mainView.inputView.commentTextView setEditable:NO];

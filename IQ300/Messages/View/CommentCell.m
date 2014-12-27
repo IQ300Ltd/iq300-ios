@@ -194,7 +194,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
             CGFloat attachmentX = _descriptionLabel.frame.origin.x;
             attachButton.frame = CGRectMake(attachmentX,
                                             attachButtonY,
-                                            MIN(attachmentSize.width + 5.0f, _bubbleImageView.frame.size.width - attachmentX),
+                                            MIN(attachmentSize.width + 5.0f, _descriptionLabel.frame.size.width),
                                             attachmentSize.height);
             
             attachButtonY = CGRectBottom(attachButton.frame) + 7.0f;
