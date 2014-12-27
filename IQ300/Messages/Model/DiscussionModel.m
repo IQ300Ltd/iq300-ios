@@ -345,6 +345,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         if([comment.commentStatus integerValue] != IQCommentStatusSendError) {
             BOOL isViewed = [comment.createDate compare:_lastViewDate] == NSOrderedAscending;
             IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
+            
             if([comment.commentStatus integerValue] != status && [comment.author.userId isEqualToNumber:userId]) {
                 comment.commentStatus = @(status);
             }
@@ -483,21 +484,37 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     __weak typeof(self) weakSelf = self;
     void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
         NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
-        NSNumber * authorId = commentData[@"author"][@"id"];
-        if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId]) {
-            NSError * serializeError = nil;
-            Class commentClass = [IQComment class];
-            IQComment * comment = [ObjectSerializator objectFromDictionary:@{ NSStringFromClass(commentClass) : commentData }
-                                                          destinationClass:[IQComment class]
-                                                        managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
-                                                                     error:&serializeError];
-            [weakSelf modelNewComment:comment];
-            [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
-                                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                                if(!success) {
-                                                                    NSLog(@"Mark discussion as read fail with error:%@", error);
-                                                                }
-                                                            }];
+        NSNumber * commentId = commentData[@"id"];
+        NSNumber * discussionId = commentData[@"discussion_id"];
+        
+        if(discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
+            
+            NSError * requestError = nil;
+            NSManagedObjectContext * context = [IQService sharedService].context;
+            NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQComment"];
+            fetchRequest.predicate = [NSPredicate predicateWithFormat:@"commentId == %@", commentId];
+            NSUInteger count = [context countForFetchRequest:fetchRequest error:&requestError];
+            
+            if(!requestError && count == 0) {
+                NSError * serializeError = nil;
+                Class commentClass = [IQComment class];
+                IQComment * comment = [ObjectSerializator objectFromDictionary:@{ NSStringFromClass(commentClass) : commentData }
+                                                              destinationClass:[IQComment class]
+                                                            managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
+                                                                         error:&serializeError];
+                
+                if(comment) {
+                    [self updateDefaultStatusesForComments:@[comment]];
+                    
+                    [weakSelf modelNewComment:comment];
+                    [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
+                                                                    handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                        if(!success) {
+                                                                            NSLog(@"Mark discussion as read fail with error:%@", error);
+                                                                        }
+                                                                    }];
+                }
+            }
         }
     };
     
