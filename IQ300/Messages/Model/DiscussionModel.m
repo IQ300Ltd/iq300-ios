@@ -199,7 +199,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(reloadFirstPart)
+                                                 selector:@selector(applicationWillEnterForeground)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
         [self resubscribeToIQNotifications];
@@ -460,12 +460,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)reloadFirstPart {
-    [self reloadFirstPartWithCompletion:^(NSError *error) {
-        
-    }];
-}
-
 - (NSString*)createCacheDirIfNeedWithError:(NSError**)error {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString * namespace = @"com.iq300.FileStore.Share";
@@ -501,7 +495,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
             [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
                                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                                 if(!success) {
-                                                                    NSLog(@"Mark conversation as read fail with error:%@", error);
+                                                                    NSLog(@"Mark discussion as read fail with error:%@", error);
                                                                 }
                                                             }];
         }
@@ -562,6 +556,25 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
     
     return _dateFormatter;
+}
+
+- (void)applicationWillEnterForeground {
+    [self reloadFirstPartWithCompletion:^(NSError *error) {
+        if(!error) {
+            [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
+                                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                if(!success) {
+                                                                    NSLog(@"Mark discussion as read fail with error:%@", error);
+                                                                }
+                                                                else {
+                                                                    NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"messages" };
+                                                                    [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
+                                                                                                                        object:nil
+                                                                                                                      userInfo:userInfo];
+                                                                }
+                                                            }];
+        }
+    }];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

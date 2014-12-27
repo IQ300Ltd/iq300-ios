@@ -180,6 +180,7 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+    [self updateGlobalCounters];
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
 }

@@ -95,6 +95,11 @@
          }];
      }
      position:SVPullToRefreshPositionBottom];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(countersDidChangedNotification:)
+                                                 name:CountersDidChangedNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -309,6 +314,19 @@
     BOOL hasUnreadNotf = (badgeValue > 0);
     NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%ld", (long)badgeValue];
     self.tabBarItem.badgeValue = (hasUnreadNotf) ? badgeStringValue : nil;
+}
+
+- (void)countersDidChangedNotification:(NSNotification*)notification {
+    NSString * counterName = [notification.userInfo[ChangedCounterNameUserInfoKey] lowercaseString];
+    if([counterName isEqualToString:@"notifications"]) {
+        [self updateGlobalCounter];
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:CountersDidChangedNotification
+                                                  object:nil];
 }
 
 @end

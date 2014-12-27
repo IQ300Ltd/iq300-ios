@@ -33,6 +33,7 @@
     ALAsset * _attachment;
     UIDocumentInteractionController * _documentController;
     BOOL _needFullReload;
+    UISwipeGestureRecognizer * _tableGesture;
 }
 
 @end
@@ -53,7 +54,14 @@
     
     _enterCommentProcessing = NO;
     _needFullReload = YES;
+    
+    _tableGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                              action:@selector(handleSwipe:)];
+    _tableGesture.direction = UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown;
+    _tableGesture.delegate = (id<UIGestureRecognizerDelegate>)self;
 
+    [self.tableView addGestureRecognizer:_tableGesture];
+    
     [_mainView.inputView.sendButton setEnabled:NO];
     [_mainView.backButton addTarget:self
                              action:@selector(backButtonAction:)
@@ -173,16 +181,6 @@
     }
 }
 
-#pragma mark - UIScroll Delegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if(_enterCommentProcessing && scrollView == self.tableView) {
-        [self.tableView setContentOffset:self.tableView.contentOffset animated:YES];
-        [self.tableView setScrollEnabled:NO];
-        [_mainView.inputView.commentTextView resignFirstResponder];
-    }
-}
-
 #pragma mark - DiscussionModelDelegate Delegate
 
 - (void)model:(DiscussionModel*)model newComment:(IQComment*)comment {
@@ -191,6 +189,26 @@
     if(isTableScrolledToBottom) {
         [self scrollToBottomAnimated:YES delay:0.5f];
     }
+}
+
+#pragma mark - Scroll Gesture Delegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    return _enterCommentProcessing && gestureRecognizer.view == self.tableView;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return YES;
+}
+
+- (void)handleSwipe:(UISwipeGestureRecognizer *)gestureRecognizer {
+    [self.tableView setContentOffset:self.tableView.contentOffset animated:YES];
+    [self.tableView setScrollEnabled:NO];
+    [_mainView.inputView.commentTextView resignFirstResponder];
 }
 
 #pragma mark - Private methods
@@ -207,7 +225,6 @@
     BOOL isSendButtonEnabled = [self isTextValid:text];
     [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
 }
-
 
 - (void)backButtonAction:(UIButton*)sender {
     [self.navigationController popViewControllerAnimated:YES];
@@ -319,6 +336,7 @@
         if(!error) {
             [self.tableView reloadData];
         }
+        
         [self scrollToBottomIfNeedAnimated:NO delay:0.5];
         _needFullReload = NO;
     }];
@@ -380,30 +398,34 @@
     CGFloat messageTextViewHeight = MIN(MAX(contentSize.height + (textView.textContainerInset.top + textView.textContainerInset.bottom)*2.0, MIN_INPUT_VIEW_HEIGHT),
                                         MAX_INPUT_VIEW_HEIGHT);
     
+    BOOL inputHeightWillBeChanged = (_mainView.inputHeight != messageTextViewHeight);
     [_mainView setInputHeight:messageTextViewHeight];
-    if (isTableScrolledToBottom) {
+    
+    if (isTableScrolledToBottom && inputHeightWillBeChanged) {
         [self scrollToBottomAnimated:NO delay:0.0f];
     }
 }
 
 - (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay {
-    NSInteger section = [self.tableView numberOfSections] - 1;
-    if (section > 0) {
-        NSInteger row = [self.tableView numberOfRowsInSection:section] - 1;
+    __block NSInteger section = [self.tableView numberOfSections] - 1;
+    BOOL canScroll = ([self.tableView numberOfSections] > 0 && [self.tableView numberOfRowsInSection:section] > 0);
+    
+    if (canScroll) {
+        __block  NSInteger row = [self.tableView numberOfRowsInSection:section] - 1;
         
-        if (row > 0) {
-            if(delay > 0.0f) {
-                dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                    NSIndexPath * indexPath = [NSIndexPath indexPathForRow:row inSection:section];
-                    [self.tableView scrollToRowAtIndexPath:indexPath
-                                          atScrollPosition:UITableViewScrollPositionBottom
-                                                  animated:animated];
-                });
-            }
-            else {
+        if(delay > 0.0f) {
+            dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
+                section = [self.tableView numberOfSections] - 1;
+                row = [self.tableView numberOfRowsInSection:section] - 1;
                 NSIndexPath * indexPath = [NSIndexPath indexPathForRow:row inSection:section];
-                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
-            }
+                [self.tableView scrollToRowAtIndexPath:indexPath
+                                      atScrollPosition:UITableViewScrollPositionBottom
+                                              animated:animated];
+            });
+        }
+        else {
+            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
         }
     }
 }

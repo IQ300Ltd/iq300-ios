@@ -55,6 +55,14 @@
                       forControlEvents:UIControlEventEditingChanged];
     
     _mainView.userTextField.delegate = (id<UITextFieldDelegate>)self;
+}
+
+- (UITableView*)tableView {
+    return _mainView.tableView;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillShow:)
@@ -65,17 +73,16 @@
                                              selector:@selector(onKeyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
-}
-
-- (UITableView*)tableView {
-    return _mainView.tableView;
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+    
     if([IQSession defaultSession]) {
         [self reloadModel];
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - UITableView DataSource
