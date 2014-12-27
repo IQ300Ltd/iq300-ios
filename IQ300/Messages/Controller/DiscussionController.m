@@ -192,7 +192,12 @@
 }
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
-    [self scrollToBottomIfNeedAnimated:YES delay:1.0f];
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+    
+    if(isTableScrolledToBottom) {
+        [self scrollToBottomIfNeedAnimated:YES delay:1.0f];
+    }
 }
 
 #pragma mark - Scroll Gesture Delegate
@@ -411,6 +416,7 @@
 }
 
 - (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay {
+    NSLog(@"%s", __PRETTY_FUNCTION__);
     __block NSInteger section = [self.tableView numberOfSections] - 1;
     BOOL canScroll = ([self.tableView numberOfSections] > 0 && [self.tableView numberOfRowsInSection:section] > 0);
     

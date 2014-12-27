@@ -164,7 +164,12 @@
 }
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
-    [self scrollToBottomIfNeedAnimated:YES delay:1.0f];
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+    
+    if(isTableScrolledToBottom) {
+        [self scrollToBottomIfNeedAnimated:YES delay:1.0f];
+    }
 }
 
 #pragma mark - Scroll Gesture Delegate
