@@ -199,7 +199,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(reloadFirstPart)
+                                                 selector:@selector(applicationWillEnterForeground)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
         [self resubscribeToIQNotifications];
@@ -345,6 +345,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         if([comment.commentStatus integerValue] != IQCommentStatusSendError) {
             BOOL isViewed = [comment.createDate compare:_lastViewDate] == NSOrderedAscending;
             IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
+            
             if([comment.commentStatus integerValue] != status && [comment.author.userId isEqualToNumber:userId]) {
                 comment.commentStatus = @(status);
             }
@@ -460,12 +461,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)reloadFirstPart {
-    [self reloadFirstPartWithCompletion:^(NSError *error) {
-        
-    }];
-}
-
 - (NSString*)createCacheDirIfNeedWithError:(NSError**)error {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString * namespace = @"com.iq300.FileStore.Share";
@@ -489,21 +484,37 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     __weak typeof(self) weakSelf = self;
     void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
         NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
-        NSNumber * authorId = commentData[@"author"][@"id"];
-        if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId]) {
-            NSError * serializeError = nil;
-            Class commentClass = [IQComment class];
-            IQComment * comment = [ObjectSerializator objectFromDictionary:@{ NSStringFromClass(commentClass) : commentData }
-                                                          destinationClass:[IQComment class]
-                                                        managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
-                                                                     error:&serializeError];
-            [weakSelf modelNewComment:comment];
-            [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
-                                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                                if(!success) {
-                                                                    NSLog(@"Mark conversation as read fail with error:%@", error);
-                                                                }
-                                                            }];
+        NSNumber * commentId = commentData[@"id"];
+        NSNumber * discussionId = commentData[@"discussion_id"];
+        
+        if(discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
+            
+            NSError * requestError = nil;
+            NSManagedObjectContext * context = [IQService sharedService].context;
+            NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQComment"];
+            fetchRequest.predicate = [NSPredicate predicateWithFormat:@"commentId == %@", commentId];
+            NSUInteger count = [context countForFetchRequest:fetchRequest error:&requestError];
+            
+            if(!requestError && count == 0) {
+                NSError * serializeError = nil;
+                Class commentClass = [IQComment class];
+                IQComment * comment = [ObjectSerializator objectFromDictionary:@{ NSStringFromClass(commentClass) : commentData }
+                                                              destinationClass:[IQComment class]
+                                                            managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
+                                                                         error:&serializeError];
+                
+                if(comment) {
+                    [self updateDefaultStatusesForComments:@[comment]];
+                    
+                    [weakSelf modelNewComment:comment];
+                    [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
+                                                                    handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                        if(!success) {
+                                                                            NSLog(@"Mark discussion as read fail with error:%@", error);
+                                                                        }
+                                                                    }];
+                }
+            }
         }
     };
     
@@ -562,6 +573,26 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
     
     return _dateFormatter;
+}
+
+- (void)applicationWillEnterForeground {
+    [self reloadFirstPartWithCompletion:^(NSError *error) {
+        if(!error) {
+            [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
+                                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                if(!success) {
+                                                                    NSLog(@"Mark discussion as read fail with error:%@", error);
+                                                                }
+                                                                else {
+                                                                    NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"messages" };
+                                                                    [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
+                                                                                                                        object:nil
+                                                                                                                      userInfo:userInfo];
+                                                                    [self modelDidChanged];
+                                                                }
+                                                            }];
+        }
+    }];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

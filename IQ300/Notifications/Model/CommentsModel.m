@@ -160,7 +160,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(reloadFirstPart)
+                                                 selector:@selector(applicationWillEnterForeground)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
     }
@@ -375,12 +375,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)reloadFirstPart {
-    [self reloadFirstPartWithCompletion:^(NSError *error) {
-        
-    }];
-}
-
 - (NSString*)createCacheDirIfNeedWithError:(NSError**)error {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString * namespace = @"com.iq300.FileStore.Share";
@@ -407,6 +401,14 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
     
     return _dateFormatter;
+}
+
+- (void)applicationWillEnterForeground {
+    [self reloadFirstPartWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self modelDidChanged];
+        }
+    }];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

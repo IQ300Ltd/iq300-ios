@@ -136,7 +136,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                   page:@(page)
                                                    per:@(_portionLenght)
                                                 search:_filter
-                                                  sort:IQSortDirectionAscending
+                                                  sort:SORT_DIRECTION
                                                handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                    if(completion) {
                                                        completion(error);
@@ -154,7 +154,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                               page:@(1)
                                                per:@(_portionLenght)
                                             search:_filter
-                                              sort:IQSortDirectionAscending
+                                              sort:SORT_DIRECTION
                                            handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                if(completion) {
                                                    completion(error);
@@ -170,7 +170,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                               page:@(1)
                                                per:@(_portionLenght)
                                             search:_filter
-                                              sort:IQSortDirectionAscending
+                                              sort:SORT_DIRECTION
                                            handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
                                                if(completion) {
                                                    completion(error);

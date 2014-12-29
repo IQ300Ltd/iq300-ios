@@ -46,6 +46,8 @@
 #define USE_DEFAULT_LOCALIZATION
 
 static NSString * AccountDidChangedNotification = @"AccountDidChangedNotification";
+static NSString * CountersDidChangedNotification = @"CountersDidChangedNotification";
+static NSString * ChangedCounterNameUserInfoKey = @"ChangedCounterNameUserInfoKey";
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
 #import "NSString+SizeWith.h"

@@ -48,8 +48,8 @@
     [_titleLabel setTextColor:[UIColor whiteColor]];
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     _titleLabel.backgroundColor = [UIColor clearColor];
-    _titleLabel.numberOfLines = 0;
-    _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    _titleLabel.numberOfLines = 1;
+    _titleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
     [_headerView addSubview:_titleLabel];
     
     _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
@@ -114,7 +114,11 @@
                                    backButtonImageSize.width,
                                    backButtonImageSize.height);
     
-    _titleLabel.frame = _headerView.bounds;
+    CGFloat labelX = _backButton.frame.origin.x + 35.0f;
+    _titleLabel.frame = CGRectMake(labelX,
+                                   0.0f,
+                                   _headerView.frame.size.width - labelX * 2.0f,
+                                   _headerView.frame.size.height);
     
     //CGFloat imageY = CGRectBottom(_headerView.frame);
     _imageView.frame = actualBounds;

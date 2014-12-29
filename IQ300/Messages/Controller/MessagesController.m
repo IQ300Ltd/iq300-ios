@@ -96,13 +96,8 @@
      position:SVPullToRefreshPositionBottom];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onKeyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onKeyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
+                                             selector:@selector(countersDidChangedNotification:)
+                                                 name:CountersDidChangedNotification
                                                object:nil];
 }
 
@@ -123,11 +118,29 @@
     }
     
     [self.model setSubscribedToNotifications:YES];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onKeyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onKeyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.model setSubscribedToNotifications:NO];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillShowNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillHideNotification
+                                                  object:nil];
 }
 
 - (void)updateGlobalCounter {
@@ -278,7 +291,7 @@
             NSIndexPath * indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
             if(delay > 0.0f) {
                 dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                    [self scrollToTopAnimated:animated delay:0.0f];
                 });
             }
             else {
@@ -313,6 +326,19 @@
     BOOL hasUnreadNotf = (badgeValue > 0);
     NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%ld", (long)badgeValue];
     self.tabBarItem.badgeValue = (hasUnreadNotf) ? badgeStringValue : nil;
+}
+
+- (void)countersDidChangedNotification:(NSNotification*)notification {
+    NSString * counterName = [notification.userInfo[ChangedCounterNameUserInfoKey] lowercaseString];
+    if([counterName isEqualToString:@"messages"]) {
+        [self updateGlobalCounter];
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:CountersDidChangedNotification
+                                                  object:nil];
 }
 
 @end
