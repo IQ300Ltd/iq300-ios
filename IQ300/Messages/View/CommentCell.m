@@ -81,7 +81,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 }
 
 + (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
-    CGFloat descriptionWidth = cellWidth - CONTENT_INSET * 2.0f;
+    CGFloat descriptionWidth = BUBBLE_WIDTH - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {

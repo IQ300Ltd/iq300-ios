@@ -416,7 +416,6 @@
 }
 
 - (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
     __block NSInteger section = [self.tableView numberOfSections] - 1;
     BOOL canScroll = ([self.tableView numberOfSections] > 0 && [self.tableView numberOfRowsInSection:section] > 0);
     

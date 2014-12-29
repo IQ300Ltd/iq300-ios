@@ -194,12 +194,13 @@
 #pragma mark - Notifications
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {
-    NSLog(@"Device token is: %@", deviceToken);
     
     if ([IQSession defaultSession]) {
         NSString* newToken = [deviceToken description];
         newToken = [newToken stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
         newToken = [newToken stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+        NSLog(@"Device token is: %@", newToken);
 
         [[IQService sharedService] registerDeviceForRemoteNotificationsWithToken:newToken
                                                                          handler:^(BOOL success, NSData *responseData, NSError *error) {
