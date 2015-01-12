@@ -5,7 +5,6 @@
 //  Created by Tayphoon on 02.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
 #import "UIViewController+LeftMenu.h"
@@ -22,6 +21,7 @@
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQBadgeView.h"
 #import "IQCounters.h"
+#import "UIScrollView+PullToRefreshInsert.h"
 
 #define DISPATCH_DELAY 0.7
 
@@ -88,12 +88,21 @@
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
-     addPullToRefreshWithActionHandler:^{
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model reloadFirstPartWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
+    
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
          [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-             [weakSelf.tableView.pullToRefreshView stopAnimating];
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
          }];
      }
      position:SVPullToRefreshPositionBottom];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(countersDidChangedNotification:)
