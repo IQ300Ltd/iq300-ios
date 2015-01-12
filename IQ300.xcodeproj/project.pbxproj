@@ -144,6 +144,7 @@
 		73ADA8EC1A36FD680032C1FA /* ContactCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8EB1A36FD680032C1FA /* ContactCell.m */; };
 		73ADA8F11A373B010032C1FA /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8F01A373B010032C1FA /* PhotoViewController.m */; };
 		73AF25A31A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF25A21A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m */; };
+		73AF25F61A63F42F00F12CCD /* conversations.json in Resources */ = {isa = PBXBuildFile; fileRef = 73AF25F51A63F42F00F12CCD /* conversations.json */; };
 		73AF73E11A3AFEBA001B8E42 /* CViewInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF73E01A3AFEBA001B8E42 /* CViewInfo.m */; };
 		73AF73E41A3B0C0D001B8E42 /* msg_viewed.png in Resources */ = {isa = PBXBuildFile; fileRef = 73AF73E21A3B0C0D001B8E42 /* msg_viewed.png */; };
 		73AF73E51A3B0C0D001B8E42 /* msg_viewed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73AF73E31A3B0C0D001B8E42 /* msg_viewed@2x.png */; };
@@ -184,7 +185,6 @@
 		73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CE91A1B6B6D00225255 /* IQSession.m */; };
 		73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */; };
 		73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */; };
-		73F90CFF1A1B9F0500225255 /* IQFakeService.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CFE1A1B9F0500225255 /* IQFakeService.m */; };
 		C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D006E3B70304215613C192 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -419,6 +419,7 @@
 		73ADA8F01A373B010032C1FA /* PhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
 		73AF25A11A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+PullToRefreshInsert.h"; sourceTree = "<group>"; };
 		73AF25A21A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+PullToRefreshInsert.m"; sourceTree = "<group>"; };
+		73AF25F51A63F42F00F12CCD /* conversations.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = conversations.json; sourceTree = "<group>"; };
 		73AF73DF1A3AFEBA001B8E42 /* CViewInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CViewInfo.h; sourceTree = "<group>"; };
 		73AF73E01A3AFEBA001B8E42 /* CViewInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CViewInfo.m; sourceTree = "<group>"; };
 		73AF73E21A3B0C0D001B8E42 /* msg_viewed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = msg_viewed.png; sourceTree = "<group>"; };
@@ -477,8 +478,6 @@
 		73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQServiceResponse.h; sourceTree = "<group>"; };
 		73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQServiceResponse.m; sourceTree = "<group>"; };
 		73F90CF91A1B981C00225255 /* IQ300.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IQ300.xcdatamodel; sourceTree = "<group>"; };
-		73F90CFD1A1B9F0500225255 /* IQFakeService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQFakeService.h; sourceTree = "<group>"; };
-		73F90CFE1A1B9F0500225255 /* IQFakeService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQFakeService.m; sourceTree = "<group>"; };
 		755F5FB022B113814C52815E /* Pods.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.production.xcconfig; path = "Pods/Target Support Files/Pods/Pods.production.xcconfig"; sourceTree = "<group>"; };
 		93D006E3B70304215613C192 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9B2A8B58D9801BD961060BB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -616,6 +615,7 @@
 				7395C5101A3192C500A6D5DA /* backArrow@2x.png */,
 				73A9498D1A3821AD008EC469 /* backWhiteArrow.png */,
 				73A9498E1A3821AD008EC469 /* backWhiteArrow@2x.png */,
+				73AF25F51A63F42F00F12CCD /* conversations.json */,
 				736B6BCF1A0B5C0800034D9B /* Images.xcassets */,
 				73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */,
 			);
@@ -757,8 +757,6 @@
 				737DD22F1A14F00400CC4443 /* IQService.m */,
 				739850E41A2E023D00DB5B21 /* IQService+Messages.h */,
 				739850E51A2E023D00DB5B21 /* IQService+Messages.m */,
-				73F90CFD1A1B9F0500225255 /* IQFakeService.h */,
-				73F90CFE1A1B9F0500225255 /* IQFakeService.m */,
 				73F90CE81A1B6B6D00225255 /* IQSession.h */,
 				73F90CE91A1B6B6D00225255 /* IQSession.m */,
 				73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */,
@@ -1246,6 +1244,7 @@
 				73AF73E41A3B0C0D001B8E42 /* msg_viewed.png in Resources */,
 				738FE7021A162B10009F26A2 /* messages_tab@2x.png in Resources */,
 				738FE7121A162B10009F26A2 /* tasks_tab@2x.png in Resources */,
+				73AF25F61A63F42F00F12CCD /* conversations.json in Resources */,
 				73BA98911A109F4D005AEC00 /* menu_expanded@2x.png in Resources */,
 				73BA988F1A109F4D005AEC00 /* menu_collapseed@2x.png in Resources */,
 				738FE70B1A162B10009F26A2 /* projects_tab.png in Resources */,
@@ -1363,7 +1362,6 @@
 				734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */,
 				731DEEC81A2F11A1002F5FEB /* MessagesModel.m in Sources */,
 				739850E61A2E023D00DB5B21 /* IQService+Messages.m in Sources */,
-				73F90CFF1A1B9F0500225255 /* IQFakeService.m in Sources */,
 				73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */,
 				73BA98771A1092DF005AEC00 /* MTableHeaderView.m in Sources */,
 				73A9499D1A3832D7008EC469 /* FileStore.m in Sources */,
