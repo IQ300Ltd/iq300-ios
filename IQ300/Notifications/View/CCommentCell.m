@@ -27,6 +27,7 @@
 @interface CCommentCell() {
     BOOL _commentIsMine;
     NSMutableArray * _attachButtons;
+    UITapGestureRecognizer * _singleTapGesture;
 }
 
 @end
@@ -84,6 +85,9 @@
         _userNameLabel.clipsToBounds = YES;
         [contentView addSubview:_userNameLabel];
         
+        _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapRecognized:)];
+        _singleTapGesture.numberOfTapsRequired = 1;
+
         _descriptionTextView = [[UITextView alloc] init];
         [_descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
         [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
@@ -93,6 +97,7 @@
         _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
         _descriptionTextView.scrollEnabled = NO;
         _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+        [_descriptionTextView addGestureRecognizer:_singleTapGesture];
         [contentView addSubview:_descriptionTextView];
         
         _attachButtons = [NSMutableArray array];
@@ -234,6 +239,24 @@
         [label setText:NSLocalizedString(localaizedKey, nil)];
     }
     return label;
+}
+
+- (void)singleTapRecognized:(UITapGestureRecognizer*)gesture {
+    UITableView * tableView = [self parentTableView];
+    if (tableView && [tableView.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)]) {
+        [tableView.delegate tableView:tableView didSelectRowAtIndexPath:[tableView indexPathForCell:self]];
+    }
+}
+
+- (UITableView *)parentTableView {
+    UIView *aView = self.superview;
+    while(aView != nil) {
+        if([aView isKindOfClass:[UITableView class]]) {
+            return (UITableView *)aView;
+        }
+        aView = aView.superview;
+    }
+    return nil;
 }
 
 @end
