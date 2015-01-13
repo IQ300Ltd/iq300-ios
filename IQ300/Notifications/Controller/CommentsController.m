@@ -23,6 +23,7 @@
 #import "PhotoViewController.h"
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
+#import "IQDrawerController.h"
 
 @interface CommentsController() {
     CommentsView * _mainView;
@@ -106,6 +107,12 @@
                                              selector:@selector(onKeyboardDidHide:)
                                                  name:UIKeyboardDidHideNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(drawerDidShowNotification:)
+                                                 name:IQDrawerDidShowNotification
+                                               object:nil];
+
     if([IQSession defaultSession]) {
         [self reloadModel];
     }
@@ -476,6 +483,10 @@
 
 - (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
     _documentController = nil;
+}
+
+- (void)drawerDidShowNotification:(NSNotification*)notification {
+    [_mainView.inputView.commentTextView resignFirstResponder];
 }
 
 - (void)dealloc {

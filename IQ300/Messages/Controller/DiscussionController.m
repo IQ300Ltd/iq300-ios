@@ -24,6 +24,7 @@
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "CSectionHeaderView.h"
+#import "IQDrawerController.h"
 
 #define SECTION_HEIGHT 12
 
@@ -109,6 +110,12 @@
                                              selector:@selector(onKeyboardDidHide:)
                                                  name:UIKeyboardDidHideNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(drawerDidShowNotification:)
+                                                 name:IQDrawerDidShowNotification
+                                               object:nil];
+    
     if([IQSession defaultSession]) {
         [self reloadModel];
     }
@@ -484,6 +491,10 @@
     }
     
     return [self cellForView:view.superview];
+}
+
+- (void)drawerDidShowNotification:(NSNotification*)notification {
+    [_mainView.inputView.commentTextView resignFirstResponder];
 }
 
 - (void)dealloc {

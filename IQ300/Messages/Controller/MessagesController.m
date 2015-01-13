@@ -22,6 +22,7 @@
 #import "IQBadgeView.h"
 #import "IQCounters.h"
 #import "UIScrollView+PullToRefreshInsert.h"
+#import "IQDrawerController.h"
 
 #define DISPATCH_DELAY 0.7
 
@@ -138,6 +139,11 @@
                                              selector:@selector(onKeyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(drawerDidShowNotification:)
+                                                 name:IQDrawerDidShowNotification
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -149,6 +155,9 @@
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:IQDrawerDidShowNotification
                                                   object:nil];
 }
 
@@ -342,6 +351,10 @@
     if([counterName isEqualToString:@"messages"]) {
         [self updateGlobalCounter];
     }
+}
+
+- (void)drawerDidShowNotification:(NSNotification*)notification {
+    [_messagesView.searchBar resignFirstResponder];
 }
 
 - (void)dealloc {

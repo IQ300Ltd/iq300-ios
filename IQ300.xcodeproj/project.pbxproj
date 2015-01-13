@@ -44,6 +44,7 @@
 		738113831A4C35FF0061280F /* attach_white_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 7381137F1A4C35FF0061280F /* attach_white_ico.png */; };
 		738113841A4C35FF0061280F /* attach_white_ico@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 738113801A4C35FF0061280F /* attach_white_ico@2x.png */; };
 		7382CA951A4566BD00D5EE1F /* CSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7382CA941A4566BD00D5EE1F /* CSectionHeaderView.m */; };
+		738356301A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 7383562F1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m */; };
 		7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4AC1A288ED2000B94BD /* IQNotificationCenter.m */; };
 		7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4BD1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m */; };
 		7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 7386B3B81A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m */; };
@@ -252,6 +253,8 @@
 		738113801A4C35FF0061280F /* attach_white_ico@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "attach_white_ico@2x.png"; sourceTree = "<group>"; };
 		7382CA931A4566BD00D5EE1F /* CSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSectionHeaderView.h; sourceTree = "<group>"; };
 		7382CA941A4566BD00D5EE1F /* CSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSectionHeaderView.m; sourceTree = "<group>"; };
+		7383562E1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SafelyRemoveObserver.h"; sourceTree = "<group>"; };
+		7383562F1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SafelyRemoveObserver.m"; sourceTree = "<group>"; };
 		7385D4AB1A288ED2000B94BD /* IQNotificationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationCenter.h; sourceTree = "<group>"; };
 		7385D4AC1A288ED2000B94BD /* IQNotificationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationCenter.m; sourceTree = "<group>"; };
 		7385D4BC1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+ActiveRecord.h"; sourceTree = "<group>"; };
@@ -666,6 +669,8 @@
 				7386B3B71A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.h */,
 				7386B3B81A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m */,
 				73882D891A24687300B8BE90 /* SuppressWarning.h */,
+				7383562E1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.h */,
+				7383562F1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m */,
 				73C58C051A1F145200C83729 /* NSDate+CupertinoYankee.h */,
 				73C58C061A1F145200C83729 /* NSDate+CupertinoYankee.m */,
 				738FE7221A165A00009F26A2 /* IQTableModel.h */,
@@ -1316,6 +1321,7 @@
 				738CE1E91A0B3F4E0096B374 /* AppDelegate.m in Sources */,
 				739850BF1A2DB05400DB5B21 /* MessagesView.m in Sources */,
 				73A7983C1A35B96F006F5721 /* ALAssetInputStream.m in Sources */,
+				738356301A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m in Sources */,
 				739850D41A2DD30E00DB5B21 /* IQNotificationsHolder.m in Sources */,
 				7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */,
 				73BA98A01A10A531005AEC00 /* NSBundle+Localization.m in Sources */,

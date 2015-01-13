@@ -8,13 +8,38 @@
 
 #import "IQDrawerController.h"
 #import "IQNavigationController.h"
+#import "NSObject+SafelyRemoveObserver.h"
+
+NSString * const IQDrawerDidShowNotification = @"IQDrawerDidShowNotification";
+NSString * const IQDrawerDidHideNotification = @"IQDrawerDidHideNotification";
+NSString * const IQDrawerNotificationStateKey = @"IQDrawerNotificationStateKey";
+
+NSString * const kOpenSideObservKey = @"openSide";
 
 @interface IQDrawerController() {
+    
 }
 
 @end
 
 @implementation IQDrawerController
+
+- (id)initWithCenterViewController:(UIViewController *)centerViewController
+          leftDrawerViewController:(UIViewController *)leftDrawerViewController
+         rightDrawerViewController:(UIViewController *)rightDrawerViewController {
+    self = [super initWithCenterViewController:centerViewController
+                      leftDrawerViewController:leftDrawerViewController
+                     rightDrawerViewController:rightDrawerViewController];
+    if(self) {
+        [self addObserver:self
+               forKeyPath:kOpenSideObservKey
+                  options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew)
+                  context:nil];
+    }
+    
+    return self;
+}
+
 
 - (void)panGestureCallback:(UIPanGestureRecognizer *)panGesture {
     [super panGestureCallback:panGesture];
@@ -87,6 +112,19 @@
                          }];
     }
     [super openDrawerSide:drawerSide animated:animated velocity:velocity animationOptions:options completion:completion];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:kOpenSideObservKey]) {
+        NSString * notificationName = (self.openSide != MMDrawerSideNone) ? IQDrawerDidShowNotification : IQDrawerDidHideNotification;
+        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName
+                                                            object:self
+                                                          userInfo:@{ IQDrawerNotificationStateKey : @(self.openSide) }];
+    }
+}
+
+- (void)dealloc {
+    [self safelyRemoveObserver:self forKeyPath:kOpenSideObservKey];
 }
 
 @end

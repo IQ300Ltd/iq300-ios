@@ -8,6 +8,10 @@
 
 #import <MMDrawerController/MMDrawerController+Subclass.h>
 
+extern NSString * const IQDrawerDidShowNotification;
+extern NSString * const IQDrawerDidHideNotification;
+extern NSString * const IQDrawerNotificationStateKey;
+
 @interface IQDrawerController : MMDrawerController
 
 @end

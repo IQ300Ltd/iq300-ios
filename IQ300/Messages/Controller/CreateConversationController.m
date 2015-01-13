@@ -17,6 +17,7 @@
 #import "IQConversation.h"
 #import "DiscussionController.h"
 #import "DispatchAfterExecution.h"
+#import "IQDrawerController.h"
 
 #define DISPATCH_DELAY 0.7
 
@@ -72,6 +73,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(drawerDidShowNotification:)
+                                                 name:IQDrawerDidShowNotification
                                                object:nil];
     
     if([IQSession defaultSession]) {
@@ -215,6 +221,10 @@
     _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
         [self.model reloadFirstPartWithCompletion:compleationBlock];
     });
+}
+
+- (void)drawerDidShowNotification:(NSNotification*)notification {
+    [_mainView.userTextField resignFirstResponder];
 }
 
 @end
