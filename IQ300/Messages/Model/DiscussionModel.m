@@ -526,11 +526,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSDictionary * viewData = notf.userInfo[IQNotificationDataKey][@"user_view"];
         NSNumber * userId = viewData[@"user_id"];
         NSNumber * discussionId = viewData[@"discussion_id"];
+        NSString * viewedDateString = viewData[@"viewed_at"];
+        NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
        
-        if(userId && [_companionId isEqualToNumber:userId] &&
+        if(userId && [_companionId isEqualToNumber:userId] && viewedDate &&
            discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
-            NSString * viewedDateString = viewData[@"viewed_at"];
-            NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
+            _lastViewDate = viewedDate;
             
             NSManagedObjectContext * context = [IQService sharedService].context;
             NSString * format = @"discussionId == %@ AND author.userId == %@ AND commentStatus == %d";
