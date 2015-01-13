@@ -85,9 +85,10 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
-        CGSize descriptionSize = [item.body sizeWithFont:DESCRIPTION_LABEL_FONT
-                                                   constrainedToSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
-                                                       lineBreakMode:NSLineBreakByWordWrapping];
+        CGSize descriptionSize = [item.body boundingRectWithSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
+                                                         options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                                      attributes:@{NSFontAttributeName:DESCRIPTION_LABEL_FONT}
+                                                         context:nil].size;
         height = MAX(descriptionSize.height + CELL_HEADER_HEIGHT + DESCRIPTION_PADDING * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
     }
@@ -127,11 +128,17 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         [_statusImageView setBackgroundColor:[UIColor clearColor]];
         [contentView addSubview:_statusImageView];
         
-        _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x8b8b8b]
-                                                    font:DESCRIPTION_LABEL_FONT
-                                           localaizedKey:nil];
-        [contentView addSubview:_descriptionLabel];
-
+        _descriptionTextView = [[UITextView alloc] init];
+        [_descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
+        [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
+        _descriptionTextView.textAlignment = NSTextAlignmentLeft;
+        _descriptionTextView.backgroundColor = [UIColor clearColor];
+        _descriptionTextView.editable = NO;
+        _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        _descriptionTextView.scrollEnabled = NO;
+        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+        [contentView addSubview:_descriptionTextView];
+        
         _attachButtons = [NSMutableArray array];
     }
     
@@ -179,22 +186,22 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat descriptioHeight = (hasAttachment) ? _bubbleImageView.frame.size.height - attachmentRectHeight - DESCRIPTION_PADDING * 2 :
                                                  _bubbleImageView.frame.size.height - DESCRIPTION_PADDING * 2;
     
-    _descriptionLabel.frame = CGRectMake(_bubbleImageView.frame.origin.x + DESCRIPTION_PADDING,
-                                         _bubbleImageView.frame.origin.y + DESCRIPTION_PADDING - bubleTailWidth,
-                                         _bubbleImageView.frame.size.width - DESCRIPTION_PADDING * 2.0f,
-                                         (hasDescription) ? descriptioHeight : 0.0f);
+    _descriptionTextView.frame = CGRectMake(_bubbleImageView.frame.origin.x + DESCRIPTION_PADDING,
+                                            _bubbleImageView.frame.origin.y + DESCRIPTION_PADDING - bubleTailWidth,
+                                            _bubbleImageView.frame.size.width - DESCRIPTION_PADDING * 2.0f,
+                                            (hasDescription) ? descriptioHeight : 0.0f);
     
     if(hasAttachment) {
-        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionLabel.frame) + 2.0f :
+        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + 2.0f :
                                                     _bubbleImageView.frame.origin.y + ATTACHMENT_VIEW_Y_OFFSET;
         
         CGSize constrainedSize = CGSizeMake(_bubbleImageView.frame.size.width, 15.0f);
         for (UIButton * attachButton in _attachButtons) {
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
-            CGFloat attachmentX = _descriptionLabel.frame.origin.x;
+            CGFloat attachmentX = _descriptionTextView.frame.origin.x;
             attachButton.frame = CGRectMake(attachmentX,
                                             attachButtonY,
-                                            MIN(attachmentSize.width + 5.0f, _descriptionLabel.frame.size.width),
+                                            MIN(attachmentSize.width + 5.0f, _descriptionTextView.frame.size.width),
                                             attachmentSize.height);
             
             attachButtonY = CGRectBottom(attachButton.frame) + 7.0f;
@@ -222,9 +229,9 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     _timeLabel.textAlignment = (_commentIsMine) ? NSTextAlignmentRight : NSTextAlignmentLeft;
     
     NSString * body = ([_item.body length] > 0) ? _item.body : @"";
-    _descriptionLabel.text = body;
-    _descriptionLabel.textColor = (_commentIsMine) ? DESCRIPTION_LEFT_TEXT_COLOR :
-                                                     DESCRIPTION_RIGHT_TEXT_COLOR;
+    _descriptionTextView.text = body;
+    _descriptionTextView.textColor = (_commentIsMine) ? DESCRIPTION_LEFT_TEXT_COLOR :
+                                                        DESCRIPTION_RIGHT_TEXT_COLOR;
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
     if(hasAttachment) {

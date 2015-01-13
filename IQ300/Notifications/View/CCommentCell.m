@@ -39,9 +39,10 @@
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
-        CGSize descriptionSize = [item.body sizeWithFont:DESCRIPTION_LABEL_FONT
-                                       constrainedToSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
-                                           lineBreakMode:NSLineBreakByWordWrapping];
+        CGSize descriptionSize = [item.body boundingRectWithSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
+                                                         options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                                      attributes:@{NSFontAttributeName:DESCRIPTION_LABEL_FONT}
+                                                         context:nil].size;
         height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
     }
@@ -83,10 +84,16 @@
         _userNameLabel.clipsToBounds = YES;
         [contentView addSubview:_userNameLabel];
         
-        _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x8b8b8b]
-                                                    font:DESCRIPTION_LABEL_FONT
-                                           localaizedKey:nil];
-        [contentView addSubview:_descriptionLabel];
+        _descriptionTextView = [[UITextView alloc] init];
+        [_descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
+        [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
+        _descriptionTextView.textAlignment = NSTextAlignmentLeft;
+        _descriptionTextView.backgroundColor = [UIColor clearColor];
+        _descriptionTextView.editable = NO;
+        _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        _descriptionTextView.scrollEnabled = NO;
+        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+        [contentView addSubview:_descriptionTextView];
         
         _attachButtons = [NSMutableArray array];
     }
@@ -135,15 +142,15 @@
         descriptionHeight = 16.5f;
     }
     
-    _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
-                                         descriptionY,
-                                         (hasDescription) ? actualBounds.size.width : 10.0f,
-                                         descriptionHeight);
+    _descriptionTextView.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+                                            descriptionY,
+                                            (hasDescription) ? actualBounds.size.width : 10.0f,
+                                            descriptionHeight);
     if(hasAttachment) {
-        CGFloat attachmentY = (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f;
+        CGFloat attachmentY = (hasAttachment && !hasDescription) ? _descriptionTextView.frame.origin.y + 2.0f : CGRectBottom(_descriptionTextView.frame) + 5.0f;
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
         for (UIButton * attachButton in _attachButtons) {
-            CGFloat attachmentX = _descriptionLabel.frame.origin.x;
+            CGFloat attachmentX = _descriptionTextView.frame.origin.x;
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
             attachButton.frame = CGRectMake(attachmentX,
                                             attachmentY,
@@ -165,7 +172,7 @@
     _userNameLabel.text = _item.author.displayName;
     
     NSString * body = ([_item.body length] > 0) ? _item.body : @"";
-    _descriptionLabel.text = body;
+    _descriptionTextView.text = body;
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
     

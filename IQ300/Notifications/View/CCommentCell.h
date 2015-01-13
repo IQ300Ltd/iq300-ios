@@ -20,7 +20,7 @@
 @property (nonatomic, strong) UIView * contentBackgroundView;
 @property (nonatomic, strong) UILabel * dateLabel;
 @property (nonatomic, strong) UILabel * userNameLabel;
-@property (nonatomic, strong) UILabel * descriptionLabel;
+@property (nonatomic, strong) UITextView * descriptionTextView;
 @property (nonatomic, readonly) NSArray * attachButtons;
 
 @property (nonatomic, strong) NSString * author;
