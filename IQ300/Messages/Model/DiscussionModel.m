@@ -543,8 +543,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                     for (IQComment * comment in objects) {
                         BOOL isViewed = [comment.createDate compare:viewedDate] == NSOrderedAscending;
                         IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
-                        if(status != [comment.commentStatus integerValue] &&
-                           [comment.commentStatus integerValue] != IQCommentStatusSendError) {
+                        if(status != [comment.commentStatus integerValue]) {
                             comment.commentStatus = @(status);
                         }
                     }
