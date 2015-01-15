@@ -129,6 +129,40 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     [self notificationsUnread:unread page:page per:per search:nil sort:sort handler:handler];
 }
 
+- (void)notificationsAfterId:(NSNumber*)notificationId unread:(NSNumber*)unread per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"id_more_than" : NSObjectNullForNil(notificationId),
+                                                                  @"unread"       : NSObjectNullForNil(unread),
+                                                                  @"page"         : @(1),
+                                                                  @"per"          : NSObjectNullForNil(per),
+                                                                  }).mutableCopy;
+    
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+    
+    [self getObjectsAtPath:@"/api/v1/notifications"
+                parameters:parameters
+                   handler:handler];
+}
+
+- (void)notificationsBeforeId:(NSNumber*)notificationId unread:(NSNumber*)unread per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"id_less_than" : NSObjectNullForNil(notificationId),
+                                                                  @"unread"       : NSObjectNullForNil(unread),
+                                                                  @"page"         : @(1),
+                                                                  @"per"          : NSObjectNullForNil(per),
+                                                                  }).mutableCopy;
+    
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+    
+    [self getObjectsAtPath:@"/api/v1/notifications"
+                parameters:parameters
+                   handler:handler];
+}
+
 - (void)notificationsWithIds:(NSArray*)ids handler:(ObjectLoaderCompletionHandler)handler {
     [self getObjectsAtPath:@"/api/v1/notifications"
                 parameters:@{ @"by_ids" : ids }

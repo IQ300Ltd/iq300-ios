@@ -33,7 +33,6 @@
     BOOL _enterCommentProcessing;
     ALAsset * _attachment;
     UIDocumentInteractionController * _documentController;
-    BOOL _needFullReload;
     UISwipeGestureRecognizer * _tableGesture;
 }
 
@@ -54,7 +53,7 @@
     [super viewDidLoad];
     
     _enterCommentProcessing = NO;
-    _needFullReload = YES;
+    self.needFullReload = YES;
     
     _tableGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                               action:@selector(handleSwipe:)];
@@ -354,7 +353,7 @@
         }
         
         [self scrollToBottomIfNeedAnimated:NO delay:0.5];
-        _needFullReload = NO;
+        self.needFullReload = NO;
     }];
 }
 
@@ -444,7 +443,7 @@
 - (void)scrollToBottomIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
-    if(isTableScrolledToBottom || _needFullReload) {
+    if(isTableScrolledToBottom || self.needFullReload) {
         [self scrollToBottomAnimated:animated delay:delay];
     }
 }

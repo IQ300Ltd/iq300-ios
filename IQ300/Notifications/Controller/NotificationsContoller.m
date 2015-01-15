@@ -5,7 +5,6 @@
 //  Created by Tayphoon on 11.11.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
 #import "UIViewController+LeftMenu.h"
@@ -24,11 +23,11 @@
 #import "IQDiscussion.h"
 #import "CommentsController.h"
 #import "DispatchAfterExecution.h"
+#import "UIScrollView+PullToRefreshInsert.h"
 
 @interface NotificationsContoller() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationsView * _mainView;
     NotificationsMenuModel * _menuModel;
-    BOOL _needFullReload;
 }
 
 @end
@@ -39,7 +38,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     
     if (self) {
-        _needFullReload = YES;
+        self.needFullReload = YES;
 
         self.model = [[NotificationsModel alloc] init];
 
@@ -82,16 +81,25 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-        
+    _mainView.noDataLabel.text = NSLocalizedString((self.model.loadUnreadOnly) ? NoUnreadNotificationFound : NoNotificationFound, nil);
+    
     _menuModel = [[NotificationsMenuModel alloc] init];
     [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:(self.model.loadUnreadOnly) ? 1 : 0
                                                          inSection:0]];
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
-     addPullToRefreshWithActionHandler:^{
+     insertPullToRefreshWithActionHandler:^{
          [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-             [weakSelf.tableView.pullToRefreshView stopAnimating];
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
+    
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
          }];
      }
      position:SVPullToRefreshPositionBottom];
@@ -258,6 +266,7 @@
         }
         [self scrollToTopIfNeedAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
+        self.needFullReload = NO;
     }];
 }
 
@@ -269,14 +278,14 @@
 
         [self scrollToTopIfNeedAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
-        _needFullReload = NO;
+        self.needFullReload = NO;
     }];
 }
 
 - (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
     CGFloat bottomPosition = 0.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y <= bottomPosition);
-    if(isTableScrolledToBottom || _needFullReload) {
+    if(isTableScrolledToBottom || self.needFullReload) {
         [self scrollToTopAnimated:animated delay:delay];
     }
 }

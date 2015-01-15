@@ -16,6 +16,22 @@
 @property (nonatomic, assign) BOOL loadUnreadOnly;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
+/**
+ UpdateModelWithCompletion. Load new data.
+ 
+ @param completion handler.
+
+ */
+- (void)updateModelWithCompletion:(void (^)(NSError * error))completion;
+
+/**
+ Load data from history.
+ 
+ @param completion handler.
+ 
+ */
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
+
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
 
