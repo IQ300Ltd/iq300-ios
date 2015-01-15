@@ -22,6 +22,7 @@
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "NSDate+IQFormater.h"
 #import "NSDate+CupertinoYankee.h"
+#import "DispatchAfterExecution.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -169,21 +170,20 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
     BOOL hasObjects = ([_fetchController.fetchedObjects count] == 0);
     if(hasObjects) {
-        [self updateModelSourceControllerWithCompletion:nil];
+        [self updateModelSourceControllerWithCompletion:completion];
     }
     
-    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                      page:@(1)
-                                                       per:@(40)
-                                                      sort:SORT_DIRECTION
-                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                       if(!error) {
-                                                           [self updateDefaultStatusesForComments:comments];
-                                                       }
-                                                       if(completion) {
-                                                           completion(error);
-                                                       }
-                                                   }];
+    dispatch_after_delay(1, dispatch_get_main_queue(), ^{
+        [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                          page:@(1)
+                                                           per:@(40)
+                                                          sort:SORT_DIRECTION
+                                                       handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                           if(!error) {
+                                                               [self updateDefaultStatusesForComments:comments];
+                                                           }
+                                                       }];
+    });
 }
 
 - (void)clearModelData {
@@ -576,23 +576,29 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)applicationWillEnterForeground {
-    [self reloadFirstPartWithCompletion:^(NSError *error) {
-        if(!error) {
-            [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
-                                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                                if(!success) {
-                                                                    NSLog(@"Mark discussion as read fail with error:%@", error);
-                                                                }
-                                                                else {
-                                                                    NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"messages" };
-                                                                    [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
-                                                                                                                        object:nil
-                                                                                                                      userInfo:userInfo];
-                                                                    [self modelDidChanged];
-                                                                }
-                                                            }];
-        }
-    }];
+    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                      page:@(1)
+                                                       per:@(40)
+                                                      sort:SORT_DIRECTION
+                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                       if(!error) {
+                                                           [self updateDefaultStatusesForComments:comments];
+                                                           [self modelDidChanged];
+
+                                                           [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
+                                                                                                           handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                                                               if(!success) {
+                                                                                                                   NSLog(@"Mark discussion as read fail with error:%@", error);
+                                                                                                               }
+                                                                                                               else {
+                                                                                                                   NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"messages" };
+                                                                                                                   [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
+                                                                                                                                                                       object:nil
+                                                                                                                                                                     userInfo:userInfo];
+                                                                                                               }
+                                                                                                           }];
+                                                       }
+                                                   }];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
