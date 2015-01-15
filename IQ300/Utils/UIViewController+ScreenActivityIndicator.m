@@ -5,11 +5,11 @@
 //  Created by Tayphoon on 11.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
+#import <objc/runtime.h>
 
 #import "UIViewController+ScreenActivityIndicator.h"
 
-static UIView * _loadingDimmingView = nil;
-static UIActivityIndicatorView * _loadingIndicator = nil;
+NSString const *UIViewController_indicatorViewKey = @"UIViewController_indicatorViewKey";
 
 @implementation UIViewController (ScreenActivityIndicator)
 
@@ -41,41 +41,45 @@ static UIActivityIndicatorView * _loadingIndicator = nil;
     return resultView;
 }
 
-+ (UIView*)indicatorView {
-    if(!_loadingDimmingView || !_loadingIndicator) {
-        _loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        [_loadingIndicator sizeToFit];
-        [_loadingIndicator setHidesWhenStopped:YES];
+- (UIView*)indicatorView {
+    UIView * loadingDimmingView = objc_getAssociatedObject(self, &UIViewController_indicatorViewKey);
+    UIActivityIndicatorView * loadingIndicator = ([[loadingDimmingView subviews] count] > 0 ) ? [[loadingDimmingView subviews] objectAtIndex:0] : nil;
+    
+    if(!loadingDimmingView || !loadingIndicator) {
+        loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        [loadingIndicator sizeToFit];
+        [loadingIndicator setHidesWhenStopped:YES];
         NSLayoutConstraint *heightConstraint =
-        [NSLayoutConstraint constraintWithItem:_loadingIndicator
+        [NSLayoutConstraint constraintWithItem:loadingIndicator
                                      attribute:NSLayoutAttributeHeight
                                      relatedBy:NSLayoutRelationEqual
                                         toItem:nil
                                      attribute:NSLayoutAttributeNotAnAttribute
                                     multiplier:1.0
-                                      constant:_loadingIndicator.frame.size.height];
-        [_loadingIndicator addConstraint:heightConstraint];
+                                      constant:loadingIndicator.frame.size.height];
+        [loadingIndicator addConstraint:heightConstraint];
         
         NSLayoutConstraint *widthConstraint =
-        [NSLayoutConstraint constraintWithItem:_loadingIndicator
+        [NSLayoutConstraint constraintWithItem:loadingIndicator
                                      attribute:NSLayoutAttributeWidth
                                      relatedBy:NSLayoutRelationEqual
                                         toItem:nil
                                      attribute:NSLayoutAttributeNotAnAttribute
                                     multiplier:1.0
-                                      constant:_loadingIndicator.frame.size.width];
-        [_loadingIndicator addConstraint:widthConstraint];
+                                      constant:loadingIndicator.frame.size.width];
+        [loadingIndicator addConstraint:widthConstraint];
         
-        _loadingDimmingView = [[UIView alloc] initWithFrame:[self keyWindow].bounds];
-        _loadingDimmingView.backgroundColor = [UIColor blackColor];
-        _loadingDimmingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _loadingDimmingView.opaque = NO;
-        _loadingDimmingView.alpha = 0.7f;
-        [_loadingDimmingView addSubview:_loadingIndicator];
-        _loadingIndicator.center = _loadingDimmingView.center;
+        loadingDimmingView = [[UIView alloc] init];
+        loadingDimmingView.backgroundColor = [UIColor blackColor];
+        loadingDimmingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        loadingDimmingView.opaque = NO;
+        loadingDimmingView.alpha = 0.7f;
+        [loadingDimmingView addSubview:loadingIndicator];
+        loadingIndicator.center = loadingDimmingView.center;
+        objc_setAssociatedObject(self, &UIViewController_indicatorViewKey, loadingDimmingView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     
-    return _loadingDimmingView;
+    return loadingDimmingView;
 }
 
 - (UIView*)getControllerDimmingView {
@@ -96,22 +100,49 @@ static UIActivityIndicatorView * _loadingIndicator = nil;
 }
 
 - (void)showActivityIndicator {
-    UIView * indicatorView = [UIViewController indicatorView];
+    UIView * indicatorView = [self indicatorView];
+    UIActivityIndicatorView * loadingIndicator = ([[indicatorView subviews] count] > 0 ) ? [[indicatorView subviews] objectAtIndex:0] : nil;
     UIWindow * window = [UIViewController keyWindow];
+    [indicatorView setFrame:window.bounds];
     [window addSubview:indicatorView];
-    
-    if(_loadingIndicator) {
-        [_loadingIndicator startAnimating];
+    loadingIndicator.center = indicatorView.center;
+
+    if(loadingIndicator) {
+        [loadingIndicator startAnimating];
+    }
+}
+
+- (void)showActivityIndicatorOnView:(UIView*)view {
+    UIView * indicatorView = [self indicatorView];
+    UIActivityIndicatorView * loadingIndicator = ([[indicatorView subviews] count] > 0 ) ? [[indicatorView subviews] objectAtIndex:0] : nil;
+    [indicatorView setFrame:view.bounds];
+    [view addSubview:indicatorView];
+    loadingIndicator.center = indicatorView.center;
+
+    if(loadingIndicator) {
+        [loadingIndicator startAnimating];
     }
 }
 
 - (void)hideActivityIndicator {
-    if(_loadingIndicator) {
-        [_loadingIndicator stopAnimating];
+    UIView * indicatorView = [self indicatorView];
+    UIActivityIndicatorView * loadingIndicator = ([[indicatorView subviews] count] > 0 ) ? [[indicatorView subviews] objectAtIndex:0] : nil;
+    if(loadingIndicator) {
+        [loadingIndicator stopAnimating];
     }
     
-    UIView * indicatorView = [UIViewController indicatorView];
     [indicatorView removeFromSuperview];
+}
+
+- (void)setActivityIndicatorBackgroundColor:(UIColor*)backgroundColor {
+    UIView * indicatorView = [self indicatorView];
+    [indicatorView setBackgroundColor:backgroundColor];
+}
+
+- (void)setActivityIndicatorStyle:(UIActivityIndicatorViewStyle)viewStyle {
+    UIView * indicatorView = [self indicatorView];
+    UIActivityIndicatorView * loadingIndicator = ([[indicatorView subviews] count] > 0 ) ? [[indicatorView subviews] objectAtIndex:0] : nil;
+    loadingIndicator.activityIndicatorViewStyle = viewStyle;
 }
 
 @end

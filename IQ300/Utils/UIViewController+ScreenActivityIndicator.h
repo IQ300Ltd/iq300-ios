@@ -11,6 +11,10 @@
 @interface UIViewController (ScreenActivityIndicator)
 
 - (void)showActivityIndicator;
+- (void)showActivityIndicatorOnView:(UIView*)view;
 - (void)hideActivityIndicator;
+
+- (void)setActivityIndicatorBackgroundColor:(UIColor*)backgroundColor;
+- (void)setActivityIndicatorStyle:(UIActivityIndicatorViewStyle)viewStyle;
 
 @end

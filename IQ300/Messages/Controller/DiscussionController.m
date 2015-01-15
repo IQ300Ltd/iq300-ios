@@ -62,6 +62,9 @@
 
     [self.tableView addGestureRecognizer:_tableGesture];
     
+    [self setActivityIndicatorBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.3f]];
+    [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
     [_mainView.inputView.sendButton setEnabled:NO];
     [_mainView.backButton addTarget:self
                              action:@selector(backButtonAction:)
@@ -84,6 +87,7 @@
      position:SVPullToRefreshPositionTop];
     
     [_mainView.inputView.commentTextView setDelegate:(id<UITextViewDelegate>)self];
+    _mainView.tableView.hidden = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -116,6 +120,9 @@
                                                object:nil];
     
     if([IQSession defaultSession]) {
+        if(self.needFullReload) {
+            [self showActivityIndicatorOnView:_mainView];
+        }
         [self reloadModel];
     }
 }
@@ -123,6 +130,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [self hideActivityIndicator];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -352,8 +360,13 @@
             [self.tableView reloadData];
         }
         
-        [self scrollToBottomIfNeedAnimated:NO delay:0.5];
+        [self scrollToBottomIfNeedAnimated:NO delay:0];
         self.needFullReload = NO;
+        
+        dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+            _mainView.tableView.hidden = NO;
+            [self hideActivityIndicator];
+        });
     }];
 }
 

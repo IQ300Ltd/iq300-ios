@@ -170,20 +170,21 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
     BOOL hasObjects = ([_fetchController.fetchedObjects count] == 0);
     if(hasObjects) {
-        [self updateModelSourceControllerWithCompletion:completion];
+        [self updateModelSourceControllerWithCompletion:nil];
     }
     
-    dispatch_after_delay(1, dispatch_get_main_queue(), ^{
-        [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                          page:@(1)
-                                                           per:@(40)
-                                                          sort:SORT_DIRECTION
-                                                       handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                           if(!error) {
-                                                               [self updateDefaultStatusesForComments:comments];
+    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                      page:@(1)
+                                                       per:@(40)
+                                                      sort:SORT_DIRECTION
+                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                       if(!error) {
+                                                           [self updateDefaultStatusesForComments:comments];
+                                                           if(completion) {
+                                                               completion(error);
                                                            }
-                                                       }];
-    });
+                                                       }
+                                                   }];
 }
 
 - (void)clearModelData {
