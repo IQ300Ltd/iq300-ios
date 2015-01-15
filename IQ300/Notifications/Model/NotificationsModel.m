@@ -342,16 +342,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                                           cacheName:nil];
     }
     
-    if(_loadUnreadOnly) {
-        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES) AND ownerId = %@", [IQSession defaultSession].userId]];
-    }
-    else {
-        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
-    }
-    
     NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId];
     if(_loadUnreadOnly) {
-        NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"readed == NO"];
+        NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
     }
     
@@ -381,6 +374,13 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     [fetchRequest setResultType:NSDictionaryResultType];
     fetchRequest.fetchLimit = 1;
     
+    if(_loadUnreadOnly) {
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES) AND ownerId = %@", [IQSession defaultSession].userId]];
+    }
+    else {
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
+    }
+
     NSError *error = nil;
     
     NSArray *objects = [[IQService sharedService].context executeFetchRequest:fetchRequest error:&error];
