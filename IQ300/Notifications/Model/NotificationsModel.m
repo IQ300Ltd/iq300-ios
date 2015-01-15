@@ -343,7 +343,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     }
     
     if(_loadUnreadOnly) {
-        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@", [IQSession defaultSession].userId]];
+        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES) AND ownerId = %@", [IQSession defaultSession].userId]];
     }
     else {
         [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
