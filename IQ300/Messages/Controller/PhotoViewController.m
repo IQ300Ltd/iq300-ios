@@ -13,9 +13,6 @@
 
 @interface PhotoViewController () {
     UIImageView * _imageView;
-    UIView * _headerView;
-    UIButton * _backButton;
-    UILabel * _titleLabel;
     UIActivityIndicatorView * _activityIndicator;
 }
 
@@ -29,40 +26,27 @@
     
     _imageView = [[UIImageView alloc] init];
     _imageView.backgroundColor = [UIColor clearColor];
+    _imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.view addSubview:_imageView];
 
-    _headerView = [[UIView alloc] init];
-    _headerView.backgroundColor = [UIColor blackColor];
-    _headerView.opaque = NO;
-    _headerView.alpha = 0.7f;
-    _imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.view addSubview:_headerView];
- 
-    _backButton = [[UIButton alloc] init];
-    [_backButton setImage:[UIImage imageNamed:@"backWhiteArrow.png"] forState:UIControlStateNormal];
-    [[_backButton imageView] setContentMode:UIViewContentModeCenter];
-    [_headerView addSubview:_backButton];
-    
-    _titleLabel = [[UILabel alloc] init];
-    [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-    [_titleLabel setTextColor:[UIColor whiteColor]];
-    _titleLabel.textAlignment = NSTextAlignmentCenter;
-    _titleLabel.backgroundColor = [UIColor clearColor];
-    _titleLabel.numberOfLines = 1;
-    _titleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
-    [_headerView addSubview:_titleLabel];
-    
     _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     [_activityIndicator setHidesWhenStopped:YES];
     [self.view addSubview:_activityIndicator];
+}
 
-    [_backButton addTarget:self action:@selector(backButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+- (BOOL)showMenuBarItem {
+    return NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    _titleLabel.text = self.fileName;
+    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self action:@selector(backButtonAction:)];
+    self.navigationItem.leftBarButtonItem = backBarButton;
+    
+    self.title = self.fileName;
     
     [_activityIndicator startAnimating];
     if(self.imageURL) {
@@ -103,26 +87,7 @@
     [super viewWillLayoutSubviews];
     
     CGRect actualBounds = self.view.bounds;
-    _headerView.frame = CGRectMake(actualBounds.origin.x,
-                                   actualBounds.origin.y,
-                                   actualBounds.size.width,
-                                   HEADER_HEIGHT);
-    
-    CGSize backButtonImageSize = [_backButton imageForState:UIControlStateNormal].size;
-    _backButton.frame = CGRectMake(13.0f,
-                                   (_headerView.frame.size.height - backButtonImageSize.height) / 2,
-                                   backButtonImageSize.width,
-                                   backButtonImageSize.height);
-    
-    CGFloat labelX = _backButton.frame.origin.x + 35.0f;
-    _titleLabel.frame = CGRectMake(labelX,
-                                   0.0f,
-                                   _headerView.frame.size.width - labelX * 2.0f,
-                                   _headerView.frame.size.height);
-    
-    //CGFloat imageY = CGRectBottom(_headerView.frame);
     _imageView.frame = actualBounds;
-
     _activityIndicator.center = self.view.center;
 }
 

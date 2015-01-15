@@ -253,6 +253,7 @@
                 controller.companionName = companion.displayName;
                 
                 if(!isDiscussionOpen) {
+                    controller.hidesBottomBarWhenPushed = YES;
                     [tabController setSelectedIndex:messagesTab];
                     [navController pushViewController:controller animated:NO];
                 }

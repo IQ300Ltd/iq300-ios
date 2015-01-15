@@ -66,9 +66,7 @@
     [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     
     [_mainView.inputView.sendButton setEnabled:NO];
-    [_mainView.backButton addTarget:self
-                             action:@selector(backButtonAction:)
-                   forControlEvents:UIControlEventTouchUpInside];
+
     [_mainView.inputView.sendButton addTarget:self
                                        action:@selector(sendButtonAction:)
                              forControlEvents:UIControlEventTouchUpInside];
@@ -90,9 +88,19 @@
     _mainView.tableView.hidden = YES;
 }
 
+- (BOOL)showMenuBarItem {
+    return NO;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [_mainView.titleLabel setText:self.companionName];
+    
+    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self action:@selector(backButtonAction:)];
+    self.navigationItem.leftBarButtonItem = backBarButton;
+
+    [self setTitle:self.companionName];
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];

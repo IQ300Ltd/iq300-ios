@@ -11,10 +11,6 @@
 
 @interface DiscussionView : UIView
 
-@property (nonatomic, readonly) BottomLineView * headerView;
-@property (nonatomic, readonly) UILabel * titleLabel;
-@property (nonatomic, readonly) UIButton * backButton;
-
 @property (nonatomic, strong) UITableView * tableView;
 @property (nonatomic, readonly) CommentInputView * inputView;
 @property (nonatomic, assign) CGFloat inputHeight;

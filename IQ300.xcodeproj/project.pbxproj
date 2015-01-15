@@ -118,7 +118,6 @@
 		739C3B651A3077320032C057 /* NSDate+IQFormater.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C3B641A3077320032C057 /* NSDate+IQFormater.m */; };
 		739C3B681A3086BA0032C057 /* DiscussionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C3B671A3086BA0032C057 /* DiscussionView.m */; };
 		739C3B6D1A3098550032C057 /* PlaceholderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C3B6C1A3098550032C057 /* PlaceholderTextView.m */; };
-		73A113F01A1C722D00293EC5 /* notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = 73A113EF1A1C722D00293EC5 /* notifications.json */; };
 		73A113F71A1C88DD00293EC5 /* IQMenuCellFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A113F61A1C88DD00293EC5 /* IQMenuCellFactory.m */; };
 		73A113FA1A1C8D1B00293EC5 /* RMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A113F91A1C8D1B00293EC5 /* RMenuCell.m */; };
 		73A113FD1A1CAA5900293EC5 /* default_avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A113FB1A1CAA5900293EC5 /* default_avatar.png */; };
@@ -374,7 +373,6 @@
 		739C3B671A3086BA0032C057 /* DiscussionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscussionView.m; sourceTree = "<group>"; };
 		739C3B6B1A3098550032C057 /* PlaceholderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceholderTextView.h; sourceTree = "<group>"; };
 		739C3B6C1A3098550032C057 /* PlaceholderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceholderTextView.m; sourceTree = "<group>"; };
-		73A113EF1A1C722D00293EC5 /* notifications.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = notifications.json; sourceTree = "<group>"; };
 		73A113F51A1C88DD00293EC5 /* IQMenuCellFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQMenuCellFactory.h; sourceTree = "<group>"; };
 		73A113F61A1C88DD00293EC5 /* IQMenuCellFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQMenuCellFactory.m; sourceTree = "<group>"; };
 		73A113F81A1C8D1B00293EC5 /* RMenuCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMenuCell.h; sourceTree = "<group>"; };
@@ -598,7 +596,6 @@
 		736B6BCE1A0B5BCB00034D9B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				73A113EE1A1C6F3100293EC5 /* FakeData */,
 				738FE6E21A162B10009F26A2 /* TabBar */,
 				73BA98891A109E26005AEC00 /* Menu */,
 				73F2A5411A39AB3000E9D324 /* Messages */,
@@ -1019,14 +1016,6 @@
 			path = Notifications;
 			sourceTree = "<group>";
 		};
-		73A113EE1A1C6F3100293EC5 /* FakeData */ = {
-			isa = PBXGroup;
-			children = (
-				73A113EF1A1C722D00293EC5 /* notifications.json */,
-			);
-			path = FakeData;
-			sourceTree = "<group>";
-		};
 		73A949931A383297008EC469 /* Downloader */ = {
 			isa = PBXGroup;
 			children = (
@@ -1242,7 +1231,6 @@
 				73C3FE7E1A4591E50042DAA6 /* bubble_gray@2x.png in Resources */,
 				73C58C111A1F532500C83729 /* mark_tab_item@2x.png in Resources */,
 				73F2A5511A39AB3000E9D324 /* attach_ico@2x.png in Resources */,
-				73A113F01A1C722D00293EC5 /* notifications.json in Resources */,
 				73AF73E41A3B0C0D001B8E42 /* msg_viewed.png in Resources */,
 				738FE7021A162B10009F26A2 /* messages_tab@2x.png in Resources */,
 				738FE7121A162B10009F26A2 /* tasks_tab@2x.png in Resources */,

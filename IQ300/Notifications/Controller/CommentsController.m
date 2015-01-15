@@ -281,6 +281,7 @@
     if([attachment.contentType rangeOfString:@"image"].location != NSNotFound &&
        [attachment.originalURL length] > 0) {
         PhotoViewController * controller = [[PhotoViewController alloc] init];
+        controller.hidesBottomBarWhenPushed = YES;
         controller.imageURL = [NSURL URLWithString:attachment.originalURL];
         controller.fileName = attachment.displayName;
         [self.navigationController pushViewController:controller animated:YES];

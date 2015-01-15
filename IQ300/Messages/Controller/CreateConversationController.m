@@ -119,6 +119,7 @@
                                                   model.companionId = userId;
                                                   
                                                   DiscussionController * controller = [[DiscussionController alloc] init];
+                                                  controller.hidesBottomBarWhenPushed = YES;
                                                   controller.title = NSLocalizedString(@"Messages", nil);
                                                   controller.model = model;
                                                   controller.companionName = companionName;
