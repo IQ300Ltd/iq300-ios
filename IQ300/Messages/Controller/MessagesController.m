@@ -272,6 +272,7 @@
 
 - (void)createNewAction:(id)sender {
     CreateConversationController * controller = [[CreateConversationController alloc] init];
+    controller.hidesBottomBarWhenPushed = YES;
     controller.model = [[UsersModel alloc] init];
     [self.navigationController pushViewController:controller animated:YES];
 }
