@@ -97,6 +97,12 @@
         _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
         _descriptionTextView.scrollEnabled = NO;
         _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+        
+        _descriptionTextView.linkTextAttributes = @{
+                                                    NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
+                                                    NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
+                                                    };
+        
         [_descriptionTextView addGestureRecognizer:_singleTapGesture];
         [contentView addSubview:_descriptionTextView];
         
@@ -190,7 +196,25 @@
             [attachButton setTitleColor:[UIColor colorWithHexInt:0x446b7a] forState:UIControlStateHighlighted];
             [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
             attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            [attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
+            
+            NSDictionary *underlineAttribute = @{
+                                                 NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                                 NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                                 NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x358bae]
+                                                 };
+            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
+                                                                             attributes:underlineAttribute]
+                                    forState:UIControlStateNormal];
+            
+            underlineAttribute = @{
+                                   NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                   NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                   NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x446b7a]
+                                   };
+            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
+                                                                             attributes:underlineAttribute]
+                                    forState:UIControlStateHighlighted];
+            
             [attachButton sizeToFit];
             [self.contentView addSubview:attachButton];
             [_attachButtons addObject:attachButton];

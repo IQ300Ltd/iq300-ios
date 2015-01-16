@@ -37,6 +37,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
                                 @"basetask_accept"        : @"Accept",
                                 @"basetask_refuse"        : @"Refuse",
                                 @"basetask_decline"       : @"To refine",
+                                @"basetask_work"          : @"To work",
                                 
                                 @"basecommunity_accept"   : @"Accept",
                                 @"basecommunity_decline"  : @"Refuse",

@@ -134,13 +134,18 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         
         _descriptionTextView = [[UITextView alloc] init];
         [_descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
-        [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
+        [_descriptionTextView setTextColor:DESCRIPTION_RIGHT_TEXT_COLOR];
         _descriptionTextView.textAlignment = NSTextAlignmentLeft;
         _descriptionTextView.backgroundColor = [UIColor clearColor];
         _descriptionTextView.editable = NO;
         _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
         _descriptionTextView.scrollEnabled = NO;
         _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+        _descriptionTextView.linkTextAttributes = @{
+                                                    NSForegroundColorAttributeName: _descriptionTextView.textColor,
+                                                    NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
+                                                    };
+        
         [_descriptionTextView addGestureRecognizer:_singleTapGesture];
         [contentView addSubview:_descriptionTextView];
         
@@ -238,6 +243,12 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     _descriptionTextView.textColor = (_commentIsMine) ? DESCRIPTION_LEFT_TEXT_COLOR :
                                                         DESCRIPTION_RIGHT_TEXT_COLOR;
     
+    _descriptionTextView.linkTextAttributes = @{
+                                                NSForegroundColorAttributeName: _descriptionTextView.textColor,
+                                                NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
+                                                };
+
+    
     BOOL hasAttachment = ([_item.attachments count] > 0);
     if(hasAttachment) {
         UIColor * titleColor = (_commentIsMine) ? [UIColor whiteColor] : [UIColor colorWithHexInt:0x7f7f7f];
@@ -251,7 +262,26 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
             [attachButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
             [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
             attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            [attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
+
+            NSDictionary *underlineAttribute = @{
+                                                 NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                                 NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                                 NSForegroundColorAttributeName : titleColor
+                                                 };
+            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
+                                                                             attributes:underlineAttribute]
+                                    forState:UIControlStateNormal];
+            
+            underlineAttribute = @{
+                                   NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                   NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                   NSForegroundColorAttributeName : titleHighlightedColor
+                                   };
+            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
+                                                                             attributes:underlineAttribute]
+                                    forState:UIControlStateHighlighted];
+
+            
             [self.contentView addSubview:attachButton];
             [_attachButtons addObject:attachButton];
         }
