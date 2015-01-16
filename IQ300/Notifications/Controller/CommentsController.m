@@ -157,10 +157,6 @@
         buttonIndex ++;
     }
     
-    if(self.highlightedCommentId && [comment.commentId isEqualToNumber:self.highlightedCommentId]) {
-        [cell setCommentHighlighted:YES];
-    }
-  
     return cell;
 }
 
@@ -343,7 +339,7 @@
         }
         
         if(self.needFullReload) {
-            [self scrollToCommentWithId:self.highlightedCommentId animated:YES delay:0.5f];
+            [self scrollToBottomAnimated:NO delay:0.5f];
         }
         
         self.needFullReload = NO;

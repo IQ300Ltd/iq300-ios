@@ -18,8 +18,8 @@
 #define HEIGHT_DELTA 1.0f
 #define DESCRIPTION_PADDING 7
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
-#define DESCRIPTION_LEFT_TEXT_COLOR [UIColor whiteColor]
-#define DESCRIPTION_RIGHT_TEXT_COLOR [UIColor colorWithHexInt:0x8b8b8b]
+#define DESCRIPTION_LEFT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
+#define DESCRIPTION_RIGHT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
 #define STATUS_IMAGE_SIZE 11
 #define CELL_HEADER_HEIGHT 12
 #define ATTACHMENT_VIEW_Y_OFFSET 5.0f
@@ -68,7 +68,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _bubbleImages = @{
                           @(CommentCellStyleLeft)  : [[UIImage imageNamed:@"bubble_gray.png"] stretchableImageWithLeftCapWidth:5
                                                                                                                   topCapHeight:5],
-                          @(CommentCellStyleRight) : [[UIImage imageNamed:@"bubble_green.png"] stretchableImageWithLeftCapWidth:5
+                          @(CommentCellStyleRight) : [[UIImage imageNamed:@"bubble_blue.png"] stretchableImageWithLeftCapWidth:5
                                                                                                                    topCapHeight:5]
                           };
     });
@@ -142,7 +142,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _descriptionTextView.scrollEnabled = NO;
         _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
         _descriptionTextView.linkTextAttributes = @{
-                                                    NSForegroundColorAttributeName: _descriptionTextView.textColor,
+                                                    NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
                                                     NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
                                                     };
         
@@ -243,17 +243,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     _descriptionTextView.textColor = (_commentIsMine) ? DESCRIPTION_LEFT_TEXT_COLOR :
                                                         DESCRIPTION_RIGHT_TEXT_COLOR;
     
-    _descriptionTextView.linkTextAttributes = @{
-                                                NSForegroundColorAttributeName: _descriptionTextView.textColor,
-                                                NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
-                                                };
-
-    
     BOOL hasAttachment = ([_item.attachments count] > 0);
     if(hasAttachment) {
-        UIColor * titleColor = (_commentIsMine) ? [UIColor whiteColor] : [UIColor colorWithHexInt:0x7f7f7f];
-        UIColor * titleHighlightedColor = (_commentIsMine) ? [UIColor colorWithHexInt:0x818D83] : [UIColor colorWithHexInt:0x615f5f];
-        UIImage * bacgroundImage = (_commentIsMine) ? [UIImage imageNamed:@"attach_white_ico.png"] : [UIImage imageNamed:@"attach_gray_ico.png"];
+        UIColor * titleColor = [UIColor colorWithHexInt:0x358bae];
+        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x446b7a];
+        UIImage * bacgroundImage = [UIImage imageNamed:@"attach_ico.png"];
         for (IQAttachment * attachment in _item.attachments) {
             UIButton * attachButton = [[UIButton alloc] init];
             [attachButton setImage:bacgroundImage forState:UIControlStateNormal];
