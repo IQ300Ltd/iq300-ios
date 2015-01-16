@@ -56,6 +56,8 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 
 - (void)notificationsWithIds:(NSArray*)ids handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)unreadNotificationIdsWithHandler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
 - (void)markAllNotificationAsReadWithHandler:(RequestCompletionHandler)handler;
@@ -67,5 +69,6 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 - (void)acceptNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
 - (void)declineNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
+
 
 @end

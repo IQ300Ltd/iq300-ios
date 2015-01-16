@@ -280,6 +280,10 @@
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;
     }];
+    
+    [self.model syncLocalNotificationsWithCompletion:^(NSError *error) {
+        
+    }];
 }
 
 - (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {

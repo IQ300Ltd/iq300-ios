@@ -285,6 +285,29 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                  }];
 }
 
+- (void)syncLocalNotificationsWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] unreadNotificationIdsWithHandler:^(BOOL success, NSArray * notificationIds, NSData *responseData, NSError *error) {
+        if(success && [notificationIds count] > 0) {
+            NSManagedObjectContext * context = _fetchController.managedObjectContext;
+            NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES) AND NOT(notificationId in %@)", notificationIds];
+            NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
+            [fetchRequest setPredicate:readCondition];
+            [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+                if ([objects count] > 0) {
+                    [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
+                    [objects makeObjectsPerformSelector:@selector(setHasActions:) withObject:@(NO)];
+                    [objects makeObjectsPerformSelector:@selector(setAvailableActions:) withObject:nil];
+                    NSError *saveError = nil;
+                    
+                    if(![context saveToPersistentStore:&saveError]) {
+                        NSLog(@"Save notifications error: %@", saveError);
+                    }
+                }
+            }];
+        }
+    }];
+}
+
 #pragma mark - Private methods
 
 - (void)resetActionsForNotification:(IQNotification*)notification {

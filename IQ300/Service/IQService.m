@@ -169,6 +169,21 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                    handler:handler];
 }
 
+- (void)unreadNotificationIdsWithHandler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/notifications/unread_ids"
+                parameters:nil
+                   handler:^(BOOL success, IQNotificationIds * holder, NSData *responseData, NSError *error) {
+                       if(success && holder) {
+                           if(handler) {
+                               handler(success, holder.notificationIds, responseData, error);
+                           }
+                       }
+                       else if(handler) {
+                           handler(success, holder, responseData, error);
+                       }
+                   }];
+}
+
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
                path:[NSString stringWithFormat:@"/api/v1/notifications/%@", notificationId]
@@ -279,6 +294,14 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationIds class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/notifications/unread_ids"
+                                                   fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQUser class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/users/current"
