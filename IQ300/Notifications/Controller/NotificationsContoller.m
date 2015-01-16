@@ -174,6 +174,7 @@
                                                 if(success) {
                                                     CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];                                                    
                                                     CommentsController * controller = [[CommentsController alloc] init];
+                                                    controller.hidesBottomBarWhenPushed = YES;
                                                     controller.title = NSLocalizedString(@"Notifications", nil);
                                                     controller.model = model;
                                                     controller.subTitle = title;

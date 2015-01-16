@@ -216,6 +216,10 @@
     [super prepareForReuse];
     _commentIsMine = NO;
     
+    _descriptionTextView.selectable = NO;
+    _descriptionTextView.text = nil;
+    _descriptionTextView.selectable = YES;
+
     for (UIButton * attachButton in _attachButtons) {
         [attachButton removeTarget:nil
                             action:NULL

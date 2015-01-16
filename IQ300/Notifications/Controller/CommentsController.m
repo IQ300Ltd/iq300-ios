@@ -60,9 +60,7 @@
     [self.tableView addGestureRecognizer:_tableGesture];
 
     [_mainView.inputView.sendButton setEnabled:NO];
-    [_mainView.backButton addTarget:self
-                             action:@selector(backButtonAction:)
-                   forControlEvents:UIControlEventTouchUpInside];
+
     [_mainView.inputView.sendButton addTarget:self
                                        action:@selector(sendButtonAction:)
                              forControlEvents:UIControlEventTouchUpInside];
@@ -83,9 +81,19 @@
     [_mainView.inputView.commentTextView setDelegate:(id<UITextViewDelegate>)self];
 }
 
+- (BOOL)showMenuBarItem {
+    return NO;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [_mainView.titleLabel setText:self.subTitle];
+    
+    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self action:@selector(backButtonAction:)];
+    self.navigationItem.leftBarButtonItem = backBarButton;
+    
+    [self setTitle:self.subTitle];
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];

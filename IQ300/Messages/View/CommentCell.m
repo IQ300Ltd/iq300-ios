@@ -266,7 +266,13 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 
 - (void)prepareForReuse {
     [super prepareForReuse];
+    
     _commentIsMine = NO;
+
+    _descriptionTextView.selectable = NO;
+    _descriptionTextView.text = nil;
+    _descriptionTextView.selectable = YES;
+
     [self setStatus:IQCommentStatusUnknown];
     for (UIButton * attachButton in _attachButtons) {
         [attachButton removeTarget:nil
