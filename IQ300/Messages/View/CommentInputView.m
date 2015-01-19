@@ -84,8 +84,8 @@
         [_sendButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
         [_sendButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
-        [_sendButton setBackgroundColor:[UIColor colorWithHexInt:0x4288a7]];
-        [_sendButton setBackgroundColor:[UIColor colorWithHexInt:0x31667d] forState:UIControlStateHighlighted];
+        [_sendButton setBackgroundColor:[UIColor colorWithHexInt:0x348dad]];
+        [_sendButton setBackgroundColor:[UIColor colorWithHexInt:0x2d7a96] forState:UIControlStateHighlighted];
         [_sendButton setBackgroundColor:[UIColor colorWithHexInt:0x7296a6] forState:UIControlStateDisabled];
         _sendButton.layer.borderColor = _sendButton.backgroundColor.CGColor;
         [_sendButton setClipsToBounds:YES];
