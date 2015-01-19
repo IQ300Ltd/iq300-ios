@@ -52,6 +52,9 @@
     _enterCommentProcessing = NO;
     self.needFullReload = YES;
     
+    [self setActivityIndicatorBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.3f]];
+    [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+
     _tableGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                               action:@selector(handleSwipe:)];
     _tableGesture.direction = UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown;
@@ -79,6 +82,7 @@
      position:SVPullToRefreshPositionTop];
     
     [_mainView.inputView.commentTextView setDelegate:(id<UITextViewDelegate>)self];
+    _mainView.tableView.hidden = YES;
 }
 
 - (BOOL)showMenuBarItem {
@@ -121,6 +125,9 @@
                                                object:nil];
 
     if([IQSession defaultSession]) {
+        if(self.needFullReload) {
+            [self showActivityIndicatorOnView:_mainView];
+        }
         [self reloadModel];
     }
 }
@@ -338,11 +345,13 @@
             [self.tableView reloadData];
         }
         
-        if(self.needFullReload) {
-            [self scrollToBottomAnimated:NO delay:0.5f];
-        }
-        
+        [self scrollToBottomIfNeedAnimated:NO delay:0];
         self.needFullReload = NO;
+        
+        dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+            _mainView.tableView.hidden = NO;
+            [self hideActivityIndicator];
+        });
     }];
 }
 
