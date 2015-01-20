@@ -220,6 +220,7 @@
         application.applicationState == UIApplicationStateBackground) {
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
+        NSLog(@"Recive remote notification %@", userInfo);
         [self showControllerForNotification:userInfo];
     }
 }
