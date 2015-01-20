@@ -273,11 +273,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     }
     
     if(hasAttachment) {
-        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + 2.5f :
+        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + 3.5f :
                                                     _bubbleImageView.frame.origin.y + ATTACHMENT_VIEW_Y_OFFSET;
         
         if(_expandable && !_expanded) {
-            attachButtonY = CGRectBottom(_expandButton.frame) + 2.5f;
+            attachButtonY = CGRectBottom(_expandButton.frame) + ATTACHMENT_VIEW_Y_OFFSET;
         }
         
         CGSize constrainedSize = CGSizeMake(_bubbleImageView.frame.size.width, ATTACHMENT_VIEW_HEIGHT);
@@ -291,7 +291,6 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
             
             attachButtonY = CGRectBottom(attachButton.frame) + 7.0f;
         }
-        
     }
 }
 
