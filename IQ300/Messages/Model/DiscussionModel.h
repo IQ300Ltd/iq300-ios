@@ -29,6 +29,12 @@
 
 - (id)initWithDiscussion:(IQDiscussion*)discussion;
 
+- (BOOL)isCellExpandedAtIndexPath:(NSIndexPath*)indexPath;
+
+- (BOOL)isCellExpandableAtIndexPath:(NSIndexPath*)indexPath;
+
+- (void)setCellExpanded:(BOOL)expanded atIndexPath:(NSIndexPath*)indexPath;
+
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;

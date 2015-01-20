@@ -81,7 +81,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     return nil;
 }
 
-+ (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
++ (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth expanded:(BOOL)expanded {
     CGFloat descriptionWidth = BUBBLE_WIDTH - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
@@ -92,6 +92,15 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                                          context:nil].size;
         height = MAX(descriptionSize.height + CELL_HEADER_HEIGHT + DESCRIPTION_PADDING * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
+        
+        if (!expanded) {
+            height = MIN(height, COLLAPSED_COMMENT_CELL_MAX_HEIGHT);
+
+            BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;
+            if(canExpand) {
+                height += ATTACHMENT_VIEW_Y_OFFSET + ATTACHMENT_VIEW_HEIGHT;
+            }
+        }
     }
     else {
         height = CELL_HEADER_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA;
@@ -103,6 +112,24 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     }
     
     return height;
+}
+
++ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
+    CGFloat descriptionWidth = BUBBLE_WIDTH - DESCRIPTION_PADDING * 2.0f;
+    CGFloat height = COMMENT_CELL_MIN_HEIGHT;
+    
+    if([item.body length] > 0) {
+        CGSize descriptionSize = [item.body boundingRectWithSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
+                                                         options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                                      attributes:@{NSFontAttributeName:DESCRIPTION_LABEL_FONT}
+                                                         context:nil].size;
+        height = MAX(descriptionSize.height + CELL_HEADER_HEIGHT + DESCRIPTION_PADDING * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA,
+                     COMMENT_CELL_MIN_HEIGHT);
+        
+        BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;
+        return canExpand;
+    }
+    return NO;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -148,6 +175,38 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         
         [_descriptionTextView addGestureRecognizer:_singleTapGesture];
         [contentView addSubview:_descriptionTextView];
+        
+        UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
+        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+        UIImage * bacgroundImage = [UIImage imageNamed:@"view_all_ico.png"];
+        _expandButton = [[UIButton alloc] init];
+        [_expandButton setImage:bacgroundImage forState:UIControlStateNormal];
+        [_expandButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+        [_expandButton setTitleColor:titleColor forState:UIControlStateNormal];
+        [_expandButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
+        [_expandButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
+        _expandButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        
+        NSDictionary *underlineAttribute = @{
+                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                             NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                             NSForegroundColorAttributeName : titleColor
+                                             };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"View all", nil)
+                                                                         attributes:underlineAttribute]
+                                forState:UIControlStateNormal];
+        
+        underlineAttribute = @{
+                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                               NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                               NSForegroundColorAttributeName : titleHighlightedColor
+                               };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"View all", nil)
+                                                                         attributes:underlineAttribute]
+                                forState:UIControlStateHighlighted];
+        
+        [_expandButton setHidden:YES];
+        [contentView addSubview:_expandButton];
         
         _attachButtons = [NSMutableArray array];
     }
@@ -196,16 +255,28 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat descriptioHeight = (hasAttachment) ? _bubbleImageView.frame.size.height - attachmentRectHeight - DESCRIPTION_PADDING * 2 :
                                                  _bubbleImageView.frame.size.height - DESCRIPTION_PADDING * 2;
     
+    if (_expandable && !_expanded) {
+        descriptioHeight -= ATTACHMENT_VIEW_Y_OFFSET + ATTACHMENT_VIEW_HEIGHT;
+    }
+    
     _descriptionTextView.frame = CGRectMake(_bubbleImageView.frame.origin.x + DESCRIPTION_PADDING,
                                             _bubbleImageView.frame.origin.y + DESCRIPTION_PADDING - bubleTailWidth,
                                             _bubbleImageView.frame.size.width - DESCRIPTION_PADDING * 2.0f,
                                             (hasDescription) ? descriptioHeight : 0.0f);
     
+    if(hasDescription && _expandable && !_expanded) {
+        CGFloat buttonY = CGRectBottom(_descriptionTextView.frame) + 2.0f;
+        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x,
+                                         buttonY,
+                                         _descriptionTextView.frame.size.width,
+                                         ATTACHMENT_VIEW_HEIGHT);
+    }
+    
     if(hasAttachment) {
         CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + 2.0f :
                                                     _bubbleImageView.frame.origin.y + ATTACHMENT_VIEW_Y_OFFSET;
         
-        CGSize constrainedSize = CGSizeMake(_bubbleImageView.frame.size.width, 15.0f);
+        CGSize constrainedSize = CGSizeMake(_bubbleImageView.frame.size.width, ATTACHMENT_VIEW_HEIGHT);
         for (UIButton * attachButton in _attachButtons) {
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
             CGFloat attachmentX = _descriptionTextView.frame.origin.x;
@@ -217,6 +288,22 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
             attachButtonY = CGRectBottom(attachButton.frame) + 7.0f;
         }
         
+    }
+}
+
+- (void)setExpandable:(BOOL)expandable {
+    if(_expandable != expandable) {
+        _expandable = expandable;
+        [_expandButton setHidden:!(_expandable && !_expanded)];
+        [self setNeedsDisplay];
+    }
+}
+
+- (void)setExpanded:(BOOL)expanded {
+    if (_expanded != expanded) {
+        _expanded = expanded;
+        [_expandButton setHidden:!(_expandable && !_expanded)];
+        [self setNeedsDisplay];
     }
 }
 
@@ -246,7 +333,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     BOOL hasAttachment = ([_item.attachments count] > 0);
     if(hasAttachment) {
         UIColor * titleColor = [UIColor colorWithHexInt:0x358bae];
-        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x446b7a];
+        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x224f60];
         UIImage * bacgroundImage = [UIImage imageNamed:@"attach_ico.png"];
         for (IQAttachment * attachment in _item.attachments) {
             UIButton * attachButton = [[UIButton alloc] init];
@@ -292,6 +379,8 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     [super prepareForReuse];
     
     _commentIsMine = NO;
+    _expanded = NO;
+    _expandable = NO;
 
     _descriptionTextView.selectable = NO;
     _descriptionTextView.text = nil;
@@ -303,6 +392,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                             action:NULL
                   forControlEvents:UIControlEventTouchUpInside];
     }
+    
+    [_expandButton setHidden:YES];
+    [_expandButton removeTarget:nil
+                         action:NULL
+               forControlEvents:UIControlEventTouchUpInside];
     
     [_attachButtons makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [_attachButtons removeAllObjects];
