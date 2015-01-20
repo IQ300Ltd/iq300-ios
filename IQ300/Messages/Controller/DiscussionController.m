@@ -99,8 +99,6 @@
                                                                        style:UIBarButtonItemStylePlain
                                                                       target:self action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
-
-    [self setTitle:self.companionName];
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
@@ -140,6 +138,18 @@
     
     [self hideActivityIndicator];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)reloadDataWithCompletion:(void (^)())completion {
+    [self showActivityIndicatorOnView:_mainView];
+    [self.model reloadModelWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self.tableView reloadData];
+        }
+        
+        [self scrollToBottomAnimated:NO delay:0.0f];
+        [self hideActivityIndicator];
+    }];
 }
 
 #pragma mark - UITableView DataSource

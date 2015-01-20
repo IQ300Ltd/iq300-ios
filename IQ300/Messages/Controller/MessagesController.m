@@ -192,9 +192,8 @@
 
     DiscussionController * controller = [[DiscussionController alloc] init];
     controller.hidesBottomBarWhenPushed = YES;
-    controller.title = NSLocalizedString(@"Messages", nil);
+    controller.title = cell.companion.displayName;
     controller.model = model;
-    controller.companionName = cell.companion.displayName;
 
     [self.navigationController pushViewController:controller animated:YES];
     

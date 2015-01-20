@@ -128,9 +128,8 @@
                                                   
                                                   DiscussionController * controller = [[DiscussionController alloc] init];
                                                   controller.hidesBottomBarWhenPushed = YES;
-                                                  controller.title = NSLocalizedString(@"Messages", nil);
                                                   controller.model = model;
-                                                  controller.companionName = companionName;
+                                                  controller.title = companionName;
 
                                                   [MessagesModel markConversationAsRead:conv completion:nil];
                                                   
