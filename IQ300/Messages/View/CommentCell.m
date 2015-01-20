@@ -94,11 +94,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                      COMMENT_CELL_MIN_HEIGHT);
         
         if (!expanded) {
+            BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;
             height = MIN(height, COLLAPSED_COMMENT_CELL_MAX_HEIGHT);
 
-            BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;
             if(canExpand) {
-                height += ATTACHMENT_VIEW_Y_OFFSET + ATTACHMENT_VIEW_HEIGHT;
+                height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET;
             }
         }
     }
@@ -256,7 +256,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                                  _bubbleImageView.frame.size.height - DESCRIPTION_PADDING * 2;
     
     if (_expandable && !_expanded) {
-        descriptioHeight -= ATTACHMENT_VIEW_Y_OFFSET + ATTACHMENT_VIEW_HEIGHT;
+        descriptioHeight -= ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET;
     }
     
     _descriptionTextView.frame = CGRectMake(_bubbleImageView.frame.origin.x + DESCRIPTION_PADDING,
@@ -265,21 +265,25 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                             (hasDescription) ? descriptioHeight : 0.0f);
     
     if(hasDescription && _expandable && !_expanded) {
-        CGFloat buttonY = CGRectBottom(_descriptionTextView.frame) + 2.0f;
-        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x,
+        CGFloat buttonY = CGRectBottom(_descriptionTextView.frame) + 3.5f;
+        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + ATTACHMENT_VIEW_Y_OFFSET,
                                          buttonY,
                                          _descriptionTextView.frame.size.width,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
     
     if(hasAttachment) {
-        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + 2.0f :
+        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + 2.5f :
                                                     _bubbleImageView.frame.origin.y + ATTACHMENT_VIEW_Y_OFFSET;
         
+        if(_expandable && !_expanded) {
+            attachButtonY = CGRectBottom(_expandButton.frame) + 2.5f;
+        }
+        
         CGSize constrainedSize = CGSizeMake(_bubbleImageView.frame.size.width, ATTACHMENT_VIEW_HEIGHT);
+        CGFloat attachmentX = _descriptionTextView.frame.origin.x + ATTACHMENT_VIEW_Y_OFFSET;
         for (UIButton * attachButton in _attachButtons) {
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
-            CGFloat attachmentX = _descriptionTextView.frame.origin.x;
             attachButton.frame = CGRectMake(attachmentX,
                                             attachButtonY,
                                             MIN(attachmentSize.width + 5.0f, _descriptionTextView.frame.size.width),
