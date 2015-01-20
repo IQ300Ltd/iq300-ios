@@ -141,6 +141,10 @@
 }
 
 - (void)reloadDataWithCompletion:(void (^)())completion {
+    [_mainView.inputView.commentTextView resignFirstResponder];
+    _attachment = nil;
+    _enterCommentProcessing = NO;
+    
     [self showActivityIndicatorOnView:_mainView];
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
