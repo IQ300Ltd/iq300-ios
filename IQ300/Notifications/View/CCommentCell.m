@@ -40,11 +40,13 @@
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
-        CGSize descriptionSize = [item.body boundingRectWithSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
-                                                         options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                                      attributes:@{NSFontAttributeName:DESCRIPTION_LABEL_FONT}
-                                                         context:nil].size;
-        height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
+        UITextView * descriptionTextView = [[UITextView alloc] init];
+        [descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
+        descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        descriptionTextView.text = item.body;
+        
+        CGSize descriptionSize = [descriptionTextView sizeThatFits:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)];
+        height = MAX(descriptionY + ceilf(descriptionSize.height) + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
         if (!expanded) {
             BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;
@@ -73,11 +75,13 @@
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
-        CGSize descriptionSize = [item.body boundingRectWithSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
-                                                         options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                                      attributes:@{NSFontAttributeName:DESCRIPTION_LABEL_FONT}
-                                                         context:nil].size;
-        height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
+        UITextView * descriptionTextView = [[UITextView alloc] init];
+        [descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
+        descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        descriptionTextView.text = item.body;
+        
+        CGSize descriptionSize = [descriptionTextView sizeThatFits:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)];
+        height = MAX(descriptionY + ceilf(descriptionSize.height) + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
         BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;
         if(canExpand) {
@@ -213,7 +217,7 @@
     
     _descriptionTextView.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                             descriptionY,
-                                            actualBounds.size.width ,
+                                            actualBounds.size.width,
                                             (hasDescription) ? descriptionHeight : 0.0f);
     
     if(hasExpandView) {

@@ -87,11 +87,13 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
-        CGSize descriptionSize = [item.body boundingRectWithSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
-                                                         options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                                      attributes:@{NSFontAttributeName:DESCRIPTION_LABEL_FONT}
-                                                         context:nil].size;
-        height = MAX(descriptionSize.height + CELL_HEADER_HEIGHT + DESCRIPTION_PADDING * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA,
+        UITextView * descriptionTextView = [[UITextView alloc] init];
+        [descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
+        descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        descriptionTextView.text = item.body;
+        
+        CGSize descriptionSize = [descriptionTextView sizeThatFits:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)];
+        height = MAX(ceilf(descriptionSize.height) + CELL_HEADER_HEIGHT + DESCRIPTION_PADDING * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
         
         if (!expanded) {
@@ -120,11 +122,13 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
-        CGSize descriptionSize = [item.body boundingRectWithSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
-                                                         options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                                      attributes:@{NSFontAttributeName:DESCRIPTION_LABEL_FONT}
-                                                         context:nil].size;
-        height = MAX(descriptionSize.height + CELL_HEADER_HEIGHT + DESCRIPTION_PADDING * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA,
+        UITextView * descriptionTextView = [[UITextView alloc] init];
+        [descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
+        descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        descriptionTextView.text = item.body;
+        
+        CGSize descriptionSize = [descriptionTextView sizeThatFits:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)];
+        height = MAX(ceilf(descriptionSize.height) + CELL_HEADER_HEIGHT + DESCRIPTION_PADDING * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
         
         BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;

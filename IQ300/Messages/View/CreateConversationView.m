@@ -8,7 +8,7 @@
 
 #import "CreateConversationView.h"
 
-#define HEADER_HEIGHT 52.0f
+#define HEADER_HEIGHT 60.0f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xc0c0c0]
 
 @interface CreateConversationView() {
@@ -24,7 +24,7 @@
     self = [super init];
     
     if (self) {
-        _contentInsets = UIEdgeInsetsZero;
+        _contentInsets = UIEdgeInsetsMake(10.0f, 0.0f, 0.0f, 0.0f);
         _userNameInset = UIEdgeInsetsMake(0.0f, 14.0f, 0.0f, 14.0f);
         
         [self setBackgroundColor:[UIColor whiteColor]];
