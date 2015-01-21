@@ -34,7 +34,7 @@
 
 @implementation CCommentCell
 
-+ (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
++ (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded andCellWidth:(CGFloat)cellWidth {
     CGFloat descriptionY = CELL_HEADER_MIN_HEIGHT;
     CGFloat descriptionWidth = cellWidth - CONTENT_INSET * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
@@ -46,6 +46,14 @@
                                                          context:nil].size;
         height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
+        if (!expanded) {
+            BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;
+            height = MIN(height, COLLAPSED_COMMENT_CELL_MAX_HEIGHT);
+            
+            if(canExpand) {
+                height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET * 2.0f;
+            }
+        }
     }
     else {
         height = descriptionY + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA;
@@ -57,6 +65,27 @@
     }
     
     return height;
+}
+
++ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
+    CGFloat descriptionY = CELL_HEADER_MIN_HEIGHT;
+    CGFloat descriptionWidth = cellWidth - CONTENT_INSET * 2.0f;
+    CGFloat height = COMMENT_CELL_MIN_HEIGHT;
+    
+    if([item.body length] > 0) {
+        CGSize descriptionSize = [item.body boundingRectWithSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
+                                                         options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                                      attributes:@{NSFontAttributeName:DESCRIPTION_LABEL_FONT}
+                                                         context:nil].size;
+        height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
+                     COMMENT_CELL_MIN_HEIGHT);
+        BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;
+        if(canExpand) {
+            return canExpand;
+        }
+    }
+
+    return NO;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -106,6 +135,38 @@
         [_descriptionTextView addGestureRecognizer:_singleTapGesture];
         [contentView addSubview:_descriptionTextView];
         
+        UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
+        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+        UIImage * bacgroundImage = [UIImage imageNamed:@"view_all_ico.png"];
+        _expandButton = [[UIButton alloc] init];
+        [_expandButton setImage:bacgroundImage forState:UIControlStateNormal];
+        [_expandButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+        [_expandButton setTitleColor:titleColor forState:UIControlStateNormal];
+        [_expandButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
+        [_expandButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
+        _expandButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        
+        NSDictionary *underlineAttribute = @{
+                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                             NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                             NSForegroundColorAttributeName : titleColor
+                                             };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"View all", nil)
+                                                                          attributes:underlineAttribute]
+                                 forState:UIControlStateNormal];
+        
+        underlineAttribute = @{
+                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                               NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                               NSForegroundColorAttributeName : titleHighlightedColor
+                               };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"View all", nil)
+                                                                          attributes:underlineAttribute]
+                                 forState:UIControlStateHighlighted];
+        
+        [_expandButton setHidden:YES];
+        [contentView addSubview:_expandButton];
+        
         _attachButtons = [NSMutableArray array];
     }
     
@@ -121,6 +182,7 @@
     
     BOOL hasDescription = ([_item.body length] > 0);
     BOOL hasAttachment = ([_item.attachments count] > 0);
+    BOOL hasExpandView = (_expandable && !_expanded);
 
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
@@ -144,24 +206,33 @@
                                   topLabelSize.width,
                                   topLabelSize.height);
     
-    CGFloat attachmentRectHeight = (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [_attachButtons count] - ATTACHMENT_VIEW_Y_OFFSET;
-    CGFloat descriptionInset = (hasAttachment) ? attachmentRectHeight : 0.0f;
+    CGFloat attachmentRectHeight = (hasAttachment) ? (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [_attachButtons count] - ATTACHMENT_VIEW_Y_OFFSET : 0.0f;
+    CGFloat expandViewHeight = (hasExpandView) ? ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET : 0.0f;
     CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
-    CGFloat descriptionHeight = (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f;
-    
-    if(hasAttachment && !hasDescription) {
-        descriptionHeight = 16.5f;
-    }
+    CGFloat descriptionHeight = (hasDescription) ? actualBounds.size.height - descriptionY - attachmentRectHeight - expandViewHeight : 0.0f;
     
     _descriptionTextView.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                             descriptionY,
-                                            (hasDescription) ? actualBounds.size.width : 10.0f,
-                                            descriptionHeight);
+                                            actualBounds.size.width ,
+                                            (hasDescription) ? descriptionHeight : 0.0f);
+    
+    if(hasExpandView) {
+        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + ATTACHMENT_VIEW_Y_OFFSET,
+                                         CGRectBottom(_descriptionTextView.frame) + ATTACHMENT_VIEW_Y_OFFSET,
+                                         _descriptionTextView.frame.size.width - ATTACHMENT_VIEW_Y_OFFSET,
+                                         ATTACHMENT_VIEW_HEIGHT);
+    }
+    
     if(hasAttachment) {
         CGFloat attachmentY = (hasAttachment && !hasDescription) ? _descriptionTextView.frame.origin.y + 2.0f : CGRectBottom(_descriptionTextView.frame) + 5.0f;
+        
+        if(hasExpandView) {
+            attachmentY = CGRectBottom(_expandButton.frame) + 5.0f;
+        }
+        
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
+        CGFloat attachmentX = _descriptionTextView.frame.origin.x + 5.0f;
         for (UIButton * attachButton in _attachButtons) {
-            CGFloat attachmentX = _descriptionTextView.frame.origin.x;
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
             attachButton.frame = CGRectMake(attachmentX,
                                             attachmentY,
@@ -170,6 +241,22 @@
             
             attachmentY = CGRectBottom(attachButton.frame) + 7.0f;
         }
+    }
+}
+
+- (void)setExpandable:(BOOL)expandable {
+    if(_expandable != expandable) {
+        _expandable = expandable;
+        [_expandButton setHidden:!(_expandable && !_expanded)];
+        [self setNeedsDisplay];
+    }
+}
+
+- (void)setExpanded:(BOOL)expanded {
+    if (_expanded != expanded) {
+        _expanded = expanded;
+        [_expandButton setHidden:!(_expandable && !_expanded)];
+        [self setNeedsDisplay];
     }
 }
 
@@ -239,7 +326,9 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     _commentIsMine = NO;
-    
+    _expanded = NO;
+    _expandable = NO;
+ 
     _descriptionTextView.selectable = NO;
     _descriptionTextView.text = nil;
     _descriptionTextView.selectable = YES;
@@ -249,6 +338,11 @@
                             action:NULL
                   forControlEvents:UIControlEventTouchUpInside];
     }
+    
+    [_expandButton setHidden:YES];
+    [_expandButton removeTarget:nil
+                         action:NULL
+               forControlEvents:UIControlEventTouchUpInside];
     
     [_attachButtons makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [_attachButtons removeAllObjects];

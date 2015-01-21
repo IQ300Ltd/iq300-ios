@@ -280,7 +280,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         }
         
         CGSize constrainedSize = CGSizeMake(_bubbleImageView.frame.size.width, ATTACHMENT_VIEW_HEIGHT);
-        CGFloat attachmentX = _descriptionTextView.frame.origin.x + CONTENT_Y_OFFSET;
+        CGFloat attachmentX = _descriptionTextView.frame.origin.x + 5.0f;
         for (UIButton * attachButton in _attachButtons) {
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
             attachButton.frame = CGRectMake(attachmentX,

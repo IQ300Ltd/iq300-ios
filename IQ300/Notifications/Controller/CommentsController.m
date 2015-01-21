@@ -155,6 +155,15 @@
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
     
+    cell.expandable = [self.model isCellExpandableAtIndexPath:indexPath];
+    cell.expanded = [self.model isCellExpandedAtIndexPath:indexPath];
+    
+    if(cell.expandable && !cell.expanded) {
+        [cell.expandButton addTarget:self
+                              action:@selector(expandButtonAction:)
+                    forControlEvents:UIControlEventTouchUpInside];
+    }
+
     NSInteger buttonIndex = 0;
     for (UIButton * attachButton in cell.attachButtons) {
         [attachButton addTarget:self
@@ -336,6 +345,14 @@
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               
                           }];
+    }
+}
+
+- (void)expandButtonAction:(UIButton*)sender {
+    CCommentCell * cell = [self cellForView:sender];
+    if(cell) {
+        NSIndexPath * cellIndexPath = [self.tableView indexPathForCell:cell];
+        [self.model setCellExpanded:YES atIndexPath:cellIndexPath];
     }
 }
 

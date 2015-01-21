@@ -31,6 +31,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
     NSDateFormatter * _dateFormatter;
+    NSMutableDictionary * _expandedCells;
+    NSMutableDictionary * _expandableCells;
 }
 
 @end
@@ -39,6 +41,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (id)init {
     if(self) {
+        _expandedCells = [NSMutableDictionary dictionary];
+        _expandableCells = [NSMutableDictionary dictionary];
         _portionLenght = 20;
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createDate" ascending:YES];
         _sortDescriptors = @[descriptor];
@@ -80,7 +84,17 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return [CCommentCell heightForItem:[self itemAtIndexPath:indexPath] andCellWidth:self.cellWidth];
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    
+    if(self.cellWidth > 0 && ![_expandableCells objectForKey:comment.commentId]) {
+        BOOL expandable = [CCommentCell cellNeedToBeExpandableForItem:comment andCellWidth:self.cellWidth];
+        [_expandableCells setObject:@(expandable) forKey:comment.commentId];
+    }
+    
+    BOOL isExpanded = [self isCellExpandedAtIndexPath:indexPath];
+    return [CCommentCell heightForItem:comment
+                              expanded:isExpanded
+                          andCellWidth:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
@@ -97,6 +111,32 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (Class)controllerClassForItemAtIndexPath:(NSIndexPath*)indexPath {
     return nil;
+}
+
+- (BOOL)isCellExpandedAtIndexPath:(NSIndexPath*)indexPath {
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    BOOL isExpanded = [[_expandedCells objectForKey:comment.commentId] boolValue];
+    return isExpanded;
+}
+
+- (BOOL)isCellExpandableAtIndexPath:(NSIndexPath*)indexPath {
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    BOOL isExpandable = [[_expandableCells objectForKey:comment.commentId] boolValue];
+    return isExpandable;
+}
+
+- (void)setCellExpanded:(BOOL)expanded atIndexPath:(NSIndexPath*)indexPath {
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    BOOL isExpanded = [[_expandedCells objectForKey:comment.commentId] boolValue];
+    if(isExpanded != expanded) {
+        [_expandedCells setObject:@(expanded) forKey:comment.commentId];
+        [self modelWillChangeContent];
+        [self modelDidChangeObject:nil
+                       atIndexPath:indexPath
+                     forChangeType:NSFetchedResultsChangeUpdate
+                      newIndexPath:nil];
+        [self modelDidChangeContent];
+    }
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
