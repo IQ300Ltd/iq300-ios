@@ -273,7 +273,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
     if(hasAttachment) {
         CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET + 1 :
-                                                    _bubbleImageView.frame.origin.y + DESCRIPTION_PADDING;
+                                                    _bubbleImageView.frame.origin.y + CONTENT_Y_OFFSET;
         
         if(hasExpandView) {
             attachButtonY = CGRectBottom(_expandButton.frame) + CONTENT_Y_OFFSET;
