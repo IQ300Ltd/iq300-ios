@@ -248,7 +248,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(reloadFirstPart)
+                                                 selector:@selector(applicationWillEnterForeground)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
     }
@@ -466,6 +466,17 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         [self clearModelData];
         [self modelDidChanged];
     }
+}
+
+- (void)applicationWillEnterForeground {
+    NSNumber * notificationId = [self getLastIdFromTop:YES];
+    [[IQService sharedService] notificationsAfterId:notificationId
+                                             unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                per:nil
+                                               sort:SORT_DIRECTION
+                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                            }];
+    [self syncLocalNotificationsWithCompletion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

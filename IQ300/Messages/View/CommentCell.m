@@ -21,8 +21,9 @@
 #define DESCRIPTION_LEFT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
 #define DESCRIPTION_RIGHT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
 #define STATUS_IMAGE_SIZE 11
-#define CELL_HEADER_HEIGHT 12
-#define ATTACHMENT_VIEW_Y_OFFSET 5.0f
+#define TIME_LABEL_HEIGHT 7.0f
+#define CONTENT_Y_OFFSET 5.0f
+#define CELL_HEADER_HEIGHT TIME_LABEL_HEIGHT + CONTENT_Y_OFFSET
 
 #define BUBBLE_WIDTH 205
 #define BUBBLE_BOTTOM_OFFSET 6.0f
@@ -81,7 +82,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     return nil;
 }
 
-+ (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth expanded:(BOOL)expanded {
++ (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded {
     CGFloat descriptionWidth = BUBBLE_WIDTH - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
@@ -98,23 +99,23 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
             height = MIN(height, COLLAPSED_COMMENT_CELL_MAX_HEIGHT);
 
             if(canExpand) {
-                height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET;
+                height += ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET * 2.0f;
             }
         }
     }
     else {
-        height = CELL_HEADER_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA;
+        height = CELL_HEADER_HEIGHT + CONTENT_Y_OFFSET + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA;
     }
     
     BOOL hasAttachment = ([item.attachments count] > 0);
     if(hasAttachment) {
-        height += (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * item.attachments.count - ATTACHMENT_VIEW_Y_OFFSET;
+        height += (ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET) * item.attachments.count;
     }
     
     return height;
 }
 
-+ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
++ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item {
     CGFloat descriptionWidth = BUBBLE_WIDTH - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
@@ -185,7 +186,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         [_expandButton setTitleColor:titleColor forState:UIControlStateNormal];
         [_expandButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
         [_expandButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
-        _expandButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+       _expandButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         
         NSDictionary *underlineAttribute = @{
                                              NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
@@ -223,20 +224,21 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
     BOOL hasDescription = ([_item.body length] > 0);
     BOOL hasAttachment = ([_item.attachments count] > 0);
+    BOOL hasExpandView = (_expandable && !_expanded);
+    
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     CGFloat bubleOffset = 5.0f;
-    CGFloat bubleTailWidth = 2.0f;
  
     _timeLabel.frame = CGRectMake(actualBounds.origin.x,
                                   actualBounds.origin.y,
                                   actualBounds.size.width,
-                                  7);
+                                  TIME_LABEL_HEIGHT);
     
-    CGFloat bubdleImageY = CGRectBottom(_timeLabel.frame) + 5.0f;
+    CGFloat bubdleImageY = CGRectBottom(_timeLabel.frame) + CONTENT_Y_OFFSET;
 
     if(_commentIsMine) {
-        _statusImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - bubleOffset - BUBBLE_WIDTH - STATUS_IMAGE_SIZE,
+        _statusImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - CONTENT_Y_OFFSET - BUBBLE_WIDTH - STATUS_IMAGE_SIZE,
                                             bubdleImageY + 10.0f,
                                             STATUS_IMAGE_SIZE,
                                             STATUS_IMAGE_SIZE);
@@ -247,41 +249,38 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
     CGFloat bubdleImageX = (_commentIsMine) ? CGRectRight(_statusImageView.frame) + bubleOffset : actualBounds.origin.x;
     _bubbleImageView.frame = CGRectMake(bubdleImageX,
-                                        CGRectBottom(_timeLabel.frame) + 5.0f,
+                                        bubdleImageY,
                                         BUBBLE_WIDTH,
                                         actualBounds.size.height - bubdleImageY - BUBBLE_BOTTOM_OFFSET);
     
-    CGFloat attachmentRectHeight = (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [_attachButtons count] - ATTACHMENT_VIEW_Y_OFFSET;
-    CGFloat descriptioHeight = (hasAttachment) ? _bubbleImageView.frame.size.height - attachmentRectHeight - DESCRIPTION_PADDING * 2 :
-                                                 _bubbleImageView.frame.size.height - DESCRIPTION_PADDING * 2;
     
-    if (_expandable && !_expanded) {
-        descriptioHeight -= ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET;
-    }
+    CGRect contentRect = _bubbleImageView.frame;
+    CGFloat expandViewHeight = (hasExpandView) ? ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET : 0.0f;
+    CGFloat attachmentRectHeight = (hasAttachment) ? (ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET) * [_attachButtons count] : 0.0f;
+    CGFloat descriptioHeight =  (contentRect.size.height - DESCRIPTION_PADDING * 2) - attachmentRectHeight - expandViewHeight;
     
-    _descriptionTextView.frame = CGRectMake(_bubbleImageView.frame.origin.x + DESCRIPTION_PADDING,
-                                            _bubbleImageView.frame.origin.y + DESCRIPTION_PADDING - bubleTailWidth,
-                                            _bubbleImageView.frame.size.width - DESCRIPTION_PADDING * 2.0f,
+    _descriptionTextView.frame = CGRectMake(contentRect.origin.x + DESCRIPTION_PADDING,
+                                            contentRect.origin.y + DESCRIPTION_PADDING - 1,
+                                            contentRect.size.width - DESCRIPTION_PADDING * 2.0f,
                                             (hasDescription) ? descriptioHeight : 0.0f);
     
-    if(hasDescription && _expandable && !_expanded) {
-        CGFloat buttonY = CGRectBottom(_descriptionTextView.frame) + 3.5f;
-        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + ATTACHMENT_VIEW_Y_OFFSET,
-                                         buttonY,
-                                         _descriptionTextView.frame.size.width,
+    if(hasExpandView) {
+        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + CONTENT_Y_OFFSET,
+                                         CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET,
+                                         _descriptionTextView.frame.size.width - CONTENT_Y_OFFSET,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
     
     if(hasAttachment) {
-        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + 3.5f :
-                                                    _bubbleImageView.frame.origin.y + ATTACHMENT_VIEW_Y_OFFSET;
+        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET + 1 :
+                                                    _bubbleImageView.frame.origin.y + DESCRIPTION_PADDING;
         
-        if(_expandable && !_expanded) {
-            attachButtonY = CGRectBottom(_expandButton.frame) + ATTACHMENT_VIEW_Y_OFFSET;
+        if(hasExpandView) {
+            attachButtonY = CGRectBottom(_expandButton.frame) + CONTENT_Y_OFFSET;
         }
         
         CGSize constrainedSize = CGSizeMake(_bubbleImageView.frame.size.width, ATTACHMENT_VIEW_HEIGHT);
-        CGFloat attachmentX = _descriptionTextView.frame.origin.x + ATTACHMENT_VIEW_Y_OFFSET;
+        CGFloat attachmentX = _descriptionTextView.frame.origin.x + CONTENT_Y_OFFSET;
         for (UIButton * attachButton in _attachButtons) {
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
             attachButton.frame = CGRectMake(attachmentX,
@@ -289,7 +288,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                             MIN(attachmentSize.width + 5.0f, _descriptionTextView.frame.size.width),
                                             attachmentSize.height);
             
-            attachButtonY = CGRectBottom(attachButton.frame) + 7.0f;
+            attachButtonY = CGRectBottom(attachButton.frame) + CONTENT_Y_OFFSET;
         }
     }
 }

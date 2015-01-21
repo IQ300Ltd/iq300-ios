@@ -159,7 +159,6 @@
 #pragma mark - UITableView DataSource
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    self.model.cellWidth = tableView.frame.size.width;
     return [self.model heightForItemAtIndexPath:indexPath];
 }
 

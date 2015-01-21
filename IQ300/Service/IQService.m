@@ -56,6 +56,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     self = [super initWithURL:url andSession:session];
     if (self) {
         self.responseClass = [IQServiceResponse class];
+        [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     }
     return self;
 }
