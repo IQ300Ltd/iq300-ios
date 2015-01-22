@@ -130,11 +130,16 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     [self notificationsUnread:unread page:page per:per search:nil sort:sort handler:handler];
 }
 
-- (void)notificationsAfterId:(NSNumber*)notificationId unread:(NSNumber*)unread per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
+- (void)notificationsAfterId:(NSNumber*)notificationId
+                      unread:(NSNumber*)unread
+                        page:(NSString*)page
+                         per:(NSNumber*)per
+                        sort:(IQSortDirection)sort
+                     handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"id_more_than" : NSObjectNullForNil(notificationId),
                                                                   @"unread"       : NSObjectNullForNil(unread),
-                                                                  @"page"         : @(1),
+                                                                  @"page"         : NSObjectNullForNil(page),
                                                                   @"per"          : NSObjectNullForNil(per),
                                                                   }).mutableCopy;
     
@@ -147,11 +152,16 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                    handler:handler];
 }
 
-- (void)notificationsBeforeId:(NSNumber*)notificationId unread:(NSNumber*)unread per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
+- (void)notificationsBeforeId:(NSNumber*)notificationId
+                       unread:(NSNumber*)unread
+                         page:(NSString*)page
+                          per:(NSNumber*)per
+                         sort:(IQSortDirection)sort
+                      handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"id_less_than" : NSObjectNullForNil(notificationId),
                                                                   @"unread"       : NSObjectNullForNil(unread),
-                                                                  @"page"         : @(1),
+                                                                  @"page"         : NSObjectNullForNil(page),
                                                                   @"per"          : NSObjectNullForNil(per),
                                                                   }).mutableCopy;
     

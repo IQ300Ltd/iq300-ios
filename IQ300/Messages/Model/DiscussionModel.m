@@ -211,7 +211,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
     BOOL hasObjects = ([_fetchController.fetchedObjects count] == 0);
-    if(hasObjects) {
+    if(!hasObjects) {
         [self updateModelSourceControllerWithCompletion:nil];
     }
     

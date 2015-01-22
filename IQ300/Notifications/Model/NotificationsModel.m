@@ -108,6 +108,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         NSNumber * notificationId = [self getLastIdFromTop:YES];
         [[IQService sharedService] notificationsAfterId:notificationId
                                                  unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                   page:nil
                                                     per:@(_portionLenght)
                                                    sort:SORT_DIRECTION
                                                 handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
@@ -127,6 +128,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         NSNumber * notificationId = [self getLastIdFromTop:NO];
         [[IQService sharedService] notificationsBeforeId:notificationId
                                                   unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                    page:nil
                                                      per:@(_portionLenght)
                                                     sort:SORT_DIRECTION
                                                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
@@ -143,6 +145,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     NSNumber * notificationId = [self getLastIdFromTop:YES];
     [[IQService sharedService] notificationsAfterId:notificationId
                                              unread:(_loadUnreadOnly) ? @(YES) : nil
+                                               page:nil
                                                 per:@(_portionLenght)
                                                sort:SORT_DIRECTION
                                             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
@@ -154,13 +157,14 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
     BOOL hasObjects = ([_fetchController.fetchedObjects count] == 0);
-    if(hasObjects) {
+    if(!hasObjects) {
         [self reloadModelSourceControllerWithCompletion:nil];
     }
     
     NSNumber * notificationId = [self getLastIdFromTop:YES];
     [[IQService sharedService] notificationsAfterId:notificationId
                                              unread:(_loadUnreadOnly) ? @(YES) : nil
+                                               page:nil
                                                 per:@(40)
                                                sort:SORT_DIRECTION
                                             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
@@ -472,6 +476,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     NSNumber * notificationId = [self getLastIdFromTop:YES];
     [[IQService sharedService] notificationsAfterId:notificationId
                                              unread:(_loadUnreadOnly) ? @(YES) : nil
+                                               page:nil
                                                 per:nil
                                                sort:SORT_DIRECTION
                                             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
