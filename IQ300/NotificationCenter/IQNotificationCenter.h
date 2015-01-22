@@ -12,10 +12,7 @@
 #define kLOG_TRACE
 
 #ifdef kLOG_TRACE
-#ifdef DEBUG
 #define DNSLog(x, ...) NSLog(@"%s %d: " x, __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#else
-#define DNSLog(x, ...) IQLog(@"%s %d: " x, __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #endif
 #else
 #define DNSLog(x, ...)
