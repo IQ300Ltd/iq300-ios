@@ -13,7 +13,6 @@
 
 #ifdef kLOG_TRACE
 #define DNSLog(x, ...) NSLog(@"%s %d: " x, __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#endif
 #else
 #define DNSLog(x, ...)
 #endif
