@@ -52,14 +52,14 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 
 - (void)notificationsAfterId:(NSNumber*)notificationId
                       unread:(NSNumber*)unread
-                        page:(NSString*)page
+                        page:(NSNumber*)page
                          per:(NSNumber*)per
                         sort:(IQSortDirection)sort
                      handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)notificationsBeforeId:(NSNumber*)notificationId
                        unread:(NSNumber*)unread
-                         page:(NSString*)page
+                         page:(NSNumber*)page
                           per:(NSNumber*)per
                          sort:(IQSortDirection)sort
                       handler:(ObjectLoaderCompletionHandler)handler;
