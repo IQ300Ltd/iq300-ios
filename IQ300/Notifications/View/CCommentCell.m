@@ -56,6 +56,9 @@
                 height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET * 2.0f;
             }
         }
+        else {
+            height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET;
+        }
     }
     else {
         height = descriptionY + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA;
@@ -155,7 +158,7 @@
                                              NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                              NSForegroundColorAttributeName : titleColor
                                              };
-        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"View all", nil)
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Show all", nil)
                                                                           attributes:underlineAttribute]
                                  forState:UIControlStateNormal];
         
@@ -164,7 +167,7 @@
                                NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                NSForegroundColorAttributeName : titleHighlightedColor
                                };
-        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"View all", nil)
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Show all", nil)
                                                                           attributes:underlineAttribute]
                                  forState:UIControlStateHighlighted];
         
@@ -186,7 +189,7 @@
     
     BOOL hasDescription = ([_item.body length] > 0);
     BOOL hasAttachment = ([_item.attachments count] > 0);
-    BOOL hasExpandView = (_expandable && !_expanded);
+    BOOL hasExpandView = (_expandable);
 
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
@@ -251,7 +254,7 @@
 - (void)setExpandable:(BOOL)expandable {
     if(_expandable != expandable) {
         _expandable = expandable;
-        [_expandButton setHidden:!(_expandable && !_expanded)];
+        [_expandButton setHidden:!_expandable];
         [self setNeedsDisplay];
     }
 }
@@ -259,7 +262,26 @@
 - (void)setExpanded:(BOOL)expanded {
     if (_expanded != expanded) {
         _expanded = expanded;
-        [_expandButton setHidden:!(_expandable && !_expanded)];
+        
+        UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
+        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+        NSDictionary *underlineAttribute = @{
+                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                             NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                             NSForegroundColorAttributeName : titleColor
+                                             };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString((_expanded) ? @"Hide" : @"Show all", nil)
+                                                                          attributes:underlineAttribute]
+                                 forState:UIControlStateNormal];
+        
+        underlineAttribute = @{
+                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                               NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                               NSForegroundColorAttributeName : titleHighlightedColor
+                               };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString((_expanded) ? @"Hide" : @"Show all", nil)
+                                                                          attributes:underlineAttribute]
+                                 forState:UIControlStateHighlighted];
         [self setNeedsDisplay];
     }
 }
@@ -336,6 +358,7 @@
     _descriptionTextView.selectable = NO;
     _descriptionTextView.text = nil;
     _descriptionTextView.selectable = YES;
+    [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
 
     for (UIButton * attachButton in _attachButtons) {
         [attachButton removeTarget:nil
@@ -350,7 +373,6 @@
     
     [_attachButtons makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [_attachButtons removeAllObjects];
-    [self setCommentHighlighted:NO];
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {

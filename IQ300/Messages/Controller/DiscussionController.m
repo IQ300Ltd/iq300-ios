@@ -184,9 +184,9 @@
     cell.item = comment;
 
     cell.expandable = [self.model isCellExpandableAtIndexPath:indexPath];
-    cell.expanded = [self.model isCellExpandedAtIndexPath:indexPath];
+    cell.expanded = [self.model isItemExpandedAtIndexPath:indexPath];
     
-    if(cell.expandable && !cell.expanded) {
+    if(cell.expandable) {
         [cell.expandButton addTarget:self
                               action:@selector(expandButtonAction:)
                     forControlEvents:UIControlEventTouchUpInside];
@@ -388,7 +388,8 @@
     CommentCell * cell = [self cellForView:sender];
     if(cell) {
         NSIndexPath * cellIndexPath = [self.tableView indexPathForCell:cell];
-        [self.model setCellExpanded:YES atIndexPath:cellIndexPath];
+        BOOL isExpanded = [self.model isItemExpandedAtIndexPath:cellIndexPath];
+        [self.model setItemExpanded:!isExpanded atIndexPath:cellIndexPath];
     }
 }
 

@@ -104,6 +104,9 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                 height += ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET * 2.0f;
             }
         }
+        else {
+            height += ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET;
+        }
     }
     else {
         height = CELL_HEADER_HEIGHT + CONTENT_Y_OFFSET + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA;
@@ -197,7 +200,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                              NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                              NSForegroundColorAttributeName : titleColor
                                              };
-        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"View all", nil)
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Show all", nil)
                                                                          attributes:underlineAttribute]
                                 forState:UIControlStateNormal];
         
@@ -206,7 +209,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                NSForegroundColorAttributeName : titleHighlightedColor
                                };
-        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"View all", nil)
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Show all", nil)
                                                                          attributes:underlineAttribute]
                                 forState:UIControlStateHighlighted];
         
@@ -228,7 +231,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
     BOOL hasDescription = ([_item.body length] > 0);
     BOOL hasAttachment = ([_item.attachments count] > 0);
-    BOOL hasExpandView = (_expandable && !_expanded);
+    BOOL hasExpandView = (_expandable);
     
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
@@ -300,7 +303,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 - (void)setExpandable:(BOOL)expandable {
     if(_expandable != expandable) {
         _expandable = expandable;
-        [_expandButton setHidden:!(_expandable && !_expanded)];
+        [_expandButton setHidden:!_expandable];
         [self setNeedsDisplay];
     }
 }
@@ -308,7 +311,27 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 - (void)setExpanded:(BOOL)expanded {
     if (_expanded != expanded) {
         _expanded = expanded;
-        [_expandButton setHidden:!(_expandable && !_expanded)];
+        
+        UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
+        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+        NSDictionary *underlineAttribute = @{
+                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                             NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                             NSForegroundColorAttributeName : titleColor
+                                             };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString((_expanded) ? @"Hide" : @"Show all", nil)
+                                                                          attributes:underlineAttribute]
+                                 forState:UIControlStateNormal];
+        
+        underlineAttribute = @{
+                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                               NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                               NSForegroundColorAttributeName : titleHighlightedColor
+                               };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString((_expanded) ? @"Hide" : @"Show all", nil)
+                                                                          attributes:underlineAttribute]
+                                 forState:UIControlStateHighlighted];
+        
         [self setNeedsDisplay];
     }
 }
@@ -391,6 +414,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     _descriptionTextView.selectable = NO;
     _descriptionTextView.text = nil;
     _descriptionTextView.selectable = YES;
+    [_descriptionTextView setTextColor:DESCRIPTION_RIGHT_TEXT_COLOR];
 
     [self setStatus:IQCommentStatusUnknown];
     for (UIButton * attachButton in _attachButtons) {

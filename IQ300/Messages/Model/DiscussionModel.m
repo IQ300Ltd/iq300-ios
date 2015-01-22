@@ -121,7 +121,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         [_expandableCells setObject:@(expandable) forKey:comment.commentId];
     }
     
-    BOOL isExpanded = [self isCellExpandedAtIndexPath:indexPath];
+    BOOL isExpanded = [self isItemExpandedAtIndexPath:indexPath];
     return [CommentCell heightForItem:comment
                              expanded:isExpanded];
 }
@@ -142,7 +142,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     return nil;
 }
 
-- (BOOL)isCellExpandedAtIndexPath:(NSIndexPath*)indexPath {
+- (BOOL)isItemExpandedAtIndexPath:(NSIndexPath*)indexPath {
     IQComment * comment = [self itemAtIndexPath:indexPath];
     BOOL isExpanded = [[_expandedCells objectForKey:comment.commentId] boolValue];
     return isExpanded;
@@ -154,7 +154,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     return isExpandable;
 }
 
-- (void)setCellExpanded:(BOOL)expanded atIndexPath:(NSIndexPath*)indexPath {
+- (void)setItemExpanded:(BOOL)expanded atIndexPath:(NSIndexPath*)indexPath {
     IQComment * comment = [self itemAtIndexPath:indexPath];
     BOOL isExpanded = [[_expandedCells objectForKey:comment.commentId] boolValue];
     if(isExpanded != expanded) {

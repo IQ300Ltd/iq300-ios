@@ -52,7 +52,8 @@
 "To refine" = "На доработку";
 "Complete" = "Завершить";
 "To work" = "В работу";
-"View all" = "Показать все";
+"Show all" = "Показать все";
+"Hide" = "Скрыть";
 
 //Notification types
 "Attachment" = "Документ";
