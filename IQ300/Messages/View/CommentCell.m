@@ -190,7 +190,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         [_expandButton setTitleColor:titleColor forState:UIControlStateNormal];
         [_expandButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
         [_expandButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
-       _expandButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        _expandButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         
         NSDictionary *underlineAttribute = @{
                                              NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
