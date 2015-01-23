@@ -176,7 +176,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
 
 - (void)notificationsWithIds:(NSArray*)ids handler:(ObjectLoaderCompletionHandler)handler {
     [self getObjectsAtPath:@"/api/v1/notifications"
-                parameters:@{ @"by_ids" : ids }
+                parameters:@{ @"by_ids" : ids, @"per" : @(NSIntegerMax) }
                    handler:handler];
 }
 

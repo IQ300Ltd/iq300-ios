@@ -325,8 +325,11 @@ static IQNotificationCenter * _defaultCenter = nil;
 - (void)dispatchNotification:(IQCNotification*)notf formChannel:(NSString*)channelName {
     NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, notf.name];
     NSArray * observers = _observers[key];
+    DNSLog(@"%s notification key %@", __PRETTY_FUNCTION__, key);
+    
     for (IQNotificationObserver * observer in observers) {
         [observer dispatchNotification:notf];
+        DNSLog(@"Found observer %@", observer);
     }
 }
 
