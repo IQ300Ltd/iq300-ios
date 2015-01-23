@@ -17,7 +17,7 @@
 #import "IQNotificationCenter.h"
 
 #define CACHE_FILE_NAME @"NotificationsModelcache"
-#define SORT_DIRECTION IQSortDirectionDescending
+#define SORT_DIRECTION IQSortDirectionAscending
 
 static NSString * NReuseIdentifier = @"NReuseIdentifier";
 static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
@@ -39,7 +39,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     if(self) {
         _portionLenght = 20;
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt"
-                                                                    ascending:SORT_DIRECTION == IQSortDirectionAscending];
+                                                                    ascending:NO];
         _sortDescriptors = @[descriptor];
         _loadUnreadOnly = YES;
         _totalItemsCount = 0;
@@ -130,7 +130,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                   unread:(_loadUnreadOnly) ? @(YES) : nil
                                                     page:@(1)
                                                      per:@(_portionLenght)
-                                                    sort:SORT_DIRECTION
+                                                    sort:IQSortDirectionDescending
                                                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                                                      if(completion) {
                                                          completion(error);
