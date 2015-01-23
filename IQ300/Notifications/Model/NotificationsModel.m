@@ -109,6 +109,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
             _lastLoadedId = [self getLastIdFromTop:YES];
         }
 
+        [self updateCounters];
         [[IQService sharedService] notificationsAfterId:_lastLoadedId
                                                  unread:(_loadUnreadOnly) ? @(YES) : nil
                                                    page:@(1)
@@ -259,6 +260,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         if(success) {
             _totalItemsCount = [counter.totalCount integerValue];
             _unreadItemsCount = [counter.unreadCount integerValue];
+            [self modelCountersDidChanged];
         }
         if(completion) {
             completion(counter, error);
@@ -446,9 +448,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)updateCounters {
     [self updateCountersWithCompletion:^(IQCounters * counter, NSError *error) {
-        if(!error) {
-            [self modelCountersDidChanged];
-        }
     }];
 }
 
