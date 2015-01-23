@@ -134,7 +134,7 @@ static IQNotificationCenter * _defaultCenter = nil;
         _channelBindings = [NSMutableDictionary dictionary];
         _defaultChannelName = channelName;
         
-#ifdef kLOG_ALL_EVENTS
+//#ifdef kLOG_ALL_EVENTS
         __weak typeof (self) weakSelf = self;
         _notfObserver = [[NSNotificationCenter defaultCenter] addObserverForName:PTPusherEventReceivedNotification
                                                                           object:nil
@@ -145,7 +145,7 @@ static IQNotificationCenter * _defaultCenter = nil;
                                                                               [weakSelf pusher:_client didReceiveEvent:event];
                                                                           }
                                                                       }];
-#endif
+//#endif
 
         if(channelName) {
             PTPusherChannel * channel = [_client subscribeToChannelNamed:channelName];
@@ -253,12 +253,8 @@ static IQNotificationCenter * _defaultCenter = nil;
     }
     
     if(!_channelBindings[key]) {
-        __weak typeof(self) weakSelf = self;
         PTPusherEventBinding * binding = [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
-            IQCNotification * notf = [[IQCNotification alloc] initWithName:eventName
-                                                                    object:self
-                                                                  userInfo:@{ IQNotificationDataKey : channelEvent.data }];
-            [weakSelf dispatchNotification:notf formChannel:channelName];
+            
         }];
         
         _channelBindings[key] = binding;
@@ -433,6 +429,10 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 - (void)pusher:(PTPusher *)pusher didReceiveEvent:(PTPusherEvent *)event {
     DNSLog(@"[IQNotificationCenter-%@] Received event named %@ data:%@", pusher.connection.socketID, event.name, event.data);
+    IQCNotification * notf = [[IQCNotification alloc] initWithName:event.name
+                                                            object:self
+                                                          userInfo:@{ IQNotificationDataKey : event.data }];
+    [self dispatchNotification:notf formChannel:event.channel];
 }
 
 @end
