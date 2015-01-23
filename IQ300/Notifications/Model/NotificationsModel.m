@@ -473,6 +473,8 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (void)accountDidChanged {
+    _lastLoadedId = nil;
+
     if([IQSession defaultSession]) {
         [self resubscribeToIQNotifications];
         [self updateCounters];
