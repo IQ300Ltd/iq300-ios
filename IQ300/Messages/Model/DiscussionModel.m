@@ -529,7 +529,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
         NSNumber * commentId = commentData[@"id"];
         NSNumber * discussionId = commentData[@"discussion_id"];
-        
+        NSLog(@"Recive pusher new comment notification");
+
         if(discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
             
             NSError * requestError = nil;
@@ -571,7 +572,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSNumber * discussionId = viewData[@"discussion_id"];
         NSString * viewedDateString = viewData[@"viewed_at"];
         NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
-       
+
+        NSLog(@"Recive pusher discussion viewed notification");
+
         if(userId && [_companionId isEqualToNumber:userId] && viewedDate &&
            discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
             _lastViewDate = viewedDate;

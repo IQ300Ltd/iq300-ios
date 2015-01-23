@@ -174,6 +174,9 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 - (id<NSObject>)addObserverForName:(NSString *)name channelName:(NSString*)channelName queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * notf))block {
     NSParameterAssert(block);
+    
+    DNSLog(@"Add observer for channel %@ eventName %@", channelName, name);
+
     dispatch_queue_t dispatchQueue = (queue) ? queue : dispatch_get_main_queue();
     IQNotificationObserver * observer = [IQNotificationObserver observerWithQueue:dispatchQueue dispatchBlock:block];
     observer.eventName = name;
@@ -264,6 +267,7 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 - (void)unsubscribeChannelWithName:(NSString*)channelName toEventNamed:(NSString*)eventName {
     NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, eventName];
+    DNSLog(@"Unsubscribe channel %@ event %@", channelName, eventName);
     PTPusherChannel * channel = _channels[channelName];
     
     if(_channelBindings[key]) {

@@ -455,7 +455,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     [self unsubscribeFromIQNotifications];
     
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSLog(@"Recive pusher notification");
+        NSLog(@"Recive pusher new notification");
         NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
         if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
             [self loadNotificationsWithIds:changedIds];
