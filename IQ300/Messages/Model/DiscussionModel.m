@@ -529,7 +529,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
         NSNumber * commentId = commentData[@"id"];
         NSNumber * discussionId = commentData[@"discussion_id"];
-        NSLog(@"Recive pusher new comment notification");
 
         if(discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
             
@@ -572,8 +571,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSNumber * discussionId = viewData[@"discussion_id"];
         NSString * viewedDateString = viewData[@"viewed_at"];
         NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
-
-        NSLog(@"Recive pusher discussion viewed notification");
 
         if(userId && [_companionId isEqualToNumber:userId] && viewedDate &&
            discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
@@ -622,29 +619,32 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)applicationWillEnterForeground {
+    
+    ObjectLoaderCompletionHandler handler = ^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+        if(!error) {
+            [self updateDefaultStatusesForComments:comments];
+            [self modelDidChanged];
+            
+            [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
+                                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                if(!success) {
+                                                                    NSLog(@"Mark discussion as read fail with error:%@", error);
+                                                                }
+                                                                else {
+                                                                    NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"messages" };
+                                                                    [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
+                                                                                                                        object:nil
+                                                                                                                      userInfo:userInfo];
+                                                                }
+                                                            }];
+        }
+    };
+    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(40)
                                                       sort:SORT_DIRECTION
-                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                       if(!error) {
-                                                           [self updateDefaultStatusesForComments:comments];
-                                                           [self modelDidChanged];
-
-                                                           [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
-                                                                                                           handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                                                                               if(!success) {
-                                                                                                                   NSLog(@"Mark discussion as read fail with error:%@", error);
-                                                                                                               }
-                                                                                                               else {
-                                                                                                                   NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"messages" };
-                                                                                                                   [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
-                                                                                                                                                                       object:nil
-                                                                                                                                                                     userInfo:userInfo];
-                                                                                                               }
-                                                                                                           }];
-                                                       }
-                                                   }];
+                                                   handler:handler];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

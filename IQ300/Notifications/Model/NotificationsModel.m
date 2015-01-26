@@ -440,7 +440,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     [[IQService sharedService] notificationsWithIds:ids
                                             handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
                                                 if(success) {
-                                                    NSLog(@"Recive %lu notifications", (unsigned long)[holder.notifications count]);
                                                     [self updateCounters];
                                                 }
                                             }];
@@ -455,7 +454,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     [self unsubscribeFromIQNotifications];
     
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSLog(@"Recive pusher new notification");
         NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
         if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
             [self reloadFirstPartWithCompletion:nil];

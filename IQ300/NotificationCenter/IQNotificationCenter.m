@@ -134,7 +134,6 @@ static IQNotificationCenter * _defaultCenter = nil;
         _channelBindings = [NSMutableDictionary dictionary];
         _defaultChannelName = channelName;
         
-//#ifdef kLOG_ALL_EVENTS
         __weak typeof (self) weakSelf = self;
         _notfObserver = [[NSNotificationCenter defaultCenter] addObserverForName:PTPusherEventReceivedNotification
                                                                           object:nil
@@ -145,7 +144,6 @@ static IQNotificationCenter * _defaultCenter = nil;
                                                                               [weakSelf pusher:_client didReceiveEvent:event];
                                                                           }
                                                                       }];
-//#endif
 
         if(channelName) {
             PTPusherChannel * channel = [_client subscribeToChannelNamed:channelName];
@@ -232,9 +230,7 @@ static IQNotificationCenter * _defaultCenter = nil;
 }
 
 - (void)dealloc {
-#ifdef kLOG_ALL_EVENTS
     [[NSNotificationCenter defaultCenter] removeObserver:_notfObserver];
-#endif
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     _client.delegate = nil;
@@ -246,6 +242,7 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 - (void)subscribeChannelWithName:(NSString*)channelName toEventNamed:(NSString*)eventName {
     NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, eventName];
+    DNSLog(@"Subscribe channel %@ event %@", channelName, eventName);
     PTPusherChannel * channel = _channels[channelName];
     if(!channel) {
         channel = [_client subscribeToChannelNamed:channelName];
