@@ -251,7 +251,9 @@ static IQNotificationCenter * _defaultCenter = nil;
     
     if(!_channelBindings[key]) {
         PTPusherEventBinding * binding = [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
-            
+            DNSLog(@"*************************************");
+            DNSLog(@"Recive event named %@ from channel %@", eventName, channelName);
+            DNSLog(@"*************************************");
         }];
         
         _channelBindings[key] = binding;
