@@ -50,7 +50,23 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 
 - (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)notificationsAfterId:(NSNumber*)notificationId
+                      unread:(NSNumber*)unread
+                        page:(NSNumber*)page
+                         per:(NSNumber*)per
+                        sort:(IQSortDirection)sort
+                     handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)notificationsBeforeId:(NSNumber*)notificationId
+                       unread:(NSNumber*)unread
+                         page:(NSNumber*)page
+                          per:(NSNumber*)per
+                         sort:(IQSortDirection)sort
+                      handler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)notificationsWithIds:(NSArray*)ids handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)unreadNotificationIdsWithHandler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
@@ -63,5 +79,6 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 - (void)acceptNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
 - (void)declineNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
+
 
 @end

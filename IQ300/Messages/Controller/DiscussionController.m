@@ -24,6 +24,7 @@
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "CSectionHeaderView.h"
+#import "IQDrawerController.h"
 
 #define SECTION_HEIGHT 12
 
@@ -32,7 +33,6 @@
     BOOL _enterCommentProcessing;
     ALAsset * _attachment;
     UIDocumentInteractionController * _documentController;
-    BOOL _needFullReload;
     UISwipeGestureRecognizer * _tableGesture;
 }
 
@@ -53,7 +53,7 @@
     [super viewDidLoad];
     
     _enterCommentProcessing = NO;
-    _needFullReload = YES;
+    self.needFullReload = YES;
     
     _tableGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                               action:@selector(handleSwipe:)];
@@ -62,10 +62,11 @@
 
     [self.tableView addGestureRecognizer:_tableGesture];
     
+    [self setActivityIndicatorBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.3f]];
+    [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
     [_mainView.inputView.sendButton setEnabled:NO];
-    [_mainView.backButton addTarget:self
-                             action:@selector(backButtonAction:)
-                   forControlEvents:UIControlEventTouchUpInside];
+
     [_mainView.inputView.sendButton addTarget:self
                                        action:@selector(sendButtonAction:)
                              forControlEvents:UIControlEventTouchUpInside];
@@ -84,11 +85,20 @@
      position:SVPullToRefreshPositionTop];
     
     [_mainView.inputView.commentTextView setDelegate:(id<UITextViewDelegate>)self];
+    _mainView.tableView.hidden = YES;
+}
+
+- (BOOL)showMenuBarItem {
+    return NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [_mainView.titleLabel setText:self.companionName];
+    
+    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self action:@selector(backButtonAction:)];
+    self.navigationItem.leftBarButtonItem = backBarButton;
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
@@ -109,7 +119,16 @@
                                              selector:@selector(onKeyboardDidHide:)
                                                  name:UIKeyboardDidHideNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(drawerDidShowNotification:)
+                                                 name:IQDrawerDidShowNotification
+                                               object:nil];
+    
     if([IQSession defaultSession]) {
+        if(self.needFullReload) {
+            [self showActivityIndicatorOnView:_mainView];
+        }
         [self reloadModel];
     }
 }
@@ -117,13 +136,29 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [self hideActivityIndicator];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)reloadDataWithCompletion:(void (^)())completion {
+    [_mainView.inputView.commentTextView resignFirstResponder];
+    _attachment = nil;
+    _enterCommentProcessing = NO;
+    
+    [self showActivityIndicatorOnView:_mainView];
+    [self.model reloadModelWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self.tableView reloadData];
+        }
+        
+        [self scrollToBottomAnimated:NO delay:0.0f];
+        [self hideActivityIndicator];
+    }];
 }
 
 #pragma mark - UITableView DataSource
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    self.model.cellWidth = tableView.frame.size.width;
     return [self.model heightForItemAtIndexPath:indexPath];
 }
 
@@ -148,6 +183,15 @@
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
 
+    cell.expandable = [self.model isCellExpandableAtIndexPath:indexPath];
+    cell.expanded = [self.model isItemExpandedAtIndexPath:indexPath];
+    
+    if(cell.expandable) {
+        [cell.expandButton addTarget:self
+                              action:@selector(expandButtonAction:)
+                    forControlEvents:UIControlEventTouchUpInside];
+    }
+    
     NSInteger buttonIndex = 0;
     for (UIButton * attachButton in cell.attachButtons) {
         [attachButton addTarget:self
@@ -340,14 +384,28 @@
     }
 }
 
+- (void)expandButtonAction:(UIButton*)sender {
+    CommentCell * cell = [self cellForView:sender];
+    if(cell) {
+        NSIndexPath * cellIndexPath = [self.tableView indexPathForCell:cell];
+        BOOL isExpanded = [self.model isItemExpandedAtIndexPath:cellIndexPath];
+        [self.model setItemExpanded:!isExpanded atIndexPath:cellIndexPath];
+    }
+}
+
 - (void)reloadModel {
     [self.model reloadFirstPartWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
         }
         
-        [self scrollToBottomIfNeedAnimated:NO delay:0.5];
-        _needFullReload = NO;
+        [self scrollToBottomIfNeedAnimated:NO delay:0];
+        self.needFullReload = NO;
+        
+        dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+            _mainView.tableView.hidden = NO;
+            [self hideActivityIndicator];
+        });
     }];
 }
 
@@ -378,13 +436,12 @@
     [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
     
     CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    keyboardRect = [_mainView.inputView convertRect:keyboardRect fromView:nil];
-    
+
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    [_mainView setInputOffset:down ? 0.0f : keyboardRect.origin.y - _mainView.inputView.frame.size.height];
+    [_mainView setInputOffset:down ? 0.0f : -keyboardRect.size.height];
     if(isTableScrolledToBottom) {
         [self scrollToBottomAnimated:NO delay:0.0f];
     }
@@ -437,7 +494,7 @@
 - (void)scrollToBottomIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
-    if(isTableScrolledToBottom || _needFullReload) {
+    if(isTableScrolledToBottom || self.needFullReload) {
         [self scrollToBottomAnimated:animated delay:delay];
     }
 }
@@ -484,6 +541,10 @@
     }
     
     return [self cellForView:view.superview];
+}
+
+- (void)drawerDidShowNotification:(NSNotification*)notification {
+    [_mainView.inputView.commentTextView resignFirstResponder];
 }
 
 - (void)dealloc {

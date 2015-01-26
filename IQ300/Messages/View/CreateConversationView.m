@@ -8,7 +8,7 @@
 
 #import "CreateConversationView.h"
 
-#define HEADER_HEIGHT 52.0f
+#define HEADER_HEIGHT 60.0f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xc0c0c0]
 
 @interface CreateConversationView() {
@@ -24,31 +24,11 @@
     self = [super init];
     
     if (self) {
-        _contentInsets = UIEdgeInsetsZero;
+        _contentInsets = UIEdgeInsetsMake(10.0f, 0.0f, 0.0f, 0.0f);
         _userNameInset = UIEdgeInsetsMake(0.0f, 14.0f, 0.0f, 14.0f);
         
         [self setBackgroundColor:[UIColor whiteColor]];
         
-        _headerView = [[BottomLineView alloc] init];
-        _headerView.bottomLineColor = [UIColor whiteColor];
-        _headerView.bottomLineHeight = 0.5f;
-        [_headerView setBackgroundColor:[UIColor clearColor]];
-        
-        _backButton = [[UIButton alloc] init];
-        [_backButton setImage:[UIImage imageNamed:@"backArrow.png"] forState:UIControlStateNormal];
-        [[_backButton imageView] setContentMode:UIViewContentModeCenter];
-        [_headerView addSubview:_backButton];
-        
-        _titleLabel = [[UILabel alloc] init];
-        [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-        [_titleLabel setTextColor:[UIColor colorWithHexInt:0x9f9f9f]];
-        _titleLabel.textAlignment = NSTextAlignmentCenter;
-        _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.numberOfLines = 0;
-        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [_titleLabel setText:NSLocalizedString(@"Сontacts", nil)];
-        [_headerView addSubview:_titleLabel];
-
         _userTextField = [[ExTextField alloc] init];
         _userNamelContainer = [self makeContainerWithField:_userTextField placeholder:@"User name or email"];
         [self addSubview:_userNamelContainer];
@@ -77,8 +57,6 @@
         [_noDataLabel setHidden:YES];
         [_noDataLabel setText:NSLocalizedString(@"No contacts", nil)];
         [self addSubview:_noDataLabel];
-
-        [self addSubview:_headerView];
     }
     return self;
 }
@@ -87,21 +65,9 @@
     [super layoutSubviews];
     
     CGRect actualBounds = UIEdgeInsetsInsetRect(self.bounds, _contentInsets);
-    _headerView.frame = CGRectMake(actualBounds.origin.x,
-                                   actualBounds.origin.y,
-                                   actualBounds.size.width,
-                                   HEADER_HEIGHT);
-    
-    CGSize backButtonImageSize = [_backButton imageForState:UIControlStateNormal].size;
-    _backButton.frame = CGRectMake(-4.0f,
-                                   actualBounds.origin.y + (_headerView.frame.size.height - backButtonImageSize.height) / 2,
-                                   backButtonImageSize.width,
-                                   backButtonImageSize.height);
-
-    _titleLabel.frame = _headerView.bounds;
     
     CGRect containerRect = CGRectMake(actualBounds.origin.x,
-                                      CGRectBottom(_headerView.frame),
+                                      actualBounds.origin.y,
                                       actualBounds.size.width,
                                       29.0f);
     _userNamelContainer.frame = UIEdgeInsetsInsetRect(containerRect, _userNameInset);

@@ -22,6 +22,7 @@
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "NSDate+IQFormater.h"
 #import "NSDate+CupertinoYankee.h"
+#import "DispatchAfterExecution.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -36,6 +37,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     __weak id _messageViewedObserver;
     NSDate * _lastViewDate;
     NSDateFormatter * _dateFormatter;
+    NSMutableDictionary * _expandedCells;
+    NSMutableDictionary * _expandableCells;
 }
 
 @end
@@ -44,6 +47,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (id)init {
     if(self) {
+        _expandedCells = [NSMutableDictionary dictionary];
+        _expandableCells = [NSMutableDictionary dictionary];
         _portionLenght = 20;
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createDate" ascending:YES];
         _sortDescriptors = @[descriptor];
@@ -109,7 +114,16 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return [CommentCell heightForItem:[self itemAtIndexPath:indexPath] andCellWidth:self.cellWidth];
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    
+    if(![_expandableCells objectForKey:comment.commentId]) {
+        BOOL expandable = [CommentCell cellNeedToBeExpandableForItem:comment];
+        [_expandableCells setObject:@(expandable) forKey:comment.commentId];
+    }
+    
+    BOOL isExpanded = [self isItemExpandedAtIndexPath:indexPath];
+    return [CommentCell heightForItem:comment
+                             expanded:isExpanded];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
@@ -126,6 +140,32 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (Class)controllerClassForItemAtIndexPath:(NSIndexPath*)indexPath {
     return nil;
+}
+
+- (BOOL)isItemExpandedAtIndexPath:(NSIndexPath*)indexPath {
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    BOOL isExpanded = [[_expandedCells objectForKey:comment.commentId] boolValue];
+    return isExpanded;
+}
+
+- (BOOL)isCellExpandableAtIndexPath:(NSIndexPath*)indexPath {
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    BOOL isExpandable = [[_expandableCells objectForKey:comment.commentId] boolValue];
+    return isExpandable;
+}
+
+- (void)setItemExpanded:(BOOL)expanded atIndexPath:(NSIndexPath*)indexPath {
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    BOOL isExpanded = [[_expandedCells objectForKey:comment.commentId] boolValue];
+    if(isExpanded != expanded) {
+        [_expandedCells setObject:@(expanded) forKey:comment.commentId];
+        [self modelWillChangeContent];
+        [self modelDidChangeObject:nil
+                       atIndexPath:indexPath
+                     forChangeType:NSFetchedResultsChangeUpdate
+                      newIndexPath:nil];
+        [self modelDidChangeContent];
+    }
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
@@ -151,6 +191,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
+    [_expandableCells removeAllObjects];
+    [_expandedCells removeAllObjects];
+    
     [self updateModelSourceControllerWithCompletion:nil];
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
@@ -167,8 +210,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    BOOL hasObjects = ([_fetchController.fetchedObjects count] == 0);
-    if(hasObjects) {
+    BOOL hasObjects = ([_fetchController.fetchedObjects count] > 0);
+    if(!hasObjects) {
         [self updateModelSourceControllerWithCompletion:nil];
     }
     
@@ -179,9 +222,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                    handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
                                                        if(!error) {
                                                            [self updateDefaultStatusesForComments:comments];
-                                                       }
-                                                       if(completion) {
-                                                           completion(error);
+                                                           if(completion) {
+                                                               completion(error);
+                                                           }
                                                        }
                                                    }];
 }
@@ -486,7 +529,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
         NSNumber * commentId = commentData[@"id"];
         NSNumber * discussionId = commentData[@"discussion_id"];
-        
+
         if(discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
             
             NSError * requestError = nil;
@@ -526,11 +569,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSDictionary * viewData = notf.userInfo[IQNotificationDataKey][@"user_view"];
         NSNumber * userId = viewData[@"user_id"];
         NSNumber * discussionId = viewData[@"discussion_id"];
-       
-        if(userId && [_companionId isEqualToNumber:userId] &&
+        NSString * viewedDateString = viewData[@"viewed_at"];
+        NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
+
+        if(userId && [_companionId isEqualToNumber:userId] && viewedDate &&
            discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
-            NSString * viewedDateString = viewData[@"viewed_at"];
-            NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
+            _lastViewDate = viewedDate;
             
             NSManagedObjectContext * context = [IQService sharedService].context;
             NSString * format = @"discussionId == %@ AND author.userId == %@ AND commentStatus == %d";
@@ -542,8 +586,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                     for (IQComment * comment in objects) {
                         BOOL isViewed = [comment.createDate compare:viewedDate] == NSOrderedAscending;
                         IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
-                        if(status != [comment.commentStatus integerValue] &&
-                           [comment.commentStatus integerValue] != IQCommentStatusSendError) {
+                        if(status != [comment.commentStatus integerValue]) {
                             comment.commentStatus = @(status);
                         }
                     }
@@ -576,8 +619,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)applicationWillEnterForeground {
-    [self reloadFirstPartWithCompletion:^(NSError *error) {
+    
+    ObjectLoaderCompletionHandler handler = ^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
         if(!error) {
+            [self updateDefaultStatusesForComments:comments];
+            [self modelDidChanged];
+            
             [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
                                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                                 if(!success) {
@@ -588,11 +635,16 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                     [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
                                                                                                                         object:nil
                                                                                                                       userInfo:userInfo];
-                                                                    [self modelDidChanged];
                                                                 }
                                                             }];
         }
-    }];
+    };
+    
+    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                      page:@(1)
+                                                       per:@(40)
+                                                      sort:SORT_DIRECTION
+                                                   handler:handler];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

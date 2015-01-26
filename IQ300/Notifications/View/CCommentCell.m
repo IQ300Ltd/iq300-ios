@@ -27,23 +27,38 @@
 @interface CCommentCell() {
     BOOL _commentIsMine;
     NSMutableArray * _attachButtons;
+    UITapGestureRecognizer * _singleTapGesture;
 }
 
 @end
 
 @implementation CCommentCell
 
-+ (CGFloat)heightForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
++ (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded andCellWidth:(CGFloat)cellWidth {
     CGFloat descriptionY = CELL_HEADER_MIN_HEIGHT;
     CGFloat descriptionWidth = cellWidth - CONTENT_INSET * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
-        CGSize descriptionSize = [item.body sizeWithFont:DESCRIPTION_LABEL_FONT
-                                       constrainedToSize:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)
-                                           lineBreakMode:NSLineBreakByWordWrapping];
-        height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
+        UITextView * descriptionTextView = [[UITextView alloc] init];
+        [descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
+        descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        descriptionTextView.text = item.body;
+        
+        CGSize descriptionSize = [descriptionTextView sizeThatFits:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)];
+        height = MAX(descriptionY + ceilf(descriptionSize.height) + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
+        if (!expanded) {
+            BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;
+            height = MIN(height, COLLAPSED_COMMENT_CELL_MAX_HEIGHT);
+            
+            if(canExpand) {
+                height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET * 2.0f;
+            }
+        }
+        else {
+            height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET;
+        }
     }
     else {
         height = descriptionY + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA;
@@ -55,6 +70,29 @@
     }
     
     return height;
+}
+
++ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth {
+    CGFloat descriptionY = CELL_HEADER_MIN_HEIGHT;
+    CGFloat descriptionWidth = cellWidth - CONTENT_INSET * 2.0f;
+    CGFloat height = COMMENT_CELL_MIN_HEIGHT;
+    
+    if([item.body length] > 0) {
+        UITextView * descriptionTextView = [[UITextView alloc] init];
+        [descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
+        descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        descriptionTextView.text = item.body;
+        
+        CGSize descriptionSize = [descriptionTextView sizeThatFits:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)];
+        height = MAX(descriptionY + ceilf(descriptionSize.height) + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
+                     COMMENT_CELL_MIN_HEIGHT);
+        BOOL canExpand = height > COLLAPSED_COMMENT_CELL_MAX_HEIGHT;
+        if(canExpand) {
+            return canExpand;
+        }
+    }
+
+    return NO;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -83,10 +121,58 @@
         _userNameLabel.clipsToBounds = YES;
         [contentView addSubview:_userNameLabel];
         
-        _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x8b8b8b]
-                                                    font:DESCRIPTION_LABEL_FONT
-                                           localaizedKey:nil];
-        [contentView addSubview:_descriptionLabel];
+        _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapRecognized:)];
+        _singleTapGesture.numberOfTapsRequired = 1;
+
+        _descriptionTextView = [[UITextView alloc] init];
+        [_descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
+        [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
+        _descriptionTextView.textAlignment = NSTextAlignmentLeft;
+        _descriptionTextView.backgroundColor = [UIColor clearColor];
+        _descriptionTextView.editable = NO;
+        _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        _descriptionTextView.scrollEnabled = NO;
+        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+        
+        _descriptionTextView.linkTextAttributes = @{
+                                                    NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
+                                                    NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
+                                                    };
+        
+        [_descriptionTextView addGestureRecognizer:_singleTapGesture];
+        [contentView addSubview:_descriptionTextView];
+        
+        UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
+        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+        UIImage * bacgroundImage = [UIImage imageNamed:@"view_all_ico.png"];
+        _expandButton = [[UIButton alloc] init];
+        [_expandButton setImage:bacgroundImage forState:UIControlStateNormal];
+        [_expandButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+        [_expandButton setTitleColor:titleColor forState:UIControlStateNormal];
+        [_expandButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
+        [_expandButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
+        _expandButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        
+        NSDictionary *underlineAttribute = @{
+                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                             NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                             NSForegroundColorAttributeName : titleColor
+                                             };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Show all", nil)
+                                                                          attributes:underlineAttribute]
+                                 forState:UIControlStateNormal];
+        
+        underlineAttribute = @{
+                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                               NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                               NSForegroundColorAttributeName : titleHighlightedColor
+                               };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Show all", nil)
+                                                                          attributes:underlineAttribute]
+                                 forState:UIControlStateHighlighted];
+        
+        [_expandButton setHidden:YES];
+        [contentView addSubview:_expandButton];
         
         _attachButtons = [NSMutableArray array];
     }
@@ -103,6 +189,7 @@
     
     BOOL hasDescription = ([_item.body length] > 0);
     BOOL hasAttachment = ([_item.attachments count] > 0);
+    BOOL hasExpandView = (_expandable);
 
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
@@ -126,24 +213,33 @@
                                   topLabelSize.width,
                                   topLabelSize.height);
     
-    CGFloat attachmentRectHeight = (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [_attachButtons count] - ATTACHMENT_VIEW_Y_OFFSET;
-    CGFloat descriptionInset = (hasAttachment) ? attachmentRectHeight : 0.0f;
+    CGFloat attachmentRectHeight = (hasAttachment) ? (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [_attachButtons count] - ATTACHMENT_VIEW_Y_OFFSET : 0.0f;
+    CGFloat expandViewHeight = (hasExpandView) ? ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET : 0.0f;
     CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
-    CGFloat descriptionHeight = (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f;
+    CGFloat descriptionHeight = (hasDescription) ? actualBounds.size.height - descriptionY - attachmentRectHeight - expandViewHeight : 0.0f;
     
-    if(hasAttachment && !hasDescription) {
-        descriptionHeight = 16.5f;
+    _descriptionTextView.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+                                            descriptionY,
+                                            actualBounds.size.width,
+                                            (hasDescription) ? descriptionHeight : 0.0f);
+    
+    if(hasExpandView) {
+        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + ATTACHMENT_VIEW_Y_OFFSET,
+                                         CGRectBottom(_descriptionTextView.frame) + ATTACHMENT_VIEW_Y_OFFSET,
+                                         _descriptionTextView.frame.size.width - ATTACHMENT_VIEW_Y_OFFSET,
+                                         ATTACHMENT_VIEW_HEIGHT);
     }
     
-    _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
-                                         descriptionY,
-                                         (hasDescription) ? actualBounds.size.width : 10.0f,
-                                         descriptionHeight);
     if(hasAttachment) {
-        CGFloat attachmentY = (hasAttachment && !hasDescription) ? _descriptionLabel.frame.origin.y + 2.0f : CGRectBottom(_descriptionLabel.frame) + 5.0f;
+        CGFloat attachmentY = (hasAttachment && !hasDescription) ? _descriptionTextView.frame.origin.y + 2.0f : CGRectBottom(_descriptionTextView.frame) + 5.0f;
+        
+        if(hasExpandView) {
+            attachmentY = CGRectBottom(_expandButton.frame) + 5.0f;
+        }
+        
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
+        CGFloat attachmentX = _descriptionTextView.frame.origin.x + 5.0f;
         for (UIButton * attachButton in _attachButtons) {
-            CGFloat attachmentX = _descriptionLabel.frame.origin.x;
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
             attachButton.frame = CGRectMake(attachmentX,
                                             attachmentY,
@@ -152,6 +248,41 @@
             
             attachmentY = CGRectBottom(attachButton.frame) + 7.0f;
         }
+    }
+}
+
+- (void)setExpandable:(BOOL)expandable {
+    if(_expandable != expandable) {
+        _expandable = expandable;
+        [_expandButton setHidden:!_expandable];
+        [self setNeedsDisplay];
+    }
+}
+
+- (void)setExpanded:(BOOL)expanded {
+    if (_expanded != expanded) {
+        _expanded = expanded;
+        
+        UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
+        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+        NSDictionary *underlineAttribute = @{
+                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                             NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                             NSForegroundColorAttributeName : titleColor
+                                             };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString((_expanded) ? @"Hide" : @"Show all", nil)
+                                                                          attributes:underlineAttribute]
+                                 forState:UIControlStateNormal];
+        
+        underlineAttribute = @{
+                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                               NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                               NSForegroundColorAttributeName : titleHighlightedColor
+                               };
+        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString((_expanded) ? @"Hide" : @"Show all", nil)
+                                                                          attributes:underlineAttribute]
+                                 forState:UIControlStateHighlighted];
+        [self setNeedsDisplay];
     }
 }
 
@@ -165,7 +296,7 @@
     _userNameLabel.text = _item.author.displayName;
     
     NSString * body = ([_item.body length] > 0) ? _item.body : @"";
-    _descriptionLabel.text = body;
+    _descriptionTextView.text = body;
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
     
@@ -178,7 +309,25 @@
             [attachButton setTitleColor:[UIColor colorWithHexInt:0x446b7a] forState:UIControlStateHighlighted];
             [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
             attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            [attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
+            
+            NSDictionary *underlineAttribute = @{
+                                                 NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                                 NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                                 NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x358bae]
+                                                 };
+            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
+                                                                             attributes:underlineAttribute]
+                                    forState:UIControlStateNormal];
+            
+            underlineAttribute = @{
+                                   NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                   NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                   NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x446b7a]
+                                   };
+            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
+                                                                             attributes:underlineAttribute]
+                                    forState:UIControlStateHighlighted];
+            
             [attachButton sizeToFit];
             [self.contentView addSubview:attachButton];
             [_attachButtons addObject:attachButton];
@@ -203,16 +352,27 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     _commentIsMine = NO;
-    
+    _expanded = NO;
+    _expandable = NO;
+ 
+    _descriptionTextView.selectable = NO;
+    _descriptionTextView.text = nil;
+    _descriptionTextView.selectable = YES;
+    [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
+
     for (UIButton * attachButton in _attachButtons) {
         [attachButton removeTarget:nil
                             action:NULL
                   forControlEvents:UIControlEventTouchUpInside];
     }
     
+    [_expandButton setHidden:YES];
+    [_expandButton removeTarget:nil
+                         action:NULL
+               forControlEvents:UIControlEventTouchUpInside];
+    
     [_attachButtons makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [_attachButtons removeAllObjects];
-    [self setCommentHighlighted:NO];
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {
@@ -227,6 +387,24 @@
         [label setText:NSLocalizedString(localaizedKey, nil)];
     }
     return label;
+}
+
+- (void)singleTapRecognized:(UITapGestureRecognizer*)gesture {
+    UITableView * tableView = [self parentTableView];
+    if (tableView && [tableView.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)]) {
+        [tableView.delegate tableView:tableView didSelectRowAtIndexPath:[tableView indexPathForCell:self]];
+    }
+}
+
+- (UITableView *)parentTableView {
+    UIView *aView = self.superview;
+    while(aView != nil) {
+        if([aView isKindOfClass:[UITableView class]]) {
+            return (UITableView *)aView;
+        }
+        aView = aView.superview;
+    }
+    return nil;
 }
 
 @end

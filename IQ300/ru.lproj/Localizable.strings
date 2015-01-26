@@ -51,6 +51,9 @@
 "Accept" = "Принять";
 "To refine" = "На доработку";
 "Complete" = "Завершить";
+"To work" = "В работу";
+"Show all" = "Показать все";
+"Hide" = "Скрыть";
 
 //Notification types
 "Attachment" = "Документ";

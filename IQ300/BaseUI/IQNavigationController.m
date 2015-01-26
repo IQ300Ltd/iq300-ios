@@ -38,8 +38,18 @@
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    MMDrawerBarButtonItem * leftDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self action:@selector(leftDrawerButtonPress:)];
-    [viewController.navigationItem setLeftBarButtonItem:leftDrawerButton animated:YES];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    SEL selector = @selector(showMenuBarItem);
+    BOOL showMenuBarItem = ([viewController respondsToSelector:selector]) ? [[viewController performSelector:selector] boolValue] :
+                                                                            YES;
+    
+    if(showMenuBarItem) {
+        MMDrawerBarButtonItem * leftDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self action:@selector(leftDrawerButtonPress:)];
+        [viewController.navigationItem setLeftBarButtonItem:leftDrawerButton animated:YES];
+    }
+#pragma clang diagnostic pop
 }
 
 @end

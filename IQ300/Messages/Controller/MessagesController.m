@@ -5,7 +5,6 @@
 //  Created by Tayphoon on 02.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
 #import "UIViewController+LeftMenu.h"
@@ -22,13 +21,14 @@
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQBadgeView.h"
 #import "IQCounters.h"
+#import "UIScrollView+PullToRefreshInsert.h"
+#import "IQDrawerController.h"
 
 #define DISPATCH_DELAY 0.7
 
 @interface MessagesController() {
     MessagesView * _messagesView;
     dispatch_after_block _cancelBlock;
-    BOOL _needFullReload;
 }
 
 @end
@@ -41,7 +41,7 @@
         self.model = [[MessagesModel alloc] init];
         self.title = NSLocalizedString(@"Messages", nil);
         
-        _needFullReload = YES;
+        self.needFullReload = YES;
 
         UIImage * barImage = [[UIImage imageNamed:@"messages_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIImage * barImageSel = [[UIImage imageNamed:@"messgaes_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -88,12 +88,21 @@
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
-     addPullToRefreshWithActionHandler:^{
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model reloadFirstPartWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
+    
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
          [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-             [weakSelf.tableView.pullToRefreshView stopAnimating];
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
          }];
      }
      position:SVPullToRefreshPositionBottom];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(countersDidChangedNotification:)
@@ -129,6 +138,11 @@
                                              selector:@selector(onKeyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(drawerDidShowNotification:)
+                                                 name:IQDrawerDidShowNotification
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -140,6 +154,9 @@
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:IQDrawerDidShowNotification
                                                   object:nil];
 }
 
@@ -174,9 +191,9 @@
     model.companionId = cell.companion.userId;
 
     DiscussionController * controller = [[DiscussionController alloc] init];
-    controller.title = NSLocalizedString(@"Messages", nil);
+    controller.hidesBottomBarWhenPushed = YES;
+    controller.title = cell.companion.displayName;
     controller.model = model;
-    controller.companionName = cell.companion.displayName;
 
     [self.navigationController pushViewController:controller animated:YES];
     
@@ -254,6 +271,7 @@
 
 - (void)createNewAction:(id)sender {
     CreateConversationController * controller = [[CreateConversationController alloc] init];
+    controller.hidesBottomBarWhenPushed = YES;
     controller.model = [[UsersModel alloc] init];
     [self.navigationController pushViewController:controller animated:YES];
 }
@@ -265,7 +283,7 @@
         }
         [self updateNoDataLabelVisibility];
         [self scrollToTopIfNeedAnimated:NO delay:0.0f];
-        _needFullReload = NO;
+        self.needFullReload = NO;
    }];
 }
 
@@ -276,7 +294,7 @@
 - (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
     CGFloat bottomPosition = 0.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y <= bottomPosition);
-    if(isTableScrolledToBottom || _needFullReload) {
+    if(isTableScrolledToBottom || self.needFullReload) {
         [self scrollToTopAnimated:animated delay:delay];
     }
 }
@@ -333,6 +351,10 @@
     if([counterName isEqualToString:@"messages"]) {
         [self updateGlobalCounter];
     }
+}
+
+- (void)drawerDidShowNotification:(NSNotification*)notification {
+    [_messagesView.searchBar resignFirstResponder];
 }
 
 - (void)dealloc {

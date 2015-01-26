@@ -9,7 +9,6 @@
 
 #import "DiscussionView.h"
 
-#define HEADER_HEIGHT 52.0f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
 
 @implementation DiscussionView
@@ -22,25 +21,6 @@
         
         _inputHeight = MIN_INPUT_VIEW_HEIGHT;
         _inputOffset = 0.0f;
-        
-        _headerView = [[BottomLineView alloc] init];
-        _headerView.bottomLineColor = SEPARATOR_COLOR;
-        _headerView.bottomLineHeight = 0.5f;
-        [_headerView setBackgroundColor:[UIColor clearColor]];
-        
-        _backButton = [[UIButton alloc] init];
-        [_backButton setImage:[UIImage imageNamed:@"backArrow.png"] forState:UIControlStateNormal];
-        [[_backButton imageView] setContentMode:UIViewContentModeCenter];
-        [_headerView addSubview:_backButton];
-        
-        _titleLabel = [[UILabel alloc] init];
-        [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-        [_titleLabel setTextColor:[UIColor colorWithHexInt:0x9f9f9f]];
-        _titleLabel.textAlignment = NSTextAlignmentCenter;
-        _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.numberOfLines = 0;
-        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [_headerView addSubview:_titleLabel];
         
         _tableView = [[UITableView alloc] init];
         _tableView.backgroundColor = [UIColor clearColor];
@@ -55,8 +35,6 @@
         }
         [self addSubview:_tableView];
 
-        [self addSubview:_headerView];
-
         _inputView = [[CommentInputView alloc] init];
         [self addSubview:_inputView];
     }
@@ -67,24 +45,6 @@
     [super layoutSubviews];
 
     CGRect actualBounds = self.bounds;
-    _headerView.frame = CGRectMake(actualBounds.origin.x,
-                                   actualBounds.origin.y,
-                                   actualBounds.size.width,
-                                   HEADER_HEIGHT);
-    
-    CGSize backButtonImageSize = [_backButton imageForState:UIControlStateNormal].size;
-    _backButton.frame = CGRectMake(-4.0f,
-                                   (_headerView.frame.size.height - backButtonImageSize.height) / 2,
-                                   backButtonImageSize.width,
-                                   backButtonImageSize.height);
-    
-    CGFloat labelX = _backButton.frame.origin.x + 35.0f;
-    _titleLabel.frame = CGRectMake(labelX,
-                                   0.0f,
-                                   _headerView.frame.size.width - labelX * 2.0f,
-                                   _headerView.frame.size.height);
-    
-    CGFloat tableViewY = CGRectBottom(_headerView.frame);
     
     _inputView.frame = CGRectMake(actualBounds.origin.x,
                                   actualBounds.origin.y + (actualBounds.size.height - self.inputHeight) + _inputOffset,
@@ -92,9 +52,9 @@
                                   self.inputHeight);
     
     _tableView.frame = CGRectMake(actualBounds.origin.x,
-                                  tableViewY - 1.0f,
+                                  actualBounds.origin.y,
                                   actualBounds.size.width,
-                                  _inputView.frame.origin.y - tableViewY);
+                                  _inputView.frame.origin.y - actualBounds.origin.y);
 }
 
 - (void)setInputHeight:(CGFloat)inputHeight {
@@ -114,7 +74,7 @@
                                   actualBounds.size.width,
                                   self.inputHeight);
 
-    CGFloat tableViewY = CGRectBottom(_headerView.frame);
+    CGFloat tableViewY = actualBounds.origin.y;
     _tableView.frame = CGRectMake(actualBounds.origin.x,
                                   tableViewY,
                                   actualBounds.size.width,

@@ -13,7 +13,6 @@
 
 @interface DiscussionController : IQTableBaseController
 
-@property (nonatomic, strong) NSString * companionName;
 @property (nonatomic, strong) DiscussionModel * model;
 
 @end

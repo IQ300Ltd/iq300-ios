@@ -17,6 +17,7 @@
 #import "IQConversation.h"
 #import "DiscussionController.h"
 #import "DispatchAfterExecution.h"
+#import "IQDrawerController.h"
 
 #define DISPATCH_DELAY 0.7
 
@@ -36,10 +37,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    [_mainView.backButton addTarget:self
-                             action:@selector(backButtonAction:)
-                   forControlEvents:UIControlEventTouchUpInside];
 
     __weak typeof(self) weakSelf = self;
     [self.tableView
@@ -61,8 +58,20 @@
     return _mainView.tableView;
 }
 
+- (BOOL)showMenuBarItem {
+    return NO;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self action:@selector(backButtonAction:)];
+    self.navigationItem.leftBarButtonItem = backBarButton;
+    
+    [self setTitle:NSLocalizedString(@"Сontacts", nil)];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillShow:)
@@ -72,6 +81,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(drawerDidShowNotification:)
+                                                 name:IQDrawerDidShowNotification
                                                object:nil];
     
     if([IQSession defaultSession]) {
@@ -113,9 +127,9 @@
                                                   model.companionId = userId;
                                                   
                                                   DiscussionController * controller = [[DiscussionController alloc] init];
-                                                  controller.title = NSLocalizedString(@"Messages", nil);
+                                                  controller.hidesBottomBarWhenPushed = YES;
                                                   controller.model = model;
-                                                  controller.companionName = companionName;
+                                                  controller.title = companionName;
 
                                                   [MessagesModel markConversationAsRead:conv completion:nil];
                                                   
@@ -215,6 +229,10 @@
     _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
         [self.model reloadFirstPartWithCompletion:compleationBlock];
     });
+}
+
+- (void)drawerDidShowNotification:(NSNotification*)notification {
+    [_mainView.userTextField resignFirstResponder];
 }
 
 @end

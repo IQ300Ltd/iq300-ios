@@ -133,22 +133,27 @@
     _contentBackgroundView.frame = contentBackgroundBounds;
 
     CGFloat nameOffset = 6;
-    CGFloat halfWidth = actualBounds.size.width / 2.0f;
     _userImageView.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                       actualBounds.origin.y,
                                       USER_ICON_SEZE,
                                       USER_ICON_SEZE);
 
-    _userNameLabel.frame = CGRectMake(CGRectRight(_userImageView.frame) + nameOffset,
-                                      actualBounds.origin.y,
-                                      halfWidth,
-                                      CELL_HEADER_MIN_HEIGHT);
-    
-    CGFloat dateLabelX = actualBounds.origin.x + actualBounds.size.width - _userNameLabel.frame.size.width;
-    _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - _userNameLabel.frame.size.width,
+    CGFloat dateMaxWidth = 150;
+    CGSize dateLabelSize = [_dateLabel.text sizeWithFont:_dateLabel.font
+                                       constrainedToSize:CGSizeMake(dateMaxWidth, CELL_HEADER_MIN_HEIGHT)
+                                           lineBreakMode:_dateLabel.lineBreakMode];
+    CGFloat dateLabelWidth = MIN(dateLabelSize.width + 6.0f, dateMaxWidth);
+    CGFloat dateLabelX = actualBounds.origin.x + actualBounds.size.width - dateLabelWidth;
+    _dateLabel.frame = CGRectMake(dateLabelX,
                                   actualBounds.origin.y,
-                                  actualBounds.size.width - dateLabelX,
+                                  dateLabelWidth,
                                   CELL_HEADER_MIN_HEIGHT);
+    
+    CGFloat userNameX = CGRectRight(_userImageView.frame) + nameOffset;
+    _userNameLabel.frame = CGRectMake(userNameX,
+                                      actualBounds.origin.y,
+                                      _dateLabel.frame.origin.x - userNameX - 4.0f,
+                                      CELL_HEADER_MIN_HEIGHT);
     
     BOOL hasDescription = ([_item.lastComment.body length] > 0);
     BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);

@@ -220,6 +220,7 @@
         application.applicationState == UIApplicationStateBackground) {
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
+        NSLog(@"Recive remote notification %@", userInfo);
         [self showControllerForNotification:userInfo];
     }
 }
@@ -235,7 +236,7 @@
     UITabBarController * tabController = ((UITabBarController*)self.drawerController.centerViewController);
     if([objectType isEqualToString:@"Conversation"]) {
         UINavigationController * navController = tabController.viewControllers[messagesTab];
-        BOOL isDiscussionOpen = ([navController isKindOfClass:[DiscussionController class]]);
+        BOOL isDiscussionOpen = ([navController.topViewController isKindOfClass:[DiscussionController class]]);
         DiscussionController * controller = (isDiscussionOpen) ? (DiscussionController*)navController.topViewController : [[DiscussionController alloc] init];
         MessagesController * messagesController = navController.viewControllers[0];
         
@@ -248,11 +249,11 @@
                 DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
                 model.companionId = companion.userId;
                 
-                controller.title = NSLocalizedString(@"Messages", nil);
+                controller.title = companion.displayName;
                 controller.model = model;
-                controller.companionName = companion.displayName;
                 
                 if(!isDiscussionOpen) {
+                    controller.hidesBottomBarWhenPushed = YES;
                     [tabController setSelectedIndex:messagesTab];
                     [navController pushViewController:controller animated:NO];
                 }

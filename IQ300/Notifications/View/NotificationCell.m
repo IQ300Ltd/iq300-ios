@@ -142,10 +142,11 @@
 - (void)setItem:(IQNotification *)item {
     _item = item;
     
-    _contentBackgroundInsets = ([_item.readed boolValue]) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);
-    _contentBackgroundView.backgroundColor = ([_item.readed boolValue]) ? CONTEN_BACKGROUND_COLOR_R :
-                                                                          CONTEN_BACKGROUND_COLOR;
-    self.rightUtilityButtons = ([_item.readed boolValue]) ? nil : @[_markAsReadedButton];
+    BOOL isReaded = [_item.readed boolValue] || [_item.hasActions boolValue];
+    _contentBackgroundInsets = (isReaded) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);
+    _contentBackgroundView.backgroundColor = (isReaded) ? CONTEN_BACKGROUND_COLOR_R :
+                                                          CONTEN_BACKGROUND_COLOR;
+    self.rightUtilityButtons = (isReaded) ? nil : @[_markAsReadedButton];
     
     _typeLabel.text = NSLocalizedString(_item.notificable.type, nil);
     _dateLabel.text = [_item.createdAt dateToDayTimeString];

@@ -43,6 +43,9 @@
 "Accept" = "Accept";
 "To refine" = "To refine";
 "Complete" = "Complete";
+"To work" = "To work";
+"Show all" = "Show all";
+"Hide" = "Hide";
 
 //Notification types
 "Attachment" = "Document";

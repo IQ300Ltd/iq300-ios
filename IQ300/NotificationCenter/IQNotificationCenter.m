@@ -134,7 +134,6 @@ static IQNotificationCenter * _defaultCenter = nil;
         _channelBindings = [NSMutableDictionary dictionary];
         _defaultChannelName = channelName;
         
-#ifdef kLOG_ALL_EVENTS
         __weak typeof (self) weakSelf = self;
         _notfObserver = [[NSNotificationCenter defaultCenter] addObserverForName:PTPusherEventReceivedNotification
                                                                           object:nil
@@ -145,7 +144,6 @@ static IQNotificationCenter * _defaultCenter = nil;
                                                                               [weakSelf pusher:_client didReceiveEvent:event];
                                                                           }
                                                                       }];
-#endif
 
         if(channelName) {
             PTPusherChannel * channel = [_client subscribeToChannelNamed:channelName];
@@ -174,6 +172,9 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 - (id<NSObject>)addObserverForName:(NSString *)name channelName:(NSString*)channelName queue:(dispatch_queue_t)queue usingBlock:(void (^)(IQCNotification * notf))block {
     NSParameterAssert(block);
+    
+    DNSLog(@"Add observer for channel %@ eventName %@", channelName, name);
+
     dispatch_queue_t dispatchQueue = (queue) ? queue : dispatch_get_main_queue();
     IQNotificationObserver * observer = [IQNotificationObserver observerWithQueue:dispatchQueue dispatchBlock:block];
     observer.eventName = name;
@@ -229,9 +230,7 @@ static IQNotificationCenter * _defaultCenter = nil;
 }
 
 - (void)dealloc {
-#ifdef kLOG_ALL_EVENTS
     [[NSNotificationCenter defaultCenter] removeObserver:_notfObserver];
-#endif
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     _client.delegate = nil;
@@ -243,6 +242,7 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 - (void)subscribeChannelWithName:(NSString*)channelName toEventNamed:(NSString*)eventName {
     NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, eventName];
+    DNSLog(@"Subscribe channel %@ event %@", channelName, eventName);
     PTPusherChannel * channel = _channels[channelName];
     if(!channel) {
         channel = [_client subscribeToChannelNamed:channelName];
@@ -250,12 +250,10 @@ static IQNotificationCenter * _defaultCenter = nil;
     }
     
     if(!_channelBindings[key]) {
-        __weak typeof(self) weakSelf = self;
         PTPusherEventBinding * binding = [channel bindToEventNamed:eventName handleWithBlock:^(PTPusherEvent *channelEvent) {
-            IQCNotification * notf = [[IQCNotification alloc] initWithName:eventName
-                                                                    object:self
-                                                                  userInfo:@{ IQNotificationDataKey : channelEvent.data }];
-            [weakSelf dispatchNotification:notf formChannel:channelName];
+            DNSLog(@"*************************************");
+            DNSLog(@"Recive event named %@ from channel %@", eventName, channelName);
+            DNSLog(@"*************************************");
         }];
         
         _channelBindings[key] = binding;
@@ -264,6 +262,7 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 - (void)unsubscribeChannelWithName:(NSString*)channelName toEventNamed:(NSString*)eventName {
     NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, eventName];
+    DNSLog(@"Unsubscribe channel %@ event %@", channelName, eventName);
     PTPusherChannel * channel = _channels[channelName];
     
     if(_channelBindings[key]) {
@@ -325,8 +324,11 @@ static IQNotificationCenter * _defaultCenter = nil;
 - (void)dispatchNotification:(IQCNotification*)notf formChannel:(NSString*)channelName {
     NSString * key = [NSString stringWithFormat:@"%@_%@", channelName, notf.name];
     NSArray * observers = _observers[key];
+    DNSLog(@"%s notification key %@", __PRETTY_FUNCTION__, key);
+    
     for (IQNotificationObserver * observer in observers) {
         [observer dispatchNotification:notf];
+        DNSLog(@"Found observer %@", observer);
     }
 }
 
@@ -426,6 +428,10 @@ static IQNotificationCenter * _defaultCenter = nil;
 
 - (void)pusher:(PTPusher *)pusher didReceiveEvent:(PTPusherEvent *)event {
     DNSLog(@"[IQNotificationCenter-%@] Received event named %@ data:%@", pusher.connection.socketID, event.name, event.data);
+    IQCNotification * notf = [[IQCNotification alloc] initWithName:event.name
+                                                            object:self
+                                                          userInfo:@{ IQNotificationDataKey : event.data }];
+    [self dispatchNotification:notf formChannel:event.channel];
 }
 
 @end

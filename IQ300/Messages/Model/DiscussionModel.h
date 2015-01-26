@@ -24,10 +24,15 @@
 
 @property (nonatomic, strong) IQDiscussion * discussion;
 @property (nonatomic, strong) NSNumber * companionId;
-@property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, weak) id<DiscussionModelDelegate> delegate;
 
 - (id)initWithDiscussion:(IQDiscussion*)discussion;
+
+- (BOOL)isItemExpandedAtIndexPath:(NSIndexPath*)indexPath;
+
+- (BOOL)isCellExpandableAtIndexPath:(NSIndexPath*)indexPath;
+
+- (void)setItemExpanded:(BOOL)expanded atIndexPath:(NSIndexPath*)indexPath;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 
