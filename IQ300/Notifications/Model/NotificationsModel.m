@@ -108,8 +108,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         if(!_lastLoadedId) {
             _lastLoadedId = [self getLastIdFromTop:YES];
         }
-
+        
         [self updateCounters];
+        [self syncLocalNotificationsWithCompletion:nil];
         [[IQService sharedService] notificationsAfterId:_lastLoadedId
                                                  unread:(_loadUnreadOnly) ? @(YES) : nil
                                                    page:@(1)
@@ -177,6 +178,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         _lastLoadedId = [self getLastIdFromTop:YES];
     }
     
+    [self syncLocalNotificationsWithCompletion:nil];
     [[IQService sharedService] notificationsAfterId:_lastLoadedId
                                              unread:(_loadUnreadOnly) ? @(YES) : nil
                                                page:@(1)
