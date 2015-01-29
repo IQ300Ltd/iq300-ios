@@ -228,6 +228,9 @@
 #pragma mark - Private methods
 
 - (void)showControllerForNotification:(NSDictionary*)notfObject {
+    NSLog(@"%s", __PRETTY_FUNCTION__);
+    NSLog(@"Recive notification %@", notfObject);
+    
     NSDictionary * notificable = notfObject[@"notificable"];
     NSNumber * objectId = notificable[@"id"];
     NSString * objectType = notificable[@"type"];

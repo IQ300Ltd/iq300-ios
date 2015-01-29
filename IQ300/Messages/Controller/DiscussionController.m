@@ -125,6 +125,7 @@
                                                  name:IQDrawerDidShowNotification
                                                object:nil];
     
+    NSLog(@"%s", __PRETTY_FUNCTION__);
     if([IQSession defaultSession]) {
         if(self.needFullReload) {
             [self showActivityIndicatorOnView:_mainView];
@@ -141,6 +142,8 @@
 }
 
 - (void)reloadDataWithCompletion:(void (^)())completion {
+    NSLog(@"%s", __PRETTY_FUNCTION__);
+    
     [_mainView.inputView.commentTextView resignFirstResponder];
     _attachment = nil;
     _enterCommentProcessing = NO;
