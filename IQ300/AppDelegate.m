@@ -245,7 +245,7 @@
         DiscussionController * controller = (isDiscussionOpen) ? (DiscussionController*)navController.topViewController : [[DiscussionController alloc] init];
         MessagesController * messagesController = navController.viewControllers[0];
         
-        BOOL needReload = (isDiscussionOpen && [controller.model.discussion.conversation.conversationId isEqualToNumber:objectId]);
+        BOOL needReload = (isDiscussionOpen && ![controller.model.discussion.conversation.conversationId isEqualToNumber:objectId]);
         if(needReload) {
             [controller.model setSubscribedToNotifications:NO];
         }
