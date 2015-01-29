@@ -46,6 +46,7 @@
 
 - (void)setModel:(id<IQTableModel>)model {
     self.model.delegate = nil;
+    [self.model setSubscribedToNotifications:NO];
     [self.model clearModelData];
     [super setModel:model];
 }
