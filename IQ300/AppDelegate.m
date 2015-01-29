@@ -243,6 +243,10 @@
         DiscussionController * controller = (isDiscussionOpen) ? (DiscussionController*)navController.topViewController : [[DiscussionController alloc] init];
         MessagesController * messagesController = navController.viewControllers[0];
         
+        if(isDiscussionOpen) {
+            [controller.model setSubscribedToNotifications:NO];
+        }
+        
         ObjectLoaderCompletionHandler handler = ^(BOOL success, IQConversation * conver, NSData *responseData, NSError *error) {
             if(success) {
                 NSPredicate * companionsPredicate = [NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId];
