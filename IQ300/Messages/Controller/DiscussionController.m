@@ -132,7 +132,6 @@
                                                  name:IQDrawerDidShowNotification
                                                object:nil];
     
-    NSLog(@"%s", __PRETTY_FUNCTION__);
     if([IQSession defaultSession]) {
         if(self.needFullReload) {
             [self showActivityIndicatorOnView:_mainView];
@@ -146,24 +145,6 @@
     
     [self hideActivityIndicator];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)reloadDataWithCompletion:(void (^)())completion {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
-    
-    [_mainView.inputView.commentTextView resignFirstResponder];
-    _attachment = nil;
-    _enterCommentProcessing = NO;
-    
-    [self showActivityIndicatorOnView:_mainView];
-    [self.model reloadModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
-        
-        [self scrollToBottomAnimated:NO delay:0.0f];
-        [self hideActivityIndicator];
-    }];
 }
 
 #pragma mark - UITableView DataSource

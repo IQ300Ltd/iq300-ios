@@ -230,25 +230,20 @@
 #pragma mark - Private methods
 
 - (void)showControllerForNotification:(NSDictionary*)notfObject {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
-    NSLog(@"Recive notification %@", notfObject);
-    
     NSDictionary * notificable = notfObject[@"notificable"];
     NSNumber * objectId = notificable[@"id"];
     NSString * objectType = notificable[@"type"];
     NSInteger messagesTab = 1;
     
     UITabBarController * tabController = ((UITabBarController*)self.drawerController.centerViewController);
-    if([objectType isEqualToString:@"Conversation"]) {
-        UINavigationController * navController = tabController.viewControllers[messagesTab];
-        BOOL isDiscussionOpen = ([navController.topViewController isKindOfClass:[DiscussionController class]]);
-        DiscussionController * controller = (isDiscussionOpen) ? (DiscussionController*)navController.topViewController : [[DiscussionController alloc] init];
-        MessagesController * messagesController = navController.viewControllers[0];
+    UINavigationController * navController = tabController.viewControllers[messagesTab];
+    BOOL isDiscussionOpen = ([navController.topViewController isKindOfClass:[DiscussionController class]]);
+    NSNumber * conversationId = (isDiscussionOpen) ? ((DiscussionController*)navController.topViewController).model.discussion.conversation.conversationId : nil;
+
+    if([objectType isEqualToString:@"Conversation"] &&
+       ((isDiscussionOpen && ![conversationId isEqualToNumber:objectId]) || !isDiscussionOpen)) {
         
-        BOOL needReload = (isDiscussionOpen && ![controller.model.discussion.conversation.conversationId isEqualToNumber:objectId]);
-        if(needReload) {
-            [controller.model setSubscribedToNotifications:NO];
-        }
+        MessagesController * messagesController = navController.viewControllers[0];
         
         ObjectLoaderCompletionHandler handler = ^(BOOL success, IQConversation * conver, NSData *responseData, NSError *error) {
             if(success) {
@@ -259,17 +254,18 @@
                 DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
                 model.companionId = companion.userId;
                 
+                DiscussionController * controller = [[DiscussionController alloc] init];
+                controller.hidesBottomBarWhenPushed = YES;
                 controller.title = companion.displayName;
                 controller.model = model;
                 
                 if(!isDiscussionOpen) {
-                    controller.hidesBottomBarWhenPushed = YES;
                     [tabController setSelectedIndex:messagesTab];
                     [navController pushViewController:controller animated:NO];
                 }
-                else if(needReload) {
-                    [controller.tableView reloadData];
-                    [controller reloadDataWithCompletion:nil];
+                else  {
+                    NSArray * newStack = @[navController.viewControllers[0], controller];
+                    [navController setViewControllers:newStack animated:YES];
                 }
                 
                 [MessagesModel markConversationAsRead:conver completion:^(NSError *error) {
