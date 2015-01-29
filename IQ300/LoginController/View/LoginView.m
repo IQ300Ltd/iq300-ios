@@ -53,8 +53,11 @@
         _errorLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_errorLabel];
         
-        _enterButton = [[UIButton alloc] init];
+        _enterButton = [[ExtendedButton alloc] init];
+        [_enterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
         [_enterButton setBackgroundColor:[UIColor colorWithHexInt:0x348dad]];
+        [_enterButton setBackgroundColor:[UIColor colorWithHexInt:0x2d7a96] forState:UIControlStateHighlighted];
+        [_enterButton setBackgroundColor:[UIColor colorWithHexInt:0x7296a6] forState:UIControlStateDisabled];
         [_enterButton.layer setCornerRadius:2.0f];
         [_enterButton setTitle:NSLocalizedString(@"Enter", nil) forState:UIControlStateNormal];
         [_enterButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
