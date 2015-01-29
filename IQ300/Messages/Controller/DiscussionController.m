@@ -44,6 +44,12 @@
     return _mainView.tableView;
 }
 
+- (void)setModel:(id<IQTableModel>)model {
+    self.model.delegate = nil;
+    [self.model clearModelData];
+    [super setModel:model];
+}
+
 - (void)loadView {
     _mainView = [[DiscussionView alloc] init];
     self.view = _mainView;
