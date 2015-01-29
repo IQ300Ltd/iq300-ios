@@ -268,6 +268,7 @@
                     [navController pushViewController:controller animated:NO];
                 }
                 else if(needReload) {
+                    [controller.tableView reloadData];
                     [controller reloadDataWithCompletion:nil];
                 }
                 
