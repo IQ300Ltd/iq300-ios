@@ -23,6 +23,8 @@
 #import "IQUser.h"
 #import "DiscussionController.h"
 #import "IQConversation.h"
+#import "DiscussionModel.h"
+#import "IQDiscussion.h"
 
 #define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
 
@@ -243,7 +245,8 @@
         DiscussionController * controller = (isDiscussionOpen) ? (DiscussionController*)navController.topViewController : [[DiscussionController alloc] init];
         MessagesController * messagesController = navController.viewControllers[0];
         
-        if(isDiscussionOpen) {
+        BOOL needReload = (isDiscussionOpen && [controller.model.discussion.conversation.conversationId isEqualToNumber:objectId]);
+        if(needReload) {
             [controller.model setSubscribedToNotifications:NO];
         }
         
@@ -264,7 +267,7 @@
                     [tabController setSelectedIndex:messagesTab];
                     [navController pushViewController:controller animated:NO];
                 }
-                else {
+                else if(needReload) {
                     [controller reloadDataWithCompletion:nil];
                 }
                 
