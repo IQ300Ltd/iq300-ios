@@ -71,6 +71,7 @@
         _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
                                               font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                      localaizedKey:nil];
+        _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_titleLabel];
         
         _userNameLabel = [self makeLabelWithTextColor:[UIColor whiteColor]
@@ -138,7 +139,7 @@
     
     _titleLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                    _typeLabel.frame.origin.y + _typeLabel.frame.size.height + 4,
-                                   actualBounds.size.width - _badgeView.frame.size.width, 
+                                   actualBounds.size.width - _badgeView.frame.size.width - 5.0f,
                                    16);
     
     CGFloat userNameHeight = 17;
