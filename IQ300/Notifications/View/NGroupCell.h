@@ -1,9 +1,9 @@
 //
-//  Notifications].h
+//  NGroupCell.h
 //  IQ300
 //
-//  Created by Tayphoon on 21.11.14.
-//  Copyright (c) 2014 Tayphoon. All rights reserved.
+//  Created by Tayphoon on 28.01.15.
+//  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
 #import <SWTableViewCell/SWTableViewCell.h>
@@ -12,12 +12,13 @@
 #define READ_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
-#define NOTIFICATION_CELL_MAX_HEIGHT 105.0f
-#define NOTIFICATION_CELL_MIN_HEIGHT 72.0f
+#define GROUP_CELL_MAX_HEIGHT 105.0f
+#define GROUP_CELL_MIN_HEIGHT 89.0f
 
-@class IQNotification;
+@class IQNotificationsGroup;
+@class IQBadgeView;
 
-@interface NotificationCell : SWTableViewCell {
+@interface NGroupCell : SWTableViewCell {
     UIEdgeInsets _contentInsets;
     UIEdgeInsets _contentBackgroundInsets;
 }
@@ -30,9 +31,10 @@
 @property (nonatomic, strong) UILabel * actionLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;
 @property (nonatomic, strong) UIButton * markAsReadedButton;
+@property (nonatomic, readonly) IQBadgeView * badgeView;
 
-@property (nonatomic, strong) IQNotification * item;
+@property (nonatomic, strong) IQNotificationsGroup * item;
 
-+ (CGFloat)heightForItem:(IQNotification *)item andCellWidth:(CGFloat)cellWidth;
++ (CGFloat)heightForItem:(IQNotificationsGroup *)item andCellWidth:(CGFloat)cellWidth;
 
 @end

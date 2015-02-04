@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B25" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14C109" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CViewInfo" representedClassName="CViewInfo" syncable="YES">
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -77,8 +77,18 @@
         <attribute name="notificationId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="readed" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="group" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQNotificationsGroup" inverseName="lastNotification" inverseEntity="IQNotificationsGroup" syncable="YES"/>
         <relationship name="notificable" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQNotificable" inverseName="notifications" inverseEntity="IQNotificable" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="notifications" inverseEntity="IQUser" syncable="YES"/>
+    </entity>
+    <entity name="IQNotificationsGroup" representedClassName="IQNotificationsGroup" syncable="YES">
+        <attribute name="firstNotificationId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastNotificationId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="sID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="unreadCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="lastNotification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQNotification" inverseName="group" inverseEntity="IQNotification" syncable="YES"/>
     </entity>
     <entity name="IQUser" representedClassName="IQUser" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
@@ -102,7 +112,8 @@
         <element name="IQConversation" positionX="-54" positionY="81" width="128" height="195"/>
         <element name="IQDiscussion" positionX="-45" positionY="90" width="128" height="148"/>
         <element name="IQNotificable" positionX="-63" positionY="-9" width="128" height="103"/>
-        <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="240"/>
-        <element name="IQUser" positionX="-45" positionY="45" width="128" height="223"/>
+        <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="253"/>
+        <element name="IQNotificationsGroup" positionX="-45" positionY="135" width="128" height="150"/>
+        <element name="IQUser" positionX="-45" positionY="45" width="128" height="225"/>
     </elements>
 </model>

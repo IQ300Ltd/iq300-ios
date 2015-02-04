@@ -9,10 +9,8 @@
 #import "IQTableBaseController.h"
 #import "NotificationsModel.h"
 
-@interface NotificationsContoller : IQTableBaseController
+@interface NotificationsController : IQTableBaseController
 
 @property (nonatomic, strong) NotificationsModel * model;
-
-- (void)updateGlobalCounter;
 
 @end

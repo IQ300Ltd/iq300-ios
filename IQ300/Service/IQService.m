@@ -195,6 +195,96 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                    }];
 }
 
+- (void)notificationsGroupAfterId:(NSNumber*)notificationId
+                           unread:(NSNumber*)unread
+                             page:(NSNumber*)page
+                              per:(NSNumber*)per
+                             sort:(IQSortDirection)sort
+                          handler:(ObjectLoaderCompletionHandler)handler {
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"id_more_than" : NSObjectNullForNil(notificationId),
+                                                                  @"unread"       : NSObjectNullForNil(unread),
+                                                                  @"page"         : NSObjectNullForNil(page),
+                                                                  @"per"          : NSObjectNullForNil(per),
+                                                                  }).mutableCopy;
+    
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+    
+    [self getObjectsAtPath:@"/api/v1/notifications/groups"
+                parameters:parameters
+                   handler:handler];
+}
+
+- (void)notificationsGroupBeforeId:(NSNumber*)notificationId
+                            unread:(NSNumber*)unread
+                              page:(NSNumber*)page
+                               per:(NSNumber*)per
+                              sort:(IQSortDirection)sort
+                           handler:(ObjectLoaderCompletionHandler)handler {
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"id_less_than" : NSObjectNullForNil(notificationId),
+                                                                  @"unread"       : NSObjectNullForNil(unread),
+                                                                  @"page"         : NSObjectNullForNil(page),
+                                                                  @"per"          : NSObjectNullForNil(per),
+                                                                  }).mutableCopy;
+    
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+    
+    [self getObjectsAtPath:@"/api/v1/notifications/groups"
+                parameters:parameters
+                   handler:handler];
+}
+
+- (void)notificationsForGroupWithId:(NSNumber*)anyNotificationId
+                            afterId:(NSNumber*)notificationId
+                             unread:(NSNumber*)unread
+                               page:(NSNumber*)page
+                                per:(NSNumber*)per
+                               sort:(IQSortDirection)sort
+                            handler:(ObjectLoaderCompletionHandler)handler {
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"id_more_than" : NSObjectNullForNil(notificationId),
+                                                                  @"unread"       : NSObjectNullForNil(unread),
+                                                                  @"page"         : NSObjectNullForNil(page),
+                                                                  @"per"          : NSObjectNullForNil(per),
+                                                                  }).mutableCopy;
+    
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+    
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/notifications/%@/children", anyNotificationId]
+                parameters:parameters
+                   handler:handler];
+}
+
+- (void)notificationsForGroupWithId:(NSNumber*)anyNotificationId
+                           beforeId:(NSNumber*)notificationId
+                             unread:(NSNumber*)unread
+                               page:(NSNumber*)page
+                                per:(NSNumber*)per
+                               sort:(IQSortDirection)sort
+                              handler:(ObjectLoaderCompletionHandler)handler {
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"id_less_than" : NSObjectNullForNil(notificationId),
+                                                                  @"unread"       : NSObjectNullForNil(unread),
+                                                                  @"page"         : NSObjectNullForNil(page),
+                                                                  @"per"          : NSObjectNullForNil(per),
+                                                                  }).mutableCopy;
+    
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+    
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/notifications/%@/children", anyNotificationId]
+                parameters:parameters
+                   handler:handler];
+}
+
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
                path:[NSString stringWithFormat:@"/api/v1/notifications/%@", notificationId]
@@ -206,7 +296,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
             }];
 }
 
-- (void)markAllNotificationAsReadWithHandler:(RequestCompletionHandler)handler {
+- (void)markAllNotificationsAsReadWithHandler:(RequestCompletionHandler)handler {
     [self putObject:nil
                path:@"/api/v1/notifications/read_all"
          parameters:nil
@@ -217,8 +307,31 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
             }];
 }
 
+- (void)markNotificationsGroupAsReadWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/notifications/%@/read_group", notificationId]
+         parameters:nil
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if(handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
 - (void)notificationsCountWithHandler:(ObjectLoaderCompletionHandler)handler {
     [self getObjectsAtPath:@"/api/v1/notifications/counters"
+                parameters:nil
+                   handler:handler];
+}
+
+- (void)notificationsGroupCountWithHandler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/notifications/group_counters"
+                parameters:nil
+                   handler:handler];
+}
+
+- (void)notificationsCountForGroupWithId:(NSNumber*)anyNotificationId handler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/notifications/%@/group_counter", anyNotificationId]
                 parameters:nil
                    handler:handler];
 }
@@ -297,14 +410,30 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsHolder class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotification class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/notifications"
-                                                   fromKeyPath:nil
+                                                   fromKeyPath:@"notifications"
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotification class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/notifications/:id/children"
+                                                   fromKeyPath:@"notifications"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsGroup class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/notifications/groups"
+                                                   fromKeyPath:@"notification_groups"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationIds class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/notifications/unread_ids"
@@ -335,6 +464,13 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/notifications/:id/read_group"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/notifications/counters"
@@ -343,6 +479,22 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/notifications/group_counters"
+                                                   fromKeyPath:@"notification_group_counters"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/notifications/:id/group_counter"
+                                                   fromKeyPath:@"notification_group_counter"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/conversations"

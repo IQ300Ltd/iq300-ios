@@ -1,20 +1,18 @@
 //
-//  NotificationsModel.h
+//  NGroupModel.h
 //  IQ300
 //
-//  Created by Tayphoon on 20.11.14.
-//  Copyright (c) 2014 Tayphoon. All rights reserved.
+//  Created by Tayphoon on 29.01.15.
+//  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
 #import "IQTableModel.h"
 
-@class IQNotificationsGroup;
 @class IQNotification;
 @class IQCounters;
 
-@interface NotificationsModel : NSObject<IQTableModel>
+@interface NGroupModel : NSObject<IQTableModel>
 
-@property (nonatomic, strong) IQNotificationsGroup * group;
 @property (nonatomic, assign) BOOL loadUnreadOnly;
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
@@ -23,7 +21,7 @@
  UpdateModelWithCompletion. Load new data.
  
  @param completion handler.
-
+ 
  */
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion;
 
@@ -41,17 +39,12 @@
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
 
-- (void)markNotificationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
+- (void)markNotificationsAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion;
 
+- (void)updateGlobalCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
 
 - (void)setSubscribedToNotifications:(BOOL)subscribed;
-
-- (void)acceptNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
-
-- (void)declineNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
-
-- (void)syncLocalNotificationsWithCompletion:(void (^)(NSError * error))completion;
 
 @end

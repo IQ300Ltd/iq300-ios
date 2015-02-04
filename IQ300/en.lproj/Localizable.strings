@@ -28,7 +28,8 @@
 "no_data_formart" = "No %@ found";
 "There are no unread notifications" = "There are no unread notifications";
 "There are no notifications" = "There are no notifications";
-"mark_all_readed_question" = "All your messages will be marked as read. Continue?";
+"mark_all_readed_question" = "All your notifications will be marked as read. Continue?";
+"mark_all_group_readed_question" = "All your notifications in group will be marked as read. Continue?";
 "OK" = "OK";
 "Cancel" = "Cancel";
 "I" = "I";

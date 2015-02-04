@@ -13,7 +13,7 @@
 #import "MessagesController.h"
 #import "MenuViewController.h"
 #import "IQNavigationController.h"
-#import "NotificationsContoller.h"
+#import "NotificationsGroupController.h"
 #import "IQDrawerController.h"
 #import "IQService+Messages.h"
 #import "IQSession.h"
@@ -105,7 +105,7 @@
 
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
-    NotificationsContoller * notifications = [[NotificationsContoller alloc] init];
+    NotificationsGroupController * notifications = [[NotificationsGroupController alloc] init];
     IQNavigationController * notificationsNav = [[IQNavigationController alloc] initWithRootViewController:notifications];
     
     MessagesController * messages = [[MessagesController alloc] init];

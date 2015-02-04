@@ -1,47 +1,47 @@
 //
-//  NotificationsContoller.m
+//  NotificationsGroupController.m
 //  IQ300
 //
-//  Created by Tayphoon on 11.11.14.
-//  Copyright (c) 2014 Tayphoon. All rights reserved.
+//  Created by Tayphoon on 28.01.15.
+//  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
 #import "UIViewController+LeftMenu.h"
 #import "IQSession.h"
 
-#import "NotificationsContoller.h"
+#import "NotificationsGroupController.h"
 #import "NotificationsView.h"
 #import "NotificationsMenuModel.h"
-#import "NotificationsModel.h"
+#import "NGroupCell.h"
+#import "NGroupModel.h"
+#import "IQNotificationsGroup.h"
 #import "IQNotification.h"
-#import "NotificationCell.h"
 #import "IQCounters.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQBadgeView.h"
 #import "IQService+Messages.h"
-#import "IQDiscussion.h"
-#import "CommentsController.h"
 #import "DispatchAfterExecution.h"
 #import "UIScrollView+PullToRefreshInsert.h"
+#import "NotificationsController.h"
 
-@interface NotificationsContoller() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
+@interface NotificationsGroupController () <SWTableViewCellDelegate> {
     NotificationsView * _mainView;
     NotificationsMenuModel * _menuModel;
 }
 
 @end
 
-@implementation NotificationsContoller
+@implementation NotificationsGroupController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     
     if (self) {
         self.needFullReload = YES;
-
-        self.model = [[NotificationsModel alloc] init];
-
+        
+        self.model = [[NGroupModel alloc] init];
+        
         self.title = NSLocalizedString(@"Notifications", nil);
         UIImage * barImage = [[UIImage imageNamed:@"notif_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIImage * barImageSel = [[UIImage imageNamed:@"notif_tab_selected.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -139,7 +139,7 @@
 
 - (void)updateGlobalCounter {
     __weak typeof(self) weakSelf = self;
-    [self.model updateCountersWithCompletion:^(IQCounters *counter, NSError *error) {
+    [self.model updateGlobalCountersWithCompletion:^(IQCounters *counter, NSError *error) {
         [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue]];
     }];
 }
@@ -147,45 +147,40 @@
 #pragma mark - UITableView DataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NotificationCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    NGroupCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    IQNotification * notification = [self.model itemAtIndexPath:indexPath];
-    cell.item = notification;
+    IQNotificationsGroup * group = [self.model itemAtIndexPath:indexPath];
+    cell.item = group;
     cell.markAsReadedButton.tag = indexPath.row;
     cell.delegate = self;
     cell.tag = indexPath.row;
-        
+    
     return cell;
 }
 
 #pragma mark - UITableView Delegate
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.model.cellWidth = tableView.frame.size.width;
+    return [self.model heightForItemAtIndexPath:indexPath];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQNotification * notification = [self.model itemAtIndexPath:indexPath];
-    if(notification.discussionId) {
-        NSString * title = notification.notificable.title;
-        NSNumber * commentId = notification.commentId;
-        [[IQService sharedService] discussionWithId:notification.discussionId
-                                            handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
-                                                if(success) {
-                                                    CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];                                                    
-                                                    CommentsController * controller = [[CommentsController alloc] init];
-                                                    controller.hidesBottomBarWhenPushed = YES;
-                                                    controller.title = NSLocalizedString(@"Notifications", nil);
-                                                    controller.model = model;
-                                                    controller.subTitle = title;
-                                                    controller.highlightedCommentId = commentId;
-                                                    
-                                                    [self.navigationController pushViewController:controller animated:YES];
-                                                    
-                                                    [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
-                                                }
-                                            }];
-    }
+    IQNotificationsGroup * group = [self.model itemAtIndexPath:indexPath];
+    NotificationsModel * model = [[NotificationsModel alloc] init];
+    model.loadUnreadOnly = self.model.loadUnreadOnly;
+    model.group = group;
+    
+    NotificationsController * controller = [[NotificationsController alloc] init];
+    controller.hidesBottomBarWhenPushed = YES;
+    controller.title = NSLocalizedString(group.lastNotification.notificable.type, nil);
+    controller.model = model;
+    
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 #pragma mark - IQTableModel Delegate
@@ -211,29 +206,17 @@
 
 #pragma mark - SWTableViewCell Delegate
 
-- (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
-    __weak typeof (self) weakSelf = self;
-    void(^completion)(NSError *error) = ^(NSError *error) {
-        if([weakSelf.model numberOfItemsInSection:0] == 0) {
-            [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-                [weakSelf updateNoDataLabelVisibility];
-            }];
-        }
-    };
-    
-    if(![cell.item.hasActions boolValue]) {
-        NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
-        
-        [self.model markNotificationAsReadAtIndexPath:itemIndexPath completion:completion];
-    }
-    else {
-        if(index == 0) {
-            [self.model acceptNotification:cell.item completion:completion];
-        }
-        else {
-            [self.model declineNotification:cell.item completion:completion];
-        }
-    }
+- (void)swipeableTableViewCell:(NGroupCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
+    [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_group_readed_question", nil)
+             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+             otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                          if(buttonIndex == 1) {
+                              [self markGroupAsReadedAtIndexPath:itemIndexPath];
+                          }
+                      }];
+
 }
 
 #pragma mark - Private methods
@@ -260,6 +243,19 @@
     }
 }
 
+- (void)markGroupAsReadedAtIndexPath:(NSIndexPath*)itemIndexPath {
+    __weak typeof (self) weakSelf = self;
+    void(^completion)(NSError *error) = ^(NSError *error) {
+        if([weakSelf.model numberOfItemsInSection:0] == 0) {
+            [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+                [weakSelf updateNoDataLabelVisibility];
+            }];
+        }
+    };
+    
+    [self.model markNotificationsAsReadAtIndexPath:itemIndexPath completion:completion];
+}
+
 - (void)reloadModel {
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
@@ -276,7 +272,7 @@
         if(!error) {
             [self.tableView reloadData];
         }
-
+        
         [self scrollToTopIfNeedAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;
@@ -317,7 +313,6 @@
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.totalItemsCount = self.model.totalItemsCount;
     _menuModel.unreadItemsCount = self.model.unreadItemsCount;
-    [self updateBarBadgeWithValue:self.model.unreadItemsCount];
 }
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {

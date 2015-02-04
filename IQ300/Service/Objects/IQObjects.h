@@ -9,7 +9,7 @@
 #ifndef IQ300_IQObjects_h
 #define IQ300_IQObjects_h
 
-#import "IQNotificationsHolder.h"
+#import "IQNotification.h"
 #import "IQUser.h"
 #import "IQCounters.h"
 #import "IQConversation.h"
@@ -18,5 +18,6 @@
 #import "IQAttachment.h"
 #import "IQContact.h"
 #import "IQNotificationIds.h"
+#import "IQNotificationsGroup.h"
 
 #endif
