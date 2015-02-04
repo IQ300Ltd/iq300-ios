@@ -42,7 +42,7 @@ NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
     
     if(self) {
         _queue = queue;
-        _dispatchBlock = dispatchBlock;
+        _dispatchBlock = [dispatchBlock copy];
     }
     
     return self;
