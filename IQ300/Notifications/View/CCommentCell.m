@@ -225,7 +225,7 @@
     if(hasExpandView) {
         _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + ATTACHMENT_VIEW_Y_OFFSET,
                                          CGRectBottom(_descriptionTextView.frame) + ATTACHMENT_VIEW_Y_OFFSET,
-                                         _descriptionTextView.frame.size.width - ATTACHMENT_VIEW_Y_OFFSET,
+                                         90,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
     

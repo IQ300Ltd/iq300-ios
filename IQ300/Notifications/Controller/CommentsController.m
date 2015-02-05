@@ -177,9 +177,6 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    CCommentCell * cell = (CCommentCell*)[tableView cellForRowAtIndexPath:indexPath];
-    NSLog(@"%@", NSStringFromClass([cell class]));
-    NSLog(@"%@",cell.descriptionTextView.textColor);
 }
 
 #pragma mark - DiscussionModelDelegate Delegate

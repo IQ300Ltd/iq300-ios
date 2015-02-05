@@ -274,7 +274,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     if(hasExpandView) {
         _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + CONTENT_Y_OFFSET,
                                          CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET,
-                                         _descriptionTextView.frame.size.width - CONTENT_Y_OFFSET,
+                                         90,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
     
