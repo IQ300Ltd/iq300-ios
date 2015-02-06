@@ -33,6 +33,7 @@
 @dynamic notificationId;
 @dynamic readed;
 @dynamic createdAt;
+@dynamic updatedAt;
 @dynamic hasActions;
 @dynamic notificable;
 @dynamic mainDescription;
@@ -51,6 +52,7 @@
                                                    @"id"                : @"notificationId",
                                                    @"readed"            : @"readed",
                                                    @"created_at"        : @"createdAt",
+                                                   @"updated_at"        : @"updatedAt",
                                                    @"has_actions"       : @"hasActions",
                                                    @"main_text"         : @"mainDescription",
                                                    @"additional_text"   : @"additionalDescription",

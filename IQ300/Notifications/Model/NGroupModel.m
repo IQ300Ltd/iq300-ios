@@ -29,6 +29,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     NSInteger _unreadItemsCount;
     __weak id _notfObserver;
     NSNumber * _lastLoadedId;
+    NSDate * _lastUpdatedDate;
 }
 
 @end
@@ -285,6 +286,22 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
 #pragma mark - Private methods
 
+- (void)groupUpdatesWithCompletion:(void (^)(NSError * error))completion {
+    if(!_lastUpdatedDate) {
+        _lastUpdatedDate = [self getLastNotificationChangedDate];
+    }
+
+    [[IQService sharedService] notificationsGroupUpdatedAfter:_lastUpdatedDate
+                                                      handler:^(BOOL success, NSArray * groups, NSData *responseData, NSError *error) {
+                                                          if(success && [groups count] > 0) {
+                                                              _lastUpdatedDate = [groups valueForKeyPath:@"@max.lastNotification.updatedAt"];
+                                                          }
+                                                          if(completion) {
+                                                              completion(error);
+                                                          }
+                                                      }];
+}
+
 - (void)markAllLocalNotificationsAsRead {
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
     NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
@@ -378,12 +395,12 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 - (NSNumber*)getLastIdFromTop:(BOOL)top {
     NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQNotificationsGroup"];
     NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"lastNotificationId"];
-    NSExpression * maxSalaryExpression = [NSExpression expressionForFunction:(top) ? @"max:" : @"min:"
+    NSExpression * maxIdExpression = [NSExpression expressionForFunction:(top) ? @"max:" : @"min:"
                                                                    arguments:[NSArray arrayWithObject:keyPathExpression]];
     
     NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
     [expressionDescription setName:@"notificationId"];
-    [expressionDescription setExpression:maxSalaryExpression];
+    [expressionDescription setExpression:maxIdExpression];
     [expressionDescription setExpressionResultType:NSDecimalAttributeType];
     
     [fetchRequest setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
@@ -402,6 +419,28 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     NSArray *objects = [[IQService sharedService].context executeFetchRequest:fetchRequest error:&error];
     if ([objects count] > 0) {
         return [[objects objectAtIndex:0] valueForKey:@"notificationId"];
+    }
+    return nil;
+}
+
+- (NSDate*)getLastNotificationChangedDate {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQNotificationsGroup"];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"lastNotification.updatedAt" ascending:NO]];
+    fetchRequest.fetchLimit = 1;
+    
+    if(_loadUnreadOnly) {
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"unreadCount > 0 AND ownerId = %@", [IQSession defaultSession].userId]];
+    }
+    else {
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
+    }
+    
+    NSError *error = nil;
+    
+    NSArray *objects = [[IQService sharedService].context executeFetchRequest:fetchRequest error:&error];
+    if ([objects count] > 0) {
+        IQNotification * lastNotification = ((IQNotificationsGroup*)[objects objectAtIndex:0]).lastNotification;
+        return lastNotification.updatedAt;
     }
     return nil;
 }
@@ -430,7 +469,8 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
         NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
         if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
-            [weakSelf reloadFirstPartWithCompletion:nil];
+            [weakSelf groupUpdatesWithCompletion:nil];
+            [weakSelf updateCounters];
         }
     };
     _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged

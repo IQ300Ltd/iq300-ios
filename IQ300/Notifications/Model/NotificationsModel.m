@@ -453,12 +453,12 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (NSNumber*)getLastIdFromTop:(BOOL)top {
     NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQNotification"];
     NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"notificationId"];
-    NSExpression * maxSalaryExpression = [NSExpression expressionForFunction:(top) ? @"max:" : @"min:"
+    NSExpression * maxIdExpression = [NSExpression expressionForFunction:(top) ? @"max:" : @"min:"
                                                                   arguments:[NSArray arrayWithObject:keyPathExpression]];
     
     NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
     [expressionDescription setName:@"notificationId"];
-    [expressionDescription setExpression:maxSalaryExpression];
+    [expressionDescription setExpression:maxIdExpression];
     [expressionDescription setExpressionResultType:NSDecimalAttributeType];
   
     [fetchRequest setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];

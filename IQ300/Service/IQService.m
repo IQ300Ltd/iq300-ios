@@ -239,6 +239,12 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                    handler:handler];
 }
 
+- (void)notificationsGroupUpdatedAfter:(NSDate*)date handler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/notifications/groups"
+                parameters:@{ @"updated_at_after" : NSObjectNullForNil(date) }
+                   handler:handler];
+}
+
 - (void)notificationsForGroupWithId:(NSNumber*)anyNotificationId
                             afterId:(NSNumber*)notificationId
                              unread:(NSNumber*)unread
