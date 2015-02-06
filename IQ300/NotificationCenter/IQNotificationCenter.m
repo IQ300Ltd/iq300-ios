@@ -86,7 +86,6 @@ NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
 static IQNotificationCenter * _defaultCenter = nil;
 
 @interface IQNotificationCenter() <PTPusherDelegate> {
-    PTPusher * _client;
     NSString * _defaultChannelName;
     NSMutableDictionary * _channels;
     NSMutableDictionary * _channelBindings;
@@ -97,6 +96,8 @@ static IQNotificationCenter * _defaultCenter = nil;
     BOOL _shouldReconnect;
     __weak id _notfObserver;
 }
+
+@property (nonatomic, strong) PTPusher * client;
 
 @end
 
@@ -140,8 +141,8 @@ static IQNotificationCenter * _defaultCenter = nil;
                                                                            queue:nil
                                                                       usingBlock:^(NSNotification *note) {
                                                                           PTPusherEvent * event = note.userInfo[PTPusherEventUserInfoKey];
-                                                                          if(event) {
-                                                                              [weakSelf pusher:_client didReceiveEvent:event];
+                                                                          if(event && note.object == weakSelf.client) {
+                                                                              [weakSelf pusher:weakSelf.client didReceiveEvent:event];
                                                                           }
                                                                       }];
 
