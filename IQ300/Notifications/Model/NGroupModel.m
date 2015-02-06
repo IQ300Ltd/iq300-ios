@@ -429,6 +429,10 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
 - (void)updateCounters {
     [self updateCountersWithCompletion:nil];
+    [self initGlobalCounterUpdate];
+}
+
+- (void)initGlobalCounterUpdate {
     NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"notifications" };
     [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
                                                         object:nil
@@ -443,6 +447,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
         if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
             [weakSelf reloadFirstPartWithCompletion:nil];
+            [weakSelf initGlobalCounterUpdate];
         }
     };
     _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
