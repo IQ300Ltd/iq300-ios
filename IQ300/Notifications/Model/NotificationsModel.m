@@ -353,14 +353,11 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)markAllLocalNotificationAsRead {
     self.group.unreadCount = @(0);
     
-    NSNumber * notificableId = self.group.lastNotification.notificable.notificableId;
-    NSString * notificableType = self.group.lastNotification.notificable.type;
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
     NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-    NSString * predicateFormat = @"readed == NO AND ownerId = %@ AND notificable.notificableId == %@ AND notificable.type == %@";
+    NSString * predicateFormat = @"readed == NO AND ownerId = %@ AND groupSid == %@";
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId,
-                                notificableId,
-                                notificableType]];
+                                                                                 self.group.sID]];
     [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
         if ([objects count] > 0) {
             [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
@@ -428,12 +425,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                                           cacheName:nil];
     }
     
-    NSNumber * notificableId = self.group.lastNotification.notificable.notificableId;
-    NSString * notificableType = self.group.lastNotification.notificable.type;
-    NSString * predicateFormat = @"ownerId = %@ AND notificable.notificableId == %@ AND notificable.type == %@";
+    NSString * predicateFormat = @"ownerId = %@ AND groupSid == %@";
     NSPredicate * predicate = [NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId,
-                                                                                notificableId,
-                                                                                notificableType];
+                                                                                self.group.sID];
     if(_loadUnreadOnly) {
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
@@ -465,12 +459,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     [fetchRequest setResultType:NSDictionaryResultType];
     fetchRequest.fetchLimit = 1;
     
-    NSNumber * notificableId = self.group.lastNotification.notificable.notificableId;
-    NSString * notificableType = self.group.lastNotification.notificable.type;
-    NSString * predicateFormat = @"ownerId = %@ AND notificable.notificableId == %@ AND notificable.type == %@";
+    NSString * predicateFormat = @"ownerId = %@ AND groupSid == %@";
     NSPredicate * predicate = [NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId,
-                                                                                notificableId,
-                                                                                notificableType];
+                                                                                self.group.sID];
 
     if(_loadUnreadOnly) {
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES)"];

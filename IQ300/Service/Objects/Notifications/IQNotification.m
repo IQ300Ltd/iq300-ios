@@ -31,6 +31,7 @@
 @implementation IQNotification
 
 @dynamic notificationId;
+@dynamic groupSid;
 @dynamic readed;
 @dynamic createdAt;
 @dynamic updatedAt;
@@ -50,6 +51,7 @@
     [mapping setIdentificationAttributes:@[@"notificationId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                    @"id"                : @"notificationId",
+                                                   @"group_sid"         : @"groupSid",
                                                    @"readed"            : @"readed",
                                                    @"created_at"        : @"createdAt",
                                                    @"updated_at"        : @"updatedAt",
