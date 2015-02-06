@@ -42,7 +42,6 @@
 - (void)markNotificationsAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion;
 
-- (void)updateGlobalCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
 
 - (void)setSubscribedToNotifications:(BOOL)subscribed;

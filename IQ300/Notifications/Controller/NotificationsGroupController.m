@@ -139,7 +139,7 @@
 
 - (void)updateGlobalCounter {
     __weak typeof(self) weakSelf = self;
-    [self.model updateGlobalCountersWithCompletion:^(IQCounters *counter, NSError *error) {
+    [self.model updateCountersWithCompletion:^(IQCounters *counter, NSError *error) {
         [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue]];
     }];
 }
@@ -313,6 +313,7 @@
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.totalItemsCount = self.model.totalItemsCount;
     _menuModel.unreadItemsCount = self.model.unreadItemsCount;
+    [self updateBarBadgeWithValue:self.model.unreadItemsCount];
 }
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {

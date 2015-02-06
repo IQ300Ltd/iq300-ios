@@ -256,14 +256,6 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     }];
 }
 
-- (void)updateGlobalCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion {
-    [[IQService sharedService] notificationsCountWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
-        if(completion) {
-            completion(counter, error);
-        }
-    }];
-}
-
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion {
     [[IQService sharedService] notificationsGroupCountWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
         if(success) {
@@ -429,14 +421,6 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
 - (void)updateCounters {
     [self updateCountersWithCompletion:nil];
-    [self initGlobalCounterUpdate];
-}
-
-- (void)initGlobalCounterUpdate {
-    NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"notifications" };
-    [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
-                                                        object:nil
-                                                      userInfo:userInfo];
 }
 
 - (void)resubscribeToIQNotifications {
@@ -447,7 +431,6 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
         if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
             [weakSelf reloadFirstPartWithCompletion:nil];
-            [weakSelf initGlobalCounterUpdate];
         }
     };
     _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
