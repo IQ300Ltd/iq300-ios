@@ -286,9 +286,11 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     __weak typeof(self) weakSelf = self;
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
         NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
+        NSString * disscusionParentType = [commentData[@"discussable"][@"type"] lowercaseString];
         NSNumber * authorId = commentData[@"author"][@"id"];
         
-        if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId]) {
+        if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId] &&
+           [disscusionParentType isEqualToString:@"conversation"]) {
             [weakSelf reloadFirstPart];
         }
     };
