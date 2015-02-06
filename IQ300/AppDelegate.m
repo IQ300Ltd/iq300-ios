@@ -147,15 +147,15 @@
     
     [self.window makeKeyAndVisible];
     
-//    if(![IQSession defaultSession]) {
-//        [[UIApplication sharedApplication] unregisterForRemoteNotifications];
-//        [[UIApplication sharedApplication] setStatusBarHidden:YES];
-//        LoginController * loginViewController = [[LoginController alloc] init];
-//        [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
-//    }
-//    else {
-//        [self updateGlobalCounters];
-//    }
+    if(![IQSession defaultSession]) {
+        [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+        LoginController * loginViewController = [[LoginController alloc] init];
+        [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+    }
+    else {
+        [self updateGlobalCounters];
+    }
     
     if (launchOptions != nil) {
         NSDictionary* dictionary = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
