@@ -49,7 +49,7 @@ NSString * const kOpenSideObservKey = @"openSide";
     UIView * statusBarView = navController.statusBarView;
 
     CGRect newFrame = navController.statusBarView.frame;
-    newFrame.origin.x = centerContainerView.frame.origin.x + 3;
+    newFrame.origin.x = centerContainerView.frame.origin.x;
     
     statusBarView.frame = newFrame;
 }
