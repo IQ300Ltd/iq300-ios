@@ -240,6 +240,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                                       NSLog(@"Save notification error: %@", saveError);
                                                                   }
 
+                                                                  [self markAllNotificationsAsReadInGroup:item.sID];
                                                                   [self updateCounters];
                                                               }
                                                           }];
@@ -322,6 +323,22 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
         if ([objects count] > 0) {
             [objects makeObjectsPerformSelector:@selector(setUnreadCount:) withObject:@(0)];
+            NSError *saveError = nil;
+            
+            if(![context saveToPersistentStore:&saveError]) {
+                NSLog(@"Save notifications error: %@", saveError);
+            }
+        }
+    }];
+}
+
+- (void)markAllNotificationsAsReadInGroup:(NSString*)sid {
+    NSManagedObjectContext * context = _fetchController.managedObjectContext;
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@ AND groupSid == %@", [IQSession defaultSession].userId, sid]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+        if ([objects count] > 0) {
+            [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
             NSError *saveError = nil;
             
             if(![context saveToPersistentStore:&saveError]) {
