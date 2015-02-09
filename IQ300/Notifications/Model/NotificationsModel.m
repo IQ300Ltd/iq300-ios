@@ -239,9 +239,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     IQNotification * item = [self itemAtIndexPath:indexPath];
     [[IQService sharedService] markNotificationAsRead:item.notificationId
                                               handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                  if(completion) {
-                                                      completion(error);
-                                                  }
                                                   if(success) {
                                                       item.readed = @(YES);
                                                       
@@ -252,8 +249,16 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                       if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
                                                           NSLog(@"Save notification error: %@", saveError);
                                                       }
-
-                                                      [self updateCounters];
+                                                      
+                                                      [self updateCountersWithCompletion:^(IQCounters *counters, NSError *error) {
+                                                          if(self.loadUnreadOnly && _unreadItemsCount > 0 &&
+                                                             [_fetchController.fetchedObjects count] == 0) {
+                                                              [self loadNextPartWithCompletion:nil];
+                                                          }
+                                                      }];
+                                                  }
+                                                  if(completion) {
+                                                      completion(error);
                                                   }
                                               }];
 }
@@ -261,12 +266,12 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion {
     [[IQService sharedService] markNotificationsGroupAsReadWithId:self.group.lastNotificationId
                                                           handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                              if(completion) {
-                                                                  completion(error);
-                                                              }
                                                               if(success) {
                                                                   [self markAllLocalNotificationAsRead];
                                                                   [self updateCounters];
+                                                              }
+                                                              if(completion) {
+                                                                  completion(error);
                                                               }
                                                           }];
 }

@@ -229,9 +229,6 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     
     [[IQService sharedService] markNotificationsGroupAsReadWithId:item.lastNotificationId
                                                           handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                              if(completion) {
-                                                                  completion(error);
-                                                              }
                                                               if(success) {
                                                                   item.unreadCount = @(0);
                                                                   
@@ -241,19 +238,27 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                                   }
 
                                                                   [self markAllNotificationsAsReadInGroup:item.sID];
-                                                                  [self updateCounters];
+                                                                  [self updateCountersWithCompletion:^(IQCounters *counters, NSError *error) {
+                                                                      if(self.loadUnreadOnly && _unreadItemsCount > 0 &&
+                                                                         [_fetchController.fetchedObjects count] == 0) {
+                                                                          [self loadNextPartWithCompletion:nil];
+                                                                      }
+                                                                  }];
+                                                              }
+                                                              if(completion) {
+                                                                  completion(error);
                                                               }
                                                           }];
 }
 
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion {
     [[IQService sharedService] markAllNotificationsAsReadWithHandler:^(BOOL success, NSData *responseData, NSError *error) {
-        if(completion) {
-            completion(error);
-        }
         if(success) {
             [self markAllLocalNotificationsAsRead];
             [self updateCounters];
+        }
+        if(completion) {
+            completion(error);
         }
     }];
 }

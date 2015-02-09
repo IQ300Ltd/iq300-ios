@@ -208,6 +208,7 @@
     _badgeView.hidden = YES;
     _contentBackgroundInsets = UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR_R;
+    [self hideUtilityButtonsAnimated:NO];
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {
