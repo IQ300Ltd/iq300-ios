@@ -61,6 +61,8 @@
 		738EA7AC1A1DD69F0065D39F /* NotificationsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7AB1A1DD69F0065D39F /* NotificationsModel.m */; };
 		738EA7AF1A1DDEC20065D39F /* IQTableBaseController.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7AE1A1DDEC20065D39F /* IQTableBaseController.m */; };
 		738EA7B21A1DE15B0065D39F /* UIViewController+LeftMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7B11A1DE15B0065D39F /* UIViewController+LeftMenu.m */; };
+		738FB0001A88F52C00C360E2 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738FAFFF1A88F52C00C360E2 /* Crashlytics.framework */; };
+		738FB0031A88F53900C360E2 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738FB0021A88F53900C360E2 /* Fabric.framework */; };
 		738FE6D11A15F119009F26A2 /* RKMappingResult+Result.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE6D01A15F119009F26A2 /* RKMappingResult+Result.m */; };
 		738FE6FD1A162B10009F26A2 /* calendar_tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 738FE6E31A162B10009F26A2 /* calendar_tab.png */; };
 		738FE6FE1A162B10009F26A2 /* calendar_tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 738FE6E41A162B10009F26A2 /* calendar_tab@2x.png */; };
@@ -306,6 +308,8 @@
 		738EA7AE1A1DDEC20065D39F /* IQTableBaseController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTableBaseController.m; sourceTree = "<group>"; };
 		738EA7B01A1DE15B0065D39F /* UIViewController+LeftMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+LeftMenu.h"; sourceTree = "<group>"; };
 		738EA7B11A1DE15B0065D39F /* UIViewController+LeftMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+LeftMenu.m"; sourceTree = "<group>"; };
+		738FAFFF1A88F52C00C360E2 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		738FB0021A88F53900C360E2 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		738FE6CF1A15F119009F26A2 /* RKMappingResult+Result.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RKMappingResult+Result.h"; sourceTree = "<group>"; };
 		738FE6D01A15F119009F26A2 /* RKMappingResult+Result.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RKMappingResult+Result.m"; sourceTree = "<group>"; };
 		738FE6E31A162B10009F26A2 /* calendar_tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calendar_tab.png; sourceTree = "<group>"; };
@@ -521,10 +525,12 @@
 			files = (
 				73ACA0441A31E1E2005C0259 /* MediaPlayer.framework in Frameworks */,
 				73ACA0421A31E1D4005C0259 /* AssetsLibrary.framework in Frameworks */,
+				738FB0001A88F52C00C360E2 /* Crashlytics.framework in Frameworks */,
 				73B6F1F91A27626E00ECF102 /* libz.dylib in Frameworks */,
 				737DD2251A14E52B00CC4443 /* CoreGraphics.framework in Frameworks */,
 				737DD2231A14E51900CC4443 /* Foundation.framework in Frameworks */,
 				737DD2211A14E51300CC4443 /* UIKit.framework in Frameworks */,
+				738FB0031A88F53900C360E2 /* Fabric.framework in Frameworks */,
 				737DD21F1A14E50800CC4443 /* MobileCoreServices.framework in Frameworks */,
 				737DD21D1A14E4F800CC4443 /* CFNetwork.framework in Frameworks */,
 				737DD21B1A14E4F100CC4443 /* Security.framework in Frameworks */,
@@ -938,6 +944,22 @@
 			path = Objects;
 			sourceTree = "<group>";
 		};
+		738FAFFE1A88F52C00C360E2 /* Crashlytics */ = {
+			isa = PBXGroup;
+			children = (
+				738FAFFF1A88F52C00C360E2 /* Crashlytics.framework */,
+			);
+			path = Crashlytics;
+			sourceTree = "<group>";
+		};
+		738FB0011A88F53900C360E2 /* Fabric */ = {
+			isa = PBXGroup;
+			children = (
+				738FB0021A88F53900C360E2 /* Fabric.framework */,
+			);
+			path = Fabric;
+			sourceTree = "<group>";
+		};
 		738FE6E21A162B10009F26A2 /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -1117,6 +1139,8 @@
 		73B6F1ED1A2760B400ECF102 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				738FAFFE1A88F52C00C360E2 /* Crashlytics */,
+				738FB0011A88F53900C360E2 /* Fabric */,
 				732952A61A692EE90066B336 /* LibComponentLogging-Core */,
 				732952AD1A692EE90066B336 /* LibComponentLogging-LogFile */,
 			);
@@ -1205,6 +1229,7 @@
 				738CE1DD1A0B3F4E0096B374 /* Frameworks */,
 				738CE1DE1A0B3F4E0096B374 /* Resources */,
 				13EB416966FC58DB57384D49 /* Copy Pods Resources */,
+				738FAFF91A88F00800C360E2 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1352,6 +1377,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		738FAFF91A88F00800C360E2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Dependencies/Fabric/Fabric.framework/run f74d3836578743decd3ad64c91295683ac272daf 162729e63a6dcf04b39959345042cacee9abc83fd178c82811701c96b1f3217a";
 		};
 		98DBA4C8145B6256D6CC040B /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1559,6 +1597,11 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Inostudio Solutions (2375DJV45D)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/Crashlytics",
+					"$(PROJECT_DIR)/Dependencies/Fabric",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IQ300/IQ300-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1663,6 +1706,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Evgeny Kulinchenko (5A5WW9MX3F)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Evgeny Kulinchenko (5A5WW9MX3F)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/Crashlytics",
+					"$(PROJECT_DIR)/Dependencies/Fabric",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IQ300/IQ300-Prefix.pch";
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
@@ -1686,6 +1734,11 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Inostudio Solutions (2375DJV45D)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Dependencies/Crashlytics",
+					"$(PROJECT_DIR)/Dependencies/Fabric",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IQ300/IQ300-Prefix.pch";
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;

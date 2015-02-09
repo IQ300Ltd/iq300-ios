@@ -7,6 +7,8 @@
 //
 #import <RestKit/RestKit.h>
 #import <MMDrawerController/MMDrawerController.h>
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 
 #import "AppDelegate.h"
 #import "TasksController.h"
@@ -172,6 +174,8 @@
     [self instalCrashSignalCatchers];
 #endif
     
+    [Fabric with:@[CrashlyticsKit]];
+
     return YES;
 }
 
