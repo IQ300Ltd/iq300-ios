@@ -293,15 +293,10 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 #pragma mark - Private methods
 
 - (void)groupUpdatesWithCompletion:(void (^)(NSError * error))completion {
-    if(!_lastUpdatedDate) {
-        _lastUpdatedDate = [self getLastNotificationChangedDate];
-    }
+    _lastUpdatedDate = [self getLastNotificationChangedDate];
 
     [[IQService sharedService] notificationsGroupUpdatedAfter:_lastUpdatedDate
                                                       handler:^(BOOL success, NSArray * groups, NSData *responseData, NSError *error) {
-                                                          if(success && [groups count] > 0) {
-                                                              _lastUpdatedDate = [groups valueForKeyPath:@"@max.lastNotification.updatedAt"];
-                                                          }
                                                           if(completion) {
                                                               completion(error);
                                                           }
@@ -448,14 +443,8 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 - (NSDate*)getLastNotificationChangedDate {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQNotificationsGroup"];
     fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"lastNotification.updatedAt" ascending:NO]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
     fetchRequest.fetchLimit = 1;
-    
-    if(_loadUnreadOnly) {
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"unreadCount > 0 AND ownerId = %@", [IQSession defaultSession].userId]];
-    }
-    else {
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
-    }
     
     NSError *error = nil;
     
