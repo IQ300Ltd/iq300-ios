@@ -132,15 +132,15 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     else {
         NSNumber * notificationId = [self getLastIdFromTop:NO];
         [[IQService sharedService] notificationsGroupBeforeId:notificationId
-                                                             unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                               page:@(1)
-                                                                per:@(_portionLenght)
-                                                               sort:IQSortDirectionDescending
-                                                            handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                                if(completion) {
-                                                                    completion(error);
-                                                                }
-                                                            }];
+                                                       unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                         page:@(1)
+                                                          per:@(_portionLenght)
+                                                         sort:IQSortDirectionDescending
+                                                      handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                          if(completion) {
+                                                              completion(error);
+                                                          }
+                                                      }];
     }
 }
 
@@ -150,26 +150,26 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     _lastLoadedId = [self getLastIdFromTop:YES];
     
     [[IQService sharedService] notificationsGroupAfterId:_lastLoadedId
-                                                        unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                          page:@(1)
-                                                           per:@(_portionLenght)
-                                                          sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                           if(success && [holder.objects count] > 0) {
-                                                               _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
-                                                           }
-                                                           
-                                                           if(success && _lastLoadedId && [_fetchController.fetchedObjects count] < _portionLenght) {
-                                                               [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
-                                                                   if(completion) {
-                                                                       completion(error);
-                                                                   }
-                                                               }];
-                                                           }
-                                                           else if(completion) {
-                                                               completion(error);
-                                                           }
-                                                       }];
+                                                  unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                    page:@(1)
+                                                     per:@(_portionLenght)
+                                                    sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
+                                                 handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                     if(success && [holder.objects count] > 0) {
+                                                         _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
+                                                     }
+                                                     
+                                                     if(success && _lastLoadedId && [_fetchController.fetchedObjects count] < _portionLenght) {
+                                                         [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
+                                                             if(completion) {
+                                                                 completion(error);
+                                                             }
+                                                         }];
+                                                     }
+                                                     else if(completion) {
+                                                         completion(error);
+                                                     }
+                                                 }];
 }
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
@@ -184,26 +184,26 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     
     [self updateCountersWithCompletion:nil];
     [[IQService sharedService] notificationsGroupAfterId:_lastLoadedId
-                                                        unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                          page:@(1)
-                                                           per:@(_portionLenght)
-                                                          sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                           if(success && [holder.objects count] > 0) {
-                                                               _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
-                                                           }
-                                                           
-                                                           if(success && _lastLoadedId && [_fetchController.fetchedObjects count] < _portionLenght) {
-                                                               [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
-                                                                   if(completion) {
-                                                                       completion(error);
-                                                                   }
-                                                               }];
-                                                           }
-                                                           else if(completion) {
-                                                               completion(error);
-                                                           }
-                                                       }];
+                                                  unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                    page:@(1)
+                                                     per:@(_portionLenght)
+                                                    sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
+                                                 handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                     if(success && [holder.objects count] > 0) {
+                                                         _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
+                                                     }
+                                                     
+                                                     if(success && _lastLoadedId && [_fetchController.fetchedObjects count] < _portionLenght) {
+                                                         [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
+                                                             if(completion) {
+                                                                 completion(error);
+                                                             }
+                                                         }];
+                                                     }
+                                                     else if(completion) {
+                                                         completion(error);
+                                                     }
+                                                 }];
 }
 
 - (void)clearModelData {
@@ -548,21 +548,8 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (void)applicationWillEnterForeground {
-    [self recursiveNotificationsLoadingFromId:_lastLoadedId];
-}
-
-- (void)recursiveNotificationsLoadingFromId:(NSNumber*)notificationId {
-    [[IQService sharedService] notificationsGroupAfterId:notificationId
-                                                        unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                          page:@(1)
-                                                           per:@(_portionLenght)
-                                                          sort:SORT_DIRECTION
-                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                           if(success && holder.currentPage != holder.totalPages) {
-                                                               _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
-                                                               [self recursiveNotificationsLoadingFromId:_lastLoadedId];
-                                                           }
-                                                       }];
+    [self updateCounters];
+    [self groupUpdatesWithCompletion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
