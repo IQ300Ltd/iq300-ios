@@ -32,7 +32,7 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 
 @property (nonatomic, strong) IQSession * session;
 
-- (void)loginWithEmail:(NSString*)email password:(NSString*)password handler:(RequestCompletionHandler)handler;
+- (void)loginWithDeviceToken:(NSString*)deviceToken email:(NSString*)email password:(NSString*)password handler:(RequestCompletionHandler)handler;
 - (void)logout;
 
 - (void)userInfoWithHandler:(ObjectLoaderCompletionHandler)handler;

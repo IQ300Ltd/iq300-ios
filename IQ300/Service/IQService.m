@@ -67,9 +67,10 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     return @"IQ300";
 }
 
-- (void)loginWithEmail:(NSString*)email password:(NSString*)password handler:(RequestCompletionHandler)handler {
-    NSDictionary * parameters = @{ @"email"    : NSStringNullForNil(email),
-                                   @"password" : NSStringNullForNil(password) };
+- (void)loginWithDeviceToken:(NSString*)deviceToken email:(NSString*)email password:(NSString*)password handler:(RequestCompletionHandler)handler {
+    NSDictionary * parameters = @{ //@"device_token" : NSStringNullForNil(deviceToken),
+                                   @"email"        : NSStringNullForNil(email),
+                                   @"password"     : NSStringNullForNil(password) };
     [self postObject:nil
                 path:@"/api/v1/sessions"
           parameters:parameters
