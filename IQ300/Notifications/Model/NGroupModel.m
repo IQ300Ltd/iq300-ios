@@ -9,7 +9,7 @@
 
 #import "NGroupModel.h"
 #import "IQService.h"
-#import "IQNotificationsGroup.h"
+#import "IQNotificationGroupsHolder.h"
 #import "IQCounters.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "IQNotificationCenter.h"
@@ -114,9 +114,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                         page:@(1)
                                                          per:@(_portionLenght)
                                                         sort:SORT_DIRECTION
-                                                     handler:^(BOOL success, NSArray * groups, NSData *responseData, NSError *error) {
-                                                         if(success && [groups count] > 0) {
-                                                             _lastLoadedId = [groups valueForKeyPath:@"@max.lastNotificationId"];
+                                                     handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                         if(success && [holder.objects count] > 0) {
+                                                             _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
                                                          }
                                                          if(completion) {
                                                              completion(error);
@@ -136,7 +136,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                                page:@(1)
                                                                 per:@(_portionLenght)
                                                                sort:IQSortDirectionDescending
-                                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                            handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
                                                                 if(completion) {
                                                                     completion(error);
                                                                 }
@@ -154,9 +154,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                           page:@(1)
                                                            per:@(_portionLenght)
                                                           sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                                       handler:^(BOOL success, NSArray * groups, NSData *responseData, NSError *error) {
-                                                           if(success && [groups count] > 0) {
-                                                               _lastLoadedId = [groups valueForKeyPath:@"@max.lastNotificationId"];
+                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                           if(success && [holder.objects count] > 0) {
+                                                               _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
                                                            }
                                                            
                                                            if(success && _lastLoadedId && [_fetchController.fetchedObjects count] < _portionLenght) {
@@ -188,9 +188,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                           page:@(1)
                                                            per:@(_portionLenght)
                                                           sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                                       handler:^(BOOL success, NSArray * groups, NSData *responseData, NSError *error) {
-                                                           if(success && [groups count] > 0) {
-                                                               _lastLoadedId = [groups valueForKeyPath:@"@max.lastNotificationId"];
+                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                           if(success && [holder.objects count] > 0) {
+                                                               _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
                                                            }
                                                            
                                                            if(success && _lastLoadedId && [_fetchController.fetchedObjects count] < _portionLenght) {
@@ -230,14 +230,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     [[IQService sharedService] markNotificationsGroupAsReadWithId:item.lastNotificationId
                                                           handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                               if(success) {
-                                                                  item.unreadCount = @(0);
-                                                                  
-                                                                  NSError *saveError = nil;
-                                                                  if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
-                                                                      NSLog(@"Save notification error: %@", saveError);
-                                                                  }
-
-                                                                  [self markAllNotificationsAsReadInGroup:item.sID];
+                                                                  [self markAllNotificationsAsReadInGroup:item];
                                                                   [self updateCountersWithCompletion:^(IQCounters *counters, NSError *error) {
                                                                       if(self.loadUnreadOnly && _unreadItemsCount > 0 &&
                                                                          [_fetchController.fetchedObjects count] == 0) {
@@ -296,8 +289,11 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     _lastUpdatedDate = [self getLastNotificationChangedDate];
 
     [[IQService sharedService] notificationsGroupUpdatedAfter:_lastUpdatedDate
-                                                      handler:^(BOOL success, NSArray * groups, NSData *responseData, NSError *error) {
-                                                          if(completion) {
+                                                      handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                          if(success && holder.currentPage != holder.totalPages) {
+                                                              [self groupUpdatesWithCompletion:completion];
+                                                          }
+                                                          else if(completion) {
                                                               completion(error);
                                                           }
                                                       }];
@@ -318,13 +314,40 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         }
     }];
     
-    fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotificationsGroup"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"unreadCount > 0 AND ownerId = %@", [IQSession defaultSession].userId]];
-    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+
+    NSArray * groups = [_fetchController fetchedObjects];
+    NSEntityDescription * entity = [NSEntityDescription entityForName:@"IQNotification"
+                                               inManagedObjectContext:context];
+    
+    NSAttributeDescription* groupSIDDesc = [entity.attributesByName objectForKey:@"groupSid"];
+
+    NSExpression * countExpression = [NSExpression expressionForFunction: @"count:"
+                                                              arguments: @[[NSExpression expressionForKeyPath: @"groupSid"]]];
+    NSExpressionDescription * expressionDescription = [[NSExpressionDescription alloc] init];
+    [expressionDescription setName:@"count"];
+    [expressionDescription setExpression: countExpression];
+    [expressionDescription setExpressionResultType: NSInteger32AttributeType];
+    
+    NSFetchRequest * request = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
+    [request setPropertiesToFetch:@[groupSIDDesc, expressionDescription]];
+    [request setPropertiesToGroupBy:@[groupSIDDesc]];
+    [request setResultType:NSDictionaryResultType];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"hasActions == YES AND ownerId = %@", [IQSession defaultSession].userId]];
+
+    [context executeFetchRequest:request completion:^(NSArray *objects, NSError *error) {
         if ([objects count] > 0) {
-            [objects makeObjectsPerformSelector:@selector(setUnreadCount:) withObject:@(0)];
-            NSError *saveError = nil;
+            for (NSDictionary * counts in objects) {
+                NSNumber * unreadCount = counts[@"count"];
+                NSNumber * groupSid = counts[@"groupSid"];
+
+                NSArray * filteredArray = [groups filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"sID == %@", groupSid]];
+                if([filteredArray count] > 0) {
+                    IQNotificationsGroup * group = [filteredArray objectAtIndex:0];
+                    group.unreadCount = unreadCount;
+                }
+            }
             
+            NSError *saveError = nil;
             if(![context saveToPersistentStore:&saveError]) {
                 NSLog(@"Save notifications error: %@", saveError);
             }
@@ -332,15 +355,25 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     }];
 }
 
-- (void)markAllNotificationsAsReadInGroup:(NSString*)sid {
+- (void)markAllNotificationsAsReadInGroup:(IQNotificationsGroup*)group {
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
     NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@ AND groupSid == %@", [IQSession defaultSession].userId, sid]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES) AND ownerId = %@ AND groupSid == %@",
+                                                                [IQSession defaultSession].userId,
+                                                                group.sID]];
     [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
         if ([objects count] > 0) {
             [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
-            NSError *saveError = nil;
             
+            NSArray * actionsNotifications = [objects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"hasActions == YES"]];
+            if([actionsNotifications count] > 0) {
+                group.unreadCount = @([actionsNotifications count]);
+            }
+            else {
+                group.unreadCount = @(0);
+            }
+            
+            NSError *saveError = nil;
             if(![context saveToPersistentStore:&saveError]) {
                 NSLog(@"Save notifications error: %@", saveError);
             }
@@ -462,7 +495,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                      page:@(1)
                                                       per:@(_portionLenght)
                                                      sort:IQSortDirectionDescending
-                                                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                  handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
                                                       if(completion) {
                                                           completion(error);
                                                       }
@@ -519,9 +552,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                           page:@(1)
                                                            per:@(_portionLenght)
                                                           sort:SORT_DIRECTION
-                                                       handler:^(BOOL success, NSArray * groups, NSData *responseData, NSError *error) {
-                                                           if(success && [groups count] > 0) {
-                                                               _lastLoadedId = [groups valueForKeyPath:@"@max.lastNotificationId"];
+                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                           if(success && holder.currentPage != holder.totalPages) {
+                                                               _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
                                                                [self recursiveNotificationsLoadingFromId:_lastLoadedId];
                                                            }
                                                        }];

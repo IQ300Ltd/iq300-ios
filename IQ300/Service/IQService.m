@@ -432,10 +432,10 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
 
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsGroup class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationGroupsHolder class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/notifications/groups"
-                                                   fromKeyPath:@"notification_groups"
+                                                   fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];

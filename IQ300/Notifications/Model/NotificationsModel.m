@@ -307,12 +307,12 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)acceptNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] acceptNotificationWithId:notification.notificationId
                                                 handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                    if(completion) {
-                                                        completion(error);
-                                                    }
                                                     if(success) {
                                                         [self resetActionsForNotification:notification];
                                                         [self updateCounters];
+                                                    }
+                                                    if(completion) {
+                                                        completion(error);
                                                     }
                                                 }];
 }
@@ -320,12 +320,12 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)declineNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] declineNotificationWithId:notification.notificationId
                                                  handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                     if(completion) {
-                                                         completion(error);
-                                                     }
                                                      if(success) {
                                                          [self resetActionsForNotification:notification];
                                                          [self updateCounters];
+                                                     }
+                                                     if(completion) {
+                                                         completion(error);
                                                      }
                                                  }];
 }
@@ -356,17 +356,23 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 #pragma mark - Private methods
 
 - (void)markAllLocalNotificationAsRead {
-    self.group.unreadCount = @(0);
-    
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
     NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-    NSString * predicateFormat = @"readed == NO AND ownerId = %@ AND groupSid == %@";
+    NSString * predicateFormat = @"(readed == NO || hasActions == YES) AND ownerId = %@ AND groupSid == %@";
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId,
                                                                                  self.group.sID]];
     [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
         if ([objects count] > 0) {
             [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
             NSError *saveError = nil;
+            
+            NSArray * actionsNotifications = [objects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"hasActions == YES"]];
+            if([actionsNotifications count] > 0) {
+                self.group.unreadCount = @([actionsNotifications count]);
+            }
+            else {
+                self.group.unreadCount = @(0);
+            }
             
             if(![context saveToPersistentStore:&saveError]) {
                 NSLog(@"Save notifications error: %@", saveError);
@@ -379,6 +385,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     notification.hasActions = @(NO);
     notification.availableActions = nil;
     notification.readed = @(YES);
+    
+    NSNumber * unreadCount = @(MAX([self.group.unreadCount integerValue] - 1, 0));
+    self.group.unreadCount = unreadCount;
     
     NSError *saveError = nil;
     if(![notification.managedObjectContext saveToPersistentStore:&saveError] ) {
