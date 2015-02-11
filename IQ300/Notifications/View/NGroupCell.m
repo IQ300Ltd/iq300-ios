@@ -16,7 +16,7 @@
 #define HORIZONTAL_INSETS 8.0f
 #define VERTICAL_INSETS 5.0f
 #define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
-#define DESCRIPTION_MIN_HEIGHT 17.0f
+#define DESCRIPTION_MIN_HEIGHT 19.0f
 
 @implementation NGroupCell
 
@@ -121,7 +121,7 @@
     CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
     _contentBackgroundView.frame = contentBackgroundBounds;
     
-    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, 12);
+    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, 14);
     _typeLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                   actualBounds.origin.y,
                                   topLabelSize.width,

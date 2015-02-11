@@ -14,7 +14,7 @@
 #define HORIZONTAL_INSETS 8.0f
 #define VERTICAL_INSETS 5.0f
 #define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
-#define DESCRIPTION_MIN_HEIGHT 17.0f
+#define DESCRIPTION_MIN_HEIGHT 19.0f
 
 @interface NotificationCell() {
 }
@@ -102,7 +102,7 @@
     _dateLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                   actualBounds.origin.y,
                                   actualBounds.size.width - labelsOffset * 2.0f,
-                                  12);
+                                  14);
     
     CGFloat userNameHeight = 17;
     CGFloat userNameMaxWidth = actualBounds.size.width / 2.0f;
