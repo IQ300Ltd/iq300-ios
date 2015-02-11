@@ -188,7 +188,8 @@
     self.rightUtilityButtons = (isReaded) ? nil : @[_markAsReadedButton];
     
     if(!isReaded) {
-        _badgeView.badgeValue = [_item.unreadCount stringValue];
+        NSInteger badgeValue = [_item.unreadCount integerValue];
+        _badgeView.badgeValue = (badgeValue > 99.0f) ? @"99+" : [_item.unreadCount stringValue];
         _badgeView.hidden = NO;
     }
     
