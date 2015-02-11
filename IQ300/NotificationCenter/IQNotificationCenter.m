@@ -141,6 +141,11 @@ static IQNotificationCenter * _defaultCenter = nil;
                                                                            queue:nil
                                                                       usingBlock:^(NSNotification *note) {
                                                                           PTPusherEvent * event = note.userInfo[PTPusherEventUserInfoKey];
+                                                                           DNSLog(@"[IQNotificationCenter-%@] Received event named %@ data:%@",
+                                                                                  weakSelf.client.connection.socketID,
+                                                                                  event.name,
+                                                                                  event.data);
+
                                                                           if(event && note.object == weakSelf.client) {
                                                                               [weakSelf pusher:weakSelf.client didReceiveEvent:event];
                                                                           }

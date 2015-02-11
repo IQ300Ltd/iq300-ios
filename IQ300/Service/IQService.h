@@ -82,7 +82,12 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
                               sort:(IQSortDirection)sort
                            handler:(ObjectLoaderCompletionHandler)handler;
 
-- (void)notificationsGroupUpdatedAfter:(NSDate*)date handler:(ObjectLoaderCompletionHandler)handler;
+- (void)notificationsGroupUpdatedAfter:(NSDate*)date
+                                unread:(NSNumber*)unread
+                                  page:(NSNumber*)page
+                                   per:(NSNumber*)per
+                                  sort:(IQSortDirection)sort
+                               handler:(ObjectLoaderCompletionHandler)handler;
 
 /**
  *  Get notifications for group

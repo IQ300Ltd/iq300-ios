@@ -28,8 +28,6 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     NSInteger _totalItemsCount;
     NSInteger _unreadItemsCount;
     __weak id _notfObserver;
-    NSNumber * _lastLoadedId;
-    NSDate * _lastUpdatedDate;
 }
 
 @end
@@ -104,24 +102,21 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        if(!_lastLoadedId) {
-            _lastLoadedId = [self getLastIdFromTop:YES];
-        }
         
         [self updateCounters];
-        [[IQService sharedService] notificationsGroupAfterId:_lastLoadedId
-                                                      unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                        page:@(1)
-                                                         per:@(_portionLenght)
-                                                        sort:SORT_DIRECTION
-                                                     handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                         if(success && [holder.objects count] > 0) {
-                                                             _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
-                                                         }
-                                                         if(completion) {
-                                                             completion(error);
-                                                         }
-                                                     }];
+        
+        NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+        
+        [[IQService sharedService] notificationsGroupUpdatedAfter:lastUpdatedDate
+                                                           unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                             page:@(1)
+                                                              per:@(_portionLenght)
+                                                             sort:SORT_DIRECTION
+                                                          handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                              if(completion) {
+                                                                  completion(error);
+                                                              }
+                                                          }];
     }
 }
 
@@ -147,29 +142,25 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadModelSourceControllerWithCompletion:completion];
     
-    _lastLoadedId = [self getLastIdFromTop:YES];
+    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
     
-    [[IQService sharedService] notificationsGroupAfterId:_lastLoadedId
-                                                  unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                    page:@(1)
-                                                     per:@(_portionLenght)
-                                                    sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                                 handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                     if(success && [holder.objects count] > 0) {
-                                                         _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
-                                                     }
-                                                     
-                                                     if(success && _lastLoadedId && [_fetchController.fetchedObjects count] < _portionLenght) {
-                                                         [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
-                                                             if(completion) {
-                                                                 completion(error);
-                                                             }
-                                                         }];
-                                                     }
-                                                     else if(completion) {
-                                                         completion(error);
-                                                     }
-                                                 }];
+    [[IQService sharedService] notificationsGroupUpdatedAfter:lastUpdatedDate
+                                                       unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                         page:@(1)
+                                                          per:@(_portionLenght)
+                                                         sort:(lastUpdatedDate) ? IQSortDirectionAscending : IQSortDirectionDescending
+                                                      handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                          if(success && lastUpdatedDate && [_fetchController.fetchedObjects count] < _portionLenght) {
+                                                              [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
+                                                                  if(completion) {
+                                                                      completion(error);
+                                                                  }
+                                                              }];
+                                                          }
+                                                          else if(completion) {
+                                                              completion(error);
+                                                          }
+                                                      }];
 }
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
@@ -178,32 +169,27 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         [self reloadModelSourceControllerWithCompletion:nil];
     }
     
-    if(!_lastLoadedId) {
-        _lastLoadedId = [self getLastIdFromTop:YES];
-    }
-    
     [self updateCountersWithCompletion:nil];
-    [[IQService sharedService] notificationsGroupAfterId:_lastLoadedId
-                                                  unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                    page:@(1)
-                                                     per:@(_portionLenght)
-                                                    sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                                 handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                     if(success && [holder.objects count] > 0) {
-                                                         _lastLoadedId = [holder.objects valueForKeyPath:@"@max.lastNotificationId"];
-                                                     }
-                                                     
-                                                     if(success && _lastLoadedId && [_fetchController.fetchedObjects count] < _portionLenght) {
-                                                         [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
-                                                             if(completion) {
-                                                                 completion(error);
-                                                             }
-                                                         }];
-                                                     }
-                                                     else if(completion) {
-                                                         completion(error);
-                                                     }
-                                                 }];
+    
+    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+    
+    [[IQService sharedService] notificationsGroupUpdatedAfter:lastUpdatedDate
+                                                       unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                         page:@(1)
+                                                          per:@(_portionLenght)
+                                                         sort:(lastUpdatedDate) ? IQSortDirectionAscending : IQSortDirectionDescending
+                                                      handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
+                                                          if(success && lastUpdatedDate && [_fetchController.fetchedObjects count] < _portionLenght) {
+                                                              [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
+                                                                  if(completion) {
+                                                                      completion(error);
+                                                                  }
+                                                              }];
+                                                          }
+                                                          else if(completion) {
+                                                              completion(error);
+                                                          }
+                                                      }];
 }
 
 - (void)clearModelData {
@@ -286,9 +272,13 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 #pragma mark - Private methods
 
 - (void)groupUpdatesWithCompletion:(void (^)(NSError * error))completion {
-    _lastUpdatedDate = [self getLastNotificationChangedDate];
-
-    [[IQService sharedService] notificationsGroupUpdatedAfter:_lastUpdatedDate
+    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+    
+    [[IQService sharedService] notificationsGroupUpdatedAfter:lastUpdatedDate
+                                                       unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                         page:@(1)
+                                                          per:@(_portionLenght)
+                                                         sort:IQSortDirectionAscending
                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
                                                           if(success && holder.currentPage != holder.totalPages) {
                                                               [self groupUpdatesWithCompletion:completion];
@@ -495,7 +485,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] notificationsGroupBeforeId:_lastLoadedId
+    NSNumber * lastLoadedId = [self getLastIdFromTop:YES];
+
+    [[IQService sharedService] notificationsGroupBeforeId:lastLoadedId
                                                    unread:(_loadUnreadOnly) ? @(YES) : nil
                                                      page:@(1)
                                                       per:@(_portionLenght)
@@ -534,8 +526,6 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (void)accountDidChanged {
-    _lastLoadedId = nil;
-    
     if([IQSession defaultSession]) {
         [self resubscribeToIQNotifications];
         [self updateCounters];
