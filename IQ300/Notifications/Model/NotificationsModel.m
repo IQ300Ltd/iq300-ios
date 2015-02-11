@@ -347,6 +347,8 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                     if(![context saveToPersistentStore:&saveError]) {
                         NSLog(@"Save notifications error: %@", saveError);
                     }
+                    
+                    [self updateGroupCounter];
                 }
             }];
         }
@@ -354,6 +356,25 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 #pragma mark - Private methods
+
+- (void)updateGroupCounter {
+    NSManagedObjectContext * context = _fetchController.managedObjectContext;
+    NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES) AND groupSid == %@", self.group.sID];
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
+    [fetchRequest setPredicate:readCondition];
+    [fetchRequest setIncludesSubentities:NO];
+    
+    NSError * error;
+    NSUInteger unreadCount = [context countForFetchRequest:fetchRequest error:&error];
+    if(unreadCount != NSNotFound && [self.group.unreadCount integerValue] != unreadCount) {
+
+        self.group.unreadCount = @(unreadCount);
+        
+        if(![context saveToPersistentStore:&error]) {
+            NSLog(@"Save notifications error: %@", error);
+        }
+    }
+}
 
 - (void)markAllLocalNotificationAsRead {
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
