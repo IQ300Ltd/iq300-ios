@@ -71,9 +71,9 @@
     [mapping addPropertyMapping:notificableRelation];
 
     
-    RKRelationshipMapping * userRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"user"
-                                                                                      toKeyPath:@"user"
-                                                                                    withMapping:[IQUser objectMappingForManagedObjectStore:store]];
+    RKRelationshipMapping * userRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"sender"
+                                                                                       toKeyPath:@"user"
+                                                                                     withMapping:[IQUser objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:userRelation];
 
     return mapping;
