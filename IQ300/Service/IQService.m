@@ -68,7 +68,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
 }
 
 - (void)loginWithDeviceToken:(NSString*)deviceToken email:(NSString*)email password:(NSString*)password handler:(RequestCompletionHandler)handler {
-    NSDictionary * parameters = @{ //@"device_token" : NSStringNullForNil(deviceToken),
+    NSDictionary * parameters = @{ @"device_token" : NSStringNullForNil(deviceToken),
                                    @"email"        : NSStringNullForNil(email),
                                    @"password"     : NSStringNullForNil(password) };
     [self postObject:nil
