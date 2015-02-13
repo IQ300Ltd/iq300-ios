@@ -531,6 +531,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         [self updateCounters];
     }
     else {
+        _loadUnreadOnly = YES;
         [self unsubscribeFromIQNotifications];
         [self clearModelData];
         [self modelDidChanged];
