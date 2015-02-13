@@ -13,7 +13,7 @@
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
 #define NOTIFICATION_CELL_MAX_HEIGHT 105.0f
-#define NOTIFICATION_CELL_MIN_HEIGHT 72.0f
+#define NOTIFICATION_CELL_MIN_HEIGHT 76.0f
 
 @class IQNotification;
 
