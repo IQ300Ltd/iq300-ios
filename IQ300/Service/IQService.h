@@ -137,7 +137,9 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
  *  @param notificationId Id of any notification in group (group secondary identifire)
  *  @param handler        Action handler
  */
-- (void)markNotificationsGroupAsReadWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
+- (void)markNotificationsGroupAsReadWithId:(NSNumber*)notificationId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)markAllNotificationGroupsAsReadWithHandler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)notificationsCountWithHandler:(ObjectLoaderCompletionHandler)handler;
 

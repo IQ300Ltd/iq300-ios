@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		73086B0C1A8E64D80013582E /* IQGroupCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73086B0B1A8E64D80013582E /* IQGroupCounter.m */; };
 		731DEEC81A2F11A1002F5FEB /* MessagesModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 731DEEC71A2F11A1002F5FEB /* MessagesModel.m */; };
 		731DEECB1A2F27AE002F5FEB /* IQCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 731DEECA1A2F27AE002F5FEB /* IQCounters.m */; };
 		732952B31A692EE90066B336 /* lcl.m in Sources */ = {isa = PBXBuildFile; fileRef = 732952A81A692EE90066B336 /* lcl.m */; };
@@ -201,6 +202,8 @@
 
 /* Begin PBXFileReference section */
 		3C453A1313F35DF8AD783316 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		73086B0A1A8E64D80013582E /* IQGroupCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQGroupCounter.h; sourceTree = "<group>"; };
+		73086B0B1A8E64D80013582E /* IQGroupCounter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQGroupCounter.m; sourceTree = "<group>"; };
 		731DEEC61A2F11A1002F5FEB /* MessagesModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagesModel.h; sourceTree = "<group>"; };
 		731DEEC71A2F11A1002F5FEB /* MessagesModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesModel.m; sourceTree = "<group>"; };
 		731DEEC91A2F27AE002F5FEB /* IQCounters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQCounters.h; sourceTree = "<group>"; };
@@ -1130,6 +1133,8 @@
 				73DD80081A68E83800A6ADA5 /* IQNotificationIds.m */,
 				7373ED5C1A89FB2100719FCD /* IQNotificationGroupsHolder.h */,
 				7373ED5D1A89FB2100719FCD /* IQNotificationGroupsHolder.m */,
+				73086B0A1A8E64D80013582E /* IQGroupCounter.h */,
+				73086B0B1A8E64D80013582E /* IQGroupCounter.m */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -1428,6 +1433,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73086B0C1A8E64D80013582E /* IQGroupCounter.m in Sources */,
 				73AF25A31A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m in Sources */,
 				7373ED5E1A89FB2100719FCD /* IQNotificationGroupsHolder.m in Sources */,
 				73AF73E11A3AFEBA001B8E42 /* CViewInfo.m in Sources */,
@@ -1721,7 +1727,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Evgeny Kulinchenko (5A5WW9MX3F)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Evgeny Kulinchenko (5A5WW9MX3F)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				FRAMEWORK_SEARCH_PATHS = (

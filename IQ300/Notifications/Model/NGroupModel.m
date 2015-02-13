@@ -15,6 +15,7 @@
 #import "IQNotificationCenter.h"
 #import "NGroupCell.h"
 #import "IQNotification.h"
+#import "IQGroupCounter.h"
 
 #define CACHE_FILE_NAME @"NotificationsModelcache"
 #define SORT_DIRECTION IQSortDirectionAscending
@@ -214,7 +215,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
     
     [[IQService sharedService] markNotificationsGroupAsReadWithId:item.lastNotificationId
-                                                          handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                          handler:^(BOOL success, IQNotificationsGroup * group, NSData *responseData, NSError *error) {
                                                               if(success) {
                                                                   [self markAllNotificationsAsReadInGroup:item];
                                                                   [self updateCountersWithCompletion:^(IQCounters *counters, NSError *error) {
@@ -231,9 +232,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] markAllNotificationsAsReadWithHandler:^(BOOL success, NSData *responseData, NSError *error) {
+    [[IQService sharedService] markAllNotificationGroupsAsReadWithHandler:^(BOOL success, NSArray * groups, NSData *responseData, NSError *error) {
         if(success) {
-            [self markAllLocalNotificationsAsRead];
+            [self markAllLocalNotificationsAsReadExceptGroups:groups];
             [self updateCounters];
         }
         if(completion) {
@@ -289,7 +290,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                       }];
 }
 
-- (void)markAllLocalNotificationsAsRead {
+- (void)markAllLocalNotificationsAsReadExceptGroups:(NSArray*)unreadGroups {
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
     NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@", [IQSession defaultSession].userId]];
@@ -304,46 +305,22 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
         }
     }];
     
+    NSArray * unreadIds = [unreadGroups valueForKey:@"sID"];
     NSArray * groups = [_fetchController fetchedObjects];
-    NSArray * unreadGroup = [groups filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"unreadCount > 0"]];
-    if([unreadGroup count]) {
-        [unreadGroup makeObjectsPerformSelector:@selector(setUnreadCount:) withObject:@(0)];
+    NSArray * readedGroups = [groups filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"unreadCount > 0 AND NOT(sID IN %@)", unreadIds]];
+    if([readedGroups count] > 0) {
+        [readedGroups makeObjectsPerformSelector:@selector(setUnreadCount:) withObject:@(0)];
     }
     
-    NSEntityDescription * entity = [NSEntityDescription entityForName:@"IQNotification"
-                                               inManagedObjectContext:context];
-    
-    NSAttributeDescription* groupSIDDesc = [entity.attributesByName objectForKey:@"groupSid"];
-    
-    NSExpression * countExpression = [NSExpression expressionForFunction: @"count:"
-                                                               arguments: @[[NSExpression expressionForKeyPath: @"groupSid"]]];
-    NSExpressionDescription * expressionDescription = [[NSExpressionDescription alloc] init];
-    [expressionDescription setName:@"count"];
-    [expressionDescription setExpression: countExpression];
-    [expressionDescription setExpressionResultType: NSInteger32AttributeType];
-    
-    NSFetchRequest * request = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-    [request setPropertiesToFetch:@[groupSIDDesc, expressionDescription]];
-    [request setPropertiesToGroupBy:@[groupSIDDesc]];
-    [request setResultType:NSDictionaryResultType];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"hasActions == YES AND ownerId = %@", [IQSession defaultSession].userId]];
-    
-    NSError * error = nil;
-    NSArray * objects = [context executeFetchRequest:request error:&error];
-    
-    if ([objects count] > 0) {
-        for (NSDictionary * counts in objects) {
-            NSNumber * unreadCount = counts[@"count"];
-            NSNumber * groupSid = counts[@"groupSid"];
-            
-            NSArray * filteredArray = [groups filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"sID == %@", groupSid]];
-            if([filteredArray count] > 0) {
-                IQNotificationsGroup * group = [filteredArray objectAtIndex:0];
-                group.unreadCount = unreadCount;
-            }
+    NSDictionary* dict = [NSDictionary dictionaryWithObjects:unreadGroups forKeys:[unreadGroups valueForKey:@"sID"]];
+    NSArray * filteredGroups = [groups filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"sID IN %@", unreadIds]];
+    if([filteredGroups count] > 0) {
+        for (IQNotificationsGroup * group in filteredGroups) {
+            IQGroupCounter * counter = dict[group.sID];
+            group.unreadCount = counter.unreadCount;
         }
     }
-    
+
     NSError * saveError = nil;
     if(![context saveToPersistentStore:&saveError]) {
         NSLog(@"Save notifications error: %@", saveError);
@@ -353,20 +330,12 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 - (void)markAllNotificationsAsReadInGroup:(IQNotificationsGroup*)group {
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
     NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES) AND ownerId = %@ AND groupSid == %@",
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@ AND groupSid == %@",
                                                                 [IQSession defaultSession].userId,
                                                                 group.sID]];
     [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
         if ([objects count] > 0) {
             [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
-            
-            NSArray * actionsNotifications = [objects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"hasActions == YES"]];
-            if([actionsNotifications count] > 0) {
-                group.unreadCount = @([actionsNotifications count]);
-            }
-            else {
-                group.unreadCount = @(0);
-            }
             
             NSError *saveError = nil;
             if(![context saveToPersistentStore:&saveError]) {

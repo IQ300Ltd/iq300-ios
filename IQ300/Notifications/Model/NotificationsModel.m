@@ -265,7 +265,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion {
     [[IQService sharedService] markNotificationsGroupAsReadWithId:self.group.lastNotificationId
-                                                          handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                          handler:^(BOOL success, IQNotificationsGroup * group, NSData *responseData, NSError *error) {
                                                               if(success) {
                                                                   [self markAllLocalNotificationAsRead];
                                                                   [self updateCounters];
@@ -379,21 +379,13 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)markAllLocalNotificationAsRead {
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
     NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-    NSString * predicateFormat = @"(readed == NO || hasActions == YES) AND ownerId = %@ AND groupSid == %@";
+    NSString * predicateFormat = @"readed == NO AND ownerId = %@ AND groupSid == %@";
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId,
                                                                                  self.group.sID]];
     [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
         if ([objects count] > 0) {
             [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
             NSError *saveError = nil;
-            
-            NSArray * actionsNotifications = [objects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"hasActions == YES"]];
-            if([actionsNotifications count] > 0) {
-                self.group.unreadCount = @([actionsNotifications count]);
-            }
-            else {
-                self.group.unreadCount = @(0);
-            }
             
             if(![context saveToPersistentStore:&saveError]) {
                 NSLog(@"Save notifications error: %@", saveError);

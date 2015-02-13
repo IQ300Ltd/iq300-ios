@@ -330,15 +330,18 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
             }];
 }
 
-- (void)markNotificationsGroupAsReadWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
+- (void)markNotificationsGroupAsReadWithId:(NSNumber*)notificationId handler:(ObjectLoaderCompletionHandler)handler {
     [self putObject:nil
                path:[NSString stringWithFormat:@"/api/v1/notifications/%@/read_group", notificationId]
          parameters:nil
-            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                if(handler) {
-                    handler(success, responseData, error);
-                }
-            }];
+            handler:handler];
+}
+
+- (void)markAllNotificationGroupsAsReadWithHandler:(ObjectLoaderCompletionHandler)handler {
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/notifications/read_all_groups"]
+         parameters:nil
+            handler:handler];
 }
 
 - (void)notificationsCountWithHandler:(ObjectLoaderCompletionHandler)handler {
@@ -487,13 +490,22 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
-                                                              method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/notifications/:id/read_group"
-                                                             keyPath:nil
-                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsGroup class]
+                                                        method:RKRequestMethodPUT
+                                                   pathPattern:@"/api/v1/notifications/:id/read_group"
+                                                   fromKeyPath:@"notification_group"
+                                                         store:self.objectManager.managedObjectStore];
+    
     [self.objectManager addResponseDescriptor:descriptor];
-
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQGroupCounter class]
+                                                        method:RKRequestMethodPUT
+                                                   pathPattern:@"/api/v1/notifications/read_all_groups"
+                                                   fromKeyPath:@"unread_groups"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/notifications/counters"

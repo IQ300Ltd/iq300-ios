@@ -20,5 +20,6 @@
 #import "IQNotificationIds.h"
 #import "IQNotificationsGroup.h"
 #import "IQNotificationGroupsHolder.h"
+#import "IQGroupCounter.h"
 
 #endif
