@@ -33,6 +33,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     NSDateFormatter * _dateFormatter;
     NSMutableDictionary * _expandedCells;
     NSMutableDictionary * _expandableCells;
+    __weak id _newMessageObserver;
 }
 
 @end
@@ -203,11 +204,13 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                  selector:@selector(applicationWillEnterForeground)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
+        [self resubscribeToNewMessageNotification];
     }
     else {
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:UIApplicationWillEnterForegroundNotification
                                                       object:nil];
+        [self unsubscribeFromNewMessageNotification];
     }
 }
 
@@ -449,6 +452,51 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
             [self modelDidChanged];
         }
     }];
+}
+
+- (void)resubscribeToNewMessageNotification {
+    [self unsubscribeFromNewMessageNotification];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
+        NSNumber * authorId = commentData[@"author"][@"id"];
+        NSNumber * commentId = commentData[@"id"];
+        NSNumber * discussionId = commentData[@"discussion_id"];
+        
+        if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId] &&
+           discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
+            
+            NSError * requestError = nil;
+            NSManagedObjectContext * context = [IQService sharedService].context;
+            NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQComment"];
+            fetchRequest.predicate = [NSPredicate predicateWithFormat:@"commentId == %@", commentId];
+            NSUInteger count = [context countForFetchRequest:fetchRequest error:&requestError];
+            
+            if(!requestError && count == 0) {
+                NSError * serializeError = nil;
+                Class commentClass = [IQComment class];
+                IQComment * comment = [ObjectSerializator objectFromDictionary:@{ NSStringFromClass(commentClass) : commentData }
+                                                              destinationClass:[IQComment class]
+                                                            managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
+                                                                         error:&serializeError];
+                
+                if(comment) {
+                    [weakSelf modelNewComment:comment];
+                }
+            }
+        }
+    };
+    
+    _newMessageObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNewMessageNotification
+                                                                             queue:nil
+                                                                        usingBlock:block];
+}
+
+- (void)unsubscribeFromNewMessageNotification {
+    if(_newMessageObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+    }
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
