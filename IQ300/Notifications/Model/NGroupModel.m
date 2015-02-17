@@ -293,7 +293,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 - (void)markAllLocalNotificationsAsReadExceptGroups:(NSArray*)unreadGroups {
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
     NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@", [IQSession defaultSession].userId]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(readed == NO AND hasActions == NO) AND ownerId = %@", [IQSession defaultSession].userId]];
     [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
         if ([objects count] > 0) {
             [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
@@ -317,12 +317,14 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     if([filteredGroups count] > 0) {
         for (IQNotificationsGroup * group in filteredGroups) {
             IQGroupCounter * counter = dict[group.sID];
-            group.unreadCount = counter.unreadCount;
+            if(![group.unreadCount isEqualToNumber:counter.unreadCount]) {
+                group.unreadCount = counter.unreadCount;
+            }
         }
     }
 
     NSError * saveError = nil;
-    if(![context saveToPersistentStore:&saveError]) {
+    if([context hasChanges] && ![context saveToPersistentStore:&saveError]) {
         NSLog(@"Save notifications error: %@", saveError);
     }
 }
