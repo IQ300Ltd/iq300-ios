@@ -269,8 +269,12 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                           handler:^(BOOL success, IQNotificationsGroup * group, NSData *responseData, NSError *error) {
                                                               if(success) {
                                                                   [self markAllLocalNotificationAsRead];
-                                                                  [self updateCounters];
-                                                              }
+                                                                  [self updateCountersWithCompletion:^(IQCounters *counters, NSError *error) {
+                                                                      if(self.loadUnreadOnly && _unreadItemsCount > 0 &&
+                                                                         [_fetchController.fetchedObjects count] == 0) {
+                                                                          [self loadNextPartWithCompletion:nil];
+                                                                      }
+                                                                  }];                                                              }
                                                               if(completion) {
                                                                   completion(error);
                                                               }

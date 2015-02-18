@@ -172,9 +172,9 @@
 
 #ifdef DEBUG
     [self instalCrashSignalCatchers];
-#endif
-    
+#else
     [Fabric with:@[CrashlyticsKit]];
+#endif
 
     return YES;
 }
