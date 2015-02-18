@@ -113,13 +113,14 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
     // Try to find next responder
     UIResponder* nextResponder = [textField.superview.superview viewWithTag:nextTag];
     if (nextResponder) {
-        // Found next responder, so set it.
         [nextResponder becomeFirstResponder];
     } else {
-        // Not found, so remove keyboard.
         [textField resignFirstResponder];
+        if([_loginView.emailTextField.text length] > 0 && [_loginView.passwordTextField.text length] > 0) {
+            [self enterButtonAction:_loginView.enterButton];
+        }
     }
-    return NO; // We do not want UITextField to insert line-breaks.
+    return NO;
 }
 
 @end

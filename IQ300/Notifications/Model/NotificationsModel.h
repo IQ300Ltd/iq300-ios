@@ -52,6 +52,4 @@
 
 - (void)declineNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
 
-- (void)syncLocalNotificationsWithCompletion:(void (^)(NSError * error))completion;
-
 @end

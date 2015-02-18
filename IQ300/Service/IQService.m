@@ -196,6 +196,21 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                    }];
 }
 
+- (void)unreadNotificationsGroupIdsWithHandler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/notifications/unread_group_sids"
+                parameters:nil
+                   handler:^(BOOL success, IQNotificationsGroupIds * holder, NSData *responseData, NSError *error) {
+                       if(success && holder) {
+                           if(handler) {
+                               handler(success, holder.groupIds, responseData, error);
+                           }
+                       }
+                       else if(handler) {
+                           handler(success, holder, responseData, error);
+                       }
+                   }];
+}
+
 - (void)notificationsGroupAfterId:(NSNumber*)notificationId
                            unread:(NSNumber*)unread
                              page:(NSNumber*)page
@@ -444,10 +459,10 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotification class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsHolder class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/notifications/:id/children"
-                                                   fromKeyPath:@"notifications"
+                                                   fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
@@ -463,6 +478,14 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationIds class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/notifications/unread_ids"
+                                                   fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsGroupIds class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/notifications/unread_group_sids"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     

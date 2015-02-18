@@ -68,6 +68,8 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 
 - (void)unreadNotificationIdsWithHandler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)unreadNotificationsGroupIdsWithHandler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)notificationsGroupAfterId:(NSNumber*)notificationId
                            unread:(NSNumber*)unread
                              page:(NSNumber*)page

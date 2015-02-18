@@ -15,7 +15,7 @@
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "IQNotificationCenter.h"
 #import "IQNotificationsGroup.h"
-#import "IQNotification.h"
+#import "IQNotificationsHolder.h"
 
 #define CACHE_FILE_NAME @"NotificationsModelcache"
 #define SORT_DIRECTION IQSortDirectionAscending
@@ -121,9 +121,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                           page:@(1)
                                                            per:@(_portionLenght)
                                                           sort:SORT_DIRECTION
-                                                       handler:^(BOOL success, NSArray * notifications, NSData *responseData, NSError *error) {
-                                                           if(success && [notifications count] > 0) {
-                                                               _lastLoadedId = [notifications valueForKeyPath:@"@max.notificationId"];
+                                                       handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                                           if(success && [holder.objects count] > 0) {
+                                                               _lastLoadedId = [holder.objects valueForKeyPath:@"@max.notificationId"];
                                                            }
                                                            if(completion) {
                                                                completion(error);
@@ -144,7 +144,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                           page:@(1)
                                                            per:@(_portionLenght)
                                                           sort:IQSortDirectionDescending
-                                                       handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                       handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
                                                            if(completion) {
                                                                completion(error);
                                                            }
@@ -154,6 +154,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadModelSourceControllerWithCompletion:completion];
+    [self syncLocalNotificationsWithCompletion:nil];
   
     _lastLoadedId = [self getLastIdFromTop:YES];
     
@@ -163,9 +164,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                       page:@(1)
                                                        per:@(_portionLenght)
                                                       sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                                   handler:^(BOOL success, NSArray * notifications, NSData *responseData, NSError *error) {
-                                                       if(success && [notifications count] > 0) {
-                                                           _lastLoadedId = [notifications valueForKeyPath:@"@max.notificationId"];
+                                                   handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                                       if(success && [holder.objects count] > 0) {
+                                                           _lastLoadedId = [holder.objects valueForKeyPath:@"@max.notificationId"];
                                                        }
                                                        
                                                        if(success && _lastLoadedId && [_fetchController.fetchedObjects count] < _portionLenght) {
@@ -199,9 +200,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                       page:@(1)
                                                        per:@(_portionLenght)
                                                       sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                                   handler:^(BOOL success, NSArray * notifications, NSData *responseData, NSError *error) {
-                                                       if(success && [notifications count] > 0) {
-                                                           _lastLoadedId = [notifications valueForKeyPath:@"@max.notificationId"];
+                                                   handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                                       if(success && [holder.objects count] > 0) {
+                                                           _lastLoadedId = [holder.objects valueForKeyPath:@"@max.notificationId"];
                                                        }
                                                        
                                                        if(success && _lastLoadedId && [_fetchController.fetchedObjects count] < _portionLenght) {
@@ -330,6 +331,8 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                  }];
 }
 
+#pragma mark - Private methods
+
 - (void)syncLocalNotificationsWithCompletion:(void (^)(NSError * error))completion {
     [[IQService sharedService] unreadNotificationIdsWithHandler:^(BOOL success, NSArray * notificationIds, NSData *responseData, NSError *error) {
         if(success && [notificationIds count] > 0) {
@@ -354,8 +357,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         }
     }];
 }
-
-#pragma mark - Private methods
 
 - (void)updateGroupCounter {
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
@@ -522,7 +523,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                      page:@(1)
                                                       per:@(_portionLenght)
                                                      sort:IQSortDirectionDescending
-                                                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                  handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
                                                       if(completion) {
                                                           completion(error);
                                                       }
@@ -589,9 +590,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                       page:@(1)
                                                        per:@(_portionLenght)
                                                       sort:SORT_DIRECTION
-                                                   handler:^(BOOL success, NSArray * notifications, NSData *responseData, NSError *error) {
-                                                       if(success && [notifications count] > 0) {
-                                                           _lastLoadedId = [notifications valueForKeyPath:@"@max.notificationId"];
+                                                   handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                                       if(success && holder.currentPage < holder.totalPages) {
+                                                           _lastLoadedId = [holder.objects valueForKeyPath:@"@max.notificationId"];
                                                            [self recursiveNotificationsLoadingFromId:_lastLoadedId];
                                                        }
                                                    }];

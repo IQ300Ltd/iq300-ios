@@ -105,19 +105,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     else {
         
         [self updateCounters];
-        
-        NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
-        
-        [[IQService sharedService] notificationsGroupUpdatedAfter:lastUpdatedDate
-                                                           unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                             page:@(1)
-                                                              per:@(_portionLenght)
-                                                             sort:SORT_DIRECTION
-                                                          handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                              if(completion) {
-                                                                  completion(error);
-                                                              }
-                                                          }];
+        [self groupUpdatesWithCompletion:completion];
     }
 }
 
@@ -142,6 +130,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadModelSourceControllerWithCompletion:completion];
+    [self syncLocalNotificationsGroupWithCompletion:nil];
     
     NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
     
@@ -173,24 +162,32 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     [self updateCountersWithCompletion:nil];
     
     NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
-    
-    [[IQService sharedService] notificationsGroupUpdatedAfter:lastUpdatedDate
+    if(!lastUpdatedDate) {
+    [[IQService sharedService] notificationsGroupUpdatedAfter:nil
                                                        unread:(_loadUnreadOnly) ? @(YES) : nil
                                                          page:@(1)
                                                           per:@(_portionLenght)
                                                          sort:(lastUpdatedDate) ? IQSortDirectionAscending : IQSortDirectionDescending
                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                          if(success && lastUpdatedDate && [_fetchController.fetchedObjects count] < _portionLenght) {
-                                                              [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
-                                                                  if(completion) {
-                                                                      completion(error);
-                                                                  }
-                                                              }];
-                                                          }
-                                                          else if(completion) {
+                                                          if(completion) {
                                                               completion(error);
                                                           }
                                                       }];
+    }
+    else {
+        [self groupUpdatesWithCompletion:^(NSError *error) {
+            if(!error && [_fetchController.fetchedObjects count] < _portionLenght) {
+                [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
+                    if(completion) {
+                        completion(error);
+                    }
+                }];
+            }
+            else if(completion) {
+                completion(error);
+            }
+        }];
+    }
 }
 
 - (void)clearModelData {
@@ -272,16 +269,38 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
 #pragma mark - Private methods
 
+- (void)syncLocalNotificationsGroupWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] unreadNotificationsGroupIdsWithHandler:^(BOOL success, NSArray * groupIds, NSData *responseData, NSError *error) {
+        if(success && [groupIds count] > 0) {
+            NSManagedObjectContext * context = _fetchController.managedObjectContext;
+            NSString * format = @"unreadCount > 0 AND NOT(sID in %@) AND ownerId = %@";
+            NSPredicate * readCondition = [NSPredicate predicateWithFormat:format, groupIds, [IQSession defaultSession].userId];
+            NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotificationsGroup"];
+            [fetchRequest setPredicate:readCondition];
+            [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+                if ([objects count] > 0) {
+                    [objects makeObjectsPerformSelector:@selector(setUnreadCount:) withObject:@(0)];
+                    NSError *saveError = nil;
+                    
+                    if(![context saveToPersistentStore:&saveError]) {
+                        NSLog(@"Save notifications error: %@", saveError);
+                    }
+                }
+            }];
+        }
+    }];
+}
+
 - (void)groupUpdatesWithCompletion:(void (^)(NSError * error))completion {
     NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
     
     [[IQService sharedService] notificationsGroupUpdatedAfter:lastUpdatedDate
-                                                       unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                       unread:@(NO)
                                                          page:@(1)
                                                           per:@(_portionLenght)
                                                          sort:IQSortDirectionAscending
                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                          if(success && holder.currentPage != holder.totalPages) {
+                                                          if(success && holder.currentPage < holder.totalPages) {
                                                               [self groupUpdatesWithCompletion:completion];
                                                           }
                                                           else if(completion) {
