@@ -306,6 +306,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:CountersDidChangedNotification
                                                   object:nil];
+    [self.model setSubscribedToNotifications:NO];
+    [self.leftMenuController setMenuResponder:nil];
+    [self.leftMenuController setModel:nil];
 }
 
 @end

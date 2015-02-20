@@ -130,7 +130,6 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadModelSourceControllerWithCompletion:completion];
-    [self syncLocalNotificationsGroupWithCompletion:nil];
     
     NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
     
@@ -268,28 +267,6 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 #pragma mark - Private methods
-
-- (void)syncLocalNotificationsGroupWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] unreadNotificationsGroupIdsWithHandler:^(BOOL success, NSArray * groupIds, NSData *responseData, NSError *error) {
-        if(success && [groupIds count] > 0) {
-            NSManagedObjectContext * context = _fetchController.managedObjectContext;
-            NSString * format = @"unreadCount > 0 AND NOT(sID in %@) AND ownerId = %@";
-            NSPredicate * readCondition = [NSPredicate predicateWithFormat:format, groupIds, [IQSession defaultSession].userId];
-            NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotificationsGroup"];
-            [fetchRequest setPredicate:readCondition];
-            [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
-                if ([objects count] > 0) {
-                    [objects makeObjectsPerformSelector:@selector(setUnreadCount:) withObject:@(0)];
-                    NSError *saveError = nil;
-                    
-                    if(![context saveToPersistentStore:&saveError]) {
-                        NSLog(@"Save notifications error: %@", saveError);
-                    }
-                }
-            }];
-        }
-    }];
-}
 
 - (void)groupUpdatesWithCompletion:(void (^)(NSError * error))completion {
     NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];

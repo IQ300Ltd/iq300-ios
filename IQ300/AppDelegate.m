@@ -100,6 +100,7 @@
     RKLogConfigureByName("RestKit/App", RKLogLevelError);
     
     NSLog(@"\n\nService adress is %@\n\n", SERVICE_URL);
+    
 
     [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
     [AppDelegate setupNotificationCenter];

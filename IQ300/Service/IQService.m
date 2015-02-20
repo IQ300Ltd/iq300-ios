@@ -323,6 +323,29 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                    handler:handler];
 }
 
+- (void)notificationsForGroupWithId:(NSNumber*)anyNotificationId
+                       updatedAfter:(NSDate*)updatedAfter
+                             unread:(NSNumber*)unread
+                               page:(NSNumber*)page
+                                per:(NSNumber*)per
+                               sort:(IQSortDirection)sort
+                            handler:(ObjectLoaderCompletionHandler)handler {
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"updated_at_after" : NSObjectNullForNil(updatedAfter),
+                                                                  @"unread"           : NSObjectNullForNil(unread),
+                                                                  @"page"             : NSObjectNullForNil(page),
+                                                                  @"per"              : NSObjectNullForNil(per),
+                                                                  }).mutableCopy;
+    
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+    
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/notifications/%@/children", anyNotificationId]
+                parameters:parameters
+                   handler:handler];
+}
+
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
                path:[NSString stringWithFormat:@"/api/v1/notifications/%@", notificationId]
