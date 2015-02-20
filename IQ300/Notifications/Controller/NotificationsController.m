@@ -94,6 +94,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+
     
     UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mark_tab_item.png"]
                                                                         style:UIBarButtonItemStylePlain
@@ -115,6 +118,9 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    self.tableView.delegate = nil;
+    self.tableView.dataSource = nil;
+
     [self.model setSubscribedToNotifications:NO];
 }
 

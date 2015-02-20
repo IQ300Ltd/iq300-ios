@@ -21,20 +21,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     if(self.tableView) {
+        self.tableView.delegate = self;
+        self.tableView.dataSource = self;
         [self.view addSubview:self.tableView];
     }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    self.tableView.delegate = nil;
-    self.tableView.dataSource = nil;
 }
 
 - (UITableView*)tableView {
