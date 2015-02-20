@@ -268,22 +268,29 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 
 #pragma mark - Private methods
 
-- (void)groupUpdatesWithCompletion:(void (^)(NSError * error))completion {
-    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
-    
+- (void)groupUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] notificationsGroupUpdatedAfter:lastUpdatedDate
                                                        unread:@(NO)
-                                                         page:@(1)
+                                                         page:page
                                                           per:@(_portionLenght)
                                                          sort:IQSortDirectionAscending
                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
                                                           if(success && holder.currentPage < holder.totalPages) {
-                                                              [self groupUpdatesWithCompletion:completion];
+                                                              [self groupUpdatesAfterDate:lastUpdatedDate
+                                                                                     page:@([page integerValue] + 1)
+                                                                               completion:completion];
                                                           }
                                                           else if(completion) {
                                                               completion(error);
                                                           }
                                                       }];
+}
+
+- (void)groupUpdatesWithCompletion:(void (^)(NSError * error))completion {
+    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+    [self groupUpdatesAfterDate:lastUpdatedDate
+                           page:@(1)
+                     completion:completion];
 }
 
 - (void)markAllLocalNotificationsAsReadExceptGroups:(NSArray*)unreadGroups {

@@ -138,6 +138,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
     NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
 
+    [self updateCounters];
     [[IQService sharedService] notificationsForGroupWithId:self.group.lastNotificationId
                                               updatedAfter:lastUpdatedDate
                                                     unread:@(NO)
@@ -164,6 +165,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         [self reloadModelSourceControllerWithCompletion:nil];
     }
     
+    [self updateCounters];
     NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
     if(!lastUpdatedDate) {
         [[IQService sharedService] notificationsForGroupWithId:self.group.lastNotificationId
@@ -314,23 +316,30 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 #pragma mark - Private methods
 
-- (void)notificationsUpdatesWithCompletion:(void (^)(NSError * error))completion {
-    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
-    
+- (void)notificationsUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] notificationsForGroupWithId:self.group.lastNotificationId
                                               updatedAfter:lastUpdatedDate
                                                     unread:@(NO)
-                                                      page:@(1)
+                                                      page:page
                                                        per:@(_portionLenght)
                                                       sort:IQSortDirectionAscending
                                                    handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
                                                        if(success && holder.currentPage < holder.totalPages) {
-                                                           [self notificationsUpdatesWithCompletion:completion];
+                                                           [self notificationsUpdatesAfterDate:lastUpdatedDate
+                                                                                          page:@([page integerValue] + 1)
+                                                                                    completion:completion];
                                                        }
                                                        else if(completion) {
                                                            completion(error);
                                                        }
                                                    }];
+}
+
+- (void)notificationsUpdatesWithCompletion:(void (^)(NSError * error))completion {
+    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+    [self notificationsUpdatesAfterDate:lastUpdatedDate
+                                   page:@(1)
+                             completion:completion];
 }
 
 - (NSDate*)getLastNotificationChangedDate {
