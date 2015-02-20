@@ -10,6 +10,7 @@
 
 @interface NSDate (IQFormater)
 
+- (NSDate*)randomDateInYearOfDate;
 - (NSString*)dateToDayTimeString;
 - (NSString*)dateToTimeString;
 - (NSString*)dateToStringWithFormat:(NSString*)format;

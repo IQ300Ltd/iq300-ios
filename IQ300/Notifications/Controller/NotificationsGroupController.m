@@ -64,7 +64,7 @@
         badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(88, 7);
+        self.tabBarItem.badgeOrigin = CGPointMake(61.5f, 3.5f);
     }
     
     return self;
@@ -81,8 +81,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.view.backgroundColor = [UIColor whiteColor];
     
     __weak typeof(self) weakSelf = self;
     [self.tableView

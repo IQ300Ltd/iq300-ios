@@ -1,12 +1,12 @@
 //
-//  MenuModel.m
+//  TasksMenuModel.m
 //  IQ300
 //
-//  Created by Tayphoon on 06.11.14.
-//  Copyright (c) 2014 Tayphoon. All rights reserved.
+//  Created by Tayphoon on 19.02.15.
+//  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "NotificationsMenuModel.h"
+#import "TasksMenuModel.h"
 #import "MenuCell.h"
 #import "IQMenuSerializator.h"
 #import "IQMenuSection.h"
@@ -15,21 +15,19 @@
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
-@interface NotificationsMenuModel() {
+@interface TasksMenuModel() {
     NSArray * _sections;
     NSIndexPath * _selectedItemIndexPath;
 }
 
 @end
 
-@implementation NotificationsMenuModel
+@implementation TasksMenuModel
 
 - (id)init {
     self = [super init];
     
     if (self) {
-        _totalItemsCount = -1;
-        _unreadItemsCount = -1;
     }
     
     return self;
@@ -37,20 +35,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (NSString*)title {
     return NSLocalizedString(@"Tasks", @"Tasks");
-}
-
-- (void)setTotalItemsCount:(NSInteger)totalItemsCount {
-    if(_totalItemsCount != totalItemsCount) {
-        //_totalItemsCount = totalItemsCount;
-        //[self reloadItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    }
-}
-
-- (void)setUnreadItemsCount:(NSInteger)unreadItemsCount {
-    if(_unreadItemsCount != unreadItemsCount) {
-        _unreadItemsCount = unreadItemsCount;
-        [self reloadItemAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-    }
 }
 
 - (NSUInteger)numberOfSections {
@@ -77,7 +61,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     IQMenuItem * item = [self itemAtIndexPath:indexPath];
     Class cellClass = [IQMenuCellFactory cellClassForItemType:[item.type integerValue]];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
-                           reuseIdentifier:reuseIdentifier];
+                            reuseIdentifier:reuseIdentifier];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
@@ -107,13 +91,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (NSString*)badgeTextAtIndexPath:(NSIndexPath*)indexPath {
-    if (indexPath.row == 0 && _totalItemsCount > 0) {
-        return [NSString stringWithFormat:@"%ld", (long)_totalItemsCount];
-    }
-    else if (indexPath.row == 1 && _unreadItemsCount > 0) {
-        return [NSString stringWithFormat:@"%ld", (long)_unreadItemsCount];
-    }
-    return nil;
+    return @"12";
 }
 
 - (NSIndexPath*)indexPathForSelectedItem {
@@ -127,7 +105,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
-    _sections = [IQMenuSerializator serializeMenuFromList:@"notifications_menu" error:nil];
+    _sections = [IQMenuSerializator serializeMenuFromList:@"tasks_menu" error:nil];
     if(completion) {
         completion(nil);
     }

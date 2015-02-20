@@ -11,6 +11,20 @@
 
 @implementation NSDate (IQFormater)
 
+- (NSDate *)randomDateInYearOfDate {
+    NSCalendar *currentCalendar = [NSCalendar currentCalendar];
+    NSDateComponents *comps = [currentCalendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:self];
+    
+    [comps setMonth:arc4random_uniform(12)];
+    
+    NSRange range = [[NSCalendar currentCalendar] rangeOfUnit:NSDayCalendarUnit inUnit:NSMonthCalendarUnit forDate:[currentCalendar dateFromComponents:comps]];
+    
+    [comps setDay:arc4random_uniform((u_int32_t)range.length)];
+    [comps setTimeZone:[NSTimeZone timeZoneWithName:@"GMT"]];
+    
+    return [currentCalendar dateFromComponents:comps];
+}
+
 - (NSString*)dateToDayTimeString {
     NSString * stringDate = nil;
     NSDate * today = [[NSDate date] beginningOfDay];
