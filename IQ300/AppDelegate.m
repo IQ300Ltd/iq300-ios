@@ -111,8 +111,8 @@
     NotificationsGroupController * notifications = [[NotificationsGroupController alloc] init];
     IQNavigationController * notificationsNav = [[IQNavigationController alloc] initWithRootViewController:notifications];
     
-    TasksController * tasks = [[TasksController alloc] init];
-    IQNavigationController * tasksNav = [[IQNavigationController alloc] initWithRootViewController:tasks];
+//    TasksController * tasks = [[TasksController alloc] init];
+//    IQNavigationController * tasksNav = [[IQNavigationController alloc] initWithRootViewController:tasks];
    
     MessagesController * messages = [[MessagesController alloc] init];
     IQNavigationController * messagesNav = [[IQNavigationController alloc] initWithRootViewController:messages];
@@ -120,7 +120,7 @@
     UITabBarController * center = [[UITabBarController alloc] init];
     center.tabBar.layer.borderWidth = 0;
     
-    [center setViewControllers:@[notificationsNav, tasksNav, messagesNav]];
+    [center setViewControllers:@[notificationsNav, messagesNav]];
     
     MMDrawerController * drawerController = [[IQDrawerController alloc]
                                              initWithCenterViewController:center
