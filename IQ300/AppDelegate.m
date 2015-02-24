@@ -45,9 +45,13 @@
     LoginController * loginViewController = [[LoginController alloc] init];
     [delegate.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
     UITabBarController * center = ((UITabBarController*)delegate.drawerController.centerViewController);
-    NSArray * controllers = [center viewControllers];
+    
+    for (UINavigationController * controller in center.viewControllers) {
+        [controller popToRootViewControllerAnimated:NO];
+    }
+    
     [center setSelectedIndex:0];
-    [controllers makeObjectsPerformSelector:@selector(popToRootViewControllerAnimated:) withObject:@(NO)];
+
     [[IQService sharedService] logout];
     [IQSession setDefaultSession:nil];
     [[IQNotificationCenter defaultCenter] resetAllObservers];
