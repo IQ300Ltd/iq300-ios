@@ -11,7 +11,7 @@
 
 @interface IQTableBaseController : UIViewController<UITableViewDataSource, UITableViewDelegate, IQTableModelDelegate>
 
-@property (nonatomic, strong) UITableView * tableView;
+@property (nonatomic, readonly) UITableView * tableView;
 @property (nonatomic, strong) id<IQTableModel> model;
 @property (nonatomic, assign) BOOL needFullReload;
 

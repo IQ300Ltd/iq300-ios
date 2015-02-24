@@ -63,7 +63,7 @@ typedef void(^FileStoreSaveDataToDiskHandler)(NSString * filePath, NSError * err
  * @completion Moved file data
  */
 
-- (void)storeFileFromURL:(NSURL*)filePath atPath:(NSString*)destinationPath error:(NSError**)error;
+- (BOOL)storeFileFromURL:(NSURL*)filePath atPath:(NSString*)destinationPath error:(NSError**)error;
 
 /**
  * Query the disk data asynchronousely.

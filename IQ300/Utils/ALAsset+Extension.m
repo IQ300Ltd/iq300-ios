@@ -48,7 +48,11 @@
     }
     else {
         NSString * localizedError = [NSString stringWithFormat:@"Error create file with code: %d - message: %s", errno, strerror(errno)];
-        *error = [NSError errorWithDomain:@"" code:errno userInfo:@{ NSLocalizedDescriptionKey : localizedError }];
+        if(error) {
+            *error = [NSError errorWithDomain:@""
+                                         code:errno
+                                     userInfo:@{ NSLocalizedDescriptionKey : localizedError }];
+        }
     }
     return NO;
 }

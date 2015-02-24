@@ -58,7 +58,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+        
     _mainView.noDataLabel.text = NSLocalizedString((self.model.loadUnreadOnly) ? NoUnreadNotificationFound : NoNotificationFound, nil);
     
     _menuModel = [[NotificationsMenuModel alloc] init];
@@ -94,10 +94,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-
-    
     UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mark_tab_item.png"]
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
@@ -118,8 +114,6 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    self.tableView.delegate = nil;
-    self.tableView.dataSource = nil;
 
     [self.model setSubscribedToNotifications:NO];
 }

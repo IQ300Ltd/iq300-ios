@@ -109,7 +109,7 @@
     CGSize constrainedSize = CGSizeMake(userNameMaxWidth,
                                         userNameHeight);
     
-    CGPoint actionLabelLocation = CGPointMake(actualBounds.origin.x, CGRectBottom(_titleLabel.frame) + 5);
+    CGPoint actionLabelLocation = CGPointZero;
     if (([_item.user.displayName length] > 0)) {
         CGSize userSize = [_userNameLabel.text sizeWithFont:_userNameLabel.font
                                           constrainedToSize:constrainedSize

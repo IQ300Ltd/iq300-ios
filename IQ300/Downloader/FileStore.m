@@ -72,18 +72,20 @@ static FileStore * _sharedStore = nil;
     [_fileManager removeItemAtURL:destinationURL error:nil];
     
     if (![_fileManager moveItemAtURL:fileUrl toURL:destinationURL error:error]) {
-        NSLog(@"file move error: %@", *error);
-        NSString * errorDescription = [NSString stringWithFormat:@"%s", strerror(errno)];
-        *error = [NSError errorWithDomain:FileStoreErrorDomain
-                                    code:errno
-                                userInfo:@{NSLocalizedDescriptionKey : errorDescription}];
+        if(error) {
+            NSLog(@"file move error: %@", *error);
+            NSString * errorDescription = [NSString stringWithFormat:@"%s", strerror(errno)];
+            *error = [NSError errorWithDomain:FileStoreErrorDomain
+                                         code:errno
+                                     userInfo:@{NSLocalizedDescriptionKey : errorDescription}];
+        }
     }
 
     return [self.diskCachePath stringByAppendingPathComponent:key];
 }
 
 
-- (void)storeFileFromURL:(NSURL*)filePath atPath:(NSString*)destinationPath error:(NSError**)error {
+- (BOOL)storeFileFromURL:(NSURL*)filePath atPath:(NSString*)destinationPath error:(NSError**)error {
     NSString * destinationDirectory = [destinationPath stringByDeletingLastPathComponent];
     NSError * rootError = [NSError errorWithDomain:FileStoreErrorDomain
                                               code:0
@@ -95,7 +97,7 @@ static FileStore * _sharedStore = nil;
                                      attributes:nil
                                           error:error]) {
             *error = [rootError errorWithUnderlyingError:*error];
-            return;
+            return NO;
         }
     }
     
@@ -103,12 +105,16 @@ static FileStore * _sharedStore = nil;
     [_fileManager removeItemAtURL:destinationURL error:nil];
     
     if (![_fileManager moveItemAtURL:filePath toURL:destinationURL error:error]) {
-        NSString * errorDescription = [NSString stringWithFormat:@"%s", strerror(errno)];
-        *error = [NSError errorWithDomain:FileStoreErrorDomain
-                                    code:errno
-                                userInfo:@{ NSLocalizedDescriptionKey : errorDescription }];
-        *error = [rootError errorWithUnderlyingError:*error];
+        if(error) {
+            NSString * errorDescription = [NSString stringWithFormat:@"%s", strerror(errno)];
+            *error = [NSError errorWithDomain:FileStoreErrorDomain
+                                         code:errno
+                                     userInfo:@{ NSLocalizedDescriptionKey : errorDescription }];
+            *error = [rootError errorWithUnderlyingError:*error];
+        }
+        return NO;
     }
+    return YES;
 }
 
 

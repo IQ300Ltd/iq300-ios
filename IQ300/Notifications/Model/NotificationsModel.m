@@ -37,6 +37,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 @implementation NotificationsModel
 
 - (id)init {
+    self = [super init];
     if(self) {
         _portionLenght = 20;
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt"
@@ -45,12 +46,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         _loadUnreadOnly = YES;
         _totalItemsCount = 0;
         _unreadItemsCount = 0;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(accountDidChanged)
-                                                     name:AccountDidChangedNotification
-                                                   object:nil];
-        [self resubscribeToIQNotifications];
     }
     return self;
 }
@@ -280,8 +275,10 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                  selector:@selector(applicationWillEnterForeground)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
+        [self resubscribeToIQNotifications];
     }
     else {
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:UIApplicationWillEnterForegroundNotification
                                                       object:nil];
@@ -536,18 +533,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)unsubscribeFromIQNotifications {
     if(_notfObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
-    }
-}
-
-- (void)accountDidChanged {
-    if([IQSession defaultSession]) {
-        [self resubscribeToIQNotifications];
-        [self updateCounters];
-    }
-    else {
-        [self unsubscribeFromIQNotifications];
-        [self clearModelData];
-        [self modelDidChanged];
     }
 }
 

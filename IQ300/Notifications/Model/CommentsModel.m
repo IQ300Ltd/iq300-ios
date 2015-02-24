@@ -41,6 +41,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 @implementation CommentsModel
 
 - (id)init {
+    self = [super init];
     if(self) {
         _expandedCells = [NSMutableDictionary dictionary];
         _expandableCells = [NSMutableDictionary dictionary];
@@ -87,7 +88,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
     IQComment * comment = [self itemAtIndexPath:indexPath];
     
-    if(self.cellWidth > 0 && ![_expandableCells objectForKey:comment.commentId]) {
+    if(comment && self.cellWidth > 0 && ![_expandableCells objectForKey:comment.commentId]) {
         BOOL expandable = [CCommentCell cellNeedToBeExpandableForItem:comment andCellWidth:self.cellWidth];
         [_expandableCells setObject:@(expandable) forKey:comment.commentId];
     }
@@ -129,7 +130,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)setItemExpanded:(BOOL)expanded atIndexPath:(NSIndexPath*)indexPath {
     IQComment * comment = [self itemAtIndexPath:indexPath];
     BOOL isExpanded = [[_expandedCells objectForKey:comment.commentId] boolValue];
-    if(isExpanded != expanded) {
+    if(comment && isExpanded != expanded) {
         [_expandedCells setObject:@(expanded) forKey:comment.commentId];
         [self modelWillChangeContent];
         [self modelDidChangeObject:nil

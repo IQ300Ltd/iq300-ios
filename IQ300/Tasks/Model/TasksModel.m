@@ -23,6 +23,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 @implementation TasksModel
 
 - (id)init {
+    self = [super init];
     if(self) {
         _tasks = [NSMutableArray array];
     }

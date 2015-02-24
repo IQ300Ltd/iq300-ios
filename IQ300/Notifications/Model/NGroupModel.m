@@ -36,6 +36,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 @implementation NGroupModel
 
 - (id)init {
+    self = [super init];
     if(self) {
         _portionLenght = 20;
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"lastNotification.createdAt"

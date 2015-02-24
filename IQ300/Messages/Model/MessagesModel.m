@@ -64,6 +64,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (id)init {
+    self = [super init];
     if(self) {
         _portionLenght = 20;
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"lastComment.createDate" ascending:SORT_DIRECTION == IQSortDirectionAscending];
