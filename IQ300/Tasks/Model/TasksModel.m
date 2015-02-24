@@ -53,7 +53,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return 109;
+    IQTask * item = [self itemAtIndexPath:indexPath];
+    return [TaskCell heightForItem:item andCellWidth:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {

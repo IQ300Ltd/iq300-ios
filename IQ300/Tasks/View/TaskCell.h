@@ -14,14 +14,14 @@
     UIEdgeInsets _contentInsets;
 }
 
-@property (nonatomic, strong) UITextView * titleTextView;
+@property (nonatomic, strong) UILabel * titleLabel;
 @property (nonatomic, strong) UILabel * taskIDLabel;
 @property (nonatomic, strong) UILabel * fromLabel;
 @property (nonatomic, strong) UILabel * toLabel;
 @property (nonatomic, strong) UIImageView * dueIconImageVIew;
 @property (nonatomic, strong) UILabel * dueDateLabel;
 @property (nonatomic, strong) UIImageView * communityImageVIew;
-@property (nonatomic, strong) UITextView * communityNameTextView;
+@property (nonatomic, strong) UILabel * communityNameLabel;
 @property (nonatomic, strong) UIImageView * messagesImageVIew;
 @property (nonatomic, strong) UILabel * messagesCountLabel;
 @property (nonatomic, strong) UILabel * statusLabel;

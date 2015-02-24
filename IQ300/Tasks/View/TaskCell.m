@@ -10,11 +10,44 @@
 #import "IQTask.h"
 #import "NSDate+IQFormater.h"
 
+#define CONTENT_INSETS 10.0f
+#define TASK_ID_HEIGHT 11.0f
+#define TASK_ID_WIDTH 50.0f
+#define TITLE_MAX_HEIGHT 36.0f
+#define COMM_NAME_MAX_HEIGHT 27.0f
+#define COMM_NAME_WIDTH 140.0f
+#define DUE_DATE_HEIGHT 13.0f
+#define VERTICAL_PADDING 5.0f
+
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
+#define COMM_NAME_FONT [UIFont fontWithName:IQ_HELVETICA size:11.0f]
+
 @implementation TaskCell
 
 + (CGFloat)heightForItem:(IQTask *)item andCellWidth:(CGFloat)cellWidth {
+    CGFloat height = CONTENT_INSETS * 2.0f;
+
+    if([item.title length] > 0) {
+        CGFloat titleWidth = cellWidth - CONTENT_INSETS * 2.0f - TASK_ID_WIDTH;
+        CGSize titleSize = [item.title sizeWithFont:TITLE_FONT
+                                  constrainedToSize:CGSizeMake(titleWidth, CGFLOAT_MAX)
+                                      lineBreakMode:NSLineBreakByWordWrapping];
+        
+        height += MIN(MAX(titleSize.height, TITLE_MAX_HEIGHT / 2.0f),  TITLE_MAX_HEIGHT);
+    }
     
-    return 0;
+    height += DUE_DATE_HEIGHT + VERTICAL_PADDING * 2.0f;
+    
+    if([item.communityName length] > 0) {
+        
+        CGSize commSize = [item.communityName sizeWithFont:COMM_NAME_FONT
+               constrainedToSize:CGSizeMake(COMM_NAME_WIDTH, COMM_NAME_MAX_HEIGHT)
+                   lineBreakMode:NSLineBreakByWordWrapping];
+        
+        height += MIN(MAX(commSize.height, COMM_NAME_MAX_HEIGHT / 2.0f),  CGFLOAT_MAX);
+    }
+    
+    return height;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -22,18 +55,12 @@
     
     if(self) {
         UIView * contentView = self.contentView;
-        _contentInsets = UIEdgeInsetsMakeWithInset(10.0f);
+        _contentInsets = UIEdgeInsetsMakeWithInset(CONTENT_INSETS);
         
-        _titleTextView = [[UITextView alloc] init];
-        [_titleTextView setFont:[UIFont fontWithName:IQ_HELVETICA size:15.0f]];
-        [_titleTextView setTextColor:[UIColor blackColor]];
-        _titleTextView.textAlignment = NSTextAlignmentLeft;
-        _titleTextView.backgroundColor = [UIColor clearColor];
-        _titleTextView.editable = NO;
-        _titleTextView.textContainerInset = UIEdgeInsetsZero;
-        _titleTextView.textContainer.lineFragmentPadding = 0;
-        _titleTextView.scrollEnabled = NO;
-        [contentView addSubview:_titleTextView];
+        _titleLabel = [self makeLabelWithTextColor:[UIColor blackColor]
+                                                 font:TITLE_FONT
+                                        localaizedKey:nil];
+        [contentView addSubview:_titleLabel];
         
         _taskIDLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
                                 font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
@@ -65,16 +92,10 @@
         _communityImageVIew = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"community_ico.png"]];
         [contentView addSubview:_communityImageVIew];
         
-        _communityNameTextView = [[UITextView alloc] init];
-        [_communityNameTextView setFont:[UIFont fontWithName:IQ_HELVETICA size:11.0f]];
-        [_communityNameTextView setTextColor:[UIColor colorWithHexInt:0x9f9f9f]];
-        _communityNameTextView.textAlignment = NSTextAlignmentLeft;
-        _communityNameTextView.backgroundColor = [UIColor clearColor];
-        _communityNameTextView.editable = NO;
-        _communityNameTextView.textContainerInset = UIEdgeInsetsZero;
-        _communityNameTextView.textContainer.lineFragmentPadding = 0;
-        _communityNameTextView.scrollEnabled = NO;
-        [contentView addSubview:_communityNameTextView];
+        _communityNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+                                                         font:COMM_NAME_FONT
+                                                localaizedKey:nil];
+        [contentView addSubview:_communityNameLabel];
         
         _messagesImageVIew = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"message_blue_buble.png"]];
         [contentView addSubview:_messagesImageVIew];
@@ -100,16 +121,22 @@
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     
-    CGSize taskIDSize = CGSizeMake(50.0f, 11.0f);
+    CGSize taskIDSize = CGSizeMake(TASK_ID_WIDTH, TASK_ID_HEIGHT);
     _taskIDLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - taskIDSize.width,
                                     actualBounds.origin.y,
                                     taskIDSize.width,
                                     taskIDSize.height);
     
-    _titleTextView.frame = CGRectMake(actualBounds.origin.x,
-                                      actualBounds.origin.y - 1.8f,
-                                      _taskIDLabel.frame.origin.x - actualBounds.origin.x,
-                                      36.0f);
+    CGSize constrainedSize = CGSizeMake(_taskIDLabel.frame.origin.x - actualBounds.origin.x,
+                                        TITLE_MAX_HEIGHT);
+    CGSize titleSize = [_titleLabel.text sizeWithFont:_titleLabel.font
+                                    constrainedToSize:constrainedSize
+                                        lineBreakMode:NSLineBreakByWordWrapping];
+    
+    _titleLabel.frame = CGRectMake(actualBounds.origin.x,
+                                   actualBounds.origin.y - 1.8f,
+                                   constrainedSize.width,
+                                   titleSize.height);
     
     CGSize dueIconImageSize = [_dueIconImageVIew image].size;
     CGFloat dateHeight = dueIconImageSize.height;
@@ -120,7 +147,7 @@
     CGFloat dateLabelWidth = MIN(dateLabelSize.width, dateMaxWidth);
     CGFloat dateLabelX = actualBounds.origin.x + actualBounds.size.width - dateLabelWidth;
     _dueDateLabel.frame = CGRectMake(dateLabelX,
-                                     CGRectBottom(_titleTextView.frame) + 5.0f,
+                                     CGRectBottom(_titleLabel.frame) + VERTICAL_PADDING,
                                      dateLabelWidth,
                                      dateHeight);
     
@@ -153,17 +180,22 @@
     
     CGSize communityImageSize = [_communityImageVIew image].size;
     _communityImageVIew.frame = CGRectMake(actualBounds.origin.x,
-                                           CGRectBottom(_fromLabel.frame) + 5.0f,
+                                           CGRectBottom(_fromLabel.frame) + VERTICAL_PADDING,
                                            communityImageSize.width,
                                            communityImageSize.height);
     
-    _communityNameTextView.frame = CGRectMake(CGRectRight(_communityImageVIew.frame) + 5.0f,
+    constrainedSize = CGSizeMake(COMM_NAME_WIDTH, COMM_NAME_MAX_HEIGHT);
+    CGSize communityNameSize = [_communityNameLabel.text sizeWithFont:_communityNameLabel.font
+                                                    constrainedToSize:constrainedSize
+                                                        lineBreakMode:NSLineBreakByWordWrapping];
+    
+    _communityNameLabel.frame = CGRectMake(CGRectRight(_communityImageVIew.frame) + 5.0f,
                                               _communityImageVIew.frame.origin.y + 1.8f,
                                               140,
-                                              27.0f);
+                                              communityNameSize.height);
     
     CGSize messagesImageSize = [_messagesImageVIew image].size;
-    _messagesImageVIew.frame = CGRectMake(CGRectRight(_communityNameTextView.frame) + 5.0f,
+    _messagesImageVIew.frame = CGRectMake(CGRectRight(_communityNameLabel.frame) + 5.0f,
                                           _communityImageVIew.frame.origin.y + 2.0f,
                                           messagesImageSize.width,
                                           messagesImageSize.height);
@@ -171,7 +203,7 @@
     _messagesCountLabel.frame = CGRectMake(CGRectRight(_messagesImageVIew.frame) + 5.0f,
                                            _messagesImageVIew.frame.origin.y,
                                            20.0f,
-                                           12.0f);
+                                           messagesImageSize.height);
     
     CGFloat statusLabelX = CGRectRight(_messagesCountLabel.frame) + 5.0f;
     _statusLabel.frame = CGRectMake(statusLabelX,
@@ -184,11 +216,11 @@
     _item = item;
     
     _taskIDLabel.text = _item.taskID;
-    _titleTextView.text = _item.title;
+    _titleLabel.text = _item.title;
     _dueDateLabel.text = [_item.dueDate dateToDayTimeString];
     _fromLabel.text = _item.fromUser;
     _toLabel.text = [NSString stringWithFormat:@"> %@", _item.toUser];
-    _communityNameTextView.text = _item.communityName;
+    _communityNameLabel.text = _item.communityName;
     _messagesCountLabel.text = [NSString stringWithFormat:@"%@", _item.unreadMessagesCount];
     _statusLabel.text = _item.status;
     

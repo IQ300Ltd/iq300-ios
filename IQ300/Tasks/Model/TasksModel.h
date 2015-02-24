@@ -12,6 +12,7 @@
 
 @property (nonatomic, assign) NSInteger taskaFilter;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+@property (nonatomic, assign) CGFloat cellWidth;
 
 /**
  UpdateModelWithCompletion. Load new data.
