@@ -83,7 +83,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (NSUInteger)numberOfSections {
-    return 1;//[_fetchController.sections count];
+    return 1;
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
@@ -181,7 +181,6 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                }
                                            }];
 }
-
 
 - (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;

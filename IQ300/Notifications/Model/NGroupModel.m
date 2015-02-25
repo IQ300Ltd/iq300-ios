@@ -56,7 +56,7 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (NSUInteger)numberOfSections {
-    return 1;//[_fetchController.sections count];
+    return 1;
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
@@ -150,6 +150,10 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                           else if(completion) {
                                                               completion(error);
                                                           }
+                                                          
+                                                          if (success) {
+                                                              [self syncNotificationsForReadedGroups];
+                                                          }
                                                       }];
 }
 
@@ -171,6 +175,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
                                                           if(completion) {
                                                               completion(error);
+                                                          }
+                                                          if (success) {
+                                                              [self syncNotificationsForReadedGroups];
                                                           }
                                                       }];
     }
@@ -284,6 +291,10 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
                                                           else if(completion) {
                                                               completion(error);
                                                           }
+                                                          
+                                                          if (holder.currentPage >= holder.totalPages) {
+                                                              [self syncNotificationsForReadedGroups];
+                                                          }
                                                       }];
 }
 
@@ -349,6 +360,41 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
             }
         }
     }];
+}
+
+
+/**
+ *  Mark unread notifications for readed groups
+ */
+
+- (void)syncNotificationsForReadedGroups {
+    NSManagedObjectContext * context = _fetchController.managedObjectContext;
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotificationsGroup"];
+    [fetchRequest setResultType:NSDictionaryResultType];
+    [fetchRequest setPropertiesToFetch:@[@"sID"]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"unreadCount == 0 AND ownerId = %@", [IQSession defaultSession].userId]];
+    
+    NSError * error = nil;
+    NSArray * fetchedObjects = [context executeFetchRequest:fetchRequest error:&error];
+    NSArray * sids = [fetchedObjects valueForKey:@"sID"];
+    if([sids count] > 0) {
+        NSFetchRequest * request = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
+        [request setPredicate:[NSPredicate predicateWithFormat:@"(readed == NO OR hasActions == YES) AND ownerId = %@ AND groupSid IN %@",
+                               [IQSession defaultSession].userId, sids]];
+        
+        [context executeFetchRequest:request completion:^(NSArray *objects, NSError *error) {
+            if ([objects count] > 0) {
+                [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
+                [objects makeObjectsPerformSelector:@selector(setHasActions:) withObject:@(NO)];
+                [objects makeObjectsPerformSelector:@selector(setAvailableActions:) withObject:nil];
+                
+                NSError *saveError = nil;
+                if(![context saveToPersistentStore:&saveError]) {
+                    NSLog(@"Save notifications error: %@", saveError);
+                }
+            }
+        }];
+    }
 }
 
 - (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {

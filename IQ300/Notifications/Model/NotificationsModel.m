@@ -51,7 +51,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (NSUInteger)numberOfSections {
-    return 1;//[_fetchController.sections count];
+    return 1;
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
