@@ -31,9 +31,16 @@
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
         _typeColors = @{
-                        @"new"     : [UIColor colorWithHexInt:0x3084a8],
-                        @"in_work" : [UIColor colorWithHexInt:0xf8931f],
-                        @"refused" : [UIColor colorWithHexInt:0xfb0007]
+                        @"new"       : [UIColor colorWithHexInt:0x00b54f],
+                        @"on_init"   : [UIColor colorWithHexInt:0x9f9f9f],
+                        @"browsed"   : [UIColor colorWithHexInt:0x753bb7],
+                        @"in_work"   : [UIColor colorWithHexInt:0xf8931f],
+                        @"refused"   : [UIColor colorWithHexInt:0xe74545],
+                        @"completed" : [UIColor colorWithHexInt:0x348dad],
+                        @"accepted"  : [UIColor colorWithHexInt:0x7dc223],
+                        @"declined"  : [UIColor colorWithHexInt:0xe976ba],
+                        @"archived"  : [UIColor colorWithHexInt:0x272727],
+                        @"canceled"  : [UIColor colorWithHexInt:0x3b5b78]
                        };
     });
     
