@@ -87,7 +87,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        [[IQService sharedService] tasksByFolder:nil
+        [[IQService sharedService] tasksByFolder:self.folder
                                           status:nil
                                      communityId:nil
                                             page:@(1)
@@ -107,7 +107,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadSourceControllerWithCompletion:nil];
-    [[IQService sharedService] tasksByFolder:nil
+    [[IQService sharedService] tasksByFolder:self.folder
                                       status:nil
                                  communityId:nil
                                         page:@(1)
@@ -127,7 +127,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion {
     NSInteger count = [self numberOfItemsInSection:0];
     NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
-    [[IQService sharedService] tasksByFolder:nil
+    [[IQService sharedService] tasksByFolder:self.folder
                                       status:nil
                                  communityId:nil
                                         page:@(page)

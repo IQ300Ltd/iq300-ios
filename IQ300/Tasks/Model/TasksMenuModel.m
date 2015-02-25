@@ -124,6 +124,28 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     [self modelDidChangeContent];
 }
 
+- (NSString*)folderForMenuItemAtIndexPath:(NSIndexPath*)indexPath {
+    static NSDictionary * _folders = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _folders = @{
+                        @(0) : @"actual",
+                        @(1) : @"overdue",
+                        @(2) : @"inbox",
+                        @(3) : @"outbox",
+                        @(4) : @"watchable",
+                        @(5) : @"templates",
+                        @(6) : @"archive"
+                        };
+    });
+    
+    if([_folders objectForKey:@(indexPath.row)]) {
+        return [_folders objectForKey:@(indexPath.row)];
+    }
+    
+    return nil;
+}
+
 #pragma mark - Delegate methods
 
 - (void)modelWillChangeContent {

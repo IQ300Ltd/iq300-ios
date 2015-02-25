@@ -64,13 +64,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:0
+                                                         inSection:0]];
+    self.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:0
-                                                         inSection:0]];
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
@@ -104,7 +105,8 @@
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
-    [self.model updateModelWithCompletion:nil];
+    self.model.folder = [_menuModel folderForMenuItemAtIndexPath:indexPath];
+    [self.model reloadModelWithCompletion:nil];
 }
 
 

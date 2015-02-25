@@ -13,4 +13,6 @@
 @property (nonatomic, readonly) NSString * title;
 @property (nonatomic, weak)     id<IQTableModelDelegate> delegate;
 
+- (NSString*)folderForMenuItemAtIndexPath:(NSIndexPath*)indexPath;
+
 @end

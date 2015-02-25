@@ -16,6 +16,9 @@
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, strong) NSString * filter;
+@property (nonatomic, strong) NSString * folder;
+
+- (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 
 /**
  UpdateModelWithCompletion. Load new data.
