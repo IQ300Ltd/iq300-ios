@@ -175,7 +175,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                                                           cacheName:CACHE_FILE_NAME];
     }
     
-    NSPredicate * predicate = nil;//[NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
     if([_filter length] > 0) {
         NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"(user.displayName CONTAINS[cd] $filter) OR (user.email CONTAINS[cd] $filter)"];
         filterPredicate = [filterPredicate predicateWithSubstitutionVariables:@{ @"filter" : _filter }];
