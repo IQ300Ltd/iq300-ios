@@ -56,3 +56,15 @@
 "Contract" = "Contract";
 "DocShare" = "Document";
 "ErrorReport" = "Feedback";
+
+//Tasks types
+"browsed" = "Browsed";
+"new" = "New";
+"in_work" = "In work";
+"canceled" = "Canceled";
+"refused" = "Refused";
+"accepted" = "Accepted";
+"on_init" = "On init";
+"completed" = "Upon verification";
+"declined" = "Declined";
+"archived" = "Archived";

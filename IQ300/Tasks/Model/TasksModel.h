@@ -8,11 +8,14 @@
 
 #import "IQTableModel.h"
 
+@class IQCounters;
+
 @interface TasksModel : NSObject<IQTableModel>
 
 @property (nonatomic, assign) NSInteger taskaFilter;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 @property (nonatomic, assign) CGFloat cellWidth;
+@property (nonatomic, strong) NSString * filter;
 
 /**
  UpdateModelWithCompletion. Load new data.
@@ -29,5 +32,7 @@
  
  */
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
+
+- (void)updateCountersWithCompletion:(void (^)(IQCounters * counter, NSError * error))completion;
 
 @end

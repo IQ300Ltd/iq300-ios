@@ -64,3 +64,15 @@
 "Contract" = "Контракт";
 "DocShare" = "Документ";
 "ErrorReport" = "Обратная связь";
+
+//Tasks types
+"browsed" = "Просмотрена";
+"new" = "Новая";
+"in_work" = "В работе";
+"canceled" = "Отменена";
+"refused" = "Отказано";
+"accepted" = "Выполнена";
+"on_init" = "Инициализация";
+"completed" = "На проверке";
+"declined" = "Не принята";
+"archived" = "Архивная";

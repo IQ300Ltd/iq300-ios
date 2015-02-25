@@ -23,7 +23,7 @@
 @property (nonatomic, strong) UIImageView * communityImageVIew;
 @property (nonatomic, strong) UILabel * communityNameLabel;
 @property (nonatomic, strong) UIImageView * messagesImageVIew;
-@property (nonatomic, strong) UILabel * messagesCountLabel;
+@property (nonatomic, strong) UILabel * commentsCountLabel;
 @property (nonatomic, strong) UILabel * statusLabel;
 
 @property (nonatomic, strong) IQTask * item;

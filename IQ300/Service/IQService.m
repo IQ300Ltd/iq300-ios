@@ -683,6 +683,15 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    //Tasks
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTasksHolder class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks"
+                                                   fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 }
 
 @end

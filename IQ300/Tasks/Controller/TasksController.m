@@ -15,6 +15,7 @@
 #import "TasksMenuModel.h"
 #import "IQTask.h"
 #import "TaskCell.h"
+#import "UIScrollView+PullToRefreshInsert.h"
 
 @interface TasksController () {
     TasksView * _mainView;
@@ -71,6 +72,23 @@
     [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:0
                                                          inSection:0]];
     
+    __weak typeof(self) weakSelf = self;
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
+    
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionBottom];
+
     [self.leftMenuController setMenuResponder:self];
     [self.leftMenuController setTableHaderHidden:YES];
     [self.leftMenuController setModel:_menuModel];

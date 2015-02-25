@@ -5,25 +5,90 @@
 //  Created by Tayphoon on 20.02.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
+#import <RestKit/RestKit.h>
 
 #import "IQTask.h"
-#import "NSDate+IQFormater.h"
+#import "IQUser.h"
+#import "IQAttachment.h"
+#import "IQProject.h"
+#import "IQCommunity.h"
+#import "IQTodoItem.h"
 
 @implementation IQTask
 
-+ (IQTask*)randomTask {
-    IQTask * task = [[IQTask alloc] init];
-    
-    task.taskID = [NSString stringWithFormat:@"#%d", random_range(1, 999999)];
-    task.dueDate = [[NSDate date] randomDateInYearOfDate];
-    task.title = (random_range(0, 1) == 0) ? @"Длинное название задачи в несколько строчек" : @"Короткое название задачи";
-    task.fromUser = (random_range(0, 1) == 0) ? @"Иванов Иван" : @"Александр Иванович";
-    task.toUser = (random_range(0, 1) == 0) ? @"Иванов Иван" : @"Сергеев Сергей Сергеевич";
-    task.communityName = (random_range(0, 1) == 0) ? @"«Муниципальное авто- номное учреждение города Таганрога" : @"Сообшество";
-    task.unreadMessagesCount = @(random_range(0, 135));
-    task.status = (random_range(0, 1) == 0) ? @"В работе" : @"Инициализация";
+@dynamic taskId;
+@dynamic ownerId;
+@dynamic status;
+@dynamic title;
+@dynamic taskDescription;
+@dynamic startDate;
+@dynamic endDate;
+@dynamic createdDate;
+@dynamic updatedDate;
+@dynamic templateId;
+@dynamic parentId;
+@dynamic duration;
+@dynamic position;
+@dynamic discussionId;
+@dynamic commentsCount;
 
-    return task;
+@dynamic customer;
+@dynamic executor;
+@dynamic community;
+
+@dynamic childIds;
+@dynamic todoItems;
+@dynamic attachments;
+
+
++ (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
+    RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
+    [mapping setIdentificationAttributes:@[@"taskId"]];
+    [mapping addAttributeMappingsFromDictionary:@{
+                                                  @"id"             : @"taskId",
+                                                  @"recipient_id"   : @"ownerId",
+                                                  @"status"         : @"status",
+                                                  @"title"          : @"title",
+                                                  @"description"    : @"taskDescription",
+                                                  @"start_date"     : @"startDate",
+                                                  @"end_date"       : @"endDate",
+                                                  @"created_at"     : @"createdDate",
+                                                  @"updated_at"     : @"updatedDate",
+                                                  @"template_id"    : @"templateId",
+                                                  @"parent_id"      : @"parentId",
+                                                  @"duration"       : @"duration",
+                                                  @"position"       : @"position",
+                                                  @"discussionId"   : @"discussionId",
+                                                  @"child_ids"      : @"childIds",
+                                                  @"comments_count" : @"commentsCount"
+                                                  }];
+    
+    RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"customer"
+                                                                                   toKeyPath:@"customer"
+                                                                                 withMapping:[IQUser objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+    
+    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"executor"
+                                                           toKeyPath:@"executor"
+                                                         withMapping:[IQUser objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+    
+    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"community"
+                                                           toKeyPath:@"community"
+                                                         withMapping:[IQCommunity objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+    
+    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"todo_items"
+                                                           toKeyPath:@"todoItems"
+                                                         withMapping:[IQTodoItem objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+
+    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"attachments"
+                                                           toKeyPath:@"attachments"
+                                                         withMapping:[IQAttachment objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+    
+    return mapping;
 }
 
 @end

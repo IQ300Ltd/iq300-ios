@@ -23,5 +23,9 @@
 #import "IQNotificationsGroup.h"
 #import "IQNotificationGroupsHolder.h"
 #import "IQGroupCounter.h"
+#import "IQTasksHolder.h"
+#import "IQProject.h"
+#import "IQCommunity.h"
+#import "IQTodoItem.h"
 
 #endif

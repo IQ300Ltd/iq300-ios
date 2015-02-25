@@ -45,7 +45,7 @@ NSString * const NoTasksFound = @"There are no tasks";
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 0;
         _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _titleLabel.text = @"Все задачи, Сообщество Iq300,  по последней активности";
+        _titleLabel.text = @"Все задачи, по последней активности";
         [_headerView addSubview:_titleLabel];
         [self addSubview:_headerView];
 
