@@ -19,7 +19,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 #define SORT_DIRECTION IQSortDirectionDescending
 
 #define ACTUAL_FORMAT @"type LIKE 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
-                        status IN {\"new\", \"in_work\", \"browsed\", \"completed\" }"
+                        status IN {\"new\", \"in_work\", \"browsed\", \"completed\"}"
 
 #define OVERDUE_FORMAT @"type LIKE 'Task' AND endDate < $nowDate AND \
                          ((executor.userId == $userId AND status IN {\"new\", \"browsed\", \"in_work\", \"on_init\", \"declined\"}) OR \
