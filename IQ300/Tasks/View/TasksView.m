@@ -33,10 +33,10 @@ NSString * const NoTasksFound = @"There are no tasks";
         _headerView.bottomLineHeight = 0.5f;
         [_headerView setBackgroundColor:[UIColor colorWithHexInt:0xf6f6f6]];
         
-        _backButton = [[UIButton alloc] init];
-        [_backButton setImage:[UIImage imageNamed:@"nex_header_button.png"] forState:UIControlStateNormal];
-        [[_backButton imageView] setContentMode:UIViewContentModeCenter];
-        [_headerView addSubview:_backButton];
+        _filterButton = [[UIButton alloc] init];
+        [_filterButton setImage:[UIImage imageNamed:@"nex_header_button.png"] forState:UIControlStateNormal];
+        [[_filterButton imageView] setContentMode:UIViewContentModeCenter];
+        [_headerView addSubview:_filterButton];
         
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
@@ -84,15 +84,15 @@ NSString * const NoTasksFound = @"There are no tasks";
                                    HEADER_HEIGHT);
     
     CGRect headerContentRect = UIEdgeInsetsInsetRect(_headerView.frame, _headerContentInsets);
-    CGSize backButtonImageSize = [_backButton imageForState:UIControlStateNormal].size;
-    _backButton.frame = CGRectMake(CGRectRight(headerContentRect) - backButtonImageSize.width,
+    CGSize backButtonImageSize = [_filterButton imageForState:UIControlStateNormal].size;
+    _filterButton.frame = CGRectMake(CGRectRight(headerContentRect) - backButtonImageSize.width,
                                    (headerContentRect.size.height - backButtonImageSize.height) / 2,
                                    backButtonImageSize.width,
                                    backButtonImageSize.height);
     
     _titleLabel.frame = CGRectMake(headerContentRect.origin.x,
                                    headerContentRect.origin.y,
-                                   _backButton.frame.origin.x - 5.0f,
+                                   _filterButton.frame.origin.x - 5.0f,
                                    headerContentRect.size.height);
     
     _tableView.frame = UIEdgeInsetsInsetRect(actualBounds, UIEdgeInsetsMake(HEADER_HEIGHT, 0, 0, 0));

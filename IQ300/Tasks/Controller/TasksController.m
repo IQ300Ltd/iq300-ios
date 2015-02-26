@@ -16,10 +16,12 @@
 #import "IQTask.h"
 #import "TaskCell.h"
 #import "UIScrollView+PullToRefreshInsert.h"
+#import "TasksFilterController.h"
 
 @interface TasksController () {
     TasksView * _mainView;
     TasksMenuModel * _menuModel;
+    UITapGestureRecognizer * _singleTapGesture;
 }
 
 @end
@@ -68,6 +70,14 @@
     [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:0
                                                          inSection:0]];
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];
+    
+    _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFilterController)];
+    _singleTapGesture.numberOfTapsRequired = 1;
+
+    [_mainView.headerView addGestureRecognizer:_singleTapGesture];
+    [_mainView.filterButton addTarget:self
+                               action:@selector(showFilterController)
+                     forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -142,5 +152,15 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
+#pragma mark -  Private methods
+
+- (void)showFilterController {
+    TasksFilterModel * model = [[TasksFilterModel alloc] init];
+
+    TasksFilterController * controller = [[TasksFilterController alloc] init];
+    controller.title = NSLocalizedString(@"Filtering and sorting", nil);
+    controller.model = model;
+    [self.navigationController pushViewController:controller animated:YES];
+}
 
 @end

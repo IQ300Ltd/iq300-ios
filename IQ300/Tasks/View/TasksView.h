@@ -14,7 +14,7 @@ extern NSString * const NoTasksFound;
 @interface TasksView : UIView
 
 @property (nonatomic, readonly) BottomLineView * headerView;
-@property (nonatomic, readonly) UIButton * backButton;
+@property (nonatomic, readonly) UIButton * filterButton;
 @property (nonatomic, readonly) UILabel * titleLabel;
 @property (nonatomic, readonly) UITableView * tableView;
 @property (nonatomic, readonly) UILabel * noDataLabel;
