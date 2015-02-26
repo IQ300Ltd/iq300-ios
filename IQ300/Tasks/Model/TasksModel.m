@@ -18,6 +18,16 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 #define CACHE_FILE_NAME @"TasksModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
 
+#define ACTUAL_FORMAT @"type LIKE 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
+                        status IN {\"new\", \"in_work\", \"browsed\", \"completed\" }"
+
+#define OVERDUE_FORMAT @"type LIKE 'Task' AND endDate < $nowDate AND \
+                         ((executor.userId == $userId AND status IN {\"new\", \"browsed\", \"in_work\", \"on_init\", \"declined\"}) OR \
+                          (customer.userId == $userId AND status IN {\"new\", \"browsed\", \"refused\", \"in_work\", \"on_init\", \"declined\", \"completed\"}))"
+
+#define ARCHIVE_FORMAT @"type LIKE 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
+                         status IN {\"accepted\", \"canceled\"}"
+
 @interface TasksModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;
     NSArray * _sortDescriptors;
@@ -27,6 +37,32 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 @end
 
 @implementation TasksModel
+
++ (NSPredicate*)predicateForFolder:(NSString*)folder userId:(NSNumber*)userId {
+    static NSDictionary * _folders = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _folders = @{
+                     @"actual"    : ACTUAL_FORMAT,
+                     @"overdue"   : OVERDUE_FORMAT,
+                     @"inbox"     : @"type LIKE 'Task' AND executor.userId == $userId",
+                     @"outbox"    : @"type LIKE 'Task' AND customer.userId == $userId",
+                     @"watchable" : @"type LIKE 'Task' AND (customer.userId != $userId AND executor.userId != $userId)",
+                     @"templates" : @"type LIKE 'TemplateTask' AND customer.userId == $userId",
+                     @"archive"   : ARCHIVE_FORMAT
+                     };
+    });
+    
+    if([_folders objectForKey:folder]) {
+        NSString * format = [_folders objectForKey:folder];
+        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:format];
+        filterPredicate = [filterPredicate predicateWithSubstitutionVariables:@{ @"userId" : userId,
+                                                                                 @"nowDate" : [NSDate date]}];
+        return filterPredicate;
+    }
+    
+    return nil;
+}
 
 - (id)init {
     self = [super init];
@@ -106,7 +142,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadSourceControllerWithCompletion:nil];
+    [self reloadSourceControllerWithCompletion:completion];
     [[IQService sharedService] tasksByFolder:self.folder
                                       status:nil
                                  communityId:nil
@@ -115,9 +151,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                       search:_filter
                                         sort:SORT_DIRECTION
                                      handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
-                                         if(completion) {
-                                             completion(error);
-                                         }
                                          if(success) {
                                              [self updateCountersWithCompletion:nil];
                                          }
@@ -176,6 +209,14 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     }
     
     NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
+    
+    if([self.folder length] > 0) {
+        NSPredicate * folderPredicate = [TasksModel predicateForFolder:self.folder userId:[IQSession defaultSession].userId];
+        if(folderPredicate) {
+            predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, folderPredicate]];
+        }
+    }
+    
     if([_filter length] > 0) {
         NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"(user.displayName CONTAINS[cd] $filter) OR (user.email CONTAINS[cd] $filter)"];
         filterPredicate = [filterPredicate predicateWithSubstitutionVariables:@{ @"filter" : _filter }];

@@ -17,6 +17,7 @@
 @implementation IQTask
 
 @dynamic taskId;
+@dynamic type;
 @dynamic ownerId;
 @dynamic status;
 @dynamic title;
@@ -46,6 +47,7 @@
     [mapping setIdentificationAttributes:@[@"taskId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"             : @"taskId",
+                                                  @"kind"           : @"type",
                                                   @"recipient_id"   : @"ownerId",
                                                   @"status"         : @"status",
                                                   @"title"          : @"title",

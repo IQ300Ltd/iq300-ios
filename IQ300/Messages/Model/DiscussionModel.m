@@ -196,7 +196,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     [_expandableCells removeAllObjects];
     [_expandedCells removeAllObjects];
     
-    [self updateModelSourceControllerWithCompletion:nil];
+    [self reloadModelSourceControllerWithCompletion:nil];
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
@@ -214,7 +214,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
     BOOL hasObjects = ([_fetchController.fetchedObjects count] > 0);
     if(!hasObjects) {
-        [self updateModelSourceControllerWithCompletion:nil];
+        [self reloadModelSourceControllerWithCompletion:nil];
     }
     
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
@@ -478,7 +478,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
+- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;
     
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];

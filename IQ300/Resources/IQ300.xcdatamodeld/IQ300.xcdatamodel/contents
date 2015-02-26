@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14C109" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14D87h" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CViewInfo" representedClassName="CViewInfo" syncable="YES">
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -122,6 +122,7 @@
         <attribute name="taskId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="templateId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQAttachment" inverseName="tasks" inverseEntity="IQAttachment" syncable="YES"/>
         <relationship name="community" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQCommunity" inverseName="tasks" inverseEntity="IQCommunity" syncable="YES"/>
@@ -166,7 +167,7 @@
         <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="285"/>
         <element name="IQNotificationsGroup" positionX="-45" positionY="135" width="128" height="150"/>
         <element name="IQProject" positionX="-45" positionY="135" width="128" height="75"/>
-        <element name="IQTask" positionX="-18" positionY="162" width="128" height="360"/>
+        <element name="IQTask" positionX="-18" positionY="162" width="128" height="375"/>
         <element name="IQTodoItem" positionX="-36" positionY="144" width="128" height="148"/>
         <element name="IQUser" positionX="-45" positionY="45" width="128" height="253"/>
     </elements>

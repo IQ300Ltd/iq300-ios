@@ -150,7 +150,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self updateModelSourceControllerWithCompletion:nil];
+    [self reloadModelSourceControllerWithCompletion:nil];
     [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
                                                per:@(_portionLenght)
@@ -182,7 +182,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                            }];
 }
 
-- (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
+- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;
     
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];

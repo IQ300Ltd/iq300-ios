@@ -16,6 +16,7 @@
 @interface IQTask : NSManagedObject
 
 @property (nonatomic, strong) NSNumber    * taskId;
+@property (nonatomic, strong) NSString    * type;
 @property (nonatomic, strong) NSNumber    * ownerId;
 @property (nonatomic, strong) NSString    * status;
 @property (nonatomic, strong) NSString    * title;

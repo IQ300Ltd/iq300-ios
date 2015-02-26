@@ -333,7 +333,7 @@
     };
     
     [self.model setFilter:text];
-    [self.model updateModelSourceControllerWithCompletion:compleationBlock];
+    [self.model reloadModelSourceControllerWithCompletion:compleationBlock];
     
     _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
         [self.model reloadFirstPartWithCompletion:compleationBlock];
