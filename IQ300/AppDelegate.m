@@ -244,14 +244,14 @@
     NSDictionary * notificable = notfObject[@"notificable"];
     NSNumber * objectId = notificable[@"id"];
     NSString * objectType = notificable[@"type"];
-    NSInteger messagesTab = 1;
+    NSInteger messagesTab = 2;
     
     UITabBarController * tabController = ((UITabBarController*)self.drawerController.centerViewController);
     UINavigationController * navController = tabController.viewControllers[messagesTab];
-    BOOL isDiscussionOpen = ([navController.topViewController isKindOfClass:[DiscussionController class]]);
+    BOOL isDiscussionOpen = (tabController.selectedIndex == messagesTab && [navController.topViewController isKindOfClass:[DiscussionController class]]);
     NSNumber * conversationId = (isDiscussionOpen) ? ((DiscussionController*)navController.topViewController).model.discussion.conversation.conversationId : nil;
 
-    if([objectType isEqualToString:@"Conversation"] &&
+    if([[objectType lowercaseString] isEqualToString:@"conversation"] &&
        ((isDiscussionOpen && ![conversationId isEqualToNumber:objectId]) || !isDiscussionOpen)) {
         
         MessagesController * messagesController = navController.viewControllers[0];
