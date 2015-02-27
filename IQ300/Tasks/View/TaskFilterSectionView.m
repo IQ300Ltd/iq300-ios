@@ -10,11 +10,14 @@
 #import "ExtendedButton.h"
 #import "TaskFilterConst.h"
 
+#define SEPARATOR_HEIGHT 0.5f
+
 @interface TaskFilterSectionView() {
     ExtendedButton * _backgroundView;
     UIButton * _sortButton;
     BOOL _isExpandable;
     UIEdgeInsets _backgroundViewInsets;
+    UIView * _topSeparatorView;
 }
 
 @end
@@ -26,9 +29,6 @@
     if(self) {
         _backgroundViewInsets = UIEdgeInsetsMake(0, 0, 1, 0);
         CGFloat spacing = 13;
-        
-        [self setBottomLineColor:SEPARATOR_COLOR];
-        [self setBottomLineHeight:1.0f];
         
         _backgroundView = [ExtendedButton new];
         _backgroundView.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
@@ -47,6 +47,10 @@
         [_sortButton addTarget:self action:@selector(sortButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_sortButton];
         
+        _topSeparatorView = [[UIView alloc] init];
+        [_topSeparatorView setBackgroundColor:SEPARATOR_COLOR];
+        [self addSubview:_topSeparatorView];
+
         _expanded = NO;
         _sortAvailable = NO;
         _ascending = YES;
@@ -96,6 +100,10 @@
     }
 }
 
+- (void)setSeparatorHidden:(BOOL)hidden {
+    _topSeparatorView.hidden = hidden;
+}
+
 - (NSString*)title {
     return [_backgroundView titleForState:UIControlStateNormal];
 }
@@ -111,6 +119,11 @@
                                    actualBounds.origin.y,
                                    actualBounds.size.height,
                                    actualBounds.size.height);
+    
+    _topSeparatorView.frame = CGRectMake(actualBounds.origin.x,
+                                         actualBounds.origin.y,
+                                         actualBounds.size.width,
+                                         SEPARATOR_HEIGHT);
 }
 
 - (void)buttonAction:(UIButton*)sender {

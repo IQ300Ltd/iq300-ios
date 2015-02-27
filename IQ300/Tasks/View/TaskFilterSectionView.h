@@ -8,7 +8,7 @@
 
 #import "BottomLineView.h"
 
-@interface TaskFilterSectionView : BottomLineView {
+@interface TaskFilterSectionView : UIView {
     void (^_actionBlock)(TaskFilterSectionView * header);
     void (^_sortActionBlock)(TaskFilterSectionView * header);
 }
@@ -23,5 +23,6 @@
 - (void)setActionBlock:(void (^)(TaskFilterSectionView* header))block;
 - (void)setSortActionBlock:(void (^)(TaskFilterSectionView* header))block;
 - (void)setExpandable:(BOOL)expandable;
+- (void)setSeparatorHidden:(BOOL)hidden;
 
 @end

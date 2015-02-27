@@ -229,6 +229,8 @@
 		73F2A5591A39AB3000E9D324 /* msg_error@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F2A54B1A39AB3000E9D324 /* msg_error@2x.png */; };
 		73F2A55C1A39AB3000E9D324 /* msg_sent.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F2A54E1A39AB3000E9D324 /* msg_sent.png */; };
 		73F2A55D1A39AB3000E9D324 /* msg_sent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F2A54F1A39AB3000E9D324 /* msg_sent@2x.png */; };
+		73F63E881AA055FB000DA319 /* TaskFilterSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F63E871AA055FB000DA319 /* TaskFilterSection.m */; };
+		73F63E8C1AA08ED0000DA319 /* TaskFilterSortItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F63E8B1AA08ED0000DA319 /* TaskFilterSortItem.m */; };
 		73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CE91A1B6B6D00225255 /* IQSession.m */; };
 		73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */; };
 		73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */; };
@@ -608,6 +610,11 @@
 		73F2A54B1A39AB3000E9D324 /* msg_error@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "msg_error@2x.png"; sourceTree = "<group>"; };
 		73F2A54E1A39AB3000E9D324 /* msg_sent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = msg_sent.png; sourceTree = "<group>"; };
 		73F2A54F1A39AB3000E9D324 /* msg_sent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "msg_sent@2x.png"; sourceTree = "<group>"; };
+		73F63E861AA055FB000DA319 /* TaskFilterSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskFilterSection.h; sourceTree = "<group>"; };
+		73F63E871AA055FB000DA319 /* TaskFilterSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskFilterSection.m; sourceTree = "<group>"; };
+		73F63E891AA08E67000DA319 /* TaskFilterItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskFilterItem.h; sourceTree = "<group>"; };
+		73F63E8A1AA08ED0000DA319 /* TaskFilterSortItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskFilterSortItem.h; sourceTree = "<group>"; };
+		73F63E8B1AA08ED0000DA319 /* TaskFilterSortItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskFilterSortItem.m; sourceTree = "<group>"; };
 		73F90CE81A1B6B6D00225255 /* IQSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSession.h; sourceTree = "<group>"; };
 		73F90CE91A1B6B6D00225255 /* IQSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSession.m; sourceTree = "<group>"; };
 		73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQServiceResponse.h; sourceTree = "<group>"; };
@@ -709,6 +716,11 @@
 				73A700541A95D0E600A1C2AC /* TasksMenuModel.m */,
 				73A7CA681A9F11080038DEF1 /* TasksFilterModel.h */,
 				73A7CA691A9F11080038DEF1 /* TasksFilterModel.m */,
+				73F63E861AA055FB000DA319 /* TaskFilterSection.h */,
+				73F63E871AA055FB000DA319 /* TaskFilterSection.m */,
+				73F63E891AA08E67000DA319 /* TaskFilterItem.h */,
+				73F63E8A1AA08ED0000DA319 /* TaskFilterSortItem.h */,
+				73F63E8B1AA08ED0000DA319 /* TaskFilterSortItem.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1608,6 +1620,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73F63E881AA055FB000DA319 /* TaskFilterSection.m in Sources */,
 				73086B0C1A8E64D80013582E /* IQGroupCounter.m in Sources */,
 				73AF25A31A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m in Sources */,
 				7373ED5E1A89FB2100719FCD /* IQNotificationGroupsHolder.m in Sources */,
@@ -1722,6 +1735,7 @@
 				737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */,
 				739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */,
 				73ADA8D91A36DB8D0032C1FA /* CreateConversationController.m in Sources */,
+				73F63E8C1AA08ED0000DA319 /* TaskFilterSortItem.m in Sources */,
 				73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */,
 				738EA7AF1A1DDEC20065D39F /* IQTableBaseController.m in Sources */,
 				73B3C1AB1A7B73B9005F972D /* NSString+MD5.m in Sources */,

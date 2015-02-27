@@ -8,11 +8,14 @@
 
 #import "TasksFilterModel.h"
 #import "TaskFilterCell.h"
+#import "TaskFilterSection.h"
+#import "TaskFilterSortItem.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 @interface TasksFilterModel () {
-    NSArray * _sections;
+    NSMutableDictionary * _sortingOrders;
+    NSMutableArray * _sections;
     NSMutableArray * _selectedItems;
 }
 
@@ -24,22 +27,42 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     self = [super init];
     
     if (self) {
+        _sortingOrders = [NSMutableDictionary dictionary];
+        _sections = [NSMutableArray array];
         _selectedItems = [NSMutableArray array];
+        
+        TaskFilterSection * statusSection = [[TaskFilterSection alloc] init];
+        statusSection.title = NSLocalizedString(@"Statuses", nil);
+        statusSection.expandable = YES;
+        [_sections addObject:statusSection];
+        
+        TaskFilterSection * communitiesSection = [[TaskFilterSection alloc] init];
+        communitiesSection.title = NSLocalizedString(@"Communities", nil);
+        communitiesSection.expandable = YES;
+        [_sections addObject:communitiesSection];
+        
+        TaskFilterSection * sortingSection = [self makeSortSection];
+        [_sections addObject:sortingSection];
+        
+        [self makeItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:[_sections indexOfObject:sortingSection]]
+                         selected:YES];
     }
     
     return self;
 }
 
 - (NSUInteger)numberOfSections {
-    return 3;
+    return [_sections count];
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
-    return [NSString stringWithFormat:@"%ld", (long)section];
+    TaskFilterSection * filterSection = _sections[section];
+    return filterSection.title;
 }
 
 - (NSUInteger)numberOfItemsInSection:(NSInteger)section {
-    return 5;
+    TaskFilterSection * filterSection = _sections[section];
+    return [filterSection.items count];
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
@@ -56,8 +79,9 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return 42;
 }
 
-- (id)itemAtIndexPath:(NSIndexPath*)indexPath {
-    return nil;
+- (id<TaskFilterItem>)itemAtIndexPath:(NSIndexPath*)indexPath {
+    TaskFilterSection * filterSection = _sections[indexPath.section];
+    return filterSection.items[indexPath.row];
 }
 
 - (NSIndexPath *)indexPathOfObject:(id)object {
@@ -65,13 +89,22 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (BOOL)canExpandSection:(NSInteger)section {
-    return YES;
+    TaskFilterSection * filterSection = _sections[section];
+    return filterSection.isExpandable;
+}
+
+- (BOOL)isSortActionAvailableAtSection:(NSInteger)section {
+    TaskFilterSection * filterSection = _sections[section];
+    return filterSection.isSortAvailable;
+}
+
+- (void)setAscendingSortOrder:(BOOL)ascending forSection:(NSInteger)section {
+    _sortingOrders[@(section)] = @(ascending);
 }
 
 - (Class)controllerClassForItemAtIndexPath:(NSIndexPath*)indexPath {
     return nil;
 }
-
 
 - (BOOL)isItemSellectedAtIndexPath:(NSIndexPath *)indexPath {
     return [_selectedItems containsObject:indexPath];
@@ -84,6 +117,10 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     else if(!selected && [_selectedItems containsObject:indexPath]) {
         [_selectedItems removeObject:indexPath];
     }
+}
+
+- (NSArray*)selectedIndexPathsForSection:(NSInteger)section {
+    return [_selectedItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"section == %d", section]];
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
@@ -134,6 +171,33 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     if([self.delegate respondsToSelector:@selector(modelDidChanged:)]) {
         [self.delegate modelDidChanged:self];
     }
+}
+
+#pragma mark - Private methods
+
+- (TaskFilterSection*)makeSortSection {
+    TaskFilterSection * sortingSection = [[TaskFilterSection alloc] init];
+    sortingSection.title = NSLocalizedString(@"Sorting", nil);
+    sortingSection.expandable = YES;
+    sortingSection.sortAvailable = YES;
+
+    NSMutableArray * items = [NSMutableArray array];
+    
+    TaskFilterSortItem * lastActivity = [[TaskFilterSortItem alloc] init];
+    lastActivity.title = NSLocalizedString(@"According to the latest activity", nil);
+    [items addObject:lastActivity];
+    
+    TaskFilterSortItem * number = [[TaskFilterSortItem alloc] init];
+    number.title = NSLocalizedString(@"By number", nil);
+    [items addObject:number];
+
+    TaskFilterSortItem * dueDate = [[TaskFilterSortItem alloc] init];
+    dueDate.title = NSLocalizedString(@"According to deadline", nil);
+    [items addObject:dueDate];
+    
+    sortingSection.items = items;
+
+    return sortingSection;
 }
 
 @end

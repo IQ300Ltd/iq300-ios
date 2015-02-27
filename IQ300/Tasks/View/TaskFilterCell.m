@@ -13,6 +13,9 @@
 #define CONTENT_LEFT_INSET 12
 #define CONTENT_LEFT_RIGHT 10
 
+#define TEXT_COLOR [UIColor colorWithHexInt:0x20272a]
+#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x358bae]
+
 @interface TaskFilterCell() {
     
 }
@@ -24,7 +27,7 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
-        _accessoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+        _accessoryImageView = [[UIImageView alloc] init];
         self.accessoryView = _accessoryImageView;
         
         super.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -32,22 +35,15 @@
 
         _contentInsets = UIEdgeInsetsMake(0, CONTENT_LEFT_INSET, 0, CONTENT_LEFT_RIGHT);
         _isBottomLineShown = YES;
-        
-        _cellContentView = [[BottomLineView alloc] init];
-        [_cellContentView setBackgroundColor:[UIColor clearColor]];
-        [((BottomLineView*)_cellContentView) setBottomLineColor:SEPARATOR_COLOR];
-        [((BottomLineView*)_cellContentView) setBottomLineHeight:1.0f];
-        
+                
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:13]];
-        [_titleLabel setTextColor:[UIColor blackColor]];
+        [_titleLabel setTextColor:TEXT_COLOR];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 0;
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [_cellContentView addSubview:_titleLabel];
-        
-        [self.contentView addSubview:_cellContentView];
+        [self.contentView addSubview:_titleLabel];
     }
     return self;
 }
@@ -55,14 +51,13 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    _cellContentView.frame = self.bounds;
-    
-    self.accessoryView.frame = CGRectMake(self.bounds.size.width - self.accessoryView.frame.size.width - 4.5,
+    CGSize accessorySize = [_accessoryImageView image].size;
+    self.accessoryView.frame = CGRectMake(self.bounds.size.width - accessorySize.width - 4.5,
                                           self.accessoryView.frame.origin.y,
-                                          self.accessoryView.frame.size.width,
-                                          self.accessoryView.frame.size.height);
+                                          accessorySize.width,
+                                          accessorySize.height);
     
-    CGRect actualBounds = _cellContentView.bounds;
+    CGRect actualBounds = self.contentView.bounds;
     CGRect mainRect = UIEdgeInsetsInsetRect(actualBounds, _contentInsets);
     
     _titleLabel.frame = CGRectMake(mainRect.origin.x,
@@ -88,10 +83,10 @@
     
     if (accessoryType == UITableViewCellAccessoryCheckmark) {
         _accessoryImageView.image = [UIImage imageNamed:@"filterSelected.png"];
-        self.textLabel.textColor = [UIColor colorWithHexInt:0x0683d8];
+        _titleLabel.textColor = SELECTED_TEXT_COLOR;
     } else {
         _accessoryImageView.image = nil;
-        [self.textLabel setTextColor:[UIColor colorWithHexInt:0x575656]];
+        _titleLabel.textColor = TEXT_COLOR;
     }
 }
 

@@ -10,6 +10,7 @@
 #import "ExpandableTableView.h"
 #import "TaskFilterCell.h"
 #import "TaskFilterSectionView.h"
+#import "TaskFilterItem.h"
 
 #define SECTION_HEIGHT 50.0f
 
@@ -122,7 +123,8 @@
         cell = [_model createCellForIndexPath:indexPath];
     }
     
-    cell.titleLabel.text = @"Rsdvdfsfsdf";
+    id<TaskFilterItem> item = [self.model itemAtIndexPath:indexPath];
+    cell.titleLabel.text = item.title;
     
     BOOL showBootomLine = !(indexPath.row == [_model numberOfItemsInSection:indexPath.section] - 1);
     [cell setBottomLineShown:showBootomLine];
@@ -156,8 +158,20 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BOOL isItemSelected = [self.model isItemSellectedAtIndexPath:indexPath];
-    [self.model makeItemAtIndexPath:indexPath selected:!isItemSelected];
+    BOOL isItemSelected = ![self.model isItemSellectedAtIndexPath:indexPath];
+    
+    //Deselect previous cells
+    NSArray * sectionSelectedIndexPaths = [self.model selectedIndexPathsForSection:indexPath.section];
+    for (NSIndexPath * selectedIndexPath in sectionSelectedIndexPaths) {
+        UITableViewCell * cell = [tableView cellForRowAtIndexPath:selectedIndexPath];
+        [cell setAccessoryType:UITableViewCellAccessoryNone];
+        [self.model makeItemAtIndexPath:selectedIndexPath selected:NO];
+    }
+    
+    UITableViewCell * cell = [tableView cellForRowAtIndexPath:indexPath];
+    [cell setAccessoryType:(isItemSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
+
+    [self.model makeItemAtIndexPath:indexPath selected:isItemSelected];
 }
 
 #pragma mark - IQMenuModel Delegate
@@ -215,9 +229,14 @@
     TaskFilterSectionView * headerView = [[TaskFilterSectionView alloc] init];
     headerView.section = section;
     [headerView setTitle:title];
-    [headerView setActionBlock:^(TaskFilterSectionView *header) {
-        BOOL isExpandable = [self tableView:_tableView canExpandSection:header.section];
-        if(isExpandable) {
+    [headerView setSeparatorHidden:section == 0];
+    
+    BOOL isExpandable = [self tableView:_tableView canExpandSection:section];
+    [headerView setExpandable:isExpandable];
+    if(isExpandable) {
+        [headerView setExpanded:[_expandedSections containsIndex:section]];
+        
+        [headerView setActionBlock:^(TaskFilterSectionView *header) {
             if(header.isExpanded) {
                 [_expandedSections addIndex:section];
             }
@@ -225,17 +244,16 @@
                 [_expandedSections removeIndex:section];
             }
             [_tableView expandCollapseSection:header.section animated:YES];
-        }
-    }];
-    
-    BOOL isExpandable = [self tableView:_tableView canExpandSection:section];
-    [headerView setExpandable:isExpandable];
-    if(isExpandable) {
-        [headerView setExpanded:[_expandedSections containsIndex:section]];
+        }];
     }
     
-    BOOL sortAvailable = (section == 2);
+    BOOL sortAvailable = [self.model isSortActionAvailableAtSection:section];
     headerView.sortAvailable = sortAvailable;
+    if(sortAvailable) {
+        [headerView setSortActionBlock:^(TaskFilterSectionView *header) {
+            [self.model setAscendingSortOrder:header.ascending forSection:header.section];
+        }];
+    }
     
     return headerView;
 }

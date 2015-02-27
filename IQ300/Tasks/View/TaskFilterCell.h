@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface TaskFilterCell : UITableViewCell {
-    UIView * _cellContentView;
     UIEdgeInsets _contentInsets;
     UIImageView * _accessoryImageView;
 }
