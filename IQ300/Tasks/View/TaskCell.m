@@ -36,7 +36,7 @@
                         @"browsed"   : [UIColor colorWithHexInt:0x753bb7],
                         @"in_work"   : [UIColor colorWithHexInt:0xf8931f],
                         @"refused"   : [UIColor colorWithHexInt:0xe74545],
-                        @"completed" : [UIColor colorWithHexInt:0x348dad],
+                        @"completed" : IQ_CELADON_COLOR,
                         @"accepted"  : [UIColor colorWithHexInt:0x7dc223],
                         @"declined"  : [UIColor colorWithHexInt:0xe976ba],
                         @"archived"  : [UIColor colorWithHexInt:0x272727],

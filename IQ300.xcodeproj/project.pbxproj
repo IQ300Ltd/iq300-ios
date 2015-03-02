@@ -161,6 +161,8 @@
 		73A7CA841A9F55ED0038DEF1 /* filterSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A7CA7A1A9F55ED0038DEF1 /* filterSelected.png */; };
 		73A7CA851A9F55ED0038DEF1 /* filterSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A7CA7B1A9F55ED0038DEF1 /* filterSelected@2x.png */; };
 		73A7CA881A9F5CB90038DEF1 /* TaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A7CA871A9F5CB90038DEF1 /* TaskFilterCell.m */; };
+		73A87EF61AA4591100C4A7C3 /* NActionGropCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A87EF51AA4591100C4A7C3 /* NActionGropCell.m */; };
+		73A87EF91AA4597800C4A7C3 /* NotificationsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A87EF81AA4597800C4A7C3 /* NotificationsHelper.m */; };
 		73A9498F1A3821AD008EC469 /* backWhiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A9498D1A3821AD008EC469 /* backWhiteArrow.png */; };
 		73A949901A3821AD008EC469 /* backWhiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A9498E1A3821AD008EC469 /* backWhiteArrow@2x.png */; };
 		73A9499C1A3832D7008EC469 /* DownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A949951A3832D7008EC469 /* DownloadManager.m */; };
@@ -505,6 +507,11 @@
 		73A7CA7B1A9F55ED0038DEF1 /* filterSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filterSelected@2x.png"; sourceTree = "<group>"; };
 		73A7CA861A9F5CB90038DEF1 /* TaskFilterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskFilterCell.h; sourceTree = "<group>"; };
 		73A7CA871A9F5CB90038DEF1 /* TaskFilterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskFilterCell.m; sourceTree = "<group>"; };
+		73A87EF31AA4495700C4A7C3 /* IQColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQColors.h; sourceTree = "<group>"; };
+		73A87EF41AA4591100C4A7C3 /* NActionGropCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NActionGropCell.h; sourceTree = "<group>"; };
+		73A87EF51AA4591100C4A7C3 /* NActionGropCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NActionGropCell.m; sourceTree = "<group>"; };
+		73A87EF71AA4597800C4A7C3 /* NotificationsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsHelper.h; sourceTree = "<group>"; };
+		73A87EF81AA4597800C4A7C3 /* NotificationsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsHelper.m; sourceTree = "<group>"; };
 		73A9498D1A3821AD008EC469 /* backWhiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backWhiteArrow.png; sourceTree = "<group>"; };
 		73A9498E1A3821AD008EC469 /* backWhiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backWhiteArrow@2x.png"; sourceTree = "<group>"; };
 		73A949941A3832D7008EC469 /* DownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadManager.h; sourceTree = "<group>"; };
@@ -959,6 +966,10 @@
 				733A80531A7A6C5C00460C87 /* NotificationGroupView.m */,
 				738C7F6C1A792D7500A25C70 /* NGroupCell.h */,
 				738C7F6D1A792D7500A25C70 /* NGroupCell.m */,
+				73A87EF41AA4591100C4A7C3 /* NActionGropCell.h */,
+				73A87EF51AA4591100C4A7C3 /* NActionGropCell.m */,
+				73A87EF71AA4597800C4A7C3 /* NotificationsHelper.h */,
+				73A87EF81AA4597800C4A7C3 /* NotificationsHelper.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1056,6 +1067,7 @@
 				73A798351A3585FF006F5721 /* CTAssetsPickerController.strings */,
 				73BA987F1A10969E005AEC00 /* Localizable.strings */,
 				7393C41A1A1A379400E9E944 /* IQFonts.h */,
+				73A87EF31AA4495700C4A7C3 /* IQColors.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1638,6 +1650,7 @@
 				739850BF1A2DB05400DB5B21 /* MessagesView.m in Sources */,
 				73A7983C1A35B96F006F5721 /* ALAssetInputStream.m in Sources */,
 				738356301A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m in Sources */,
+				73A87EF61AA4591100C4A7C3 /* NActionGropCell.m in Sources */,
 				738EF8241A9CA76700894755 /* IQCommunity.m in Sources */,
 				7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */,
 				73BA98A01A10A531005AEC00 /* NSBundle+Localization.m in Sources */,
@@ -1649,6 +1662,7 @@
 				739C3B651A3077320032C057 /* NSDate+IQFormater.m in Sources */,
 				738EA7B21A1DE15B0065D39F /* UIViewController+LeftMenu.m in Sources */,
 				73A20C771A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m in Sources */,
+				73A87EF91AA4597800C4A7C3 /* NotificationsHelper.m in Sources */,
 				73ACB0BD1A7A1882004F5D99 /* NGroupModel.m in Sources */,
 				739C3B5F1A3075D90032C057 /* DiscussionModel.m in Sources */,
 				73C384C91A9725DA00B66D0F /* IQTask.m in Sources */,

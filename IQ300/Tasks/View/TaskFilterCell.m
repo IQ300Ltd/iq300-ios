@@ -52,7 +52,7 @@
     [super layoutSubviews];
     
     CGSize accessorySize = [_accessoryImageView image].size;
-    self.accessoryView.frame = CGRectMake(self.bounds.size.width - accessorySize.width - 4.5,
+    self.accessoryView.frame = CGRectMake(self.bounds.size.width - accessorySize.width - 17,
                                           self.accessoryView.frame.origin.y,
                                           accessorySize.width,
                                           accessorySize.height);

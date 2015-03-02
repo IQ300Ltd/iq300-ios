@@ -16,6 +16,7 @@
 #import "NGroupCell.h"
 #import "IQNotification.h"
 #import "IQGroupCounter.h"
+#import "NActionGropCell.h"
 
 #define CACHE_FILE_NAME @"NotificationsModelcache"
 #define SORT_DIRECTION IQSortDirectionAscending
@@ -73,7 +74,8 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = [NGroupCell class];
+    IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
+    Class cellClass = ([item.unreadCount integerValue] == 1 && [item.lastNotification.hasActions boolValue]) ? [NActionGropCell class] : [NGroupCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
                             reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }
@@ -274,7 +276,49 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
     }
 }
 
+
+- (void)acceptNotificationsGroupAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
+    IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
+    [[IQService sharedService] acceptNotificationWithId:item.lastNotification.notificationId
+                                                handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                    if(success) {
+                                                        [self resetActionsForGroupNotification:item];
+                                                        [self updateCounters];
+                                                    }
+                                                    if(completion) {
+                                                        completion(error);
+                                                    }
+                                                }];
+}
+
+- (void)declineNotificationsGroupAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
+    IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
+   [[IQService sharedService] declineNotificationWithId:item.lastNotification.notificationId
+                                                 handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                     if(success) {
+                                                         [self resetActionsForGroupNotification:item];
+                                                         [self updateCounters];
+                                                     }
+                                                     if(completion) {
+                                                         completion(error);
+                                                     }
+                                                 }];
+}
+
 #pragma mark - Private methods
+
+- (void)resetActionsForGroupNotification:(IQNotificationsGroup*)group {
+    group.lastNotification.hasActions = @(NO);
+    group.lastNotification.availableActions = nil;
+    group.lastNotification.readed = @(YES);
+    
+    group.unreadCount = @(0);
+    
+    NSError *saveError = nil;
+    if(![group.managedObjectContext saveToPersistentStore:&saveError] ) {
+        NSLog(@"Save notification error: %@", saveError);
+    }
+}
 
 - (void)groupUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] notificationsGroupUpdatedAfter:lastUpdatedDate

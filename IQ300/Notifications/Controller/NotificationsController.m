@@ -129,10 +129,8 @@
     
     IQNotification * notification = [self.model itemAtIndexPath:indexPath];
     cell.item = notification;
-    cell.markAsReadedButton.tag = indexPath.row;
     cell.delegate = self;
-    cell.tag = indexPath.row;
-        
+    
     return cell;
 }
 

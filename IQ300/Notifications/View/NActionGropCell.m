@@ -1,18 +1,19 @@
 //
-//  ActionNotificationCell.m
+//  NActionGropCell.m
 //  IQ300
 //
-//  Created by Tayphoon on 22.12.14.
-//  Copyright (c) 2014 Tayphoon. All rights reserved.
+//  Created by Tayphoon on 02.03.15.
+//  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 #import <QuartzCore/QuartzCore.h>
 
-#import "ActionNotificationCell.h"
+#import "NActionGropCell.h"
 #import "IQUtilityButtonView.h"
-#import "IQNotification.h"
 #import "NotificationsHelper.h"
+#import "IQNotification.h"
+#import "IQNotificationsGroup.h"
 
-@interface ActionNotificationCell() {
+@interface NActionGropCell() {
     IQUtilityButtonView * _leftButtonsView;
     IQUtilityButtonView * _rightButtonsView;
     UIView * _readFlagView;
@@ -20,7 +21,7 @@
 
 @end
 
-@implementation ActionNotificationCell
+@implementation NActionGropCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     [self initUtilityButtonViews];
@@ -46,19 +47,20 @@
                                      bounds.size.height);
 }
 
-- (void)setItem:(IQNotification *)item {
+- (void)setItem:(IQNotificationsGroup *)item {
     [super setItem:item];
     
-    _contentBackgroundInsets = (![item.hasActions boolValue]) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);
-    self.contentBackgroundView.backgroundColor = (![item.hasActions boolValue]) ? CONTEN_BACKGROUND_COLOR_R :
-                                                                                  CONTEN_BACKGROUND_COLOR;
-
-    if([item.hasActions boolValue]) {
+    IQNotification * notification = item.lastNotification;
+    _contentBackgroundInsets = (![notification.hasActions boolValue]) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);
+    self.contentBackgroundView.backgroundColor = (![notification.hasActions boolValue]) ? CONTEN_BACKGROUND_COLOR_R :
+    CONTEN_BACKGROUND_COLOR;
+    
+    if([notification.hasActions boolValue]) {
         NSMutableArray * actionButtons = [NSMutableArray array];
         NSMutableArray * availableActions = [NSMutableArray array];
         
         //Set right order for actions
-        for (NSString * actionType in item.availableActions) {
+        for (NSString * actionType in notification.availableActions) {
             BOOL isPositiveAction = [NotificationsHelper isPositiveActionWithType:actionType];
             if(isPositiveAction) {
                 [availableActions insertObject:actionType atIndex:0];
@@ -70,7 +72,7 @@
         
         for (NSString * actionType in availableActions) {
             BOOL isPositiveAction = [NotificationsHelper isPositiveActionWithType:actionType];
-            NSString * combineType = ([item.notificable.type length] > 0) ? [NSString stringWithFormat:@"%@_%@", item.notificable.type, actionType] :
+            NSString * combineType = ([notification.notificable.type length] > 0) ? [NSString stringWithFormat:@"%@_%@", notification.notificable.type, actionType] :
             actionType;
             NSString * localizeKey = [NotificationsHelper displayNameForActionType:[combineType lowercaseString]];
             UIButton * actionButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 99.0f, 31.0f)];

@@ -8,7 +8,6 @@
 
 #import "IQTableModel.h"
 
-@class IQNotification;
 @class IQCounters;
 
 @interface NGroupModel : NSObject<IQTableModel>
@@ -45,5 +44,21 @@
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
 
 - (void)setSubscribedToNotifications:(BOOL)subscribed;
+
+/**
+ *  Accept last notification action and mark group as readed
+ *
+ *  @param indexPath  indexPath of group
+ *  @param completion completion handler
+ */
+- (void)acceptNotificationsGroupAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
+
+/**
+ *  Decline last notification action and mark group as readed
+ *
+ *  @param indexPath  indexPath of group
+ *  @param completion completion handler
+ */
+- (void)declineNotificationsGroupAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 
 @end

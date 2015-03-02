@@ -206,16 +206,34 @@
 #pragma mark - SWTableViewCell Delegate
 
 - (void)swipeableTableViewCell:(NGroupCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    __weak typeof (self) weakSelf = self;
+    void(^completion)(NSError *error) = ^(NSError *error) {
+        if([weakSelf.model numberOfItemsInSection:0] == 0) {
+            [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+                [weakSelf updateNoDataLabelVisibility];
+            }];
+        }
+    };
+    
     NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
-    [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_group_readed_question", nil)
-             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-             otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
-                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                          if(buttonIndex == 1) {
-                              [self markGroupAsReadedAtIndexPath:itemIndexPath];
-                          }
-                      }];
-
+    if(![cell.item.lastNotification.hasActions boolValue]) {
+        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_group_readed_question", nil)
+                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                              if(buttonIndex == 1) {
+                                  [weakSelf.model markNotificationsAsReadAtIndexPath:itemIndexPath completion:completion];
+                              }
+                          }];
+    }
+    else {
+        if(index == 0) {
+            [self.model acceptNotificationsGroupAtIndexPath:itemIndexPath completion:completion];
+        }
+        else {
+            [self.model declineNotificationsGroupAtIndexPath:itemIndexPath completion:completion];
+        }
+    }
 }
 
 #pragma mark - Private methods
@@ -240,19 +258,6 @@
                               
                           }];
     }
-}
-
-- (void)markGroupAsReadedAtIndexPath:(NSIndexPath*)itemIndexPath {
-    __weak typeof (self) weakSelf = self;
-    void(^completion)(NSError *error) = ^(NSError *error) {
-        if([weakSelf.model numberOfItemsInSection:0] == 0) {
-            [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-                [weakSelf updateNoDataLabelVisibility];
-            }];
-        }
-    };
-    
-    [self.model markNotificationsAsReadAtIndexPath:itemIndexPath completion:completion];
 }
 
 - (void)reloadModel {

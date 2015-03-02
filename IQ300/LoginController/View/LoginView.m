@@ -55,9 +55,9 @@
         
         _enterButton = [[ExtendedButton alloc] init];
         [_enterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
-        [_enterButton setBackgroundColor:[UIColor colorWithHexInt:0x348dad]];
-        [_enterButton setBackgroundColor:[UIColor colorWithHexInt:0x2d7a96] forState:UIControlStateHighlighted];
-        [_enterButton setBackgroundColor:[UIColor colorWithHexInt:0x7296a6] forState:UIControlStateDisabled];
+        [_enterButton setBackgroundColor:IQ_CELADON_COLOR];
+        [_enterButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
+        [_enterButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
         [_enterButton.layer setCornerRadius:2.0f];
         [_enterButton setTitle:NSLocalizedString(@"Enter", nil) forState:UIControlStateNormal];
         [_enterButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];

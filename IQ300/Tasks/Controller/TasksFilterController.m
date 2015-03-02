@@ -11,13 +11,19 @@
 #import "TaskFilterCell.h"
 #import "TaskFilterSectionView.h"
 #import "TaskFilterItem.h"
+#import "ExtendedButton.h"
 
 #define SECTION_HEIGHT 50.0f
+#define SEPARATOR_HEIGHT 0.5f
+#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
+#define BOTTOM_VIEW_HEIGHT 80
 
 @interface TasksFilterController () <ExpandableTableViewDataSource, ExpandableTableViewDelegate> {
     ExpandableTableView * _tableView;
     NSInteger _selectedSection;
     NSMutableIndexSet * _expandedSections;
+    UIView * _bottomSeparatorView;
+    ExtendedButton * _clearButton;
 }
 
 @end
@@ -41,21 +47,29 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
-//    _accountHeader = [[AccountHeaderView alloc] init];
-//    [_accountHeader.editButton addTarget:self
-//                                  action:@selector(editButtonAction:)
-//                        forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:_accountHeader];
-//    
-//    _tableHaderView = [[MTableHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, TABLE_HEADER_HEIGHT)];
-    
     _tableView = [[ExpandableTableView alloc] init];
     _tableView.backgroundColor = self.view.backgroundColor;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.delegate = self;
     _tableView.dataSource = self;
-    
     [self.view addSubview:_tableView];
+    
+    _bottomSeparatorView = [[UIView alloc] init];
+    [_bottomSeparatorView setBackgroundColor:SEPARATOR_COLOR];
+    [self.view addSubview:_bottomSeparatorView];
+    
+    _clearButton = [[ExtendedButton alloc] init];
+    _clearButton.layer.cornerRadius = 4.0f;
+    _clearButton.layer.borderWidth = 0.5f;
+    [_clearButton setTitle:NSLocalizedString(@"Reset settings", nil) forState:UIControlStateNormal];
+    [_clearButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
+    [_clearButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
+    [_clearButton setBackgroundColor:IQ_CELADON_COLOR];
+    [_clearButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
+    [_clearButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
+    _clearButton.layer.borderColor = _clearButton.backgroundColor.CGColor;
+    [_clearButton setClipsToBounds:YES];
+    [self.view addSubview:_clearButton];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -63,16 +77,21 @@
     
     CGRect actualBounds = self.view.bounds;
     
-//    _accountHeader.frame = CGRectMake(actualBounds.origin.x,
-//                                      actualBounds.origin.y,
-//                                      actualBounds.size.width,
-//                                      ACCOUNT_HEADER_HEIGHT);
-//    
-//    CGFloat tableViewOffset = _accountHeader.frame.origin.y + _accountHeader.frame.size.height;
     _tableView.frame = CGRectMake(0,
                                   0.0f,
                                   actualBounds.size.width,
-                                  actualBounds.size.height);
+                                  actualBounds.size.height - BOTTOM_VIEW_HEIGHT);
+    
+    _bottomSeparatorView.frame = CGRectMake(actualBounds.origin.x,
+                                            actualBounds.origin.y + actualBounds.size.height - BOTTOM_VIEW_HEIGHT,
+                                            actualBounds.size.width,
+                                            SEPARATOR_HEIGHT);
+    
+    CGSize clearButtonSize = CGSizeMake(300, 40);
+    _clearButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - clearButtonSize.width) / 2.0f,
+                                    actualBounds.origin.y + actualBounds.size.height - clearButtonSize.height - 10.0f,
+                                    clearButtonSize.width,
+                                    clearButtonSize.height);
 }
 
 - (void)viewWillAppear:(BOOL)animated {

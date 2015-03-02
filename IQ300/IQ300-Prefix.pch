@@ -27,6 +27,7 @@
 #import "NSBundle+Localization.h"
 #import "UIImage+Extensions.h"
 #import "IQFonts.h"
+#import "IQColors.h"
 #import "CGGeometry+Extensions.h"
 #import "UIAlertView+Blocks.h"
 #import "UIEdgeInsetsExtend.h"

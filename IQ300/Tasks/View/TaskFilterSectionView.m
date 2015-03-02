@@ -35,6 +35,7 @@
         _backgroundView.contentEdgeInsets = UIEdgeInsetsMake(0, spacing, 0, 0);
         _backgroundView.titleEdgeInsets = UIEdgeInsetsMake(0, 10.0f, 0, 0);
         [_backgroundView setBackgroundColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_backgroundView setBackgroundColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
         [_backgroundView setImage:[UIImage imageNamed:@"filter_collapseed.png"] forState:UIControlStateNormal];
         [_backgroundView.titleLabel setFont:[UIFont fontWithName:@"Helvetica" size:18]];
         
@@ -50,7 +51,7 @@
         _topSeparatorView = [[UIView alloc] init];
         [_topSeparatorView setBackgroundColor:SEPARATOR_COLOR];
         [self addSubview:_topSeparatorView];
-
+        
         _expanded = NO;
         _sortAvailable = NO;
         _ascending = YES;
@@ -144,7 +145,7 @@
 
 - (void)updateUIForState {    
     if(_isExpandable) {
-        _backgroundView.titleEdgeInsets = (_expanded) ? UIEdgeInsetsMake(0, 5.0f, 0, 0) : UIEdgeInsetsMake(0, 10.0f, 0, 0);
+        _backgroundView.titleEdgeInsets = (_expanded) ? UIEdgeInsetsMake(0, 4.0f, 0, 0) : UIEdgeInsetsMake(0, 10.0f, 0, 0);
         [_backgroundView setImage:(_expanded) ? [UIImage imageNamed:@"filter_expanded.png"] : [UIImage imageNamed:@"filter_collapseed.png"]
                          forState:UIControlStateNormal];
     }
