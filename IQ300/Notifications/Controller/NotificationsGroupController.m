@@ -217,14 +217,21 @@
     
     NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
     if(![cell.item.lastNotification.hasActions boolValue]) {
+        UIAlertViewCompletionBlock alertBlock = ^(UIAlertView *alertView, NSInteger buttonIndex) {
+            if(buttonIndex == 1) {
+                [weakSelf.model markNotificationsAsReadAtIndexPath:itemIndexPath completion:completion];
+            }
+        };
+        
+        if([cell.item.unreadCount integerValue] > 1) {
         [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_group_readed_question", nil)
                  cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                  otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
-                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              if(buttonIndex == 1) {
-                                  [weakSelf.model markNotificationsAsReadAtIndexPath:itemIndexPath completion:completion];
-                              }
-                          }];
+                          tapBlock:alertBlock];
+        }
+        else {
+            alertBlock(nil, 1);
+        }
     }
     else {
         if(index == 0) {
