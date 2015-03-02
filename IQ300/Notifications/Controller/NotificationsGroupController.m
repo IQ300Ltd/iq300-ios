@@ -24,6 +24,8 @@
 #import "DispatchAfterExecution.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "NotificationsController.h"
+#import "IQDiscussion.h"
+#import "CommentsController.h"
 
 @interface NotificationsGroupController () <SWTableViewCellDelegate> {
     NotificationsView * _mainView;
@@ -170,16 +172,45 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQNotificationsGroup * group = [self.model itemAtIndexPath:indexPath];
-    NotificationsModel * model = [[NotificationsModel alloc] init];
-    model.loadUnreadOnly = self.model.loadUnreadOnly;
-    model.group = group;
+    IQNotification * notification = group.lastNotification;
+    BOOL hasOneUnread = ([group.unreadCount integerValue] == 1);
     
-    NotificationsController * controller = [[NotificationsController alloc] init];
-    controller.hidesBottomBarWhenPushed = YES;
-    controller.title = NSLocalizedString(group.lastNotification.notificable.type, nil);
-    controller.model = model;
-    
-    [self.navigationController pushViewController:controller animated:YES];
+    if ((hasOneUnread && self.model.loadUnreadOnly) || [group.totalCount integerValue] == 1) {
+        if(notification.discussionId) {
+            NSString * title = notification.notificable.title;
+            NSNumber * commentId = notification.commentId;
+            [[IQService sharedService] discussionWithId:notification.discussionId
+                                                handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
+                                                    if(success) {
+                                                        CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
+                                                        CommentsController * controller = [[CommentsController alloc] init];
+                                                        controller.hidesBottomBarWhenPushed = YES;
+                                                        controller.title = NSLocalizedString(@"Notifications", nil);
+                                                        controller.model = model;
+                                                        controller.subTitle = title;
+                                                        controller.highlightedCommentId = commentId;
+                                                        
+                                                        [self.navigationController pushViewController:controller animated:YES];
+                                                        
+                                                        if(hasOneUnread) {
+                                                            [self .model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
+                                                        }
+                                                    }
+                                                }];
+        }
+    }
+    else {
+        NotificationsModel * model = [[NotificationsModel alloc] init];
+        model.loadUnreadOnly = self.model.loadUnreadOnly;
+        model.group = group;
+        
+        NotificationsController * controller = [[NotificationsController alloc] init];
+        controller.hidesBottomBarWhenPushed = YES;
+        controller.title = NSLocalizedString(group.lastNotification.notificable.type, nil);
+        controller.model = model;
+        
+        [self.navigationController pushViewController:controller animated:YES];
+    }
 }
 
 #pragma mark - IQTableModel Delegate
