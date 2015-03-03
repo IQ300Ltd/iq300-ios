@@ -109,6 +109,13 @@
     [self.model updateModelWithCompletion:^(NSError *error) {
         [self updateNoDataLabelVisibility];
     }];
+    
+    [self.model setSubscribedToNotifications:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.model setSubscribedToNotifications:NO];
 }
 
 - (UITableView*)tableView {

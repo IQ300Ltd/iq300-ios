@@ -12,6 +12,7 @@
 #import "IQService+Tasks.h"
 #import "IQCounters.h"
 #import "IQTasksHolder.h"
+#import "IQNotificationCenter.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
@@ -33,6 +34,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     NSInteger _portionLenght;
     NSFetchedResultsController * _fetchController;
     NSString * _sort;
+    __weak id _notfObserver;
 }
 
 @end
@@ -90,6 +92,12 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         _portionLenght = 20;
         self.sortField = @"updated_at";
         self.ascending = NO;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(accountDidChanged)
+                                                     name:AccountDidChangedNotification
+                                                   object:nil];
+        [self resubscribeToIQNotifications];
     }
     return self;
 }
@@ -224,6 +232,20 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
             completion(object, error);
         }
     }];
+}
+
+- (void)setSubscribedToNotifications:(BOOL)subscribed {
+    if(subscribed) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationWillEnterForeground)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIApplicationWillEnterForegroundNotification
+                                                      object:nil];
+    }
 }
 
 - (void)clearModelData {
@@ -391,6 +413,44 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return nil;
 }
 
+- (void)accountDidChanged {
+    if([IQSession defaultSession]) {
+        [self resubscribeToIQNotifications];
+        [self updateCountersWithCompletion:nil];
+    }
+    else {
+        self.sortField = @"updated_at";
+        self.ascending = NO;
+        [self unsubscribeFromIQNotifications];
+        [self clearModelData];
+        [self modelDidChanged];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateCountersWithCompletion:nil];
+    [self tasksUpdatesAfterDateWithCompletion:nil];
+}
+
+- (void)resubscribeToIQNotifications {
+    [self unsubscribeFromIQNotifications];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        [weakSelf updateCountersWithCompletion:nil];
+        [weakSelf tasksUpdatesAfterDateWithCompletion:nil];
+    };
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChanged
+                                                                       queue:nil
+                                                                  usingBlock:block];
+}
+
+- (void)unsubscribeFromIQNotifications {
+    if(_notfObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    }
+}
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController*)controller {
@@ -456,6 +516,11 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     if([self.delegate respondsToSelector:@selector(modelCountersDidChanged:)]) {
         [self.delegate modelCountersDidChanged:self];
     }
+}
+
+- (void)dealloc {
+    [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
