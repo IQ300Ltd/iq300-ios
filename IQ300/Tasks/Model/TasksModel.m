@@ -27,6 +27,12 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                          ((executor.userId == $userId AND status IN {\"new\", \"browsed\", \"in_work\", \"on_init\", \"declined\"}) OR \
                           (customer.userId == $userId AND status IN {\"new\", \"browsed\", \"refused\", \"in_work\", \"on_init\", \"declined\", \"completed\"}))"
 
+#define INBOX_FORMAT @"type LIKE[c] 'Task' AND executor.userId == $userId AND \
+                       status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\"}"
+
+#define OUTBOX_FORMAT @"type LIKE[c] 'Task' AND customer.userId == $userId AND executor.userId != $userId AND \
+                        status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\", \"on_init\"}"
+
 #define ARCHIVE_FORMAT @"type LIKE[c] 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
                          status IN {\"accepted\", \"canceled\"}"
 
@@ -48,8 +54,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         _folders = @{
                      @"actual"    : ACTUAL_FORMAT,
                      @"overdue"   : OVERDUE_FORMAT,
-                     @"inbox"     : @"type LIKE 'Task' AND executor.userId == $userId",
-                     @"outbox"    : @"type LIKE 'Task' AND customer.userId == $userId",
+                     @"inbox"     : INBOX_FORMAT,
+                     @"outbox"    : OUTBOX_FORMAT,
                      @"watchable" : @"type LIKE 'Task' AND (customer.userId != $userId AND executor.userId != $userId)",
                      @"templates" : @"type LIKE 'TemplateTask' AND customer.userId == $userId",
                      @"archive"   : ARCHIVE_FORMAT
