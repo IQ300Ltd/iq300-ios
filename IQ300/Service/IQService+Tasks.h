@@ -10,13 +10,31 @@
 
 @interface IQService (Tasks)
 
-- (void)tasksByFolder:(NSString*)folder
+- (void)tasksUpdatedAfter:(NSDate*)date
+                   folder:(NSString*)folder
+                   status:(NSString*)status
+              communityId:(NSNumber*)communityId
+                     page:(NSNumber*)page
+                      per:(NSNumber*)per
+                   search:(NSString*)search
+                     sort:(NSString*)sort
+                  handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)tasksBeforeId:(NSNumber*)taskId
+               folder:(NSString*)folder
                status:(NSString*)status
           communityId:(NSNumber*)communityId
                  page:(NSNumber*)page
                   per:(NSNumber*)per
                search:(NSString*)search
-                 sort:(IQSortDirection)sort
+                 sort:(NSString*)sort
               handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)filterCountersForFolder:(NSString*)folder
+                         status:(NSString*)status
+                    communityId:(NSNumber*)communityId
+                        handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)tasksMenuCountersWithHandler:(ObjectLoaderCompletionHandler)handler;
 
 @end

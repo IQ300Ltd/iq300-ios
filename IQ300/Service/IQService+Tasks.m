@@ -10,32 +10,78 @@
 
 @implementation IQService (Tasks)
 
-- (void)tasksByFolder:(NSString*)folder
+- (void)tasksUpdatedAfter:(NSDate*)date
+                   folder:(NSString*)folder
+                   status:(NSString*)status
+              communityId:(NSNumber*)communityId
+                     page:(NSNumber*)page
+                      per:(NSNumber*)per
+                   search:(NSString*)search
+                     sort:(NSString*)sort
+                  handler:(ObjectLoaderCompletionHandler)handler {
+    
+    NSDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                           @"updated_at_after" : NSObjectNullForNil(date),
+                                                           @"folder"           : NSStringNullForNil(folder),
+                                                           @"status"           : NSStringNullForNil(status),
+                                                           @"by_community"     : NSObjectNullForNil(communityId),
+                                                           @"page"             : NSObjectNullForNil(page),
+                                                           @"per"              : NSObjectNullForNil(per),
+                                                           @"sort"             : NSStringNullForNil(sort),
+                                                           @"search"           : NSStringNullForNil(search)
+                                                           });
+    
+    [self getObjectsAtPath:@"/api/v1/tasks"
+                parameters:parameters
+                   handler:handler];
+}
+
+- (void)tasksBeforeId:(NSNumber*)taskId
+               folder:(NSString*)folder
                status:(NSString*)status
           communityId:(NSNumber*)communityId
                  page:(NSNumber*)page
                   per:(NSNumber*)per
                search:(NSString*)search
-                 sort:(IQSortDirection)sort
+                 sort:(NSString*)sort
               handler:(ObjectLoaderCompletionHandler)handler {
     
-    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"folder"         : NSStringNullForNil(folder),
-                                                                  @"status"         : NSStringNullForNil(status),
-                                                                  @"by_community"   : NSObjectNullForNil(communityId),
-                                                                  @"page"           : NSObjectNullForNil(page),
-                                                                  @"per"            : NSObjectNullForNil(per),
-                                                                  @"search"         : NSStringNullForNil(search)
-                                                                  }).mutableCopy;
+    NSDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                           @"id_less_than" : NSObjectNullForNil(taskId),
+                                                           @"folder"       : NSStringNullForNil(folder),
+                                                           @"status"       : NSStringNullForNil(status),
+                                                           @"by_community" : NSObjectNullForNil(communityId),
+                                                           @"page"         : NSObjectNullForNil(page),
+                                                           @"per"          : NSObjectNullForNil(per),
+                                                           @"sort"         : NSStringNullForNil(sort),
+                                                           @"search"       : NSStringNullForNil(search)
+                                                           });
     
-    if(sort != IQSortDirectionNo) {
-        parameters[@"sort"] = IQSortDirectionToString(sort);
-    }
     
     [self getObjectsAtPath:@"/api/v1/tasks"
                 parameters:parameters
                    handler:handler];
+}
 
+- (void)filterCountersForFolder:(NSString*)folder
+                         status:(NSString*)status
+                    communityId:(NSNumber*)communityId
+                        handler:(ObjectLoaderCompletionHandler)handler {
+    NSDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                           @"folder"       : NSStringNullForNil(folder),
+                                                           @"status"       : NSStringNullForNil(status),
+                                                           @"by_community" : NSObjectNullForNil(communityId),
+                                                           });
+
+    [self getObjectsAtPath:@"/api/v1/tasks/filter_counters"
+                parameters:parameters
+                   handler:handler];
+}
+
+- (void)tasksMenuCountersWithHandler:(ObjectLoaderCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/tasks/menu_counters"
+                parameters:nil
+                   handler:handler];
 }
 
 @end

@@ -12,6 +12,11 @@
 
 @interface TasksFilterModel : NSObject <IQTableModel>
 
+@property (nonatomic, strong) NSString * sortField;
+@property (nonatomic, strong) NSString * statusFilter;
+@property (nonatomic, strong) NSNumber * communityId;
+@property (nonatomic, assign, getter=isAscending) BOOL ascending;
+
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (id<TaskFilterItem>)itemAtIndexPath:(NSIndexPath *)indexPath;
@@ -20,9 +25,12 @@
 
 - (BOOL)isSortActionAvailableAtSection:(NSInteger)section;
 - (void)setAscendingSortOrder:(BOOL)ascending forSection:(NSInteger)section;
+- (BOOL)isSortOrderAscendingForSection:(NSInteger)section;
 
 - (BOOL)isItemSellectedAtIndexPath:(NSIndexPath *)indexPath;
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)selected;
 - (NSArray*)selectedIndexPathsForSection:(NSInteger)section;
+
+- (void)updateFilterParameters;
 
 @end

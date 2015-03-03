@@ -27,5 +27,7 @@
 #import "IQProject.h"
 #import "IQCommunity.h"
 #import "IQTodoItem.h"
+#import "TaskFilterCounters.h"
+#import "TasksMenuCounters.h"
 
 #endif

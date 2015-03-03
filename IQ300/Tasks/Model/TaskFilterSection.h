@@ -13,6 +13,7 @@
 @property (nonatomic, strong) NSString * title;
 @property (nonatomic, assign, getter=isExpandable) BOOL expandable;
 @property (nonatomic, assign, getter=isSortAvailable) BOOL sortAvailable;
+@property (nonatomic, assign, getter=isAscending) BOOL ascending;
 
 @property (nonatomic, strong) NSArray * items;
 

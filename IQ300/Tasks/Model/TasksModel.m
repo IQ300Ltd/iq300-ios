@@ -19,7 +19,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 #define SORT_DIRECTION IQSortDirectionDescending
 
 #define ACTUAL_FORMAT @"type LIKE 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
-                        status IN {\"new\", \"in_work\", \"browsed\", \"completed\"}"
+                        (status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\"} OR \
+                         (status LIKE \"on_init\" AND customer.userId == $userId))"
 
 #define OVERDUE_FORMAT @"type LIKE 'Task' AND endDate < $nowDate AND \
                          ((executor.userId == $userId AND status IN {\"new\", \"browsed\", \"in_work\", \"on_init\", \"declined\"}) OR \
@@ -30,8 +31,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 @interface TasksModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;
-    NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
+    NSString * _sort;
 }
 
 @end
@@ -64,14 +65,49 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return nil;
 }
 
++ (NSString*)propertyNameForSortField:(NSString*)sortField {
+    static NSDictionary * _propertyNames = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _propertyNames = @{
+                                @"updated_at" : @"updatedDate",
+                                @"id"         : @"taskId",
+                                @"end_date"   : @"endDate",
+                                };
+    });
+    
+    if([_propertyNames objectForKey:sortField]) {
+        return [_propertyNames objectForKey:sortField];
+    }
+    
+    return nil;
+}
+
+
 - (id)init {
     self = [super init];
     if(self) {
         _portionLenght = 20;
-        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"updatedDate" ascending:SORT_DIRECTION == IQSortDirectionAscending];
-        _sortDescriptors = @[descriptor];
+        self.sortField = @"updated_at";
+        self.ascending = NO;
     }
     return self;
+}
+
+- (void)setAscending:(BOOL)ascending {
+    if (_ascending != ascending) {
+        _ascending = ascending;
+        NSString * format = (_ascending) ? @"%@" : @"-%@";
+        _sort = [NSString stringWithFormat:format, _sortField];
+    }
+}
+
+- (void)setSortField:(NSString *)sortField {
+    if(![_sortField isEqualToString:sortField]) {
+        _sortField = sortField;
+        NSString * format = (_ascending) ? @"%@" : @"-%@";
+        _sort = [NSString stringWithFormat:format, _sortField];
+    }
 }
 
 - (NSUInteger)numberOfSections {
@@ -123,19 +159,28 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        [[IQService sharedService] tasksByFolder:self.folder
-                                          status:nil
-                                     communityId:nil
+        [self updateCountersWithCompletion:nil];
+        [self tasksUpdatesAfterDateWithCompletion:completion];
+    }
+}
+
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion {
+    if([_fetchController.fetchedObjects count] == 0) {
+        [self reloadModelWithCompletion:completion];
+    }
+    else {
+        NSNumber * taskId = [self getLastIdFromTop:NO];
+        [[IQService sharedService] tasksBeforeId:taskId
+                                          folder:self.folder
+                                          status:self.statusFilter
+                                     communityId:self.communityId
                                             page:@(1)
                                              per:@(_portionLenght)
-                                          search:_filter
-                                            sort:SORT_DIRECTION
+                                          search:self.search
+                                            sort:_sort
                                          handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
                                              if(completion) {
                                                  completion(error);
-                                             }
-                                             if(success) {
-                                                 [self updateCountersWithCompletion:nil];
                                              }
                                          }];
     }
@@ -143,42 +188,42 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadSourceControllerWithCompletion:completion];
-    [[IQService sharedService] tasksByFolder:self.folder
-                                      status:nil
-                                 communityId:nil
-                                        page:@(1)
-                                         per:@(_portionLenght)
-                                      search:_filter
-                                        sort:SORT_DIRECTION
-                                     handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
-                                         if(success) {
-                                             [self updateCountersWithCompletion:nil];
-                                         }
-                                     }];
-}
-
-- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion {
-    NSInteger count = [self numberOfItemsInSection:0];
-    NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
-    [[IQService sharedService] tasksByFolder:self.folder
-                                      status:nil
-                                 communityId:nil
-                                        page:@(page)
-                                         per:@(_portionLenght)
-                                      search:_filter
-                                        sort:SORT_DIRECTION
-                                     handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
-                                         if(completion) {
-                                             completion(error);
-                                         }
-                                         if(success) {
-                                             [self updateCountersWithCompletion:nil];
-                                         }
-                                     }];
-}
-
-- (void)updateCountersWithCompletion:(void (^)(IQCounters * counter, NSError * error))completion {
+   
+    NSDate * lastUpdatedDate = [self getLastChangedDate];
     
+    [self updateCountersWithCompletion:nil];
+    [[IQService sharedService] tasksUpdatedAfter:lastUpdatedDate
+                                          folder:self.folder
+                                          status:self.statusFilter
+                                     communityId:self.communityId
+                                            page:@(1)
+                                             per:@(_portionLenght)
+                                          search:self.search
+                                            sort:_sort
+                                         handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
+                                             if(success && lastUpdatedDate && [_fetchController.fetchedObjects count] < _portionLenght) {
+                                                 [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
+                                                     if(completion) {
+                                                         completion(error);
+                                                     }
+                                                 }];
+                                             }
+                                             else if(completion) {
+                                                 completion(error);
+                                             }
+                                         }];
+}
+
+- (void)updateCountersWithCompletion:(void (^)(TasksMenuCounters * counters, NSError * error))completion {
+    [[IQService sharedService] tasksMenuCountersWithHandler:^(BOOL success, TasksMenuCounters * object, NSData *responseData, NSError *error) {
+        if(success) {
+            self.counters = object;
+            [self modelCountersDidChanged];
+        }
+        if(completion) {
+            completion(object, error);
+        }
+    }];
 }
 
 - (void)clearModelData {
@@ -193,6 +238,52 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 #pragma mark - Private methods
 
+- (void)tasksUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] tasksUpdatedAfter:lastUpdatedDate
+                                          folder:self.folder
+                                          status:self.statusFilter
+                                     communityId:self.communityId
+                                            page:page
+                                             per:@(_portionLenght)
+                                          search:self.search
+                                            sort:_sort
+                                         handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
+                                             if(success && holder.currentPage < holder.totalPages) {
+                                                 [self tasksUpdatesAfterDate:lastUpdatedDate
+                                                                        page:@([page integerValue] + 1)
+                                                                  completion:completion];
+                                             }
+                                             else if(completion) {
+                                                 completion(error);
+                                             }
+                                         }];
+}
+
+- (void)tasksUpdatesAfterDateWithCompletion:(void (^)(NSError * error))completion {
+    NSDate * lastUpdatedDate = [self getLastChangedDate];
+    [self tasksUpdatesAfterDate:lastUpdatedDate
+                           page:@(1)
+                     completion:completion];
+}
+
+- (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
+    NSNumber * lastLoadedId = [self getLastIdFromTop:YES];
+    
+    [[IQService sharedService] tasksBeforeId:lastLoadedId
+                                      folder:self.folder
+                                      status:self.statusFilter
+                                 communityId:self.communityId
+                                        page:@(1)
+                                         per:@(_portionLenght)
+                                      search:self.search
+                                        sort:_sort
+                                     handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
+                                         if(completion) {
+                                             completion(error);
+                                         }
+                                     }];
+}
+
 - (void)reloadSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;
     
@@ -201,13 +292,66 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     
     if(!_fetchController && [IQService sharedService].context) {
         NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQTask"];
-        [fetchRequest setSortDescriptors:_sortDescriptors];
+        [fetchRequest setSortDescriptors:[self makeSortDescriptors]];
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                managedObjectContext:[IQService sharedService].context
                                                                  sectionNameKeyPath:nil
                                                                           cacheName:CACHE_FILE_NAME];
     }
     
+    NSError * fetchError = nil;
+    [_fetchController.fetchRequest setPredicate:[self makeFilterPredicate]];
+    [_fetchController.fetchRequest setSortDescriptors:[self makeSortDescriptors]];
+    [_fetchController setDelegate:self];
+    [_fetchController performFetch:&fetchError];
+    
+    if(completion) {
+        completion(fetchError);
+    }
+}
+
+- (NSNumber*)getLastIdFromTop:(BOOL)top {
+    NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
+    NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"taskId"];
+    NSExpression * maxIdExpression = [NSExpression expressionForFunction:(top) ? @"max:" : @"min:"
+                                                               arguments:[NSArray arrayWithObject:keyPathExpression]];
+    
+    NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
+    [expressionDescription setName:@"taskId"];
+    [expressionDescription setExpression:maxIdExpression];
+    [expressionDescription setExpressionResultType:NSDecimalAttributeType];
+    
+    [fetchRequest setPredicate:[self makeFilterPredicate]];
+    [fetchRequest setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
+    [fetchRequest setResultType:NSDictionaryResultType];
+    fetchRequest.fetchLimit = 1;
+    
+    NSError *error = nil;
+    
+    NSArray *objects = [[IQService sharedService].context executeFetchRequest:fetchRequest error:&error];
+    if ([objects count] > 0) {
+        return [[objects objectAtIndex:0] valueForKey:@"taskId"];
+    }
+    return nil;
+}
+
+- (NSDate*)getLastChangedDate {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
+    [fetchRequest setPredicate:[self makeFilterPredicate]];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"updatedDate" ascending:NO]];
+    fetchRequest.fetchLimit = 1;
+
+    NSError *error = nil;
+    
+    NSArray *objects = [[IQService sharedService].context executeFetchRequest:fetchRequest error:&error];
+    if ([objects count] > 0) {
+        IQTask * task = [objects objectAtIndex:0];
+        return task.updatedDate;
+    }
+    return nil;
+}
+
+- (NSPredicate*)makeFilterPredicate {
     NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
     
     if([self.folder length] > 0) {
@@ -217,21 +361,34 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         }
     }
     
-    if([_filter length] > 0) {
+    if (self.communityId) {
+        NSPredicate * communityFilter = [NSPredicate predicateWithFormat:@"community.communityId == %@", self.communityId];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, communityFilter]];
+    }
+    
+    if(self.statusFilter) {
+        NSPredicate * statusFilter = [NSPredicate predicateWithFormat:@"status LIKE[c] %@", self.statusFilter];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, statusFilter]];
+    }
+    
+    if([self.search length] > 0) {
         NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"(user.displayName CONTAINS[cd] $filter) OR (user.email CONTAINS[cd] $filter)"];
-        filterPredicate = [filterPredicate predicateWithSubstitutionVariables:@{ @"filter" : _filter }];
+        filterPredicate = [filterPredicate predicateWithSubstitutionVariables:@{ @"filter" : self.search }];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, filterPredicate]];
     }
-    
-    NSError * fetchError = nil;
-    [_fetchController.fetchRequest setPredicate:predicate];
-    [_fetchController.fetchRequest setSortDescriptors:_sortDescriptors];
-    [_fetchController setDelegate:self];
-    [_fetchController performFetch:&fetchError];
-    
-    if(completion) {
-        completion(fetchError);
+
+    return predicate;
+}
+
+- (NSArray*)makeSortDescriptors {
+    NSString * key = [TasksModel propertyNameForSortField:self.sortField];    
+    if (key) {
+        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:key
+                                                                    ascending:self.ascending];
+        
+        return @[descriptor];
     }
+    return nil;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

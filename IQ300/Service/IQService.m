@@ -75,12 +75,12 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                 path:@"/api/v1/sessions"
           parameters:parameters
              handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
-                     if (success && token) {
-                         self.session = [IQSession sessionWithEmail:email andPassword:password token:token.token];
-                     }
-                     
+                 if (success && token) {
+                     self.session = [IQSession sessionWithEmail:email andPassword:password token:token.token];
+                 }
+                 
                  if(handler) {
-                    handler(success, responseData, error);
+                     handler(success, responseData, error);
                  }
              }];
 }
@@ -689,6 +689,22 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/tasks"
                                                    fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[TaskFilterCounters class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/filter_counters"
+                                                   fromKeyPath:@"filter_counters"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[TasksMenuCounters class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/menu_counters"
+                                                   fromKeyPath:@"menu_counters"
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];

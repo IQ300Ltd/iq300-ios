@@ -101,23 +101,9 @@
                                                                        style:UIBarButtonItemStylePlain
                                                                       target:self action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
-}
 
-- (void)reloadMenuWithCompletion:(void (^)())completion {
-    void (^completionBlock)(NSError *error) = ^(NSError *error) {
-        if(!error) {
-            [_tableView reloadData];
-        }
-        if (completion) {
-            completion();
-        }
-    };
-    
     if(_model) {
-        [_model updateModelWithCompletion:completionBlock];
-    }
-    else {
-        completionBlock(nil);
+        [_model updateModelWithCompletion:nil];
     }
 }
 
@@ -191,6 +177,7 @@
     [cell setAccessoryType:(isItemSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
 
     [self.model makeItemAtIndexPath:indexPath selected:isItemSelected];
+    [self.model updateFilterParameters];
 }
 
 #pragma mark - IQMenuModel Delegate
@@ -267,8 +254,9 @@
     }
     
     BOOL sortAvailable = [self.model isSortActionAvailableAtSection:section];
-    headerView.sortAvailable = sortAvailable;
     if(sortAvailable) {
+        headerView.sortAvailable = sortAvailable;
+        headerView.ascending = [self.model isSortOrderAscendingForSection:section];
         [headerView setSortActionBlock:^(TaskFilterSectionView *header) {
             [self.model setAscendingSortOrder:header.ascending forSection:header.section];
         }];

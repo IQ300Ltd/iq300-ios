@@ -303,7 +303,7 @@
         if(!error) {
             [self.tableView reloadData];
         }
-        [self scrollToTopIfNeedAnimated:NO delay:0.5];
+        [self scrollToTopAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;
     }];

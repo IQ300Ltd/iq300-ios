@@ -8,9 +8,13 @@
 
 #import "IQMenuModel.h"
 
+@class TasksMenuCounters;
+
 @interface TasksMenuModel : NSObject<IQMenuModel>
 
 @property (nonatomic, readonly) NSString * title;
+@property (nonatomic, strong)   TasksMenuCounters * counters;
+
 @property (nonatomic, weak)     id<IQTableModelDelegate> delegate;
 
 - (NSString*)folderForMenuItemAtIndexPath:(NSIndexPath*)indexPath;

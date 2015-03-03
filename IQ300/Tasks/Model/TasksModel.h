@@ -8,20 +8,27 @@
 
 #import "IQTableModel.h"
 
-@class IQCounters;
+@class TasksMenuCounters;
 
 @interface TasksModel : NSObject<IQTableModel>
 
 @property (nonatomic, assign) NSInteger taskaFilter;
-@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 @property (nonatomic, assign) CGFloat cellWidth;
-@property (nonatomic, strong) NSString * filter;
+@property (nonatomic, strong) NSString * search;
 @property (nonatomic, strong) NSString * folder;
+@property (nonatomic, strong) NSString * sortField;
+@property (nonatomic, strong) NSString * statusFilter;
+@property (nonatomic, strong) NSNumber * communityId;
+@property (nonatomic, assign, getter=isAscending) BOOL ascending;
+
+@property (nonatomic, strong) TasksMenuCounters * counters;
+
+@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 
 /**
- UpdateModelWithCompletion. Load new data.
+ Load data updates.
  
  @param completion handler.
  
@@ -36,6 +43,6 @@
  */
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
 
-- (void)updateCountersWithCompletion:(void (^)(IQCounters * counter, NSError * error))completion;
+- (void)updateCountersWithCompletion:(void (^)(TasksMenuCounters * counters, NSError * error))completion;
 
 @end

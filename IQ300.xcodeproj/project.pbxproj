@@ -110,6 +110,8 @@
 		7395C50D1A31848700A6D5DA /* UIView+RoundedCorners.m in Sources */ = {isa = PBXBuildFile; fileRef = 7395C50C1A31848700A6D5DA /* UIView+RoundedCorners.m */; };
 		7395C5111A3192C500A6D5DA /* backArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7395C50F1A3192C500A6D5DA /* backArrow.png */; };
 		7395C5121A3192C500A6D5DA /* backArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7395C5101A3192C500A6D5DA /* backArrow@2x.png */; };
+		73970E8F1AA5A7CC00AC2414 /* TaskFilterCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 73970E8E1AA5A7CC00AC2414 /* TaskFilterCounters.m */; };
+		73970E921AA5C45300AC2414 /* TasksMenuCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 73970E911AA5C45300AC2414 /* TasksMenuCounters.m */; };
 		739850BC1A2DADF000DB5B21 /* MessagesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850BB1A2DADF000DB5B21 /* MessagesController.m */; };
 		739850BF1A2DB05400DB5B21 /* MessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850BE1A2DB05400DB5B21 /* MessagesView.m */; };
 		739850C21A2DB1C100DB5B21 /* search_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 739850C01A2DB1C000DB5B21 /* search_icon.png */; };
@@ -420,6 +422,10 @@
 		7395C50E1A3190D800A6D5DA /* UIEdgeInsetsExtend.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIEdgeInsetsExtend.h; sourceTree = "<group>"; };
 		7395C50F1A3192C500A6D5DA /* backArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backArrow.png; sourceTree = "<group>"; };
 		7395C5101A3192C500A6D5DA /* backArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backArrow@2x.png"; sourceTree = "<group>"; };
+		73970E8D1AA5A7CC00AC2414 /* TaskFilterCounters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskFilterCounters.h; sourceTree = "<group>"; };
+		73970E8E1AA5A7CC00AC2414 /* TaskFilterCounters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskFilterCounters.m; sourceTree = "<group>"; };
+		73970E901AA5C45300AC2414 /* TasksMenuCounters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TasksMenuCounters.h; sourceTree = "<group>"; };
+		73970E911AA5C45300AC2414 /* TasksMenuCounters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TasksMenuCounters.m; sourceTree = "<group>"; };
 		739850BA1A2DADF000DB5B21 /* MessagesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagesController.h; sourceTree = "<group>"; };
 		739850BB1A2DADF000DB5B21 /* MessagesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesController.m; sourceTree = "<group>"; };
 		739850BD1A2DB05400DB5B21 /* MessagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagesView.h; sourceTree = "<group>"; };
@@ -1357,6 +1363,10 @@
 				738EF8291A9CA95600894755 /* IQTodoItem.m */,
 				738EF82E1A9CBAA200894755 /* IQTasksHolder.h */,
 				738EF82F1A9CBAA200894755 /* IQTasksHolder.m */,
+				73970E8D1AA5A7CC00AC2414 /* TaskFilterCounters.h */,
+				73970E8E1AA5A7CC00AC2414 /* TaskFilterCounters.m */,
+				73970E901AA5C45300AC2414 /* TasksMenuCounters.h */,
+				73970E911AA5C45300AC2414 /* TasksMenuCounters.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1732,6 +1742,7 @@
 				7373ED661A8A2EB500719FCD /* DeviceToken.m in Sources */,
 				739850D81A2DD32E00DB5B21 /* IQConversation.m in Sources */,
 				738EF8271A9CA88400894755 /* IQProject.m in Sources */,
+				73970E8F1AA5A7CC00AC2414 /* TaskFilterCounters.m in Sources */,
 				738EF8301A9CBAA200894755 /* IQTasksHolder.m in Sources */,
 				736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */,
 				73A7004F1A95CF8C00A1C2AC /* TaskCell.m in Sources */,
@@ -1746,6 +1757,7 @@
 				736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */,
 				7379EEBA1A11E47700D69BBD /* NotificationsController.m in Sources */,
 				73A9499E1A3832D7008EC469 /* BackgroundDownloadManager.m in Sources */,
+				73970E921AA5C45300AC2414 /* TasksMenuCounters.m in Sources */,
 				737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */,
 				739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */,
 				73ADA8D91A36DB8D0032C1FA /* CreateConversationController.m in Sources */,

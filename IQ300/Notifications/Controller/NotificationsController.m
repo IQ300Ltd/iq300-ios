@@ -177,6 +177,11 @@
     [self updateNoDataLabelVisibility];
 }
 
+- (void)modelCountersDidChanged:(id<IQTableModel>)model {
+    _menuModel.totalItemsCount = self.model.totalItemsCount;
+    _menuModel.unreadItemsCount = self.model.unreadItemsCount;
+}
+
 #pragma mark - Menu Responder Delegate
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
@@ -246,9 +251,8 @@
         if(!error) {
             [self.tableView reloadData];
         }
-        [self scrollToTopIfNeedAnimated:NO delay:0.5];
+        [self scrollToTopAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
-        self.needFullReload = NO;
     }];
 }
 
@@ -265,8 +269,8 @@
 }
 
 - (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
-    CGFloat bottomPosition = 0.0f;
-    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y <= bottomPosition);
+    CGFloat topPosition = 0.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y <= topPosition);
     if(isTableScrolledToBottom || self.needFullReload) {
         [self scrollToTopAnimated:animated delay:delay];
     }
@@ -285,7 +289,9 @@
                 });
             }
             else {
-                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:animated];
+                [self.tableView scrollToRowAtIndexPath:indexPath
+                                      atScrollPosition:UITableViewScrollPositionTop
+                                              animated:animated];
             }
         }
     }
@@ -293,11 +299,6 @@
 
 - (void)updateNoDataLabelVisibility {
     [_mainView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
-}
-
-- (void)modelCountersDidChanged:(id<IQTableModel>)model {
-    _menuModel.totalItemsCount = self.model.totalItemsCount;
-    _menuModel.unreadItemsCount = self.model.unreadItemsCount;
 }
 
 - (void)dealloc {

@@ -12,6 +12,7 @@
 #import "IQMenuSection.h"
 #import "IQMenuCellFactory.h"
 #import "IQMenuItem.h"
+#import "TasksMenuCounters.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
@@ -35,6 +36,13 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (NSString*)title {
     return NSLocalizedString(@"Tasks", @"Tasks");
+}
+
+- (void)setCounters:(TasksMenuCounters *)counters {
+    if (_counters != counters) {
+        _counters = counters;
+        [self modelDidChanged];
+    }
 }
 
 - (NSUInteger)numberOfSections {
@@ -91,7 +99,11 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (NSString*)badgeTextAtIndexPath:(NSIndexPath*)indexPath {
-    return @"12";
+    NSString * propertyName = (indexPath.row == 0) ? @"total" : [self folderForMenuItemAtIndexPath:indexPath];
+    if(propertyName && self.counters && [self.counters respondsToSelector:NSSelectorFromString(propertyName)]) {
+        return [[self.counters valueForKey:propertyName] stringValue];
+    }
+    return @"";
 }
 
 - (NSIndexPath*)indexPathForSelectedItem {

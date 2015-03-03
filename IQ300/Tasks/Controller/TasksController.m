@@ -17,6 +17,7 @@
 #import "TaskCell.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "TasksFilterController.h"
+#import "DispatchAfterExecution.h"
 
 @interface TasksController () {
     TasksView * _mainView;
@@ -104,7 +105,10 @@
     [self.leftMenuController setTableHaderHidden:YES];
     [self.leftMenuController setModel:_menuModel];
     [self.leftMenuController reloadMenuWithCompletion:nil];
-    [self.model updateModelWithCompletion:nil];
+    
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        [self updateNoDataLabelVisibility];
+    }];
 }
 
 - (UITableView*)tableView {
@@ -119,6 +123,7 @@
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
+            [self scrollToTopAnimated:NO delay:0.0f];
         }
     }];
 }
@@ -150,17 +155,53 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+}
+
+#pragma mark - IQMenuModel Delegate
+
+- (void)modelCountersDidChanged:(id<IQTableModel>)model {
+    _menuModel.counters = self.model.counters;
 }
 
 #pragma mark -  Private methods
 
 - (void)showFilterController {
     TasksFilterModel * model = [[TasksFilterModel alloc] init];
+    model.sortField = self.model.sortField;
+    model.statusFilter = self.model.statusFilter;
+    model.ascending = self.model.ascending;
+    model.communityId = self.model.communityId;
 
     TasksFilterController * controller = [[TasksFilterController alloc] init];
     controller.title = NSLocalizedString(@"Filtering and sorting", nil);
     controller.model = model;
     [self.navigationController pushViewController:controller animated:YES];
+}
+
+- (void)updateNoDataLabelVisibility {
+    [_mainView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
+}
+
+- (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay {
+    NSInteger section = [self.tableView numberOfSections];
+    if (section > 0) {
+        NSInteger itemsCount = [self.tableView numberOfRowsInSection:0];
+        
+        if (itemsCount > 0) {
+            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            if(delay > 0.0f) {
+                dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
+                    [self scrollToTopAnimated:animated delay:0.0f];
+                });
+            }
+            else {
+                [self.tableView scrollToRowAtIndexPath:indexPath
+                                      atScrollPosition:UITableViewScrollPositionTop
+                                              animated:animated];
+            }
+        }
+    }
 }
 
 @end
