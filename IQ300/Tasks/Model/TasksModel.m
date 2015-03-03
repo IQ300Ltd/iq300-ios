@@ -18,15 +18,15 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 #define CACHE_FILE_NAME @"TasksModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
 
-#define ACTUAL_FORMAT @"type LIKE 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
+#define ACTUAL_FORMAT @"type LIKE[c] 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
                         (status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\"} OR \
-                         (status LIKE \"on_init\" AND customer.userId == $userId))"
+                         (status LIKE[c] 'on_init' AND customer.userId == $userId))"
 
-#define OVERDUE_FORMAT @"type LIKE 'Task' AND endDate < $nowDate AND \
+#define OVERDUE_FORMAT @"type LIKE[c] 'Task' AND endDate < $nowDate AND \
                          ((executor.userId == $userId AND status IN {\"new\", \"browsed\", \"in_work\", \"on_init\", \"declined\"}) OR \
                           (customer.userId == $userId AND status IN {\"new\", \"browsed\", \"refused\", \"in_work\", \"on_init\", \"declined\", \"completed\"}))"
 
-#define ARCHIVE_FORMAT @"type LIKE 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
+#define ARCHIVE_FORMAT @"type LIKE[c] 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
                          status IN {\"accepted\", \"canceled\"}"
 
 @interface TasksModel() <NSFetchedResultsControllerDelegate> {

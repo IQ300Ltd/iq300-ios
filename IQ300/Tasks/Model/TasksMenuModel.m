@@ -99,11 +99,12 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (NSString*)badgeTextAtIndexPath:(NSIndexPath*)indexPath {
+    NSNumber * count = nil;
     NSString * propertyName = (indexPath.row == 0) ? @"total" : [self folderForMenuItemAtIndexPath:indexPath];
     if(propertyName && self.counters && [self.counters respondsToSelector:NSSelectorFromString(propertyName)]) {
-        return [[self.counters valueForKey:propertyName] stringValue];
+        count = [self.counters valueForKey:propertyName];
     }
-    return @"";
+    return ([count integerValue] > 0) ? [count stringValue] : nil;
 }
 
 - (NSIndexPath*)indexPathForSelectedItem {
