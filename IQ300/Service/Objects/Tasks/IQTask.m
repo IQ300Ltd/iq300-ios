@@ -18,6 +18,7 @@
 
 @dynamic taskId;
 @dynamic type;
+@dynamic recipientId;
 @dynamic ownerId;
 @dynamic status;
 @dynamic title;
@@ -48,7 +49,8 @@
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"             : @"taskId",
                                                   @"kind"           : @"type",
-                                                  @"recipient_id"   : @"ownerId",
+                                                  @"recipient_id"   : @"recipientId",
+                                                  @"owner.id"       : @"ownerId",
                                                   @"status"         : @"status",
                                                   @"title"          : @"title",
                                                   @"description"    : @"taskDescription",

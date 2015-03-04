@@ -56,8 +56,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                      @"overdue"   : OVERDUE_FORMAT,
                      @"inbox"     : INBOX_FORMAT,
                      @"outbox"    : OUTBOX_FORMAT,
-                     @"watchable" : @"type LIKE 'Task' AND (customer.userId != $userId AND executor.userId != $userId)",
-                     @"templates" : @"type LIKE 'TemplateTask' AND customer.userId == $userId",
+                     @"watchable" : @"type LIKE[c] 'Task' AND (customer.userId != $userId AND executor.userId != $userId)",
+                     @"templates" : @"type LIKE[c] 'TemplateTask' AND ownerId == $userId",
                      @"archive"   : ARCHIVE_FORMAT
                      };
     });
@@ -380,7 +380,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (NSPredicate*)makeFilterPredicate {
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"recipientId == %@", [IQSession defaultSession].userId];
     
     if([self.folder length] > 0) {
         NSPredicate * folderPredicate = [TasksModel predicateForFolder:self.folder userId:[IQSession defaultSession].userId];
