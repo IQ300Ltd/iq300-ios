@@ -18,6 +18,7 @@
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "TasksFilterController.h"
 #import "DispatchAfterExecution.h"
+#import "TasksMenuCounters.h"
 
 @interface TasksController () {
     TasksView * _mainView;
@@ -136,7 +137,7 @@
 }
 
 - (void)updateGlobalCounter {
-    
+    [self.model updateCountersWithCompletion:nil];
 }
 
 #pragma mark - UITableView DataSource
@@ -169,6 +170,7 @@
 
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.counters = self.model.counters;
+    [self updateBarBadgeWithValue:[self.model.counters.total integerValue]];
 }
 
 #pragma mark -  Private methods
@@ -209,6 +211,12 @@
             }
         }
     }
+}
+
+- (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
+    BOOL hasUnreadNotf = (badgeValue > 0);
+    NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%ld", (long)badgeValue];
+    self.tabBarItem.badgeValue = (hasUnreadNotf) ? badgeStringValue : nil;
 }
 
 @end

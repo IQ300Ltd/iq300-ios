@@ -225,6 +225,12 @@
     [self updateNoDataLabelVisibility];
 }
 
+- (void)modelCountersDidChanged:(id<IQTableModel>)model {
+    _menuModel.totalItemsCount = self.model.totalItemsCount;
+    _menuModel.unreadItemsCount = self.model.unreadItemsCount;
+    [self updateBarBadgeWithValue:self.model.unreadItemsCount];
+}
+
 #pragma mark - Menu Responder Delegate
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
@@ -350,12 +356,6 @@
 
 - (void)updateNoDataLabelVisibility {
     [_mainView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
-}
-
-- (void)modelCountersDidChanged:(id<IQTableModel>)model {
-    _menuModel.totalItemsCount = self.model.totalItemsCount;
-    _menuModel.unreadItemsCount = self.model.unreadItemsCount;
-    [self updateBarBadgeWithValue:self.model.unreadItemsCount];
 }
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
