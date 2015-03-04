@@ -100,7 +100,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (NSString*)badgeTextAtIndexPath:(NSIndexPath*)indexPath {
     NSInteger count = -1;
-    NSString * propertyName = (indexPath.row == 0) ? @"total" : [self folderForMenuItemAtIndexPath:indexPath];
+    NSString * propertyName = [self folderForMenuItemAtIndexPath:indexPath];
     if(propertyName && self.counters && [self.counters respondsToSelector:NSSelectorFromString(propertyName)]) {
         count = [[self.counters valueForKey:propertyName] integerValue];
     }
