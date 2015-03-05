@@ -11,5 +11,6 @@
 @protocol TaskFilterItem <NSObject>
 
 @property (nonatomic, strong) NSString * title;
+@property (nonatomic, strong) NSNumber * count;
 
 @end

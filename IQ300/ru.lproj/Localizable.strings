@@ -65,7 +65,7 @@
 "DocShare" = "Документ";
 "ErrorReport" = "Обратная связь";
 
-//Tasks types
+//Tasks statuses
 "browsed" = "Просмотрена";
 "new" = "Новая";
 "in_work" = "В работе";
@@ -76,6 +76,7 @@
 "completed" = "На проверке";
 "declined" = "Не принята";
 "archived" = "Архивная";
+"pending" = "Неактивная";
 
 "Filtering and sorting" = "Фильтрация и сортировка";
 "Statuses" = "Статусы";

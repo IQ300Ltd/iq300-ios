@@ -238,6 +238,8 @@
 		73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CE91A1B6B6D00225255 /* IQSession.m */; };
 		73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */; };
 		73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */; };
+		73F9D1AF1AA6F9620030DE90 /* TaskStatusFilterItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F9D1AE1AA6F9620030DE90 /* TaskStatusFilterItem.m */; };
+		73F9D1B21AA7369E0030DE90 /* FiltersLocalization.strings in Resources */ = {isa = PBXBuildFile; fileRef = 73F9D1B41AA7369E0030DE90 /* FiltersLocalization.strings */; };
 		C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D006E3B70304215613C192 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -633,6 +635,10 @@
 		73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQServiceResponse.h; sourceTree = "<group>"; };
 		73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQServiceResponse.m; sourceTree = "<group>"; };
 		73F90CF91A1B981C00225255 /* IQ300.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IQ300.xcdatamodel; sourceTree = "<group>"; };
+		73F9D1AD1AA6F9620030DE90 /* TaskStatusFilterItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskStatusFilterItem.h; sourceTree = "<group>"; };
+		73F9D1AE1AA6F9620030DE90 /* TaskStatusFilterItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskStatusFilterItem.m; sourceTree = "<group>"; };
+		73F9D1B31AA7369E0030DE90 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/FiltersLocalization.strings; sourceTree = "<group>"; };
+		73F9D1B51AA736A10030DE90 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/FiltersLocalization.strings; sourceTree = "<group>"; };
 		755F5FB022B113814C52815E /* Pods.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.production.xcconfig; path = "Pods/Target Support Files/Pods/Pods.production.xcconfig"; sourceTree = "<group>"; };
 		93D006E3B70304215613C192 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9B2A8B58D9801BD961060BB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -732,6 +738,8 @@
 				73F63E861AA055FB000DA319 /* TaskFilterSection.h */,
 				73F63E871AA055FB000DA319 /* TaskFilterSection.m */,
 				73F63E891AA08E67000DA319 /* TaskFilterItem.h */,
+				73F9D1AD1AA6F9620030DE90 /* TaskStatusFilterItem.h */,
+				73F9D1AE1AA6F9620030DE90 /* TaskStatusFilterItem.m */,
 				73F63E8A1AA08ED0000DA319 /* TaskFilterSortItem.h */,
 				73F63E8B1AA08ED0000DA319 /* TaskFilterSortItem.m */,
 			);
@@ -1073,6 +1081,7 @@
 				73A798351A3585FF006F5721 /* CTAssetsPickerController.strings */,
 				73BA987F1A10969E005AEC00 /* Localizable.strings */,
 				7393C41A1A1A379400E9E944 /* IQFonts.h */,
+				73F9D1B41AA7369E0030DE90 /* FiltersLocalization.strings */,
 				73A87EF31AA4495700C4A7C3 /* IQColors.h */,
 			);
 			name = "Supporting Files";
@@ -1582,6 +1591,7 @@
 				73F2A5551A39AB3000E9D324 /* attachment_img@2x.png in Resources */,
 				73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */,
 				73F2A5571A39AB3000E9D324 /* createNewMessage@2x.png in Resources */,
+				73F9D1B21AA7369E0030DE90 /* FiltersLocalization.strings in Resources */,
 				7393C40D1A1A2FCF00E9E944 /* login_logo.png in Resources */,
 				738FE6FE1A162B10009F26A2 /* calendar_tab@2x.png in Resources */,
 				739850C31A2DB1C100DB5B21 /* search_icon@2x.png in Resources */,
@@ -1647,6 +1657,7 @@
 				73AF25A31A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m in Sources */,
 				7373ED5E1A89FB2100719FCD /* IQNotificationGroupsHolder.m in Sources */,
 				73A700521A95D0AF00A1C2AC /* NotificationsMenuModel.m in Sources */,
+				73F9D1AF1AA6F9620030DE90 /* TaskStatusFilterItem.m in Sources */,
 				73AF73E11A3AFEBA001B8E42 /* CViewInfo.m in Sources */,
 				73F2A5401A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m in Sources */,
 				73C58C0A1A1F17FD00C83729 /* NSString+SizeWith.m in Sources */,
@@ -1811,6 +1822,15 @@
 				73D0DDF41A95D255008710FF /* ru */,
 			);
 			name = tasks_menu.plist;
+			sourceTree = "<group>";
+		};
+		73F9D1B41AA7369E0030DE90 /* FiltersLocalization.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				73F9D1B31AA7369E0030DE90 /* en */,
+				73F9D1B51AA736A10030DE90 /* ru */,
+			);
+			name = FiltersLocalization.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -29,4 +29,7 @@
 #define NSLocalizedStringWithFormat(key, args...) \
 [NSString stringWithFormat:NSLocalizedString(key, nil), args]
 
+#define NSLocalizedStringFromTableWithFormat(key, tbl, args...) \
+[NSString stringWithFormat:NSLocalizedStringWithFormat(key, tbl, nil), args]
+
 @end

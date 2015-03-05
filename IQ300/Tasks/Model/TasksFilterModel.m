@@ -10,8 +10,9 @@
 #import "TaskFilterCell.h"
 #import "TaskFilterSection.h"
 #import "TaskFilterSortItem.h"
-
-#define SORT_SECTION 2
+#import "TaskFilterCounters.h"
+#import "TaskStatusFilterItem.h"
+#import "IQService+Tasks.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
@@ -64,8 +65,11 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (id<TaskFilterItem>)itemAtIndexPath:(NSIndexPath*)indexPath {
-    TaskFilterSection * filterSection = _sections[indexPath.section];
-    return filterSection.items[indexPath.row];
+    if(indexPath) {
+        TaskFilterSection * filterSection = _sections[indexPath.section];
+        return filterSection.items[indexPath.row];
+    }
+    return nil;
 }
 
 - (NSIndexPath *)indexPathOfObject:(id)object {
@@ -85,6 +89,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 - (void)setAscendingSortOrder:(BOOL)ascending forSection:(NSInteger)section {
     TaskFilterSection * filterSection = _sections[section];
     filterSection.ascending = ascending;
+    //Temporary set model asceding because we have one section with sorting
+    self.ascending = ascending;
 }
 
 - (BOOL)isSortOrderAscendingForSection:(NSInteger)section {
@@ -103,62 +109,51 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)selected {
     if (selected && ![_selectedItems containsObject:indexPath]) {
         [_selectedItems addObject:indexPath];
+        [self updatePropertiesBySelectedItems];
     }
     else if(!selected && [_selectedItems containsObject:indexPath]) {
         [_selectedItems removeObject:indexPath];
+        [self updatePropertiesBySelectedItems];
     }
-}
-
-- (NSArray*)selectedIndexPathsForSection:(NSInteger)section {
-    return [_selectedItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"section == %d", section]];
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
-    TaskFilterSection * statusSection = [[TaskFilterSection alloc] init];
-    statusSection.title = NSLocalizedString(@"Statuses", nil);
-    statusSection.expandable = YES;
-    [_sections addObject:statusSection];
-    
-    TaskFilterSection * communitiesSection = [[TaskFilterSection alloc] init];
-    communitiesSection.title = NSLocalizedString(@"Communities", nil);
-    communitiesSection.expandable = YES;
-    [_sections addObject:communitiesSection];
-    
-    TaskFilterSection * sortingSection = [self makeSortSection];
-    [_sections addObject:sortingSection];
-    
-    __weak typeof(self) weakSelf = self;
-    NSInteger sortSelectedIndex = [sortingSection.items indexOfObjectPassingTest:^BOOL(TaskFilterSortItem * obj, NSUInteger idx, BOOL *stop) {
-        if([obj.sortField isEqualToString:weakSelf.sortField]) {
-            *stop = YES;
-            return YES;
-        }
-        return NO;
-    }];
-    
-    if(sortSelectedIndex != NSNotFound) {
-        [self makeItemAtIndexPath:[NSIndexPath indexPathForRow:sortSelectedIndex inSection:SORT_SECTION]
-                         selected:YES];
-    }
-
-    if(completion) {
-        completion(nil);
-    }
+    [[IQService sharedService] filterCountersForFolder:self.folder
+                                                status:self.statusFilter
+                                           communityId:self.communityId
+                                               handler:^(BOOL success, TaskFilterCounters * counters, NSData *responseData, NSError *error) {
+                                                   if (success) {
+                                                       [_sections removeAllObjects];
+                                                       
+                                                       TaskFilterSection * statusSection = [self makeStatusesSectionFromStatuses:counters.statuses];
+                                                       [_sections addObject:statusSection];
+                                                       
+                                                       TaskFilterSection * communitiesSection = [[TaskFilterSection alloc] init];
+                                                       communitiesSection.title = NSLocalizedString(@"Communities", nil);
+                                                       communitiesSection.expandable = YES;
+                                                       communitiesSection.items = counters.communities;
+                                                       [_sections addObject:communitiesSection];
+                                                       
+                                                       TaskFilterSection * sortingSection = [self makeSortSection];
+                                                       [_sections addObject:sortingSection];
+                                                       
+                                                       [self selectItemsByFields];
+                                                       if(completion) {
+                                                           completion(nil);
+                                                       }
+                                                   }
+                                                   else if(completion) {
+                                                       completion(error);
+                                                   }
+                                               }];
 }
 
-- (void)updateFilterParameters {
-    NSArray * sortIndexPath = [self selectedIndexPathsForSection:SORT_SECTION];
-    if ([sortIndexPath count] > 0) {
-        TaskFilterSection * sortingSection = _sections[SORT_SECTION];
-        TaskFilterSortItem * sortItem = [self itemAtIndexPath:[sortIndexPath firstObject]];
-        
-        self.sortField = sortItem.sortField;
-        self.ascending = sortingSection.ascending;
-    }
+- (NSIndexPath*)selectedIndexPathForSection:(NSInteger)section {
+    return [[_selectedItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"section == %d", section]] firstObject];
 }
 
 - (void)clearModelData {
-    
+    [_sections removeAllObjects];
 }
 
 #pragma mark - Delegate methods
@@ -195,15 +190,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 #pragma mark - Private methods
 
-- (void)reloadItemAtIndexPath:(NSIndexPath*)indexPath {
-    [self modelWillChangeContent];
-    [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
-                   atIndexPath:indexPath
-                 forChangeType:NSFetchedResultsChangeUpdate
-                  newIndexPath:nil];
-    [self modelDidChangeContent];
-}
-
 - (TaskFilterSection*)makeSortSection {
     TaskFilterSection * sortingSection = [[TaskFilterSection alloc] init];
     sortingSection.title = NSLocalizedString(@"Sorting", nil);
@@ -231,6 +217,103 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     sortingSection.items = items;
 
     return sortingSection;
+}
+
+- (TaskFilterSection*)makeStatusesSectionFromStatuses:(NSDictionary*)statuses {
+    NSMutableArray * items = [NSMutableArray array];
+    TaskFilterSection * statusSection = [[TaskFilterSection alloc] init];
+    statusSection.title = NSLocalizedString(@"Statuses", nil);
+    statusSection.expandable = YES;
+
+    for (NSString * status in statuses.allKeys) {
+        if ([statuses[status] integerValue] > 0) {
+            TaskStatusFilterItem * item = [[TaskStatusFilterItem alloc] init];
+            item.status = status;
+            item.title = NSLocalizedStringFromTable(status, @"FiltersLocalization", nil);
+            item.count = statuses[status];
+            [items addObject:item];
+        }
+    }
+    
+    statusSection.items = items;
+    return statusSection;
+}
+
+- (void)selectItemsByFields {
+    TaskFilterSection * statusSection = _sections[STATUS_SECTION];
+    if(self.statusFilter) {
+        __weak typeof(self) weakSelf = self;
+        NSInteger selectedIndex = [statusSection.items indexOfObjectPassingTest:^BOOL(TaskStatusFilterItem * obj, NSUInteger idx, BOOL *stop) {
+            if([obj.status isEqualToString:weakSelf.statusFilter]) {
+                *stop = YES;
+                return YES;
+            }
+            return NO;
+        }];
+        
+        if(selectedIndex != NSNotFound) {
+            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:selectedIndex
+                                                         inSection:STATUS_SECTION];
+            if(![_selectedItems containsObject:indexPath]) {
+                [_selectedItems addObject:indexPath];
+            }
+        }
+    }
+
+    TaskFilterSection * communitySection = _sections[COMMUNITY_SECTION];
+    if(self.communityId) {
+        __weak typeof(self) weakSelf = self;
+        NSInteger selectedIndex = [communitySection.items indexOfObjectPassingTest:^BOOL(CommunityFilter * obj, NSUInteger idx, BOOL *stop) {
+            if([obj.communityId isEqualToNumber:weakSelf.communityId]) {
+                *stop = YES;
+                return YES;
+            }
+            return NO;
+        }];
+        
+        if(selectedIndex != NSNotFound) {
+            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:selectedIndex
+                                                         inSection:COMMUNITY_SECTION];
+            if(![_selectedItems containsObject:indexPath]) {
+                [_selectedItems addObject:indexPath];
+            }
+        }
+    }
+
+    TaskFilterSection * sortingSection = _sections[SORT_SECTION];
+    __weak typeof(self) weakSelf = self;
+    NSInteger sortSelectedIndex = [sortingSection.items indexOfObjectPassingTest:^BOOL(TaskFilterSortItem * obj, NSUInteger idx, BOOL *stop) {
+        if([obj.sortField isEqualToString:weakSelf.sortField]) {
+            *stop = YES;
+            return YES;
+        }
+        return NO;
+    }];
+    
+    if(sortSelectedIndex != NSNotFound) {
+        NSIndexPath * indexPath = [NSIndexPath indexPathForRow:sortSelectedIndex
+                                                     inSection:SORT_SECTION];
+        if(![_selectedItems containsObject:indexPath]) {
+            [_selectedItems addObject:indexPath];
+        }
+    }
+}
+
+- (void)updatePropertiesBySelectedItems {
+    NSIndexPath * statusIndexPath = [self selectedIndexPathForSection:STATUS_SECTION];
+    TaskStatusFilterItem * statusItem = (TaskStatusFilterItem*)[self itemAtIndexPath:statusIndexPath];
+    self.statusFilter = statusItem.status;
+    
+    NSIndexPath * communityIndexPath = [self selectedIndexPathForSection:COMMUNITY_SECTION];
+    CommunityFilter * communityItem = (CommunityFilter*)[self itemAtIndexPath:communityIndexPath];
+    self.communityId = communityItem.communityId;
+
+    NSIndexPath * sortIndexPath = [self selectedIndexPathForSection:SORT_SECTION];
+    TaskFilterSortItem * sortItem = (TaskFilterSortItem*)[self itemAtIndexPath:sortIndexPath];
+    self.sortField = sortItem.sortField;
+    
+    TaskFilterSection * sortingSection = _sections[SORT_SECTION];
+    self.ascending = sortingSection.ascending;
 }
 
 @end

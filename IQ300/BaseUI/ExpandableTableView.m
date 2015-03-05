@@ -11,7 +11,7 @@
 @interface ExpandableTableView() {
     id<ExpandableTableViewDataSource> _targetDataSource;
     id<ExpandableTableViewDelegate> _targetDelegate;
-    NSMutableDictionary * _expandedSections;
+    NSMutableIndexSet * _expandedSections;
     BOOL _isDrawingComplete;
 }
 
@@ -23,7 +23,7 @@
     self = [super init];
     
     if (self) {
-        _expandedSections = [NSMutableDictionary dictionary];
+        _expandedSections = [[NSMutableIndexSet alloc] init];
         _isDrawingComplete = NO;
     }
     
@@ -32,14 +32,20 @@
 
 #pragma mark - Public methods
 
+- (NSIndexSet*)expandedSections {
+    return [_expandedSections copy];
+}
+
 - (void)setDataSource:(id<ExpandableTableViewDataSource>)dataSource {
     _targetDataSource = dataSource;
     [super setDataSource:(_targetDataSource) ? self : nil];
 }
 
 - (void)expandSection:(NSInteger)section withRowAnimation:(UITableViewRowAnimation)animation {
-    if([self canExpandSection:section] && ![_expandedSections[@(section)] boolValue]) {
-        _expandedSections[@(section)] = @(YES);
+    BOOL isSectionExpanded = [_expandedSections containsIndex:section];
+    if([self canExpandSection:section] && !isSectionExpanded) {
+        [_expandedSections addIndex:section];
+        
         NSInteger numberOfRows = [_targetDataSource tableView:self numberOfRowsInSection:section];
       
         if(_isDrawingComplete && numberOfRows > 0) {
@@ -66,10 +72,12 @@
 }
 
 - (void)collapseSection:(NSInteger)section withRowAnimation:(UITableViewRowAnimation)animation {
-    if([self canExpandSection:section] && [_expandedSections[@(section)] boolValue]) {
-        _expandedSections[@(section)] = @(NO);
+    BOOL isSectionExpanded = [_expandedSections containsIndex:section];
+    if([self canExpandSection:section] && isSectionExpanded) {
+        [_expandedSections removeIndex:section];
+        
         NSInteger numberOfRows = [_targetDataSource tableView:self numberOfRowsInSection:section];
-
+        
         if(_isDrawingComplete && numberOfRows > 0) {
             BOOL animated = (animation != UITableViewRowAnimationNone);
             [self willCollapseSection:section animated:animated];
@@ -94,11 +102,16 @@
 }
 
 - (void)expandCollapseSection:(NSInteger)section animated:(BOOL)animated {
-    if([_expandedSections[@(section)] boolValue]) {
-        [self collapseSection:section withRowAnimation:(animated) ? UITableViewRowAnimationTop : UITableViewRowAnimationNone];
-    }
-    else {
-        [self expandSection:section withRowAnimation:(animated) ? UITableViewRowAnimationTop : UITableViewRowAnimationNone];
+    if ([self canExpandSection:section]) {
+        BOOL isSectionExpanded = [_expandedSections containsIndex:section];
+        if(isSectionExpanded) {
+            [self collapseSection:section withRowAnimation:(animated) ? UITableViewRowAnimationTop :
+                                                                        UITableViewRowAnimationNone];
+        }
+        else {
+            [self expandSection:section withRowAnimation:(animated) ? UITableViewRowAnimationTop :
+                                                                      UITableViewRowAnimationNone];
+        }
     }
 }
 
@@ -155,8 +168,9 @@
 #pragma mark - UITableView DataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    BOOL isSectionExpanded = [_expandedSections containsIndex:section];
     BOOL canExpandSection = [self canExpandSection:section];
-    if(!canExpandSection || (canExpandSection && [_expandedSections[@(section)] boolValue])) {
+    if(!canExpandSection || (canExpandSection && isSectionExpanded)) {
         return [_targetDataSource tableView:self numberOfRowsInSection:section];
     }
     return 0;

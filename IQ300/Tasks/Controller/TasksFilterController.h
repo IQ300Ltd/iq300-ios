@@ -8,8 +8,18 @@
 
 #import "TasksFilterModel.h"
 
+@class TasksFilterController;
+
+@protocol TasksFilterControllerDelegate <NSObject>
+
+@optional
+- (void)filterControllerWillFinish:(TasksFilterController*)controller;
+
+@end
+
 @interface TasksFilterController : UIViewController <IQTableModelDelegate>
 
 @property (nonatomic, strong) TasksFilterModel * model;
+@property (nonatomic, weak) id<TasksFilterControllerDelegate> delegate;
 
 @end

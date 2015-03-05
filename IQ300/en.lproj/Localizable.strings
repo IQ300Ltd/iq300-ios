@@ -57,7 +57,7 @@
 "DocShare" = "Document";
 "ErrorReport" = "Feedback";
 
-//Tasks types
+//Tasks statuses
 "browsed" = "Browsed";
 "new" = "New";
 "in_work" = "In work";
@@ -68,6 +68,7 @@
 "completed" = "Upon verification";
 "declined" = "Declined";
 "archived" = "Archived";
+"pending" = "Inactive";
 
 "Filtering and sorting" = "Filtering and sorting";
 "Statuses" = "Statuses";

@@ -20,7 +20,7 @@
 #import "DispatchAfterExecution.h"
 #import "TasksMenuCounters.h"
 
-@interface TasksController () {
+@interface TasksController () <TasksFilterControllerDelegate> {
     TasksView * _mainView;
     TasksMenuModel * _menuModel;
     UITapGestureRecognizer * _singleTapGesture;
@@ -173,10 +173,35 @@
     [self updateBarBadgeWithValue:[self.model.counters.total integerValue]];
 }
 
+#pragma mark - IQMenuModel Delegate
+
+- (void)filterControllerWillFinish:(TasksFilterController *)controller {
+    TasksFilterModel * model = controller.model;
+    if (![self.model.sortField isEqualToString:model.sortField] ||
+        self.model.ascending != model.ascending ||
+        (model.communityId && ![self.model.communityId isEqualToNumber:model.communityId]) ||
+        (!model.communityId && self.model.communityId) ||
+        ![self.model.statusFilter isEqualToString:model.statusFilter]) {
+     
+        self.model.sortField = model.sortField;
+        self.model.statusFilter = model.statusFilter;
+        self.model.ascending = model.ascending;
+        self.model.communityId = model.communityId;
+        
+        [self.model reloadModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+                [self scrollToTopAnimated:NO delay:0.0f];
+            }
+        }];
+    }
+}
+
 #pragma mark -  Private methods
 
 - (void)showFilterController {
     TasksFilterModel * model = [[TasksFilterModel alloc] init];
+    model.folder = self.model.folder;
     model.sortField = self.model.sortField;
     model.statusFilter = self.model.statusFilter;
     model.ascending = self.model.ascending;
@@ -185,6 +210,7 @@
     TasksFilterController * controller = [[TasksFilterController alloc] init];
     controller.title = NSLocalizedString(@"Filtering and sorting", nil);
     controller.model = model;
+    controller.delegate = self;
     [self.navigationController pushViewController:controller animated:YES];
 }
 

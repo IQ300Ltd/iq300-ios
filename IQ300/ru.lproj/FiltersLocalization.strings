@@ -1,0 +1,19 @@
+/* 
+  FiltersLocalization.strings
+  IQ300
+
+  Created by Tayphoon on 04.03.15.
+  Copyright (c) 2015 Tayphoon. All rights reserved.
+*/
+
+"new" = "Новые";
+"browsed" = "Просмотренные";
+"in_work" = "В работе";
+"on_init" = "Инициализированные";
+"refused" = "Отказанные";
+"completed" = "На проверке";
+"accepted" = "Выполненные";
+"declined" = "Не принятые";
+"canceled" = "Отмененные";
+"archived" = "Архивные";
+"pending" = "Неактивная";

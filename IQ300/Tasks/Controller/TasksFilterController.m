@@ -21,7 +21,6 @@
 @interface TasksFilterController () <ExpandableTableViewDataSource, ExpandableTableViewDelegate> {
     ExpandableTableView * _tableView;
     NSInteger _selectedSection;
-    NSMutableIndexSet * _expandedSections;
     UIView * _bottomSeparatorView;
     ExtendedButton * _clearButton;
 }
@@ -34,13 +33,18 @@
     self = [super init];
     if (self) {
         _selectedSection = NSNotFound;
-        _expandedSections = [[NSMutableIndexSet alloc] init];
     }
     return self;
 }
 
 - (BOOL)showMenuBarItem {
     return NO;
+}
+
+- (void)setModel:(id<IQTableModel>)model {
+    [_model setDelegate:nil];
+    _model = model;
+    _model.delegate = self;
 }
 
 - (void)viewDidLoad {
@@ -103,8 +107,16 @@
     self.navigationItem.leftBarButtonItem = backBarButton;
 
     if(_model) {
-        [_model updateModelWithCompletion:nil];
+        [_model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [_tableView reloadData];
+            }
+        }];
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
 }
 
 #pragma mark - UITableView DataSource
@@ -129,7 +141,7 @@
     }
     
     id<TaskFilterItem> item = [self.model itemAtIndexPath:indexPath];
-    cell.titleLabel.text = item.title;
+    cell.titleLabel.text = (indexPath.section == SORT_SECTION) ? item.title : [NSString stringWithFormat:@"%@ - %@", item.title, item.count];
     
     BOOL showBootomLine = !(indexPath.row == [_model numberOfItemsInSection:indexPath.section] - 1);
     [cell setBottomLineShown:showBootomLine];
@@ -163,21 +175,33 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BOOL isItemSelected = ![self.model isItemSellectedAtIndexPath:indexPath];
-    
-    //Deselect previous cells
-    NSArray * sectionSelectedIndexPaths = [self.model selectedIndexPathsForSection:indexPath.section];
-    for (NSIndexPath * selectedIndexPath in sectionSelectedIndexPaths) {
-        UITableViewCell * cell = [tableView cellForRowAtIndexPath:selectedIndexPath];
-        [cell setAccessoryType:UITableViewCellAccessoryNone];
-        [self.model makeItemAtIndexPath:selectedIndexPath selected:NO];
-    }
-    
-    UITableViewCell * cell = [tableView cellForRowAtIndexPath:indexPath];
-    [cell setAccessoryType:(isItemSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
+    NSMutableArray * updates = [NSMutableArray array];
+    NSIndexPath * selectedIndexPath = [self.model selectedIndexPathForSection:indexPath.section];
+    if(indexPath.section != SORT_SECTION) {
+        BOOL isItemSelected = [self.model isItemSellectedAtIndexPath:indexPath];
+        if(selectedIndexPath && [selectedIndexPath compare:indexPath] != NSOrderedSame) {
+            [self.model makeItemAtIndexPath:selectedIndexPath selected:NO];
+            [updates addObject:selectedIndexPath];
+        }
 
-    [self.model makeItemAtIndexPath:indexPath selected:isItemSelected];
-    [self.model updateFilterParameters];
+        [self.model makeItemAtIndexPath:indexPath selected:!isItemSelected];
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self modelWillChangeContent:self.model];
+                [self model:self.model didChangeSectionAtIndex:STATUS_SECTION forChangeType:NSFetchedResultsChangeUpdate];
+                [self model:self.model didChangeSectionAtIndex:COMMUNITY_SECTION forChangeType:NSFetchedResultsChangeUpdate];
+                [self modelDidChangeContent:self.model];
+            }
+        }];
+    }
+    else if((selectedIndexPath && [selectedIndexPath compare:indexPath] != NSOrderedSame) || !selectedIndexPath) {
+        [self.model makeItemAtIndexPath:selectedIndexPath selected:NO];
+        [self.model makeItemAtIndexPath:indexPath selected:YES];
+        [self modelWillChangeContent:self.model];
+        [self model:self.model didChangeObject:nil atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+        [self model:self.model didChangeObject:nil atIndexPath:selectedIndexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+        [self modelDidChangeContent:self.model];
+    }
 }
 
 #pragma mark - IQMenuModel Delegate
@@ -190,6 +214,10 @@
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [_tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
+            break;
+        case NSFetchedResultsChangeUpdate:
+            [_tableView reloadSections:[NSIndexSet indexSetWithIndex:sectionIndex]
                       withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
         case NSFetchedResultsChangeDelete:
@@ -240,15 +268,10 @@
     BOOL isExpandable = [self tableView:_tableView canExpandSection:section];
     [headerView setExpandable:isExpandable];
     if(isExpandable) {
-        [headerView setExpanded:[_expandedSections containsIndex:section]];
+        BOOL isSectionExpanded = [_tableView.expandedSections containsIndex:section];
+        [headerView setExpanded:isSectionExpanded];
         
         [headerView setActionBlock:^(TaskFilterSectionView *header) {
-            if(header.isExpanded) {
-                [_expandedSections addIndex:section];
-            }
-            else {
-                [_expandedSections removeIndex:section];
-            }
             [_tableView expandCollapseSection:header.section animated:YES];
         }];
     }
@@ -266,6 +289,10 @@
 }
 
 - (void)backButtonAction:(UIButton*)sender {
+    if ([self.delegate respondsToSelector:@selector(filterControllerWillFinish:)]) {
+        [self.delegate filterControllerWillFinish:self];
+    }
+
     [self.navigationController popViewControllerAnimated:YES];
 }
 

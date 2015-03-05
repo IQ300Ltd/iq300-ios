@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TaskFilterItem.h"
 
 @class RKObjectMapping;
 
-@interface CommunityFilter : NSObject
+@interface CommunityFilter : NSObject <TaskFilterItem>
 
 @property (nonatomic, strong) NSNumber * communityId;
 @property (nonatomic, strong) NSString * title;
