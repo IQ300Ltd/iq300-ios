@@ -20,7 +20,6 @@
 
 @interface TasksFilterController () <ExpandableTableViewDataSource, ExpandableTableViewDelegate> {
     ExpandableTableView * _tableView;
-    NSInteger _selectedSection;
     UIView * _bottomSeparatorView;
     ExtendedButton * _clearButton;
 }
@@ -32,7 +31,6 @@
 - (id)init {
     self = [super init];
     if (self) {
-        _selectedSection = NSNotFound;
     }
     return self;
 }
@@ -175,13 +173,11 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSMutableArray * updates = [NSMutableArray array];
     NSIndexPath * selectedIndexPath = [self.model selectedIndexPathForSection:indexPath.section];
     if(indexPath.section != SORT_SECTION) {
         BOOL isItemSelected = [self.model isItemSellectedAtIndexPath:indexPath];
         if(selectedIndexPath && [selectedIndexPath compare:indexPath] != NSOrderedSame) {
             [self.model makeItemAtIndexPath:selectedIndexPath selected:NO];
-            [updates addObject:selectedIndexPath];
         }
 
         [self.model makeItemAtIndexPath:indexPath selected:!isItemSelected];
