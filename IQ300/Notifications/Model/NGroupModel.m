@@ -22,6 +22,7 @@
 #define SORT_DIRECTION IQSortDirectionAscending
 
 static NSString * NReuseIdentifier = @"NReuseIdentifier";
+static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 @interface NGroupModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;
@@ -70,7 +71,9 @@ static NSString * NReuseIdentifier = @"NReuseIdentifier";
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
-    return NReuseIdentifier;
+    IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
+    BOOL isActionItem = ([item.unreadCount integerValue] == 1 && [item.lastNotification.hasActions boolValue]);
+    return (isActionItem) ? NActionReuseIdentifier : NReuseIdentifier;
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
