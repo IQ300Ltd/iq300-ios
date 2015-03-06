@@ -128,6 +128,8 @@
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:indexPath];
+    self.model.communityId = nil;
+    self.model.statusFilter = nil;
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
