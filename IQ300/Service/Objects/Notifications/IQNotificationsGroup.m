@@ -19,6 +19,7 @@
 @dynamic firstNotificationId;
 @dynamic lastNotificationId;
 @dynamic lastNotification;
+@dynamic lastUnreadNotification;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:@"IQNotificationsGroup" inManagedObjectStore:store];
@@ -32,10 +33,17 @@
                                                   @"last_notice_id"                 : @"lastNotificationId"
                                                   }];
     
-    RKRelationshipMapping * userRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"last_notification"
-                                                                                       toKeyPath:@"lastNotification"
-                                                                                     withMapping:[IQNotification objectMappingForManagedObjectStore:store]];
-    [mapping addPropertyMapping:userRelation];
+    
+    RKRelationshipMapping * notificationRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"last_notification"
+                                                                                               toKeyPath:@"lastNotification"
+                                                                                             withMapping:[IQNotification objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:notificationRelation];
+    
+    RKRelationshipMapping * unotificationRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"last_unread_notification"
+                                                                                                toKeyPath:@"lastUnreadNotification"
+                                                                                              withMapping:[IQNotification objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:unotificationRelation];
+
 
     return mapping;
 }

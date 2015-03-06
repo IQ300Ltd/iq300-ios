@@ -90,6 +90,7 @@
         <attribute name="readed" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="group" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQNotificationsGroup" inverseName="lastNotification" inverseEntity="IQNotificationsGroup" syncable="YES"/>
+        <relationship name="group_unread" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQNotificationsGroup" inverseName="lastUnreadNotification" inverseEntity="IQNotificationsGroup" syncable="YES"/>
         <relationship name="notificable" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQNotificable" inverseName="notifications" inverseEntity="IQNotificable" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="notifications" inverseEntity="IQUser" syncable="YES"/>
     </entity>
@@ -101,6 +102,7 @@
         <attribute name="totalCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="unreadCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="lastNotification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQNotification" inverseName="group" inverseEntity="IQNotification" syncable="YES"/>
+        <relationship name="lastUnreadNotification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQNotification" inverseName="group_unread" inverseEntity="IQNotification" syncable="YES"/>
     </entity>
     <entity name="IQProject" representedClassName="IQProject" syncable="YES">
         <attribute name="projectId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -165,8 +167,8 @@
         <element name="IQConversation" positionX="-54" positionY="81" width="128" height="195"/>
         <element name="IQDiscussion" positionX="-45" positionY="90" width="128" height="148"/>
         <element name="IQNotificable" positionX="-63" positionY="-9" width="128" height="103"/>
-        <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="285"/>
-        <element name="IQNotificationsGroup" positionX="-45" positionY="135" width="128" height="150"/>
+        <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="300"/>
+        <element name="IQNotificationsGroup" positionX="-45" positionY="135" width="128" height="163"/>
         <element name="IQProject" positionX="-45" positionY="135" width="128" height="75"/>
         <element name="IQTask" positionX="-18" positionY="162" width="128" height="390"/>
         <element name="IQTodoItem" positionX="-36" positionY="144" width="128" height="148"/>

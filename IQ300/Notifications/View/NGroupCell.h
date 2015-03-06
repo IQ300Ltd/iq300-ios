@@ -32,9 +32,10 @@
 @property (nonatomic, strong) UILabel * descriptionLabel;
 @property (nonatomic, strong) UIButton * markAsReadedButton;
 @property (nonatomic, readonly) IQBadgeView * badgeView;
+@property (nonatomic, assign) BOOL showUnreadOnly;
 
 @property (nonatomic, strong) IQNotificationsGroup * item;
 
-+ (CGFloat)heightForItem:(IQNotificationsGroup *)item andCellWidth:(CGFloat)cellWidth;
++ (CGFloat)heightForItem:(IQNotificationsGroup *)item andCellWidth:(CGFloat)cellWidth showUnreadOnly:(BOOL)showUnreadOnly;
 
 @end

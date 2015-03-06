@@ -25,6 +25,7 @@
 @property (nonatomic, strong) NSNumber * ownerId;
 
 @property (nonatomic, strong) IQNotification * lastNotification;
+@property (nonatomic, strong) IQNotification * lastUnreadNotification;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

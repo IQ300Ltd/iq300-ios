@@ -20,11 +20,13 @@
 
 @implementation NGroupCell
 
-+ (CGFloat)heightForItem:(IQNotificationsGroup *)item andCellWidth:(CGFloat)cellWidth {
++ (CGFloat)heightForItem:(IQNotificationsGroup *)item andCellWidth:(CGFloat)cellWidth showUnreadOnly:(BOOL)showUnreadOnly {
     CGFloat width = cellWidth - HORIZONTAL_INSETS * 2.0f - 40;
     CGFloat height = GROUP_CELL_MIN_HEIGHT - DESCRIPTION_MIN_HEIGHT;
+    BOOL showUnread = ([item.unreadCount integerValue] == 1 && item.lastUnreadNotification && showUnreadOnly);
+    IQNotification * notification = (showUnread) ? item.lastUnreadNotification : item.lastNotification;
     
-    if([item.lastNotification.additionalDescription length] > 0) {
+    if([notification.additionalDescription length] > 0) {
         CGSize constrainedSize = CGSizeMake(width,
                                             GROUP_CELL_MAX_HEIGHT);
         
@@ -180,7 +182,8 @@
 - (void)setItem:(IQNotificationsGroup *)item {
     _item = item;
     
-    IQNotification * notification = _item.lastNotification;
+    BOOL showUnread = ([_item.unreadCount integerValue] == 1 && _item.lastUnreadNotification && self.showUnreadOnly);
+    IQNotification * notification = (showUnread) ? _item.lastUnreadNotification : _item.lastNotification;
     BOOL isReaded = ([_item.unreadCount integerValue] == 0);
     _contentBackgroundInsets = (isReaded) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);
     _contentBackgroundView.backgroundColor = (isReaded) ? CONTEN_BACKGROUND_COLOR_R :
@@ -206,6 +209,7 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     
+    _showUnreadOnly = NO;
     _badgeView.hidden = YES;
     _contentBackgroundInsets = UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR_R;

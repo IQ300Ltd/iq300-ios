@@ -72,20 +72,22 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
     IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
-    BOOL isActionItem = ([item.unreadCount integerValue] == 1 && [item.lastNotification.hasActions boolValue]);
+
+    BOOL isActionItem = [self isActionItem:item];
     return (isActionItem) ? NActionReuseIdentifier : NReuseIdentifier;
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
     IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
-    Class cellClass = ([item.unreadCount integerValue] == 1 && [item.lastNotification.hasActions boolValue]) ? [NActionGropCell class] : [NGroupCell class];
+    BOOL isActionItem = [self isActionItem:item];
+    Class cellClass = (isActionItem) ? [NActionGropCell class] : [NGroupCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
                             reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
     IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
-    return [NGroupCell heightForItem:item andCellWidth:self.cellWidth];
+    return [NGroupCell heightForItem:item andCellWidth:self.cellWidth showUnreadOnly:self.loadUnreadOnly];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
@@ -309,6 +311,14 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 #pragma mark - Private methods
+
+- (BOOL)isActionItem:(IQNotificationsGroup*)item {
+    BOOL showUnread = ([item.unreadCount integerValue] == 1 && item.lastUnreadNotification && self.loadUnreadOnly);
+    IQNotification * notification = (showUnread) ? item.lastUnreadNotification : item.lastNotification;
+    
+    BOOL isActionItem = ([item.unreadCount integerValue] == 1 && [notification.hasActions boolValue]);
+    return isActionItem;
+}
 
 - (void)resetActionsForGroupNotification:(IQNotificationsGroup*)group {
     group.lastNotification.hasActions = @(NO);

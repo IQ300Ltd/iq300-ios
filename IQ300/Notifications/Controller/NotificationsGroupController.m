@@ -155,6 +155,8 @@
     }
     
     IQNotificationsGroup * group = [self.model itemAtIndexPath:indexPath];
+    
+    cell.showUnreadOnly = self.model.loadUnreadOnly;
     cell.item = group;
     cell.markAsReadedButton.tag = indexPath.row;
     cell.delegate = self;

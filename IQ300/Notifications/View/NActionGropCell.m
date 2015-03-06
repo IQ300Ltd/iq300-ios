@@ -50,7 +50,8 @@
 - (void)setItem:(IQNotificationsGroup *)item {
     [super setItem:item];
     
-    IQNotification * notification = item.lastNotification;
+    BOOL showUnread = ([item.unreadCount integerValue] == 1 && item.lastUnreadNotification && self.showUnreadOnly);
+    IQNotification * notification = (showUnread) ? item.lastUnreadNotification : item.lastNotification;
     _contentBackgroundInsets = (![notification.hasActions boolValue]) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);
     self.contentBackgroundView.backgroundColor = (![notification.hasActions boolValue]) ? CONTEN_BACKGROUND_COLOR_R :
     CONTEN_BACKGROUND_COLOR;
