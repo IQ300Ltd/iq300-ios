@@ -71,6 +71,7 @@
     [_clearButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
     _clearButton.layer.borderColor = _clearButton.backgroundColor.CGColor;
     [_clearButton setClipsToBounds:YES];
+    [_clearButton addTarget:self action:@selector(clearButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_clearButton];
 }
 
@@ -104,8 +105,8 @@
                                                                       target:self action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
 
-    if(_model) {
-        [_model updateModelWithCompletion:^(NSError *error) {
+    if(self.model) {
+        [self.model updateModelWithCompletion:^(NSError *error) {
             if(!error) {
                 [_tableView reloadData];
             }
@@ -290,6 +291,15 @@
     }
 
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)clearButtonAction:(UIButton*)sender {
+    [self.model resetFilters];
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        if(!error) {
+            [_tableView reloadData];
+        }
+    }];
 }
 
 @end

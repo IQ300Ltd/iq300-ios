@@ -427,6 +427,9 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     else {
         self.sortField = @"updated_at";
         self.ascending = NO;
+        self.statusFilter = nil;
+        self.communityId = nil;
+        
         [self unsubscribeFromIQNotifications];
         [self clearModelData];
         [self modelDidChanged];

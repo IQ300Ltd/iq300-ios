@@ -36,4 +36,6 @@
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)selected;
 - (NSIndexPath*)selectedIndexPathForSection:(NSInteger)section;
 
+- (void)resetFilters;
+
 @end

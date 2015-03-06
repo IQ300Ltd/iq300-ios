@@ -152,6 +152,16 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return [[_selectedItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"section == %d", section]] firstObject];
 }
 
+- (void)resetFilters {
+    self.sortField = @"updated_at";
+    self.ascending = NO;
+    self.statusFilter = nil;
+    self.communityId = nil;
+    
+    [_selectedItems removeAllObjects];
+    [_selectedItems addObject:[NSIndexPath indexPathForRow:0 inSection:SORT_SECTION]];
+}
+
 - (void)clearModelData {
     [_sections removeAllObjects];
 }
