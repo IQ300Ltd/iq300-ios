@@ -185,6 +185,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     else {
         NSInteger count = [self numberOfItemsInSection:0];
         NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
+        
         [[IQService sharedService] tasksBeforeId:nil
                                           folder:self.folder
                                           status:self.statusFilter
