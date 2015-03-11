@@ -183,12 +183,13 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        NSNumber * taskId = [self getLastTaskIdFromTop:!self.ascending];
-        [[IQService sharedService] tasksBeforeId:taskId
+        NSInteger count = [self numberOfItemsInSection:0];
+        NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
+        [[IQService sharedService] tasksBeforeId:nil
                                           folder:self.folder
                                           status:self.statusFilter
                                      communityId:self.communityId
-                                            page:@(1)
+                                            page:@(page)
                                              per:@(_portionLenght)
                                           search:self.search
                                             sort:_sort
@@ -295,13 +296,14 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
-    NSNumber * lastLoadedId = [self getLastTaskIdFromTop:self.ascending];
-    
-    [[IQService sharedService] tasksBeforeId:lastLoadedId
+    NSInteger count = [self numberOfItemsInSection:0];
+    NSInteger page = (count > 0) ? count / _portionLenght : 0;
+
+    [[IQService sharedService] tasksBeforeId:nil
                                       folder:self.folder
                                       status:self.statusFilter
                                  communityId:self.communityId
-                                        page:@(1)
+                                        page:@(page)
                                          per:@(_portionLenght)
                                       search:self.search
                                         sort:_sort
