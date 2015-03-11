@@ -73,6 +73,9 @@
                                                          inSection:0]];
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];
     
+    NSString * title = [NSString stringWithFormat:@"%@ %@", (self.model.ascending) ? @"↓" : @"↑", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil)];
+    _mainView.titleLabel.text = title;
+    
     _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFilterController)];
     _singleTapGesture.numberOfTapsRequired = 1;
 
@@ -189,6 +192,24 @@
         self.model.statusFilter = model.statusFilter;
         self.model.ascending = model.ascending;
         self.model.communityId = model.communityId;
+
+        NSMutableArray * fields = [NSMutableArray array];
+        
+        NSString * ascedingString = (self.model.ascending) ? @"↓" : @"↑";
+        
+        if([self.model.sortField length] > 0) {
+            [fields addObject:NSLocalizedString(DescriptionForSortField(self.model.sortField), nil)];
+        }
+        
+        if([self.model.statusFilter length] > 0) {
+            [fields addObject:NSLocalizedStringFromTable(self.model.statusFilter, @"FiltersLocalization", nil)];
+        }
+        
+        if([controller.model.communityDescription length] > 0) {
+            [fields addObject:controller.model.communityDescription];
+        }
+        
+        _mainView.titleLabel.text = [NSString stringWithFormat:@"%@ %@", ascedingString, [fields componentsJoinedByString:@", "]];
         
         [self.model reloadModelWithCompletion:^(NSError *error) {
             if(!error) {

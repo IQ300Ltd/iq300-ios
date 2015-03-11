@@ -14,13 +14,17 @@
 
 @protocol TaskFilterItem;
 
+extern NSString * DescriptionForSortField(NSString * sortField);
+
 @interface TasksFilterModel : NSObject <IQTableModel>
 
 @property (nonatomic, strong) NSString * folder;
+@property (nonatomic, assign, getter=isAscending) BOOL ascending;
+
 @property (nonatomic, strong) NSString * sortField;
 @property (nonatomic, strong) NSString * statusFilter;
 @property (nonatomic, strong) NSNumber * communityId;
-@property (nonatomic, assign, getter=isAscending) BOOL ascending;
+@property (nonatomic, readonly) NSString * communityDescription;
 
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 

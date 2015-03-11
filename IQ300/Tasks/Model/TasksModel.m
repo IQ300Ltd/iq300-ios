@@ -183,7 +183,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        NSNumber * taskId = [self getLastIdFromTop:NO];
+        NSNumber * taskId = [self getLastTaskIdFromTop:!self.ascending];
         [[IQService sharedService] tasksBeforeId:taskId
                                           folder:self.folder
                                           status:self.statusFilter
@@ -295,7 +295,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
-    NSNumber * lastLoadedId = [self getLastIdFromTop:YES];
+    NSNumber * lastLoadedId = [self getLastTaskIdFromTop:self.ascending];
     
     [[IQService sharedService] tasksBeforeId:lastLoadedId
                                       folder:self.folder
@@ -338,19 +338,19 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     }
 }
 
-- (NSNumber*)getLastIdFromTop:(BOOL)top {
+/**
+ *  Get task id by max/min sort field
+ *
+ *  @param top If top return max sort field
+ *
+ *  @return Task id
+ */
+- (NSNumber*)getLastTaskIdFromTop:(BOOL)top {
+    NSString * keyPath = [TasksModel propertyNameForSortField:self.sortField];
     NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
-    NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"taskId"];
-    NSExpression * maxIdExpression = [NSExpression expressionForFunction:(top) ? @"max:" : @"min:"
-                                                               arguments:[NSArray arrayWithObject:keyPathExpression]];
-    
-    NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
-    [expressionDescription setName:@"taskId"];
-    [expressionDescription setExpression:maxIdExpression];
-    [expressionDescription setExpressionResultType:NSDecimalAttributeType];
-    
     [fetchRequest setPredicate:[self makeFilterPredicate]];
-    [fetchRequest setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:keyPath ascending:top]];
+    [fetchRequest setPropertiesToFetch:@[@"taskId"]];
     [fetchRequest setResultType:NSDictionaryResultType];
     fetchRequest.fetchLimit = 1;
     

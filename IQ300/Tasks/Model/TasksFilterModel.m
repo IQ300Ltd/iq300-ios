@@ -16,6 +16,24 @@
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
+extern NSString * DescriptionForSortField(NSString * sortField) {
+    static NSDictionary * _descriptions = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _descriptions = @{
+                     @"updated_at" : @"According to the latest activity",
+                     @"id"         : @"By number",
+                     @"end_date"   : @"According to deadline"
+                     };
+    });
+    
+    if([_descriptions objectForKey:sortField]) {
+        return [_descriptions objectForKey:sortField];
+    }
+    return nil;
+}
+
+
 @interface TasksFilterModel () {
     NSMutableArray * _sections;
     NSMutableArray * _selectedItems;
@@ -210,18 +228,18 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     NSMutableArray * items = [NSMutableArray array];
     
     TaskFilterSortItem * lastActivity = [[TaskFilterSortItem alloc] init];
-    lastActivity.title = NSLocalizedString(@"According to the latest activity", nil);
     lastActivity.sortField = @"updated_at";
+    lastActivity.title = NSLocalizedString(DescriptionForSortField(lastActivity.sortField), nil);
     [items addObject:lastActivity];
     
     TaskFilterSortItem * number = [[TaskFilterSortItem alloc] init];
-    number.title = NSLocalizedString(@"By number", nil);
     number.sortField = @"id";
+    number.title = NSLocalizedString(DescriptionForSortField(number.sortField), nil);
     [items addObject:number];
 
     TaskFilterSortItem * dueDate = [[TaskFilterSortItem alloc] init];
-    dueDate.title = NSLocalizedString(@"According to deadline", nil);
     dueDate.sortField = @"end_date";
+    dueDate.title = NSLocalizedString(DescriptionForSortField(dueDate.sortField), nil);
     [items addObject:dueDate];
     
     sortingSection.items = items;
@@ -317,6 +335,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     NSIndexPath * communityIndexPath = [self selectedIndexPathForSection:COMMUNITY_SECTION];
     CommunityFilter * communityItem = (CommunityFilter*)[self itemAtIndexPath:communityIndexPath];
     self.communityId = communityItem.communityId;
+    _communityDescription = communityItem.title;
 
     NSIndexPath * sortIndexPath = [self selectedIndexPathForSection:SORT_SECTION];
     TaskFilterSortItem * sortItem = (TaskFilterSortItem*)[self itemAtIndexPath:sortIndexPath];
