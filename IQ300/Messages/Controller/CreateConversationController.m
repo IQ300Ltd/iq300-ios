@@ -108,8 +108,8 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    id contact = [self.model itemAtIndexPath:indexPath];
-    cell.item = contact;
+    IQContact * contact = [self.model itemAtIndexPath:indexPath];
+    cell.item = contact.user;
     
     return cell;
 }

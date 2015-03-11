@@ -25,12 +25,19 @@
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "IQDrawerController.h"
 
-@interface CommentsController() {
+#import "IQContact.h"
+#import "UserPickerController.h"
+#import "IQService.h"
+
+@interface CommentsController() <UserPickerControllerDelegate> {
     CommentsView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachment;
     UIDocumentInteractionController * _documentController;
     UISwipeGestureRecognizer * _tableGesture;
+    UserPickerController * _userPickerController;
+    NSRange _inputWordRange;
+    NSString * _curUserNick;
 }
 
 @end
@@ -51,6 +58,10 @@
     
     _enterCommentProcessing = NO;
     self.needFullReload = YES;
+    
+    IQUser * curUser = [IQUser userWithId:[IQSession defaultSession].userId
+                                inContext:[IQService sharedService].context];
+    _curUserNick = curUser.nickName;
     
     [self setActivityIndicatorBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.3f]];
     [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -153,6 +164,7 @@
     }
     
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
+    cell.curUserNick = _curUserNick;
     cell.item = comment;
     
     cell.expandable = [self.model isCellExpandableAtIndexPath:indexPath];
@@ -430,11 +442,44 @@
     
     BOOL inputHeightWillBeChanged = (_mainView.inputHeight != messageTextViewHeight);
     [_mainView setInputHeight:messageTextViewHeight];
-    
+    [self layoutUserPickerController];
+  
     if (isTableScrolledToBottom && inputHeightWillBeChanged) {
         [self scrollToBottomAnimated:NO delay:0.0f];
     }
 }
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
+   
+    if([newString length] > 0) {
+        NSString * beforeString = [newString substringToIndex:(range.length > 0) ? range.location : range.location + 1];
+        NSString * afterString =  [newString substringFromIndex:(range.length > 0) ? range.location : range.location + 1];
+        
+        NSArray * wordArrayBefor = [beforeString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString * wordTypedBefor = [wordArrayBefor lastObject];
+        NSArray * wordArrayAfter = [afterString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString * wordTypedAfter = [wordArrayAfter firstObject];
+        
+        NSString * typedWord = [wordTypedBefor stringByAppendingString:wordTypedAfter];
+        if([typedWord length] > 0 && [[typedWord substringToIndex:1] isEqualToString:@"@"]) {
+            _inputWordRange = [newString rangeOfString:typedWord];
+            [self showUserPickerControllerWithFilter:[typedWord substringFromIndex:1]];
+        }
+        else {
+            _inputWordRange = NSMakeRange(0, 0);
+            [self hideUserPickerController];
+        }
+    }
+    else {
+        _inputWordRange = NSMakeRange(0, 0);
+        [self hideUserPickerController];
+    }
+    
+    return YES;
+}
+
+#pragma mark - Scrolls
 
 - (void)scrollToBottomIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
@@ -517,6 +562,46 @@
 
 - (void)drawerDidShowNotification:(NSNotification*)notification {
     [_mainView.inputView.commentTextView resignFirstResponder];
+}
+
+#pragma mark - User picker methods
+
+- (void)showUserPickerControllerWithFilter:(NSString*)filter {
+    if (!_userPickerController) {
+        UsersPickerModel * model = [[UsersPickerModel alloc] init];
+        model.users = [self.model.discussion.users allObjects];
+        
+        _userPickerController = [[UserPickerController alloc] init];
+        _userPickerController.delegate = self;
+        _userPickerController.model = model;
+        [_mainView insertSubview:_userPickerController.view aboveSubview:_mainView.tableView];
+    }
+    
+    _userPickerController.filter = filter;
+}
+
+- (void)hideUserPickerController {
+    if (_userPickerController) {
+        _userPickerController.delegate = nil;
+        [_userPickerController.view removeFromSuperview];
+        _userPickerController = nil;
+    }
+}
+
+- (void)layoutUserPickerController {
+    _userPickerController.view.frame = CGRectMake(0.0f, 0.0f, _mainView.tableView.frame.size.width, _mainView.tableView.frame.size.height);
+}
+
+- (void)userPickerController:(UserPickerController*)picker didPickUser:(IQUser*)user {
+    if(user) {
+        NSString * inputText = _mainView.inputView.commentTextView.text;
+        if(_inputWordRange.location != NSNotFound) {
+            inputText = [inputText stringByReplacingCharactersInRange:_inputWordRange
+                                                           withString:[NSString stringWithFormat:@"@%@ ", user.nickName]];
+            _mainView.inputView.commentTextView.text = inputText;
+        }
+        [self hideUserPickerController];
+    }
 }
 
 - (void)dealloc {

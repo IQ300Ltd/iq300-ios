@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class IQContact;
+@class IQUser;
 
 @interface ContactCell : UITableViewCell
 
-@property (nonatomic, strong) IQContact * item;
+@property (nonatomic, strong) IQUser * item;
 
 @end

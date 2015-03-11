@@ -25,11 +25,12 @@
 @property (nonatomic, strong) UIButton * expandButton;
 @property (nonatomic, assign, getter=isExpanded) BOOL expanded;
 @property (nonatomic, assign, getter=isExpandable) BOOL expandable;
+@property (nonatomic, assign, getter=isCommentHighlighted) BOOL commentHighlighted;
 @property (nonatomic, readonly) NSArray * attachButtons;
 
 @property (nonatomic, strong) NSString * author;
 @property (nonatomic, strong) IQComment * item;
-@property (nonatomic, assign, getter=isCommentHighlighted) BOOL commentHighlighted;
+@property (nonatomic, strong) NSString * curUserNick;
 
 + (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded andCellWidth:(CGFloat)cellWidth;
 + (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item andCellWidth:(CGFloat)cellWidth;
