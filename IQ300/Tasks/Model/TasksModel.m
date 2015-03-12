@@ -183,8 +183,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        [self loadNextPartSourceControllerWithCompletion:nil];
-        
         NSInteger count = [self numberOfItemsInSection:0];
         NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
         
@@ -200,6 +198,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                              if(completion) {
                                                  completion(error);
                                              }
+                                             [self loadNextPartSourceControllerWithCompletion:nil];
                                          }];
     }
 }
