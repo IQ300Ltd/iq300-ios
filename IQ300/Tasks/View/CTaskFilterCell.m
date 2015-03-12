@@ -50,6 +50,16 @@
                                        mainRect.size.height);
 }
 
+- (void)setAccessoryType:(UITableViewCellAccessoryType)accessoryType {
+    [super setAccessoryType:accessoryType];
+    
+    if (accessoryType == UITableViewCellAccessoryCheckmark) {
+        self.countLabel.textColor = SELECTED_TEXT_COLOR;
+    } else {
+        self.countLabel.textColor = TEXT_COLOR;
+    }
+}
+
 - (void)setItem:(id<TaskFilterItem>)item {
     self.titleLabel.text = item.title;
     self.countLabel.text = [NSString stringWithFormat:@" - %@", ([item.count integerValue] > 99) ? @"99+" : item.count];
