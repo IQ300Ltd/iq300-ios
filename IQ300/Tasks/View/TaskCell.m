@@ -5,6 +5,7 @@
 //  Created by Tayphoon on 19.02.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "TaskCell.h"
 #import "IQTask.h"
@@ -20,6 +21,8 @@
 #define COMM_NAME_WIDTH 140.0f
 #define DUE_DATE_HEIGHT 13.0f
 #define VERTICAL_PADDING 5.0f
+
+#define COMMUNITY_ICO_SIZE 17.0f
 
 #define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
 #define COMM_NAME_FONT [UIFont fontWithName:IQ_HELVETICA size:11.0f]
@@ -117,6 +120,8 @@
         [contentView addSubview:_dueDateLabel];
         
         _communityImageVIew = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"community_ico.png"]];
+        _communityImageVIew.layer.cornerRadius = COMMUNITY_ICO_SIZE / 2.0f;
+        _communityImageVIew.clipsToBounds = YES;
         [contentView addSubview:_communityImageVIew];
         
         _communityNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
@@ -205,11 +210,10 @@
                                 usersLabelFrame.size.width / 2.0f,
                                 usersLabelFrame.size.height);
     
-    CGSize communityImageSize = [_communityImageVIew image].size;
     _communityImageVIew.frame = CGRectMake(actualBounds.origin.x,
                                            CGRectBottom(_fromLabel.frame) + VERTICAL_PADDING,
-                                           communityImageSize.width,
-                                           communityImageSize.height);
+                                           COMMUNITY_ICO_SIZE,
+                                           COMMUNITY_ICO_SIZE);
     
     constrainedSize = CGSizeMake(COMM_NAME_WIDTH, COMM_NAME_MAX_HEIGHT);
     CGSize communityNameSize = [_communityNameLabel.text sizeWithFont:_communityNameLabel.font
@@ -247,7 +251,13 @@
     _dueDateLabel.text = [_item.endDate dateToDayString];
     _fromLabel.text = _item.customer.displayName;
     _toLabel.text = [NSString stringWithFormat:@"> %@", _item.executor.displayName];
+    
     _communityNameLabel.text = _item.community.title;
+    
+    if([_item.community.thumbUrl length] > 0) {
+        [_communityImageVIew sd_setImageWithURL:[NSURL URLWithString:_item.community.thumbUrl]
+                               placeholderImage:[UIImage imageNamed:@"community_ico.png"]];
+    }
     
     BOOL showCommentsCount = ([_item.commentsCount integerValue] > 0);
     

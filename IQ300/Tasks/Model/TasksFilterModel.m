@@ -81,11 +81,11 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
-    return (indexPath.section == COMMUNITY_SECTION) ? CCellReuseIdentifier : CellReuseIdentifier;
+    return (indexPath.section != SORT_SECTION) ? CCellReuseIdentifier : CellReuseIdentifier;
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = (indexPath.section == COMMUNITY_SECTION) ? [CTaskFilterCell class] : [TaskFilterCell class];
+    Class cellClass = (indexPath.section != SORT_SECTION) ? [CTaskFilterCell class] : [TaskFilterCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
                             reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }
