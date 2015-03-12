@@ -37,6 +37,7 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
 @interface TasksFilterModel () {
     NSMutableArray * _sections;
     NSMutableArray * _selectedItems;
+    NSArray * _statuses;
 }
 
 @end
@@ -49,6 +50,15 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
     if (self) {
         _sections = [NSMutableArray array];
         _selectedItems = [NSMutableArray array];
+        _statuses = @[@"new",
+                      @"browsed",
+                      @"in_work",
+                      @"on_init",
+                      @"refused",
+                      @"completed",
+                      @"accepted",
+                      @"declined",
+                      @"canceled"];
     }
     
     return self;
@@ -253,7 +263,7 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
     statusSection.title = NSLocalizedString(@"Statuses", nil);
     statusSection.expandable = YES;
 
-    for (NSString * status in statuses.allKeys) {
+    for (NSString * status in _statuses) {
         if ([statuses[status] integerValue] > 0) {
             TaskStatusFilterItem * item = [[TaskStatusFilterItem alloc] init];
             item.status = status;
