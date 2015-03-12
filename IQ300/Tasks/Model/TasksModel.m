@@ -183,6 +183,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
+        [self loadNextPartSourceControllerWithCompletion:nil];
+        
         NSInteger count = [self numberOfItemsInSection:0];
         NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
         
@@ -331,12 +333,44 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     }
     
     NSError * fetchError = nil;
+    [_fetchController.fetchRequest setFetchLimit:_portionLenght];
     [_fetchController.fetchRequest setPredicate:[self makeFilterPredicate]];
     [_fetchController.fetchRequest setSortDescriptors:[self makeSortDescriptors]];
     [_fetchController setDelegate:self];
     [_fetchController performFetch:&fetchError];
     
     if(completion) {
+        completion(fetchError);
+    }
+}
+
+- (void)loadNextPartSourceControllerWithCompletion:(void (^)(NSError * error))completion {
+    [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
+
+    NSInteger count = [self numberOfItemsInSection:0];
+    NSInteger fetchLimit = _fetchController.fetchRequest.fetchLimit;
+    
+    //load next portiosion from fetchController
+    NSError * fetchError = nil;
+    [_fetchController.fetchRequest setFetchLimit:fetchLimit + _portionLenght];
+    [_fetchController performFetch:&fetchError];
+    if (!fetchError) {
+        NSInteger itemsCount = [self numberOfItemsInSection:0];
+        NSInteger difference = itemsCount - count;
+        if(difference > 0) {
+            [self modelWillChangeContent];
+            NSInteger lastIndex = count - 1;
+            for (NSInteger i = lastIndex; i < itemsCount - 1; i++) {
+                [self modelDidChangeObject:nil
+                               atIndexPath:nil
+                             forChangeType:NSFetchedResultsChangeInsert
+                              newIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            }
+            [self modelDidChangeContent];
+        }
+    }
+    
+    if (completion) {
         completion(fetchError);
     }
 }
