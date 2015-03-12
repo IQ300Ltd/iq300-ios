@@ -152,8 +152,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                         @(2) : @"inbox",
                         @(3) : @"outbox",
                         @(4) : @"watchable",
-                        @(5) : @"templates",
-                        @(6) : @"archive"
+                        @(5) : @"archive",
+                        @(6) : @"templates"
                         };
     });
     

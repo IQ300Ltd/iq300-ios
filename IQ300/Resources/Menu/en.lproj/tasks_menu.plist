@@ -27,33 +27,33 @@
 			</dict>
 			<dict>
 				<key>itemId</key>
-				<integer>0</integer>
+				<integer>2</integer>
 				<key>title</key>
 				<string>Inbox</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
-				<integer>0</integer>
+				<integer>3</integer>
 				<key>title</key>
 				<string>Outbox</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
-				<integer>0</integer>
+				<integer>4</integer>
 				<key>title</key>
 				<string>Оbserved</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
-				<integer>0</integer>
+				<integer>5</integer>
 				<key>title</key>
-				<string>Templates</string>
+				<string>Archive</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
-				<integer>0</integer>
+				<integer>6</integer>
 				<key>title</key>
-				<string>Archive</string>
+				<string>Templates</string>
 			</dict>
 		</array>
 	</dict>

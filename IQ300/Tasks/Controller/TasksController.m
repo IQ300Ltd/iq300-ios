@@ -73,7 +73,7 @@
                                                          inSection:0]];
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];
     
-    NSString * title = [NSString stringWithFormat:@"%@ %@", (self.model.ascending) ? @"↓" : @"↑", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil)];
+    NSString * title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil), (self.model.ascending) ? @"↓" : @"↑"];
     _mainView.titleLabel.text = title;
     
     _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFilterController)];
@@ -195,10 +195,10 @@
 
         NSMutableArray * fields = [NSMutableArray array];
         
-        NSString * ascedingString = (self.model.ascending) ? @"↓" : @"↑";
-        
         if([self.model.sortField length] > 0) {
-            [fields addObject:NSLocalizedString(DescriptionForSortField(self.model.sortField), nil)];
+            NSString * sort = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil),
+                                                                   (self.model.ascending) ? @"↓" : @"↑"];
+            [fields addObject:sort];
         }
         
         if([self.model.statusFilter length] > 0) {
@@ -209,7 +209,7 @@
             [fields addObject:controller.model.communityDescription];
         }
         
-        _mainView.titleLabel.text = [NSString stringWithFormat:@"%@ %@", ascedingString, [fields componentsJoinedByString:@", "]];
+        _mainView.titleLabel.text = [fields componentsJoinedByString:@", "];
         
         [self.model reloadModelWithCompletion:^(NSError *error) {
             if(!error) {
