@@ -156,10 +156,11 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
                                                        TaskFilterSection * statusSection = [self makeStatusesSectionFromStatuses:counters.statuses];
                                                        [_sections addObject:statusSection];
                                                        
+                                                       NSSortDescriptor * descriptor = [NSSortDescriptor sortDescriptorWithKey:@"count" ascending:NO];
                                                        TaskFilterSection * communitiesSection = [[TaskFilterSection alloc] init];
                                                        communitiesSection.title = NSLocalizedString(@"Communities", nil);
                                                        communitiesSection.expandable = YES;
-                                                       communitiesSection.items = counters.communities;
+                                                       communitiesSection.items = [counters.communities sortedArrayUsingDescriptors:@[descriptor]];
                                                        [_sections addObject:communitiesSection];
                                                        
                                                        TaskFilterSection * sortingSection = [self makeSortSection];
