@@ -6,7 +6,10 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "TaskFilterItem.h"
+
+#define TEXT_COLOR [UIColor colorWithHexInt:0x20272a]
+#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x358bae]
 
 @interface TaskFilterCell : UITableViewCell {
     UIEdgeInsets _contentInsets;
@@ -14,7 +17,7 @@
 }
 
 @property (nonatomic, readonly) UILabel * titleLabel;
-
+@property (nonatomic, strong) id<TaskFilterItem> item;
 @property (nonatomic, assign, setter = setBottomLineShown:) BOOL isBottomLineShown;
 
 @end

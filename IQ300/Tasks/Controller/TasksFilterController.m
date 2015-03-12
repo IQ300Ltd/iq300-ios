@@ -140,7 +140,7 @@
     }
     
     id<TaskFilterItem> item = [self.model itemAtIndexPath:indexPath];
-    cell.titleLabel.text = (indexPath.section == SORT_SECTION) ? item.title : [NSString stringWithFormat:@"%@ - %@", item.title, item.count];
+    [cell setItem:item];
     
     BOOL showBootomLine = !(indexPath.row == [_model numberOfItemsInSection:indexPath.section] - 1);
     [cell setBottomLineShown:showBootomLine];

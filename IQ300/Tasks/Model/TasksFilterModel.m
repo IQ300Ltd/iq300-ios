@@ -8,6 +8,7 @@
 
 #import "TasksFilterModel.h"
 #import "TaskFilterCell.h"
+#import "CTaskFilterCell.h"
 #import "TaskFilterSection.h"
 #import "TaskFilterSortItem.h"
 #import "TaskFilterCounters.h"
@@ -15,6 +16,7 @@
 #import "IQService+Tasks.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
+static NSString * CCellReuseIdentifier = @"CCellReuseIdentifier";
 
 extern NSString * DescriptionForSortField(NSString * sortField) {
     static NSDictionary * _descriptions = nil;
@@ -79,13 +81,13 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
-    return CellReuseIdentifier;
+    return (indexPath.section == COMMUNITY_SECTION) ? CCellReuseIdentifier : CellReuseIdentifier;
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = [TaskFilterCell class];
+    Class cellClass = (indexPath.section == COMMUNITY_SECTION) ? [CTaskFilterCell class] : [TaskFilterCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
-                            reuseIdentifier:CellReuseIdentifier];
+                            reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {

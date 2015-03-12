@@ -13,9 +13,6 @@
 #define CONTENT_LEFT_INSET 12
 #define CONTENT_LEFT_RIGHT 10
 
-#define TEXT_COLOR [UIColor colorWithHexInt:0x20272a]
-#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x358bae]
-
 @interface TaskFilterCell() {
     
 }
@@ -41,8 +38,8 @@
         [_titleLabel setTextColor:TEXT_COLOR];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.numberOfLines = 0;
-        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _titleLabel.numberOfLines = 1;
+        _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [self.contentView addSubview:_titleLabel];
     }
     return self;
@@ -88,6 +85,10 @@
         _accessoryImageView.image = nil;
         _titleLabel.textColor = TEXT_COLOR;
     }
+}
+
+- (void)setItem:(id<TaskFilterItem>)item {
+    self.titleLabel.text = item.title;
 }
 
 - (void)setSelectionStyle:(UITableViewCellSelectionStyle)selectionStyle {

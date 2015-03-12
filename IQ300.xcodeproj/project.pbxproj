@@ -17,6 +17,7 @@
 		732953901A69208000F3704C /* IQLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329538F1A69208000F3704C /* IQLog.m */; };
 		733A80541A7A6C5C00460C87 /* NotificationGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 733A80531A7A6C5C00460C87 /* NotificationGroupView.m */; };
 		734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQAttachment.m */; };
+		734965D11AB1A60100263B57 /* CTaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 734965D01AB1A60100263B57 /* CTaskFilterCell.m */; };
 		73506ED61A137D070071B4CB /* TasksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BC61A0B5B7500034D9B /* TasksController.m */; };
 		736B6BD01A0B5C0800034D9B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 736B6BCF1A0B5C0800034D9B /* Images.xcassets */; };
 		736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BD21A0B5C1E00034D9B /* MenuViewController.m */; };
@@ -276,6 +277,8 @@
 		733A80531A7A6C5C00460C87 /* NotificationGroupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationGroupView.m; sourceTree = "<group>"; };
 		734433631A2DEBF300102FC8 /* IQAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachment.h; sourceTree = "<group>"; };
 		734433641A2DEBF300102FC8 /* IQAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachment.m; sourceTree = "<group>"; };
+		734965CF1AB1A60100263B57 /* CTaskFilterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTaskFilterCell.h; sourceTree = "<group>"; };
+		734965D01AB1A60100263B57 /* CTaskFilterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTaskFilterCell.m; sourceTree = "<group>"; };
 		736B6BC51A0B5B7500034D9B /* TasksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TasksController.h; sourceTree = "<group>"; };
 		736B6BC61A0B5B7500034D9B /* TasksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TasksController.m; sourceTree = "<group>"; };
 		736B6BCF1A0B5C0800034D9B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -769,6 +772,8 @@
 				73A7CA6F1A9F4BF70038DEF1 /* TaskFilterSectionView.m */,
 				73A7CA861A9F5CB90038DEF1 /* TaskFilterCell.h */,
 				73A7CA871A9F5CB90038DEF1 /* TaskFilterCell.m */,
+				734965CF1AB1A60100263B57 /* CTaskFilterCell.h */,
+				734965D01AB1A60100263B57 /* CTaskFilterCell.m */,
 				73A7CA711A9F557F0038DEF1 /* TaskFilterConst.h */,
 			);
 			path = View;
@@ -1674,6 +1679,7 @@
 			files = (
 				73F63E881AA055FB000DA319 /* TaskFilterSection.m in Sources */,
 				73086B0C1A8E64D80013582E /* IQGroupCounter.m in Sources */,
+				734965D11AB1A60100263B57 /* CTaskFilterCell.m in Sources */,
 				73AF25A31A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m in Sources */,
 				7373ED5E1A89FB2100719FCD /* IQNotificationGroupsHolder.m in Sources */,
 				73A700521A95D0AF00A1C2AC /* NotificationsMenuModel.m in Sources */,
