@@ -96,8 +96,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     self = [super init];
     if(self) {
         _portionLenght = 20;
-        self.sortField = @"updated_at";
         self.ascending = NO;
+        self.sortField = @"updated_at";
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(accountDidChanged)
@@ -461,8 +461,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self updateCountersWithCompletion:nil];
     }
     else {
-        self.sortField = @"updated_at";
         self.ascending = NO;
+        self.sortField = @"updated_at";
         self.statusFilter = nil;
         self.communityId = nil;
         
