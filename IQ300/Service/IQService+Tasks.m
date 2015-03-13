@@ -23,7 +23,7 @@
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"updated_at_after" : NSObjectNullForNil(date),
                                                            @"folder"           : NSStringNullForNil(folder),
-                                                           @"status"           : NSStringNullForNil(status),
+                                                           @"by_status"        : NSStringNullForNil(status),
                                                            @"by_community"     : NSObjectNullForNil(communityId),
                                                            @"page"             : NSObjectNullForNil(page),
                                                            @"per"              : NSObjectNullForNil(per),
@@ -49,7 +49,7 @@
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"id_less_than" : NSObjectNullForNil(taskId),
                                                            @"folder"       : NSStringNullForNil(folder),
-                                                           @"status"       : NSStringNullForNil(status),
+                                                           @"by_status"    : NSStringNullForNil(status),
                                                            @"by_community" : NSObjectNullForNil(communityId),
                                                            @"page"         : NSObjectNullForNil(page),
                                                            @"per"          : NSObjectNullForNil(per),
