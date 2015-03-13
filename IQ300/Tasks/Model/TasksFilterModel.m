@@ -95,9 +95,11 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
 }
 
 - (id<TaskFilterItem>)itemAtIndexPath:(NSIndexPath*)indexPath {
-    if(indexPath) {
+    if(indexPath && indexPath.section < [self numberOfSections]) {
         TaskFilterSection * filterSection = _sections[indexPath.section];
-        return filterSection.items[indexPath.row];
+        if (indexPath.row < [filterSection.items count]) {
+            return filterSection.items[indexPath.row];
+        }
     }
     return nil;
 }

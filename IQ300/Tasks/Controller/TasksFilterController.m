@@ -287,7 +287,7 @@
 }
 
 - (void)clearButtonAction:(UIButton*)sender {
-    [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"Reset all filters?", nil)
+    [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"reset_filters_question", nil)
              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
              otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
                       tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
