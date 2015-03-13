@@ -184,13 +184,12 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
 }
 
 - (void)resetFilters {
-    self.sortField = @"updated_at";
-    self.ascending = NO;
     self.statusFilter = nil;
     self.communityId = nil;
     
+    NSIndexPath * sortIndexPath = [self selectedIndexPathForSection:SORT_SECTION];
     [_selectedItems removeAllObjects];
-    [_selectedItems addObject:[NSIndexPath indexPathForRow:0 inSection:SORT_SECTION]];
+    [_selectedItems addObject:sortIndexPath];
 }
 
 - (void)clearModelData {
