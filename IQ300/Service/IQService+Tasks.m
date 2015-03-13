@@ -69,7 +69,7 @@
                         handler:(ObjectLoaderCompletionHandler)handler {
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"folder"       : NSStringNullForNil(folder),
-                                                           @"status"       : NSStringNullForNil(status),
+                                                           @"by_status"    : NSStringNullForNil(status),
                                                            @"by_community" : NSObjectNullForNil(communityId),
                                                            });
 
