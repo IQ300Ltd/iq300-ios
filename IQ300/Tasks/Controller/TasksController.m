@@ -73,7 +73,7 @@
                                                          inSection:0]];
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];
     
-    NSString * title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil), (self.model.ascending) ? @"↓" : @"↑"];
+    NSString * title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil), (self.model.ascending) ? @"↑" : @"↓"];
     _mainView.titleLabel.text = title;
     
     _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFilterController)];
@@ -197,7 +197,7 @@
         
         if([self.model.sortField length] > 0) {
             NSString * sort = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil),
-                                                                   (self.model.ascending) ? @"↓" : @"↑"];
+                                                                   (self.model.ascending) ? @"↑" : @"↓"];
             [fields addObject:sort];
         }
         
