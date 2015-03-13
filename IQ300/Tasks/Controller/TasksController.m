@@ -69,12 +69,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:0
-                                                         inSection:0]];
-    self.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];
-    
-    NSString * title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil), (self.model.ascending) ? @"↑" : @"↓"];
-    _mainView.titleLabel.text = title;
+    [self setupInitState];
     
     _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFilterController)];
     _singleTapGesture.numberOfTapsRequired = 1;
@@ -83,6 +78,11 @@
     [_mainView.filterButton addTarget:self
                                action:@selector(showFilterController)
                      forControlEvents:UIControlEventTouchUpInside];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(accountDidChanged)
+                                                 name:AccountDidChangedNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -225,6 +225,22 @@
 }
 
 #pragma mark -  Private methods
+
+- (void)accountDidChanged {
+    [self setupInitState];
+}
+
+- (void)setupInitState {
+    [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:0
+                                                         inSection:0]];
+
+    self.model.communityId = nil;
+    self.model.statusFilter = nil;
+    self.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];
+    
+    NSString * title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil), (self.model.ascending) ? @"↑" : @"↓"];
+    _mainView.titleLabel.text = title;
+}
 
 - (void)showFilterController {
     TasksFilterModel * model = [[TasksFilterModel alloc] init];
