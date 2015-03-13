@@ -133,6 +133,10 @@
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:indexPath];
     self.model.communityId = nil;
     self.model.statusFilter = nil;
+    
+    NSString * title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil), (self.model.ascending) ? @"↑" : @"↓"];
+    _mainView.titleLabel.text = title;
+    
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
