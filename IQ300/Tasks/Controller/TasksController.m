@@ -19,6 +19,7 @@
 #import "TasksFilterController.h"
 #import "DispatchAfterExecution.h"
 #import "TasksMenuCounters.h"
+#import "IQSession.h"
 
 @interface TasksController () <TasksFilterControllerDelegate> {
     TasksView * _mainView;
@@ -110,9 +111,15 @@
     [self.leftMenuController setModel:_menuModel];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        [self updateNoDataLabelVisibility];
-    }];
+    if([IQSession defaultSession]) {
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
+            [self updateNoDataLabelVisibility];
+        }];
+    }
     
     [self.model setSubscribedToNotifications:YES];
 }
