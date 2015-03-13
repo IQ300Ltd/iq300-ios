@@ -64,7 +64,7 @@
     _clearButton = [[ExtendedButton alloc] init];
     _clearButton.layer.cornerRadius = 4.0f;
     _clearButton.layer.borderWidth = 0.5f;
-    [_clearButton setTitle:NSLocalizedString(@"Reset settings", nil) forState:UIControlStateNormal];
+    [_clearButton setTitle:NSLocalizedString(@"Reset all filters", nil) forState:UIControlStateNormal];
     [_clearButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
     [_clearButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
     [_clearButton setBackgroundColor:IQ_CELADON_COLOR];

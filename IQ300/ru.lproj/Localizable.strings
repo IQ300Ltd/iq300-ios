@@ -85,6 +85,6 @@
 "According to the latest activity" = "По последней активности";
 "By number" = "По номеру";
 "According to deadline" = "По дедлайну";
-"Reset settings" = "Сбросить настройки";
+"Reset all filters" = "Сбросить все фильтры";
 "reset_filters_question" = "Настройки фильтров по статусу и сообществу будут сброшены. Продолжить?";
 "There are no tasks" = "Задачи отсутствуют";

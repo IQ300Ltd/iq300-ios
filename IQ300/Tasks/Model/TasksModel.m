@@ -450,6 +450,11 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:key
                                                                     ascending:self.ascending];
         
+        if (![key isEqualToString:@"taskId"]) {
+            NSSortDescriptor * taskIdDescriptor = [[NSSortDescriptor alloc] initWithKey:@"taskId"
+                                                                              ascending:self.ascending];
+            return @[descriptor, taskIdDescriptor];
+        }
         return @[descriptor];
     }
     return nil;
