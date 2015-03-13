@@ -287,12 +287,19 @@
 }
 
 - (void)clearButtonAction:(UIButton*)sender {
-    [self.model resetFilters];
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [_tableView reloadData];
-        }
-    }];
+    [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"Filters and sorting will be reset. Continue?", nil)
+             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+             otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                          if(buttonIndex == 1) {
+                              [self.model resetFilters];
+                              [self.model updateModelWithCompletion:^(NSError *error) {
+                                  if(!error) {
+                                      [_tableView reloadData];
+                                  }
+                              }];
+                          }
+                      }];
 }
 
 @end
