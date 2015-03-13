@@ -64,6 +64,7 @@ CGFloat IQStatusBarHeight()
     _tableView = [[ExpandableTableView alloc] init];
     _tableView.backgroundColor = self.view.backgroundColor;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.tableFooterView = [UIView new];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     
@@ -181,14 +182,6 @@ CGFloat IQStatusBarHeight()
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     return [self viewForHeaderInSection:section];
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 0;
-}
-
-- (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    return [UIView new];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
