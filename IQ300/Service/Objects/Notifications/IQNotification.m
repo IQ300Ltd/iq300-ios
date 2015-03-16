@@ -31,8 +31,10 @@
 @implementation IQNotification
 
 @dynamic notificationId;
+@dynamic groupSid;
 @dynamic readed;
 @dynamic createdAt;
+@dynamic updatedAt;
 @dynamic hasActions;
 @dynamic notificable;
 @dynamic mainDescription;
@@ -49,8 +51,10 @@
     [mapping setIdentificationAttributes:@[@"notificationId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                    @"id"                : @"notificationId",
+                                                   @"group_sid"         : @"groupSid",
                                                    @"readed"            : @"readed",
                                                    @"created_at"        : @"createdAt",
+                                                   @"updated_at"        : @"updatedAt",
                                                    @"has_actions"       : @"hasActions",
                                                    @"main_text"         : @"mainDescription",
                                                    @"additional_text"   : @"additionalDescription",
@@ -68,8 +72,8 @@
 
     
     RKRelationshipMapping * userRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"user"
-                                                                                      toKeyPath:@"user"
-                                                                                    withMapping:[IQUser objectMappingForManagedObjectStore:store]];
+                                                                                       toKeyPath:@"user"
+                                                                                     withMapping:[IQUser objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:userRelation];
 
     return mapping;

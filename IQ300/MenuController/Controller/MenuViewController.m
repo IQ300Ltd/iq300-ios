@@ -35,7 +35,6 @@ CGFloat IQStatusBarHeight()
     ExpandableTableView * _tableView;
     AccountHeaderView * _accountHeader;
     NSInteger _selectedSection;
-    NSMutableIndexSet * _expandedSections;
 }
 
 @end
@@ -46,7 +45,6 @@ CGFloat IQStatusBarHeight()
     self = [super init];
     if (self) {
         _selectedSection = NSNotFound;
-        _expandedSections = [[NSMutableIndexSet alloc] init];
     }
     return self;
 }
@@ -66,6 +64,7 @@ CGFloat IQStatusBarHeight()
     _tableView = [[ExpandableTableView alloc] init];
     _tableView.backgroundColor = self.view.backgroundColor;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.tableFooterView = [UIView new];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     
@@ -185,14 +184,6 @@ CGFloat IQStatusBarHeight()
     return [self viewForHeaderInSection:section];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 0.01f;
-}
-
-- (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    return [UIView new];
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.model selectItemAtIndexPath:indexPath];
     SEL didSelect = @selector(menuController:didSelectMenuItemAtIndexPath:);
@@ -266,12 +257,6 @@ CGFloat IQStatusBarHeight()
         
         BOOL isExpandable = [self tableView:_tableView canExpandSection:header.section];
         if(isExpandable) {
-            if(header.isExpanded) {
-                [_expandedSections addIndex:section];
-            }
-            else {
-                [_expandedSections removeIndex:section];
-            }
             [_tableView expandCollapseSection:header.section animated:YES];
         }
     }];
@@ -279,8 +264,10 @@ CGFloat IQStatusBarHeight()
     BOOL isExpandable = [self tableView:_tableView canExpandSection:section];
     [headerView setExpandable:isExpandable];
     if(isExpandable) {
-        [headerView setExpanded:[_expandedSections containsIndex:section]];
+        BOOL isSectionExpanded = [_tableView.expandedSections containsIndex:section];
+        [headerView setExpanded:isSectionExpanded];
     }
+
     [headerView setSelected:(section == _selectedSection)];
     
     return headerView;

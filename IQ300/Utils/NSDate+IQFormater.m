@@ -11,6 +11,20 @@
 
 @implementation NSDate (IQFormater)
 
+- (NSDate *)randomDateInYearOfDate {
+    NSCalendar *currentCalendar = [NSCalendar currentCalendar];
+    NSDateComponents *comps = [currentCalendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:self];
+    
+    [comps setMonth:arc4random_uniform(12)];
+    
+    NSRange range = [[NSCalendar currentCalendar] rangeOfUnit:NSDayCalendarUnit inUnit:NSMonthCalendarUnit forDate:[currentCalendar dateFromComponents:comps]];
+    
+    [comps setDay:arc4random_uniform((u_int32_t)range.length)];
+    [comps setTimeZone:[NSTimeZone timeZoneWithName:@"GMT"]];
+    
+    return [currentCalendar dateFromComponents:comps];
+}
+
 - (NSString*)dateToDayTimeString {
     NSString * stringDate = nil;
     NSDate * today = [[NSDate date] beginningOfDay];
@@ -33,6 +47,32 @@
     else {
         NSDateFormatter *dateFormatter = [self dateFormater];
         [dateFormatter setDateFormat:(todayYearComp.year == dateYearComp.year) ? @"dd MMMM, HH:mm" : @"dd MMMM yyyy, HH:mm"];
+        stringDate = [dateFormatter stringFromDate:self];
+    }
+    
+    return stringDate;
+}
+
+- (NSString*)dateToDayString {
+    NSString * stringDate = nil;
+    NSDate * today = [[NSDate date] beginningOfDay];
+    NSDate * yesterday = [today prevDay];
+    NSDate * beginningOfDay = [self beginningOfDay];
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents * todayYearComp = [calendar components:NSYearCalendarUnit fromDate:today];
+    NSDateComponents * dateYearComp = [calendar components:NSYearCalendarUnit fromDate:self];
+    
+    
+    if([beginningOfDay compare:today] == NSOrderedSame) {
+        stringDate = NSLocalizedString(@"Today", nil);
+    }
+    else if([beginningOfDay compare:yesterday] == NSOrderedSame) {
+        stringDate = NSLocalizedString(@"Yesterday", nil);
+    }
+    else {
+        NSDateFormatter *dateFormatter = [self dateFormater];
+        [dateFormatter setDateFormat:(todayYearComp.year == dateYearComp.year) ? @"dd MMMM" : @"dd MMMM yyyy"];
         stringDate = [dateFormatter stringFromDate:self];
     }
     

@@ -65,7 +65,7 @@
     _userNameLabel.frame = CGRectMake(userNameLabelX,
                                       _userImageView.frame.origin.y,
                                       mainRect.size.width - userNameLabelX,
-                                      15);
+                                      17);
     
     _editButton.frame = CGRectMake(_userNameLabel.frame.origin.x,
                                    _userNameLabel.frame.origin.y + _userNameLabel.frame.size.height + 7.0f,

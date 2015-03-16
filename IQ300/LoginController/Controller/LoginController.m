@@ -12,6 +12,7 @@
 #import "IQUser.h"
 #import "IQNotificationCenter.h"
 #import "AppDelegate.h"
+#import "DeviceToken.h"
 
 BOOL NSStringIsValidEmail(NSString * checkString) {
     BOOL stricterFilter = NO;
@@ -60,19 +61,20 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
         [self showErrorMessage:@"Email address is invalid"];
     }
     else {
-        [[IQService sharedService] loginWithEmail:_loginView.emailTextField.text
-                                         password:_loginView.passwordTextField.text
-                                          handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                              if(success) {
-                                                  [self continueLoginProccess];
-                                              }
-                                              else if([IQService sharedService].serviceReachabilityStatus == TCServicekReachabilityStatusNotReachable) {
-                                                  [self showErrorMessage:@"Internet connection is unavailable"];
-                                              }
-                                              else {
-                                                  [self showErrorMessage:@"Wrong credentials"];
-                                              }
-                                          }];
+        [[IQService sharedService] loginWithDeviceToken:[DeviceToken uniqueIdentifier]
+                                                  email:_loginView.emailTextField.text
+                                               password:_loginView.passwordTextField.text
+                                                handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                    if(success) {
+                                                        [self continueLoginProccess];
+                                                    }
+                                                    else if([IQService sharedService].serviceReachabilityStatus == TCServicekReachabilityStatusNotReachable) {
+                                                        [self showErrorMessage:@"Internet connection is unavailable"];
+                                                    }
+                                                    else {
+                                                        [self showErrorMessage:@"Wrong credentials"];
+                                                    }
+                                                }];
     }
 }
 
@@ -111,13 +113,14 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
     // Try to find next responder
     UIResponder* nextResponder = [textField.superview.superview viewWithTag:nextTag];
     if (nextResponder) {
-        // Found next responder, so set it.
         [nextResponder becomeFirstResponder];
     } else {
-        // Not found, so remove keyboard.
         [textField resignFirstResponder];
+        if([_loginView.emailTextField.text length] > 0 && [_loginView.passwordTextField.text length] > 0) {
+            [self enterButtonAction:_loginView.enterButton];
+        }
     }
-    return NO; // We do not want UITextField to insert line-breaks.
+    return NO;
 }
 
 @end

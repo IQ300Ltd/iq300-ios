@@ -11,6 +11,10 @@
 #import "IQNotification.h"
 #import "NSDate+IQFormater.h"
 
+#define HORIZONTAL_INSETS 8.0f
+#define VERTICAL_INSETS 5.0f
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#define DESCRIPTION_MIN_HEIGHT 19.0f
 
 @interface NotificationCell() {
 }
@@ -18,6 +22,22 @@
 @end
 
 @implementation NotificationCell
+
++ (CGFloat)heightForItem:(IQNotification *)item andCellWidth:(CGFloat)cellWidth {
+    CGFloat width = cellWidth - HORIZONTAL_INSETS * 2.0f;
+    CGFloat height = NOTIFICATION_CELL_MIN_HEIGHT - DESCRIPTION_MIN_HEIGHT;
+    
+    if([item.additionalDescription length] > 0) {
+        CGSize constrainedSize = CGSizeMake(width,
+                                            NOTIFICATION_CELL_MAX_HEIGHT);
+        CGSize desSize = [item.additionalDescription sizeWithFont:DESCRIPTION_FONT
+                                                constrainedToSize:constrainedSize
+                                                    lineBreakMode:NSLineBreakByWordWrapping];
+        height = MAX(height + desSize.height, height);
+    }
+    
+    return height;
+}
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -30,7 +50,7 @@
         [_markAsReadedButton setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
         [_markAsReadedButton setImage:[UIImage imageNamed:@"check_mark_medium"] forState:UIControlStateNormal];
         
-        _contentInsets = UIEdgeInsetsMake(5, 8, 5, 8);
+        _contentInsets = UIEdgeInsetsMake(VERTICAL_INSETS, HORIZONTAL_INSETS, VERTICAL_INSETS, HORIZONTAL_INSETS);
         _contentBackgroundInsets = UIEdgeInsetsZero;
         
         [self setBackgroundColor:READ_FLAG_COLOR];
@@ -39,21 +59,11 @@
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
         [contentView addSubview:_contentBackgroundView];
         
-        _typeLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:13]
-                                    localaizedKey:@"Project"];
-        [contentView addSubview:_typeLabel];
-        
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
                                              font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                     localaizedKey:nil];
-        _dateLabel.textAlignment = NSTextAlignmentRight;
+        _dateLabel.textAlignment = NSTextAlignmentLeft;
         [contentView addSubview:_dateLabel];
-        
-        _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
-                                              font:[UIFont fontWithName:IQ_HELVETICA size:13]
-                                     localaizedKey:nil];
-        [contentView addSubview:_titleLabel];
         
         _userNameLabel = [self makeLabelWithTextColor:[UIColor whiteColor]
                                                  font:[UIFont fontWithName:IQ_HELVETICA size:13]
@@ -70,8 +80,9 @@
         [contentView addSubview:_actionLabel];
         
         _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9b9c9e]
-                                                    font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                                    font:DESCRIPTION_FONT
                                            localaizedKey:nil];
+        _descriptionLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_descriptionLabel];
     }
     
@@ -88,42 +99,31 @@
     CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
     _contentBackgroundView.frame = contentBackgroundBounds;
     
-    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, 12);
-    _typeLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+    _dateLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                   actualBounds.origin.y,
-                                  topLabelSize.width,
-                                  topLabelSize.height);
-    
-    _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - topLabelSize.width,
-                                  actualBounds.origin.y,
-                                  topLabelSize.width,
-                                  topLabelSize.height);
-    
-    _titleLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
-                                   _typeLabel.frame.origin.y + _typeLabel.frame.size.height + 4,
-                                   actualBounds.size.width,
-                                   16);
+                                  actualBounds.size.width - labelsOffset * 2.0f,
+                                  14);
     
     CGFloat userNameHeight = 17;
     CGFloat userNameMaxWidth = actualBounds.size.width / 2.0f;
     CGSize constrainedSize = CGSizeMake(userNameMaxWidth,
                                         userNameHeight);
     
-    CGPoint actionLabelLocation = CGPointMake(actualBounds.origin.x, CGRectBottom(_titleLabel.frame) + 5);
+    CGPoint actionLabelLocation = CGPointZero;
     if (([_item.user.displayName length] > 0)) {
         CGSize userSize = [_userNameLabel.text sizeWithFont:_userNameLabel.font
                                           constrainedToSize:constrainedSize
                                               lineBreakMode:_userNameLabel.lineBreakMode];
         
         _userNameLabel.frame = CGRectMake(actualBounds.origin.x,
-                                          CGRectBottom(_titleLabel.frame) + 5,
+                                          CGRectBottom(_dateLabel.frame) + 5,
                                           userSize.width + 5,
                                           userNameHeight);
         actionLabelLocation = CGPointMake(CGRectRight(_userNameLabel.frame) + 7, _userNameLabel.frame.origin.y);
     }
     else {
         _userNameLabel.frame = CGRectZero;
-        actionLabelLocation = CGPointMake(actualBounds.origin.x, CGRectBottom(_titleLabel.frame) + 5);
+        actionLabelLocation = CGPointMake(actualBounds.origin.x, CGRectBottom(_dateLabel.frame) + 5);
     }
 
     
@@ -132,7 +132,7 @@
                                     actualBounds.size.width - actionLabelLocation.x,
                                     userNameHeight);
     
-    CGFloat descriptionY = CGRectBottom(_actionLabel.frame);
+    CGFloat descriptionY = CGRectBottom(_actionLabel.frame) + labelsOffset;
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
                                          actualBounds.size.width,
@@ -163,6 +163,7 @@
     
     _contentBackgroundInsets = UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR_R;
+    [self hideUtilityButtonsAnimated:NO];
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {

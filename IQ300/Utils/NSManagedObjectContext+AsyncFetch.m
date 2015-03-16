@@ -12,6 +12,7 @@
 
 - (void)executeFetchRequest:(NSFetchRequest *)request completion:(void (^)(NSArray *objects, NSError *error))completion {
     NSPersistentStoreCoordinator *coordinator = self.persistentStoreCoordinator;
+    NSFetchRequestResultType resultType = [request resultType];
     
     NSManagedObjectContext * backgroundContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     [backgroundContext performBlock:^{
@@ -22,7 +23,7 @@
         NSArray * fetchedObjects = [backgroundContext executeFetchRequest:request error:&error];
         
         [self performBlock:^{
-            if (fetchedObjects) {
+            if (resultType == NSManagedObjectResultType && fetchedObjects) {
                 // Collect object IDs
                 NSArray * objectIds = [fetchedObjects valueForKey:@"objectID"];
                 
@@ -37,9 +38,10 @@
                     NSArray *objects = [mutObjects copy];
                     completion(objects, nil);
                 }
-            } else {
+            }
+            else {
                 if (completion) {
-                    completion(nil, error);
+                    completion(fetchedObjects, error);
                 }
             }
         }];

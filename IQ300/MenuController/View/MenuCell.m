@@ -109,9 +109,10 @@
 }
 
 - (void)setBadgeText:(NSString *)badgeText {
+    [_badgeView setBadgeValue:badgeText];
+
     if([badgeText length] > 0) {
         [_badgeView setHidden:NO];
-        [_badgeView setBadgeValue:badgeText];
     }
     else {
         [_badgeView setHidden:YES];

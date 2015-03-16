@@ -9,12 +9,13 @@
 
 #import "NotificationsModel.h"
 #import "IQService.h"
-#import "IQNotificationsHolder.h"
 #import "NotificationCell.h"
 #import "ActionNotificationCell.h"
 #import "IQCounters.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "IQNotificationCenter.h"
+#import "IQNotificationsGroup.h"
+#import "IQNotificationsHolder.h"
 
 #define CACHE_FILE_NAME @"NotificationsModelcache"
 #define SORT_DIRECTION IQSortDirectionAscending
@@ -29,7 +30,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     NSInteger _totalItemsCount;
     NSInteger _unreadItemsCount;
     __weak id _notfObserver;
-    NSNumber * _lastLoadedId;
 }
 
 @end
@@ -37,6 +37,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 @implementation NotificationsModel
 
 - (id)init {
+    self = [super init];
     if(self) {
         _portionLenght = 20;
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt"
@@ -45,18 +46,12 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         _loadUnreadOnly = YES;
         _totalItemsCount = 0;
         _unreadItemsCount = 0;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(accountDidChanged)
-                                                     name:AccountDidChangedNotification
-                                                   object:nil];
-        [self resubscribeToIQNotifications];
     }
     return self;
 }
 
 - (NSUInteger)numberOfSections {
-    return 1;//[_fetchController.sections count];
+    return 1;
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
@@ -81,7 +76,10 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return 105;
+    IQNotification * item = [self itemAtIndexPath:indexPath];
+    Class cellClass = ([item.hasActions boolValue]) ? [ActionNotificationCell class] : [NotificationCell class];
+    return [cellClass heightForItem:item
+                        andCellWidth:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
@@ -104,25 +102,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     if([_fetchController.fetchedObjects count] == 0) {
         [self reloadModelWithCompletion:completion];
     }
-    else {
-        if(!_lastLoadedId) {
-            _lastLoadedId = [self getLastIdFromTop:YES];
-        }
-
+    else {        
         [self updateCounters];
-        [[IQService sharedService] notificationsAfterId:_lastLoadedId
-                                                 unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                   page:@(1)
-                                                    per:@(_portionLenght)
-                                                   sort:SORT_DIRECTION
-                                                handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
-                                                    if(success && [holder.notifications count] > 0) {
-                                                        _lastLoadedId = [holder.notifications valueForKeyPath:@"@max.notificationId"];
-                                                    }
-                                                    if(completion) {
-                                                        completion(error);
-                                                    }
-                                                }];
+        [self notificationsUpdatesWithCompletion:completion];
     }
 }
 
@@ -132,39 +114,44 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     }
     else {
         NSNumber * notificationId = [self getLastIdFromTop:NO];
-        [[IQService sharedService] notificationsBeforeId:notificationId
-                                                  unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                    page:@(1)
-                                                     per:@(_portionLenght)
-                                                    sort:IQSortDirectionDescending
-                                                 handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                                     if(completion) {
-                                                         completion(error);
-                                                     }
-                                                 }];
+        [[IQService sharedService] notificationsForGroupWithId:self.group.lastNotificationId
+                                                      beforeId:notificationId
+                                                        unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                          page:@(1)
+                                                           per:@(_portionLenght)
+                                                          sort:IQSortDirectionDescending
+                                                       handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                                           if(completion) {
+                                                               completion(error);
+                                                           }
+                                                       }];
     }
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadModelSourceControllerWithCompletion:completion];
-  
-    if(!_lastLoadedId) {
-        _lastLoadedId = [self getLastIdFromTop:YES];
-    }
-    
-    [[IQService sharedService] notificationsAfterId:_lastLoadedId
-                                             unread:(_loadUnreadOnly) ? @(YES) : nil
-                                               page:@(1)
-                                                per:@(_portionLenght)
-                                               sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                            handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
-                                                if(success && [holder.notifications count] > 0) {
-                                                    _lastLoadedId = [holder.notifications valueForKeyPath:@"@max.notificationId"];
-                                                }
-                                                if(completion) {
-                                                    completion(error);
-                                                }
-                                            }];
+
+    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+
+    [self updateCounters];
+    [[IQService sharedService] notificationsForGroupWithId:self.group.lastNotificationId
+                                              updatedAfter:lastUpdatedDate
+                                                    unread:@(NO)
+                                                      page:@(1)
+                                                       per:@(_portionLenght)
+                                                      sort:(lastUpdatedDate) ? IQSortDirectionAscending : IQSortDirectionDescending
+                                                   handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                                       if(success && lastUpdatedDate && [_fetchController.fetchedObjects count] < _portionLenght) {
+                                                           [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
+                                                               if(completion) {
+                                                                   completion(error);
+                                                               }
+                                                           }];
+                                                       }
+                                                       else if(completion) {
+                                                           completion(error);
+                                                       }
+                                                   }];
 }
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
@@ -173,23 +160,36 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         [self reloadModelSourceControllerWithCompletion:nil];
     }
     
-    if(!_lastLoadedId) {
-        _lastLoadedId = [self getLastIdFromTop:YES];
+    [self updateCounters];
+    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+    if(!lastUpdatedDate) {
+        [[IQService sharedService] notificationsForGroupWithId:self.group.lastNotificationId
+                                                  updatedAfter:nil
+                                                        unread:@(NO)
+                                                          page:@(1)
+                                                           per:@(_portionLenght)
+                                                          sort:IQSortDirectionAscending
+                                                       handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                                           if(completion) {
+                                                               completion(error);
+                                                           }
+                                                       }];
+        
     }
-    
-    [[IQService sharedService] notificationsAfterId:_lastLoadedId
-                                             unread:(_loadUnreadOnly) ? @(YES) : nil
-                                               page:@(1)
-                                                per:@(_portionLenght)
-                                               sort:(_lastLoadedId) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                            handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
-                                                if(success && [holder.notifications count] > 0) {
-                                                    _lastLoadedId = [holder.notifications valueForKeyPath:@"@max.notificationId"];
-                                                }
-                                                if(completion) {
-                                                    completion(error);
-                                                }
-                                            }];
+    else {
+        [self notificationsUpdatesWithCompletion:^(NSError *error) {
+            if(!error && [_fetchController.fetchedObjects count] < _portionLenght) {
+                [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
+                    if(completion) {
+                        completion(error);
+                    }
+                }];
+            }
+            else if(completion) {
+                completion(error);
+            }
+        }];
+    }
 }
 
 - (void)clearModelData {
@@ -212,51 +212,52 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)markNotificationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
     IQNotification * item = [self itemAtIndexPath:indexPath];
-    item.readed = @(YES);
-    
-    NSError *saveError = nil;
-    if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
-        NSLog(@"Save notification error: %@", saveError);
-    }
-    
     [[IQService sharedService] markNotificationAsRead:item.notificationId
                                               handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                  if(success) {
+                                                      item.readed = @(YES);
+                                                      
+                                                      NSNumber * unreadCount = @(MAX([self.group.unreadCount integerValue] - 1, 0));
+                                                      self.group.unreadCount = unreadCount;
+                                                      
+                                                      NSError *saveError = nil;
+                                                      if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
+                                                          NSLog(@"Save notification error: %@", saveError);
+                                                      }
+                                                      
+                                                      [self updateCountersWithCompletion:^(IQCounters *counters, NSError *error) {
+                                                          if(self.loadUnreadOnly && _unreadItemsCount > 0 &&
+                                                             [_fetchController.fetchedObjects count] == 0) {
+                                                              [self loadNextPartWithCompletion:nil];
+                                                          }
+                                                      }];
+                                                  }
                                                   if(completion) {
                                                       completion(error);
-                                                  }
-                                                  if(success) {
-                                                      [self updateCounters];
                                                   }
                                               }];
 }
 
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion {
-    NSManagedObjectContext * context = _fetchController.managedObjectContext;
-    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND ownerId = %@", [IQSession defaultSession].userId]];
-    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
-        if ([objects count] > 0) {
-            [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
-            NSError *saveError = nil;
-            
-            if(![context saveToPersistentStore:&saveError]) {
-                NSLog(@"Save notifications error: %@", saveError);
-            }
-        }
-    }];
-    
-    [[IQService sharedService] markAllNotificationAsReadWithHandler:^(BOOL success, NSData *responseData, NSError *error) {
-        if(completion) {
-            completion(error);
-        }
-        if(success) {
-            [self updateCounters];
-        }
-    }];
+    [[IQService sharedService] markNotificationsGroupAsReadWithId:self.group.lastNotificationId
+                                                          handler:^(BOOL success, IQNotificationsGroup * group, NSData *responseData, NSError *error) {
+                                                              if(success) {
+                                                                  [self markAllLocalNotificationAsRead];
+                                                                  [self updateCountersWithCompletion:^(IQCounters *counters, NSError *error) {
+                                                                      if(self.loadUnreadOnly && _unreadItemsCount > 0 &&
+                                                                         [_fetchController.fetchedObjects count] == 0) {
+                                                                          [self loadNextPartWithCompletion:nil];
+                                                                      }
+                                                                  }];                                                              }
+                                                              if(completion) {
+                                                                  completion(error);
+                                                              }
+                                                          }];
 }
 
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion {
-    [[IQService sharedService] notificationsCountWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
+    [[IQService sharedService] notificationsCountForGroupWithId:self.group.lastNotificationId
+                                                        handler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
         if(success) {
             _totalItemsCount = [counter.totalCount integerValue];
             _unreadItemsCount = [counter.unreadCount integerValue];
@@ -274,8 +275,10 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                  selector:@selector(applicationWillEnterForeground)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
+        [self resubscribeToIQNotifications];
     }
     else {
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:UIApplicationWillEnterForegroundNotification
                                                       object:nil];
@@ -285,12 +288,12 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)acceptNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] acceptNotificationWithId:notification.notificationId
                                                 handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                    if(completion) {
-                                                        completion(error);
-                                                    }
                                                     if(success) {
                                                         [self resetActionsForNotification:notification];
                                                         [self updateCounters];
+                                                    }
+                                                    if(completion) {
+                                                        completion(error);
                                                     }
                                                 }];
 }
@@ -298,78 +301,111 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)declineNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] declineNotificationWithId:notification.notificationId
                                                  handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                     if(completion) {
-                                                         completion(error);
-                                                     }
                                                      if(success) {
                                                          [self resetActionsForNotification:notification];
                                                          [self updateCounters];
                                                      }
+                                                     if(completion) {
+                                                         completion(error);
+                                                     }
                                                  }];
 }
 
-- (void)syncLocalNotificationsWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] unreadNotificationIdsWithHandler:^(BOOL success, NSArray * notificationIds, NSData *responseData, NSError *error) {
-        if(success && [notificationIds count] > 0) {
-            NSManagedObjectContext * context = _fetchController.managedObjectContext;
-            NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES) AND NOT(notificationId in %@)", notificationIds];
-            NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-            [fetchRequest setPredicate:readCondition];
-            [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
-                if ([objects count] > 0) {
-                    [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
-                    [objects makeObjectsPerformSelector:@selector(setHasActions:) withObject:@(NO)];
-                    [objects makeObjectsPerformSelector:@selector(setAvailableActions:) withObject:nil];
-                    NSError *saveError = nil;
-                    
-                    if(![context saveToPersistentStore:&saveError]) {
-                        NSLog(@"Save notifications error: %@", saveError);
-                    }
-                }
-            }];
+#pragma mark - Private methods
+
+- (void)notificationsUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] notificationsForGroupWithId:self.group.lastNotificationId
+                                              updatedAfter:lastUpdatedDate
+                                                    unread:@(NO)
+                                                      page:page
+                                                       per:@(_portionLenght)
+                                                      sort:IQSortDirectionAscending
+                                                   handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                                       if(success && holder.currentPage < holder.totalPages) {
+                                                           [self notificationsUpdatesAfterDate:lastUpdatedDate
+                                                                                          page:@([page integerValue] + 1)
+                                                                                    completion:completion];
+                                                       }
+                                                       else if(completion) {
+                                                           completion(error);
+                                                       }
+                                                   }];
+}
+
+- (void)notificationsUpdatesWithCompletion:(void (^)(NSError * error))completion {
+    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+    [self notificationsUpdatesAfterDate:lastUpdatedDate
+                                   page:@(1)
+                             completion:completion];
+}
+
+- (NSDate*)getLastNotificationChangedDate {
+    NSString * predicateFormat = @"ownerId = %@ AND groupSid == %@";
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId,
+                               self.group.sID];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQNotification"];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"updatedAt" ascending:NO]];
+    [fetchRequest setPredicate:predicate];
+    fetchRequest.fetchLimit = 1;
+    
+    NSError *error = nil;
+    
+    NSArray *objects = [[IQService sharedService].context executeFetchRequest:fetchRequest error:&error];
+    if ([objects count] > 0) {
+        IQNotification * lastNotification = ((IQNotification*)[objects objectAtIndex:0]);
+        return lastNotification.updatedAt;
+    }
+    return nil;
+}
+
+- (void)updateGroupCounter {
+    NSManagedObjectContext * context = _fetchController.managedObjectContext;
+    NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES) AND groupSid == %@", self.group.sID];
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
+    [fetchRequest setPredicate:readCondition];
+    [fetchRequest setIncludesSubentities:NO];
+    
+    NSError * error;
+    NSUInteger unreadCount = [context countForFetchRequest:fetchRequest error:&error];
+    if(unreadCount != NSNotFound && [self.group.unreadCount integerValue] != unreadCount) {
+
+        self.group.unreadCount = @(unreadCount);
+        
+        if(![context saveToPersistentStore:&error]) {
+            NSLog(@"Save notifications error: %@", error);
+        }
+    }
+}
+
+- (void)markAllLocalNotificationAsRead {
+    NSManagedObjectContext * context = _fetchController.managedObjectContext;
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
+    NSString * predicateFormat = @"readed == NO AND ownerId = %@ AND groupSid == %@";
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId,
+                                                                                 self.group.sID]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+        if ([objects count] > 0) {
+            [objects makeObjectsPerformSelector:@selector(setReaded:) withObject:@(YES)];
+            NSError *saveError = nil;
+            
+            if(![context saveToPersistentStore:&saveError]) {
+                NSLog(@"Save notifications error: %@", saveError);
+            }
         }
     }];
 }
-
-#pragma mark - Private methods
 
 - (void)resetActionsForNotification:(IQNotification*)notification {
     notification.hasActions = @(NO);
     notification.availableActions = nil;
     notification.readed = @(YES);
     
+    NSNumber * unreadCount = @(MAX([self.group.unreadCount integerValue] - 1, 0));
+    self.group.unreadCount = unreadCount;
+    
     NSError *saveError = nil;
     if(![notification.managedObjectContext saveToPersistentStore:&saveError] ) {
         NSLog(@"Save notification error: %@", saveError);
-    }
-}
-
-- (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
-    NSInteger count = [self numberOfItemsInSection:0];
-    NSInteger fetchLimit = _fetchController.fetchRequest.fetchLimit;
-    
-    //load next portiosion from fetchController
-    NSError * fetchError = nil;
-    [_fetchController.fetchRequest setFetchLimit:fetchLimit + _portionLenght];
-    [_fetchController performFetch:&fetchError];
-    if (!fetchError) {
-        NSInteger itemsCount = [self numberOfItemsInSection:0];
-        NSInteger difference = itemsCount - count;
-        if(difference > 0) {
-            [self modelWillChangeContent];
-            NSInteger lastIndex = count - 1;
-            for (NSInteger i = lastIndex; i < itemsCount - 1; i++) {
-                [self modelDidChangeObject:nil
-                               atIndexPath:nil
-                             forChangeType:NSFetchedResultsChangeInsert
-                              newIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-            }
-            [self modelDidChangeContent];
-        }
-    }
-    
-    if (completion) {
-        completion(fetchError);
     }
 }
 
@@ -388,7 +424,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                                           cacheName:nil];
     }
     
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId];
+    NSString * predicateFormat = @"ownerId = %@ AND groupSid == %@";
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId,
+                                                                                self.group.sID];
     if(_loadUnreadOnly) {
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
@@ -408,24 +446,28 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (NSNumber*)getLastIdFromTop:(BOOL)top {
     NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQNotification"];
     NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"notificationId"];
-    NSExpression * maxSalaryExpression = [NSExpression expressionForFunction:(top) ? @"max:" : @"min:"
+    NSExpression * maxIdExpression = [NSExpression expressionForFunction:(top) ? @"max:" : @"min:"
                                                                   arguments:[NSArray arrayWithObject:keyPathExpression]];
     
     NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
     [expressionDescription setName:@"notificationId"];
-    [expressionDescription setExpression:maxSalaryExpression];
+    [expressionDescription setExpression:maxIdExpression];
     [expressionDescription setExpressionResultType:NSDecimalAttributeType];
   
     [fetchRequest setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
     [fetchRequest setResultType:NSDictionaryResultType];
     fetchRequest.fetchLimit = 1;
     
+    NSString * predicateFormat = @"ownerId = %@ AND groupSid == %@";
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId,
+                                                                                self.group.sID];
+
     if(_loadUnreadOnly) {
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES) AND ownerId = %@", [IQSession defaultSession].userId]];
+        NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES)"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
     }
-    else {
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
-    }
+    
+    [fetchRequest setPredicate:predicate];
 
     NSError *error = nil;
     
@@ -438,25 +480,49 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)loadNotificationsWithIds:(NSArray*)ids {
     [[IQService sharedService] notificationsWithIds:ids
-                                            handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                            handler:^(BOOL success, NSArray * notifications, NSData *responseData, NSError *error) {
                                                 if(success) {
                                                     [self updateCounters];
                                                 }
                                             }];
 }
 
+- (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
+    NSNumber * lastLoadedId = [self getLastIdFromTop:YES];
+    [[IQService sharedService] notificationsForGroupWithId:self.group.lastNotificationId
+                                                  beforeId:lastLoadedId
+                                                   unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                     page:@(1)
+                                                      per:@(_portionLenght)
+                                                     sort:IQSortDirectionDescending
+                                                  handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
+                                                      if(completion) {
+                                                          completion(error);
+                                                      }
+                                                  }];
+}
+
 - (void)updateCounters {
-    [self updateCountersWithCompletion:^(IQCounters * counter, NSError *error) {
-    }];
+    [self updateCountersWithCompletion:nil];
+    [self initGlobalCounterUpdate];
+}
+
+- (void)initGlobalCounterUpdate {
+    NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"notifications" };
+    [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
+                                                        object:nil
+                                                      userInfo:userInfo];
 }
 
 - (void)resubscribeToIQNotifications {
     [self unsubscribeFromIQNotifications];
     
+    __weak typeof(self) weakSelf = self;
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
         NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
         if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
-            [self reloadFirstPartWithCompletion:nil];
+            [weakSelf reloadFirstPartWithCompletion:nil];
+            [weakSelf initGlobalCounterUpdate];
         }
     };
     _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
@@ -470,37 +536,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     }
 }
 
-- (void)accountDidChanged {
-    _lastLoadedId = nil;
-
-    if([IQSession defaultSession]) {
-        [self resubscribeToIQNotifications];
-        [self updateCounters];
-    }
-    else {
-        [self unsubscribeFromIQNotifications];
-        [self clearModelData];
-        [self modelDidChanged];
-    }
-}
-
 - (void)applicationWillEnterForeground {
-    [self recursiveNotificationsLoadingFromId:_lastLoadedId];
-    [self syncLocalNotificationsWithCompletion:nil];
-}
-
-- (void)recursiveNotificationsLoadingFromId:(NSNumber*)notificationId {
-    [[IQService sharedService] notificationsAfterId:notificationId
-                                             unread:(_loadUnreadOnly) ? @(YES) : nil
-                                               page:@(1)
-                                                per:@(_portionLenght)
-                                               sort:SORT_DIRECTION
-                                            handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
-                                                if(success && [holder.notifications count] > 0) {
-                                                    _lastLoadedId = [holder.notifications valueForKeyPath:@"@max.notificationId"];
-                                                    [self recursiveNotificationsLoadingFromId:_lastLoadedId];
-                                                }
-                                            }];
+    [self updateCounters];
+    [self notificationsUpdatesWithCompletion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

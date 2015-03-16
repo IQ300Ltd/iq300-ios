@@ -274,7 +274,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     if(hasExpandView) {
         _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + CONTENT_Y_OFFSET,
                                          CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET,
-                                         _descriptionTextView.frame.size.width - CONTENT_Y_OFFSET,
+                                         90,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
     
@@ -312,26 +312,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     if (_expanded != expanded) {
         _expanded = expanded;
         
-        UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
-        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
-        NSDictionary *underlineAttribute = @{
-                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
-                                             NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                                             NSForegroundColorAttributeName : titleColor
-                                             };
-        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString((_expanded) ? @"Hide" : @"Show all", nil)
-                                                                          attributes:underlineAttribute]
-                                 forState:UIControlStateNormal];
-        
-        underlineAttribute = @{
-                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
-                               NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                               NSForegroundColorAttributeName : titleHighlightedColor
-                               };
-        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString((_expanded) ? @"Hide" : @"Show all", nil)
-                                                                          attributes:underlineAttribute]
-                                 forState:UIControlStateHighlighted];
-        
+        [self setExpandButtonTitle:(_expanded) ? @"Hide" : @"Show all"];
         [self setNeedsDisplay];
     }
 }
@@ -423,6 +404,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                   forControlEvents:UIControlEventTouchUpInside];
     }
     
+    [self setExpandButtonTitle:@"Show all"];
     [_expandButton setHidden:YES];
     [_expandButton removeTarget:nil
                          action:NULL
@@ -465,6 +447,29 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         aView = aView.superview;
     }
     return nil;
+}
+
+- (void)setExpandButtonTitle:(NSString*)title {
+    UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
+    UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+    NSDictionary *underlineAttribute = @{
+                                         NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                         NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                         NSForegroundColorAttributeName : titleColor
+                                         };
+    [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(title, nil)
+                                                                      attributes:underlineAttribute]
+                             forState:UIControlStateNormal];
+    
+    underlineAttribute = @{
+                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                           NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                           NSForegroundColorAttributeName : titleHighlightedColor
+                           };
+    [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(title, nil)
+                                                                      attributes:underlineAttribute]
+                             forState:UIControlStateHighlighted];
+    
 }
 
 @end

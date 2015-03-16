@@ -14,6 +14,7 @@
 NSString * const IQNotificationsDidChanged = @"notifications";
 NSString * const IQNewMessageNotification = @"comment_created";
 NSString * const IQMessageViewedByUserNotification = @"discussion_viewed";
+NSString * const IQTasksDidChanged = @"base_tasks";
 NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
 
 @class IQCNotification;
@@ -42,7 +43,7 @@ NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
     
     if(self) {
         _queue = queue;
-        _dispatchBlock = dispatchBlock;
+        _dispatchBlock = [dispatchBlock copy];
     }
     
     return self;
@@ -86,7 +87,6 @@ NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
 static IQNotificationCenter * _defaultCenter = nil;
 
 @interface IQNotificationCenter() <PTPusherDelegate> {
-    PTPusher * _client;
     NSString * _defaultChannelName;
     NSMutableDictionary * _channels;
     NSMutableDictionary * _channelBindings;
@@ -97,6 +97,8 @@ static IQNotificationCenter * _defaultCenter = nil;
     BOOL _shouldReconnect;
     __weak id _notfObserver;
 }
+
+@property (nonatomic, strong) PTPusher * client;
 
 @end
 
@@ -140,8 +142,13 @@ static IQNotificationCenter * _defaultCenter = nil;
                                                                            queue:nil
                                                                       usingBlock:^(NSNotification *note) {
                                                                           PTPusherEvent * event = note.userInfo[PTPusherEventUserInfoKey];
-                                                                          if(event) {
-                                                                              [weakSelf pusher:_client didReceiveEvent:event];
+                                                                           DNSLog(@"[IQNotificationCenter-%@] Received event named %@ data:%@",
+                                                                                  weakSelf.client.connection.socketID,
+                                                                                  event.name,
+                                                                                  event.data);
+
+                                                                          if(event && note.object == weakSelf.client) {
+                                                                              [weakSelf pusher:weakSelf.client didReceiveEvent:event];
                                                                           }
                                                                       }];
 

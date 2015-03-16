@@ -12,6 +12,8 @@
 #define READ_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
+#define NOTIFICATION_CELL_MAX_HEIGHT 105.0f
+#define NOTIFICATION_CELL_MIN_HEIGHT 76.0f
 
 @class IQNotification;
 
@@ -30,5 +32,7 @@
 @property (nonatomic, strong) UIButton * markAsReadedButton;
 
 @property (nonatomic, strong) IQNotification * item;
+
++ (CGFloat)heightForItem:(IQNotification *)item andCellWidth:(CGFloat)cellWidth;
 
 @end

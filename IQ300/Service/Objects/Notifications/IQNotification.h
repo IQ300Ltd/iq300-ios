@@ -24,8 +24,10 @@
 @interface IQNotification : NSManagedObject
 
 @property (nonatomic, strong) NSNumber * notificationId;
+@property (nonatomic, strong) NSString * groupSid;
 @property (nonatomic, strong) NSNumber * readed;
 @property (nonatomic, strong) NSDate * createdAt;
+@property (nonatomic, strong) NSDate * updatedAt;
 @property (nonatomic, strong) NSNumber * hasActions;
 @property (nonatomic, strong) IQNotificable * notificable;
 @property (nonatomic, strong) NSString * mainDescription;

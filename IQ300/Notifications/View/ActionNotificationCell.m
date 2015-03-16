@@ -10,8 +10,7 @@
 #import "ActionNotificationCell.h"
 #import "IQUtilityButtonView.h"
 #import "IQNotification.h"
-
-static NSString * const kTableViewCellContentView = @"UITableViewCellContentView";
+#import "NotificationsHelper.h"
 
 @interface ActionNotificationCell() {
     IQUtilityButtonView * _leftButtonsView;
@@ -22,44 +21,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 @end
 
 @implementation ActionNotificationCell
-
-+ (NSString*)displayNameForActionType:(NSString*)type {
-    static NSDictionary * _actionDisplayNames = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _actionDisplayNames = @{
-                                @"refuse"                 : @"Refuse",
-                                @"accept"                 : @"Accept",
-                                @"decline"                : @"Refuse",
-                                @"refuse"                 : @"Refuse",
-                                
-                                @"basetask_browse"        : @"Accept",
-                                @"basetask_accept"        : @"Accept",
-                                @"basetask_refuse"        : @"Refuse",
-                                @"basetask_decline"       : @"To refine",
-                                @"basetask_work"          : @"To work",
-                                
-                                @"basecommunity_accept"   : @"Accept",
-                                @"basecommunity_decline"  : @"Refuse",
-                                };
-    });
-    
-    if([_actionDisplayNames objectForKey:type]) {
-        return [_actionDisplayNames objectForKey:type];
-    }
-    
-    return nil;
-}
-
-+ (BOOL)isPositiveActionWithType:(NSString*)type {
-    static NSArray * _positiveActionTypes = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _positiveActionTypes = @[@"accept", @"browse", @"work", @"complete"];
-    });
-    
-    return [_positiveActionTypes containsObject:type];
-}
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     [self initUtilityButtonViews];
@@ -98,7 +59,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         
         //Set right order for actions
         for (NSString * actionType in item.availableActions) {
-            BOOL isPositiveAction = [ActionNotificationCell isPositiveActionWithType:actionType];
+            BOOL isPositiveAction = [NotificationsHelper isPositiveActionWithType:actionType];
             if(isPositiveAction) {
                 [availableActions insertObject:actionType atIndex:0];
             }
@@ -108,10 +69,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         }
         
         for (NSString * actionType in availableActions) {
-            BOOL isPositiveAction = [ActionNotificationCell isPositiveActionWithType:actionType];
+            BOOL isPositiveAction = [NotificationsHelper isPositiveActionWithType:actionType];
             NSString * combineType = ([item.notificable.type length] > 0) ? [NSString stringWithFormat:@"%@_%@", item.notificable.type, actionType] :
             actionType;
-            NSString * localizeKey = [ActionNotificationCell displayNameForActionType:[combineType lowercaseString]];
+            NSString * localizeKey = [NotificationsHelper displayNameForActionType:[combineType lowercaseString]];
             UIButton * actionButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 99.0f, 31.0f)];
             actionButton.layer.cornerRadius = 3.0f;
             if(!isPositiveAction) {

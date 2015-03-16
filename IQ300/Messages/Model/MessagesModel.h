@@ -22,7 +22,7 @@
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
-- (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion;
+- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion;
 
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;

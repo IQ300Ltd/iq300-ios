@@ -106,13 +106,12 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self updateModelSourceControllerWithCompletion:completion];
+    [self reloadModelSourceControllerWithCompletion:completion];
     [self reloadFirstPartWithCompletion:nil];
 }
 
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    _portionOffset = 1;
-    [[IQService sharedService] contactsWithPage:@(_portionOffset)
+    [[IQService sharedService] contactsWithPage:@(1)
                                             per:@(_portionSize)
                                            sort:SORT_DIRECTION
                                          search:_filter
@@ -123,7 +122,7 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
                                         }];
 }
 
-- (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
+- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;
     
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];

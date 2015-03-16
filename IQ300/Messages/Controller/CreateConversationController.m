@@ -108,8 +108,8 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    id contact = [self.model itemAtIndexPath:indexPath];
-    cell.item = contact;
+    IQContact * contact = [self.model itemAtIndexPath:indexPath];
+    cell.item = contact.user;
     
     return cell;
 }
@@ -224,7 +224,7 @@
     };
     
     [self.model setFilter:text];
-    [self.model updateModelSourceControllerWithCompletion:compleationBlock];
+    [self.model reloadModelSourceControllerWithCompletion:compleationBlock];
     
     _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
         [self.model reloadFirstPartWithCompletion:compleationBlock];

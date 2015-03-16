@@ -7,7 +7,7 @@
 //
 
 #import "ContactCell.h"
-#import "IQContact.h"
+#import "IQUser.h"
 
 #define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x2e4865]
 #define TEXT_COLOR [UIColor colorWithHexInt:0x2c74a4]
@@ -51,11 +51,11 @@
     self.textLabel.textColor = (highlighted) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
 }
 
-- (void)setItem:(IQContact *)item {
+- (void)setItem:(IQUser *)item {
     _item = item;
     
-    self.textLabel.text = item.user.displayName;
-    self.detailTextLabel.text = item.user.email;
+    self.textLabel.text = _item.displayName;
+    self.detailTextLabel.text = _item.email;
 }
 
 @end

@@ -13,11 +13,9 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
+        self.badgeView.badgeStyle.badgeFrameColor = [UIColor whiteColor];
         self.badgeView.badgeStyle.badgeInsetColor = [UIColor colorWithHexInt:0xe74545];
         self.badgeView.badgeStyle.badgeTextColor = [UIColor whiteColor];
-        self.badgeView.badgeStyle.badgeFrame = NO;
-        
-        self.titleLabel.textColor = [UIColor colorWithHexInt:0xe94545];
     }
     return self;
 }

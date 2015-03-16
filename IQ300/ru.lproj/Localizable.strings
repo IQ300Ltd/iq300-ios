@@ -37,6 +37,7 @@
 "There are no unread notifications" = "Непрочитанные уведомления отсутствуют";
 "There are no notifications" = "Уведомления отсутствуют";
 "mark_all_readed_question" = "Все Ваши уведомления будут отмечены как прочитанные. Продолжить?";
+"mark_all_group_readed_question" = "Все уведомления группы будут отмечены как прочитанные. Продолжить?";
 "OK" = "OK";
 "Cancel" = "Отмена";
 "I" = "Я";
@@ -63,3 +64,27 @@
 "Contract" = "Контракт";
 "DocShare" = "Документ";
 "ErrorReport" = "Обратная связь";
+
+//Tasks statuses
+"browsed" = "Просмотрена";
+"new" = "Новая";
+"in_work" = "В работе";
+"canceled" = "Отменена";
+"refused" = "Отказано";
+"accepted" = "Выполнена";
+"on_init" = "Инициализация";
+"completed" = "На проверке";
+"declined" = "Не принята";
+"archived" = "Архивная";
+"pending" = "Неактивная";
+
+"Filtering and sorting" = "Фильтрация и сортировка";
+"Statuses" = "Статусы";
+"Communities" = "Сообщества";
+"Sorting" = "Сортировка";
+"According to the latest activity" = "По последней активности";
+"By number" = "По номеру";
+"According to deadline" = "По дедлайну";
+"Reset all filters" = "Сбросить все фильтры";
+"reset_filters_question" = "Настройки фильтров по статусу и сообществу будут сброшены. Продолжить?";
+"There are no tasks" = "Задачи отсутствуют";

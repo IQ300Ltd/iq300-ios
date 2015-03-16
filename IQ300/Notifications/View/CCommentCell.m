@@ -12,13 +12,14 @@
 #import "IQBadgeView.h"
 #import "IQConversation.h"
 #import "IQSession.h"
+#import "IQTextView.h"
 
 #define CONTENT_INSET 8.0f
 #define ATTACHMENT_VIEW_HEIGHT 15.0f
 #define HEIGHT_DELTA 1.0f
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
-#define CELL_HEADER_MIN_HEIGHT 15
+#define CELL_HEADER_MIN_HEIGHT 17
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
 #define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED [UIColor colorWithHexInt:0xe9faff]
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
@@ -53,7 +54,7 @@
             height = MIN(height, COLLAPSED_COMMENT_CELL_MAX_HEIGHT);
             
             if(canExpand) {
-                height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET * 2.0f;
+                height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET;
             }
         }
         else {
@@ -124,7 +125,7 @@
         _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapRecognized:)];
         _singleTapGesture.numberOfTapsRequired = 1;
 
-        _descriptionTextView = [[UITextView alloc] init];
+        _descriptionTextView = [[IQTextView alloc] init];
         [_descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
         [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
         _descriptionTextView.textAlignment = NSTextAlignmentLeft;
@@ -133,7 +134,6 @@
         _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
         _descriptionTextView.scrollEnabled = NO;
         _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
-        
         _descriptionTextView.linkTextAttributes = @{
                                                     NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
                                                     NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
@@ -152,7 +152,7 @@
         [_expandButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
         [_expandButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
         _expandButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        
+
         NSDictionary *underlineAttribute = @{
                                              NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
                                              NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
@@ -195,7 +195,7 @@
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     CGFloat labelsOffset = 5.0f;
     
-    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, CELL_HEADER_MIN_HEIGHT);
+    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, 16.0f);
     if (([_userNameLabel.text length] > 0)) {
         CGSize userSize = [_userNameLabel.text sizeWithFont:_userNameLabel.font
                                           constrainedToSize:topLabelSize
@@ -226,7 +226,7 @@
     if(hasExpandView) {
         _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + ATTACHMENT_VIEW_Y_OFFSET,
                                          CGRectBottom(_descriptionTextView.frame) + ATTACHMENT_VIEW_Y_OFFSET,
-                                         _descriptionTextView.frame.size.width - ATTACHMENT_VIEW_Y_OFFSET,
+                                         90,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
     
@@ -263,25 +263,7 @@
     if (_expanded != expanded) {
         _expanded = expanded;
         
-        UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
-        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
-        NSDictionary *underlineAttribute = @{
-                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
-                                             NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                                             NSForegroundColorAttributeName : titleColor
-                                             };
-        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString((_expanded) ? @"Hide" : @"Show all", nil)
-                                                                          attributes:underlineAttribute]
-                                 forState:UIControlStateNormal];
-        
-        underlineAttribute = @{
-                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
-                               NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                               NSForegroundColorAttributeName : titleHighlightedColor
-                               };
-        [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString((_expanded) ? @"Hide" : @"Show all", nil)
-                                                                          attributes:underlineAttribute]
-                                 forState:UIControlStateHighlighted];
+        [self setExpandButtonTitle:(_expanded) ? @"Hide" : @"Show all"];
         [self setNeedsDisplay];
     }
 }
@@ -296,7 +278,38 @@
     _userNameLabel.text = _item.author.displayName;
     
     NSString * body = ([_item.body length] > 0) ? _item.body : @"";
-    _descriptionTextView.text = body;
+    
+    NSDictionary * attributes = @{
+                                  NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x8b8b8b],
+                                  NSFontAttributeName: DESCRIPTION_LABEL_FONT
+                                  };
+
+    NSMutableAttributedString * aBody = [[NSMutableAttributedString alloc] initWithString:body
+                                                                               attributes:attributes];
+    
+    NSError *error = nil;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
+    NSArray * matches = [regex matchesInString:body options:0 range:NSMakeRange(0, body.length)];
+    for (NSTextCheckingResult *match in matches) {
+        NSRange wordRange = [match rangeAtIndex:1];
+        NSString * nickName = [body substringWithRange:wordRange];
+        BOOL isCurUserNick = ([nickName isEqualToString:self.curUserNick]);
+
+        wordRange.location = wordRange.location - 1;
+        wordRange.length = wordRange.length + 1;
+        
+        if (!isCurUserNick) {
+            [aBody addAttributes:@{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
+                           range:wordRange];
+        }
+        else {
+            [aBody addAttributes:@{ IQNikBackgroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
+                                    NSForegroundColorAttributeName: [UIColor whiteColor] }
+                           range:wordRange];
+        }
+    }
+    
+    _descriptionTextView.attributedText = aBody;
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
     
@@ -366,6 +379,7 @@
                   forControlEvents:UIControlEventTouchUpInside];
     }
     
+    [self setExpandButtonTitle:@"Show all"];
     [_expandButton setHidden:YES];
     [_expandButton removeTarget:nil
                          action:NULL
@@ -405,6 +419,28 @@
         aView = aView.superview;
     }
     return nil;
+}
+
+- (void)setExpandButtonTitle:(NSString*)title {
+    UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
+    UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+    NSDictionary *underlineAttribute = @{
+                                         NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                         NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                                         NSForegroundColorAttributeName : titleColor
+                                         };
+    [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(title, nil)
+                                                                      attributes:underlineAttribute]
+                             forState:UIControlStateNormal];
+    
+    underlineAttribute = @{
+                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                           NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                           NSForegroundColorAttributeName : titleHighlightedColor
+                           };
+    [_expandButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(title, nil)
+                                                                      attributes:underlineAttribute]
+                             forState:UIControlStateHighlighted];
 }
 
 @end

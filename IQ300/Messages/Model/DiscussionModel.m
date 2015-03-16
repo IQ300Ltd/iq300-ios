@@ -46,6 +46,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 @implementation DiscussionModel
 
 - (id)init {
+    self = [super init];
     if(self) {
         _expandedCells = [NSMutableDictionary dictionary];
         _expandableCells = [NSMutableDictionary dictionary];
@@ -116,8 +117,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
     IQComment * comment = [self itemAtIndexPath:indexPath];
     
-    if(![_expandableCells objectForKey:comment.commentId]) {
+    if(comment && ![_expandableCells objectForKey:comment.commentId]) {
         BOOL expandable = [CommentCell cellNeedToBeExpandableForItem:comment];
+        
         [_expandableCells setObject:@(expandable) forKey:comment.commentId];
     }
     
@@ -157,7 +159,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)setItemExpanded:(BOOL)expanded atIndexPath:(NSIndexPath*)indexPath {
     IQComment * comment = [self itemAtIndexPath:indexPath];
     BOOL isExpanded = [[_expandedCells objectForKey:comment.commentId] boolValue];
-    if(isExpanded != expanded) {
+    if(isExpanded != expanded && comment) {
         [_expandedCells setObject:@(expanded) forKey:comment.commentId];
         [self modelWillChangeContent];
         [self modelDidChangeObject:nil
@@ -194,7 +196,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     [_expandableCells removeAllObjects];
     [_expandedCells removeAllObjects];
     
-    [self updateModelSourceControllerWithCompletion:nil];
+    [self reloadModelSourceControllerWithCompletion:nil];
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
@@ -212,7 +214,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
     BOOL hasObjects = ([_fetchController.fetchedObjects count] > 0);
     if(!hasObjects) {
-        [self updateModelSourceControllerWithCompletion:nil];
+        [self reloadModelSourceControllerWithCompletion:nil];
     }
     
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
@@ -476,7 +478,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
+- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;
     
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];

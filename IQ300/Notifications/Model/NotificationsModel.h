@@ -8,12 +8,15 @@
 
 #import "IQTableModel.h"
 
+@class IQNotificationsGroup;
 @class IQNotification;
 @class IQCounters;
 
 @interface NotificationsModel : NSObject<IQTableModel>
 
+@property (nonatomic, strong) IQNotificationsGroup * group;
 @property (nonatomic, assign) BOOL loadUnreadOnly;
+@property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 /**
@@ -48,7 +51,5 @@
 - (void)acceptNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
 
 - (void)declineNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
-
-- (void)syncLocalNotificationsWithCompletion:(void (^)(NSError * error))completion;
 
 @end

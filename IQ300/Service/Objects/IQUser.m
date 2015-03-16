@@ -14,6 +14,7 @@
 
 @dynamic userId;
 @dynamic displayName;
+@dynamic nickName;
 @dynamic email;
 @dynamic pusherChannel;
 @dynamic thumbUrl;
@@ -26,6 +27,7 @@
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"               : @"userId",
                                                   @"short_name"       : @"displayName",
+                                                  @"mention_name"     : @"nickName",
                                                   @"email"            : @"email",
                                                   @"pusher_channel"   : @"pusherChannel",
                                                   @"photo.thumb_url"  : @"thumbUrl",

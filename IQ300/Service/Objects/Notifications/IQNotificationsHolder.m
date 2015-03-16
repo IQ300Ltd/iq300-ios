@@ -2,8 +2,8 @@
 //  IQNotificationsHolder.m
 //  IQ300
 //
-//  Created by Tayphoon on 20.11.14.
-//  Copyright (c) 2014 Tayphoon. All rights reserved.
+//  Created by Tayphoon on 18.02.15.
+//  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 #import <RestKit/RestKit.h>
 
@@ -11,19 +11,13 @@
 
 @implementation IQNotificationsHolder
 
-+ (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
-    RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
-    [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"meta.collection_info.current_page"  : @"currentPage",
-                                                  @"meta.collection_info.total_pages"   : @"totalPages",
-                                                  @"meta.collection_info.total_count"   : @"totalCount"
-                                                  }];
++ (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore *)store {
+    RKObjectMapping * mapping = [super objectMappingForManagedObjectStore:store];
     
     RKRelationshipMapping * notificationsRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"notifications"
-                                                                                                toKeyPath:@"notifications"
+                                                                                                toKeyPath:@"objects"
                                                                                               withMapping:[IQNotification objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:notificationsRelation];
-    
     return mapping;
 }
 

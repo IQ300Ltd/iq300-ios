@@ -7,13 +7,15 @@
 //
 #import <RestKit/RestKit.h>
 #import <MMDrawerController/MMDrawerController.h>
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 
 #import "AppDelegate.h"
 #import "TasksController.h"
 #import "MessagesController.h"
 #import "MenuViewController.h"
 #import "IQNavigationController.h"
-#import "NotificationsContoller.h"
+#import "NotificationsGroupController.h"
 #import "IQDrawerController.h"
 #import "IQService+Messages.h"
 #import "IQSession.h"
@@ -23,6 +25,8 @@
 #import "IQUser.h"
 #import "DiscussionController.h"
 #import "IQConversation.h"
+#import "DiscussionModel.h"
+#import "IQDiscussion.h"
 
 #define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
 
@@ -41,9 +45,13 @@
     LoginController * loginViewController = [[LoginController alloc] init];
     [delegate.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
     UITabBarController * center = ((UITabBarController*)delegate.drawerController.centerViewController);
-    NSArray * controllers = [center viewControllers];
+    
+    for (UINavigationController * controller in center.viewControllers) {
+        [controller popToRootViewControllerAnimated:NO];
+    }
+    
     [center setSelectedIndex:0];
-    [controllers makeObjectsPerformSelector:@selector(popToRootViewControllerAnimated:) withObject:@(NO)];
+
     [[IQService sharedService] logout];
     [IQSession setDefaultSession:nil];
     [[IQNotificationCenter defaultCenter] resetAllObservers];
@@ -96,23 +104,26 @@
     RKLogConfigureByName("RestKit/App", RKLogLevelError);
     
     NSLog(@"\n\nService adress is %@\n\n", SERVICE_URL);
-
+    
     [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
     [AppDelegate setupNotificationCenter];
     [AppDelegate registerForRemoteNotifications];
 
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
-    NotificationsContoller * notifications = [[NotificationsContoller alloc] init];
+    NotificationsGroupController * notifications = [[NotificationsGroupController alloc] init];
     IQNavigationController * notificationsNav = [[IQNavigationController alloc] initWithRootViewController:notifications];
     
+    TasksController * tasks = [[TasksController alloc] init];
+    IQNavigationController * tasksNav = [[IQNavigationController alloc] initWithRootViewController:tasks];
+   
     MessagesController * messages = [[MessagesController alloc] init];
     IQNavigationController * messagesNav = [[IQNavigationController alloc] initWithRootViewController:messages];
     
     UITabBarController * center = [[UITabBarController alloc] init];
     center.tabBar.layer.borderWidth = 0;
     
-    [center setViewControllers:@[notificationsNav, messagesNav]];
+    [center setViewControllers:@[notificationsNav, tasksNav, messagesNav]];
     
     MMDrawerController * drawerController = [[IQDrawerController alloc]
                                              initWithCenterViewController:center
@@ -168,8 +179,10 @@
 
 #ifdef DEBUG
     [self instalCrashSignalCatchers];
+#else
+    [Fabric with:@[CrashlyticsKit]];
 #endif
-    
+
     return YES;
 }
 
@@ -231,13 +244,16 @@
     NSDictionary * notificable = notfObject[@"notificable"];
     NSNumber * objectId = notificable[@"id"];
     NSString * objectType = notificable[@"type"];
-    NSInteger messagesTab = 1;
+    NSInteger messagesTab = 2;
     
     UITabBarController * tabController = ((UITabBarController*)self.drawerController.centerViewController);
-    if([objectType isEqualToString:@"Conversation"]) {
-        UINavigationController * navController = tabController.viewControllers[messagesTab];
-        BOOL isDiscussionOpen = ([navController.topViewController isKindOfClass:[DiscussionController class]]);
-        DiscussionController * controller = (isDiscussionOpen) ? (DiscussionController*)navController.topViewController : [[DiscussionController alloc] init];
+    UINavigationController * navController = tabController.viewControllers[messagesTab];
+    BOOL isDiscussionOpen = (tabController.selectedIndex == messagesTab && [navController.topViewController isKindOfClass:[DiscussionController class]]);
+    NSNumber * conversationId = (isDiscussionOpen) ? ((DiscussionController*)navController.topViewController).model.discussion.conversation.conversationId : nil;
+
+    if([[objectType lowercaseString] isEqualToString:@"conversation"] &&
+       ((isDiscussionOpen && ![conversationId isEqualToNumber:objectId]) || !isDiscussionOpen)) {
+        
         MessagesController * messagesController = navController.viewControllers[0];
         
         ObjectLoaderCompletionHandler handler = ^(BOOL success, IQConversation * conver, NSData *responseData, NSError *error) {
@@ -249,16 +265,18 @@
                 DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
                 model.companionId = companion.userId;
                 
+                DiscussionController * controller = [[DiscussionController alloc] init];
+                controller.hidesBottomBarWhenPushed = YES;
                 controller.title = companion.displayName;
                 controller.model = model;
                 
                 if(!isDiscussionOpen) {
-                    controller.hidesBottomBarWhenPushed = YES;
                     [tabController setSelectedIndex:messagesTab];
                     [navController pushViewController:controller animated:NO];
                 }
-                else {
-                    [controller reloadDataWithCompletion:nil];
+                else  {
+                    NSArray * newStack = @[navController.viewControllers[0], controller];
+                    [navController setViewControllers:newStack animated:YES];
                 }
                 
                 [MessagesModel markConversationAsRead:conver completion:^(NSError *error) {

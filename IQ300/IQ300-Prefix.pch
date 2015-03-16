@@ -27,12 +27,13 @@
 #import "NSBundle+Localization.h"
 #import "UIImage+Extensions.h"
 #import "IQFonts.h"
+#import "IQColors.h"
 #import "CGGeometry+Extensions.h"
 #import "UIAlertView+Blocks.h"
 #import "UIEdgeInsetsExtend.h"
 
 #ifdef PROD
-#define SERVICE_URL @"https://app.iq300.ru"
+#define SERVICE_URL @"https://api.iq300.ru"
 #define PUSHER_APP_KEY @"7baa6a182eefe7314de0"
 #else
 #define SERVICE_URL @"http://edge.iq300.ru"

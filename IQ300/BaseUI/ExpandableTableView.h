@@ -31,6 +31,8 @@
 
 @interface ExpandableTableView : UITableView <UITableViewDataSource, UITableViewDelegate>
 
+@property (nonatomic, readonly) NSIndexSet * expandedSections;
+
 @property (nonatomic, assign)   id <ExpandableTableViewDataSource> dataSource;
 @property (nonatomic, assign)   id <ExpandableTableViewDelegate>   delegate;
 

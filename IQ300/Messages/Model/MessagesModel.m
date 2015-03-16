@@ -64,6 +64,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (id)init {
+    self = [super init];
     if(self) {
         _portionLenght = 20;
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"lastComment.createDate" ascending:SORT_DIRECTION == IQSortDirectionAscending];
@@ -82,7 +83,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (NSUInteger)numberOfSections {
-    return 1;//[_fetchController.sections count];
+    return 1;
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
@@ -149,7 +150,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self updateModelSourceControllerWithCompletion:nil];
+    [self reloadModelSourceControllerWithCompletion:nil];
     [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
                                                per:@(_portionLenght)
@@ -181,8 +182,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                            }];
 }
 
-
-- (void)updateModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
+- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
     _fetchController.delegate = nil;
     
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
@@ -286,9 +286,11 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     __weak typeof(self) weakSelf = self;
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
         NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
+        NSString * disscusionParentType = [commentData[@"discussable"][@"type"] lowercaseString];
         NSNumber * authorId = commentData[@"author"][@"id"];
         
-        if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId]) {
+        if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId] &&
+           [disscusionParentType isEqualToString:@"conversation"]) {
             [weakSelf reloadFirstPart];
         }
     };

@@ -43,6 +43,8 @@ NSString * const NoUnreadNotificationFound = @"There are no unread notifications
 //        [_searchBar setTextColor:[UIColor blackColor]];
 //        [_searchBarContainer addSubview:_searchBar];
         
+        [self setBackgroundColor:[UIColor whiteColor]];
+        
         _tableView = [[UITableView alloc] init];
         _tableView.backgroundColor = [UIColor clearColor];
         _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];

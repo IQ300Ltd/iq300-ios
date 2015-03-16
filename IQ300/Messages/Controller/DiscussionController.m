@@ -44,6 +44,13 @@
     return _mainView.tableView;
 }
 
+- (void)setModel:(id<IQTableModel>)model {
+    self.model.delegate = nil;
+    [self.model setSubscribedToNotifications:NO];
+    [self.model clearModelData];
+    [super setModel:model];
+}
+
 - (void)loadView {
     _mainView = [[DiscussionView alloc] init];
     self.view = _mainView;
@@ -138,22 +145,6 @@
     
     [self hideActivityIndicator];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)reloadDataWithCompletion:(void (^)())completion {
-    [_mainView.inputView.commentTextView resignFirstResponder];
-    _attachment = nil;
-    _enterCommentProcessing = NO;
-    
-    [self showActivityIndicatorOnView:_mainView];
-    [self.model reloadModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
-        
-        [self scrollToBottomAnimated:NO delay:0.0f];
-        [self hideActivityIndicator];
-    }];
 }
 
 #pragma mark - UITableView DataSource

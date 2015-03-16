@@ -8,6 +8,12 @@
 
 #import "IQTableBaseController.h"
 
+@interface IQTableBaseController() {
+    UITableView * _tableView;
+}
+
+@end
+
 @implementation IQTableBaseController
 
 - (id)init {
@@ -20,15 +26,20 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if(self.tableView) {
-        self.tableView.delegate = self;
-        self.tableView.dataSource = self;
+    if(!self.tableView.superview) {
         [self.view addSubview:self.tableView];
     }
+    
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
 }
 
 - (UITableView*)tableView {
@@ -154,6 +165,11 @@
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
     [self.tableView reloadData];
+}
+
+- (void)dealloc {
+    self.tableView.delegate = nil;
+    self.tableView.dataSource = nil;
 }
 
 @end
