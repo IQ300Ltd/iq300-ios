@@ -299,7 +299,8 @@
         wordRange.length = wordRange.length + 1;
         
         if (!isCurUserNick) {
-            [aBody addAttributes:@{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
+            [aBody addAttributes:@{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
+                                    NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
                            range:wordRange];
         }
         else {
