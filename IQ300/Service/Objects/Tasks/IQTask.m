@@ -33,10 +33,12 @@
 @dynamic position;
 @dynamic discussionId;
 @dynamic commentsCount;
+@dynamic availableActions;
 
 @dynamic customer;
 @dynamic executor;
 @dynamic community;
+@dynamic project;
 
 @dynamic childIds;
 @dynamic todoItems;
@@ -47,24 +49,25 @@
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"taskId"]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"id"             : @"taskId",
-                                                  @"kind"           : @"type",
-                                                  @"recipient_id"   : @"recipientId",
-                                                  @"owner.id"       : @"ownerId",
-                                                  @"status"         : @"status",
-                                                  @"title"          : @"title",
-                                                  @"description"    : @"taskDescription",
-                                                  @"start_date"     : @"startDate",
-                                                  @"end_date"       : @"endDate",
-                                                  @"created_at"     : @"createdDate",
-                                                  @"updated_at"     : @"updatedDate",
-                                                  @"template_id"    : @"templateId",
-                                                  @"parent_id"      : @"parentId",
-                                                  @"duration"       : @"duration",
-                                                  @"position"       : @"position",
-                                                  @"discussionId"   : @"discussionId",
-                                                  @"child_ids"      : @"childIds",
-                                                  @"comments_count" : @"commentsCount"
+                                                  @"id"                       : @"taskId",
+                                                  @"kind"                     : @"type",
+                                                  @"recipient_id"             : @"recipientId",
+                                                  @"owner.id"                 : @"ownerId",
+                                                  @"status"                   : @"status",
+                                                  @"title"                    : @"title",
+                                                  @"description"              : @"taskDescription",
+                                                  @"start_date"               : @"startDate",
+                                                  @"end_date"                 : @"endDate",
+                                                  @"created_at"               : @"createdDate",
+                                                  @"updated_at"               : @"updatedDate",
+                                                  @"template_id"              : @"templateId",
+                                                  @"parent_id"                : @"parentId",
+                                                  @"duration"                 : @"duration",
+                                                  @"position"                 : @"position",
+                                                  @"discussion_id"            : @"discussionId",
+                                                  @"child_ids"                : @"childIds",
+                                                  @"comments_count"           : @"commentsCount",
+                                                  @"available_status_actions" : @"availableActions"
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"customer"
@@ -80,6 +83,11 @@
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"community"
                                                            toKeyPath:@"community"
                                                          withMapping:[IQCommunity objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+    
+    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"project"
+                                                           toKeyPath:@"project"
+                                                         withMapping:[IQProject objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:relation];
     
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"todo_items"

@@ -21,6 +21,8 @@
 #import "TasksMenuCounters.h"
 #import "IQSession.h"
 
+#import "TaskTabController.h"
+
 @interface TasksController () <TasksFilterControllerDelegate> {
     TasksView * _mainView;
     TasksMenuModel * _menuModel;
@@ -179,7 +181,11 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    IQTask * task = [self.model itemAtIndexPath:indexPath];
+
+    TaskTabController * controller = [[TaskTabController alloc] init];
+    controller.task = task;
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 #pragma mark - IQMenuModel Delegate

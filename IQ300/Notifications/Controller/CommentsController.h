@@ -11,7 +11,6 @@
 
 @interface CommentsController : IQTableBaseController
 
-@property (nonatomic, strong) NSString * subTitle;
 @property (nonatomic, strong) CommentsModel * model;
 @property (nonatomic, strong) NSNumber * highlightedCommentId;
 

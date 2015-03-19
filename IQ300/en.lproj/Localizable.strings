@@ -80,3 +80,15 @@
 "Reset all filters" = "Reset all filters";
 "Reset all filters?" = "Status and community filters will be reset. Continue?";
 "There are no tasks" = "There are no tasks";
+"Task" = "Task";
+"Discussion" = "Discussion";
+"Members" = "Members";
+"Documents" = "Documents";
+"History" = "History";
+"Agree" = "Agree";
+"Disagree" = "Disagree";
+"Cancel" = "Cancel";
+"Decline" = "Decline";
+"Send to execute" = "Send to execute";
+"Take as done" = "Take as done";
+"Checklist" = "Checklist";

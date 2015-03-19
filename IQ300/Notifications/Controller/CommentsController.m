@@ -107,9 +107,7 @@
                                                                        style:UIBarButtonItemStylePlain
                                                                       target:self action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
-    
-    [self setTitle:self.subTitle];
-    
+        
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
@@ -252,7 +250,6 @@
     BOOL isSendButtonEnabled = [self isTextValid:text];
     [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
 }
-
 
 - (void)backButtonAction:(UIButton*)sender {
     [self.navigationController popViewControllerAnimated:YES];

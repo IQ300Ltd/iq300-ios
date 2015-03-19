@@ -1,38 +1,32 @@
 //
-//  TaskFilterCell.m
+//  CheckListItemCell.m
 //  IQ300
 //
-//  Created by Tayphoon on 26.02.15.
+//  Created by Tayphoon on 19.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "TaskFilterCell.h"
-#import "BottomLineView.h"
-#import "TaskFilterConst.h"
+#import "TodoListItemCell.h"
+#import "IQTodoItem.h"
 
-#define CONTENT_LEFT_INSET 12
-#define CONTENT_LEFT_RIGHT 10
+#define TEXT_COLOR [UIColor colorWithHexInt:0x272727]
+#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x9f9f9f]
 
-@interface TaskFilterCell() {
-    
-}
-
-@end
-
-@implementation TaskFilterCell
+@implementation TodoListItemCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    
     if(self) {
+        self.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        
+        _contentInsets = UIEdgeInsetsHorizontalMake(13.0f);
         _accessoryImageView = [[UIImageView alloc] init];
         self.accessoryView = _accessoryImageView;
         
         super.selectionStyle = UITableViewCellSelectionStyleNone;
         self.accessoryType = UITableViewCellAccessoryNone;
 
-        _contentInsets = UIEdgeInsetsMake(0, CONTENT_LEFT_INSET, 0, CONTENT_LEFT_RIGHT);
-        _isBottomLineShown = YES;
-                
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:13]];
         [_titleLabel setTextColor:TEXT_COLOR];
@@ -40,56 +34,48 @@
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 1;
         _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        _titleLabel.text = NSLocalizedString(@"Checklist", nil);
+        _titleLabel.userInteractionEnabled = NO;
         [self.contentView addSubview:_titleLabel];
+
     }
+    
     return self;
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     
+    CGRect bounds = self.contentView.bounds;
+    CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
+    
     CGSize accessorySize = [_accessoryImageView image].size;
-    self.accessoryView.frame = CGRectMake(self.bounds.size.width - accessorySize.width - 17,
-                                          (self.bounds.size.height - accessorySize.height) / 2.0f - 1.5f,
+    self.accessoryView.frame = CGRectMake(actualBounds.origin.x,
+                                          actualBounds.origin.y + (actualBounds.size.height - accessorySize.height) / 2.0f,
                                           accessorySize.width,
                                           accessorySize.height);
     
-    CGRect actualBounds = self.contentView.bounds;
-    CGRect mainRect = UIEdgeInsetsInsetRect(actualBounds, _contentInsets);
-    
-    _titleLabel.frame = CGRectMake(mainRect.origin.x,
-                                   mainRect.origin.y,
-                                   self.accessoryView.frame.origin.x,
-                                   mainRect.size.height);
-}
-
-- (void)setBottomLineShown:(BOOL)isBottomLineShown {
-    if(_isBottomLineShown != isBottomLineShown) {
-        _isBottomLineShown = isBottomLineShown;
-        
-        _contentInsets = UIEdgeInsetsMake(0,
-                                          CONTENT_LEFT_INSET,
-                                          (_isBottomLineShown) ? 1 : 0,
-                                          CONTENT_LEFT_RIGHT);
-        [self setNeedsLayout];
-    }
+    _titleLabel.frame = CGRectMake(CGRectRight(self.accessoryView.frame) + 10.0f,
+                                   actualBounds.origin.y,
+                                   actualBounds.size.width - self.accessoryView.frame.origin.x,
+                                   actualBounds.size.height);
 }
 
 - (void)setAccessoryType:(UITableViewCellAccessoryType)accessoryType {
     [super setAccessoryType:accessoryType];
     
     if (accessoryType == UITableViewCellAccessoryCheckmark) {
-        _accessoryImageView.image = [UIImage imageNamed:@"filterSelected.png"];
+        _accessoryImageView.image = [UIImage imageNamed:@"gray_checked_checkbox.png"];
         _titleLabel.textColor = SELECTED_TEXT_COLOR;
     } else {
-        _accessoryImageView.image = nil;
+        _accessoryImageView.image = [UIImage imageNamed:@"gray_checkbox.png"];
         _titleLabel.textColor = TEXT_COLOR;
     }
 }
 
-- (void)setItem:(id<TaskFilterItem>)item {
+- (void)setItem:(IQTodoItem*)item {
     _item = item;
-    self.titleLabel.text = item.title;
+    self.titleLabel.text = _item.title;
 }
 
 - (void)setSelectionStyle:(UITableViewCellSelectionStyle)selectionStyle {

@@ -26,7 +26,7 @@ NSString * const NoTasksFound = @"There are no tasks";
     if (self) {
         [self setBackgroundColor:[UIColor whiteColor]];
         
-        _headerContentInsets = UIEdgeInsetsVerticalMake(11.f);
+        _headerContentInsets = UIEdgeInsetsHorizontalMake(11.f);
         
         _headerView = [[BottomLineView alloc] init];
         _headerView.bottomLineColor = SEPARATOR_COLOR;
