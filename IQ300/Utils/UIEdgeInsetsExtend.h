@@ -14,11 +14,11 @@ UIKIT_STATIC_INLINE UIEdgeInsets UIEdgeInsetsMakeWithInset(CGFloat inset) {
 }
 
 UIKIT_STATIC_INLINE UIEdgeInsets UIEdgeInsetsVerticalMake(CGFloat inset) {
-    UIEdgeInsets insets = {0.0f, inset, 0.0f, inset};
+    UIEdgeInsets insets = {inset, 0.0f, inset, 0.0f};
     return insets;
 }
 
 UIKIT_STATIC_INLINE UIEdgeInsets UIEdgeInsetsHorizontalMake(CGFloat inset) {
-    UIEdgeInsets insets = {inset, 0.0f, inset, 0.0f};
+    UIEdgeInsets insets = {0.0f, inset, 0.0f, inset};
     return insets;
 }
