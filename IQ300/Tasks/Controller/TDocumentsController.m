@@ -33,4 +33,20 @@
     self.view.backgroundColor = [UIColor whiteColor];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:self
+                                                                  action:@selector(addButtonAction:)];
+    self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+}
+
+#pragma mark - Private methods
+
+- (void)addButtonAction:(UIButton*)sender {
+    
+}
+
 @end

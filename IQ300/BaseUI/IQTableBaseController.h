@@ -17,4 +17,7 @@
 
 - (void)reloadDataWithCompletion:(void (^)())completion;
 
+- (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay;
+- (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay;
+
 @end

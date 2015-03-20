@@ -43,6 +43,7 @@
                                                     [self.model reloadModelWithCompletion:^(NSError *error) {
                                                         if(!error) {
                                                             [self.tableView reloadData];
+                                                            [self scrollToBottomAnimated:NO delay:0.0f];
                                                             [self.tableView setHidden:NO];
                                                         }
                                                         
@@ -58,6 +59,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.parentViewController.navigationItem.rightBarButtonItem = nil;
 }
 
 @end

@@ -37,6 +37,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self action:@selector(backButtonAction:)];
+    self.navigationItem.leftBarButtonItem = backBarButton;
+    
     [self.viewControllers makeObjectsPerformSelector:@selector(setTask:) withObject:self.task];
     [self.tabBar setSelectionIndicatorImage:[UIImage imageNamed:@"task_tab_sel.png"]];
 }
@@ -44,10 +49,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self action:@selector(backButtonAction:)];
-    self.navigationItem.leftBarButtonItem = backBarButton;
 }
 
 - (BOOL)showMenuBarItem {

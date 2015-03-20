@@ -7,6 +7,7 @@
 //
 
 #import "IQTableBaseController.h"
+#import "DispatchAfterExecution.h"
 
 @interface IQTableBaseController() {
     UITableView * _tableView;
@@ -165,6 +166,49 @@
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
     [self.tableView reloadData];
+}
+
+#pragma mark - Scroll methods
+
+- (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay {
+    __block NSInteger section = [self.tableView numberOfSections] - 1;
+    BOOL canScroll = ([self.tableView numberOfSections] > 0 && [self.tableView numberOfRowsInSection:section] > 0);
+    
+    if (canScroll) {
+        __block  NSInteger row = [self.tableView numberOfRowsInSection:section] - 1;
+        
+        if(delay > 0.0f) {
+            dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
+                [self scrollToBottomAnimated:animated delay:0.0f];
+            });
+        }
+        else {
+            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
+        }
+    }
+}
+
+- (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay {
+    NSInteger section = [self.tableView numberOfSections];
+    
+    if (section > 0) {
+        NSInteger itemsCount = [self.tableView numberOfRowsInSection:0];
+        
+        if (itemsCount > 0) {
+            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            if(delay > 0.0f) {
+                dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
+                    [self scrollToTopAnimated:animated delay:0.0f];
+                });
+            }
+            else {
+                [self.tableView scrollToRowAtIndexPath:indexPath
+                                      atScrollPosition:UITableViewScrollPositionTop
+                                              animated:animated];
+            }
+        }
+    }
 }
 
 - (void)dealloc {

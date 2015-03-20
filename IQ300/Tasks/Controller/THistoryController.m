@@ -33,4 +33,9 @@
     self.view.backgroundColor = [UIColor whiteColor];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.parentViewController.navigationItem.rightBarButtonItem = nil;
+}
+
 @end

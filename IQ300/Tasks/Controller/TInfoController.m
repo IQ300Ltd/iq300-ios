@@ -52,6 +52,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
+                                                                    style:UIBarButtonItemStylePlain
+                                                                   target:self
+                                                                   action:@selector(editButtonAction:)];
+    self.parentViewController.navigationItem.rightBarButtonItem = editButton;
+
     [_headerView setupByTask:self.task];
     self.model.items = [self.task.todoItems array];
     [self.tableView reloadData];
@@ -100,6 +107,12 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
     [self.model makeItemAtIndexPath:indexPath checked:!isCellChecked];
+}
+
+#pragma mark - Private methods
+
+- (void)editButtonAction:(UIButton*)sender {
+    
 }
 
 @end
