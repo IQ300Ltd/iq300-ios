@@ -38,6 +38,7 @@
     UserPickerController * _userPickerController;
     NSRange _inputWordRange;
     NSString * _curUserNick;
+    NSArray * _avalibleNicks;
 }
 
 @end
@@ -51,6 +52,12 @@
 - (void)loadView {
     _mainView = [[CommentsView alloc] init];
     self.view = _mainView;
+}
+
+- (void)setModel:(CommentsModel *)model {
+    [super setModel:model];
+    
+    _avalibleNicks = [[self.model.discussion.users allObjects] valueForKey:@"nickName"];
 }
 
 - (void)viewDidLoad {
@@ -162,8 +169,8 @@
     }
     
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
-    cell.curUserNick = _curUserNick;
     cell.item = comment;
+    cell.descriptionTextView.attributedText = [self formatedTextFromText:comment.body];
     
     cell.expandable = [self.model isCellExpandableAtIndexPath:indexPath];
     cell.expanded = [self.model isItemExpandedAtIndexPath:indexPath];
@@ -460,7 +467,7 @@
         
         NSString * typedWord = [wordTypedBefor stringByAppendingString:wordTypedAfter];
         if([typedWord length] > 0 && [[typedWord substringToIndex:1] isEqualToString:@"@"]) {
-            _inputWordRange = [newString rangeOfString:typedWord];
+            _inputWordRange = [newString rangeOfString:typedWord options:NSBackwardsSearch];
             [self showUserPickerControllerWithFilter:[typedWord substringFromIndex:1]];
         }
         else {
@@ -580,6 +587,44 @@
         }
         [self hideUserPickerController];
     }
+}
+
+- (NSAttributedString*)formatedTextFromText:(NSString*)text {
+    NSDictionary * attributes = @{
+                                  NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x8b8b8b],
+                                  NSFontAttributeName: DESCRIPTION_LABEL_FONT
+                                  };
+
+    NSMutableAttributedString * aText = [[NSMutableAttributedString alloc] initWithString:text
+                                                                               attributes:attributes];
+    
+    NSError *error = nil;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
+    NSArray * matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
+    for (NSTextCheckingResult *match in matches) {
+        NSRange wordRange = [match rangeAtIndex:1];
+        NSString * nickName = [text substringWithRange:wordRange];
+        
+        if([_avalibleNicks containsObject:nickName]) {
+            BOOL isCurUserNick = ([nickName isEqualToString:_curUserNick]);
+            
+            wordRange.location = wordRange.location - 1;
+            wordRange.length = wordRange.length + 1;
+            
+            if (!isCurUserNick) {
+                [aText addAttributes:@{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
+                                        NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
+                               range:wordRange];
+            }
+            else {
+                [aText addAttributes:@{ IQNikBackgroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
+                                        NSForegroundColorAttributeName: [UIColor whiteColor] }
+                               range:wordRange];
+            }
+        }
+    }
+    
+    return aText;
 }
 
 - (void)dealloc {
