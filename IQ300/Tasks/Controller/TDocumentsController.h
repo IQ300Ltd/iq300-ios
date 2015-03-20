@@ -7,11 +7,14 @@
 //
 
 #import "IQTableBaseController.h"
+#import "TAttachmentsModel.h"
 
 @class IQTask;
 
 @interface TDocumentsController : IQTableBaseController
 
-@property (nonatomic, strong) IQTask * task;
+@property (nonatomic, strong) TAttachmentsModel * model;
+
+- (void)setAttachments:(NSArray*)attachments;
 
 @end

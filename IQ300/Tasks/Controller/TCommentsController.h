@@ -12,6 +12,6 @@
 
 @interface TCommentsController : CommentsController
 
-@property (nonatomic, strong) IQTask * task;
+@property (nonatomic, strong) NSNumber * discussionId;
 
 @end

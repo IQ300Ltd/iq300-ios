@@ -14,6 +14,7 @@
 
 @interface TInfoController () {
     TInfoHeaderView * _headerView;
+    TodoListModel * _todoListModel;
     TodoListSectionView * _checkListHeader;
 }
 
@@ -31,17 +32,28 @@
         float imageOffset = 6;
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImage];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
+        
+        _todoListModel = [[TodoListModel alloc] init];
+        _todoListModel.section = 1;
+        self.model = _todoListModel;
     }
     return self;
+}
+
+- (void)setTask:(IQTask *)task {
+    _task = task;
+    
+    self.model.items = [self.task.todoItems array];
+
+    if (self.isViewLoaded) {
+        [_headerView setupByTask:self.task];
+        [self.tableView reloadData];
+    }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    
-    TodoListModel * model = [[TodoListModel alloc] init];
-    model.section = 1;
-    self.model = model;
 
     self.tableView.tableHeaderView = _headerView;
     self.tableView.tableFooterView = [UIView new];
@@ -58,10 +70,6 @@
                                                                    target:self
                                                                    action:@selector(editButtonAction:)];
     self.parentViewController.navigationItem.rightBarButtonItem = editButton;
-
-    [_headerView setupByTask:self.task];
-    self.model.items = [self.task.todoItems array];
-    [self.tableView reloadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

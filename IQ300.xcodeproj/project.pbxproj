@@ -162,6 +162,10 @@
 		7399A4D81A499ED30098DA67 /* ArrayTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7399A4D71A499ED30098DA67 /* ArrayTransformer.m */; };
 		7399F9261ABC018D0013FA11 /* white_add_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 7399F9241ABC018D0013FA11 /* white_add_ico.png */; };
 		7399F9271ABC018D0013FA11 /* white_add_ico@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7399F9251ABC018D0013FA11 /* white_add_ico@2x.png */; };
+		7399F92A1ABC118A0013FA11 /* TAttachmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7399F9291ABC118A0013FA11 /* TAttachmentCell.m */; };
+		7399F92D1ABC13E00013FA11 /* TAttachmentsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7399F92C1ABC13E00013FA11 /* TAttachmentsModel.m */; };
+		7399F9301ABC2D9C0013FA11 /* ContactPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7399F92F1ABC2D9C0013FA11 /* ContactPickerController.m */; };
+		7399F9341ABC3A240013FA11 /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7399F9331ABC3A240013FA11 /* PhotoViewController.m */; };
 		739BC7981A4A9DC7007FC95C /* CommentsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC7971A4A9DC7007FC95C /* CommentsController.m */; };
 		739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC79A1A4A9E63007FC95C /* CommentsModel.m */; };
 		739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC79D1A4A9E86007FC95C /* CommentsView.m */; };
@@ -221,7 +225,6 @@
 		73ADA8E21A36E4CB0032C1FA /* UsersModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8E11A36E4CB0032C1FA /* UsersModel.m */; };
 		73ADA8E71A36EE180032C1FA /* IQContact.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8E61A36EE180032C1FA /* IQContact.m */; };
 		73ADA8EC1A36FD680032C1FA /* ContactCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8EB1A36FD680032C1FA /* ContactCell.m */; };
-		73ADA8F11A373B010032C1FA /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8F01A373B010032C1FA /* PhotoViewController.m */; };
 		73AF25A31A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF25A21A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m */; };
 		73AF73E11A3AFEBA001B8E42 /* CViewInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF73E01A3AFEBA001B8E42 /* CViewInfo.m */; };
 		73AF73E41A3B0C0D001B8E42 /* msg_viewed.png in Resources */ = {isa = PBXBuildFile; fileRef = 73AF73E21A3B0C0D001B8E42 /* msg_viewed.png */; };
@@ -544,6 +547,14 @@
 		7399A4D71A499ED30098DA67 /* ArrayTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArrayTransformer.m; sourceTree = "<group>"; };
 		7399F9241ABC018D0013FA11 /* white_add_ico.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = white_add_ico.png; sourceTree = "<group>"; };
 		7399F9251ABC018D0013FA11 /* white_add_ico@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white_add_ico@2x.png"; sourceTree = "<group>"; };
+		7399F9281ABC118A0013FA11 /* TAttachmentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAttachmentCell.h; sourceTree = "<group>"; };
+		7399F9291ABC118A0013FA11 /* TAttachmentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAttachmentCell.m; sourceTree = "<group>"; };
+		7399F92B1ABC13E00013FA11 /* TAttachmentsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAttachmentsModel.h; sourceTree = "<group>"; };
+		7399F92C1ABC13E00013FA11 /* TAttachmentsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAttachmentsModel.m; sourceTree = "<group>"; };
+		7399F92E1ABC2D9C0013FA11 /* ContactPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactPickerController.h; sourceTree = "<group>"; };
+		7399F92F1ABC2D9C0013FA11 /* ContactPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactPickerController.m; sourceTree = "<group>"; };
+		7399F9321ABC3A240013FA11 /* PhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoViewController.h; sourceTree = "<group>"; };
+		7399F9331ABC3A240013FA11 /* PhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
 		739BC7961A4A9DC7007FC95C /* CommentsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsController.h; sourceTree = "<group>"; };
 		739BC7971A4A9DC7007FC95C /* CommentsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsController.m; sourceTree = "<group>"; };
 		739BC7991A4A9E63007FC95C /* CommentsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsModel.h; sourceTree = "<group>"; };
@@ -646,8 +657,6 @@
 		73ADA8E61A36EE180032C1FA /* IQContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQContact.m; sourceTree = "<group>"; };
 		73ADA8EA1A36FD680032C1FA /* ContactCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactCell.h; sourceTree = "<group>"; };
 		73ADA8EB1A36FD680032C1FA /* ContactCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactCell.m; sourceTree = "<group>"; };
-		73ADA8EF1A373B010032C1FA /* PhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoViewController.h; sourceTree = "<group>"; };
-		73ADA8F01A373B010032C1FA /* PhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
 		73AF25A11A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+PullToRefreshInsert.h"; sourceTree = "<group>"; };
 		73AF25A21A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+PullToRefreshInsert.m"; sourceTree = "<group>"; };
 		73AF73DF1A3AFEBA001B8E42 /* CViewInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CViewInfo.h; sourceTree = "<group>"; };
@@ -855,6 +864,8 @@
 				7311706C1AB80414008A4D09 /* TDocumentsController.m */,
 				7311706E1AB80452008A4D09 /* THistoryController.h */,
 				7311706F1AB80452008A4D09 /* THistoryController.m */,
+				7399F92E1ABC2D9C0013FA11 /* ContactPickerController.h */,
+				7399F92F1ABC2D9C0013FA11 /* ContactPickerController.m */,
 				7311705F1AB7FEAE008A4D09 /* TaskTabController.h */,
 				731170601AB7FEAE008A4D09 /* TaskTabController.m */,
 				73A7CA651A9F10DE0038DEF1 /* TasksFilterController.h */,
@@ -872,6 +883,8 @@
 				73A700541A95D0E600A1C2AC /* TasksMenuModel.m */,
 				738916B41ABAEFB60017EF86 /* TodoListModel.h */,
 				738916B51ABAEFB60017EF86 /* TodoListModel.m */,
+				7399F92B1ABC13E00013FA11 /* TAttachmentsModel.h */,
+				7399F92C1ABC13E00013FA11 /* TAttachmentsModel.m */,
 				73A7CA681A9F11080038DEF1 /* TasksFilterModel.h */,
 				73A7CA691A9F11080038DEF1 /* TasksFilterModel.m */,
 				73F63E861AA055FB000DA319 /* TaskFilterSection.h */,
@@ -905,6 +918,8 @@
 				73A7CA871A9F5CB90038DEF1 /* TaskFilterCell.m */,
 				734965CF1AB1A60100263B57 /* CTaskFilterCell.h */,
 				734965D01AB1A60100263B57 /* CTaskFilterCell.m */,
+				7399F9281ABC118A0013FA11 /* TAttachmentCell.h */,
+				7399F9291ABC118A0013FA11 /* TAttachmentCell.m */,
 				73A7CA711A9F557F0038DEF1 /* TaskFilterConst.h */,
 			);
 			path = View;
@@ -1226,6 +1241,7 @@
 				739850B61A2DAC3D00DB5B21 /* Messages */,
 				7379EEB41A11E3FF00D69BBD /* Notifications */,
 				7385D4AA1A288E87000B94BD /* NotificationCenter */,
+				7399F9311ABC39040013FA11 /* PhotoViewController */,
 				736B6BCE1A0B5BCB00034D9B /* Resources */,
 				737DD2111A14DEF100CC4443 /* Service */,
 				738CE1E31A0B3F4E0096B374 /* Supporting Files */,
@@ -1376,8 +1392,6 @@
 				739C3B5B1A3075B00032C057 /* DiscussionController.m */,
 				73ADA8D71A36DB8D0032C1FA /* CreateConversationController.h */,
 				73ADA8D81A36DB8D0032C1FA /* CreateConversationController.m */,
-				73ADA8EF1A373B010032C1FA /* PhotoViewController.h */,
-				73ADA8F01A373B010032C1FA /* PhotoViewController.m */,
 				73E425FE1AAEC6BF00CD2093 /* UserPickerController.h */,
 				73E425FF1AAEC6BF00CD2093 /* UserPickerController.m */,
 			);
@@ -1458,6 +1472,15 @@
 				73086B0B1A8E64D80013582E /* IQGroupCounter.m */,
 			);
 			path = Notifications;
+			sourceTree = "<group>";
+		};
+		7399F9311ABC39040013FA11 /* PhotoViewController */ = {
+			isa = PBXGroup;
+			children = (
+				7399F9321ABC3A240013FA11 /* PhotoViewController.h */,
+				7399F9331ABC3A240013FA11 /* PhotoViewController.m */,
+			);
+			path = PhotoViewController;
 			sourceTree = "<group>";
 		};
 		73A700451A95C0DC00A1C2AC /* Tasks */ = {
@@ -1871,6 +1894,7 @@
 				73A700521A95D0AF00A1C2AC /* NotificationsMenuModel.m in Sources */,
 				73F9D1AF1AA6F9620030DE90 /* TaskStatusFilterItem.m in Sources */,
 				73AF73E11A3AFEBA001B8E42 /* CViewInfo.m in Sources */,
+				7399F92D1ABC13E00013FA11 /* TAttachmentsModel.m in Sources */,
 				73F2A5401A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m in Sources */,
 				73C58C0A1A1F17FD00C83729 /* NSString+SizeWith.m in Sources */,
 				7380E9751A4020FA00128BD9 /* ObjectSerializator.m in Sources */,
@@ -1896,6 +1920,7 @@
 				739C3B651A3077320032C057 /* NSDate+IQFormater.m in Sources */,
 				738EA7B21A1DE15B0065D39F /* UIViewController+LeftMenu.m in Sources */,
 				73A20C771A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m in Sources */,
+				7399F9341ABC3A240013FA11 /* PhotoViewController.m in Sources */,
 				73A87EF91AA4597800C4A7C3 /* NotificationsHelper.m in Sources */,
 				73ACB0BD1A7A1882004F5D99 /* NGroupModel.m in Sources */,
 				7311709C1AB81505008A4D09 /* IQTabBarController.m in Sources */,
@@ -1936,7 +1961,6 @@
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,
 				73C58C071A1F145200C83729 /* NSDate+CupertinoYankee.m in Sources */,
 				73A949A21A3833C4008EC469 /* NSError+Extension.m in Sources */,
-				73ADA8F11A373B010032C1FA /* PhotoViewController.m in Sources */,
 				73506ED61A137D070071B4CB /* TasksController.m in Sources */,
 				73A7004C1A95CAEA00A1C2AC /* TasksModel.m in Sources */,
 				73A949A91A38632C008EC469 /* ConversationCell.m in Sources */,
@@ -1980,6 +2004,7 @@
 				73970E8F1AA5A7CC00AC2414 /* TaskFilterCounters.m in Sources */,
 				731170671AB801C2008A4D09 /* TCommentsController.m in Sources */,
 				738EF8301A9CBAA200894755 /* IQTasksHolder.m in Sources */,
+				7399F92A1ABC118A0013FA11 /* TAttachmentCell.m in Sources */,
 				736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */,
 				73A7004F1A95CF8C00A1C2AC /* TaskCell.m in Sources */,
 				73C286AD1A94AFD70011FD51 /* IQNotificationsGroupIds.m in Sources */,
@@ -1991,6 +2016,7 @@
 				737DD22D1A14EFE900CC4443 /* TCService.m in Sources */,
 				739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */,
 				736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */,
+				7399F9301ABC2D9C0013FA11 /* ContactPickerController.m in Sources */,
 				7379EEBA1A11E47700D69BBD /* NotificationsController.m in Sources */,
 				73A9499E1A3832D7008EC469 /* BackgroundDownloadManager.m in Sources */,
 				738916B31ABAE1C10017EF86 /* TodoListSectionView.m in Sources */,

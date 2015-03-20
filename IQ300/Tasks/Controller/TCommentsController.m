@@ -31,11 +31,11 @@
     return self;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    if (self.task.discussionId) {
-        [[IQService sharedService] discussionWithId:self.task.discussionId
+- (void)setDiscussionId:(NSNumber*)discussionId {
+    if (discussionId && ![_discussionId isEqualToNumber:discussionId]) {
+        _discussionId = discussionId;
+        
+        [[IQService sharedService] discussionWithId:discussionId
                                             handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
                                                 if(success) {
                                                     CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
@@ -53,8 +53,12 @@
                                                     [self.tableView reloadData];
                                                 }
                                             }];
-
     }
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {

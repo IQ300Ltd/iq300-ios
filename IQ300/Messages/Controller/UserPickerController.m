@@ -16,7 +16,7 @@
 
 #define DISPATCH_DELAY 0.7
 
-@interface UserPickerController ()  <UITableViewDataSource, UITableViewDelegate> {
+@interface UserPickerController () {
     UILabel * _noDataLabel;
 }
 

@@ -7,11 +7,13 @@
 //
 
 #import "IQTableBaseController.h"
+#import "UsersPickerModel.h"
 
 @class IQTask;
 
 @interface TMembersController : IQTableBaseController
 
 @property (nonatomic, strong) IQTask * task;
+@property (nonatomic, strong) UsersPickerModel * model;
 
 @end

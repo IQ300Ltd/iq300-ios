@@ -13,6 +13,7 @@
 #import "TMembersController.h"
 #import "TDocumentsController.h"
 #import "THistoryController.h"
+#import "IQTask.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate>
 
@@ -42,8 +43,9 @@
                                                                       target:self action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
-    [self.viewControllers makeObjectsPerformSelector:@selector(setTask:) withObject:self.task];
     [self.tabBar setSelectionIndicatorImage:[UIImage imageNamed:@"task_tab_sel.png"]];
+    
+    [self updateControllerByTask:self.task];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -61,6 +63,22 @@
 
 - (void)tabBarController:(IQTabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     self.title = viewController.title;
+}
+
+- (void)updateControllerByTask:(IQTask*)task {
+    if (task) {
+        TInfoController * infoController = self.viewControllers[0];
+        [infoController setTask:task];
+        
+        TCommentsController * commentsController = self.viewControllers[1];
+        [commentsController setDiscussionId:task.discussionId];
+        
+        TMembersController * membersController = self.viewControllers[2];
+        [membersController setTask:task];
+        
+        TDocumentsController * documentsController = self.viewControllers[3];
+        [documentsController setAttachments:[task.attachments array]];
+    }
 }
 
 @end
