@@ -21,7 +21,7 @@
 @interface TasksFilterController () <ExpandableTableViewDataSource, ExpandableTableViewDelegate> {
     ExpandableTableView * _tableView;
     UIView * _bottomSeparatorView;
-    ExtendedButton * _clearButton;
+    ExtendedButton * _doneButton;
 }
 
 @end
@@ -61,19 +61,25 @@
     [_bottomSeparatorView setBackgroundColor:SEPARATOR_COLOR];
     [self.view addSubview:_bottomSeparatorView];
     
-    _clearButton = [[ExtendedButton alloc] init];
-    _clearButton.layer.cornerRadius = 4.0f;
-    _clearButton.layer.borderWidth = 0.5f;
-    [_clearButton setTitle:NSLocalizedString(@"Reset all filters", nil) forState:UIControlStateNormal];
-    [_clearButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
-    [_clearButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
-    [_clearButton setBackgroundColor:IQ_CELADON_COLOR];
-    [_clearButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
-    [_clearButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
-    _clearButton.layer.borderColor = _clearButton.backgroundColor.CGColor;
-    [_clearButton setClipsToBounds:YES];
-    [_clearButton addTarget:self action:@selector(clearButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_clearButton];
+    _doneButton = [[ExtendedButton alloc] init];
+    _doneButton.layer.cornerRadius = 4.0f;
+    _doneButton.layer.borderWidth = 0.5f;
+    [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
+    [_doneButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
+    [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
+    [_doneButton setBackgroundColor:IQ_CELADON_COLOR];
+    [_doneButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
+    [_doneButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
+    _doneButton.layer.borderColor = _doneButton.backgroundColor.CGColor;
+    [_doneButton setClipsToBounds:YES];
+    [_doneButton addTarget:self action:@selector(doneButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_doneButton];
+    
+    UIBarButtonItem * clearButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reset_filter.png"]
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(clearButtonAction:)];
+    self.navigationItem.rightBarButtonItem = clearButton;
 }
 
 - (void)viewDidLayoutSubviews {
@@ -92,7 +98,7 @@
                                             SEPARATOR_HEIGHT);
     
     CGSize clearButtonSize = CGSizeMake(300, 40);
-    _clearButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - clearButtonSize.width) / 2.0f,
+    _doneButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - clearButtonSize.width) / 2.0f,
                                     actualBounds.origin.y + actualBounds.size.height - clearButtonSize.height - 10.0f,
                                     clearButtonSize.width,
                                     clearButtonSize.height);
@@ -279,27 +285,23 @@
 }
 
 - (void)backButtonAction:(UIButton*)sender {
-    if ([self.delegate respondsToSelector:@selector(filterControllerWillFinish:)]) {
-        [self.delegate filterControllerWillFinish:self];
-    }
-
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)clearButtonAction:(UIButton*)sender {
-    [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"reset_filters_question", nil)
-             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-             otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
-                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                          if(buttonIndex == 1) {
-                              [self.model resetFilters];
-                              [self.model updateModelWithCompletion:^(NSError *error) {
-                                  if(!error) {
-                                      [_tableView reloadData];
-                                  }
-                              }];
-                          }
-                      }];
+    [self.model resetFilters];
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        if(!error) {
+            [_tableView reloadData];
+        }
+    }];
+}
+
+- (void)doneButtonAction:(UIButton*)sender {
+    if ([self.delegate respondsToSelector:@selector(filterControllerWillFinish:)]) {
+        [self.delegate filterControllerWillFinish:self];
+    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

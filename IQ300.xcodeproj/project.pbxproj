@@ -166,6 +166,8 @@
 		7399F92D1ABC13E00013FA11 /* TAttachmentsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7399F92C1ABC13E00013FA11 /* TAttachmentsModel.m */; };
 		7399F9301ABC2D9C0013FA11 /* ContactPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7399F92F1ABC2D9C0013FA11 /* ContactPickerController.m */; };
 		7399F9341ABC3A240013FA11 /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7399F9331ABC3A240013FA11 /* PhotoViewController.m */; };
+		7399F9371ABC3C390013FA11 /* reset_filter.png in Resources */ = {isa = PBXBuildFile; fileRef = 7399F9351ABC3C390013FA11 /* reset_filter.png */; };
+		7399F9381ABC3C390013FA11 /* reset_filter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7399F9361ABC3C390013FA11 /* reset_filter@2x.png */; };
 		739BC7981A4A9DC7007FC95C /* CommentsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC7971A4A9DC7007FC95C /* CommentsController.m */; };
 		739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC79A1A4A9E63007FC95C /* CommentsModel.m */; };
 		739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC79D1A4A9E86007FC95C /* CommentsView.m */; };
@@ -555,6 +557,8 @@
 		7399F92F1ABC2D9C0013FA11 /* ContactPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactPickerController.m; sourceTree = "<group>"; };
 		7399F9321ABC3A240013FA11 /* PhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoViewController.h; sourceTree = "<group>"; };
 		7399F9331ABC3A240013FA11 /* PhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
+		7399F9351ABC3C390013FA11 /* reset_filter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reset_filter.png; sourceTree = "<group>"; };
+		7399F9361ABC3C390013FA11 /* reset_filter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reset_filter@2x.png"; sourceTree = "<group>"; };
 		739BC7961A4A9DC7007FC95C /* CommentsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsController.h; sourceTree = "<group>"; };
 		739BC7971A4A9DC7007FC95C /* CommentsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsController.m; sourceTree = "<group>"; };
 		739BC7991A4A9E63007FC95C /* CommentsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsModel.h; sourceTree = "<group>"; };
@@ -1519,6 +1523,8 @@
 				738916BA1ABAFB800017EF86 /* gray_checked_checkbox@2x.png */,
 				7399F9241ABC018D0013FA11 /* white_add_ico.png */,
 				7399F9251ABC018D0013FA11 /* white_add_ico@2x.png */,
+				7399F9351ABC3C390013FA11 /* reset_filter.png */,
+				7399F9361ABC3C390013FA11 /* reset_filter@2x.png */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1737,6 +1743,7 @@
 				738FE7091A162B10009F26A2 /* notif_tab_selected.png in Resources */,
 				739850C21A2DB1C100DB5B21 /* search_icon.png in Resources */,
 				738FE7131A162B10009F26A2 /* tasks_tab_sel.png in Resources */,
+				7399F9381ABC3C390013FA11 /* reset_filter@2x.png in Resources */,
 				73D0DDFF1A95F2AB008710FF /* message_blue_buble.png in Resources */,
 				738FE7011A162B10009F26A2 /* messages_tab.png in Resources */,
 				73A7CA7E1A9F55ED0038DEF1 /* desc_sort_ico.png in Resources */,
@@ -1824,6 +1831,7 @@
 				73F2A5551A39AB3000E9D324 /* attachment_img@2x.png in Resources */,
 				73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */,
 				73F2A5571A39AB3000E9D324 /* createNewMessage@2x.png in Resources */,
+				7399F9371ABC3C390013FA11 /* reset_filter.png in Resources */,
 				73F9D1B21AA7369E0030DE90 /* FiltersLocalization.strings in Resources */,
 				7393C40D1A1A2FCF00E9E944 /* login_logo.png in Resources */,
 				738FE6FE1A162B10009F26A2 /* calendar_tab@2x.png in Resources */,
