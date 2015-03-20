@@ -590,41 +590,45 @@
 }
 
 - (NSAttributedString*)formatedTextFromText:(NSString*)text {
-    NSDictionary * attributes = @{
-                                  NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x8b8b8b],
-                                  NSFontAttributeName: DESCRIPTION_LABEL_FONT
-                                  };
-
-    NSMutableAttributedString * aText = [[NSMutableAttributedString alloc] initWithString:text
-                                                                               attributes:attributes];
-    
-    NSError *error = nil;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
-    NSArray * matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
-    for (NSTextCheckingResult *match in matches) {
-        NSRange wordRange = [match rangeAtIndex:1];
-        NSString * nickName = [text substringWithRange:wordRange];
+    if([text length] > 0) {
+        NSDictionary * attributes = @{
+                                      NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x8b8b8b],
+                                      NSFontAttributeName: DESCRIPTION_LABEL_FONT
+                                      };
         
-        if([_avalibleNicks containsObject:nickName]) {
-            BOOL isCurUserNick = ([nickName isEqualToString:_curUserNick]);
+        NSMutableAttributedString * aText = [[NSMutableAttributedString alloc] initWithString:text
+                                                                                   attributes:attributes];
+        
+        NSError *error = nil;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
+        NSArray * matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
+        for (NSTextCheckingResult *match in matches) {
+            NSRange wordRange = [match rangeAtIndex:1];
+            NSString * nickName = [text substringWithRange:wordRange];
             
-            wordRange.location = wordRange.location - 1;
-            wordRange.length = wordRange.length + 1;
-            
-            if (!isCurUserNick) {
-                [aText addAttributes:@{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
-                                        NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
-                               range:wordRange];
-            }
-            else {
-                [aText addAttributes:@{ IQNikBackgroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
-                                        NSForegroundColorAttributeName: [UIColor whiteColor] }
-                               range:wordRange];
+            if([_avalibleNicks containsObject:nickName]) {
+                BOOL isCurUserNick = ([nickName isEqualToString:_curUserNick]);
+                
+                wordRange.location = wordRange.location - 1;
+                wordRange.length = wordRange.length + 1;
+                
+                if (!isCurUserNick) {
+                    [aText addAttributes:@{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
+                                            NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
+                                   range:wordRange];
+                }
+                else {
+                    [aText addAttributes:@{ IQNikBackgroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
+                                            NSForegroundColorAttributeName: [UIColor whiteColor] }
+                                   range:wordRange];
+                }
             }
         }
+        
+        return aText;
     }
     
-    return aText;
+    return nil;
 }
 
 - (void)dealloc {
