@@ -174,7 +174,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQNotificationsGroup * group = [self.model itemAtIndexPath:indexPath];
-    IQNotification * notification = group.lastNotification;
+    IQNotification * notification = (self.model.loadUnreadOnly) ? group.lastUnreadNotification : group.lastNotification;
     BOOL hasOneUnread = ([group.unreadCount integerValue] == 1);
     
     if ((hasOneUnread && self.model.loadUnreadOnly) || [group.totalCount integerValue] == 1) {
