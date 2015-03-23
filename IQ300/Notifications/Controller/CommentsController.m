@@ -263,6 +263,8 @@
 }
 
 - (void)sendButtonAction:(UIButton*)sender {
+    [self hideUserPickerController];
+
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
@@ -295,6 +297,8 @@
 }
 
 - (void)attachButtonAction:(UIButton*)sender {
+    [self hideUserPickerController];
+    
     CTAssetsPickerController *picker = [[CTAssetsPickerController alloc] init];
     picker.assetsFilter = [ALAssetsFilter allAssets];
     picker.showsCancelButton = YES;
@@ -421,7 +425,9 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    [_mainView setInputOffset:down ? 0.0f : -keyboardRect.size.height];
+    CGFloat inset = keyboardRect.size.height - MAX((CGRectGetMaxY(self.view.superview.frame) - CGRectGetMaxY(self.view.frame)), 0);
+    inset -= (!self.hidesBottomBarWhenPushed) ? 6 : 0;
+    [_mainView setInputOffset:down ? 0.0f : -inset];
     if(isTableScrolledToBottom) {
         [self scrollToBottomAnimated:NO delay:0.0f];
     }
@@ -455,7 +461,7 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
-   
+    
     if([newString length] > 0) {
         NSString * beforeString = [newString substringToIndex:(range.length > 0) ? range.location : range.location + 1];
         NSString * afterString =  [newString substringFromIndex:(range.length > 0) ? range.location : range.location + 1];
