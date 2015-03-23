@@ -37,4 +37,6 @@
 
 - (void)tasksMenuCountersWithHandler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
+
 @end

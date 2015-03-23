@@ -9,6 +9,7 @@
 #import "TAttachmentsModel.h"
 #import "IQAttachment.h"
 #import "TAttachmentCell.h"
+#import "IQService+Tasks.h"
 
 static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
@@ -85,11 +86,51 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     }
 }
 
+- (void)addAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName attachmentType:(NSString*)type completion:(void (^)(NSError * error))completion {
+    void (^addAttachmentBlock)(IQAttachment * attachment) = ^ (IQAttachment * attachment) {
+        [[IQService sharedService] addAttachmentWithId:attachment.attachmentId
+                                                taskId:self.taskId
+                                               handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                   if(success) {
+                                                       [self insertAttachment:attachment];
+                                                   }
+                                                   if (completion) {
+                                                       completion(error);
+                                                   }
+                                               }];
+    };
+    
+    if(asset) {
+        [[IQService sharedService] createAttachmentWithAsset:asset
+                                                    fileName:fileName
+                                                    mimeType:type
+                                                     handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
+                                                         if(success) {
+                                                             addAttachmentBlock(attachment);
+                                                         }
+                                                         else if (completion) {
+                                                             completion(error);
+                                                         }
+                                                     }];
+    }
+}
+
 - (void)clearModelData {
     _items = nil;
 }
 
 #pragma mark - Private methods
+
+- (void)insertAttachment:(IQAttachment*)attachment {
+    _items = [_items arrayByAddingObject:attachment];
+    
+    [self modelWillChangeContent];
+    [self modelDidChangeObject:attachment
+                   atIndexPath:nil
+                 forChangeType:NSFetchedResultsChangeInsert
+                  newIndexPath:[NSIndexPath indexPathForItem:[_items count] - 1 inSection:self.section]];
+    [self modelDidChangeContent];
+}
 
 #pragma mark - NSFetchedResultsControllerDelegate
 

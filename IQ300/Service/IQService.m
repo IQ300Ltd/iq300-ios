@@ -441,6 +441,29 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
             }];
 }
 
+#pragma mark - Attachments methods
+
+
+- (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler {
+    [self postAsset:asset
+               path:@"/api/v1/attachments"
+         parameters:nil
+  fileAttributeName:@"attachment[file]"
+           fileName:fileName
+           mimeType:mimeType
+            handler:handler];
+}
+
+- (void)createAttachmentWithFileAtPath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler {
+    [self postFileAtPath:[NSURL fileURLWithPath:filePath]
+                    path:@"/api/v1/attachments"
+              parameters:nil
+       fileAttributeName:@"attachment[file]"
+                fileName:fileName
+                mimeType:mimeType
+                 handler:handler];
+}
+
 #pragma mark - Private methods
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation *)operation {
@@ -706,6 +729,14 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                    pathPattern:@"/api/v1/tasks/menu_counters"
                                                    fromKeyPath:@"menu_counters"
                                                          store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPOST
+                                                         pathPattern:@"/api/v1/tasks/:id/attachments"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
     
     [self.objectManager addResponseDescriptor:descriptor];
 }

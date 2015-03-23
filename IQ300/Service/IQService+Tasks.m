@@ -84,4 +84,16 @@
                    handler:handler];
 }
 
+- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self postObject:nil
+                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/attachments", taskId]
+          parameters:@{ @"attachment_id" : attachmentId }
+             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                 if (handler) {
+                     handler(success, responseData, error);
+                 }
+             }];
+}
+
 @end

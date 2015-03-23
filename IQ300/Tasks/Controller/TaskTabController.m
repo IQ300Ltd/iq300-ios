@@ -77,6 +77,7 @@
         [membersController setTask:task];
         
         TDocumentsController * documentsController = self.viewControllers[3];
+        documentsController.model.taskId = self.task.taskId;
         [documentsController setAttachments:[task.attachments array]];
     }
 }

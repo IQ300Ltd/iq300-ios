@@ -14,10 +14,10 @@
 #import "PhotoViewController.h"
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
+#import "ALAsset+Extension.h"
 
 @interface TDocumentsController () {
     TAttachmentsModel * _attachmentsModel;
-    ALAsset * _attachment;
     UIDocumentInteractionController * _documentController;
 }
 
@@ -142,7 +142,25 @@
 }
 
 - (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
-    _attachment = asset;
+    [self showActivityIndicator];
+    
+    __weak typeof(self) weakSelf = self;
+    [self.model addAttachmentWithAsset:asset
+                              fileName:[asset fileName]
+                        attachmentType:[asset MIMEType]
+                            completion:^(NSError *error) {
+                                if (error) {
+                                    [UIAlertView showWithTitle:@"IQ300"
+                                                       message:NSLocalizedString(@"Failed add document to task", nil)
+                                             cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                             otherButtonTitles:nil
+                                                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                                          
+                                                      }];
+                                }
+                                [weakSelf hideActivityIndicator];
+                            }];
+    
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
