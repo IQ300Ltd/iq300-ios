@@ -462,31 +462,12 @@
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
     
-    if([newString length] > 0) {
-        NSString * beforeString = [newString substringToIndex:(range.length > 0) ? range.location : range.location + 1];
-        NSString * afterString =  [newString substringFromIndex:(range.length > 0) ? range.location : range.location + 1];
-        
-        NSArray * wordArrayBefor = [beforeString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSString * wordTypedBefor = [wordArrayBefor lastObject];
-        NSArray * wordArrayAfter = [afterString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSString * wordTypedAfter = [wordArrayAfter firstObject];
-        
-        NSString * typedWord = [wordTypedBefor stringByAppendingString:wordTypedAfter];
-        if([typedWord length] > 0 && [[typedWord substringToIndex:1] isEqualToString:@"@"]) {
-            _inputWordRange = [newString rangeOfString:typedWord options:NSBackwardsSearch];
-            [self showUserPickerControllerWithFilter:[typedWord substringFromIndex:1]];
-        }
-        else {
-            _inputWordRange = NSMakeRange(0, 0);
-            [self hideUserPickerController];
-        }
-    }
-    else {
-        _inputWordRange = NSMakeRange(0, 0);
-        [self hideUserPickerController];
-    }
-    
+    [self showAutoCompleationIfNeedForText:newString selectedRange:NSMakeRange((range.length > 0) ? range.location : range.location + 1, 0)];
     return YES;
+}
+
+- (void)textViewDidChangeSelection:(UITextView *)textView {
+    
 }
 
 #pragma mark - Scrolls
@@ -587,10 +568,42 @@
     if(user) {
         NSString * inputText = _mainView.inputView.commentTextView.text;
         if(_inputWordRange.location != NSNotFound) {
+            BOOL needSpace = (_inputWordRange.location + _inputWordRange.length == inputText.length);
+            NSString * resultString = (needSpace) ? [NSString stringWithFormat:@"@%@ ", user.nickName] :
+                                                    [NSString stringWithFormat:@"@%@", user.nickName];
+            
             inputText = [inputText stringByReplacingCharactersInRange:_inputWordRange
-                                                           withString:[NSString stringWithFormat:@"@%@ ", user.nickName]];
+                                                           withString:resultString];
             _mainView.inputView.commentTextView.text = inputText;
+            _mainView.inputView.commentTextView.selectedRange = NSMakeRange(_inputWordRange.location + [resultString length], 0);
         }
+        [self hideUserPickerController];
+    }
+}
+
+- (void)showAutoCompleationIfNeedForText:(NSString*)text selectedRange:(NSRange)selectedRange {
+    if([text length] > 0) {
+        NSString * beforeString = [text substringToIndex:selectedRange.location];
+        NSString * afterString =  [text substringFromIndex:selectedRange.location];
+        
+        NSArray * wordArrayBefor = [beforeString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString * wordTypedBefor = [wordArrayBefor lastObject];
+        NSArray * wordArrayAfter = [afterString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString * wordTypedAfter = [wordArrayAfter firstObject];
+        
+        NSString * typedWord = [wordTypedBefor stringByAppendingString:wordTypedAfter];
+        if([typedWord length] > 0 && [[typedWord substringToIndex:1] isEqualToString:@"@"]) {
+            NSInteger location = selectedRange.location;
+            _inputWordRange = NSMakeRange(location - [wordTypedBefor length], [wordTypedBefor length] + [wordTypedAfter length]);
+            [self showUserPickerControllerWithFilter:[typedWord substringFromIndex:1]];
+        }
+        else {
+            _inputWordRange = NSMakeRange(0, 0);
+            [self hideUserPickerController];
+        }
+    }
+    else {
+        _inputWordRange = NSMakeRange(0, 0);
         [self hideUserPickerController];
     }
 }
