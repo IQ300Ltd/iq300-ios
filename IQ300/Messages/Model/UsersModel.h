@@ -16,8 +16,9 @@
 
 @property (nonatomic, strong) NSString * sectionNameKeyPath;
 @property (nonatomic, strong) NSString * filter;
+@property (nonatomic, strong) NSArray * excludeUserIds;
 @property (nonatomic, strong) NSPredicate * predicate;
-@property (strong, nonatomic) NSArray  * sortDescriptors;
+@property (nonatomic, strong) NSArray  * sortDescriptors;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 + (instancetype)modelWithPortionSize:(NSUInteger)portionSize;

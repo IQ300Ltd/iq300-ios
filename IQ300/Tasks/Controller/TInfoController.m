@@ -11,6 +11,8 @@
 #import "TodoListSectionView.h"
 #import "IQTask.h"
 #import "TodoListItemCell.h"
+#import "IQBadgeView.h"
+#import "UITabBarItem+CustomBadgeView.h"
 
 @interface TInfoController () {
     TInfoHeaderView * _headerView;
@@ -33,6 +35,20 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImage];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
         
+        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
+        style.badgeTextColor = [UIColor whiteColor];
+        style.badgeFrameColor = [UIColor whiteColor];
+        style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
+        style.badgeFrame = YES;
+        
+        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
+        badgeView.badgeMinSize = 15;
+        badgeView.frameLineHeight = 1.0f;
+        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        
+        self.tabBarItem.customBadgeView = badgeView;
+        self.tabBarItem.badgeOrigin = CGPointMake(37.5f, 3.5f);
+
         _todoListModel = [[TodoListModel alloc] init];
         _todoListModel.section = 1;
         self.model = _todoListModel;

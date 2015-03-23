@@ -64,13 +64,13 @@
     _model.delegate = self;
 }
 
-- (void)reloadDataWithCompletion:(void (^)())completion {
+- (void)reloadDataWithCompletion:(void (^)(NSError *error))completion {
     void (^completionBlock)(NSError *error) = ^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
         }
         if (completion) {
-            completion();
+            completion(error);
         }
     };
     

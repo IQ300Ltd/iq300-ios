@@ -1,46 +1,40 @@
 //
-//  UsersModel.m
+//  TaskMembersModel.m
 //  IQ300
 //
-//  Created by Tayphoon on 09.12.14.
-//  Copyright (c) 2014 Tayphoon. All rights reserved.
+//  Created by Tayphoon on 23.03.15.
+//  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "UsersModel.h"
-#import "IQService+Messages.h"
+#import "TaskMembersModel.h"
+#import "IQService+Tasks.h"
 #import "ContactCell.h"
 
-#define CACHE_FILE_NAME @"UsersModelcache"
+#define CACHE_FILE_NAME @"TMembersModelCache"
 #define SORT_DIRECTION IQSortDirectionAscending
 
-static NSString * UReuseIdentifier = @"UReuseIdentifier";
+static NSString * ReuseIdentifier = @"MReuseIdentifier";
 
-@interface UsersModel()<NSFetchedResultsControllerDelegate> {
-    NSArray * _users;
+@interface TaskMembersModel()<NSFetchedResultsControllerDelegate> {
     NSFetchedResultsController * _fetchController;
 }
 
 @end
 
-@implementation UsersModel
+@implementation TaskMembersModel
 
-+ (instancetype)modelWithPortionSize:(NSUInteger)portionSize {
-    return [[self alloc] initWithPortionSize:portionSize];
-}
-
-- (id)initWithPortionSize:(NSUInteger)portionSize {
+- (id)init {
     self = [super init];
-    if(self) {
-        _portionSize = portionSize;
-        _portionOffset = 0;
+    if (self) {
         _sectionNameKeyPath = nil;
         _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"user.displayName" ascending:SORT_DIRECTION == IQSortDirectionAscending]];
     }
+    
     return self;
 }
 
-- (id)init {
-    return [self initWithPortionSize:20];
+- (NSArray*)members {
+    return [_fetchController fetchedObjects];
 }
 
 - (NSUInteger)numberOfSections {
@@ -57,13 +51,13 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
-    return UReuseIdentifier;
+    return ReuseIdentifier;
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
     Class cellClass = [ContactCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
-                            reuseIdentifier:UReuseIdentifier];
+                            reuseIdentifier:ReuseIdentifier];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
@@ -91,73 +85,34 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        NSInteger count = [self numberOfItemsInSection:0];
-        _portionOffset = (count > 0) ? count / _portionSize + 1 : 0;
-        [[IQService sharedService] contactsWithPage:@(_portionOffset)
-                                                per:@(_portionSize)
-                                               sort:SORT_DIRECTION
-                                             search:_filter
-                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                                if(completion) {
-                                                    completion(error);
-                                                }
-                                            }];
+        [[IQService sharedService] membersByTaskId:self.taskId
+                                           handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                               if(completion) {
+                                                   completion(error);
+                                               }
+                                           }];
     }
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadModelSourceControllerWithCompletion:completion];
-    [self reloadFirstPartWithCompletion:nil];
+    
+    [[IQService sharedService] membersByTaskId:self.taskId
+                                       handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                           if(completion) {
+                                               completion(error);
+                                           }
+                                       }];
 }
 
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] contactsWithPage:@(1)
-                                            per:@(_portionSize)
-                                           sort:SORT_DIRECTION
-                                         search:_filter
-                                        handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                            if(completion) {
-                                                completion(error);
-                                            }
-                                        }];
-}
-
-- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
-    _fetchController.delegate = nil;
-    
-    [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
-    
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
-    
-    if(!_fetchController && [IQService sharedService].context) {
-        NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQContact"];
-        [fetchRequest setSortDescriptors:_sortDescriptors];
-        
-        _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                               managedObjectContext:[IQService sharedService].context
-                                                                 sectionNameKeyPath:nil
-                                                                          cacheName:CACHE_FILE_NAME];
-    }
-    
-    if([_filter length] > 0) {
-        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"(user.displayName CONTAINS[cd] %@) OR (user.email CONTAINS[cd] %@)", _filter, _filter];
-        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, filterPredicate]];
-    }
-    
-    if([_excludeUserIds count] > 0) {
-        NSPredicate * usersPredicate = [NSPredicate predicateWithFormat:@"NOT (user.userId IN %@)", _excludeUserIds];
-        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, usersPredicate]];
-    }
-    
-    NSError * fetchError = nil;
-    [_fetchController.fetchRequest setPredicate:predicate];
-    [_fetchController.fetchRequest setSortDescriptors:_sortDescriptors];
-    [_fetchController setDelegate:self];
-    [_fetchController performFetch:&fetchError];
-    
-    if(completion) {
-        completion(fetchError);
-    }
+- (void)addMemberWithUserId:(NSNumber*)userId completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] addMemberWithUserId:userId
+                                      inTaskWithId:self.taskId
+                                           handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                               if(completion) {
+                                                   completion(error);
+                                               }
+                                           }];
 }
 
 - (void)clearModelData {
@@ -171,6 +126,34 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 }
 
 #pragma mark - Private methods
+
+- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
+    _fetchController.delegate = nil;
+    
+    [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
+    
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"taskId == %@", self.taskId];
+    
+    if(!_fetchController && [IQService sharedService].context) {
+        NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQTaskMember"];
+        [fetchRequest setSortDescriptors:_sortDescriptors];
+        
+        _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                               managedObjectContext:[IQService sharedService].context
+                                                                 sectionNameKeyPath:nil
+                                                                          cacheName:CACHE_FILE_NAME];
+    }
+    
+    NSError * fetchError = nil;
+    [_fetchController.fetchRequest setPredicate:predicate];
+    [_fetchController.fetchRequest setSortDescriptors:_sortDescriptors];
+    [_fetchController setDelegate:self];
+    [_fetchController performFetch:&fetchError];
+    
+    if(completion) {
+        completion(fetchError);
+    }
+}
 
 #pragma mark - NSFetchedResultsControllerDelegate
 

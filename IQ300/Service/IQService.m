@@ -732,11 +732,43 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[TChangesCounter class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/changes"
+                                                   fromKeyPath:@"changes"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+//    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
+//                                                        method:RKRequestMethodGET
+//                                                   pathPattern:@"/api/v1/tasks/:id"
+//                                                   fromKeyPath:@"task"
+//                                                         store:self.objectManager.managedObjectStore];
+//    
+//    [self.objectManager addResponseDescriptor:descriptor];
+
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPOST
                                                          pathPattern:@"/api/v1/tasks/:id/attachments"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskMember class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/accessor_users"
+                                                   fromKeyPath:@"accessor_users"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskMember class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/tasks/:id/accessor_users"
+                                                   fromKeyPath:@"accessor_user"
+                                                         store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
 }

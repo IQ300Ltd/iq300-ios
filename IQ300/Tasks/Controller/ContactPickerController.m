@@ -7,6 +7,7 @@
 //
 
 #import "ContactPickerController.h"
+#import "IQContact.h"
 
 @interface ContactPickerController ()
 
@@ -21,10 +22,10 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQUser * user = [self.model itemAtIndexPath:indexPath];
+    IQContact * contact = [self.model itemAtIndexPath:indexPath];
     
     if([self.delegate respondsToSelector:@selector(contactPickerController:didPickUser:)]) {
-        [self.delegate contactPickerController:self didPickUser:user];
+        [self.delegate contactPickerController:self didPickUser:contact.user];
     }
 }
 

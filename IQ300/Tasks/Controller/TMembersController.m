@@ -13,14 +13,16 @@
 #import "IQSession.h"
 #import "ContactCell.h"
 #import "IQUser.h"
+#import "IQTaskMember.h"
 #import "IQTask.h"
 #import "DiscussionController.h"
 #import "MessagesModel.h"
 #import "IQConversation.h"
+#import "IQBadgeView.h"
+#import "UITabBarItem+CustomBadgeView.h"
 
 @interface TMembersController () <ContactPickerControllerDelegate> {
     UILabel * _noDataLabel;
-    UsersPickerModel * _usersModel;
 }
 
 @end
@@ -38,19 +40,34 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImage];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
         
-        _usersModel =  [[UsersPickerModel alloc] init];
-        self.model = _usersModel;
+        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
+        style.badgeTextColor = [UIColor whiteColor];
+        style.badgeFrameColor = [UIColor whiteColor];
+        style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
+        style.badgeFrame = YES;
+        
+        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
+        badgeView.badgeMinSize = 15;
+        badgeView.frameLineHeight = 1.0f;
+        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        
+        self.tabBarItem.customBadgeView = badgeView;
+        self.tabBarItem.badgeOrigin = CGPointMake(37.5f, 3.5f);
+
+        self.model = [[TaskMembersModel alloc] init];
     }
     return self;
 }
 
-- (void)setTask:(IQTask *)task {
-    _task = task;
-    
-    [self.model setValue:@[_task.executor, _task.customer] forKey:@"_usersInternal"];
-    
-    if(self.isViewLoaded) {
-        [self.tableView reloadData];
+- (void)setTaskId:(NSNumber *)taskId {
+    if(![_taskId isEqualToNumber:taskId]) {
+        _taskId = taskId;
+        
+        self.model.taskId = taskId;
+        
+        if(self.isViewLoaded) {
+            [self reloadModel];
+        }
     }
 }
 
@@ -80,9 +97,7 @@
                                                                    action:@selector(addButtonAction:)];
     self.parentViewController.navigationItem.rightBarButtonItem = addButton;
     
-    if([IQSession defaultSession]) {
-        [self.tableView reloadData];
-    }
+    [self reloadModel];
 }
 
 #pragma mark - UITableView DataSource
@@ -94,10 +109,31 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    IQUser * user = [self.model itemAtIndexPath:indexPath];
+    IQTaskMember * member = [self.model itemAtIndexPath:indexPath];
     
-    cell.textLabel.text = user.displayName;
-    cell.detailTextLabel.text = user.email;
+    cell.textLabel.text = member.user.displayName;
+    cell.detailTextLabel.numberOfLines = 0;
+
+    UIFont * font = [UIFont fontWithName:IQ_HELVETICA size:13];
+    NSMutableParagraphStyle * paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    paragraphStyle.maximumLineHeight = 1000;
+    paragraphStyle.minimumLineHeight = 3;
+    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    paragraphStyle.lineSpacing = 3.0f;
+    
+    NSMutableDictionary * attributes = @{
+                                         NSParagraphStyleAttributeName  : paragraphStyle,
+                                         NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x9f9f9f],
+                                         NSFontAttributeName            : font
+                                         }.mutableCopy ;
+    
+    NSMutableAttributedString * detailText = [[NSMutableAttributedString alloc] initWithString:member.user.email
+                                                                                    attributes:attributes];
+    
+    [attributes setValue:[UIFont fontWithName:IQ_HELVETICA size:10] forKey:NSFontAttributeName];
+    [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", member.taskRoleName]
+                                                                       attributes:attributes]];
+    cell.detailTextLabel.attributedText = detailText;
     
     return cell;
 }
@@ -105,9 +141,9 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQUser * user = [self.model itemAtIndexPath:indexPath];
-    NSString * companionName = user.displayName;
-    NSNumber * userId = user.userId;
+    IQTaskMember * member = [self.model itemAtIndexPath:indexPath];
+    NSString * companionName = member.user.displayName;
+    NSNumber * userId = member.user.userId;
     [MessagesModel createConversationWithRecipientId:userId
                                           completion:^(IQConversation * conv, NSError *error) {
                                               if(!error) {
@@ -140,20 +176,34 @@
 #pragma mark - ContactPickerController Delegate
 
 - (void)contactPickerController:(ContactPickerController *)picker didPickUser:(IQUser *)user {
+    [self.model addMemberWithUserId:user.userId completion:^(NSError *error) {
+        
+    }];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Private methods
 
 - (void)addButtonAction:(UIButton*)sender {
+    NSArray * users = [self.model.members valueForKey:@"user"];
+    
     ContactPickerController * controller = [[ContactPickerController alloc] init];
     controller.model = [[UsersModel alloc] init];
+    controller.model.excludeUserIds = [users valueForKey:@"userId"];
     controller.delegate = self;
     [self.navigationController pushViewController:controller animated:YES];
 }
 
 - (void)updateNoDataLabelVisibility {
     [_noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
+}
+
+- (void)reloadModel {
+    if([IQSession defaultSession]) {
+        [self reloadDataWithCompletion:^(NSError *error) {
+            [self updateNoDataLabelVisibility];
+        }];
+    }
 }
 
 @end

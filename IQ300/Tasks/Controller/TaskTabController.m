@@ -13,7 +13,9 @@
 #import "TMembersController.h"
 #import "TDocumentsController.h"
 #import "THistoryController.h"
+#import "IQService+Tasks.h"
 #import "IQTask.h"
+#import "TChangesCounter.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate>
 
@@ -51,6 +53,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [self updateCounters];
 }
 
 - (BOOL)showMenuBarItem {
@@ -74,12 +77,41 @@
         [commentsController setDiscussionId:task.discussionId];
         
         TMembersController * membersController = self.viewControllers[2];
-        [membersController setTask:task];
+        [membersController setTaskId:task.taskId];
         
         TDocumentsController * documentsController = self.viewControllers[3];
         documentsController.model.taskId = self.task.taskId;
         [documentsController setAttachments:[task.attachments array]];
     }
+}
+
+- (void)updateTask {
+    [[IQService sharedService] taskWithId:self.task.taskId
+                                  handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                      if (success) {
+                                          self.task = task;
+                                          [self updateControllerByTask:task];
+                                      }
+                                  }];
+}
+
+- (void)updateCounters {
+    [[IQService sharedService] taskChangesCounterById:self.task.taskId
+                                              handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
+                                                  if (success && counter) {
+                                                      TInfoController * infoController = self.viewControllers[0];
+                                                      infoController.tabBarItem.badgeValue = BadgTextFromInteger([counter.details integerValue]);
+                                                      
+                                                      TCommentsController * commentsController = self.viewControllers[1];
+                                                      commentsController.tabBarItem.badgeValue = BadgTextFromInteger([counter.comments integerValue]);
+
+                                                      TMembersController * membersController = self.viewControllers[2];
+                                                      membersController.tabBarItem.badgeValue = BadgTextFromInteger([counter.users integerValue]);
+
+                                                      TDocumentsController * documentsController = self.viewControllers[3];
+                                                      documentsController.tabBarItem.badgeValue = BadgTextFromInteger(3);
+                                                  }
+                                              }];
 }
 
 @end

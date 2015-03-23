@@ -84,6 +84,20 @@
                    handler:handler];
 }
 
+- (void)taskChangesCounterById:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/changes", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
+- (void)taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
 - (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self postObject:nil
@@ -94,6 +108,21 @@
                      handler(success, responseData, error);
                  }
              }];
+}
+
+- (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
+- (void)addMemberWithUserId:(NSNumber*)userId inTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self postObject:nil
+                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users", taskId]
+          parameters:@{ @"user_id" : userId }
+             handler:handler];
 }
 
 @end

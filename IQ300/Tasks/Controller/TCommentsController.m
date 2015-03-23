@@ -10,6 +10,8 @@
 #import "IQService+Messages.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "IQTask.h"
+#import "IQBadgeView.h"
+#import "UITabBarItem+CustomBadgeView.h"
 
 @interface TCommentsController ()
 
@@ -27,6 +29,20 @@
         float imageOffset = 6;
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImage];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
+        
+        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
+        style.badgeTextColor = [UIColor whiteColor];
+        style.badgeFrameColor = [UIColor whiteColor];
+        style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
+        style.badgeFrame = YES;
+        
+        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
+        badgeView.badgeMinSize = 15;
+        badgeView.frameLineHeight = 1.0f;
+        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        
+        self.tabBarItem.customBadgeView = badgeView;
+        self.tabBarItem.badgeOrigin = CGPointMake(38.5f, 3.5f);
     }
     return self;
 }

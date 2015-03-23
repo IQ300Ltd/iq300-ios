@@ -289,6 +289,9 @@
 		73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */; };
 		73F9D1AF1AA6F9620030DE90 /* TaskStatusFilterItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F9D1AE1AA6F9620030DE90 /* TaskStatusFilterItem.m */; };
 		73F9D1B21AA7369E0030DE90 /* FiltersLocalization.strings in Resources */ = {isa = PBXBuildFile; fileRef = 73F9D1B41AA7369E0030DE90 /* FiltersLocalization.strings */; };
+		73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A371AC0294A007176A1 /* TChangesCounter.m */; };
+		73FE0A3B1AC03121007176A1 /* IQTaskMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A3A1AC03121007176A1 /* IQTaskMember.m */; };
+		73FE0A411AC03602007176A1 /* TaskMembersModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A401AC03602007176A1 /* TaskMembersModel.m */; };
 		C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D006E3B70304215613C192 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -758,6 +761,12 @@
 		73F9D1AE1AA6F9620030DE90 /* TaskStatusFilterItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskStatusFilterItem.m; sourceTree = "<group>"; };
 		73F9D1B31AA7369E0030DE90 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/FiltersLocalization.strings; sourceTree = "<group>"; };
 		73F9D1B51AA736A10030DE90 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/FiltersLocalization.strings; sourceTree = "<group>"; };
+		73FE0A361AC0294A007176A1 /* TChangesCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TChangesCounter.h; sourceTree = "<group>"; };
+		73FE0A371AC0294A007176A1 /* TChangesCounter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TChangesCounter.m; sourceTree = "<group>"; };
+		73FE0A391AC03121007176A1 /* IQTaskMember.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskMember.h; sourceTree = "<group>"; };
+		73FE0A3A1AC03121007176A1 /* IQTaskMember.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTaskMember.m; sourceTree = "<group>"; };
+		73FE0A3F1AC03602007176A1 /* TaskMembersModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskMembersModel.h; sourceTree = "<group>"; };
+		73FE0A401AC03602007176A1 /* TaskMembersModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskMembersModel.m; sourceTree = "<group>"; };
 		755F5FB022B113814C52815E /* Pods.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.production.xcconfig; path = "Pods/Target Support Files/Pods/Pods.production.xcconfig"; sourceTree = "<group>"; };
 		93D006E3B70304215613C192 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9B2A8B58D9801BD961060BB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -887,6 +896,8 @@
 				73A700541A95D0E600A1C2AC /* TasksMenuModel.m */,
 				738916B41ABAEFB60017EF86 /* TodoListModel.h */,
 				738916B51ABAEFB60017EF86 /* TodoListModel.m */,
+				73FE0A3F1AC03602007176A1 /* TaskMembersModel.h */,
+				73FE0A401AC03602007176A1 /* TaskMembersModel.m */,
 				7399F92B1ABC13E00013FA11 /* TAttachmentsModel.h */,
 				7399F92C1ABC13E00013FA11 /* TAttachmentsModel.m */,
 				73A7CA681A9F11080038DEF1 /* TasksFilterModel.h */,
@@ -1577,6 +1588,8 @@
 			children = (
 				73C384C71A9725DA00B66D0F /* IQTask.h */,
 				73C384C81A9725DA00B66D0F /* IQTask.m */,
+				73FE0A391AC03121007176A1 /* IQTaskMember.h */,
+				73FE0A3A1AC03121007176A1 /* IQTaskMember.m */,
 				738EF8221A9CA76700894755 /* IQCommunity.h */,
 				738EF8231A9CA76700894755 /* IQCommunity.m */,
 				738EF8251A9CA88400894755 /* IQProject.h */,
@@ -1589,6 +1602,8 @@
 				73970E8E1AA5A7CC00AC2414 /* TaskFilterCounters.m */,
 				73970E901AA5C45300AC2414 /* TasksMenuCounters.h */,
 				73970E911AA5C45300AC2414 /* TasksMenuCounters.m */,
+				73FE0A361AC0294A007176A1 /* TChangesCounter.h */,
+				73FE0A371AC0294A007176A1 /* TChangesCounter.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1934,6 +1949,7 @@
 				7311709C1AB81505008A4D09 /* IQTabBarController.m in Sources */,
 				731170701AB80452008A4D09 /* THistoryController.m in Sources */,
 				739C3B5F1A3075D90032C057 /* DiscussionModel.m in Sources */,
+				73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */,
 				73C384C91A9725DA00B66D0F /* IQTask.m in Sources */,
 				738EF82A1A9CA95600894755 /* IQTodoItem.m in Sources */,
 				739850BC1A2DADF000DB5B21 /* MessagesController.m in Sources */,
@@ -1974,6 +1990,7 @@
 				73A949A91A38632C008EC469 /* ConversationCell.m in Sources */,
 				73A20C7A1A42F62C006433C5 /* IQBadgeView.m in Sources */,
 				73E426001AAEC6BF00CD2093 /* UserPickerController.m in Sources */,
+				73FE0A411AC03602007176A1 /* TaskMembersModel.m in Sources */,
 				73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */,
 				738916B61ABAEFB60017EF86 /* TodoListModel.m in Sources */,
 				7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */,
@@ -2025,6 +2042,7 @@
 				739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */,
 				736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */,
 				7399F9301ABC2D9C0013FA11 /* ContactPickerController.m in Sources */,
+				73FE0A3B1AC03121007176A1 /* IQTaskMember.m in Sources */,
 				7379EEBA1A11E47700D69BBD /* NotificationsController.m in Sources */,
 				73A9499E1A3832D7008EC469 /* BackgroundDownloadManager.m in Sources */,
 				738916B31ABAE1C10017EF86 /* TodoListSectionView.m in Sources */,

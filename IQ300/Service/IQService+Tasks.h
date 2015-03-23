@@ -37,6 +37,14 @@
 
 - (void)tasksMenuCountersWithHandler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)taskChangesCounterById:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
+
+- (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)addMemberWithUserId:(NSNumber*)userId inTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
 
 @end
