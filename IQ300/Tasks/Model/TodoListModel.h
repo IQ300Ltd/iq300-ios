@@ -10,11 +10,13 @@
 
 @interface TodoListModel : NSObject<IQTableModel>
 
+@property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, assign) NSInteger section;
 @property (nonatomic, strong) NSArray * items;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (BOOL)isItemCheckedAtIndexPath:(NSIndexPath*)indexPath;
+- (BOOL)isItemSelectableAtIndexPath:(NSIndexPath*)indexPath;
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath checked:(BOOL)checked;
 
 @end

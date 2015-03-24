@@ -100,3 +100,6 @@
 "Checklist" = "Чек-лист";
 "Done" = "Готово";
 "Failed add document to task" = "Не удалось добавить документы к задаче";
+"Not in my competence" = "Не в моей компетенции";
+"Incorrect task time" = "Некорректный срок задачи";
+"Not enough information" = "Недостаточно информации";

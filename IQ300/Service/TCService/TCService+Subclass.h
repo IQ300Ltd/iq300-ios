@@ -19,7 +19,7 @@
 
 - (void)getObjectsAtPath:(NSString *)path
               parameters:(NSDictionary *)parameters
-            fetchRequest:(NSFetchRequest*)fetchRequest
+              fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
                  handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)deleteObject:(id)object

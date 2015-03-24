@@ -15,8 +15,10 @@
 #import "THistoryController.h"
 #import "IQService+Tasks.h"
 #import "IQTask.h"
+#import "IQUser.h"
 #import "TChangesCounter.h"
 #import "IQNotificationCenter.h"
+#import "IQSession.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate> {
     __weak id _notfObserver;
@@ -63,6 +65,7 @@
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
     [self updateCounters];
+    [self markTaskAsReadedIfNeed];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -81,9 +84,13 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark - IQTabBarController Delegate
+
 - (void)tabBarController:(IQTabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     self.title = viewController.title;
 }
+
+#pragma mark - Private methods
 
 - (void)updateControllerByTask:(IQTask*)task {
     if (task) {
@@ -131,6 +138,21 @@
                                               }];
 }
 
+- (void)markTaskAsReadedIfNeed {
+    if ([self.task.status isEqualToString:@"new"] &&
+        [self.task.executor.userId isEqualToNumber:[IQSession defaultSession].userId]) {
+        [[IQService sharedService] changeStatus:@"browse"
+                                  forTaskWithId:self.task.taskId
+                                         reason:nil
+                                        handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                            if(success) {
+                                                self.task = task;
+                                                [self updateControllerByTask:task];
+                                            }
+                                        }];
+    }
+}
+
 #pragma mark - Notifications
 
 - (void)applicationWillEnterForeground {
@@ -143,8 +165,12 @@
     
     __weak typeof(self) weakSelf = self;
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        [weakSelf updateCounters];
-        [weakSelf updateTask];
+        NSArray * taskIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
+
+        if([taskIds containsObject:weakSelf.task.taskId]) {
+            [weakSelf updateCounters];
+            [weakSelf updateTask];
+        }
     };
     _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChanged
                                                                        queue:nil
@@ -155,6 +181,10 @@
     if(_notfObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
     }
+}
+
+- (void)dealloc {
+    [self unsubscribeFromIQNotifications];
 }
 
 @end

@@ -98,6 +98,39 @@
                    handler:handler];
 }
 
+- (void)changeStatus:(NSString*)status forTaskWithId:(NSNumber*)taskId reason:(NSString*)reason handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    NSDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                           @"do"     : NSStringNullForNil(status),
+                                                           @"reason" : NSStringNullForNil(reason)
+                                                           });
+    
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/change_status", taskId]
+         parameters:parameters
+            handler:handler];
+}
+
+- (void)completeTodoItemWithId:(NSNumber*)itemId taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(itemId);
+    NSParameterAssert(taskId);
+
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items/%@/complete", taskId, itemId]
+         parameters:nil
+            handler:handler];
+}
+
+- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(itemId);
+    NSParameterAssert(taskId);
+
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items/%@/rollback", taskId, itemId]
+         parameters:nil
+            handler:handler];
+}
+
 - (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self postObject:nil
@@ -111,9 +144,17 @@
 }
 
 - (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSFetchRequest *(^fetchBlock)(NSURL *URL) = ^(NSURL *URL) {
+        NSFetchRequest * fRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQTaskMember"];
+        [fRequest setPredicate:[NSPredicate predicateWithFormat:@"taskId == %@", taskId]];
+        
+        return fRequest;
+    };
+
     NSParameterAssert(taskId);
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users", taskId]
                 parameters:nil
+                fetchBlock:fetchBlock
                    handler:handler];
 }
 

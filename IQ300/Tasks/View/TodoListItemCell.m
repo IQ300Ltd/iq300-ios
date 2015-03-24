@@ -32,7 +32,7 @@
         [_titleLabel setTextColor:TEXT_COLOR];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.numberOfLines = 1;
+        _titleLabel.numberOfLines = 0;
         _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         _titleLabel.text = NSLocalizedString(@"Checklist", nil);
         _titleLabel.userInteractionEnabled = NO;

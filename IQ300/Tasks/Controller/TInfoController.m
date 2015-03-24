@@ -13,8 +13,9 @@
 #import "TodoListItemCell.h"
 #import "IQBadgeView.h"
 #import "UITabBarItem+CustomBadgeView.h"
+#import "IQService+Tasks.h"
 
-@interface TInfoController () {
+@interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
     TInfoHeaderView * _headerView;
     TodoListModel * _todoListModel;
     TodoListSectionView * _checkListHeader;
@@ -59,10 +60,11 @@
 - (void)setTask:(IQTask *)task {
     _task = task;
     
-    self.model.items = [self.task.todoItems array];
+    self.model.taskId = _task.taskId;
+    self.model.items = [_task.todoItems array];
 
     if (self.isViewLoaded) {
-        [_headerView setupByTask:self.task];
+        [_headerView setupByTask:_task];
         [self.tableView reloadData];
     }
 }
@@ -75,6 +77,8 @@
     self.tableView.tableFooterView = [UIView new];
     
     _headerView = [[TInfoHeaderView alloc] init];
+    _headerView.delegate = self;
+    
     _checkListHeader = [[TodoListSectionView alloc] init];
 }
 
@@ -131,6 +135,62 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
     [self.model makeItemAtIndexPath:indexPath checked:!isCellChecked];
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    return ([self.model isItemSelectableAtIndexPath:indexPath]) ? indexPath : nil;
+}
+
+#pragma mark - TInfoHeaderView Delegate
+
+- (void)headerView:(TInfoHeaderView*)headerView tapActionAtIndex:(NSInteger)actionIndex {
+    NSArray * actions = [self.task.availableActions allObjects];
+    NSString * action = (actionIndex < [actions count]) ? actions[actionIndex] : nil;
+    
+    if ([action length] > 0) {
+        if([action isEqualToString:@"refuse"]) {
+            UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                                     delegate:self
+                                                            cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                       destructiveButtonTitle:nil
+                                                            otherButtonTitles:NSLocalizedString(@"Not in my competence", nil),
+                                                                              NSLocalizedString(@"Incorrect task time", nil),
+                                                                              NSLocalizedString(@"Not enough information", nil), nil];
+            [actionSheet showInView:self.view];
+        }
+        else {
+            [[IQService sharedService] changeStatus:action
+                                      forTaskWithId:self.task.taskId
+                                             reason:nil
+                                            handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                                self.task = task;
+                                            }];
+        }
+    }
+}
+
+#pragma mark - ActionSheet Delegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    static NSDictionary * reasons = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        reasons = @{
+                                @(0) : @"not_in_my_competence",
+                                @(1) : @"incorrect_task_time",
+                                @(2) : @"not_enough_information"
+                                };
+    });
+    
+    NSString * reason = [reasons objectForKey:@(buttonIndex)];
+    if(reason) {
+        [[IQService sharedService] changeStatus:@"refuse"
+                                  forTaskWithId:self.task.taskId
+                                         reason:reason
+                                        handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                            self.task = task;
+                                        }];
+    }
 }
 
 #pragma mark - Private methods

@@ -5,16 +5,19 @@
 //  Created by Tayphoon on 19.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
+#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
 #import "TodoListModel.h"
 #import "TodoListItemCell.h"
 #import "IQTodoItem.h"
+#import "IQService+Tasks.h"
 
 static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
 @interface TodoListModel() {
     NSArray * _sortDescriptors;
     NSMutableArray * _checkedItems;
+    NSMutableArray * _processableItems;
 }
 
 @end
@@ -25,13 +28,14 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     self = [super init];
     if (self) {
         _checkedItems = [NSMutableArray array];
-        _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES]];
+        _processableItems = [NSMutableArray array];
+        _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"position" ascending:YES]];
     }
     return self;
 }
 
 - (void)setItems:(NSArray *)items {
-    _items = items;
+    _items = [items sortedArrayUsingDescriptors:_sortDescriptors];
     [self updateCheckedProperties];
 }
 
@@ -91,24 +95,52 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     return [_checkedItems containsObject:indexPath];
 }
 
+- (BOOL)isItemSelectableAtIndexPath:(NSIndexPath *)indexPath {
+    return ![_processableItems containsObject:indexPath];
+}
+
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath checked:(BOOL)checked {
     if (checked && ![_checkedItems containsObject:indexPath]) {
-        [_checkedItems addObject:indexPath];
-        [self modelWillChangeContent];
-        [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
-                       atIndexPath:indexPath
-                     forChangeType:NSFetchedResultsChangeUpdate
-                      newIndexPath:nil];
-        [self modelDidChangeContent];
+        [_processableItems addObject:indexPath];
+        IQTodoItem * item = [self itemAtIndexPath:indexPath];
+        
+        [[IQService sharedService] completeTodoItemWithId:item.itemId
+                                               taskWithId:self.taskId
+                                                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                      if (success) {
+                                                          [_checkedItems addObject:indexPath];
+
+                                                          [self modelWillChangeContent];
+                                                          [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
+                                                                         atIndexPath:indexPath
+                                                                       forChangeType:NSFetchedResultsChangeUpdate
+                                                                        newIndexPath:nil];
+                                                          [self modelDidChangeContent];
+                                                      }
+                                                      
+                                                      [_processableItems removeObject:indexPath];
+                                                  }];
     }
     else if(!checked && [_checkedItems containsObject:indexPath]) {
-        [_checkedItems removeObject:indexPath];
-        [self modelWillChangeContent];
-        [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
-                       atIndexPath:indexPath
-                     forChangeType:NSFetchedResultsChangeUpdate
-                      newIndexPath:nil];
-        [self modelDidChangeContent];
+        [_processableItems addObject:indexPath];
+        IQTodoItem * item = [self itemAtIndexPath:indexPath];
+        
+        [[IQService sharedService] rollbackTodoItemWithId:item.itemId
+                                               taskWithId:self.taskId
+                                                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                      if (success) {
+                                                          [_checkedItems removeObject:indexPath];
+
+                                                          [self modelWillChangeContent];
+                                                          [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
+                                                                         atIndexPath:indexPath
+                                                                       forChangeType:NSFetchedResultsChangeUpdate
+                                                                        newIndexPath:nil];
+                                                          [self modelDidChangeContent];
+                                                      }
+                                                      
+                                                      [_processableItems removeObject:indexPath];
+                                                  }];
     }
 }
 
@@ -119,6 +151,8 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 #pragma mark - Private methods
 
 - (void)updateCheckedProperties {
+    [_checkedItems removeAllObjects];
+    
     for (NSInteger index = 0; index < [_items count]; index++) {
         IQTodoItem * item = _items[index];
         if ([item.completed boolValue]) {

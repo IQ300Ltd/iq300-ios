@@ -26,7 +26,7 @@
 #define USER_HEIGHT 13.0f
 
 #define BUTTON_VERTICAL_PADDING 22.0f
-#define BUTTON_HEIGHT 31.0f
+#define BUTTON_HEIGHT 40.0f
 #define BUTTON_OFFSET 13.0f
 
 @interface TInfoHeaderView() {

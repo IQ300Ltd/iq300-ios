@@ -144,13 +144,13 @@ static id _sharedService = nil;
 - (void)getObjectsAtPath:(NSString *)path parameters:(NSDictionary *)parameters handler:(ObjectLoaderCompletionHandler)handler {
     [self getObjectsAtPath:path
                 parameters:parameters
-              fetchRequest:nil
+                fetchBlock:nil
                    handler:handler];
 }
 
 - (void)getObjectsAtPath:(NSString *)path
               parameters:(NSDictionary *)parameters
-            fetchRequest:(NSFetchRequest*)fetchRequest
+              fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
                  handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * requesParameters = [parameters mutableCopy];
     
@@ -163,6 +163,18 @@ static id _sharedService = nil;
                                      failure:[self makeFailureBlockForHandler:handler]];
     
     [self processAuthorizationForOperation:operation];
+    
+    if(fetchBlock && [operation isKindOfClass:[RKManagedObjectRequestOperation class]]) {
+        RKManagedObjectRequestOperation * managedOperation = (RKManagedObjectRequestOperation*)operation;
+        NSArray * fetchRequestBlocks = managedOperation.fetchRequestBlocks;
+        if(!fetchRequestBlocks) {
+            fetchRequestBlocks = @[fetchBlock];
+        }
+        else {
+            fetchRequestBlocks = [fetchRequestBlocks arrayByAddingObject:fetchBlock];
+        }
+        managedOperation.fetchRequestBlocks = fetchRequestBlocks;
+    }
     
     [_objectManager enqueueObjectRequestOperation:operation];
 }
