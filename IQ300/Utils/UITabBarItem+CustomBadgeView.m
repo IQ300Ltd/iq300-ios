@@ -19,6 +19,10 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     Method originalMethod = class_getInstanceMethod(self, @selector(setBadgeValue:));
     Method overrideMethod = class_getInstanceMethod(self, @selector(setBadgeValueSwizzled:));
     method_exchangeImplementations(originalMethod, overrideMethod);
+    
+    originalMethod = class_getInstanceMethod(self, @selector(badgeValue));
+    overrideMethod = class_getInstanceMethod(self, @selector(badgeValueSwizzled));
+    method_exchangeImplementations(originalMethod, overrideMethod);
 }
 
 - (void)setCustomBadgeView:(UIView *)customBadgeView {
@@ -64,6 +68,14 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     else {
         [self setBadgeValueSwizzled:[self internalBadgeValue]];
     }
+}
+
+- (NSString*)badgeValueSwizzled {
+    UIView * customBadgeView = self.customBadgeView;
+    if(customBadgeView) {
+        return [self internalBadgeValue];
+    }
+    return [self badgeValueSwizzled];
 }
 
 - (NSString*)internalBadgeValue {

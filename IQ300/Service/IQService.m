@@ -771,6 +771,14 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/tasks/:id/changes/read"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPOST

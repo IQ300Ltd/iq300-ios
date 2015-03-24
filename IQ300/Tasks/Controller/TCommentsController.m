@@ -47,6 +47,18 @@
     return self;
 }
 
+- (NSString*)category {
+    return @"comments";
+}
+
+- (void)setBadgeValue:(NSNumber *)badgeValue {
+    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+}
+
+- (NSNumber*)badgeValue {
+    return @([self.tabBarItem.badgeValue integerValue]);
+}
+
 - (void)setDiscussionId:(NSNumber*)discussionId {
     if (discussionId && ![_discussionId isEqualToNumber:discussionId]) {
         _discussionId = discussionId;

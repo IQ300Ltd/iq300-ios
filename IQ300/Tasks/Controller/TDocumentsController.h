@@ -8,12 +8,15 @@
 
 #import "IQTableBaseController.h"
 #import "TAttachmentsModel.h"
+#import "TaskTabItemController.h"
 
 @class IQTask;
 
-@interface TDocumentsController : IQTableBaseController
+@interface TDocumentsController : IQTableBaseController<TaskTabItemController>
 
 @property (nonatomic, strong) TAttachmentsModel * model;
+@property (nonatomic, strong) NSNumber * badgeValue;
+@property (nonatomic, readonly) NSString * category;
 
 - (void)setAttachments:(NSArray*)attachments;
 

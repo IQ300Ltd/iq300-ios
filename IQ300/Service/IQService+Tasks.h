@@ -43,9 +43,11 @@
 
 - (void)changeStatus:(NSString*)status forTaskWithId:(NSNumber*)taskId reason:(NSString*)reason handler:(ObjectLoaderCompletionHandler)handler;
 
-- (void)completeTodoItemWithId:(NSNumber*)itemId taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)completeTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
 
-- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)markCategoryAsReaded:(NSString*)category taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
 
 - (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
 

@@ -105,11 +105,11 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
         IQTodoItem * item = [self itemAtIndexPath:indexPath];
         
         [[IQService sharedService] completeTodoItemWithId:item.itemId
-                                               taskWithId:self.taskId
+                                                   taskId:self.taskId
                                                   handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                                                       if (success) {
                                                           [_checkedItems addObject:indexPath];
-
+                                                          
                                                           [self modelWillChangeContent];
                                                           [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
                                                                          atIndexPath:indexPath
@@ -126,11 +126,11 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
         IQTodoItem * item = [self itemAtIndexPath:indexPath];
         
         [[IQService sharedService] rollbackTodoItemWithId:item.itemId
-                                               taskWithId:self.taskId
+                                                   taskId:self.taskId
                                                   handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                                                       if (success) {
                                                           [_checkedItems removeObject:indexPath];
-
+                                                          
                                                           [self modelWillChangeContent];
                                                           [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
                                                                          atIndexPath:indexPath

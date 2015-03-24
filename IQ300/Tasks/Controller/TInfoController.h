@@ -8,12 +8,15 @@
 
 #import "IQTableBaseController.h"
 #import "TodoListModel.h"
+#import "TaskTabItemController.h"
 
 @class IQTask;
 
-@interface TInfoController : IQTableBaseController
+@interface TInfoController : IQTableBaseController<TaskTabItemController>
 
 @property (nonatomic, strong) TodoListModel * model;
 @property (nonatomic, strong) IQTask * task;
+@property (nonatomic, strong) NSNumber * badgeValue;
+@property (nonatomic, readonly) NSString * category;
 
 @end

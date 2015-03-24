@@ -28,6 +28,18 @@
     return self;
 }
 
+- (NSString*)category {
+    return @"history";
+}
+
+- (void)setBadgeValue:(NSNumber *)badgeValue {
+    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+}
+
+- (NSNumber*)badgeValue {
+    return @([self.tabBarItem.badgeValue integerValue]);
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];

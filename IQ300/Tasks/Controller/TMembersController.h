@@ -8,10 +8,13 @@
 
 #import "IQTableBaseController.h"
 #import "TaskMembersModel.h"
+#import "TaskTabItemController.h"
 
-@interface TMembersController : IQTableBaseController
+@interface TMembersController : IQTableBaseController<TaskTabItemController>
 
 @property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, strong) TaskMembersModel * model;
+@property (nonatomic, strong) NSNumber * badgeValue;
+@property (nonatomic, readonly) NSString * category;
 
 @end

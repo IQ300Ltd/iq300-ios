@@ -548,6 +548,7 @@
 		739850DE1A2DD4D700DB5B21 /* IQComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQComment.m; sourceTree = "<group>"; };
 		739850E41A2E023D00DB5B21 /* IQService+Messages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IQService+Messages.h"; sourceTree = "<group>"; };
 		739850E51A2E023D00DB5B21 /* IQService+Messages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IQService+Messages.m"; sourceTree = "<group>"; };
+		739967E91AC1AF950024C4D2 /* TaskTabItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskTabItemController.h; sourceTree = "<group>"; };
 		7399A4D61A499ED30098DA67 /* ArrayTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArrayTransformer.h; sourceTree = "<group>"; };
 		7399A4D71A499ED30098DA67 /* ArrayTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArrayTransformer.m; sourceTree = "<group>"; };
 		7399F9241ABC018D0013FA11 /* white_add_ico.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = white_add_ico.png; sourceTree = "<group>"; };
@@ -881,6 +882,7 @@
 				7399F92F1ABC2D9C0013FA11 /* ContactPickerController.m */,
 				7311705F1AB7FEAE008A4D09 /* TaskTabController.h */,
 				731170601AB7FEAE008A4D09 /* TaskTabController.m */,
+				739967E91AC1AF950024C4D2 /* TaskTabItemController.h */,
 				73A7CA651A9F10DE0038DEF1 /* TasksFilterController.h */,
 				73A7CA661A9F10DE0038DEF1 /* TasksFilterController.m */,
 			);

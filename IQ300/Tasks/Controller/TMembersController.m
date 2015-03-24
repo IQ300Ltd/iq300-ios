@@ -60,6 +60,18 @@
     return self;
 }
 
+- (NSString*)category {
+    return @"users";
+}
+
+- (void)setBadgeValue:(NSNumber *)badgeValue {
+    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+}
+
+- (NSNumber*)badgeValue {
+    return @([self.tabBarItem.badgeValue integerValue]);
+}
+
 - (void)setTaskId:(NSNumber *)taskId {
     if(![_taskId isEqualToNumber:taskId]) {
         _taskId = taskId;

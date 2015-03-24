@@ -111,7 +111,7 @@
             handler:handler];
 }
 
-- (void)completeTodoItemWithId:(NSNumber*)itemId taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)completeTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
     NSParameterAssert(itemId);
     NSParameterAssert(taskId);
 
@@ -121,7 +121,7 @@
             handler:handler];
 }
 
-- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
     NSParameterAssert(itemId);
     NSParameterAssert(taskId);
 
@@ -129,6 +129,20 @@
                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items/%@/rollback", taskId, itemId]
          parameters:nil
             handler:handler];
+}
+
+- (void)markCategoryAsReaded:(NSString*)category taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    NSParameterAssert(category);
+
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/changes/read", taskId]
+         parameters:@{ @"tabs" : @[category] }
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if (handler) {
+                    handler(success, responseData, error);
+                }
+            }];
 }
 
 - (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {

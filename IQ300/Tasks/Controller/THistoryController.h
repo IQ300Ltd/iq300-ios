@@ -7,11 +7,14 @@
 //
 
 #import "IQTableBaseController.h"
+#import "TaskTabItemController.h"
 
 @class IQTask;
 
-@interface THistoryController : IQTableBaseController
+@interface THistoryController : IQTableBaseController<TaskTabItemController>
 
 @property (nonatomic, strong) IQTask * task;
+@property (nonatomic, strong) NSNumber * badgeValue;
+@property (nonatomic, readonly) NSString * category;
 
 @end

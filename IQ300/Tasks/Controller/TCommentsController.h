@@ -7,11 +7,14 @@
 //
 
 #import "CommentsController.h"
+#import "TaskTabItemController.h"
 
 @class IQTask;
 
-@interface TCommentsController : CommentsController
+@interface TCommentsController : CommentsController<TaskTabItemController>
 
 @property (nonatomic, strong) NSNumber * discussionId;
+@property (nonatomic, strong) NSNumber * badgeValue;
+@property (nonatomic, readonly) NSString * category;
 
 @end

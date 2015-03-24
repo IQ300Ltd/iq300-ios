@@ -59,6 +59,18 @@
     return self;
 }
 
+- (NSString*)category {
+    return @"documents";
+}
+
+- (void)setBadgeValue:(NSNumber *)badgeValue {
+    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+}
+
+- (NSNumber*)badgeValue {
+    return @([self.tabBarItem.badgeValue integerValue]);
+}
+
 - (void)setAttachments:(NSArray*)attachments {
     self.model.items = attachments;
     if (self.isViewLoaded) {

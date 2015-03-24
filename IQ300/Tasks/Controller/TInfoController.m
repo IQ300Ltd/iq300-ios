@@ -57,6 +57,18 @@
     return self;
 }
 
+- (NSString*)category {
+    return @"details";
+}
+
+- (void)setBadgeValue:(NSNumber *)badgeValue {
+    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+}
+
+- (NSNumber*)badgeValue {
+    return @([self.tabBarItem.badgeValue integerValue]);
+}
+
 - (void)setTask:(IQTask *)task {
     _task = task;
     
