@@ -89,12 +89,6 @@
     
     _viewControllers = [viewControllers copy];
     
-    for (UIViewController *viewController in _viewControllers) {
-        [viewController willMoveToParentViewController:self];
-        [self addChildViewController:viewController];
-        [viewController didMoveToParentViewController:self];
-    }
-    
     NSUInteger newIndex = [_viewControllers indexOfObject:oldSelectedViewController];
     NSUInteger selectedIndex = (newIndex != NSNotFound) ? newIndex : 0;
     if([self isViewLoaded]) {
@@ -157,9 +151,15 @@
         _selectedIndex = newSelectedIndex;
 
         if(fromViewController) {
+            [fromViewController willMoveToParentViewController:nil];
+            [fromViewController removeFromParentViewController];
             [fromViewController.view removeFromSuperview];
         }
         
+        [toViewController willMoveToParentViewController:self];
+        [self addChildViewController:toViewController];
+        [toViewController didMoveToParentViewController:self];
+
         toViewController.view.frame = _transitionView.bounds;
         [_transitionView addSubview:toViewController.view];
         

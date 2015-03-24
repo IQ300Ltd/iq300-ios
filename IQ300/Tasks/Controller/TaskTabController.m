@@ -16,8 +16,11 @@
 #import "IQService+Tasks.h"
 #import "IQTask.h"
 #import "TChangesCounter.h"
+#import "IQNotificationCenter.h"
 
-@interface TaskTabController () <IQTabBarControllerDelegate>
+@interface TaskTabController () <IQTabBarControllerDelegate> {
+    __weak id _notfObserver;
+}
 
 @end
 
@@ -33,6 +36,7 @@
                                    [[TDocumentsController alloc] init],
                                    [[THistoryController alloc] init]
          ]];
+        [self resubscribeToIQNotifications];
     }
     return self;
 }
@@ -53,7 +57,20 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
     [self updateCounters];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
 }
 
 - (BOOL)showMenuBarItem {
@@ -112,6 +129,32 @@
                                                       documentsController.tabBarItem.badgeValue = BadgTextFromInteger(3);
                                                   }
                                               }];
+}
+
+#pragma mark - Notifications
+
+- (void)applicationWillEnterForeground {
+    [self updateCounters];
+    [self updateTask];
+}
+
+- (void)resubscribeToIQNotifications {
+    [self unsubscribeFromIQNotifications];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        [weakSelf updateCounters];
+        [weakSelf updateTask];
+    };
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChanged
+                                                                       queue:nil
+                                                                  usingBlock:block];
+}
+
+- (void)unsubscribeFromIQNotifications {
+    if(_notfObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    }
 }
 
 @end
