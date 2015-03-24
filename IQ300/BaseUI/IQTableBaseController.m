@@ -11,6 +11,7 @@
 
 @interface IQTableBaseController() {
     UITableView * _tableView;
+    BOOL _isDealocProcessing;
 }
 
 @end
@@ -44,7 +45,7 @@
 }
 
 - (UITableView*)tableView {
-    if(!_tableView) {
+    if(!_tableView && !_isDealocProcessing) {
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
         _tableView.backgroundColor = [UIColor clearColor];
         _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -212,6 +213,7 @@
 }
 
 - (void)dealloc {
+    _isDealocProcessing = YES;
     self.tableView.delegate = nil;
     self.tableView.dataSource = nil;
 }

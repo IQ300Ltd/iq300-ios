@@ -93,7 +93,7 @@
 
 - (void)taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
     NSParameterAssert(taskId);
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@", taskId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/", taskId]
                 parameters:nil
                    handler:handler];
 }

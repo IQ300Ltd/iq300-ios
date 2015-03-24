@@ -20,6 +20,7 @@
 #import "IQConversation.h"
 #import "IQBadgeView.h"
 #import "UITabBarItem+CustomBadgeView.h"
+#import "UIScrollView+PullToRefreshInsert.h"
 
 @interface TMembersController () <ContactPickerControllerDelegate> {
     UILabel * _noDataLabel;
@@ -73,8 +74,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
+    
+    __weak typeof(self) weakSelf = self;
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf reloadDataWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
     
     _noDataLabel = [[UILabel alloc] init];
     [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];

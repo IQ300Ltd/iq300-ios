@@ -740,13 +740,13 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-//    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
-//                                                        method:RKRequestMethodGET
-//                                                   pathPattern:@"/api/v1/tasks/:id"
-//                                                   fromKeyPath:@"task"
-//                                                         store:self.objectManager.managedObjectStore];
-//    
-//    [self.objectManager addResponseDescriptor:descriptor];
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/"
+                                                   fromKeyPath:@"task"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPOST
