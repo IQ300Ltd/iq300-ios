@@ -167,7 +167,7 @@
     
     [[_buttonsHolder subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
-    for (int i = 0; i < [task.availableActions count]; i++) {
+    for (NSInteger i = [task.availableActions count] - 1; i >= 0; i--) {
         NSString * actionType = [task.availableActions allObjects][i];
         BOOL isPositiveAction = [TaskHelper isPositiveActionWithType:actionType];
         ExtendedButton * actionButton = [[ExtendedButton alloc] init];
@@ -195,7 +195,12 @@
         [actionButton setClipsToBounds:YES];
         actionButton.tag = i;
         
-        [_buttonsHolder addSubview:actionButton];
+        if(isPositiveAction) {
+            [_buttonsHolder insertSubview:actionButton atIndex:0];
+        }
+        else {
+            [_buttonsHolder addSubview:actionButton];
+        }
     }
     
     [self setNeedsLayout];
