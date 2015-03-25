@@ -14,6 +14,7 @@
 #import "IQBadgeView.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQService+Tasks.h"
+#import "TaskPolicyInspector.h"
 
 @interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
     TInfoHeaderView * _headerView;
@@ -97,11 +98,13 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
-                                                                    style:UIBarButtonItemStylePlain
-                                                                   target:self
-                                                                   action:@selector(editButtonAction:)];
-    self.parentViewController.navigationItem.rightBarButtonItem = editButton;
+    if([self.policyInspector isActionAvailable:@"update" inCategory:self.category]) {
+        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(editButtonAction:)];
+        self.parentViewController.navigationItem.rightBarButtonItem = editButton;
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -150,7 +153,11 @@
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    return ([self.model isItemSelectableAtIndexPath:indexPath]) ? indexPath : nil;
+    //Enable or disable change checked state
+    if([self.policyInspector isActionAvailable:@"change_state" inCategory:@"todoItems"]) {
+        return ([self.model isItemSelectableAtIndexPath:indexPath]) ? indexPath : nil;
+    }
+    return nil;
 }
 
 #pragma mark - TInfoHeaderView Delegate

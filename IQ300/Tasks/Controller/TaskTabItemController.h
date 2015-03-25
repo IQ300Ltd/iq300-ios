@@ -8,9 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+@class TaskPolicyInspector;
+
 @protocol TaskTabItemController <NSObject>
 
 @property (nonatomic, strong) NSNumber * badgeValue;
 @property (nonatomic, readonly) NSString * category;
+@property (nonatomic, weak) TaskPolicyInspector * policyInspector;
 
 @end

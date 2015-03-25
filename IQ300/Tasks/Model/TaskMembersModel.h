@@ -19,6 +19,11 @@
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
+
 - (void)addMemberWithUserId:(NSNumber*)userId completion:(void (^)(NSError * error))completion;
+
+- (void)removeMemberWithId:(NSNumber*)memberId completion:(void (^)(NSError * error))completion;
+
+- (void)leaveTaskWithMemberId:(NSNumber*)memberId completion:(void (^)(NSError * error))completion;
 
 @end

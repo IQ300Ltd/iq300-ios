@@ -17,6 +17,7 @@
 #import "ALAsset+Extension.h"
 #import "IQBadgeView.h"
 #import "UITabBarItem+CustomBadgeView.h"
+#import "TaskPolicyInspector.h"
 
 @interface TDocumentsController () {
     TAttachmentsModel * _attachmentsModel;
@@ -89,11 +90,13 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
-                                                                   style:UIBarButtonItemStylePlain
-                                                                  target:self
-                                                                  action:@selector(addButtonAction:)];
-    self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+    if([self.policyInspector isActionAvailable:@"create" inCategory:self.category]) {
+        UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(addButtonAction:)];
+        self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+    }
     
     [self.model updateModelWithCompletion:^(NSError *error) {
         [self.tableView reloadData];
@@ -115,6 +118,14 @@
 }
 
 #pragma mark - UITableView Delegate
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //Enable or disable view attachments
+    if([self.policyInspector isActionAvailable:@"read" inCategory:self.category]) {
+        return indexPath;
+    }
+    return nil;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQAttachment * attachment = [self.model itemAtIndexPath:indexPath];

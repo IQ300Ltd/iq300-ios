@@ -22,10 +22,12 @@
 #import "IQSession.h"
 
 #import "TaskTabController.h"
+#import "TaskPolicyInspector.h"
 
 @interface TasksController () <TasksFilterControllerDelegate> {
     TasksView * _mainView;
     TasksMenuModel * _menuModel;
+    BOOL _isTaskOpenProcessing;
     UITapGestureRecognizer * _singleTapGesture;
 }
 
@@ -183,9 +185,24 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQTask * task = [self.model itemAtIndexPath:indexPath];
 
+    TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTask:task];
     TaskTabController * controller = [[TaskTabController alloc] init];
     controller.task = task;
-    [self.navigationController pushViewController:controller animated:YES];
+    controller.policyInspector = policyInspector;
+    
+    _isTaskOpenProcessing = YES;
+    
+    [policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
+        if (error) {
+            NSLog(@"Failed request policies for taskId %@ with error:%@", task.taskId, error);
+        }
+        [self.navigationController pushViewController:controller animated:YES];
+        _isTaskOpenProcessing = NO;
+    }];
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    return (!_isTaskOpenProcessing) ? indexPath : nil;
 }
 
 #pragma mark - IQMenuModel Delegate

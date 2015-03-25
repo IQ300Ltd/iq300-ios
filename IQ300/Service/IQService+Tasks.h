@@ -55,4 +55,10 @@
 
 - (void)addMemberWithUserId:(NSNumber*)userId inTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)removeMemberWithId:(NSNumber*)memberId fromTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
+
+- (void)leaveTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
+
+- (void)policiesForTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
 @end

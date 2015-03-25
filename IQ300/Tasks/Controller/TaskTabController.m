@@ -5,6 +5,7 @@
 //  Created by Tayphoon on 17.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
+#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
 #import "TaskTabController.h"
 
@@ -20,9 +21,12 @@
 #import "IQNotificationCenter.h"
 #import "IQSession.h"
 #import "TaskTabItemController.h"
+#import "TaskPolicyInspector.h"
+#import "TaskNotifications.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate> {
     __weak id _notfObserver;
+    TaskPolicyInspector * _policyInspector;
 }
 
 @end
@@ -38,7 +42,7 @@
                                    [[TMembersController alloc] init],
                                    [[TDocumentsController alloc] init],
                                    [[THistoryController alloc] init]
-         ]];
+                                   ]];
         [self resubscribeToIQNotifications];
     }
     return self;
@@ -65,6 +69,12 @@
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(tasksDidLeavedNotification)
+                                                 name:IQTasksDidLeavedNotification
+                                               object:nil];
+
     [self updateCounters];
     [self markTaskAsReadedIfNeed];
 }
@@ -114,16 +124,20 @@
     if (task) {
         TInfoController * infoController = self.viewControllers[0];
         [infoController setTask:task];
+        [infoController setPolicyInspector:_policyInspector];
         
         TCommentsController * commentsController = self.viewControllers[1];
         [commentsController setDiscussionId:task.discussionId];
+        [commentsController setPolicyInspector:_policyInspector];
         
         TMembersController * membersController = self.viewControllers[2];
         [membersController setTaskId:task.taskId];
+        [membersController setPolicyInspector:_policyInspector];
         
         TDocumentsController * documentsController = self.viewControllers[3];
         documentsController.model.taskId = self.task.taskId;
         [documentsController setAttachments:[task.attachments array]];
+        [documentsController setPolicyInspector:_policyInspector];
     }
 }
 
@@ -183,6 +197,19 @@
     [self updateTask];
 }
 
+- (void)tasksDidLeavedNotification {
+    [self.navigationController popViewControllerAnimated:YES];
+    
+    NSNumber * taskId = self.task.taskId;
+    
+    [self.task.managedObjectContext deleteObject:self.task];
+    
+    NSError *saveError = nil;
+    if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
+        NSLog(@"Failed to delete task by id %@ with error: %@", taskId, saveError);
+    }
+}
+
 - (void)resubscribeToIQNotifications {
     [self unsubscribeFromIQNotifications];
     
@@ -195,7 +222,7 @@
             [weakSelf updateTask];
         }
     };
-    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChanged
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChangedNotification
                                                                        queue:nil
                                                                   usingBlock:block];
 }

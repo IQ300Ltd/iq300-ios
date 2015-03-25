@@ -7,6 +7,7 @@
 //
 
 #import "THistoryController.h"
+#import "TaskPolicyInspector.h"
 
 @interface THistoryController ()
 

@@ -11,7 +11,7 @@
 #import "TMembersController.h"
 #import "ContactPickerController.h"
 #import "IQSession.h"
-#import "ContactCell.h"
+#import "TMemberCell.h"
 #import "IQUser.h"
 #import "IQTaskMember.h"
 #import "IQTask.h"
@@ -21,8 +21,10 @@
 #import "IQBadgeView.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "UIScrollView+PullToRefreshInsert.h"
+#import "TaskPolicyInspector.h"
+#import "TaskNotifications.h"
 
-@interface TMembersController () <ContactPickerControllerDelegate> {
+@interface TMembersController () <ContactPickerControllerDelegate, SWTableViewCellDelegate> {
     UILabel * _noDataLabel;
 }
 
@@ -84,6 +86,10 @@
     }
 }
 
+- (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
+    _policyInspector = policyInspector;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -114,11 +120,13 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
-                                                                    style:UIBarButtonItemStylePlain
-                                                                   target:self
-                                                                   action:@selector(addButtonAction:)];
-    self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+    if([self.policyInspector isActionAvailable:@"create" inCategory:self.category]) {
+        UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(addButtonAction:)];
+        self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+    }
     
     [self reloadModel];
 }
@@ -126,38 +134,18 @@
 #pragma mark - UITableView DataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ContactCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    TMemberCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
+    
     IQTaskMember * member = [self.model itemAtIndexPath:indexPath];
-    
-    cell.textLabel.text = member.user.displayName;
-    cell.detailTextLabel.numberOfLines = 0;
-
-    UIFont * font = [UIFont fontWithName:IQ_HELVETICA size:13];
-    NSMutableParagraphStyle * paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    paragraphStyle.maximumLineHeight = 1000;
-    paragraphStyle.minimumLineHeight = 3;
-    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-    paragraphStyle.lineSpacing = 3.0f;
-    
-    NSMutableDictionary * attributes = @{
-                                         NSParagraphStyleAttributeName  : paragraphStyle,
-                                         NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x9f9f9f],
-                                         NSFontAttributeName            : font
-                                         }.mutableCopy ;
-    
-    NSMutableAttributedString * detailText = [[NSMutableAttributedString alloc] initWithString:member.user.email
-                                                                                    attributes:attributes];
-    
-    [attributes setValue:[UIFont fontWithName:IQ_HELVETICA size:10] forKey:NSFontAttributeName];
-    [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", member.taskRoleName]
-                                                                       attributes:attributes]];
-    cell.detailTextLabel.attributedText = detailText;
-    
+    cell.item = member;
+    cell.delegate = self;
+    cell.availableActions = [self.policyInspector availableActionsForMember:member
+                                                                   category:self.category];
     return cell;
 }
 
@@ -184,6 +172,33 @@
                                           }];
 }
 
+#pragma mark - SWTableViewCell Delegate
+
+- (void)swipeableTableViewCell:(TMemberCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
+    IQTaskMember * member = [self.model itemAtIndexPath:indexPath];
+
+    if ([member.user.userId isEqualToNumber:[IQSession defaultSession].userId]) {
+        [self.model leaveTaskWithMemberId:member.memberId completion:^(NSError *error) {
+            if (!error) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:IQTasksDidLeavedNotification
+                                                                    object:self
+                                                                  userInfo:@{ @"taskId" : self.model.taskId }];
+            }
+            else {
+                [self showErrorAlertWithMessage:@""];
+            }
+        }];
+    }
+    else {
+        [self.model removeMemberWithId:member.memberId completion:^(NSError *error) {
+            if (error) {
+                [self showErrorAlertWithMessage:@""];
+            }
+        }];
+    }
+}
+
 #pragma mark - IQTableModel Delegate
 
 - (void)modelDidChangeContent:(id<IQTableModel>)model {
@@ -206,6 +221,15 @@
 }
 
 #pragma mark - Private methods
+
+- (void)showErrorAlertWithMessage:(NSString*)errorMessage {
+    UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"IQ300"
+                                                      message:errorMessage
+                                                     delegate:nil
+                                            cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                            otherButtonTitles:nil];
+    [message show];
+}
 
 - (void)addButtonAction:(UIButton*)sender {
     NSArray * users = [self.model.members valueForKey:@"user"];

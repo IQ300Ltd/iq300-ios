@@ -189,7 +189,7 @@
         }
         
         [actionButton addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
-        actionButton.titleLabel.font = [UIFont fontWithName:IQ_HELVETICA size:10];
+        actionButton.titleLabel.font = [UIFont fontWithName:IQ_HELVETICA size:16];
         [actionButton setTitle:NSLocalizedString([TaskHelper displayNameForActionType:actionType], nil)
                       forState:UIControlStateNormal];
         [actionButton setClipsToBounds:YES];

@@ -20,7 +20,7 @@
 extern NSString * const IQNotificationsDidChanged;
 extern NSString * const IQNewMessageNotification;
 extern NSString * const IQMessageViewedByUserNotification;
-extern NSString * const IQTasksDidChanged;
+extern NSString * const IQTasksDidChangedNotification;
 extern NSString * const IQNotificationDataKey;
 
 @interface IQCNotification : NSObject

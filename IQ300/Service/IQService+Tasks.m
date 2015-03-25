@@ -180,4 +180,38 @@
              handler:handler];
 }
 
+- (void)removeMemberWithId:(NSNumber*)memberId fromTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(memberId);
+    NSParameterAssert(taskId);
+
+    [self deleteObject:nil
+                  path:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users/%@", taskId, memberId]
+            parameters:nil
+               handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                   if (handler) {
+                       handler(success, responseData , error);
+                   }
+               }];
+}
+
+- (void)leaveTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(taskId);
+  
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users/leave", taskId]
+         parameters:nil
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if (handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
+- (void)policiesForTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/abilities", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
 @end

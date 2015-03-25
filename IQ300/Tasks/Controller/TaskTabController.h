@@ -9,9 +9,11 @@
 #import "IQTabBarController.h"
 
 @class IQTask;
+@class TaskPolicyInspector;
 
 @interface TaskTabController : IQTabBarController
 
 @property (nonatomic, strong) IQTask * task;
+@property (nonatomic, strong) TaskPolicyInspector * policyInspector;
 
 @end

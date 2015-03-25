@@ -17,6 +17,7 @@
 @property (nonatomic, strong) TAttachmentsModel * model;
 @property (nonatomic, strong) NSNumber * badgeValue;
 @property (nonatomic, readonly) NSString * category;
+@property (nonatomic, weak) TaskPolicyInspector * policyInspector;
 
 - (void)setAttachments:(NSArray*)attachments;
 

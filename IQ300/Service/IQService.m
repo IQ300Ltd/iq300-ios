@@ -779,14 +779,6 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
     
     [self.objectManager addResponseDescriptor:descriptor];
-
-    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
-                                                              method:RKRequestMethodPOST
-                                                         pathPattern:@"/api/v1/tasks/:id/attachments"
-                                                             keyPath:nil
-                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
-    
-    [self.objectManager addResponseDescriptor:descriptor];
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskMember class]
                                                         method:RKRequestMethodGET
@@ -800,6 +792,30 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                         method:RKRequestMethodPOST
                                                    pathPattern:@"/api/v1/tasks/:id/accessor_users"
                                                    fromKeyPath:@"accessor_user"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodDELETE
+                                                         pathPattern:@"/api/v1/tasks/:id/accessor_users/:id"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/tasks/:id/accessor_users/leave"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [IQServiceResponse responseDescriptorForClass:[TaskPolicies class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/abilities"
+                                                   fromKeyPath:@"policy"
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];

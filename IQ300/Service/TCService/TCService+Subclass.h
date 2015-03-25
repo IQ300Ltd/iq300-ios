@@ -27,6 +27,12 @@
           parameters:(NSDictionary *)parameters
              handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)deleteObject:(id)object
+                path:(NSString *)path
+          parameters:(NSDictionary *)parameters
+          fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+             handler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)putObject:(id)object
              path:(NSString *)path
        parameters:(NSDictionary *)parameters

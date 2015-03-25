@@ -12,6 +12,7 @@
 #import "IQTask.h"
 #import "IQBadgeView.h"
 #import "UITabBarItem+CustomBadgeView.h"
+#import "TaskPolicyInspector.h"
 
 @interface TCommentsController ()
 

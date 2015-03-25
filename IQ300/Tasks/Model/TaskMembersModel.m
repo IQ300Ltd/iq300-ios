@@ -5,10 +5,12 @@
 //  Created by Tayphoon on 23.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
+#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
 #import "TaskMembersModel.h"
 #import "IQService+Tasks.h"
-#import "ContactCell.h"
+#import "TMemberCell.h"
+#import "IQTaskMember.h"
 
 #define CACHE_FILE_NAME @"TMembersModelCache"
 #define SORT_DIRECTION IQSortDirectionAscending
@@ -55,7 +57,7 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = [ContactCell class];
+    Class cellClass = [TMemberCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
                             reuseIdentifier:ReuseIdentifier];
 }
@@ -115,6 +117,37 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
                                            }];
 }
 
+- (void)removeMemberWithId:(NSNumber*)memberId completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] removeMemberWithId:memberId
+                                   fromTaskWithId:self.taskId
+                                          handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                              if (success) {
+                                                  NSError * removeError = nil;
+                                                  if(![self removeLocalMemeberWithId:memberId error:&removeError]) {
+                                                      NSLog(@"Failed to delete member with id %@ from task with id %@", memberId, self.taskId);
+                                                  }
+                                              }
+                                              if(completion) {
+                                                  completion(error);
+                                              }
+                                          }];
+}
+
+- (void)leaveTaskWithMemberId:(NSNumber*)memberId completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] leaveTaskWithId:self.taskId
+                                       handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                           if (success) {
+                                               NSError * removeError = nil;
+                                               if(memberId && ![self removeLocalMemeberWithId:memberId error:&removeError]) {
+                                                   NSLog(@"Failed to delete member with id %@ from task with id %@ error: %@", memberId, self.taskId, removeError);
+                                               }
+                                           }
+                                           if(completion) {
+                                               completion(error);
+                                           }
+                                       }];
+}
+
 - (void)clearModelData {
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
     if(_fetchController) {
@@ -153,6 +186,32 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
     if(completion) {
         completion(fetchError);
     }
+}
+
+- (BOOL)removeLocalMemeberWithId:(NSNumber*)memberId error:(NSError**)error {
+    NSManagedObjectContext * context = [IQService sharedService].context;
+    NSFetchRequest * fRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQTaskMember"];
+    [fRequest setPredicate:[NSPredicate predicateWithFormat:@"memberId == %@", memberId]];
+    [fRequest setFetchLimit:1];
+    
+    NSError * fetchError = nil;
+    IQTaskMember * memeber = [[context executeFetchRequest:fRequest error:&fetchError] lastObject];
+    if (memeber) {
+        [memeber.managedObjectContext deleteObject:memeber];
+        
+        NSError *saveError = nil;
+        if([[IQService sharedService].context saveToPersistentStore:&saveError] ) {
+            return YES;
+        }
+        else if(error) {
+            *error = saveError;
+        }
+    }
+    else if(error) {
+        *error = fetchError;
+    }
+
+    return NO;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

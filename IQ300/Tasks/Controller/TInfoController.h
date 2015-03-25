@@ -18,5 +18,6 @@
 @property (nonatomic, strong) IQTask * task;
 @property (nonatomic, strong) NSNumber * badgeValue;
 @property (nonatomic, readonly) NSString * category;
+@property (nonatomic, weak) TaskPolicyInspector * policyInspector;
 
 @end

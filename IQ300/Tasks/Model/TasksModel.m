@@ -490,7 +490,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [weakSelf updateCountersWithCompletion:nil];
         [weakSelf tasksUpdatesAfterDateWithCompletion:nil];
     };
-    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChanged
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChangedNotification
                                                                        queue:nil
                                                                   usingBlock:block];
 }
