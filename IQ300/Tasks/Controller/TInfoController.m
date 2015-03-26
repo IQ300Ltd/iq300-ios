@@ -15,11 +15,16 @@
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQService+Tasks.h"
 #import "TaskPolicyInspector.h"
+#import "IQNotificationCenter.h"
+#import "TChangesCounter.h"
+#import "IQTask.h"
+#import "IQUser.h"
 
 @interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
     TInfoHeaderView * _headerView;
     TodoListModel * _todoListModel;
     TodoListSectionView * _checkListHeader;
+    __weak id _notfObserver;
 }
 
 @end
@@ -54,6 +59,8 @@
         _todoListModel = [[TodoListModel alloc] init];
         _todoListModel.section = 1;
         self.model = _todoListModel;
+
+        [self resubscribeToIQNotifications];
     }
     return self;
 }
@@ -105,10 +112,21 @@
                                                                        action:@selector(editButtonAction:)];
         self.parentViewController.navigationItem.rightBarButtonItem = editButton;
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
+    [self markTaskAsReadedIfNeed];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
 }
 
 #pragma mark - UITableView DataSource
@@ -216,6 +234,70 @@
 
 - (void)editButtonAction:(UIButton*)sender {
     
+}
+
+- (void)updateTask {
+    [[IQService sharedService] taskWithId:self.task.taskId
+                                  handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                      if (success) {
+                                          self.task = task;
+                                      }
+                                  }];
+}
+
+- (void)updateCounters {
+    [[IQService sharedService] taskChangesCounterById:self.task.taskId
+                                              handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
+                                                  if (success && counter) {
+                                                      self.badgeValue = counter.details;
+                                                  }
+                                              }];
+}
+
+- (void)markTaskAsReadedIfNeed {
+    if ([self.task.status isEqualToString:@"new"] &&
+        [self.task.executor.userId isEqualToNumber:[IQSession defaultSession].userId]) {
+        [[IQService sharedService] changeStatus:@"browse"
+                                  forTaskWithId:self.task.taskId
+                                         reason:nil
+                                        handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                            if(success) {
+                                                self.task = task;
+                                            }
+                                        }];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateCounters];
+    [self updateTask];
+}
+
+- (void)resubscribeToIQNotifications {
+    [self unsubscribeFromIQNotifications];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSArray * taskIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
+        
+        if([taskIds containsObject:weakSelf.task.taskId]) {
+            [weakSelf updateCounters];
+            [weakSelf updateTask];
+        }
+    };
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChangedNotification
+                                                                       queue:nil
+                                                                  usingBlock:block];
+}
+
+- (void)unsubscribeFromIQNotifications {
+    if(_notfObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    }
+}
+
+- (void)dealloc {
+    [self unsubscribeFromIQNotifications];
 }
 
 @end

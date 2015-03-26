@@ -15,17 +15,15 @@
 #import "TDocumentsController.h"
 #import "THistoryController.h"
 #import "IQService+Tasks.h"
-#import "IQTask.h"
-#import "IQUser.h"
 #import "TChangesCounter.h"
 #import "IQNotificationCenter.h"
 #import "IQSession.h"
 #import "TaskTabItemController.h"
 #import "TaskPolicyInspector.h"
 #import "TaskNotifications.h"
+#import "IQTask.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate> {
-    __weak id _notfObserver;
     TaskPolicyInspector * _policyInspector;
 }
 
@@ -43,7 +41,6 @@
                                    [[TDocumentsController alloc] init],
                                    [[THistoryController alloc] init]
                                    ]];
-        [self resubscribeToIQNotifications];
     }
     return self;
 }
@@ -64,27 +61,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(applicationWillEnterForeground)
-                                                 name:UIApplicationWillEnterForegroundNotification
-                                               object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(tasksDidLeavedNotification)
                                                  name:IQTasksDidLeavedNotification
                                                object:nil];
 
     [self updateCounters];
-    [self markTaskAsReadedIfNeed];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIApplicationWillEnterForegroundNotification
-                                                  object:nil];
 }
 
 - (BOOL)showMenuBarItem {
@@ -140,16 +122,6 @@
     }
 }
 
-- (void)updateTask {
-    [[IQService sharedService] taskWithId:self.task.taskId
-                                  handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
-                                      if (success) {
-                                          self.task = task;
-                                          [self updateControllerByTask:task];
-                                      }
-                                  }];
-}
-
 - (void)updateCounters {
     [[IQService sharedService] taskChangesCounterById:self.task.taskId
                                               handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
@@ -174,27 +146,7 @@
                                               }];
 }
 
-- (void)markTaskAsReadedIfNeed {
-    if ([self.task.status isEqualToString:@"new"] &&
-        [self.task.executor.userId isEqualToNumber:[IQSession defaultSession].userId]) {
-        [[IQService sharedService] changeStatus:@"browse"
-                                  forTaskWithId:self.task.taskId
-                                         reason:nil
-                                        handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
-                                            if(success) {
-                                                self.task = task;
-                                                [self updateControllerByTask:task];
-                                            }
-                                        }];
-    }
-}
-
 #pragma mark - Notifications
-
-- (void)applicationWillEnterForeground {
-    [self updateCounters];
-    [self updateTask];
-}
 
 - (void)tasksDidLeavedNotification {
     [self.navigationController popViewControllerAnimated:YES];
@@ -207,33 +159,6 @@
     if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
         NSLog(@"Failed to delete task by id %@ with error: %@", taskId, saveError);
     }
-}
-
-- (void)resubscribeToIQNotifications {
-    [self unsubscribeFromIQNotifications];
-    
-    __weak typeof(self) weakSelf = self;
-    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSArray * taskIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
-
-        if([taskIds containsObject:weakSelf.task.taskId]) {
-            [weakSelf updateCounters];
-            [weakSelf updateTask];
-        }
-    };
-    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChangedNotification
-                                                                       queue:nil
-                                                                  usingBlock:block];
-}
-
-- (void)unsubscribeFromIQNotifications {
-    if(_notfObserver) {
-        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
-    }
-}
-
-- (void)dealloc {
-    [self unsubscribeFromIQNotifications];
 }
 
 @end
