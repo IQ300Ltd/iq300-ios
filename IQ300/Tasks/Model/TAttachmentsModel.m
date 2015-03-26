@@ -145,9 +145,12 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     [[IQService sharedService] markCategoryAsReaded:@"documents"
                                              taskId:self.taskId
                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                if (completion) {
+                                                if (success) {
                                                     self.unreadCount = @(0);
                                                     [self modelCountersDidChanged];
+                                                }
+                                                if(completion) {
+                                                    completion(error);
                                                 }
                                             }];
 }
