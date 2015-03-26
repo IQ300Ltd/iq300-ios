@@ -198,14 +198,14 @@
                                                                   userInfo:@{ @"taskId" : self.model.taskId }];
             }
             else {
-                [self showErrorAlertWithMessage:@""];
+                [self showErrorAlertWithMessage:NSLocalizedString(@"You can not leave the task", nil)];
             }
         }];
     }
     else {
         [self.model removeMemberWithId:member.memberId completion:^(NSError *error) {
             if (error) {
-                [self showErrorAlertWithMessage:@""];
+                [self showErrorAlertWithMessage:NSLocalizedString(@"You can not remove the user from the task", nil)];
             }
         }];
     }
@@ -230,6 +230,12 @@
         
     }];
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark - IQTableModel Delegate
+
+- (void)modelCountersDidChanged:(TaskMembersModel*)model {
+    self.badgeValue = self.model.unreadCount;
 }
 
 #pragma mark - Private methods

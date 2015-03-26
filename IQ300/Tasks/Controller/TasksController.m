@@ -205,7 +205,7 @@
     return (!_isTaskOpenProcessing) ? indexPath : nil;
 }
 
-#pragma mark - IQMenuModel Delegate
+#pragma mark - IQTableModel Delegate
 
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.counters = self.model.counters;

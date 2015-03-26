@@ -13,6 +13,8 @@
 #import "IQBadgeView.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "TaskPolicyInspector.h"
+#import "IQService+Tasks.h"
+#import "TChangesCounter.h"
 
 @interface TCommentsController ()
 
@@ -93,6 +95,18 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.parentViewController.navigationItem.rightBarButtonItem = nil;
+}
+
+#pragma mark - Private methods 
+
+- (void)updateCounters {
+    [[IQService sharedService] taskChangesCounterById:self.taskId
+                                              handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
+                                                  if (success && counter) {
+                                                      self.badgeValue = counter.comments;
+                                                  }
+                                              }];
+
 }
 
 @end

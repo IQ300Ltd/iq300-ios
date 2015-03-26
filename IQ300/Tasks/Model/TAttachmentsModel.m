@@ -11,6 +11,7 @@
 #import "IQAttachment.h"
 #import "TAttachmentCell.h"
 #import "IQService+Tasks.h"
+#import "TChangesCounter.h"
 
 #define CACHE_FILE_NAME @"TAttachmensModelCache"
 
@@ -140,11 +141,35 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     }
 }
 
+- (void)updateReadStatusWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] markCategoryAsReaded:@"documents"
+                                             taskId:self.taskId
+                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                if (completion) {
+                                                    self.unreadCount = @(0);
+                                                    [self modelCountersDidChanged];
+                                                }
+                                            }];
+}
+
 - (void)clearModelData {
     _attachments = nil;;
 }
 
 #pragma mark - Private methods
+
+- (void)updateCountersWithCompletion:(void (^)(TChangesCounter * counters, NSError * error))completion {
+    [[IQService sharedService] taskChangesCounterById:self.taskId
+                                              handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
+                                                  if(success) {
+                                                      self.unreadCount = counter.documents;
+                                                      [self modelCountersDidChanged];
+                                                  }
+                                                  if(completion) {
+                                                      completion(counter, error);
+                                                  }
+                                              }];
+}
 
 - (void)mergeChangesFromArray:(NSArray*)attachments {
     NSMutableArray * insertPaths = [NSMutableArray array];

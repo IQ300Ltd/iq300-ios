@@ -11,6 +11,7 @@
 #import "IQService+Tasks.h"
 #import "TMemberCell.h"
 #import "IQTaskMember.h"
+#import "TChangesCounter.h"
 
 #define CACHE_FILE_NAME @"TMembersModelCache"
 #define SORT_DIRECTION IQSortDirectionAscending
@@ -153,6 +154,17 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
                                        }];
 }
 
+- (void)updateReadStatusWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] markCategoryAsReaded:@"users"
+                                             taskId:self.taskId
+                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                if (completion) {
+                                                    self.unreadCount = @(0);
+                                                    [self modelCountersDidChanged];
+                                                }
+                                            }];
+}
+
 - (void)clearModelData {
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
     if(_fetchController) {
@@ -191,6 +203,19 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
     if(completion) {
         completion(fetchError);
     }
+}
+
+- (void)updateCountersWithCompletion:(void (^)(TChangesCounter * counters, NSError * error))completion {
+    [[IQService sharedService] taskChangesCounterById:self.taskId
+                                              handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
+        if(success) {
+            self.unreadCount = counter.users;
+            [self modelCountersDidChanged];
+        }
+        if(completion) {
+            completion(counter, error);
+        }
+    }];
 }
 
 - (BOOL)removeLocalMemeberWithId:(NSNumber*)memberId error:(NSError**)error {

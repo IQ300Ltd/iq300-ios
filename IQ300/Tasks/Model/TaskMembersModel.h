@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSString * sectionNameKeyPath;
 @property (nonatomic, strong) NSPredicate * predicate;
 @property (nonatomic, strong) NSArray  * sortDescriptors;
+@property (nonatomic, strong) NSNumber * unreadCount;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
@@ -25,5 +26,7 @@
 - (void)removeMemberWithId:(NSNumber*)memberId completion:(void (^)(NSError * error))completion;
 
 - (void)leaveTaskWithMemberId:(NSNumber*)memberId completion:(void (^)(NSError * error))completion;
+
+- (void)updateReadStatusWithCompletion:(void (^)(NSError * error))completion;
 
 @end

@@ -253,6 +253,12 @@
     _documentController = nil;
 }
 
+#pragma mark - IQTableModel Delegate
+
+- (void)modelCountersDidChanged:(TAttachmentsModel*)model {
+    self.badgeValue = self.model.unreadCount;
+}
+
 #pragma mark - Private methods
 
 - (void)reloadModel {

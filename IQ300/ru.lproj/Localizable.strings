@@ -104,3 +104,5 @@
 "Incorrect task time" = "Некорректный срок задачи";
 "Not enough information" = "Недостаточно информации";
 "No attachments" = "Документы отсутствуют";
+"You can not leave the task" = "Вы не можете покинуть задачу";
+"You can not remove the user from the task" = "Вы не можете удалить пользователя из задачи";
