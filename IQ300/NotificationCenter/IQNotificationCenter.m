@@ -16,6 +16,7 @@ NSString * const IQNewMessageNotification = @"comment_created";
 NSString * const IQMessageViewedByUserNotification = @"discussion_viewed";
 NSString * const IQTasksDidChangedNotification = @"base_tasks";
 NSString * const IQTaskDetailsUpdatedNotification = @"task_details_changed";
+NSString * const IQTaskCommentsDidChangedNotification = @"task_comments_changed";
 NSString * const IQTaskMembersDidChangedNotification = @"task_users_changed";
 NSString * const IQTaskAttachmentsDidChangedNotification = @"task_documents_changed";
 NSString * const IQNotificationDataKey = @"IQNotificationDataKey";

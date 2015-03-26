@@ -569,7 +569,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)dealloc {
-    [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    [self unsubscribeFromIQNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

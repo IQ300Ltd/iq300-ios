@@ -15,8 +15,11 @@
 #import "TaskPolicyInspector.h"
 #import "IQService+Tasks.h"
 #import "TChangesCounter.h"
+#import "IQNotificationCenter.h"
 
-@interface TCommentsController ()
+@interface TCommentsController () {
+    __weak id _notfObserver;
+}
 
 @end
 
@@ -46,6 +49,8 @@
         
         self.tabBarItem.customBadgeView = badgeView;
         self.tabBarItem.badgeOrigin = CGPointMake(38.5f, 3.5f);
+
+        [self resubscribeToIQNotifications];
     }
     return self;
 }
@@ -89,7 +94,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -99,14 +103,35 @@
 
 #pragma mark - Private methods 
 
-- (void)updateCounters {
-    [[IQService sharedService] taskChangesCounterById:self.taskId
-                                              handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
-                                                  if (success && counter) {
-                                                      self.badgeValue = counter.comments;
-                                                  }
-                                              }];
+- (void)resubscribeToIQNotifications {
+    [self unsubscribeFromIQNotifications];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSArray * tasks = notf.userInfo[IQNotificationDataKey];
+        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"task_id == %@", weakSelf.taskId];
+        NSDictionary * curTask = [[tasks filteredArrayUsingPredicate:filterPredicate] lastObject];
 
+        if(curTask) {
+            NSNumber * count = curTask[@"counter"];
+            if(![weakSelf.badgeValue isEqualToNumber:count]) {
+                weakSelf.badgeValue = count;
+            }
+        }
+    };
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTaskCommentsDidChangedNotification
+                                                                       queue:nil
+                                                                  usingBlock:block];
+}
+
+- (void)unsubscribeFromIQNotifications {
+    if(_notfObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    }
+}
+
+- (void)dealloc {
+    [self unsubscribeFromIQNotifications];
 }
 
 @end

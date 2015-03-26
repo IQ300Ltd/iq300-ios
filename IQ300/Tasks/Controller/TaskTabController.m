@@ -109,6 +109,7 @@
         [infoController setPolicyInspector:_policyInspector];
         
         TCommentsController * commentsController = self.viewControllers[1];
+        [commentsController setTaskId:task.taskId];
         [commentsController setDiscussionId:task.discussionId];
         [commentsController setPolicyInspector:_policyInspector];
         

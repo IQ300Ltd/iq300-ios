@@ -12,6 +12,7 @@
 #import "TAttachmentCell.h"
 #import "IQService+Tasks.h"
 #import "TChangesCounter.h"
+#import "IQNotificationCenter.h"
 
 #define CACHE_FILE_NAME @"TAttachmensModelCache"
 
@@ -20,6 +21,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 @interface TAttachmentsModel() <NSFetchedResultsControllerDelegate> {
     NSArray * _sortDescriptors;
     NSArray * _attachments;
+    __weak id _notfObserver;
 }
 
 @end
@@ -36,6 +38,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
                                                  selector:@selector(applicationWillEnterForeground)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
+        [self resubscribeToIQNotifications];
     }
     return self;
 }
@@ -233,6 +236,36 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     [self modelDidChangeContent];
 }
 
+- (void)resubscribeToIQNotifications {
+    [self unsubscribeFromIQNotifications];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSArray * tasks = notf.userInfo[IQNotificationDataKey];
+        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"task_id == %@", weakSelf.taskId];
+        NSDictionary * curTask = [[tasks filteredArrayUsingPredicate:filterPredicate] lastObject];
+
+        if(curTask) {
+            [weakSelf updateModelWithCompletion:nil];
+            
+            NSNumber * count = curTask[@"counter"];
+            if(![weakSelf.unreadCount isEqualToNumber:count]) {
+                weakSelf.unreadCount = count;
+                [weakSelf modelCountersDidChanged];
+            }
+        }
+    };
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTaskAttachmentsDidChangedNotification
+                                                                       queue:nil
+                                                                  usingBlock:block];
+}
+
+- (void)unsubscribeFromIQNotifications {
+    if(_notfObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    }
+}
+
 - (void)applicationWillEnterForeground {
     [self updateModelWithCompletion:nil];
 }
@@ -305,6 +338,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (void)dealloc {
+    [self unsubscribeFromIQNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
