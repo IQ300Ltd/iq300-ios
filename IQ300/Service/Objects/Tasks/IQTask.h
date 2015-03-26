@@ -20,6 +20,7 @@
 @property (nonatomic, strong) NSString     * type;
 @property (nonatomic, strong) NSNumber     * recipientId;
 @property (nonatomic, strong) NSNumber     * ownerId;
+@property (nonatomic, strong) NSString     * ownerType;
 @property (nonatomic, strong) NSString     * status;
 @property (nonatomic, strong) NSString     * title;
 @property (nonatomic, strong) NSString     * taskDescription;

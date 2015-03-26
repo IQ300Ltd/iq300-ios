@@ -53,6 +53,7 @@
                                                   @"kind"                     : @"type",
                                                   @"recipient_id"             : @"recipientId",
                                                   @"owner.id"                 : @"ownerId",
+                                                  @"owner.type"               : @"ownerType",
                                                   @"status"                   : @"status",
                                                   @"title"                    : @"title",
                                                   @"description"              : @"taskDescription",
