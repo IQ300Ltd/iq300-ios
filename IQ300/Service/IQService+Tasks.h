@@ -49,7 +49,9 @@
 
 - (void)markCategoryAsReaded:(NSString*)category taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
 
-- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
+- (void)attachmentsByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
 

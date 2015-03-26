@@ -18,10 +18,13 @@
 #import "IQBadgeView.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "TaskPolicyInspector.h"
+#import "UIScrollView+PullToRefreshInsert.h"
+#import "IQSession.h"
 
 @interface TDocumentsController () {
     TAttachmentsModel * _attachmentsModel;
     UIDocumentInteractionController * _documentController;
+    UILabel * _noDataLabel;
 }
 
 @end
@@ -64,6 +67,18 @@
     return @"documents";
 }
 
+- (void)setTaskId:(NSNumber *)taskId {
+    if(![_taskId isEqualToNumber:taskId]) {
+        _taskId = taskId;
+        
+        self.model.taskId = taskId;
+        
+        if(self.isViewLoaded) {
+            [self reloadModel];
+        }
+    }
+}
+
 - (void)setBadgeValue:(NSNumber *)badgeValue {
     self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
 }
@@ -72,24 +87,41 @@
     return @([self.tabBarItem.badgeValue integerValue]);
 }
 
-- (void)setAttachments:(NSArray*)attachments {
-    self.model.items = attachments;
-    if (self.isViewLoaded) {
-        [self.model updateModelWithCompletion:^(NSError *error) {
-            [self.tableView reloadData];
-        }];
-    }
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
+    
+    _noDataLabel = [[UILabel alloc] init];
+    [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
+    [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
+    _noDataLabel.textAlignment = NSTextAlignmentCenter;
+    _noDataLabel.backgroundColor = [UIColor clearColor];
+    _noDataLabel.numberOfLines = 0;
+    _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [_noDataLabel setHidden:YES];
+    [_noDataLabel setText:NSLocalizedString(@"No attachments", nil)];
+
+    if (self.tableView) {
+        [self.view insertSubview:_noDataLabel belowSubview:self.tableView];
+    }
+    else {
+        [self.view addSubview:_noDataLabel];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    __weak typeof(self) weakSelf = self;
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf reloadDataWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
+
     if([self.policyInspector isActionAvailable:@"create" inCategory:self.category]) {
         UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
                                                                        style:UIBarButtonItemStylePlain
@@ -98,9 +130,13 @@
         self.parentViewController.navigationItem.rightBarButtonItem = addButton;
     }
     
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        [self.tableView reloadData];
-    }];
+    [self reloadModel];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    _noDataLabel.frame = self.tableView.frame;
 }
 
 #pragma mark - UITableView DataSource
@@ -218,6 +254,18 @@
 }
 
 #pragma mark - Private methods
+
+- (void)reloadModel {
+    if([IQSession defaultSession]) {
+        [self reloadDataWithCompletion:^(NSError *error) {
+            [self updateNoDataLabelVisibility];
+        }];
+    }
+}
+
+- (void)updateNoDataLabelVisibility {
+    [_noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
+}
 
 - (void)addButtonAction:(UIButton*)sender {
     CTAssetsPickerController *picker = [[CTAssetsPickerController alloc] init];

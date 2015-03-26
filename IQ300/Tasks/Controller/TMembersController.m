@@ -114,7 +114,13 @@
     _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [_noDataLabel setHidden:YES];
     [_noDataLabel setText:NSLocalizedString(@"No contacts", nil)];
-    [self.view addSubview:_noDataLabel];
+    
+    if (self.tableView) {
+        [self.view insertSubview:_noDataLabel belowSubview:self.tableView];
+    }
+    else {
+        [self.view addSubview:_noDataLabel];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -129,6 +135,12 @@
     }
     
     [self reloadModel];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    _noDataLabel.frame = self.tableView.frame;
 }
 
 #pragma mark - UITableView DataSource

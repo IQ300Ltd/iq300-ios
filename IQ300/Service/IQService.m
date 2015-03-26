@@ -800,10 +800,26 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                               method:RKRequestMethodDELETE
                                                          pathPattern:@"/api/v1/tasks/:id/accessor_users/:id"
                                                              keyPath:nil
-                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskAttachment class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/attachments"
+                                                   fromKeyPath:@"attachments"
+                                                         store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
 
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskAttachment class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/tasks/:id/attachments"
+                                                   fromKeyPath:@"attachment"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
                                                          pathPattern:@"/api/v1/tasks/:id/accessor_users/leave"

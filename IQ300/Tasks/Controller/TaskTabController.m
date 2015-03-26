@@ -135,8 +135,7 @@
         [membersController setPolicyInspector:_policyInspector];
         
         TDocumentsController * documentsController = self.viewControllers[3];
-        documentsController.model.taskId = self.task.taskId;
-        [documentsController setAttachments:[task.attachments array]];
+        [documentsController setTaskId:task.taskId];
         [documentsController setPolicyInspector:_policyInspector];
     }
 }

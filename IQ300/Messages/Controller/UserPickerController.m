@@ -24,6 +24,20 @@
 
 @implementation UserPickerController
 
+- (void)setFilter:(NSString *)filter {
+    _filter = filter;
+    
+    void(^compleationBlock)(NSError * error) = ^(NSError * error) {
+        if(!error) {
+            [self.tableView reloadData];
+            [self updateNoDataLabelVisibility];
+        }
+    };
+    
+    [self.model setFilter:filter];
+    [self.model updateModelWithCompletion:compleationBlock];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -38,7 +52,13 @@
     _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [_noDataLabel setHidden:YES];
     [_noDataLabel setText:NSLocalizedString(@"No contacts", nil)];
-    [self.view addSubview:_noDataLabel];
+    
+    if (self.tableView) {
+        [self.view insertSubview:_noDataLabel belowSubview:self.tableView];
+    }
+    else {
+        [self.view addSubview:_noDataLabel];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -56,18 +76,10 @@
     [super viewWillDisappear:animated];
 }
 
-- (void)setFilter:(NSString *)filter {
-    _filter = filter;
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
     
-    void(^compleationBlock)(NSError * error) = ^(NSError * error) {
-        if(!error) {
-            [self.tableView reloadData];
-            [self updateNoDataLabelVisibility];
-        }
-    };
-    
-    [self.model setFilter:filter];
-    [self.model updateModelWithCompletion:compleationBlock];
+    _noDataLabel.frame = self.tableView.frame;
 }
 
 #pragma mark - UITableView DataSource

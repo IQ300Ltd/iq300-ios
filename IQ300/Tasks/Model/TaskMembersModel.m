@@ -17,7 +17,7 @@
 
 static NSString * ReuseIdentifier = @"MReuseIdentifier";
 
-@interface TaskMembersModel()<NSFetchedResultsControllerDelegate> {
+@interface TaskMembersModel() <NSFetchedResultsControllerDelegate> {
     NSFetchedResultsController * _fetchController;
 }
 
@@ -30,6 +30,11 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
     if (self) {
         _sectionNameKeyPath = nil;
         _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"user.displayName" ascending:SORT_DIRECTION == IQSortDirectionAscending]];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationWillEnterForeground)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
     }
     
     return self;
@@ -212,6 +217,10 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
     }
 
     return NO;
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateModelWithCompletion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

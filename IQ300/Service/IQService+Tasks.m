@@ -145,16 +145,20 @@
             }];
 }
 
-- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
+- (void)attachmentsByTaskId:(NSNumber *)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/attachments", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
+- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self postObject:nil
                 path:[NSString stringWithFormat:@"/api/v1/tasks/%@/attachments", taskId]
           parameters:@{ @"attachment_id" : attachmentId }
-             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                 if (handler) {
-                     handler(success, responseData, error);
-                 }
-             }];
+             handler:handler];
 }
 
 - (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
