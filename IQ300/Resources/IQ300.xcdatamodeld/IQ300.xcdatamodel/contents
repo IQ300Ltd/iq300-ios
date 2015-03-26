@@ -136,9 +136,6 @@
         <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQProject" inverseName="tasks" inverseEntity="IQProject" syncable="YES"/>
         <relationship name="todoItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQTodoItem" inverseName="tasks" inverseEntity="IQTodoItem" syncable="YES"/>
     </entity>
-    <entity name="IQTaskAttachment" representedClassName="IQTaskAttachment" parentEntity="IQAttachment" syncable="YES">
-        <attribute name="taskId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-    </entity>
     <entity name="IQTaskMember" representedClassName="IQTaskMember" syncable="YES">
         <attribute name="communityRole" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="communityRoleName" optional="YES" attributeType="String" syncable="YES"/>
@@ -194,6 +191,5 @@
         <element name="IQTaskMember" positionX="-36" positionY="135" width="128" height="193"/>
         <element name="IQTodoItem" positionX="-36" positionY="144" width="128" height="148"/>
         <element name="IQUser" positionX="-45" positionY="45" width="128" height="285"/>
-        <element name="IQTaskAttachment" positionX="-36" positionY="135" width="128" height="58"/>
     </elements>
 </model>

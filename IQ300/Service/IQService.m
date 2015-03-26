@@ -804,7 +804,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskAttachment class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/tasks/:id/attachments"
                                                    fromKeyPath:@"attachments"
@@ -812,7 +812,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
 
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskAttachment class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
                                                         method:RKRequestMethodPOST
                                                    pathPattern:@"/api/v1/tasks/:id/attachments"
                                                    fromKeyPath:@"attachment"

@@ -31,7 +31,6 @@
 #import "TasksMenuCounters.h"
 #import "TChangesCounter.h"
 #import "IQTaskMember.h"
-#import "IQTaskAttachment.h"
 #import "TaskPolicies.h"
 
 #endif

@@ -8,7 +8,7 @@
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
 #import "TAttachmentsModel.h"
-#import "IQTaskAttachment.h"
+#import "IQAttachment.h"
 #import "TAttachmentCell.h"
 #import "IQService+Tasks.h"
 
@@ -17,8 +17,8 @@
 static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
 @interface TAttachmentsModel() <NSFetchedResultsControllerDelegate> {
-    NSFetchedResultsController * _fetchController;
     NSArray * _sortDescriptors;
+    NSArray * _attachments;
 }
 
 @end
@@ -28,6 +28,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 - (id)init {
     self = [super init];
     if (self) {
+        _attachments = [NSMutableArray array];
         _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"createDate" ascending:NO]];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -39,7 +40,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (NSUInteger)numberOfSections {
-    return [_fetchController.sections count];
+    return 1;
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
@@ -47,8 +48,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (NSUInteger)numberOfItemsInSection:(NSInteger)section {
-    id<NSFetchedResultsSectionInfo> sectionInfo = [_fetchController.sections objectAtIndex:section];
-    return [sectionInfo numberOfObjects];
+    return [_attachments count];
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
@@ -68,13 +68,17 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
     if(indexPath.section < [self numberOfSections] &&
        indexPath.row < [self numberOfItemsInSection:indexPath.section]) {
-        return [_fetchController objectAtIndexPath:indexPath];
+        return [_attachments objectAtIndex:indexPath.row];
     }
     return nil;
 }
 
 - (NSIndexPath *)indexPathOfObject:(id)object {
-    return [_fetchController indexPathForObject:object];
+    NSInteger index = [_attachments indexOfObject:object];
+    if (index != NSNotFound) {
+        return [NSIndexPath indexPathForRow:index inSection:self.section];
+    }
+    return nil;
 }
 
 - (Class)controllerClassForItemAtIndexPath:(NSIndexPath*)indexPath {
@@ -82,43 +86,24 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
-    if([_fetchController.fetchedObjects count] == 0) {
-        [self reloadModelWithCompletion:completion];
-    }
-    else {
-        [[IQService sharedService] attachmentsByTaskId:self.taskId
-                                               handler:^(BOOL success, NSArray * attachments, NSData *responseData, NSError *error) {
-                                                   if (success) {
-                                                       [attachments setValue:self.taskId forKey:@"taskId"];
-                                                       
-                                                       if([[IQService sharedService].context hasChanges]) {
-                                                           NSError *saveError = nil;
-                                                           if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
-                                                               NSLog(@"Save attachments change taskId error: %@", saveError);
-                                                           }
-                                                       }
-                                                   }
-                                                   if(completion) {
-                                                       completion(error);
-                                                   }
-                                               }];
-    }
+    [[IQService sharedService] attachmentsByTaskId:self.taskId
+                                           handler:^(BOOL success, NSArray * attachments, NSData *responseData, NSError *error) {
+                                               if (success) {
+                                                   [self mergeChangesFromArray:attachments];
+                                               }
+                                               if(completion) {
+                                                   completion(error);
+                                               }
+                                           }];
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadModelSourceControllerWithCompletion:completion];
+    _attachments = nil;
     
     [[IQService sharedService] attachmentsByTaskId:self.taskId
                                            handler:^(BOOL success, NSArray * attachments, NSData *responseData, NSError *error) {
                                                if (success) {
-                                                   [attachments setValue:self.taskId forKey:@"taskId"];
-                                                   
-                                                   if([[IQService sharedService].context hasChanges]) {
-                                                       NSError *saveError = nil;
-                                                       if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
-                                                           NSLog(@"Save attachments change taskId error: %@", saveError);
-                                                       }
-                                                   }
+                                                   [self mergeChangesFromArray:attachments];
                                                }
                                                if(completion) {
                                                    completion(error);
@@ -130,16 +115,9 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     void (^addAttachmentBlock)(IQAttachment * attachment) = ^ (IQAttachment * param) {
         [[IQService sharedService] addAttachmentWithId:param.attachmentId
                                                 taskId:self.taskId
-                                               handler:^(BOOL success, IQTaskAttachment * attachment, NSData *responseData, NSError *error) {
+                                               handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
                                                    if (success) {
-                                                       [attachment setTaskId:self.taskId];
-                                                       
-                                                       if([[IQService sharedService].context hasChanges]) {
-                                                           NSError *saveError = nil;
-                                                           if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
-                                                               NSLog(@"Save attachments change taskId error: %@", saveError);
-                                                           }
-                                                       }
+                                                       [self insertAttachment:attachment];
                                                    }
                                                    if (completion) {
                                                        completion(error);
@@ -163,43 +141,68 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (void)clearModelData {
-    [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
-    if(_fetchController) {
-        [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithValue:NO]];
-        [_fetchController performFetch:nil];
-        [_fetchController setDelegate:nil];
-        _fetchController = nil;
-    }
+    _attachments = nil;;
 }
 
 #pragma mark - Private methods
 
-- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
-    _fetchController.delegate = nil;
+- (void)mergeChangesFromArray:(NSArray*)attachments {
+    NSMutableArray * insertPaths = [NSMutableArray array];
+    NSMutableArray * deletePaths = [NSMutableArray array];
+
+    NSArray * newState = [attachments sortedArrayUsingDescriptors:_sortDescriptors];
     
-    [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
+    NSArray * oldAttachmentIds = [_attachments valueForKey:@"attachmentId"];
+    NSArray * newAttachmentIds = [newState valueForKey:@"attachmentId"];
+    NSArray * insertObjects = [newState filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"NOT (attachmentId IN %@)", oldAttachmentIds]];
+    NSArray * deleteObjects = [_attachments filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"NOT (attachmentId IN %@)", newAttachmentIds]];
     
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"taskId == %@", self.taskId];
+    for (id object in insertObjects) {
+        NSInteger index = [newState indexOfObject:object];
+        if (index != NSNotFound) {
+            [insertPaths addObject:[NSIndexPath indexPathForRow:index inSection:self.section]];
+        }
+    }
     
-    if(!_fetchController && [IQService sharedService].context) {
-        NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQTaskAttachment"];
-        [fetchRequest setSortDescriptors:_sortDescriptors];
+    for (id object in deleteObjects) {
+        NSInteger index = [_attachments indexOfObject:object];
+        if (index != NSNotFound) {
+            [deletePaths addObject:[NSIndexPath indexPathForRow:index inSection:self.section]];
+        }
+    }
+    
+    _attachments = newState;
+    
+    [self modelWillChangeContent];
+    
+    for (NSIndexPath * indexPath in deletePaths) {
+        [self modelDidChangeObject:nil
+                       atIndexPath:indexPath
+                     forChangeType:NSFetchedResultsChangeDelete
+                      newIndexPath:nil];
+    }
+    
+    for (NSIndexPath * indexPath in insertPaths) {
+        [self modelDidChangeObject:nil
+                       atIndexPath:nil
+                     forChangeType:NSFetchedResultsChangeInsert
+                      newIndexPath:indexPath];
         
-        _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                               managedObjectContext:[IQService sharedService].context
-                                                                 sectionNameKeyPath:nil
-                                                                          cacheName:CACHE_FILE_NAME];
     }
+
+    [self modelDidChangeContent];
+}
+
+- (void)insertAttachment:(IQAttachment*)attachment {
+    _attachments = [_attachments arrayByAddingObject:attachment];
+    _attachments = [_attachments sortedArrayUsingDescriptors:_sortDescriptors];
     
-    NSError * fetchError = nil;
-    [_fetchController.fetchRequest setPredicate:predicate];
-    [_fetchController.fetchRequest setSortDescriptors:_sortDescriptors];
-    [_fetchController setDelegate:self];
-    [_fetchController performFetch:&fetchError];
-    
-    if(completion) {
-        completion(fetchError);
-    }
+    [self modelWillChangeContent];
+    [self modelDidChangeObject:attachment
+                   atIndexPath:nil
+                 forChangeType:NSFetchedResultsChangeInsert
+                  newIndexPath:[self indexPathOfObject:attachment]];
+    [self modelDidChangeContent];
 }
 
 - (void)applicationWillEnterForeground {

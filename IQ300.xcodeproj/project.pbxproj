@@ -190,7 +190,6 @@
 		73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A113FC1A1CAA5900293EC5 /* default_avatar@2x.png */; };
 		73A20C771A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */; };
 		73A20C7A1A42F62C006433C5 /* IQBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A20C791A42F62C006433C5 /* IQBadgeView.m */; };
-		73A4B06F1AC3DC1100DA3067 /* IQTaskAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A4B06E1AC3DC1100DA3067 /* IQTaskAttachment.m */; };
 		73A700441A95BC4100A1C2AC /* TasksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A700431A95BC4100A1C2AC /* TasksView.m */; };
 		73A700481A95C0DC00A1C2AC /* nex_header_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A700461A95C0DC00A1C2AC /* nex_header_button.png */; };
 		73A700491A95C0DC00A1C2AC /* nex_header_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A700471A95C0DC00A1C2AC /* nex_header_button@2x.png */; };
@@ -610,8 +609,6 @@
 		73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarItem+CustomBadgeView.m"; sourceTree = "<group>"; };
 		73A20C781A42F62C006433C5 /* IQBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeView.h; sourceTree = "<group>"; };
 		73A20C791A42F62C006433C5 /* IQBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBadgeView.m; sourceTree = "<group>"; };
-		73A4B06D1AC3DC1100DA3067 /* IQTaskAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskAttachment.h; sourceTree = "<group>"; };
-		73A4B06E1AC3DC1100DA3067 /* IQTaskAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTaskAttachment.m; sourceTree = "<group>"; };
 		73A700421A95BC4100A1C2AC /* TasksView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TasksView.h; sourceTree = "<group>"; };
 		73A700431A95BC4100A1C2AC /* TasksView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TasksView.m; sourceTree = "<group>"; };
 		73A700461A95C0DC00A1C2AC /* nex_header_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nex_header_button.png; sourceTree = "<group>"; };
@@ -1632,8 +1629,6 @@
 				73FE0A371AC0294A007176A1 /* TChangesCounter.m */,
 				739D67D01AC29F8200859274 /* TaskPolicies.h */,
 				739D67D11AC29F8200859274 /* TaskPolicies.m */,
-				73A4B06D1AC3DC1100DA3067 /* IQTaskAttachment.h */,
-				73A4B06E1AC3DC1100DA3067 /* IQTaskAttachment.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -2063,7 +2058,6 @@
 				738EF8271A9CA88400894755 /* IQProject.m in Sources */,
 				73970E8F1AA5A7CC00AC2414 /* TaskFilterCounters.m in Sources */,
 				731170671AB801C2008A4D09 /* TCommentsController.m in Sources */,
-				73A4B06F1AC3DC1100DA3067 /* IQTaskAttachment.m in Sources */,
 				738EF8301A9CBAA200894755 /* IQTasksHolder.m in Sources */,
 				7399F92A1ABC118A0013FA11 /* TAttachmentCell.m in Sources */,
 				736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */,
