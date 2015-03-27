@@ -44,7 +44,7 @@
                                 @"refuse"        : @"Disagree",
                                 @"complete"      : @"Complete",
                                 @"accept"        : @"Accept",
-                                @"decline"       : @"Decline",
+                                @"decline"       : @"Return to work",
                                 @"cancel"        : @"Cancel",
                                 @"resend"        : @"Send to execute",
                                 @"force_accept"  : @"Take as done"
