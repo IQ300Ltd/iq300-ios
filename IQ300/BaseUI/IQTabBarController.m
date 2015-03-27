@@ -53,6 +53,15 @@
     [self setSeparatorHidden:separatorHidden];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    //try fix ios 7 tab not selected
+    if (_selectedIndex != NSNotFound) {
+        [_tabBar setSelectedItem:_tabBarItems[_selectedIndex]];
+    }
+}
+
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     
