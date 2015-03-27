@@ -165,8 +165,6 @@
                                         placeholderImage:[UIImage imageNamed:@"community_ico.png"]];
     }
     
-    [[_buttonsHolder subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
     for (NSInteger i = [task.availableActions count] - 1; i >= 0; i--) {
         NSString * actionType = [task.availableActions allObjects][i];
         BOOL isPositiveAction = [TaskHelper isPositiveActionWithType:actionType];

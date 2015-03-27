@@ -21,10 +21,8 @@
 #import "IQUser.h"
 
 @interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
-    TInfoHeaderView * _headerView;
     TodoListModel * _todoListModel;
-    TodoListSectionView * _checkListHeader;
-    NSInteger _deferredActionIndex;
+    __weak UIButton * _deferredActionButton;
     __weak id _notfObserver;
 }
 
@@ -85,7 +83,6 @@
     self.model.items = [_task.todoItems array];
 
     if (self.isViewLoaded) {
-        [_headerView setupByTask:_task];
         [self.tableView reloadData];
     }
 }
@@ -94,13 +91,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
 
-    self.tableView.tableHeaderView = _headerView;
     self.tableView.tableFooterView = [UIView new];
-    
-    _headerView = [[TInfoHeaderView alloc] init];
-    _headerView.delegate = self;
-    
-    _checkListHeader = [[TodoListSectionView alloc] init];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -159,11 +150,17 @@
 #pragma mark - UITableView Delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return (section == 0) ? [TInfoHeaderView heightForTask:self.task width:self.tableView.frame.size.width] : 50.0f;
+    CGFloat height = (section == 0) ? [TInfoHeaderView heightForTask:self.task width:self.tableView.frame.size.width] : 50.0f;
+    NSLog(@"height %f", height);
+    return height;
 }
 
 - (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return (section == 0) ? _headerView : _checkListHeader;
+    if (section == 0) {
+        return [self mainHeaderView];
+    }
+
+    return [[TodoListSectionView alloc] init];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -188,7 +185,7 @@
     
     if ([action length] > 0) {
         if([action isEqualToString:@"refuse"]) {
-            _deferredActionIndex = actionIndex;
+            _deferredActionButton = actionButton;
             UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                                      delegate:self
                                                             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
@@ -227,7 +224,6 @@
                                 };
     });
     
-    UIButton * actionButton = [_headerView actionButtonAtIndex:_deferredActionIndex];
     NSString * reason = [reasons objectForKey:@(buttonIndex)];
     if(reason) {
         [[IQService sharedService] changeStatus:@"refuse"
@@ -238,13 +234,15 @@
                                                 self.task = task;
                                             }
                                             else {
-                                                [actionButton setEnabled:YES];
+                                                [_deferredActionButton setEnabled:YES];
                                             }
                                         }];
     }
     else {
-        [actionButton setEnabled:YES];
+        [_deferredActionButton setEnabled:YES];
     }
+    
+    _deferredActionButton = nil;
 }
 
 #pragma mark - Private methods
@@ -311,6 +309,13 @@
     if(_notfObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
     }
+}
+
+- (UIView*)mainHeaderView {
+    TInfoHeaderView * headerView = [[TInfoHeaderView alloc] init];
+    [headerView setupByTask:_task];
+    headerView.delegate = self;
+    return headerView;
 }
 
 - (void)dealloc {
