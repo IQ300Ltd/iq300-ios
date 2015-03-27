@@ -305,9 +305,11 @@
     
     __weak typeof(self) weakSelf = self;
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSArray * taskIds = notf.userInfo[IQNotificationDataKey];
+        NSArray * tasks = notf.userInfo[IQNotificationDataKey];
+        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"task_id == %@", weakSelf.task.taskId];
+        NSDictionary * curTask = [[tasks filteredArrayUsingPredicate:filterPredicate] lastObject];
         
-        if([taskIds containsObject:weakSelf.task.taskId]) {
+        if(curTask) {
             [weakSelf updateCounters];
             [weakSelf updateTask];
         }
