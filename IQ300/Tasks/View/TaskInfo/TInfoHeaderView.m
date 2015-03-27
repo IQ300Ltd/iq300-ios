@@ -165,8 +165,9 @@
                                         placeholderImage:[UIImage imageNamed:@"community_ico.png"]];
     }
     
-    for (NSInteger i = [task.availableActions count] - 1; i >= 0; i--) {
-        NSString * actionType = [task.availableActions allObjects][i];
+    NSArray * actions = [task.availableActions allObjects];
+    for (NSInteger i = 0; i < [actions count]; i++) {
+        NSString * actionType = actions[i];
         BOOL isPositiveAction = [TaskHelper isPositiveActionWithType:actionType];
         ExtendedButton * actionButton = [[ExtendedButton alloc] init];
         actionButton.layer.cornerRadius = 3.0f;
