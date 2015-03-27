@@ -48,6 +48,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.separatorHeight = 0.5f;
+    self.separatorColor = [UIColor colorWithHexInt:0xcccccc];
+    self.separatorHidden = NO;
+    
     UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
                                                                        style:UIBarButtonItemStylePlain
                                                                       target:self action:@selector(backButtonAction:)];

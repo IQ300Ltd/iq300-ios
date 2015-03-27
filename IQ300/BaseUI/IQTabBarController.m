@@ -13,6 +13,7 @@
 @interface IQTabBarController () {
     UITabBar * _tabBar;
     UIView * _transitionView;
+    UIView * _separatorView;
     NSMutableArray * _tabBarItems;
 }
 
@@ -31,7 +32,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     _tabBar = [[UITabBar alloc] init];
     _tabBar.delegate = self;
     [self.view addSubview:_tabBar];
@@ -46,6 +47,10 @@
     NSUInteger selectedIndex = self.selectedIndex;
     _selectedIndex = NSNotFound;
     self.selectedIndex = selectedIndex;
+    
+    BOOL separatorHidden = _separatorHidden;
+    _separatorHidden = YES;
+    [self setSeparatorHidden:separatorHidden];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -53,8 +58,16 @@
     
     CGRect actualBounds = self.view.bounds;
     
+    if (!_separatorHidden) {
+        _separatorView.frame = CGRectMake(actualBounds.origin.x,
+                                          actualBounds.origin.y,
+                                          actualBounds.size.width,
+                                          _separatorHeight);
+    }
+    
+    CGFloat tabBarY = (!_separatorHidden) ? CGRectBottom(_separatorView.frame) : actualBounds.origin.y;
     _tabBar.frame = CGRectMake(actualBounds.origin.x,
-                               actualBounds.origin.y,
+                               tabBarY,
                                actualBounds.size.width,
                                TABBAR_HEIGHT);
     
@@ -69,6 +82,41 @@
 }
 
 #pragma mark - Public methods
+
+- (void)setSeparatorHidden:(BOOL)separatorHidden {
+    if(_separatorHidden != separatorHidden) {
+        _separatorHidden = separatorHidden;
+        if (!_separatorHidden) {
+            _separatorView = [[UIView alloc] init];
+            _separatorView.backgroundColor = _separatorColor;
+            if (self.isViewLoaded) {
+                [self.view addSubview:_separatorView];
+                [self.view setNeedsLayout];
+            }
+        }
+        else {
+            [_separatorView removeFromSuperview];
+            _separatorView = nil;
+            if (self.isViewLoaded) {
+                [self.view setNeedsLayout];
+            }
+        }
+    }
+}
+
+- (void)setSeparatorHeight:(CGFloat)separatorHeight {
+    _separatorHeight = separatorHeight;
+    if (!self.isSeparatorHidden && self.isViewLoaded) {
+        [self.view setNeedsLayout];
+    }
+}
+
+- (void)setSeparatorColor:(UIColor *)separatorColor {
+    _separatorColor = separatorColor;
+    if (!self.isSeparatorHidden && _separatorView) {
+        _separatorView.backgroundColor = _separatorColor;
+    }
+}
 
 - (UITabBar*)tabBar {
     return _tabBar;

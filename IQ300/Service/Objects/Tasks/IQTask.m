@@ -20,6 +20,7 @@
 @dynamic type;
 @dynamic recipientId;
 @dynamic ownerId;
+@dynamic ownerType;
 @dynamic status;
 @dynamic title;
 @dynamic taskDescription;
