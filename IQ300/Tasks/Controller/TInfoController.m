@@ -310,8 +310,10 @@
         NSDictionary * curTask = [[tasks filteredArrayUsingPredicate:filterPredicate] lastObject];
         
         if(curTask) {
-            [weakSelf updateCounters];
             [weakSelf updateTask];
+            
+            NSNumber * count = curTask[@"counter"];
+            self.badgeValue = count;
         }
     };
     _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTaskDetailsUpdatedNotification
