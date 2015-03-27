@@ -70,12 +70,21 @@
                                          NSFontAttributeName            : font
                                          }.mutableCopy ;
     
-    NSMutableAttributedString * detailText = [[NSMutableAttributedString alloc] initWithString:_item.user.email
-                                                                                    attributes:attributes];
+    NSMutableAttributedString * detailText = [[NSMutableAttributedString alloc] init];
     
-    [attributes setValue:[UIFont fontWithName:IQ_HELVETICA size:10] forKey:NSFontAttributeName];
-    [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", item.taskRoleName]
-                                                                       attributes:attributes]];
+    if ([_item.user.email length] > 0) {
+        NSAttributedString * emailString = [[NSAttributedString alloc] initWithString:_item.user.email
+                                                                           attributes:attributes];
+        [detailText appendAttributedString:emailString];
+    }
+    
+    if([_item.taskRoleName length] > 0) {
+        [attributes setValue:[UIFont fontWithName:IQ_HELVETICA size:10] forKey:NSFontAttributeName];
+        
+        NSAttributedString * taskRoleName = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", item.taskRoleName]
+                                                                            attributes:attributes];
+        [detailText appendAttributedString:taskRoleName];
+    }
     self.detailTextLabel.attributedText = detailText;
 }
 
