@@ -32,7 +32,14 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
     self = [super init];
     if (self) {
         _sectionNameKeyPath = nil;
-        _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"user.displayName" ascending:SORT_DIRECTION == IQSortDirectionAscending]];
+        
+        NSSortDescriptor * roleDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"taskRole"
+                                                                          ascending:YES];
+        
+        NSSortDescriptor * nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"user.displayName"
+                                                                          ascending:SORT_DIRECTION == IQSortDirectionAscending];
+        
+        _sortDescriptors = @[roleDescriptor, nameDescriptor];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(applicationWillEnterForeground)
