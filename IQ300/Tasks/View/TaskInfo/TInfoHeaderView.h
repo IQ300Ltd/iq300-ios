@@ -15,7 +15,7 @@
 
 @optional
 
-- (void)headerView:(TInfoHeaderView*)headerView tapActionAtIndex:(NSInteger)actionIndex;
+- (void)headerView:(TInfoHeaderView*)headerView tapActionAtIndex:(NSInteger)actionIndex actionButton:(UIButton*)actionButton;
 
 @end
 
@@ -35,5 +35,7 @@
 @property (nonatomic, weak) id<TInfoHeaderViewDelegate> delegate;
 
 - (void)setupByTask:(IQTask*)task;
+
+- (UIButton*)actionButtonAtIndex:(NSInteger)actionIndex;
 
 @end

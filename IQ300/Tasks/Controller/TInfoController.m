@@ -24,6 +24,7 @@
     TInfoHeaderView * _headerView;
     TodoListModel * _todoListModel;
     TodoListSectionView * _checkListHeader;
+    NSInteger _deferredActionIndex;
     __weak id _notfObserver;
 }
 
@@ -180,12 +181,14 @@
 
 #pragma mark - TInfoHeaderView Delegate
 
-- (void)headerView:(TInfoHeaderView*)headerView tapActionAtIndex:(NSInteger)actionIndex {
+- (void)headerView:(TInfoHeaderView*)headerView tapActionAtIndex:(NSInteger)actionIndex actionButton:(UIButton*)actionButton {
     NSArray * actions = [self.task.availableActions allObjects];
     NSString * action = (actionIndex < [actions count]) ? actions[actionIndex] : nil;
+    [actionButton setEnabled:NO];
     
     if ([action length] > 0) {
         if([action isEqualToString:@"refuse"]) {
+            _deferredActionIndex = actionIndex;
             UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                                      delegate:self
                                                             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
@@ -200,7 +203,12 @@
                                       forTaskWithId:self.task.taskId
                                              reason:nil
                                             handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
-                                                self.task = task;
+                                                if (success) {
+                                                    self.task = task;
+                                                }
+                                                else {
+                                                    [actionButton setEnabled:YES];
+                                                }
                                             }];
         }
     }
@@ -219,14 +227,23 @@
                                 };
     });
     
+    UIButton * actionButton = [_headerView actionButtonAtIndex:_deferredActionIndex];
     NSString * reason = [reasons objectForKey:@(buttonIndex)];
     if(reason) {
         [[IQService sharedService] changeStatus:@"refuse"
                                   forTaskWithId:self.task.taskId
                                          reason:reason
                                         handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
-                                            self.task = task;
+                                            if (success) {
+                                                self.task = task;
+                                            }
+                                            else {
+                                                [actionButton setEnabled:YES];
+                                            }
                                         }];
+    }
+    else {
+        [actionButton setEnabled:YES];
     }
 }
 
@@ -278,14 +295,14 @@
     
     __weak typeof(self) weakSelf = self;
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSArray * taskIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
+        NSArray * taskIds = notf.userInfo[IQNotificationDataKey][@"base_task_ids"];
         
         if([taskIds containsObject:weakSelf.task.taskId]) {
             [weakSelf updateCounters];
             [weakSelf updateTask];
         }
     };
-    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChangedNotification
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTaskDetailsUpdatedNotification
                                                                        queue:nil
                                                                   usingBlock:block];
 }

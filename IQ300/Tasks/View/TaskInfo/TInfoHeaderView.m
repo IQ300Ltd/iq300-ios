@@ -206,6 +206,13 @@
     [self setNeedsLayout];
 }
 
+- (UIButton*)actionButtonAtIndex:(NSInteger)actionIndex {
+    if(actionIndex > 0 && actionIndex < [_buttonsHolder.subviews count]) {
+        return _buttonsHolder.subviews[actionIndex];
+    }
+    return nil;
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     
@@ -307,8 +314,8 @@
 }
 
 - (void)buttonAction:(UIButton*)button {
-    if([self.delegate respondsToSelector:@selector(headerView:tapActionAtIndex:)]) {
-        [self.delegate headerView:self tapActionAtIndex:button.tag];
+    if([self.delegate respondsToSelector:@selector(headerView:tapActionAtIndex:actionButton:)]) {
+        [self.delegate headerView:self tapActionAtIndex:button.tag actionButton:button];
     }
 }
 
