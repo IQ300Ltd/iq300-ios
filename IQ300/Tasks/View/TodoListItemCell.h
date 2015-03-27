@@ -16,6 +16,9 @@
 }
 
 @property (nonatomic, readonly) UILabel * titleLabel;
+@property (nonatomic, getter = isEnabled) BOOL enabled;
 @property (nonatomic, strong) IQTodoItem * item;
+
++ (CGFloat)heightForItem:(IQTodoItem *)item width:(CGFloat)width;
 
 @end

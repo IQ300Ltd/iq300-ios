@@ -13,6 +13,8 @@
 @property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, assign) NSInteger section;
 @property (nonatomic, strong) NSArray * items;
+@property (nonatomic, assign) CGFloat cellWidth;
+
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (BOOL)isItemCheckedAtIndexPath:(NSIndexPath*)indexPath;

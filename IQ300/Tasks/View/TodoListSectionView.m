@@ -30,6 +30,7 @@
         [self addSubview:_titleLabel];
         
         _editButton = [[UIButton alloc] init];
+        [_editButton setHidden:YES];
         [_editButton setImage:[UIImage imageNamed:@"edit_gray_ico.png"] forState:UIControlStateNormal];
         [self addSubview:_editButton];
     }

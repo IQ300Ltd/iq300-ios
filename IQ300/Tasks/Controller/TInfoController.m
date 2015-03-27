@@ -24,6 +24,7 @@
     TodoListModel * _todoListModel;
     __weak UIButton * _deferredActionButton;
     __weak id _notfObserver;
+    BOOL _editEnabled;
 }
 
 @end
@@ -87,6 +88,11 @@
     }
 }
 
+- (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
+    _policyInspector = policyInspector;
+    _editEnabled = ([self.policyInspector isActionAvailable:@"change_state" inCategory:@"todoItems"]);
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
@@ -98,11 +104,11 @@
     [super viewWillAppear:animated];
     
     if([self.policyInspector isActionAvailable:@"update" inCategory:self.category]) {
-        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
-                                                                        style:UIBarButtonItemStylePlain
-                                                                       target:self
-                                                                       action:@selector(editButtonAction:)];
-        self.parentViewController.navigationItem.rightBarButtonItem = editButton;
+//        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
+//                                                                        style:UIBarButtonItemStylePlain
+//                                                                       target:self
+//                                                                       action:@selector(editButtonAction:)];
+//        self.parentViewController.navigationItem.rightBarButtonItem = editButton;
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -144,6 +150,8 @@
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
     [cell setAccessoryType:(isCellChecked) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
     
+    cell.enabled = _editEnabled;
+    
     return cell;
 }
 
@@ -151,7 +159,6 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     CGFloat height = (section == 0) ? [TInfoHeaderView heightForTask:self.task width:self.tableView.frame.size.width] : 50.0f;
-    NSLog(@"height %f", height);
     return height;
 }
 
@@ -163,6 +170,11 @@
     return [[TodoListSectionView alloc] init];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.model.cellWidth = tableView.frame.size.width;
+    return [self.model heightForItemAtIndexPath:indexPath];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
     [self.model makeItemAtIndexPath:indexPath checked:!isCellChecked];
@@ -170,7 +182,7 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //Enable or disable change checked state
-    if([self.policyInspector isActionAvailable:@"change_state" inCategory:@"todoItems"]) {
+    if(_editEnabled) {
         return ([self.model isItemSelectableAtIndexPath:indexPath]) ? indexPath : nil;
     }
     return nil;

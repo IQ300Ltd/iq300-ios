@@ -62,7 +62,8 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return 50.0f;
+    IQTodoItem * item = [self itemAtIndexPath:indexPath];
+    return [TodoListItemCell heightForItem:item width:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
