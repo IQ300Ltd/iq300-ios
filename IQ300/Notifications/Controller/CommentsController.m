@@ -611,9 +611,10 @@
 
 - (NSAttributedString*)formatedTextFromText:(NSString*)text {
     if([text length] > 0) {
+        
         NSDictionary * attributes = @{
-                                      NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x8b8b8b],
-                                      NSFontAttributeName: DESCRIPTION_LABEL_FONT
+                                      NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x8b8b8b],
+                                      NSFontAttributeName            : DESCRIPTION_LABEL_FONT
                                       };
         
         NSMutableAttributedString * aText = [[NSMutableAttributedString alloc] initWithString:text
@@ -633,12 +634,14 @@
                 wordRange.length = wordRange.length + 1;
                 
                 if (!isCurUserNick) {
-                    [aText addAttributes:@{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
+                    NSDictionary * highlightAttribute = @{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d] };
+                    [aText addAttributes:@{ IQNikHighlightAttributeName : highlightAttribute,
                                             NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
                                    range:wordRange];
                 }
                 else {
-                    [aText addAttributes:@{ IQNikBackgroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
+                    NSDictionary * highlightAttribute = @{ IQNikBackgroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] };
+                    [aText addAttributes:@{ IQNikHighlightAttributeName : highlightAttribute,
                                             NSForegroundColorAttributeName: [UIColor whiteColor] }
                                    range:wordRange];
                 }
