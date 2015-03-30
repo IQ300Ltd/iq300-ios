@@ -171,6 +171,7 @@
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
     cell.descriptionTextView.attributedText = [self formatedTextFromText:comment.body];
+    cell.descriptionTextView.delegate = (id<UITextViewDelegate>)self;
     
     cell.expandable = [self.model isCellExpandableAtIndexPath:indexPath];
     cell.expanded = [self.model isItemExpandedAtIndexPath:indexPath];
@@ -461,14 +462,27 @@
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
+    if (textView == _mainView.inputView.commentTextView) {
+        NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
+        [self showAutoCompleationIfNeedForText:newString selectedRange:NSMakeRange((range.length > 0) ? range.location : range.location + 1, 0)];
+    }
     
-    [self showAutoCompleationIfNeedForText:newString selectedRange:NSMakeRange((range.length > 0) ? range.location : range.location + 1, 0)];
     return YES;
 }
 
-- (void)textViewDidChangeSelection:(UITextView *)textView {
+- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
+    //This is not me, this is fucking strange url
+    if (textView != _mainView.inputView.commentTextView) {
+        NSString * unescapedString = [[URL absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        unescapedString = [unescapedString stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+        NSString * encodeURL = [unescapedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:encodeURL]];
+        
+        return NO;
+    }
     
+    return YES;
 }
 
 #pragma mark - Scrolls

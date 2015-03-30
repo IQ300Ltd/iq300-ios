@@ -332,6 +332,7 @@
     _expanded = NO;
     _expandable = NO;
  
+    _descriptionTextView.delegate = nil;
     _descriptionTextView.selectable = NO;
     _descriptionTextView.text = nil;
     _descriptionTextView.selectable = YES;
