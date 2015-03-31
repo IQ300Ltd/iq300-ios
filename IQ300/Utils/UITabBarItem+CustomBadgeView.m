@@ -19,6 +19,10 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     Method originalMethod = class_getInstanceMethod(self, @selector(setBadgeValue:));
     Method overrideMethod = class_getInstanceMethod(self, @selector(setBadgeValueSwizzled:));
     method_exchangeImplementations(originalMethod, overrideMethod);
+    
+    originalMethod = class_getInstanceMethod(self, @selector(badgeValue));
+    overrideMethod = class_getInstanceMethod(self, @selector(badgeValueSwizzled));
+    method_exchangeImplementations(originalMethod, overrideMethod);
 }
 
 - (void)setCustomBadgeView:(UIView *)customBadgeView {
@@ -62,8 +66,16 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
         [self updateBadgeFrame];
     }
     else {
-        [self setBadgeValueSwizzled:[self internalBadgeValue]];
+        [self setBadgeValueSwizzled:badgeValue];
     }
+}
+
+- (NSString*)badgeValueSwizzled {
+    UIView * customBadgeView = self.customBadgeView;
+    if(customBadgeView) {
+        return [self internalBadgeValue];
+    }
+    return [self badgeValueSwizzled];
 }
 
 - (NSString*)internalBadgeValue {
@@ -77,9 +89,9 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
 - (void)updateBadgeFrame {
     UIView * badgeView = self.customBadgeView;
     
+    UIView * parentView = [self valueForKey:@"view"];
     if (badgeView.superview == nil) {
-        UIView * parentView = [self valueForKey:@"view"];
-        [parentView addSubview:badgeView];
+        [parentView.superview addSubview:badgeView];
     }
     
     if([badgeView respondsToSelector:@selector(setBadgeValue:)]) {
@@ -88,6 +100,8 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     }
     
     CGPoint badgeOrigin = self.badgeOrigin;
+    badgeOrigin = CGPointMake(parentView.frame.origin.x + badgeOrigin.x,
+                              parentView.frame.origin.y + badgeOrigin.y);
     
     CGSize expectedBadgeSize = badgeView.frame.size;
     badgeView.frame = CGRectMake(badgeOrigin.x, badgeOrigin.y, expectedBadgeSize.width, expectedBadgeSize.height);

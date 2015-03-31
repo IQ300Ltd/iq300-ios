@@ -18,11 +18,11 @@
 @property (nonatomic, strong) UILabel * taskIDLabel;
 @property (nonatomic, strong) UILabel * fromLabel;
 @property (nonatomic, strong) UILabel * toLabel;
-@property (nonatomic, strong) UIImageView * dueIconImageVIew;
+@property (nonatomic, strong) UIImageView * dueIconImageView;
 @property (nonatomic, strong) UILabel * dueDateLabel;
-@property (nonatomic, strong) UIImageView * communityImageVIew;
+@property (nonatomic, strong) UIImageView * communityImageView;
 @property (nonatomic, strong) UILabel * communityNameLabel;
-@property (nonatomic, strong) UIImageView * messagesImageVIew;
+@property (nonatomic, strong) UIImageView * messagesImageView;
 @property (nonatomic, strong) UILabel * commentsCountLabel;
 @property (nonatomic, strong) UILabel * statusLabel;
 

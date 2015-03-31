@@ -48,5 +48,4 @@
     return [_positiveActionTypes containsObject:type];
 }
 
-
 @end

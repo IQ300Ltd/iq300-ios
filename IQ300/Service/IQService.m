@@ -441,6 +441,29 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
             }];
 }
 
+#pragma mark - Attachments methods
+
+
+- (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler {
+    [self postAsset:asset
+               path:@"/api/v1/attachments"
+         parameters:nil
+  fileAttributeName:@"attachment[file]"
+           fileName:fileName
+           mimeType:mimeType
+            handler:handler];
+}
+
+- (void)createAttachmentWithFileAtPath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler {
+    [self postFileAtPath:[NSURL fileURLWithPath:filePath]
+                    path:@"/api/v1/attachments"
+              parameters:nil
+       fileAttributeName:@"attachment[file]"
+                fileName:fileName
+                mimeType:mimeType
+                 handler:handler];
+}
+
 #pragma mark - Private methods
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation *)operation {
@@ -705,6 +728,110 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/tasks/menu_counters"
                                                    fromKeyPath:@"menu_counters"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[TChangesCounter class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/changes"
+                                                   fromKeyPath:@"changes"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/"
+                                                   fromKeyPath:@"task"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
+                                                        method:RKRequestMethodPUT
+                                                   pathPattern:@"/api/v1/tasks/:id/change_status"
+                                                   fromKeyPath:@"task"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTodoItem class]
+                                                        method:RKRequestMethodPUT
+                                                   pathPattern:@"/api/v1/tasks/:id/todo_items/:id/complete"
+                                                   fromKeyPath:@"todo_item"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTodoItem class]
+                                                        method:RKRequestMethodPUT
+                                                   pathPattern:@"/api/v1/tasks/:id/todo_items/:id/rollback"
+                                                   fromKeyPath:@"todo_item"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/tasks/:id/changes/read"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskMember class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/accessor_users"
+                                                   fromKeyPath:@"accessor_users"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskMember class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/tasks/:id/accessor_users"
+                                                   fromKeyPath:@"accessor_user"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodDELETE
+                                                         pathPattern:@"/api/v1/tasks/:id/accessor_users/:id"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/attachments"
+                                                   fromKeyPath:@"attachments"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/tasks/:id/attachments"
+                                                   fromKeyPath:@"attachment"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/tasks/:id/accessor_users/leave"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [IQServiceResponse responseDescriptorForClass:[TaskPolicies class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/abilities"
+                                                   fromKeyPath:@"policy"
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];

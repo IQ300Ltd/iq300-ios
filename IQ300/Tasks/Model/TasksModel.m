@@ -57,7 +57,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                      @"inbox"     : INBOX_FORMAT,
                      @"outbox"    : OUTBOX_FORMAT,
                      @"watchable" : @"type LIKE[c] 'Task' AND (customer.userId != $userId AND executor.userId != $userId)",
-                     @"templates" : @"type LIKE[c] 'TemplateTask' AND ownerId == $userId",
+                     @"templates" : @"type LIKE[c] 'TemplateTask' AND ownerId == $userId AND ownerType LIKE[c] 'User'",
                      @"archive"   : ARCHIVE_FORMAT
                      };
     });
@@ -490,7 +490,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [weakSelf updateCountersWithCompletion:nil];
         [weakSelf tasksUpdatesAfterDateWithCompletion:nil];
     };
-    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChanged
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTasksDidChangedNotification
                                                                        queue:nil
                                                                   usingBlock:block];
 }
@@ -569,7 +569,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)dealloc {
-    [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    [self unsubscribeFromIQNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

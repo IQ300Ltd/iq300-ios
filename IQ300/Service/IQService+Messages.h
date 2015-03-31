@@ -27,9 +27,6 @@
 
 - (void)commentWithId:(NSNumber*)commentId discussionId:(NSNumber*)discussionId handler:(ObjectLoaderCompletionHandler)handler;
 
-- (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler;
-- (void)createAttachmentWithFileAtPath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler;
-
 - (void)contactsWithPage:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler;
 
 @end

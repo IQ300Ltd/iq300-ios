@@ -15,6 +15,9 @@
 @property (nonatomic, strong) id<IQTableModel> model;
 @property (nonatomic, assign) BOOL needFullReload;
 
-- (void)reloadDataWithCompletion:(void (^)())completion;
+- (void)reloadDataWithCompletion:(void (^)(NSError *error))completion;
+
+- (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay;
+- (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay;
 
 @end

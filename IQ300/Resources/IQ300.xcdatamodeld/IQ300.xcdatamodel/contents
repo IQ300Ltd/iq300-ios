@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6751" systemVersion="14C1510" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6751" systemVersion="14C1514" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CViewInfo" representedClassName="CViewInfo" syncable="YES">
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -107,8 +107,10 @@
     <entity name="IQProject" representedClassName="IQProject" syncable="YES">
         <attribute name="projectId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="project" inverseEntity="IQTask" syncable="YES"/>
     </entity>
     <entity name="IQTask" representedClassName="IQTask" syncable="YES">
+        <attribute name="availableActions" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
         <attribute name="childIds" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
         <attribute name="commentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -116,6 +118,7 @@
         <attribute name="duration" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="endDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="-1" syncable="YES"/>
+        <attribute name="ownerType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="parentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="position" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="recipientId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -127,11 +130,24 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQAttachment" inverseName="tasks" inverseEntity="IQAttachment" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQAttachment" inverseName="tasks" inverseEntity="IQAttachment" syncable="YES"/>
         <relationship name="community" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQCommunity" inverseName="tasks" inverseEntity="IQCommunity" syncable="YES"/>
         <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="taskCustomers" inverseEntity="IQUser" syncable="YES"/>
         <relationship name="executor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="taskExecutors" inverseEntity="IQUser" syncable="YES"/>
-        <relationship name="todoItems" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTodoItem" inverseName="tasks" inverseEntity="IQTodoItem" syncable="YES"/>
+        <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQProject" inverseName="tasks" inverseEntity="IQProject" syncable="YES"/>
+        <relationship name="todoItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQTodoItem" inverseName="tasks" inverseEntity="IQTodoItem" syncable="YES"/>
+    </entity>
+    <entity name="IQTaskMember" representedClassName="IQTaskMember" syncable="YES">
+        <attribute name="communityRole" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="communityRoleName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="memberId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="taskRole" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskRoleName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="tasksMember" inverseEntity="IQUser" syncable="YES"/>
     </entity>
     <entity name="IQTodoItem" representedClassName="IQTodoItem" syncable="YES">
         <attribute name="completed" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -158,6 +174,7 @@
         <relationship name="onversations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="users" inverseEntity="IQConversation" syncable="YES"/>
         <relationship name="taskCustomers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="customer" inverseEntity="IQTask" syncable="YES"/>
         <relationship name="taskExecutors" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="executor" inverseEntity="IQTask" syncable="YES"/>
+        <relationship name="tasksMember" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTaskMember" inverseName="user" inverseEntity="IQTaskMember" syncable="YES"/>
     </entity>
     <elements>
         <element name="CViewInfo" positionX="-45" positionY="135" width="128" height="105"/>
@@ -170,9 +187,10 @@
         <element name="IQNotificable" positionX="-63" positionY="-9" width="128" height="103"/>
         <element name="IQNotification" positionX="-63" positionY="-18" width="128" height="300"/>
         <element name="IQNotificationsGroup" positionX="-45" positionY="135" width="128" height="163"/>
-        <element name="IQProject" positionX="-45" positionY="135" width="128" height="75"/>
-        <element name="IQTask" positionX="-18" positionY="162" width="128" height="390"/>
+        <element name="IQProject" positionX="-45" positionY="135" width="128" height="90"/>
+        <element name="IQTask" positionX="-18" positionY="162" width="128" height="433"/>
+        <element name="IQTaskMember" positionX="-36" positionY="135" width="128" height="193"/>
         <element name="IQTodoItem" positionX="-36" positionY="144" width="128" height="148"/>
-        <element name="IQUser" positionX="-45" positionY="45" width="128" height="270"/>
+        <element name="IQUser" positionX="-45" positionY="45" width="128" height="285"/>
     </elements>
 </model>

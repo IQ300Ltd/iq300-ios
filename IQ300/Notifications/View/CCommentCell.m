@@ -12,7 +12,6 @@
 #import "IQBadgeView.h"
 #import "IQConversation.h"
 #import "IQSession.h"
-#import "IQTextView.h"
 
 #define CONTENT_INSET 8.0f
 #define ATTACHMENT_VIEW_HEIGHT 15.0f
@@ -22,7 +21,6 @@
 #define CELL_HEADER_MIN_HEIGHT 17
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
 #define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED [UIColor colorWithHexInt:0xe9faff]
-#define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define ATTACHMENT_VIEW_Y_OFFSET 7.0f
 
 @interface CCommentCell() {
@@ -276,41 +274,7 @@
     _dateLabel.text = [_item.createDate dateToDayTimeString];
     _userNameLabel.hidden = ([_item.author.displayName length] == 0);
     _userNameLabel.text = _item.author.displayName;
-    
-    NSString * body = ([_item.body length] > 0) ? _item.body : @"";
-    
-    NSDictionary * attributes = @{
-                                  NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x8b8b8b],
-                                  NSFontAttributeName: DESCRIPTION_LABEL_FONT
-                                  };
-
-    NSMutableAttributedString * aBody = [[NSMutableAttributedString alloc] initWithString:body
-                                                                               attributes:attributes];
-    
-    NSError *error = nil;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
-    NSArray * matches = [regex matchesInString:body options:0 range:NSMakeRange(0, body.length)];
-    for (NSTextCheckingResult *match in matches) {
-        NSRange wordRange = [match rangeAtIndex:1];
-        NSString * nickName = [body substringWithRange:wordRange];
-        BOOL isCurUserNick = ([nickName isEqualToString:self.curUserNick]);
-
-        wordRange.location = wordRange.location - 1;
-        wordRange.length = wordRange.length + 1;
         
-        if (!isCurUserNick) {
-            [aBody addAttributes:@{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
-                           range:wordRange];
-        }
-        else {
-            [aBody addAttributes:@{ IQNikBackgroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d],
-                                    NSForegroundColorAttributeName: [UIColor whiteColor] }
-                           range:wordRange];
-        }
-    }
-    
-    _descriptionTextView.attributedText = aBody;
-    
     BOOL hasAttachment = ([_item.attachments count] > 0);
     
     if(hasAttachment) {
@@ -368,6 +332,7 @@
     _expanded = NO;
     _expandable = NO;
  
+    _descriptionTextView.delegate = nil;
     _descriptionTextView.selectable = NO;
     _descriptionTextView.text = nil;
     _descriptionTextView.selectable = YES;

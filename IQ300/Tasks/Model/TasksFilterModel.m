@@ -318,6 +318,8 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
                                                          inSection:COMMUNITY_SECTION];
             if(![_selectedItems containsObject:indexPath]) {
                 [_selectedItems addObject:indexPath];
+                CommunityFilter * filter = [self itemAtIndexPath:indexPath];
+                _communityDescription = filter.title;
             }
         }
     }

@@ -38,6 +38,7 @@
     UserPickerController * _userPickerController;
     NSRange _inputWordRange;
     NSString * _curUserNick;
+    NSArray * _avalibleNicks;
 }
 
 @end
@@ -51,6 +52,12 @@
 - (void)loadView {
     _mainView = [[CommentsView alloc] init];
     self.view = _mainView;
+}
+
+- (void)setModel:(CommentsModel *)model {
+    [super setModel:model];
+    
+    _avalibleNicks = [[self.model.discussion.users allObjects] valueForKey:@"nickName"];
 }
 
 - (void)viewDidLoad {
@@ -107,9 +114,7 @@
                                                                        style:UIBarButtonItemStylePlain
                                                                       target:self action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
-    
-    [self setTitle:self.subTitle];
-    
+        
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
@@ -164,8 +169,9 @@
     }
     
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
-    cell.curUserNick = _curUserNick;
     cell.item = comment;
+    cell.descriptionTextView.attributedText = [self formatedTextFromText:comment.body];
+    cell.descriptionTextView.delegate = (id<UITextViewDelegate>)self;
     
     cell.expandable = [self.model isCellExpandableAtIndexPath:indexPath];
     cell.expanded = [self.model isItemExpandedAtIndexPath:indexPath];
@@ -253,12 +259,13 @@
     [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
 }
 
-
 - (void)backButtonAction:(UIButton*)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)sendButtonAction:(UIButton*)sender {
+    [self hideUserPickerController];
+
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
@@ -291,6 +298,8 @@
 }
 
 - (void)attachButtonAction:(UIButton*)sender {
+    [self hideUserPickerController];
+    
     CTAssetsPickerController *picker = [[CTAssetsPickerController alloc] init];
     picker.assetsFilter = [ALAssetsFilter allAssets];
     picker.showsCancelButton = YES;
@@ -351,7 +360,8 @@
     _documentController = [UIDocumentInteractionController interactionControllerWithURL:documentURL];
     [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
     if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
+        [UIAlertView showWithTitle:@"IQ300"
+                           message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -417,7 +427,9 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    [_mainView setInputOffset:down ? 0.0f : -keyboardRect.size.height];
+    CGFloat inset = keyboardRect.size.height - MAX((CGRectGetMaxY(self.view.superview.frame) - CGRectGetMaxY(self.view.frame)), 0);
+    inset -= (!self.hidesBottomBarWhenPushed) ? 6 : 0;
+    [_mainView setInputOffset:down ? 0.0f : -inset];
     if(isTableScrolledToBottom) {
         [self scrollToBottomAnimated:NO delay:0.0f];
     }
@@ -450,30 +462,24 @@
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
-   
-    if([newString length] > 0) {
-        NSString * beforeString = [newString substringToIndex:(range.length > 0) ? range.location : range.location + 1];
-        NSString * afterString =  [newString substringFromIndex:(range.length > 0) ? range.location : range.location + 1];
-        
-        NSArray * wordArrayBefor = [beforeString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSString * wordTypedBefor = [wordArrayBefor lastObject];
-        NSArray * wordArrayAfter = [afterString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSString * wordTypedAfter = [wordArrayAfter firstObject];
-        
-        NSString * typedWord = [wordTypedBefor stringByAppendingString:wordTypedAfter];
-        if([typedWord length] > 0 && [[typedWord substringToIndex:1] isEqualToString:@"@"]) {
-            _inputWordRange = [newString rangeOfString:typedWord];
-            [self showUserPickerControllerWithFilter:[typedWord substringFromIndex:1]];
-        }
-        else {
-            _inputWordRange = NSMakeRange(0, 0);
-            [self hideUserPickerController];
-        }
+    if (textView == _mainView.inputView.commentTextView) {
+        NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
+        [self showAutoCompleationIfNeedForText:newString selectedRange:NSMakeRange((range.length > 0) ? range.location : range.location + 1, 0)];
     }
-    else {
-        _inputWordRange = NSMakeRange(0, 0);
-        [self hideUserPickerController];
+    
+    return YES;
+}
+
+- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
+    //This is not me, this is fucking strange url
+    if (textView != _mainView.inputView.commentTextView) {
+        NSString * unescapedString = [[URL absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        unescapedString = [unescapedString stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+        NSString * encodeURL = [unescapedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:encodeURL]];
+        
+        return NO;
     }
     
     return YES;
@@ -486,25 +492,6 @@
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     if(isTableScrolledToBottom || self.needFullReload) {
         [self scrollToBottomAnimated:animated delay:delay];
-    }
-}
-
-- (void)scrollToBottomAnimated:(BOOL)animated delay:(CGFloat)delay {
-    __block NSInteger section = [self.tableView numberOfSections] - 1;
-    BOOL canScroll = ([self.tableView numberOfSections] > 0 && [self.tableView numberOfRowsInSection:section] > 0);
-    
-    if (canScroll) {
-        __block  NSInteger row = [self.tableView numberOfRowsInSection:section] - 1;
-        
-        if(delay > 0.0f) {
-            dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                [self scrollToBottomAnimated:animated delay:0.0f];
-            });
-        }
-        else {
-            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:row inSection:section];
-            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
-        }
     }
 }
 
@@ -596,12 +583,89 @@
     if(user) {
         NSString * inputText = _mainView.inputView.commentTextView.text;
         if(_inputWordRange.location != NSNotFound) {
+            BOOL needSpace = (_inputWordRange.location + _inputWordRange.length == inputText.length);
+            NSString * resultString = (needSpace) ? [NSString stringWithFormat:@"@%@ ", user.nickName] :
+                                                    [NSString stringWithFormat:@"@%@", user.nickName];
+            
             inputText = [inputText stringByReplacingCharactersInRange:_inputWordRange
-                                                           withString:[NSString stringWithFormat:@"@%@ ", user.nickName]];
+                                                           withString:resultString];
             _mainView.inputView.commentTextView.text = inputText;
+            _mainView.inputView.commentTextView.selectedRange = NSMakeRange(_inputWordRange.location + [resultString length], 0);
         }
         [self hideUserPickerController];
     }
+}
+
+- (void)showAutoCompleationIfNeedForText:(NSString*)text selectedRange:(NSRange)selectedRange {
+    if([text length] > 0) {
+        NSString * beforeString = [text substringToIndex:selectedRange.location];
+        NSString * afterString =  [text substringFromIndex:selectedRange.location];
+        
+        NSArray * wordArrayBefor = [beforeString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString * wordTypedBefor = [wordArrayBefor lastObject];
+        NSArray * wordArrayAfter = [afterString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString * wordTypedAfter = [wordArrayAfter firstObject];
+        
+        NSString * typedWord = [wordTypedBefor stringByAppendingString:wordTypedAfter];
+        if([typedWord length] > 0 && [[typedWord substringToIndex:1] isEqualToString:@"@"]) {
+            NSInteger location = selectedRange.location;
+            _inputWordRange = NSMakeRange(location - [wordTypedBefor length], [wordTypedBefor length] + [wordTypedAfter length]);
+            [self showUserPickerControllerWithFilter:[typedWord substringFromIndex:1]];
+        }
+        else {
+            _inputWordRange = NSMakeRange(0, 0);
+            [self hideUserPickerController];
+        }
+    }
+    else {
+        _inputWordRange = NSMakeRange(0, 0);
+        [self hideUserPickerController];
+    }
+}
+
+- (NSAttributedString*)formatedTextFromText:(NSString*)text {
+    if([text length] > 0) {
+        
+        NSDictionary * attributes = @{
+                                      NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x8b8b8b],
+                                      NSFontAttributeName            : DESCRIPTION_LABEL_FONT
+                                      };
+        
+        NSMutableAttributedString * aText = [[NSMutableAttributedString alloc] initWithString:text
+                                                                                   attributes:attributes];
+        
+        NSError *error = nil;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
+        NSArray * matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
+        for (NSTextCheckingResult *match in matches) {
+            NSRange wordRange = [match rangeAtIndex:1];
+            NSString * nickName = [text substringWithRange:wordRange];
+            
+            if([_avalibleNicks containsObject:nickName]) {
+                BOOL isCurUserNick = ([nickName isEqualToString:_curUserNick]);
+                
+                wordRange.location = wordRange.location - 1;
+                wordRange.length = wordRange.length + 1;
+                
+                if (!isCurUserNick) {
+                    NSDictionary * highlightAttribute = @{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d] };
+                    [aText addAttributes:@{ IQNikHighlightAttributeName : highlightAttribute,
+                                            NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
+                                   range:wordRange];
+                }
+                else {
+                    NSDictionary * highlightAttribute = @{ IQNikBackgroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] };
+                    [aText addAttributes:@{ IQNikHighlightAttributeName : highlightAttribute,
+                                            NSForegroundColorAttributeName: [UIColor whiteColor] }
+                                   range:wordRange];
+                }
+            }
+        }
+        
+        return aText;
+    }
+    
+    return nil;
 }
 
 - (void)dealloc {

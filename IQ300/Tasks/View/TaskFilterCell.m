@@ -88,6 +88,7 @@
 }
 
 - (void)setItem:(id<TaskFilterItem>)item {
+    _item = item;
     self.titleLabel.text = item.title;
 }
 

@@ -12,6 +12,7 @@
 #import "NSDate+IQFormater.h"
 #import "IQUser.h"
 #import "IQCommunity.h"
+#import "TaskHelper.h"
 
 #define CONTENT_INSETS 10.0f
 #define TASK_ID_HEIGHT 11.0f
@@ -28,31 +29,6 @@
 #define COMM_NAME_FONT [UIFont fontWithName:IQ_HELVETICA size:11.0f]
 
 @implementation TaskCell
-
-+ (UIColor*)colorForTaskType:(NSString*)type {
-    static NSDictionary * _typeColors = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _typeColors = @{
-                        @"new"       : [UIColor colorWithHexInt:0x00b54f],
-                        @"on_init"   : [UIColor colorWithHexInt:0x9f9f9f],
-                        @"browsed"   : [UIColor colorWithHexInt:0x753bb7],
-                        @"in_work"   : [UIColor colorWithHexInt:0xf8931f],
-                        @"refused"   : [UIColor colorWithHexInt:0xe74545],
-                        @"completed" : IQ_CELADON_COLOR,
-                        @"accepted"  : [UIColor colorWithHexInt:0x7dc223],
-                        @"declined"  : [UIColor colorWithHexInt:0xe976ba],
-                        @"archived"  : [UIColor colorWithHexInt:0x272727],
-                        @"canceled"  : [UIColor colorWithHexInt:0x3b5b78]
-                       };
-    });
-    
-    if([_typeColors objectForKey:type]) {
-        return [_typeColors objectForKey:type];
-    }
-    
-    return [UIColor colorWithHexInt:0x9f9f9f];
-}
 
 + (CGFloat)heightForItem:(IQTask *)item andCellWidth:(CGFloat)cellWidth {
     CGFloat height = CONTENT_INSETS * 2.0f;
@@ -110,8 +86,8 @@
         _toLabel.numberOfLines = 1;
         [contentView addSubview:_toLabel];
         
-        _dueIconImageVIew = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bell_ico.png"]];
-        [contentView addSubview:_dueIconImageVIew];
+        _dueIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bell_ico.png"]];
+        [contentView addSubview:_dueIconImageView];
         
         _dueDateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
                                                font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
@@ -119,18 +95,18 @@
         _dueDateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dueDateLabel];
         
-        _communityImageVIew = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"community_ico.png"]];
-        _communityImageVIew.layer.cornerRadius = COMMUNITY_ICO_SIZE / 2.0f;
-        _communityImageVIew.clipsToBounds = YES;
-        [contentView addSubview:_communityImageVIew];
+        _communityImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"community_ico.png"]];
+        _communityImageView.layer.cornerRadius = COMMUNITY_ICO_SIZE / 2.0f;
+        _communityImageView.clipsToBounds = YES;
+        [contentView addSubview:_communityImageView];
         
         _communityNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
                                                          font:COMM_NAME_FONT
                                                 localaizedKey:nil];
         [contentView addSubview:_communityNameLabel];
         
-        _messagesImageVIew = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"message_blue_buble.png"]];
-        [contentView addSubview:_messagesImageVIew];
+        _messagesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"message_blue_buble.png"]];
+        [contentView addSubview:_messagesImageView];
 
         _commentsCountLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
                                                 font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
@@ -170,7 +146,7 @@
                                    constrainedSize.width,
                                    titleSize.height);
     
-    CGSize dueIconImageSize = [_dueIconImageVIew image].size;
+    CGSize dueIconImageSize = [_dueIconImageView image].size;
     CGFloat dateHeight = dueIconImageSize.height + 2;
     CGFloat dateMaxWidth = 150;
     CGSize dateLabelSize = [_dueDateLabel.text sizeWithFont:_dueDateLabel.font
@@ -183,14 +159,14 @@
                                      dateLabelWidth,
                                      dateHeight);
     
-    _dueIconImageVIew.frame = CGRectMake(_dueDateLabel.frame.origin.x - dueIconImageSize.width - 4.0f,
+    _dueIconImageView.frame = CGRectMake(_dueDateLabel.frame.origin.x - dueIconImageSize.width - 4.0f,
                                          _dueDateLabel.frame.origin.y + 2.0f,
                                          dueIconImageSize.width,
                                          dueIconImageSize.height);
     
     CGRect usersLabelFrame = CGRectMake(actualBounds.origin.x,
                                          _dueDateLabel.frame.origin.y,
-                                         _dueIconImageVIew.frame.origin.x - actualBounds.origin.x,
+                                         _dueIconImageView.frame.origin.x - actualBounds.origin.x,
                                          dateHeight);
     
     CGFloat userMaxWidth = usersLabelFrame.size.width / 2.0f;
@@ -210,7 +186,7 @@
                                 usersLabelFrame.size.width / 2.0f,
                                 usersLabelFrame.size.height);
     
-    _communityImageVIew.frame = CGRectMake(actualBounds.origin.x,
+    _communityImageView.frame = CGRectMake(actualBounds.origin.x,
                                            CGRectBottom(_fromLabel.frame) + VERTICAL_PADDING,
                                            COMMUNITY_ICO_SIZE,
                                            COMMUNITY_ICO_SIZE);
@@ -220,19 +196,19 @@
                                                     constrainedToSize:constrainedSize
                                                         lineBreakMode:NSLineBreakByWordWrapping];
     
-    _communityNameLabel.frame = CGRectMake(CGRectRight(_communityImageVIew.frame) + 5.0f,
-                                              _communityImageVIew.frame.origin.y + 1.8f,
+    _communityNameLabel.frame = CGRectMake(CGRectRight(_communityImageView.frame) + 5.0f,
+                                              _communityImageView.frame.origin.y + 1.8f,
                                               140,
                                               communityNameSize.height);
     
-    CGSize messagesImageSize = [_messagesImageVIew image].size;
-    _messagesImageVIew.frame = CGRectMake(CGRectRight(_communityNameLabel.frame) + 5.0f,
-                                          _communityImageVIew.frame.origin.y + 2.0f,
+    CGSize messagesImageSize = [_messagesImageView image].size;
+    _messagesImageView.frame = CGRectMake(CGRectRight(_communityNameLabel.frame) + 5.0f,
+                                          _communityImageView.frame.origin.y + 2.0f,
                                           messagesImageSize.width,
                                           messagesImageSize.height);
     
-    _commentsCountLabel.frame = CGRectMake(CGRectRight(_messagesImageVIew.frame) + 5.0f,
-                                           _messagesImageVIew.frame.origin.y,
+    _commentsCountLabel.frame = CGRectMake(CGRectRight(_messagesImageView.frame) + 5.0f,
+                                           _messagesImageView.frame.origin.y,
                                            20.0f,
                                            messagesImageSize.height);
     
@@ -255,17 +231,17 @@
     _communityNameLabel.text = _item.community.title;
     
     if([_item.community.thumbUrl length] > 0) {
-        [_communityImageVIew sd_setImageWithURL:[NSURL URLWithString:_item.community.thumbUrl]
+        [_communityImageView sd_setImageWithURL:[NSURL URLWithString:_item.community.thumbUrl]
                                placeholderImage:[UIImage imageNamed:@"community_ico.png"]];
     }
     
     BOOL showCommentsCount = ([_item.commentsCount integerValue] > 0);
     
     _commentsCountLabel.hidden = !showCommentsCount;
-    _messagesImageVIew.hidden = !showCommentsCount;
+    _messagesImageView.hidden = !showCommentsCount;
     _commentsCountLabel.text = [NSString stringWithFormat:@"%@", _item.commentsCount];
     
-    _statusLabel.textColor = [TaskCell colorForTaskType:_item.status];
+    _statusLabel.textColor = [TaskHelper colorForTaskType:_item.status];
     _statusLabel.text = NSLocalizedString(_item.status, nil);
     [self setNeedsLayout];
 }

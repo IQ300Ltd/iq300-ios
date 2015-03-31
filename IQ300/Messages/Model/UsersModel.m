@@ -144,6 +144,11 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, filterPredicate]];
     }
     
+    if([_excludeUserIds count] > 0) {
+        NSPredicate * usersPredicate = [NSPredicate predicateWithFormat:@"NOT (user.userId IN %@)", _excludeUserIds];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, usersPredicate]];
+    }
+    
     NSError * fetchError = nil;
     [_fetchController.fetchRequest setPredicate:predicate];
     [_fetchController.fetchRequest setSortDescriptors:_sortDescriptors];

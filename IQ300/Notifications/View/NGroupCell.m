@@ -182,7 +182,7 @@
 - (void)setItem:(IQNotificationsGroup *)item {
     _item = item;
     
-    BOOL showUnread = ([_item.unreadCount integerValue] == 1 && _item.lastUnreadNotification && self.showUnreadOnly);
+    BOOL showUnread = ([_item.unreadCount integerValue] > 0 && _item.lastUnreadNotification && self.showUnreadOnly);
     IQNotification * notification = (showUnread) ? _item.lastUnreadNotification : _item.lastNotification;
     BOOL isReaded = ([_item.unreadCount integerValue] == 0);
     _contentBackgroundInsets = (isReaded) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);

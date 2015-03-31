@@ -12,6 +12,7 @@
 #import "NotificationsHelper.h"
 #import "IQNotification.h"
 #import "IQNotificationsGroup.h"
+#import "NSDate+IQFormater.h"
 
 @interface NActionGropCell() {
     IQUtilityButtonView * _leftButtonsView;
@@ -54,7 +55,15 @@
     IQNotification * notification = (showUnread) ? item.lastUnreadNotification : item.lastNotification;
     _contentBackgroundInsets = (![notification.hasActions boolValue]) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);
     self.contentBackgroundView.backgroundColor = (![notification.hasActions boolValue]) ? CONTEN_BACKGROUND_COLOR_R :
-    CONTEN_BACKGROUND_COLOR;
+                                                                                          CONTEN_BACKGROUND_COLOR;
+    
+    self.typeLabel.text = NSLocalizedString(notification.notificable.type, nil);
+    self.dateLabel.text = [notification.createdAt dateToDayTimeString];
+    self.titleLabel.text = notification.notificable.title;
+    self.userNameLabel.hidden = ([notification.user.displayName length] == 0);
+    self.userNameLabel.text = notification.user.displayName;
+    self.actionLabel.text = notification.mainDescription;
+    self.descriptionLabel.text = notification.additionalDescription;
     
     if([notification.hasActions boolValue]) {
         NSMutableArray * actionButtons = [NSMutableArray array];

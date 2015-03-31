@@ -133,9 +133,11 @@
 
                                                   [MessagesModel markConversationAsRead:conv completion:nil];
                                                   
-                                                  NSArray * newStack = @[[self.navigationController.viewControllers firstObject],
-                                                                         controller];
-                                                  [self.navigationController setViewControllers:newStack animated:YES];
+                                                  id previousController = [self.navigationController.viewControllers firstObject];
+                                                  if(previousController) {
+                                                      NSArray * newStack = @[previousController, controller];
+                                                      [self.navigationController setViewControllers:newStack animated:YES];
+                                                  }
                                               }
                                           }];
 }

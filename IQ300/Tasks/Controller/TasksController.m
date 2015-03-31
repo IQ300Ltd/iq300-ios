@@ -21,9 +21,13 @@
 #import "TasksMenuCounters.h"
 #import "IQSession.h"
 
+#import "TaskTabController.h"
+#import "TaskPolicyInspector.h"
+
 @interface TasksController () <TasksFilterControllerDelegate> {
     TasksView * _mainView;
     TasksMenuModel * _menuModel;
+    BOOL _isTaskOpenProcessing;
     UITapGestureRecognizer * _singleTapGesture;
 }
 
@@ -179,10 +183,29 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    IQTask * task = [self.model itemAtIndexPath:indexPath];
+
+    TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTask:task];
+    TaskTabController * controller = [[TaskTabController alloc] init];
+    controller.task = task;
+    controller.policyInspector = policyInspector;
     
+    _isTaskOpenProcessing = YES;
+    
+    [policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
+        if (error) {
+            NSLog(@"Failed request policies for taskId %@ with error:%@", task.taskId, error);
+        }
+        [self.navigationController pushViewController:controller animated:YES];
+        _isTaskOpenProcessing = NO;
+    }];
 }
 
-#pragma mark - IQMenuModel Delegate
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    return (!_isTaskOpenProcessing) ? indexPath : nil;
+}
+
+#pragma mark - IQTableModel Delegate
 
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.counters = self.model.counters;
@@ -266,27 +289,6 @@
 
 - (void)updateNoDataLabelVisibility {
     [_mainView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
-}
-
-- (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay {
-    NSInteger section = [self.tableView numberOfSections];
-    if (section > 0) {
-        NSInteger itemsCount = [self.tableView numberOfRowsInSection:0];
-        
-        if (itemsCount > 0) {
-            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-            if(delay > 0.0f) {
-                dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                    [self scrollToTopAnimated:animated delay:0.0f];
-                });
-            }
-            else {
-                [self.tableView scrollToRowAtIndexPath:indexPath
-                                      atScrollPosition:UITableViewScrollPositionTop
-                                              animated:animated];
-            }
-        }
-    }
 }
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {

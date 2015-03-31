@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString * const IQNikHighlightAttributeName;
 extern NSString * const IQNikStrokeColorAttributeName;
 extern NSString * const IQNikBackgroundColorAttributeName;
 

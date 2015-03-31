@@ -37,4 +37,30 @@
 
 - (void)tasksMenuCountersWithHandler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)taskChangesCounterById:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)changeStatus:(NSString*)status forTaskWithId:(NSNumber*)taskId reason:(NSString*)reason handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)completeTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)markCategoryAsReaded:(NSString*)category taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
+
+- (void)attachmentsByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)addMemberWithUserId:(NSNumber*)userId inTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)removeMemberWithId:(NSNumber*)memberId fromTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
+
+- (void)leaveTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
+
+- (void)policiesForTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
 @end

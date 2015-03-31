@@ -152,9 +152,8 @@
                                                     CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];                                                    
                                                     CommentsController * controller = [[CommentsController alloc] init];
                                                     controller.hidesBottomBarWhenPushed = YES;
-                                                    controller.title = NSLocalizedString(@"Notifications", nil);
                                                     controller.model = model;
-                                                    controller.subTitle = title;
+                                                    controller.title = title;
                                                     controller.highlightedCommentId = commentId;
                                                     
                                                     [self.navigationController pushViewController:controller animated:YES];
@@ -273,27 +272,6 @@
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y <= topPosition);
     if(isTableScrolledToBottom || self.needFullReload) {
         [self scrollToTopAnimated:animated delay:delay];
-    }
-}
-
-- (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay {
-    NSInteger section = [self.tableView numberOfSections];
-    if (section > 0) {
-        NSInteger itemsCount = [self.tableView numberOfRowsInSection:0];
-        
-        if (itemsCount > 0) {
-            NSIndexPath * indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-            if(delay > 0.0f) {
-                dispatch_after_delay(delay, dispatch_get_main_queue(), ^{
-                    [self scrollToTopAnimated:animated delay:0.0f];
-                });
-            }
-            else {
-                [self.tableView scrollToRowAtIndexPath:indexPath
-                                      atScrollPosition:UITableViewScrollPositionTop
-                                              animated:animated];
-            }
-        }
     }
 }
 

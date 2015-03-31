@@ -84,4 +84,138 @@
                    handler:handler];
 }
 
+- (void)taskChangesCounterById:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/changes", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
+- (void)taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
+- (void)changeStatus:(NSString*)status forTaskWithId:(NSNumber*)taskId reason:(NSString*)reason handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    NSDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                           @"do"     : NSStringNullForNil(status),
+                                                           @"reason" : NSStringNullForNil(reason)
+                                                           });
+    
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/change_status", taskId]
+         parameters:parameters
+            handler:handler];
+}
+
+- (void)completeTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(itemId);
+    NSParameterAssert(taskId);
+
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items/%@/complete", taskId, itemId]
+         parameters:nil
+            handler:handler];
+}
+
+- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(itemId);
+    NSParameterAssert(taskId);
+
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items/%@/rollback", taskId, itemId]
+         parameters:nil
+            handler:handler];
+}
+
+- (void)markCategoryAsReaded:(NSString*)category taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    NSParameterAssert(category);
+
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/changes/read", taskId]
+         parameters:@{ @"tabs" : @[category] }
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if (handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
+- (void)attachmentsByTaskId:(NSNumber *)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/attachments", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
+- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self postObject:nil
+                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/attachments", taskId]
+          parameters:@{ @"attachment_id" : attachmentId }
+             handler:handler];
+}
+
+- (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSFetchRequest *(^fetchBlock)(NSURL *URL) = ^(NSURL *URL) {
+        NSFetchRequest * fRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQTaskMember"];
+        [fRequest setPredicate:[NSPredicate predicateWithFormat:@"taskId == %@", taskId]];
+        
+        return fRequest;
+    };
+
+    NSParameterAssert(taskId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users", taskId]
+                parameters:nil
+                fetchBlock:fetchBlock
+                   handler:handler];
+}
+
+- (void)addMemberWithUserId:(NSNumber*)userId inTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self postObject:nil
+                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users", taskId]
+          parameters:@{ @"user_id" : userId }
+             handler:handler];
+}
+
+- (void)removeMemberWithId:(NSNumber*)memberId fromTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(memberId);
+    NSParameterAssert(taskId);
+
+    [self deleteObject:nil
+                  path:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users/%@", taskId, memberId]
+            parameters:nil
+               handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                   if (handler) {
+                       handler(success, responseData , error);
+                   }
+               }];
+}
+
+- (void)leaveTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(taskId);
+  
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users/leave", taskId]
+         parameters:nil
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if (handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
+- (void)policiesForTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/abilities", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
 @end
