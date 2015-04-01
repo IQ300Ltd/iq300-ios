@@ -136,6 +136,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     NSInteger newRow = [_items count];
     NSIndexPath * newItemIndexPath = [NSIndexPath indexPathForRow:newRow inSection:self.section];
     IQTodoItem * item = [[IQTodoItem alloc] init];
+    item.itemId = @(-1);
     item.position = @(newRow - 1);
     
     _items = [_items arrayByAddingObject:item];

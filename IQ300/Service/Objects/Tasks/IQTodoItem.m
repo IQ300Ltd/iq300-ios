@@ -25,11 +25,11 @@
     return nil;
 }
 
-+ (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
-    RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
-    [mapping setIdentificationAttributes:@[@"itemId"]];
++ (RKObjectMapping*)objectMapping {
+    RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"         : @"itemId",
+                                                  @"task_id"    : @"taskId",
                                                   @"title"      : @"title",
                                                   @"completed"  : @"completed",
                                                   @"position"   : @"position",
@@ -37,6 +37,12 @@
                                                   @"updated_at" : @"updatedDate"
                                                   }];
     return mapping;
+}
+
++ (RKObjectMapping*)requestObjectMapping {
+    RKObjectMapping * objectMapping = [self objectMapping];
+    
+    return [objectMapping inverseMapping];
 }
 
 @end

@@ -14,6 +14,7 @@
 @interface IQTodoItem : NSObject <TodoItem>
 
 @property (nonatomic, strong) NSNumber * itemId;
+@property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, strong) NSString * title;
 @property (nonatomic, strong) NSNumber * completed;
 @property (nonatomic, strong) NSNumber * position;
@@ -21,6 +22,9 @@
 @property (nonatomic, strong) NSDate   * updatedDate;
 
 + (IQTodoItem*)itemFromObject:(id<TodoItem>)object;
-+ (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
+
++ (RKObjectMapping*)objectMapping;
+
++ (RKObjectMapping*)requestObjectMapping;
 
 @end

@@ -12,6 +12,7 @@
 @implementation IQManagedTodoItem
 
 @dynamic itemId;
+@dynamic taskId;
 @dynamic title;
 @dynamic completed;
 @dynamic position;
@@ -23,6 +24,7 @@
     [mapping setIdentificationAttributes:@[@"itemId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"         : @"itemId",
+                                                  @"task_id"    : @"taskId",
                                                   @"title"      : @"title",
                                                   @"completed"  : @"completed",
                                                   @"position"   : @"position",

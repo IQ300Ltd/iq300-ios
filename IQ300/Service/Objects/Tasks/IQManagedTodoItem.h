@@ -14,6 +14,7 @@
 @interface IQManagedTodoItem : NSManagedObject <TodoItem>
 
 @property (nonatomic, strong) NSNumber * itemId;
+@property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, strong) NSString * title;
 @property (nonatomic, strong) NSNumber * completed;
 @property (nonatomic, strong) NSNumber * position;
