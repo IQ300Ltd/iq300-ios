@@ -8,6 +8,8 @@
 
 #import "IQTableModel.h"
 
+@protocol TodoItem;
+
 @interface TodoListModel : NSObject<IQTableModel>
 
 @property (nonatomic, strong) NSNumber * taskId;
@@ -23,12 +25,14 @@
 
 - (BOOL)isItemSelectableAtIndexPath:(NSIndexPath*)indexPath;
 
-- (void)makeItemAtIndexPath:(NSIndexPath *)indexPath checked:(BOOL)checked;
+- (void)makeItemAtIndexPath:(NSIndexPath*)indexPath checked:(BOOL)checked;
 
-- (void)deleteItemAtIndexPath:(NSIndexPath *)indexPath;
+- (void)createItemWithCompletion:(void (^)(id<TodoItem> item, NSError *error))completion;
 
-- (void)completeTodoItemAtIndexPath:(NSIndexPath *)indexPath completion:(void (^)(NSError * error))completion;
+- (void)deleteItemAtIndexPath:(NSIndexPath*)indexPath;
 
-- (void)rollbackTodoItemWithId:(NSIndexPath *)indexPath completion:(void (^)(NSError * error))completion;
+- (void)completeTodoItemAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
+
+- (void)rollbackTodoItemWithId:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 
 @end

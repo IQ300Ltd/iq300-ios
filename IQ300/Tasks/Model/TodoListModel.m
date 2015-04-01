@@ -132,12 +132,35 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     }
 }
 
+- (void)createItemWithCompletion:(void (^)(id<TodoItem> item, NSError *error))completion {
+    NSInteger newRow = [_items count];
+    NSIndexPath * newItemIndexPath = [NSIndexPath indexPathForRow:newRow inSection:self.section];
+    IQTodoItem * item = [[IQTodoItem alloc] init];
+    item.position = @(newRow - 1);
+    
+    _items = [_items arrayByAddingObject:item];
+    
+    [self modelWillChangeContent];
+
+    [self modelDidChangeObject:item
+                   atIndexPath:nil
+                 forChangeType:NSFetchedResultsChangeInsert
+                  newIndexPath:newItemIndexPath];
+    [self modelDidChangeContent];
+    
+    if (completion) {
+        completion(item, nil);
+    }
+}
+
 - (void)deleteItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == self.section && indexPath.row >= 0 &&
         indexPath.row < [self.items count]) {
         NSMutableArray * items = [self.items mutableCopy];
         [items removeObjectAtIndex:indexPath.row];
         self.items = [items copy];
+        
+        [self updateItemsPosition];
         
         [self modelWillChangeContent];
         [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
@@ -201,6 +224,13 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
         if ([item.completed boolValue]) {
             [_checkedItems addObject:[NSIndexPath indexPathForRow:index inSection:self.section]];
         }
+    }
+}
+
+- (void)updateItemsPosition {
+    for (int position = 0; position < [_items count]; position++) {
+        IQTodoItem * item = _items[position];
+        item.position = @(position);
     }
 }
 

@@ -219,7 +219,26 @@
 }
 
 - (void)addButtonAction:(UIButton*)sender {
+    __weak typeof(self) weakSelf = self;
+    [self.model createItemWithCompletion:^(id<TodoItem> item, NSError *error) {
+        if (item) {
+            _editableIndexPath = [weakSelf.model indexPathOfObject:item];
+            
+            [CATransaction begin];
+            
+            [CATransaction setCompletionBlock: ^{
+                TodoListItemCell * cell = (TodoListItemCell*)[weakSelf.tableView cellForRowAtIndexPath:_editableIndexPath];
+                [cell hideUtilityButtonsAnimated:YES];
+                cell.titleTextView.editable = YES;
+                [cell.titleTextView becomeFirstResponder];
+            }];
 
+            [weakSelf.tableView scrollToRowAtIndexPath:_editableIndexPath
+                                  atScrollPosition:UITableViewScrollPositionTop
+                                          animated:NO];
+            [CATransaction commit];
+        }
+    }];
 }
 
 - (void)layoutTabelView {
