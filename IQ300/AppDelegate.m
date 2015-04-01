@@ -143,7 +143,7 @@
         if (weakSelf.drawerController.openSide == MMDrawerSideNone &&
             [gesture isKindOfClass:[UIPanGestureRecognizer class]]) {
             
-            UIView *centerView = drawerController.centerViewController.view;
+            UIView * centerView = drawerController.centerViewController.view;
             CGRect rect = UIEdgeInsetsInsetRect(centerView.frame, UIEdgeInsetsMake(0.0, 0.0, 0.0, centerView.frame.size.width * 0.60f));
             if (CGRectContainsPoint(rect, [touch locationInView:centerView])) {
                 return YES;

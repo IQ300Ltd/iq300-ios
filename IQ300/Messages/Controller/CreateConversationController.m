@@ -58,7 +58,7 @@
     return _mainView.tableView;
 }
 
-- (BOOL)showMenuBarItem {
+- (BOOL)isLeftMenuEnabled {
     return NO;
 }
 

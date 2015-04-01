@@ -103,7 +103,7 @@
     _mainView.tableView.hidden = YES;
 }
 
-- (BOOL)showMenuBarItem {
+- (BOOL)isLeftMenuEnabled {
     return NO;
 }
 

@@ -17,8 +17,18 @@
 
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
++ (NSArray*)makeTodoItemsFromManagedObjects:(NSArray*)managedObjects;
+
 - (BOOL)isItemCheckedAtIndexPath:(NSIndexPath*)indexPath;
+
 - (BOOL)isItemSelectableAtIndexPath:(NSIndexPath*)indexPath;
+
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath checked:(BOOL)checked;
+
+- (void)deleteItemAtIndexPath:(NSIndexPath *)indexPath;
+
+- (void)completeTodoItemAtIndexPath:(NSIndexPath *)indexPath completion:(void (^)(NSError * error))completion;
+
+- (void)rollbackTodoItemWithId:(NSIndexPath *)indexPath completion:(void (^)(NSError * error))completion;
 
 @end

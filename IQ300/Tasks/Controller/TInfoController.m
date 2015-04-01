@@ -19,9 +19,9 @@
 #import "TChangesCounter.h"
 #import "IQTask.h"
 #import "IQUser.h"
+#import "TTodoItemsController.h"
 
 @interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
-    TodoListModel * _todoListModel;
     __weak UIButton * _deferredActionButton;
     __weak id _notfObserver;
     BOOL _editEnabled;
@@ -56,9 +56,9 @@
         self.tabBarItem.customBadgeView = badgeView;
         self.tabBarItem.badgeOrigin = CGPointMake(37.5f, 3.5f);
 
-        _todoListModel = [[TodoListModel alloc] init];
-        _todoListModel.section = 1;
-        self.model = _todoListModel;
+        TodoListModel * todoListModel = [[TodoListModel alloc] init];
+        todoListModel.section = 1;
+        self.model = todoListModel;
 
         [self resubscribeToIQNotifications];
     }
@@ -144,7 +144,7 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    IQTodoItem * item = [self.model itemAtIndexPath:indexPath];
+    id<TodoItem> item = [self.model itemAtIndexPath:indexPath];
     cell.item = item;
     
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
@@ -166,8 +166,16 @@
     if (section == 0) {
         return [self mainHeaderView];
     }
-
-    return [[TodoListSectionView alloc] init];
+    else {
+       TodoListSectionView * headerView = [[TodoListSectionView alloc] init];
+        [headerView.editButton setHidden:!_editEnabled];
+        if (_editEnabled) {
+            [headerView.editButton addTarget:self
+                                      action:@selector(editTodoItemsAction:)
+                            forControlEvents:UIControlEventTouchUpInside];
+        }
+        return headerView;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -177,7 +185,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
-    [self.model makeItemAtIndexPath:indexPath checked:!isCellChecked];
+    if (!isCellChecked) {
+        [self.model completeTodoItemAtIndexPath:indexPath completion:nil];
+    }
+    else {
+        [self.model rollbackTodoItemWithId:indexPath completion:nil];
+    }
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -261,6 +274,16 @@
 
 - (void)editButtonAction:(UIButton*)sender {
     
+}
+
+- (void)editTodoItemsAction:(UIButton*)sender {
+    TodoListModel * model = [[TodoListModel alloc] init];
+    model.taskId = self.task.taskId;
+    model.items = [TodoListModel makeTodoItemsFromManagedObjects:[self.task.todoItems array]];
+    
+    TTodoItemsController * controller = [[TTodoItemsController alloc] init];
+    controller.model = model;
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 - (void)updateTask {

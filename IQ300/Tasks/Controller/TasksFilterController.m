@@ -35,7 +35,7 @@
     return self;
 }
 
-- (BOOL)showMenuBarItem {
+- (BOOL)isLeftMenuEnabled {
     return NO;
 }
 

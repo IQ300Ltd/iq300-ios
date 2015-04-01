@@ -12,7 +12,7 @@
 #import "IQAttachment.h"
 #import "IQProject.h"
 #import "IQCommunity.h"
-#import "IQTodoItem.h"
+#import "IQManagedTodoItem.h"
 
 @implementation IQTask
 
@@ -94,7 +94,7 @@
     
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"todo_items"
                                                            toKeyPath:@"todoItems"
-                                                         withMapping:[IQTodoItem objectMappingForManagedObjectStore:store]];
+                                                         withMapping:[IQManagedTodoItem objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:relation];
 
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"attachments"

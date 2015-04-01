@@ -1,17 +1,14 @@
 //
-//  IQTodoItem.h
+//  TodoItem.h
 //  IQ300
 //
 //  Created by Tayphoon on 31.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "TodoItem.h"
+#import <Foundation/Foundation.h>
 
-@class RKObjectMapping;
-@class RKManagedObjectStore;
-
-@interface IQTodoItem : NSObject <TodoItem>
+@protocol TodoItem <NSObject>
 
 @property (nonatomic, strong) NSNumber * itemId;
 @property (nonatomic, strong) NSString * title;
@@ -19,8 +16,5 @@
 @property (nonatomic, strong) NSNumber * position;
 @property (nonatomic, strong) NSDate   * createdDate;
 @property (nonatomic, strong) NSDate   * updatedDate;
-
-+ (IQTodoItem*)itemFromObject:(id<TodoItem>)object;
-+ (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 
 @end

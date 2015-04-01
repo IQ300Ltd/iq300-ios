@@ -73,7 +73,7 @@
     [self updateCounters];
 }
 
-- (BOOL)showMenuBarItem {
+- (BOOL)isLeftMenuEnabled {
     return NO;
 }
 

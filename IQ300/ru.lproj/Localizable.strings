@@ -98,7 +98,7 @@
 "Send to execute" = "Отправить на исполнение";
 "Take as done" = "Принять как выполненную";
 "Return to work" = "Вернуть в работу";
-"Checklist" = "Чек-лист";
+"TodoList" = "Чек-лист";
 "Done" = "Готово";
 "Failed add document to task" = "Не удалось добавить документы к задаче";
 "Not in my competence" = "Не в моей компетенции";

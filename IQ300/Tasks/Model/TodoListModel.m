@@ -9,8 +9,8 @@
 
 #import "TodoListModel.h"
 #import "TodoListItemCell.h"
-#import "IQTodoItem.h"
 #import "IQService+Tasks.h"
+#import "IQTodoItem.h"
 
 static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
@@ -23,6 +23,15 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 @end
 
 @implementation TodoListModel
+
++ (NSArray*)makeTodoItemsFromManagedObjects:(NSArray*)managedObjects {
+    NSMutableArray * items = [NSMutableArray array];
+    for (id<TodoItem> managedObject in managedObjects) {
+        IQTodoItem * item = [IQTodoItem itemFromObject:managedObject];
+        [items addObject:item];
+    }
+    return items;
+}
 
 - (id)init {
     self = [super init];
@@ -62,7 +71,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    IQTodoItem * item = [self itemAtIndexPath:indexPath];
+    id<TodoItem> item = [self itemAtIndexPath:indexPath];
     return [TodoListItemCell heightForItem:item width:self.cellWidth];
 }
 
@@ -102,47 +111,80 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath checked:(BOOL)checked {
     if (checked && ![_checkedItems containsObject:indexPath]) {
-        [_processableItems addObject:indexPath];
-        IQTodoItem * item = [self itemAtIndexPath:indexPath];
+        [_checkedItems addObject:indexPath];
         
-        [[IQService sharedService] completeTodoItemWithId:item.itemId
-                                                   taskId:self.taskId
-                                                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                                      if (success) {
-                                                          [_checkedItems addObject:indexPath];
-                                                          
-                                                          [self modelWillChangeContent];
-                                                          [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
-                                                                         atIndexPath:indexPath
-                                                                       forChangeType:NSFetchedResultsChangeUpdate
-                                                                        newIndexPath:nil];
-                                                          [self modelDidChangeContent];
-                                                      }
-                                                      
-                                                      [_processableItems removeObject:indexPath];
-                                                  }];
+        [self modelWillChangeContent];
+        [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
+                       atIndexPath:indexPath
+                     forChangeType:NSFetchedResultsChangeUpdate
+                      newIndexPath:nil];
+        [self modelDidChangeContent];
     }
     else if(!checked && [_checkedItems containsObject:indexPath]) {
-        [_processableItems addObject:indexPath];
-        IQTodoItem * item = [self itemAtIndexPath:indexPath];
+        [_checkedItems removeObject:indexPath];
         
-        [[IQService sharedService] rollbackTodoItemWithId:item.itemId
-                                                   taskId:self.taskId
-                                                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                                      if (success) {
-                                                          [_checkedItems removeObject:indexPath];
-                                                          
-                                                          [self modelWillChangeContent];
-                                                          [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
-                                                                         atIndexPath:indexPath
-                                                                       forChangeType:NSFetchedResultsChangeUpdate
-                                                                        newIndexPath:nil];
-                                                          [self modelDidChangeContent];
-                                                      }
-                                                      
-                                                      [_processableItems removeObject:indexPath];
-                                                  }];
+        [self modelWillChangeContent];
+        [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
+                       atIndexPath:indexPath
+                     forChangeType:NSFetchedResultsChangeUpdate
+                      newIndexPath:nil];
+        [self modelDidChangeContent];
     }
+}
+
+- (void)deleteItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == self.section && indexPath.row >= 0 &&
+        indexPath.row < [self.items count]) {
+        NSMutableArray * items = [self.items mutableCopy];
+        [items removeObjectAtIndex:indexPath.row];
+        self.items = [items copy];
+        
+        [self modelWillChangeContent];
+        [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
+                       atIndexPath:indexPath
+                     forChangeType:NSFetchedResultsChangeDelete
+                      newIndexPath:nil];
+        [self modelDidChangeContent];
+    }
+}
+
+- (void)completeTodoItemAtIndexPath:(NSIndexPath *)indexPath completion:(void (^)(NSError *))completion {
+    [_processableItems addObject:indexPath];
+    id<TodoItem> item = [self itemAtIndexPath:indexPath];
+    
+    [[IQService sharedService] completeTodoItemWithId:item.itemId
+                                               taskId:self.taskId
+                                              handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                  if (success) {
+                                                      [self  makeItemAtIndexPath:indexPath checked:YES];
+                                                  }
+                                                  
+                                                  [_processableItems removeObject:indexPath];
+                                                  
+                                                  if (completion) {
+                                                      completion(error);
+                                                  }
+                                              }];
+
+}
+
+- (void)rollbackTodoItemWithId:(NSIndexPath *)indexPath completion:(void (^)(NSError *))completion {
+    [_processableItems addObject:indexPath];
+    id<TodoItem> item = [self itemAtIndexPath:indexPath];
+    
+    [[IQService sharedService] rollbackTodoItemWithId:item.itemId
+                                               taskId:self.taskId
+                                              handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                  if (success) {
+                                                      [self  makeItemAtIndexPath:indexPath checked:NO];
+                                                  }
+                                                  
+                                                  [_processableItems removeObject:indexPath];
+                                                  
+                                                  if (completion) {
+                                                      completion(error);
+                                                  }
+                                              }];
 }
 
 - (void)clearModelData {
@@ -155,7 +197,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     [_checkedItems removeAllObjects];
     
     for (NSInteger index = 0; index < [_items count]; index++) {
-        IQTodoItem * item = _items[index];
+        id<TodoItem> item = _items[index];
         if ([item.completed boolValue]) {
             [_checkedItems addObject:[NSIndexPath indexPathForRow:index inSection:self.section]];
         }

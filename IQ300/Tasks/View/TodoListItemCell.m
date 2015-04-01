@@ -1,5 +1,5 @@
 //
-//  CheckListItemCell.m
+//  TodoListItemCell.m
 //  IQ300
 //
 //  Created by Tayphoon on 19.03.15.
@@ -7,7 +7,7 @@
 //
 
 #import "TodoListItemCell.h"
-#import "IQTodoItem.h"
+#import "TodoItem.h"
 
 #define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define TEXT_COLOR [UIColor colorWithHexInt:0x272727]
@@ -16,19 +16,28 @@
 #define CONTENT_HORIZONTAL_INSETS 13
 #define ACCESSORY_VIEW_SIZE 20.0f
 #define TITLE_OFFSET 10.0f
+#define TTTT 28
 
 @implementation TodoListItemCell
 
-+ (CGFloat)heightForItem:(IQTodoItem *)item width:(CGFloat)width {
-    CGFloat cellWidth = width - CONTENT_VERTICAL_INSETS * 2.0f - ACCESSORY_VIEW_SIZE - TITLE_OFFSET;
-    CGFloat height = CONTENT_HORIZONTAL_INSETS * 2.0f;
++ (CGFloat)heightForItem:(id<TodoItem>)item width:(CGFloat)width {
+    CGFloat cellWidth = width - CONTENT_HORIZONTAL_INSETS * 2.0f;
+    CGFloat textWidth = cellWidth - ACCESSORY_VIEW_SIZE - TITLE_OFFSET;
+    CGFloat height = CONTENT_VERTICAL_INSETS * 2.0f;
     
-    CGSize titleLabelSize = [item.title sizeWithFont:TITLE_FONT
-                                   constrainedToSize:CGSizeMake(cellWidth, CGFLOAT_MAX)
-                                       lineBreakMode:NSLineBreakByWordWrapping];
+    UITextView * titleTextView = [[UITextView alloc] init];
+    [titleTextView setFont:TITLE_FONT];
+    titleTextView.textAlignment = NSTextAlignmentLeft;
+    titleTextView.backgroundColor = [UIColor clearColor];
+    titleTextView.textContainer.lineBreakMode = NSLineBreakByWordWrapping;
+    titleTextView.textContainerInset = UIEdgeInsetsZero;
+    titleTextView.contentInset = UIEdgeInsetsZero;
+    titleTextView.scrollEnabled = NO;
+    titleTextView.text = item.title;
+    [titleTextView sizeToFit];
     
-    height += titleLabelSize.height;
-    
+    CGFloat titleHeight = [titleTextView sizeThatFits:CGSizeMake(textWidth, CGFLOAT_MAX)].height;
+    height += titleHeight;
     
     return MAX(height, 50.0f);
 }
@@ -42,21 +51,22 @@
         _enabled = YES;
         _contentInsets = UIEdgeInsetsMake(CONTENT_VERTICAL_INSETS, CONTENT_HORIZONTAL_INSETS, CONTENT_VERTICAL_INSETS, CONTENT_HORIZONTAL_INSETS);
         _accessoryImageView = [[UIImageView alloc] init];
-        self.accessoryView = _accessoryImageView;
+        [self.contentView addSubview:_accessoryImageView];
         
         super.selectionStyle = UITableViewCellSelectionStyleNone;
         self.accessoryType = UITableViewCellAccessoryNone;
-
-        _titleLabel = [[UILabel alloc] init];
-        [_titleLabel setFont:TITLE_FONT];
-        [_titleLabel setTextColor:TEXT_COLOR];
-        _titleLabel.textAlignment = NSTextAlignmentLeft;
-        _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.numberOfLines = 0;
-        _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _titleLabel.text = NSLocalizedString(@"Checklist", nil);
-        _titleLabel.userInteractionEnabled = NO;
-        [self.contentView addSubview:_titleLabel];
+        
+        _titleTextView = [[UITextView alloc] init];
+        [_titleTextView setFont:TITLE_FONT];
+        [_titleTextView setTextColor:TEXT_COLOR];
+        _titleTextView.textAlignment = NSTextAlignmentLeft;
+        _titleTextView.backgroundColor = [UIColor clearColor];
+        _titleTextView.editable = NO;
+        _titleTextView.textContainer.lineBreakMode = NSLineBreakByWordWrapping;
+        _titleTextView.textContainerInset = UIEdgeInsetsZero;
+        _titleTextView.contentInset = UIEdgeInsetsZero;
+        _titleTextView.scrollEnabled = NO;
+        [self.contentView addSubview:_titleTextView];
     }
     
     return self;
@@ -69,26 +79,31 @@
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     
     CGSize accessorySize = CGSizeMake(ACCESSORY_VIEW_SIZE, ACCESSORY_VIEW_SIZE);
-    self.accessoryView.frame = CGRectMake(actualBounds.origin.x,
-                                          actualBounds.origin.y + (actualBounds.size.height - accessorySize.height) / 2.0f,
-                                          accessorySize.width,
-                                          accessorySize.height);
+    _accessoryImageView.frame = CGRectMake(actualBounds.origin.x,
+                                           actualBounds.origin.y + (actualBounds.size.height - accessorySize.height) / 2.0f,
+                                           accessorySize.width,
+                                           accessorySize.height);
     
-    _titleLabel.frame = CGRectMake(CGRectRight(self.accessoryView.frame) + TITLE_OFFSET,
-                                   actualBounds.origin.y,
-                                   actualBounds.size.width - self.accessoryView.frame.origin.x,
-                                   actualBounds.size.height);
+    
+    CGFloat titleWidth = actualBounds.size.width - ACCESSORY_VIEW_SIZE - TITLE_OFFSET;
+
+    CGFloat titleHeight = [_titleTextView sizeThatFits:CGSizeMake(titleWidth, CGFLOAT_MAX)].height;
+
+    _titleTextView.frame = CGRectMake(CGRectRight(_accessoryImageView.frame) + TITLE_OFFSET,
+                                      actualBounds.origin.y + (actualBounds.size.height - titleHeight) / 2.0f,
+                                      titleWidth,
+                                      titleHeight);
 }
 
 - (void)setAccessoryType:(UITableViewCellAccessoryType)accessoryType {
-    [super setAccessoryType:accessoryType];
+    //[super setAccessoryType:accessoryType];
     
     if (accessoryType == UITableViewCellAccessoryCheckmark) {
         _accessoryImageView.image = [UIImage imageNamed:@"gray_checked_checkbox.png"];
-        _titleLabel.textColor = SELECTED_TEXT_COLOR;
+        _titleTextView.textColor = SELECTED_TEXT_COLOR;
     } else {
         _accessoryImageView.image = [UIImage imageNamed:@"gray_checkbox.png"];
-        _titleLabel.textColor = (_enabled) ? TEXT_COLOR : SELECTED_TEXT_COLOR;
+        _titleTextView.textColor = (_enabled) ? TEXT_COLOR : SELECTED_TEXT_COLOR;
     }
 }
 
@@ -96,13 +111,13 @@
     if (_enabled != enabled) {
         _enabled = enabled;
         UIColor * curColor = (self.accessoryType == UITableViewCellAccessoryCheckmark) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
-        _titleLabel.textColor = (_enabled) ? curColor : SELECTED_TEXT_COLOR;
+        _titleTextView.textColor = (_enabled) ? curColor : SELECTED_TEXT_COLOR;
     }
 }
 
-- (void)setItem:(IQTodoItem*)item {
+- (void)setItem:(id<TodoItem>)item {
     _item = item;
-    self.titleLabel.text = _item.title;
+   _titleTextView.text = _item.title;
 }
 
 - (void)setSelectionStyle:(UITableViewCellSelectionStyle)selectionStyle {
@@ -111,8 +126,43 @@
 
 - (void)prepareForReuse {
     [super prepareForReuse];
+    
     _enabled = YES;
-    [_titleLabel setTextColor:TEXT_COLOR];
+    [_titleTextView setTextColor:TEXT_COLOR];
+    _titleTextView.editable = NO;
+
+    [self setDelegate:nil];
+    [self hideUtilityButtonsAnimated:NO];
+    [self setRightUtilityButtons:nil];
+}
+
+- (void)setAvailableActions:(NSArray *)availableActions {
+    _availableActions = availableActions;
+    
+    NSMutableArray *rightUtilityButtons = [NSMutableArray array];
+    if ([_availableActions containsObject:@"edit"]) {
+        [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithHexInt:0x3b5b78]
+                                                     icon:[UIImage imageNamed:@"edit_white_ico.png"]];
+        
+        if ([availableActions count] > 1) {
+            UIView * parentView = [rightUtilityButtons objectAtIndex:0];
+            [self addRightSeparatorView:parentView];
+        }
+    }
+    
+    if ([_availableActions containsObject:@"delete"]) {
+        [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithHexInt:0x3b5b78]
+                                                     icon:[UIImage imageNamed:@"delete_ico"]];
+    }
+    [self setRightUtilityButtons:rightUtilityButtons WithButtonWidth:68.0f];
+}
+
+- (void)addRightSeparatorView:(UIView*)parentView {
+    CGFloat separatorHeight = 0.5f;
+    UIView * separatorView = [[UIView alloc] initWithFrame:CGRectMake(parentView.frame.size.width - separatorHeight, 0.0f, separatorHeight, 0.0f)];
+    separatorView.backgroundColor = [UIColor colorWithHexInt:0xc0c0c0];
+    separatorView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleLeftMargin;
+    [parentView addSubview:separatorView];
 }
 
 @end
