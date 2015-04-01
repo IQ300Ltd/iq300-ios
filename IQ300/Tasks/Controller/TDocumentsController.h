@@ -7,7 +7,7 @@
 //
 
 #import "IQTableBaseController.h"
-#import "TAttachmentsModel.h"
+#import "TaskAttachmentsModel.h"
 #import "TaskTabItemController.h"
 
 @class IQTask;
@@ -15,7 +15,7 @@
 @interface TDocumentsController : IQTableBaseController<TaskTabItemController>
 
 @property (nonatomic, strong) NSNumber * taskId;
-@property (nonatomic, strong) TAttachmentsModel * model;
+@property (nonatomic, strong) TaskAttachmentsModel * model;
 @property (nonatomic, strong) NSNumber * badgeValue;
 @property (nonatomic, readonly) NSString * category;
 @property (nonatomic, weak) TaskPolicyInspector * policyInspector;

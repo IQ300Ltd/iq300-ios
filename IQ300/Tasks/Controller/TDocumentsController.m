@@ -22,7 +22,7 @@
 #import "IQSession.h"
 
 @interface TDocumentsController () {
-    TAttachmentsModel * _attachmentsModel;
+    TaskAttachmentsModel * _attachmentsModel;
     UIDocumentInteractionController * _documentController;
     UILabel * _noDataLabel;
 }
@@ -56,7 +56,7 @@
         self.tabBarItem.customBadgeView = badgeView;
         self.tabBarItem.badgeOrigin = CGPointMake(35.5f, 3.5f);
 
-        _attachmentsModel = [[TAttachmentsModel alloc] init];
+        _attachmentsModel = [[TaskAttachmentsModel alloc] init];
         _attachmentsModel.section = 0;
         self.model = _attachmentsModel;
     }
@@ -265,7 +265,7 @@
     [self updateNoDataLabelVisibility];
 }
 
-- (void)modelCountersDidChanged:(TAttachmentsModel*)model {
+- (void)modelCountersDidChanged:(TaskAttachmentsModel*)model {
     self.badgeValue = self.model.unreadCount;
 }
 

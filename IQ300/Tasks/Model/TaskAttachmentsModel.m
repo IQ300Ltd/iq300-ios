@@ -7,7 +7,7 @@
 //
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
-#import "TAttachmentsModel.h"
+#import "TaskAttachmentsModel.h"
 #import "IQAttachment.h"
 #import "TAttachmentCell.h"
 #import "IQService+Tasks.h"
@@ -18,7 +18,7 @@
 
 static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
-@interface TAttachmentsModel() <NSFetchedResultsControllerDelegate> {
+@interface TaskAttachmentsModel() <NSFetchedResultsControllerDelegate> {
     NSArray * _sortDescriptors;
     NSArray * _attachments;
     __weak id _notfObserver;
@@ -26,7 +26,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
 @end
 
-@implementation TAttachmentsModel
+@implementation TaskAttachmentsModel
 
 - (id)init {
     self = [super init];

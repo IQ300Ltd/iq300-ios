@@ -10,7 +10,7 @@
 
 @class ALAsset;
 
-@interface TAttachmentsModel : NSObject<IQTableModel>
+@interface TaskAttachmentsModel : NSObject<IQTableModel>
 
 @property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, assign) NSInteger section;
