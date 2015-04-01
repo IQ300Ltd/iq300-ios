@@ -153,7 +153,7 @@
         return NO;
     }
     
-    return ([newString length] < MAX_NUMBER_OF_CHARACTERS);
+    return ([newString length] <= MAX_NUMBER_OF_CHARACTERS);
 }
 
 #pragma mark - SWTableViewCell Delegate
