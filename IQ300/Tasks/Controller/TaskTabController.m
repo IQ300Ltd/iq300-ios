@@ -85,26 +85,9 @@
 
 - (void)tabBarController:(IQTabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     self.title = viewController.title;
-    
-    if ([viewController conformsToProtocol:@protocol(TaskTabItemController)]) {
-        id<TaskTabItemController> controller = (id<TaskTabItemController>)viewController;
-        [self updateReadStatusForTabController:controller];
-    }
 }
 
 #pragma mark - Private methods
-
-- (void)updateReadStatusForTabController:(id<TaskTabItemController>)controller {
-    if (controller && [controller.badgeValue integerValue] > 0) {
-        [[IQService sharedService] markCategoryAsReaded:controller.category
-                                                 taskId:self.task.taskId
-                                                handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                    if (success) {
-                                                        controller.badgeValue = @(0);
-                                                    }
-                                                }];
-    }
-}
 
 - (void)updateControllerByTask:(IQTask*)task {
     if (task) {
@@ -132,20 +115,23 @@
                                               handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
                                                   if (success && counter) {
                                                       TInfoController * infoController = self.viewControllers[0];
-                                                      infoController.badgeValue = counter.details;
+                                                      if (self.selectedIndex != 0) {
+                                                          infoController.badgeValue = counter.details;
+                                                      }
                                                       
                                                       TCommentsController * commentsController = self.viewControllers[1];
-                                                      commentsController.badgeValue = counter.comments;
+                                                      if (self.selectedIndex != 1) {
+                                                          commentsController.badgeValue = counter.comments;
+                                                      }
 
                                                       TMembersController * membersController = self.viewControllers[2];
-                                                      membersController.badgeValue = counter.users;
+                                                      if (self.selectedIndex != 2) {
+                                                          membersController.badgeValue = counter.users;
+                                                      }
 
                                                       TDocumentsController * documentsController = self.viewControllers[3];
-                                                      documentsController.badgeValue = counter.documents;
-                                                      
-                                                      if (self.selectedIndex != NSNotFound &&
-                                                          [self.viewControllers[self.selectedIndex] conformsToProtocol:@protocol(TaskTabItemController)]) {
-                                                          [self updateReadStatusForTabController:self.viewControllers[self.selectedIndex]];
+                                                      if (self.selectedIndex != 3) {
+                                                          documentsController.badgeValue = counter.documents;
                                                       }
                                                   }
                                               }];

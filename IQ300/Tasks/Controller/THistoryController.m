@@ -9,9 +9,11 @@
 #import "THistoryController.h"
 #import "TaskPolicyInspector.h"
 #import "THistoryItemCell.h"
+#import "IQSession.h"
+#import "UIScrollView+PullToRefreshInsert.h"
 
 @interface THistoryController () {
-    
+    UILabel * _noDataLabel;
 }
 
 @end
@@ -33,10 +35,6 @@
     return self;
 }
 
-- (NSString*)category {
-    return @"history";
-}
-
 - (void)setBadgeValue:(NSNumber *)badgeValue {
     self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
 }
@@ -49,12 +47,55 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
+    
+    _noDataLabel = [[UILabel alloc] init];
+    [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
+    [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
+    _noDataLabel.textAlignment = NSTextAlignmentCenter;
+    _noDataLabel.backgroundColor = [UIColor clearColor];
+    _noDataLabel.numberOfLines = 0;
+    _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [_noDataLabel setHidden:YES];
+    [_noDataLabel setText:NSLocalizedString(@"History is empty", nil)];
+    
+    if (self.tableView) {
+        [self.view insertSubview:_noDataLabel belowSubview:self.tableView];
+    }
+    else {
+        [self.view addSubview:_noDataLabel];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.parentViewController.navigationItem.rightBarButtonItem = nil;
     self.parentViewController.navigationItem.leftBarButtonItem = nil;
+
+    __weak typeof(self) weakSelf = self;
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf reloadDataWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
+
+    [self reloadModel];
+    
+    self.model.resetReadFlagAutomatically = YES;
+    [self.model resetReadFlagWithCompletion:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.model.resetReadFlagAutomatically = NO;
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    _noDataLabel.frame = self.tableView.frame;
 }
 
 #pragma mark - UITableView DataSource
@@ -78,6 +119,20 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.model.cellWidth = tableView.frame.size.width;
     return [self.model heightForItemAtIndexPath:indexPath];
+}
+
+#pragma mark - Private methods
+
+- (void)reloadModel {
+    if([IQSession defaultSession]) {
+        [self reloadDataWithCompletion:^(NSError *error) {
+            [self updateNoDataLabelVisibility];
+        }];
+    }
+}
+
+- (void)updateNoDataLabelVisibility {
+    [_noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
 }
 
 @end

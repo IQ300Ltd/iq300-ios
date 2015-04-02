@@ -37,6 +37,10 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
     return self;
 }
 
+- (NSString*)category {
+    return @"history";
+}
+
 - (NSUInteger)numberOfSections {
     return [_fetchController.sections count];
 }
@@ -154,6 +158,20 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
     if(completion) {
         completion(fetchError);
     }
+}
+
+- (void)resetReadFlagWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] markCategoryAsReaded:self.category
+                                             taskId:self.taskId
+                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                if (success) {
+                                                    self.unreadCount = @(0);
+                                                    [self modelCountersDidChanged];
+                                                }
+                                                if(completion) {
+                                                    completion(error);
+                                                }
+                                            }];
 }
 
 - (void)clearModelData {

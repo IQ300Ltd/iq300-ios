@@ -51,6 +51,10 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
     return self;
 }
 
+- (NSString*)category {
+    return @"users";
+}
+
 - (NSArray*)members {
     return [_fetchController fetchedObjects];
 }
@@ -164,8 +168,8 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
                                        }];
 }
 
-- (void)updateReadStatusWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] markCategoryAsReaded:@"users"
+- (void)resetReadFlagWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] markCategoryAsReaded:self.category
                                              taskId:self.taskId
                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                 if (success) {
@@ -271,8 +275,13 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
             
             NSNumber * count = curTask[@"counter"];
             if(![weakSelf.unreadCount isEqualToNumber:count]) {
-                weakSelf.unreadCount = count;
-                [weakSelf modelCountersDidChanged];
+                if (weakSelf.resetReadFlagAutomatically) {
+                    [weakSelf resetReadFlagWithCompletion:nil];
+                }
+                else {
+                    weakSelf.unreadCount = count;
+                    [weakSelf modelCountersDidChanged];
+                }
             }
         }
     };

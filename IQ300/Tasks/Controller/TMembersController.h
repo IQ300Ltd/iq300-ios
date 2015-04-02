@@ -15,7 +15,6 @@
 @property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, strong) TaskMembersModel * model;
 @property (nonatomic, strong) NSNumber * badgeValue;
-@property (nonatomic, readonly) NSString * category;
 @property (nonatomic, weak) TaskPolicyInspector * policyInspector;
 
 @end

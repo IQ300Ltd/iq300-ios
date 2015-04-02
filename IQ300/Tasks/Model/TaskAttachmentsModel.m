@@ -43,6 +43,10 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     return self;
 }
 
+- (NSString*)category {
+    return @"documents";
+}
+
 - (NSUInteger)numberOfSections {
     return 1;
 }
@@ -144,8 +148,8 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     }
 }
 
-- (void)updateReadStatusWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] markCategoryAsReaded:@"documents"
+- (void)resetReadFlagWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] markCategoryAsReaded:self.category
                                              taskId:self.taskId
                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                 if (success) {
@@ -159,7 +163,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (void)clearModelData {
-    _attachments = nil;;
+    _attachments = nil;
 }
 
 #pragma mark - Private methods
@@ -250,8 +254,13 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
             
             NSNumber * count = curTask[@"counter"];
             if(![weakSelf.unreadCount isEqualToNumber:count]) {
-                weakSelf.unreadCount = count;
-                [weakSelf modelCountersDidChanged];
+                if (weakSelf.resetReadFlagAutomatically) {
+                    [weakSelf resetReadFlagWithCompletion:nil];
+                }
+                else {
+                    weakSelf.unreadCount = count;
+                    [weakSelf modelCountersDidChanged];
+                }
             }
         }
     };

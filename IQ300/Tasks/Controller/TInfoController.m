@@ -27,6 +27,8 @@
     BOOL _editEnabled;
 }
 
+@property (nonatomic, assign) BOOL resetReadFlagAutomatically;
+
 @end
 
 @implementation TInfoController
@@ -65,10 +67,6 @@
     return self;
 }
 
-- (NSString*)category {
-    return @"details";
-}
-
 - (void)setBadgeValue:(NSNumber *)badgeValue {
     self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
 }
@@ -103,7 +101,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    if([self.policyInspector isActionAvailable:@"update" inCategory:self.category]) {
+    if([self.policyInspector isActionAvailable:@"update" inCategory:[self category]]) {
 //        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
 //                                                                        style:UIBarButtonItemStylePlain
 //                                                                       target:self
@@ -117,10 +115,15 @@
                                                object:nil];
 
     [self markTaskAsReadedIfNeed];
+
+    self.resetReadFlagAutomatically = YES;
+    [self resetReadFlag];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    self.resetReadFlagAutomatically = NO;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationWillEnterForegroundNotification
@@ -298,7 +301,7 @@
 - (void)updateCounters {
     [[IQService sharedService] taskChangesCounterById:self.task.taskId
                                               handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
-                                                  if (success && counter) {
+                                                  if (success && counter && !self.resetReadFlagAutomatically) {
                                                       self.badgeValue = counter.details;
                                                   }
                                               }];
@@ -336,7 +339,14 @@
             [weakSelf updateTask];
             
             NSNumber * count = curTask[@"counter"];
-            self.badgeValue = count;
+            if(![weakSelf.badgeValue isEqualToNumber:count]) {
+                if (weakSelf.resetReadFlagAutomatically) {
+                    [weakSelf resetReadFlag];
+                }
+                else {
+                    weakSelf.badgeValue = count;
+                }
+            }
         }
     };
     _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTaskDetailsUpdatedNotification
@@ -350,11 +360,25 @@
     }
 }
 
+- (void)resetReadFlag {
+    [[IQService sharedService] markCategoryAsReaded:[self category]
+                                             taskId:self.task.taskId
+                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                if (success) {
+                                                    self.badgeValue = @(0);
+                                                }
+                                            }];
+}
+
 - (UIView*)mainHeaderView {
     TInfoHeaderView * headerView = [[TInfoHeaderView alloc] init];
     [headerView setupByTask:_task];
     headerView.delegate = self;
     return headerView;
+}
+
+- (NSString*)category {
+    return @"details";
 }
 
 - (void)dealloc {

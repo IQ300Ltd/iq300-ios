@@ -21,6 +21,8 @@
     __weak id _notfObserver;
 }
 
+@property (nonatomic, assign) BOOL resetReadFlagAutomatically;
+
 @end
 
 @implementation TCommentsController
@@ -53,10 +55,6 @@
         [self resubscribeToIQNotifications];
     }
     return self;
-}
-
-- (NSString*)category {
-    return @"comments";
 }
 
 - (void)setBadgeValue:(NSNumber *)badgeValue {
@@ -98,10 +96,20 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
     self.parentViewController.navigationItem.rightBarButtonItem = nil;
+    
+    self.resetReadFlagAutomatically = YES;
+    [self resetReadFlag];
 }
 
-#pragma mark - Private methods 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.resetReadFlagAutomatically = NO;
+}
+
+#pragma mark - Private methods
 
 - (void)resubscribeToIQNotifications {
     [self unsubscribeFromIQNotifications];
@@ -115,7 +123,12 @@
         if(curTask) {
             NSNumber * count = curTask[@"counter"];
             if(![weakSelf.badgeValue isEqualToNumber:count]) {
-                weakSelf.badgeValue = count;
+                if (weakSelf.resetReadFlagAutomatically) {
+                    [weakSelf resetReadFlag];
+                }
+                else {
+                    weakSelf.badgeValue = count;
+                }
             }
         }
     };
@@ -128,6 +141,21 @@
     if(_notfObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
     }
+}
+
+- (void)resetReadFlag {
+    [[IQService sharedService] markCategoryAsReaded:[self category]
+                                             taskId:self.taskId
+                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                if (success) {
+                                                    self.badgeValue = @(0);
+                                                }
+                                            }];
+
+}
+
+- (NSString*)category {
+    return @"comments";
 }
 
 - (void)dealloc {

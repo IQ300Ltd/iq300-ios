@@ -62,10 +62,6 @@
     return self;
 }
 
-- (NSString*)category {
-    return @"users";
-}
-
 - (void)setBadgeValue:(NSNumber *)badgeValue {
     self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
 }
@@ -126,7 +122,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    if([self.policyInspector isActionAvailable:@"create" inCategory:self.category]) {
+    if([self.policyInspector isActionAvailable:@"create" inCategory:self.model.category]) {
         UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
                                                                        style:UIBarButtonItemStylePlain
                                                                       target:self
@@ -135,6 +131,15 @@
     }
     
     [self reloadModel];
+    
+    self.model.resetReadFlagAutomatically = YES;
+    [self.model resetReadFlagWithCompletion:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.model.resetReadFlagAutomatically = NO;
 }
 
 - (void)viewDidLayoutSubviews {
@@ -157,7 +162,7 @@
     cell.item = member;
     cell.delegate = self;
     cell.availableActions = [self.policyInspector availableActionsForMember:member
-                                                                   category:self.category];
+                                                                   category:self.model.category];
     return cell;
 }
 

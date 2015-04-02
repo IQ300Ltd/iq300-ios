@@ -112,7 +112,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+  
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
@@ -131,6 +131,15 @@
     }
     
     [self reloadModel];
+    
+    self.model.resetReadFlagAutomatically = YES;
+    [self.model resetReadFlagWithCompletion:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.model.resetReadFlagAutomatically = NO;
 }
 
 - (void)viewDidLayoutSubviews {
