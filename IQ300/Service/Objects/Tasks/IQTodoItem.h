@@ -9,7 +9,6 @@
 #import "TodoItem.h"
 
 @class RKObjectMapping;
-@class RKManagedObjectStore;
 
 @interface IQTodoItem : NSObject <TodoItem>
 

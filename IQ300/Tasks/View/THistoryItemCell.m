@@ -7,19 +7,44 @@
 //
 
 #import "THistoryItemCell.h"
+#import "IQTaskHistoryItem.h"
 
-#define HORIZONTAL_INSETS 8.0f
-#define VERTICAL_INSETS 5.0f
-#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
-#define DESCRIPTION_MIN_HEIGHT 19.0f
+#define CONTENT_INSETS 13.0f
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:15]
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#define LABELS_HEIGHT 17.0f
+#define LABELS_OFFSET 5.0f
+#define ACTION_MAX_HEIGHT 35
+#define DESCR_MAX_HEIGHT 52
 
 @implementation THistoryItemCell
+
++ (CGFloat)heightForItem:(IQTaskHistoryItem*)item andCellWidth:(CGFloat)cellWidth {
+    CGFloat width = cellWidth - CONTENT_INSETS * 2.0f;
+    CGFloat height = CONTENT_INSETS * 2 + LABELS_HEIGHT;
+    
+    if([item.title length] > 0) {
+        CGSize titleSize = [item.title sizeWithFont:TITLE_FONT
+                                  constrainedToSize:CGSizeMake(width, ACTION_MAX_HEIGHT)
+                                      lineBreakMode:NSLineBreakByWordWrapping];
+        height += ceilf(titleSize.height) + LABELS_OFFSET;
+    }
+    
+    if([item.mainDescription length] > 0) {
+        CGSize desSize = [item.mainDescription sizeWithFont:DESCRIPTION_FONT
+                                          constrainedToSize:CGSizeMake(width, DESCR_MAX_HEIGHT)
+                                              lineBreakMode:NSLineBreakByWordWrapping];
+        height += ceilf(desSize.height) + LABELS_OFFSET;
+    }
+    
+    return MIN(height, HISTORY_CELL_MAX_HEIGHT);
+}
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
     if(self) {
-        _contentInsets = UIEdgeInsetsMake(VERTICAL_INSETS, HORIZONTAL_INSETS, VERTICAL_INSETS, HORIZONTAL_INSETS);
+        _contentInsets = UIEdgeInsetsMakeWithInset(CONTENT_INSETS);
 
         UIView * contentView = self.contentView;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -29,17 +54,20 @@
                                              font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentLeft;
+        _dateLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_dateLabel];
         
         _userNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
                                                  font:[UIFont fontWithName:IQ_HELVETICA size:13]
                                         localaizedKey:nil];
         _userNameLabel.textAlignment = NSTextAlignmentRight;
+        _dateLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_userNameLabel];
         
         _actionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                               font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                               font:TITLE_FONT
                                       localaizedKey:nil];
+        _actionLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_actionLabel];
         
         _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x20272a]
@@ -57,46 +85,40 @@
     
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
-    CGFloat labelsOffset = 5.0f;
-    
-    _dateLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+    CGFloat labelsMaxWidth = actualBounds.size.width / 2.0f;
+    CGSize constrainedSize = CGSizeMake(labelsMaxWidth,
+                                        LABELS_HEIGHT);
+
+    CGSize dateSize = [_dateLabel.text sizeWithFont:_dateLabel.font
+                                  constrainedToSize:constrainedSize
+                                      lineBreakMode:_dateLabel.lineBreakMode];
+
+    _dateLabel.frame = CGRectMake(actualBounds.origin.x,
                                   actualBounds.origin.y,
-                                  actualBounds.size.width - labelsOffset * 2.0f,
-                                  14);
+                                  dateSize.width,
+                                  LABELS_HEIGHT);
     
-    CGFloat userNameHeight = 17;
-    CGFloat userNameMaxWidth = actualBounds.size.width / 2.0f;
-    CGSize constrainedSize = CGSizeMake(userNameMaxWidth,
-                                        userNameHeight);
+    CGFloat userLabelX = CGRectRight(_dateLabel.frame) + LABELS_OFFSET;
+    _userNameLabel.frame = CGRectMake(userLabelX,
+                                      actualBounds.origin.y,
+                                      actualBounds.size.width - dateSize.width,
+                                      LABELS_HEIGHT);
     
-    CGPoint actionLabelLocation = CGPointZero;
-//    if (([_item.user.displayName length] > 0)) {
-//        CGSize userSize = [_userNameLabel.text sizeWithFont:_userNameLabel.font
-//                                          constrainedToSize:constrainedSize
-//                                              lineBreakMode:_userNameLabel.lineBreakMode];
-//        
-//        _userNameLabel.frame = CGRectMake(actualBounds.origin.x,
-//                                          CGRectBottom(_dateLabel.frame) + 5,
-//                                          userSize.width + 5,
-//                                          userNameHeight);
-//        actionLabelLocation = CGPointMake(CGRectRight(_userNameLabel.frame) + 7, _userNameLabel.frame.origin.y);
-//    }
-//    else {
-//        _userNameLabel.frame = CGRectZero;
-//        actionLabelLocation = CGPointMake(actualBounds.origin.x, CGRectBottom(_dateLabel.frame) + 5);
-//    }
+    CGSize actionSize = [_actionLabel.text sizeWithFont:_dateLabel.font
+                                  constrainedToSize:CGSizeMake(actualBounds.size.width, ACTION_MAX_HEIGHT)
+                                      lineBreakMode:NSLineBreakByWordWrapping];
+
+    _actionLabel.frame = CGRectMake(actualBounds.origin.x,
+                                    CGRectBottom(_dateLabel.frame) + LABELS_OFFSET,
+                                    actualBounds.size.width,
+                                    ceilf(actionSize.height));
     
-    
-    _actionLabel.frame = CGRectMake(actionLabelLocation.x + labelsOffset,
-                                    actionLabelLocation.y,
-                                    actualBounds.size.width - actionLabelLocation.x,
-                                    userNameHeight);
-    
-    CGFloat descriptionY = CGRectBottom(_actionLabel.frame) + labelsOffset;
-    _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+    CGFloat descriptionY = (actionSize.height > 0) ? CGRectBottom(_actionLabel.frame) + LABELS_OFFSET :
+                                                     CGRectBottom(_userNameLabel.frame) + LABELS_OFFSET;
+    _descriptionLabel.frame = CGRectMake(actualBounds.origin.x,
                                          descriptionY,
                                          actualBounds.size.width,
-                                         actualBounds.size.height - descriptionY);
+                                         actualBounds.origin.y + actualBounds.size.height - descriptionY);
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {

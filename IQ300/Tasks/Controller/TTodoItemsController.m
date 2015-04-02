@@ -9,12 +9,19 @@
 #import "TTodoItemsController.h"
 #import "TodoListItemCell.h"
 #import "TodoItem.h"
+#import "ExtendedButton.h"
 
 #define MAX_NUMBER_OF_CHARACTERS 255
+#define SEPARATOR_HEIGHT 0.5f
+#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
+#define BOTTOM_VIEW_HEIGHT 80
 
 @interface TTodoItemsController() <SWTableViewCellDelegate, UITextViewDelegate> {
     CGFloat _tableBottomMarging;
     __weak NSIndexPath * _editableIndexPath;
+    UIView * _bottomSeparatorView;
+    ExtendedButton * _doneButton;
+    
 }
 
 @end
@@ -38,6 +45,24 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
+    
+    _bottomSeparatorView = [[UIView alloc] init];
+    [_bottomSeparatorView setBackgroundColor:SEPARATOR_COLOR];
+    [self.view addSubview:_bottomSeparatorView];
+    
+    _doneButton = [[ExtendedButton alloc] init];
+    _doneButton.layer.cornerRadius = 4.0f;
+    _doneButton.layer.borderWidth = 0.5f;
+    [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
+    [_doneButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
+    [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
+    [_doneButton setBackgroundColor:IQ_CELADON_COLOR];
+    [_doneButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
+    [_doneButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
+    _doneButton.layer.borderColor = _doneButton.backgroundColor.CGColor;
+    [_doneButton setClipsToBounds:YES];
+    [_doneButton addTarget:self action:@selector(doneButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_doneButton];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -81,6 +106,19 @@
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
+
+    CGRect actualBounds = self.view.bounds;
+
+    _bottomSeparatorView.frame = CGRectMake(actualBounds.origin.x,
+                                            actualBounds.origin.y + actualBounds.size.height - BOTTOM_VIEW_HEIGHT,
+                                            actualBounds.size.width,
+                                            SEPARATOR_HEIGHT);
+    
+    CGSize clearButtonSize = CGSizeMake(300, 40);
+    _doneButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - clearButtonSize.width) / 2.0f,
+                                   actualBounds.origin.y + actualBounds.size.height - clearButtonSize.height - 10.0f,
+                                   clearButtonSize.width,
+                                   clearButtonSize.height);
 
     [self layoutTabelView];
 }
@@ -130,30 +168,23 @@
 
 #pragma mark - UITextViewDelegate Methods
 
-- (void)textViewDidChange:(UITextView *)textView {
-    TodoListItemCell * cell = (TodoListItemCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
-    cell.item.title = textView.text;
-    CGFloat cellHeight = [TodoListItemCell heightForItem:cell.item width:self.model.cellWidth];
-    
-    if (cell.frame.size.height != cellHeight) {
-        [self.tableView beginUpdates];
-        [self.tableView endUpdates];
-        [self.tableView scrollToRowAtIndexPath:_editableIndexPath
-                              atScrollPosition:UITableViewScrollPositionTop
-                                      animated:YES];
-
-    }
-}
-
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
-
     if ([text isEqualToString:@"\n"]) {
         [textView resignFirstResponder];
         return NO;
     }
     
-    return ([newString length] <= MAX_NUMBER_OF_CHARACTERS);
+    NSString * newString = [[textView.text stringByReplacingCharactersInRange:range withString:text]
+                                           stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+    if (([newString length] <= MAX_NUMBER_OF_CHARACTERS)) {
+        id<TodoItem> item = [self.model itemAtIndexPath:_editableIndexPath];
+        item.title = newString;
+        textView.text = newString;
+        
+        [self updateCellFrameIfNeed];
+    }
+    
+    return NO;
 }
 
 #pragma mark - SWTableViewCell Delegate
@@ -243,9 +274,51 @@
 
 - (void)layoutTabelView {
     CGRect actualBounds = self.view.bounds;
-    actualBounds.size.height -= _tableBottomMarging;
     
-    self.tableView.frame = actualBounds;
+    CGFloat tableOffset = (_tableBottomMarging > 0) ? _tableBottomMarging : BOTTOM_VIEW_HEIGHT;
+    self.tableView.frame = CGRectMake(actualBounds.origin.x,
+                                      actualBounds.origin.y,
+                                      actualBounds.size.width,
+                                      actualBounds.origin.y + actualBounds.size.height - tableOffset);
+}
+
+#pragma mark - Private methods
+
+- (void)doneButtonAction:(UIButton*)sender {
+    Boolean validationSuccess = YES;
+    if ([self.model.items count] > 0) {
+        NSArray * todoTitles = [self.model.items valueForKey:@"title"];
+        for (NSString * title in todoTitles) {
+            if ([NSNull null] == (NSNull*)title || [title length] == 0 ||
+                [[title stringByReplacingOccurrencesOfString:@" " withString:@""] length] == 0) {
+                
+                [UIAlertView showWithTitle:@"IQ300"
+                                   message:NSLocalizedString(@"Todo item name can not be empty", nil)
+                         cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                         otherButtonTitles:nil
+                                  tapBlock:nil];
+                validationSuccess = NO;
+                break;
+            }
+        }
+    }
+    
+    if (validationSuccess) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+- (void)updateCellFrameIfNeed {
+    TodoListItemCell * cell = (TodoListItemCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
+    CGFloat cellHeight = [TodoListItemCell heightForItem:cell.item width:self.model.cellWidth];
+    
+    if (cell.frame.size.height != cellHeight) {
+        [self.tableView beginUpdates];
+        [self.tableView endUpdates];
+        [self.tableView scrollToRowAtIndexPath:_editableIndexPath
+                              atScrollPosition:UITableViewScrollPositionTop
+                                      animated:YES];
+    }
 }
 
 @end

@@ -66,6 +66,7 @@
         _titleTextView.textContainerInset = UIEdgeInsetsZero;
         _titleTextView.contentInset = UIEdgeInsetsZero;
         _titleTextView.scrollEnabled = NO;
+        _titleTextView.returnKeyType = UIReturnKeyDone;
         [self.contentView addSubview:_titleTextView];
     }
     

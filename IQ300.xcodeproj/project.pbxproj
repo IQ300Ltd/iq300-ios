@@ -216,6 +216,7 @@
 		73A7CA841A9F55ED0038DEF1 /* filterSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A7CA7A1A9F55ED0038DEF1 /* filterSelected.png */; };
 		73A7CA851A9F55ED0038DEF1 /* filterSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A7CA7B1A9F55ED0038DEF1 /* filterSelected@2x.png */; };
 		73A7CA881A9F5CB90038DEF1 /* TaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A7CA871A9F5CB90038DEF1 /* TaskFilterCell.m */; };
+		73A81F1E1ACD237700882FB0 /* IQTaskHistoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A81F1D1ACD237700882FB0 /* IQTaskHistoryItem.m */; };
 		73A87EF61AA4591100C4A7C3 /* NActionGropCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A87EF51AA4591100C4A7C3 /* NActionGropCell.m */; };
 		73A87EF91AA4597800C4A7C3 /* NotificationsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A87EF81AA4597800C4A7C3 /* NotificationsHelper.m */; };
 		73A9498F1A3821AD008EC469 /* backWhiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A9498D1A3821AD008EC469 /* backWhiteArrow.png */; };
@@ -654,6 +655,8 @@
 		73A7CA7B1A9F55ED0038DEF1 /* filterSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filterSelected@2x.png"; sourceTree = "<group>"; };
 		73A7CA861A9F5CB90038DEF1 /* TaskFilterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskFilterCell.h; sourceTree = "<group>"; };
 		73A7CA871A9F5CB90038DEF1 /* TaskFilterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskFilterCell.m; sourceTree = "<group>"; };
+		73A81F1C1ACD237700882FB0 /* IQTaskHistoryItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskHistoryItem.h; sourceTree = "<group>"; };
+		73A81F1D1ACD237700882FB0 /* IQTaskHistoryItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTaskHistoryItem.m; sourceTree = "<group>"; };
 		73A87EF31AA4495700C4A7C3 /* IQColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQColors.h; sourceTree = "<group>"; };
 		73A87EF41AA4591100C4A7C3 /* NActionGropCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NActionGropCell.h; sourceTree = "<group>"; };
 		73A87EF51AA4591100C4A7C3 /* NActionGropCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NActionGropCell.m; sourceTree = "<group>"; };
@@ -1641,6 +1644,8 @@
 				738EF8291A9CA95600894755 /* IQManagedTodoItem.m */,
 				73F5089C1ACAD0C2009DBBD8 /* IQTodoItem.h */,
 				73F5089D1ACAD0C2009DBBD8 /* IQTodoItem.m */,
+				73A81F1C1ACD237700882FB0 /* IQTaskHistoryItem.h */,
+				73A81F1D1ACD237700882FB0 /* IQTaskHistoryItem.m */,
 				738EF82E1A9CBAA200894755 /* IQTasksHolder.h */,
 				738EF82F1A9CBAA200894755 /* IQTasksHolder.m */,
 				73970E8D1AA5A7CC00AC2414 /* TaskFilterCounters.h */,
@@ -1973,6 +1978,7 @@
 				7380E9751A4020FA00128BD9 /* ObjectSerializator.m in Sources */,
 				73A798391A359D79006F5721 /* ALAsset+Extension.m in Sources */,
 				7399A4D81A499ED30098DA67 /* ArrayTransformer.m in Sources */,
+				73A81F1E1ACD237700882FB0 /* IQTaskHistoryItem.m in Sources */,
 				7395C50D1A31848700A6D5DA /* UIView+RoundedCorners.m in Sources */,
 				739850DC1A2DD35C00DB5B21 /* IQDiscussion.m in Sources */,
 				738EA7A31A1DC91C0065D39F /* IQUser.m in Sources */,

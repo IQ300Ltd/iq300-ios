@@ -8,14 +8,14 @@
 
 #import "IQTableBaseController.h"
 #import "TaskTabItemController.h"
-
-@class IQTask;
+#import "TaskHistoryModel.h"
 
 @interface THistoryController : IQTableBaseController<TaskTabItemController>
 
-@property (nonatomic, strong) IQTask * task;
+@property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, strong) NSNumber * badgeValue;
 @property (nonatomic, readonly) NSString * category;
+@property (nonatomic, strong) TaskHistoryModel * model;
 @property (nonatomic, weak) TaskPolicyInspector * policyInspector;
 
 @end

@@ -6,8 +6,13 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "IQTableModel.h"
 
-@interface TaskHistoryModel : NSObject
+@interface TaskHistoryModel : NSObject<IQTableModel>
+
+@property (nonatomic, assign) CGFloat cellWidth;
+@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
 
 @end

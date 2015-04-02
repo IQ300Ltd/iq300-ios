@@ -32,5 +32,6 @@
 #import "TChangesCounter.h"
 #import "IQTaskMember.h"
 #import "TaskPolicies.h"
+#import "IQTaskHistoryItem.h"
 
 #endif

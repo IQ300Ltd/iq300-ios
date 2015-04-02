@@ -147,6 +147,12 @@
         <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQProject" inverseName="tasks" inverseEntity="IQProject" syncable="YES"/>
         <relationship name="todoItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQManagedTodoItem" inverseName="tasks" inverseEntity="IQManagedTodoItem" syncable="YES"/>
     </entity>
+    <entity name="IQTaskHistoryItem" representedClassName="IQTaskHistoryItem" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="itemId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="mainDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="IQTaskMember" representedClassName="IQTaskMember" syncable="YES">
         <attribute name="communityRole" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="communityRoleName" optional="YES" attributeType="String" syncable="YES"/>
@@ -193,5 +199,6 @@
         <element name="IQTask" positionX="0" positionY="0" width="128" height="435"/>
         <element name="IQTaskMember" positionX="0" positionY="0" width="128" height="195"/>
         <element name="IQUser" positionX="0" positionY="0" width="128" height="285"/>
+        <element name="IQTaskHistoryItem" positionX="9" positionY="153" width="128" height="103"/>
     </elements>
 </model>
