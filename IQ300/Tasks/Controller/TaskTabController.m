@@ -107,6 +107,10 @@
         TDocumentsController * documentsController = self.viewControllers[3];
         [documentsController setTaskId:task.taskId];
         [documentsController setPolicyInspector:_policyInspector];
+        
+        THistoryController * historyController = self.viewControllers[4];
+        [historyController setTaskId:task.taskId];
+        [historyController setPolicyInspector:_policyInspector];
     }
 }
 

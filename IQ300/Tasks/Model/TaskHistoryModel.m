@@ -12,7 +12,7 @@
 #import "THistoryItemCell.h"
 
 #define CACHE_FILE_NAME @"TaskHistoryModelCache"
-#define SORT_DIRECTION IQSortDirectionAscending
+#define SORT_DIRECTION IQSortDirectionDescending
 
 static NSString * ReuseIdentifier = @"THReuseIdentifier";
 
@@ -31,7 +31,7 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
     self = [super init];
     if(self) {
         _portionSize = 20;
-        _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"user.displayName"
+        _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"createdDate"
                                                            ascending:SORT_DIRECTION == IQSortDirectionAscending]];
     }
     return self;
@@ -129,7 +129,16 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadModelSourceControllerWithCompletion:completion];
-    [self updateModelWithCompletion:nil];
+    
+    //        [[IQService sharedService] contactsWithPage:@(1)
+    //                                                per:@(_portionSize)
+    //                                               sort:SORT_DIRECTION
+    //                                             search:_filter
+    //                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+    //                                                if(completion) {
+    //                                                    completion(error);
+    //                                                }
+    //                                            }];
 }
 
 - (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {

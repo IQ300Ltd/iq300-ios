@@ -35,6 +35,18 @@
     return self;
 }
 
+- (void)setTaskId:(NSNumber *)taskId {
+    if(![_taskId isEqualToNumber:taskId]) {
+        _taskId = taskId;
+        
+        self.model.taskId = taskId;
+        
+        if(self.isViewLoaded) {
+            [self reloadModel];
+        }
+    }
+}
+
 - (void)setBadgeValue:(NSNumber *)badgeValue {
     self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
 }

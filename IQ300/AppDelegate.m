@@ -42,8 +42,15 @@
 + (void)logout {
     AppDelegate * delegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    
     LoginController * loginViewController = [[LoginController alloc] init];
     [delegate.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+   
+    [[IQService sharedService] logout];
+    [IQSession setDefaultSession:nil];
+    [[IQNotificationCenter defaultCenter] resetAllObservers];
+    [IQNotificationCenter setDefaultCenter:nil];
+
     UITabBarController * center = ((UITabBarController*)delegate.drawerController.centerViewController);
     
     for (UINavigationController * controller in center.viewControllers) {
@@ -52,10 +59,6 @@
     
     [center setSelectedIndex:0];
 
-    [[IQService sharedService] logout];
-    [IQSession setDefaultSession:nil];
-    [[IQNotificationCenter defaultCenter] resetAllObservers];
-    [IQNotificationCenter setDefaultCenter:nil];
     [delegate.drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:nil];
     [[UIApplication sharedApplication] unregisterForRemoteNotifications];
 }

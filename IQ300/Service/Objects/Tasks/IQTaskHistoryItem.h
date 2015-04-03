@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSNumber * itemId;
 @property (nonatomic, strong) NSDate * createdDate;
 @property (nonatomic, strong) NSString * title;
+@property (nonatomic, strong) NSNumber * ownerId;
 @property (nonatomic, strong) NSString * mainDescription;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;

@@ -14,6 +14,7 @@
 @dynamic itemId;
 @dynamic createdDate;
 @dynamic title;
+@dynamic ownerId;
 @dynamic mainDescription;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {

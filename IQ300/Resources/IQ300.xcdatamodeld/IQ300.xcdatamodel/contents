@@ -151,6 +151,7 @@
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="itemId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="mainDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="IQTaskMember" representedClassName="IQTaskMember" syncable="YES">
@@ -197,8 +198,8 @@
         <element name="IQNotificationsGroup" positionX="0" positionY="0" width="128" height="165"/>
         <element name="IQProject" positionX="0" positionY="0" width="128" height="90"/>
         <element name="IQTask" positionX="0" positionY="0" width="128" height="435"/>
+        <element name="IQTaskHistoryItem" positionX="9" positionY="153" width="128" height="120"/>
         <element name="IQTaskMember" positionX="0" positionY="0" width="128" height="195"/>
         <element name="IQUser" positionX="0" positionY="0" width="128" height="285"/>
-        <element name="IQTaskHistoryItem" positionX="9" positionY="153" width="128" height="103"/>
     </elements>
 </model>
