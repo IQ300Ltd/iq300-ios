@@ -1,24 +1,24 @@
 //
-//  THistoryController.m
+//  TaskActivitiesController.m
 //  IQ300
 //
 //  Created by Tayphoon on 17.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "THistoryController.h"
+#import "TaskActivitiesController.h"
 #import "TaskPolicyInspector.h"
-#import "THistoryItemCell.h"
+#import "TActivityItemCell.h"
 #import "IQSession.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 
-@interface THistoryController () {
+@interface TaskActivitiesController () {
     UILabel * _noDataLabel;
 }
 
 @end
 
-@implementation THistoryController
+@implementation TaskActivitiesController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -30,7 +30,7 @@
         float imageOffset = 6;
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImage];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
-        self.model = [[TaskHistoryModel alloc] init];
+        self.model = [[TaskActivitiesModel alloc] init];
     }
     return self;
 }
@@ -86,22 +86,21 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
-         [weakSelf reloadDataWithCompletion:^(NSError *error) {
+         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
      position:SVPullToRefreshPositionTop];
+    
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionBottom];
 
     [self reloadModel];
-    
-    self.model.resetReadFlagAutomatically = YES;
-    [self.model resetReadFlagWithCompletion:nil];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    self.model.resetReadFlagAutomatically = NO;
 }
 
 - (void)viewDidLayoutSubviews {
@@ -113,14 +112,14 @@
 #pragma mark - UITableView DataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    THistoryItemCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    TActivityItemCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
         cell.backgroundColor = [UIColor whiteColor];
     }
     
-    IQTaskHistoryItem * item = [self.model itemAtIndexPath:indexPath];
+    IQTaskActivityItem * item = [self.model itemAtIndexPath:indexPath];
     cell.item = item;
     
     return cell;
@@ -137,7 +136,11 @@
 
 - (void)reloadModel {
     if([IQSession defaultSession]) {
-        [self reloadDataWithCompletion:^(NSError *error) {
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
             [self updateNoDataLabelVisibility];
         }];
     }

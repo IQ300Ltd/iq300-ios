@@ -18,6 +18,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     NSArray * _sortDescriptors;
     NSMutableArray * _checkedItems;
     NSMutableArray * _processableItems;
+    NSMutableArray * _deletedItems;
 }
 
 @end
@@ -38,6 +39,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     if (self) {
         _checkedItems = [NSMutableArray array];
         _processableItems = [NSMutableArray array];
+        _deletedItems = [NSMutableArray array];
         _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"position" ascending:YES]];
     }
     return self;
@@ -96,9 +98,13 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
-    if(completion) {
-        completion(nil);
-    }
+    [[IQService sharedService] todoListByTaskId:self.taskId
+                                        handler:^(BOOL success, NSArray * todoItems, NSData *responseData, NSError *error) {
+                                            self.items = todoItems;
+                                            if (completion) {
+                                                completion(error);
+                                            }
+                                        }];
 }
 
 - (BOOL)isItemCheckedAtIndexPath:(NSIndexPath*)indexPath {
@@ -157,9 +163,16 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 - (void)deleteItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == self.section && indexPath.row >= 0 &&
         indexPath.row < [self.items count]) {
+        
+        id<TodoItem> item = [self itemAtIndexPath:indexPath];
         NSMutableArray * items = [self.items mutableCopy];
-        [items removeObjectAtIndex:indexPath.row];
+        [items removeObject:item];
         self.items = [items copy];
+        
+        if (![item.itemId isEqualToNumber:@(-1)]) {
+            item.destroy = @(YES);
+            [_deletedItems addObject:item];
+        }
         
         [self updateItemsPosition];
         
@@ -189,7 +202,6 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
                                                       completion(error);
                                                   }
                                               }];
-
 }
 
 - (void)rollbackTodoItemWithId:(NSIndexPath *)indexPath completion:(void (^)(NSError *))completion {
@@ -209,6 +221,17 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
                                                       completion(error);
                                                   }
                                               }];
+}
+
+- (void)saveChangesWithCompletion:(void (^)(NSError * error))completion {
+    NSArray * items = ([_deletedItems count] > 0) ? [_items arrayByAddingObjectsFromArray:_deletedItems] : _items;
+    [[IQService sharedService] saveTodoList:items
+                                     taskId:self.taskId
+                                    handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                        if (completion) {
+                                            completion(error);
+                                        }
+                                    }];
 }
 
 - (void)clearModelData {

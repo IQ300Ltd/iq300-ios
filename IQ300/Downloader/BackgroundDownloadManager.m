@@ -226,7 +226,7 @@ static dispatch_queue_t url_session_manager_creation_queue() {
 expectedTotalBytes:(int64_t)expectedTotalBytes {
     NSLog(@"%s", __PRETTY_FUNCTION__);
     DownloadTaskDelegate * taskDelegate = nil;
-    taskDelegate = [self getDelegateForTask:downloadTask];
+    taskDelegate = [self delegateForTask:downloadTask];
     if (taskDelegate) {
         [taskDelegate URLSession:session
                     downloadTask:downloadTask
@@ -236,7 +236,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
-    DownloadTaskDelegate * taskDelegate = [self getDelegateForTask:downloadTask];
+    DownloadTaskDelegate * taskDelegate = [self delegateForTask:downloadTask];
     
     if (taskDelegate) {
         [taskDelegate URLSession:session downloadTask:downloadTask didFinishDownloadingToURL:location];
@@ -257,7 +257,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
       didWriteData:(int64_t)bytesWritten
  totalBytesWritten:(int64_t)totalBytesWritten
 totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-    DownloadTaskDelegate * taskDelegate = [self getDelegateForTask:downloadTask];
+    DownloadTaskDelegate * taskDelegate = [self delegateForTask:downloadTask];
     
     if (taskDelegate) {
         [taskDelegate URLSession:session
@@ -273,7 +273,7 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
         NSLog(@"task error: %@", error.localizedDescription);
         NSLog(@"url %@", task.response.URL);
 
-        DownloadTaskDelegate * taskDelegate = [self getDelegateForTask:task];
+        DownloadTaskDelegate * taskDelegate = [self delegateForTask:task];
         
         if (taskDelegate) {
             [taskDelegate URLSession:(NSURLSession *)session task:task didCompleteWithError:error];
@@ -320,7 +320,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 #pragma mark - Private methods
 
-- (DownloadTaskDelegate *)getDelegateForTask:(NSURLSessionTask*)task {
+- (DownloadTaskDelegate *)delegateForTask:(NSURLSessionTask*)task {
     DownloadTaskDelegate * taskDelegate = [_taskList objectForKey:task];
     return taskDelegate;
 }

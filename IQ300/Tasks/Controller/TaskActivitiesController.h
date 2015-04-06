@@ -1,5 +1,5 @@
 //
-//  THistoryController.h
+//  TaskActivitiesController.h
 //  IQ300
 //
 //  Created by Tayphoon on 17.03.15.
@@ -8,13 +8,13 @@
 
 #import "IQTableBaseController.h"
 #import "TaskTabItemController.h"
-#import "TaskHistoryModel.h"
+#import "TaskActivitiesModel.h"
 
-@interface THistoryController : IQTableBaseController<TaskTabItemController>
+@interface TaskActivitiesController : IQTableBaseController<TaskTabItemController>
 
 @property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, strong) NSNumber * badgeValue;
-@property (nonatomic, strong) TaskHistoryModel * model;
+@property (nonatomic, strong) TaskActivitiesModel * model;
 @property (nonatomic, weak) TaskPolicyInspector * policyInspector;
 
 @end

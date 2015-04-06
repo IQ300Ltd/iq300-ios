@@ -220,7 +220,22 @@ static id _sharedService = nil;
     [_objectManager enqueueObjectRequestOperation:operation];
 }
 
-- (void)putObject:(id)object path:(NSString *)path parameters:(NSDictionary *)parameters handler:(ObjectLoaderCompletionHandler)handler {
+- (void)putObject:(id)object
+             path:(NSString *)path
+       parameters:(NSDictionary *)parameters
+          handler:(ObjectLoaderCompletionHandler)handler {
+    [self putObject:object
+               path:path
+         parameters:parameters
+         fetchBlock:nil
+            handler:handler];
+}
+
+- (void)putObject:(id)object
+             path:(NSString *)path
+       parameters:(NSDictionary *)parameters
+       fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+          handler:(ObjectLoaderCompletionHandler)handler {
     RKManagedObjectRequestOperation * operation = [_objectManager appropriateObjectRequestOperationWithObject:(object) ? object : [self emptyResponse]
                                                                                                        method:RKRequestMethodPUT
                                                                                                          path:path
@@ -231,10 +246,37 @@ static id _sharedService = nil;
     
     [self processAuthorizationForOperation:operation];
     
+    if(fetchBlock && [operation isKindOfClass:[RKManagedObjectRequestOperation class]]) {
+        RKManagedObjectRequestOperation * managedOperation = (RKManagedObjectRequestOperation*)operation;
+        NSArray * fetchRequestBlocks = managedOperation.fetchRequestBlocks;
+        if(!fetchRequestBlocks) {
+            fetchRequestBlocks = @[fetchBlock];
+        }
+        else {
+            fetchRequestBlocks = [fetchRequestBlocks arrayByAddingObject:fetchBlock];
+        }
+        managedOperation.fetchRequestBlocks = fetchRequestBlocks;
+    }
+    
     [_objectManager enqueueObjectRequestOperation:operation];
 }
 
-- (void)postObject:(id)object path:(NSString *)path parameters:(NSDictionary *)parameters handler:(ObjectLoaderCompletionHandler)handler {
+- (void)postObject:(id)object
+              path:(NSString *)path
+        parameters:(NSDictionary *)parameters
+           handler:(ObjectLoaderCompletionHandler)handler {
+    [self postObject:object
+                path:path
+          parameters:parameters
+          fetchBlock:nil
+             handler:handler];
+}
+
+- (void)postObject:(id)object
+              path:(NSString *)path
+        parameters:(NSDictionary *)parameters
+        fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+           handler:(ObjectLoaderCompletionHandler)handler {
     RKManagedObjectRequestOperation * operation = [_objectManager appropriateObjectRequestOperationWithObject: (object) ? object : [self emptyResponse]
                                                                                                        method:RKRequestMethodPOST
                                                                                                          path:path
@@ -244,6 +286,18 @@ static id _sharedService = nil;
                                      failure:[self makeFailureBlockForHandler:handler]];
     
     [self processAuthorizationForOperation:operation];
+    
+    if(fetchBlock && [operation isKindOfClass:[RKManagedObjectRequestOperation class]]) {
+        RKManagedObjectRequestOperation * managedOperation = (RKManagedObjectRequestOperation*)operation;
+        NSArray * fetchRequestBlocks = managedOperation.fetchRequestBlocks;
+        if(!fetchRequestBlocks) {
+            fetchRequestBlocks = @[fetchBlock];
+        }
+        else {
+            fetchRequestBlocks = [fetchRequestBlocks arrayByAddingObject:fetchBlock];
+        }
+        managedOperation.fetchRequestBlocks = fetchRequestBlocks;
+    }
     
     [_objectManager enqueueObjectRequestOperation:operation];
 }

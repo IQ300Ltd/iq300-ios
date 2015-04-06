@@ -79,11 +79,6 @@
     _task = task;
     
     self.model.taskId = _task.taskId;
-    self.model.items = [_task.todoItems array];
-
-    if (self.isViewLoaded) {
-        [self.tableView reloadData];
-    }
 }
 
 - (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
@@ -115,6 +110,12 @@
                                                object:nil];
 
     [self markTaskAsReadedIfNeed];
+    
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        if (error == nil) {
+            [self.tableView reloadData];
+        }
+    }];
 
     self.resetReadFlagAutomatically = YES;
     [self resetReadFlag];

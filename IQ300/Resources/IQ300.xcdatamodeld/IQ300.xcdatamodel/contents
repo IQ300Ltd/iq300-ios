@@ -72,6 +72,7 @@
     <entity name="IQManagedTodoItem" representedClassName="IQManagedTodoItem" syncable="YES">
         <attribute name="completed" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="destroy" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="itemId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="position" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="taskId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -147,12 +148,15 @@
         <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQProject" inverseName="tasks" inverseEntity="IQProject" syncable="YES"/>
         <relationship name="todoItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQManagedTodoItem" inverseName="tasks" inverseEntity="IQManagedTodoItem" syncable="YES"/>
     </entity>
-    <entity name="IQTaskHistoryItem" representedClassName="IQTaskHistoryItem" syncable="YES">
+    <entity name="IQTaskActivityItem" representedClassName="IQTaskActivityItem" syncable="YES">
+        <attribute name="authorId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="authorName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="changes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="event" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="itemId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="mainDescription" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
     </entity>
     <entity name="IQTaskMember" representedClassName="IQTaskMember" syncable="YES">
         <attribute name="communityRole" optional="YES" attributeType="String" syncable="YES"/>
@@ -192,13 +196,13 @@
         <element name="IQContact" positionX="0" positionY="0" width="128" height="105"/>
         <element name="IQConversation" positionX="0" positionY="0" width="128" height="195"/>
         <element name="IQDiscussion" positionX="0" positionY="0" width="128" height="150"/>
-        <element name="IQManagedTodoItem" positionX="0" positionY="0" width="128" height="165"/>
+        <element name="IQManagedTodoItem" positionX="0" positionY="0" width="128" height="180"/>
         <element name="IQNotificable" positionX="0" positionY="0" width="128" height="105"/>
         <element name="IQNotification" positionX="0" positionY="0" width="128" height="300"/>
         <element name="IQNotificationsGroup" positionX="0" positionY="0" width="128" height="165"/>
         <element name="IQProject" positionX="0" positionY="0" width="128" height="90"/>
         <element name="IQTask" positionX="0" positionY="0" width="128" height="435"/>
-        <element name="IQTaskHistoryItem" positionX="9" positionY="153" width="128" height="120"/>
+        <element name="IQTaskActivityItem" positionX="0" positionY="0" width="128" height="163"/>
         <element name="IQTaskMember" positionX="0" positionY="0" width="128" height="195"/>
         <element name="IQUser" positionX="0" positionY="0" width="128" height="285"/>
     </elements>

@@ -1,13 +1,14 @@
 //
-//  THistoryItemCell.m
+//  TActivityItemCell.m
 //  IQ300
 //
 //  Created by Tayphoon on 01.04.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "THistoryItemCell.h"
-#import "IQTaskHistoryItem.h"
+#import "TActivityItemCell.h"
+#import "IQTaskActivityItem.h"
+#import "NSDate+IQFormater.h"
 
 #define CONTENT_INSETS 13.0f
 #define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:15]
@@ -17,27 +18,27 @@
 #define ACTION_MAX_HEIGHT 35
 #define DESCR_MAX_HEIGHT 52
 
-@implementation THistoryItemCell
+@implementation TActivityItemCell
 
-+ (CGFloat)heightForItem:(IQTaskHistoryItem*)item andCellWidth:(CGFloat)cellWidth {
++ (CGFloat)heightForItem:(IQTaskActivityItem*)item andCellWidth:(CGFloat)cellWidth {
     CGFloat width = cellWidth - CONTENT_INSETS * 2.0f;
     CGFloat height = CONTENT_INSETS * 2 + LABELS_HEIGHT;
     
-    if([item.title length] > 0) {
-        CGSize titleSize = [item.title sizeWithFont:TITLE_FONT
+    if([item.event length] > 0) {
+        CGSize titleSize = [item.event sizeWithFont:TITLE_FONT
                                   constrainedToSize:CGSizeMake(width, ACTION_MAX_HEIGHT)
                                       lineBreakMode:NSLineBreakByWordWrapping];
         height += ceilf(titleSize.height) + LABELS_OFFSET;
     }
     
-    if([item.mainDescription length] > 0) {
-        CGSize desSize = [item.mainDescription sizeWithFont:DESCRIPTION_FONT
-                                          constrainedToSize:CGSizeMake(width, DESCR_MAX_HEIGHT)
-                                              lineBreakMode:NSLineBreakByWordWrapping];
+    if([item.changes length] > 0) {
+        CGSize desSize = [item.changes sizeWithFont:DESCRIPTION_FONT
+                                  constrainedToSize:CGSizeMake(width, DESCR_MAX_HEIGHT)
+                                      lineBreakMode:NSLineBreakByWordWrapping];
         height += ceilf(desSize.height) + LABELS_OFFSET;
     }
     
-    return MIN(height, HISTORY_CELL_MAX_HEIGHT);
+    return MIN(height, ACTIVITY_CELL_MAX_HEIGHT);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -119,6 +120,15 @@
                                          descriptionY,
                                          actualBounds.size.width,
                                          actualBounds.origin.y + actualBounds.size.height - descriptionY);
+}
+
+- (void)setItem:(IQTaskActivityItem *)item {
+    _item = item;
+    
+    _userNameLabel.text = _item.authorName;
+    _dateLabel.text = [_item.createdDate dateToDayString];
+    _actionLabel.text = _item.event;
+    _descriptionLabel.text = _item.changes;
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {

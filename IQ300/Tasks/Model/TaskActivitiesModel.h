@@ -1,5 +1,5 @@
 //
-//  TaskHistoryModel.h
+//  TaskActivitiesModel.h
 //  IQ300
 //
 //  Created by Tayphoon on 01.04.15.
@@ -8,7 +8,7 @@
 
 #import "IQTableModel.h"
 
-@interface TaskHistoryModel : NSObject<IQTableModel>
+@interface TaskActivitiesModel : NSObject<IQTableModel>
 
 @property (nonatomic, readonly) NSString * category;
 

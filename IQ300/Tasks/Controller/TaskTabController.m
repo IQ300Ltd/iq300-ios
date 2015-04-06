@@ -13,7 +13,7 @@
 #import "TCommentsController.h"
 #import "TMembersController.h"
 #import "TDocumentsController.h"
-#import "THistoryController.h"
+#import "TaskActivitiesController.h"
 #import "IQService+Tasks.h"
 #import "TChangesCounter.h"
 #import "IQNotificationCenter.h"
@@ -39,7 +39,7 @@
                                    [[TCommentsController alloc] init],
                                    [[TMembersController alloc] init],
                                    [[TDocumentsController alloc] init],
-                                   [[THistoryController alloc] init]
+                                   [[TaskActivitiesController alloc] init]
                                    ]];
     }
     return self;
@@ -108,9 +108,9 @@
         [documentsController setTaskId:task.taskId];
         [documentsController setPolicyInspector:_policyInspector];
         
-        THistoryController * historyController = self.viewControllers[4];
-        [historyController setTaskId:task.taskId];
-        [historyController setPolicyInspector:_policyInspector];
+        TaskActivitiesController * activitiesController = self.viewControllers[4];
+        [activitiesController setTaskId:task.taskId];
+        [activitiesController setPolicyInspector:_policyInspector];
     }
 }
 

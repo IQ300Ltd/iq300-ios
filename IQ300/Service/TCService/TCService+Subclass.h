@@ -7,6 +7,7 @@
 //
 
 #import "TCService.h"
+#import "TCRequestItemsHolder.h"
 
 @class RKObjectRequestOperation;
 @class ALAsset;
@@ -38,9 +39,21 @@
        parameters:(NSDictionary *)parameters
           handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)putObject:(id)object
+             path:(NSString *)path
+       parameters:(NSDictionary *)parameters
+       fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+          handler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)postObject:(id)object
               path:(NSString *)path
         parameters:(NSDictionary *)parameters
+           handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)postObject:(id)object
+              path:(NSString *)path
+        parameters:(NSDictionary *)parameters
+        fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
            handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)postObjects:(NSArray*)objects path:(NSString *)path handler:(ObjectLoaderCompletionHandler)handler;

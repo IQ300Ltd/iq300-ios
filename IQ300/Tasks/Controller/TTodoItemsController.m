@@ -10,6 +10,7 @@
 #import "TodoListItemCell.h"
 #import "TodoItem.h"
 #import "ExtendedButton.h"
+#import "UIViewController+ScreenActivityIndicator.h"
 
 #define MAX_NUMBER_OF_CHARACTERS 255
 #define SEPARATOR_HEIGHT 0.5f
@@ -155,8 +156,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
-    [self.model makeItemAtIndexPath:indexPath checked:!isCellChecked];
+    id<TodoItem> item = [self.model itemAtIndexPath:indexPath];
+    BOOL isCellChecked = ![self.model isItemCheckedAtIndexPath:indexPath];
+    [self.model makeItemAtIndexPath:indexPath checked:isCellChecked];
+    item.completed = @(isCellChecked);
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -304,7 +307,13 @@
     }
     
     if (validationSuccess) {
-        [self.navigationController popViewControllerAnimated:YES];
+        [self showActivityIndicator];
+        [self.model saveChangesWithCompletion:^(NSError *error) {
+            if (!error) {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+            [self hideActivityIndicator];
+        }];
     }
 }
 

@@ -47,6 +47,10 @@
 
 - (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)todoListByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)saveTodoList:(NSArray*)tododList taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)markCategoryAsReaded:(NSString*)category taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
 
 - (void)attachmentsByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
@@ -62,5 +66,19 @@
 - (void)leaveTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
 
 - (void)policiesForTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)activitiesForTaskWithId:(NSNumber*)taskId
+                   updatedAfter:(NSDate*)date
+                           page:(NSNumber*)page
+                            per:(NSNumber*)per
+                           sort:(IQSortDirection)sort
+                        handler:(ObjectLoaderCompletionHandler)handler;
+
+- (void)activitiesForTaskWithId:(NSNumber*)taskId
+                       beforeId:(NSNumber*)beforeId
+                           page:(NSNumber*)page
+                            per:(NSNumber*)per
+                           sort:(IQSortDirection)sort
+                        handler:(ObjectLoaderCompletionHandler)handler;
 
 @end

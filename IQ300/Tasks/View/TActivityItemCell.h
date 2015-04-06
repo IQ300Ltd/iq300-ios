@@ -1,5 +1,5 @@
 //
-//  THistoryItemCell.h
+//  TActivityItemCell.h
 //  IQ300
 //
 //  Created by Tayphoon on 01.04.15.
@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-#define HISTORY_CELL_MAX_HEIGHT 300.0f
+#define ACTIVITY_CELL_MAX_HEIGHT 300.0f
 
-@class IQTaskHistoryItem;
+@class IQTaskActivityItem;
 
-@interface THistoryItemCell : UITableViewCell {
+@interface TActivityItemCell : UITableViewCell {
     UIEdgeInsets _contentInsets;
 }
 
@@ -21,8 +21,8 @@
 @property (nonatomic, strong) UILabel * actionLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;
 
-@property (nonatomic, strong) IQTaskHistoryItem * item;
+@property (nonatomic, strong) IQTaskActivityItem * item;
 
-+ (CGFloat)heightForItem:(IQTaskHistoryItem*)item andCellWidth:(CGFloat)cellWidth;
++ (CGFloat)heightForItem:(IQTaskActivityItem*)item andCellWidth:(CGFloat)cellWidth;
 
 @end

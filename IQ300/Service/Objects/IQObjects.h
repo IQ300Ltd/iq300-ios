@@ -26,12 +26,13 @@
 #import "IQTasksHolder.h"
 #import "IQProject.h"
 #import "IQCommunity.h"
+#import "IQTodoItem.h"
 #import "IQManagedTodoItem.h"
 #import "TaskFilterCounters.h"
 #import "TasksMenuCounters.h"
 #import "TChangesCounter.h"
 #import "IQTaskMember.h"
 #import "TaskPolicies.h"
-#import "IQTaskHistoryItem.h"
+#import "IQTaskActivityItem.h"
 
 #endif

@@ -18,6 +18,7 @@
 @dynamic position;
 @dynamic createdDate;
 @dynamic updatedDate;
+@dynamic destroy;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
@@ -29,7 +30,8 @@
                                                   @"completed"  : @"completed",
                                                   @"position"   : @"position",
                                                   @"created_at" : @"createdDate",
-                                                  @"updated_at" : @"updatedDate"
+                                                  @"updated_at" : @"updatedDate",
+                                                  @"_destroy"   : @"destroy"
                                                   }];
     return mapping;
 }

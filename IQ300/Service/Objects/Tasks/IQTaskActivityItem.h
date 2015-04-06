@@ -1,26 +1,26 @@
 //
-//  IQManagedTodoItem.h
+//  IQTaskActivityItem.h
 //  IQ300
 //
-//  Created by Tayphoon on 24.02.15.
+//  Created by Tayphoon on 02.04.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "TodoItem.h"
+#import <Foundation/Foundation.h>
 
 @class RKObjectMapping;
 @class RKManagedObjectStore;
 
-@interface IQManagedTodoItem : NSManagedObject <TodoItem>
+@interface IQTaskActivityItem : NSManagedObject
 
 @property (nonatomic, strong) NSNumber * itemId;
 @property (nonatomic, strong) NSNumber * taskId;
-@property (nonatomic, strong) NSString * title;
-@property (nonatomic, strong) NSNumber * completed;
-@property (nonatomic, strong) NSNumber * position;
 @property (nonatomic, strong) NSDate   * createdDate;
 @property (nonatomic, strong) NSDate   * updatedDate;
-@property (nonatomic, strong) NSNumber * destroy;
+@property (nonatomic, strong) NSNumber * authorId;
+@property (nonatomic, strong) NSString * authorName;
+@property (nonatomic, strong) NSString * event;
+@property (nonatomic, strong) NSString * changes;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

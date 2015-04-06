@@ -35,4 +35,6 @@
 
 - (void)rollbackTodoItemWithId:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 
+- (void)saveChangesWithCompletion:(void (^)(NSError * error))completion;
+
 @end

@@ -17,5 +17,6 @@
 @property (nonatomic, strong) NSNumber * position;
 @property (nonatomic, strong) NSDate   * createdDate;
 @property (nonatomic, strong) NSDate   * updatedDate;
+@property (nonatomic, strong) NSNumber * destroy;
 
 @end

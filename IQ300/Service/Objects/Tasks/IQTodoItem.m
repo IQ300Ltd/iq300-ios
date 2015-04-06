@@ -15,6 +15,7 @@
     if (object) {
         IQTodoItem * item = [[IQTodoItem alloc] init];
         item.itemId = object.itemId;
+        item.taskId = object.taskId;
         item.title = object.title;
         item.completed = object.completed;
         item.position = object.position;
@@ -34,7 +35,8 @@
                                                   @"completed"  : @"completed",
                                                   @"position"   : @"position",
                                                   @"created_at" : @"createdDate",
-                                                  @"updated_at" : @"updatedDate"
+                                                  @"updated_at" : @"updatedDate",
+                                                  @"_destroy"   : @"destroy"
                                                   }];
     return mapping;
 }
@@ -43,6 +45,16 @@
     RKObjectMapping * objectMapping = [self objectMapping];
     
     return [objectMapping inverseMapping];
+}
+
+- (id)init {
+    self = [super init];
+    
+    if (self) {
+        self.destroy = @(NO);
+    }
+    
+    return self;
 }
 
 @end

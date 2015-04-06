@@ -131,6 +131,42 @@
             handler:handler];
 }
 
+- (void)todoListByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    
+    NSFetchRequest *(^fetchBlock)(NSURL *URL) = ^(NSURL *URL) {
+        NSFetchRequest * fRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQManagedTodoItem"];
+        [fRequest setPredicate:[NSPredicate predicateWithFormat:@"taskId == %@", taskId]];
+        
+        return fRequest;
+    };
+    
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items", taskId]
+                parameters:nil
+                fetchBlock:fetchBlock
+                   handler:handler];
+}
+
+- (void)saveTodoList:(NSArray*)tododList taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    
+    NSFetchRequest *(^fetchBlock)(NSURL *URL) = ^(NSURL *URL) {
+        NSFetchRequest * fRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQManagedTodoItem"];
+        [fRequest setPredicate:[NSPredicate predicateWithFormat:@"taskId == %@", taskId]];
+        
+        return fRequest;
+    };
+    
+    TCRequestItemsHolder * holder = [[TCRequestItemsHolder alloc] init];
+    holder.items = tododList;
+    
+    [self postObject:holder
+                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items/apply_changes", taskId]
+          parameters:nil
+          fetchBlock:fetchBlock
+             handler:handler];
+}
+
 - (void)markCategoryAsReaded:(NSString*)category taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     NSParameterAssert(category);
@@ -216,6 +252,51 @@
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/abilities", taskId]
                 parameters:nil
                    handler:handler];
+}
+
+- (void)activitiesForTaskWithId:(NSNumber*)taskId
+                   updatedAfter:(NSDate*)date
+                           page:(NSNumber*)page
+                            per:(NSNumber*)per
+                           sort:(IQSortDirection)sort
+                        handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"updated_at_after" : NSObjectNullForNil(date),
+                                                                  @"page"             : NSObjectNullForNil(page),
+                                                                  @"per"              : NSObjectNullForNil(per),
+                                                                  }).mutableCopy;
+    
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/activities", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
+- (void)activitiesForTaskWithId:(NSNumber*)taskId
+                       beforeId:(NSNumber*)beforeId
+                           page:(NSNumber*)page
+                            per:(NSNumber*)per
+                           sort:(IQSortDirection)sort
+                        handler:(ObjectLoaderCompletionHandler)handler {
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"id_less_than" : NSObjectNullForNil(beforeId),
+                                                                  @"page"         : NSObjectNullForNil(page),
+                                                                  @"per"          : NSObjectNullForNil(per),
+                                                                  }).mutableCopy;
+    
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+    
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/activities", taskId]
+                parameters:nil
+                   handler:handler];
+  
 }
 
 @end

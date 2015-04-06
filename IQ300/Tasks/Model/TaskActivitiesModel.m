@@ -1,22 +1,22 @@
 //
-//  TaskHistoryModel.m
+//  TaskActivitiesModel.m
 //  IQ300
 //
 //  Created by Tayphoon on 01.04.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "TaskHistoryModel.h"
+#import "TaskActivitiesModel.h"
 #import "IQService+Tasks.h"
-#import "IQTaskHistoryItem.h"
-#import "THistoryItemCell.h"
+#import "IQTaskActivityItem.h"
+#import "TActivityItemCell.h"
 
-#define CACHE_FILE_NAME @"TaskHistoryModelCache"
+#define CACHE_FILE_NAME @"TaskActivitiesModelCache"
 #define SORT_DIRECTION IQSortDirectionDescending
 
 static NSString * ReuseIdentifier = @"THReuseIdentifier";
 
-@interface TaskHistoryModel() <NSFetchedResultsControllerDelegate> {
+@interface TaskActivitiesModel() <NSFetchedResultsControllerDelegate> {
     NSFetchedResultsController * _fetchController;
     NSArray * _sortDescriptors;
     __weak id _notfObserver;
@@ -25,7 +25,7 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
 
 @end
 
-@implementation TaskHistoryModel
+@implementation TaskActivitiesModel
 
 - (id)init {
     self = [super init];
@@ -59,14 +59,14 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = [THistoryItemCell class];
+    Class cellClass = [TActivityItemCell class];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
                             reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    IQTaskHistoryItem * item = [self itemAtIndexPath:indexPath];
-    return [THistoryItemCell heightForItem:item andCellWidth:self.cellWidth];
+    IQTaskActivityItem * item = [self itemAtIndexPath:indexPath];
+    return [TActivityItemCell heightForItem:item andCellWidth:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
@@ -90,15 +90,18 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-//        [[IQService sharedService] contactsWithPage:@(1)
-//                                                per:@(_portionSize)
-//                                               sort:SORT_DIRECTION
-//                                             search:_filter
-//                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-//                                                if(completion) {
-//                                                    completion(error);
-//                                                }
-//                                            }];
+        NSDate * lastUpdatedDate = [self lastActivityChangedDate];
+
+        [[IQService sharedService] activitiesForTaskWithId:self.taskId
+                                              updatedAfter:lastUpdatedDate
+                                                      page:@(1)
+                                                       per:@(_portionSize)
+                                                      sort:SORT_DIRECTION
+                                                   handler:^(BOOL success, NSArray * activities, NSData *responseData, NSError *error) {
+                                                       if (completion) {
+                                                           completion(error);
+                                                       }
+                                                   }];
     }
 }
 
@@ -107,38 +110,36 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-//        NSInteger count = [self numberOfItemsInSection:0];
-//        NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
-//        
-//        [[IQService sharedService] tasksBeforeId:nil
-//                                          folder:self.folder
-//                                          status:self.statusFilter
-//                                     communityId:self.communityId
-//                                            page:@(page)
-//                                             per:@(_portionLenght)
-//                                          search:self.search
-//                                            sort:_sort
-//                                         handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
-//                                             if(completion) {
-//                                                 completion(error);
-//                                             }
-//                                             [self loadNextPartSourceControllerWithCompletion:nil];
-//                                         }];
+        NSNumber * lastTaskId = [self lastIdFromBottom];
+        
+        [[IQService sharedService] activitiesForTaskWithId:self.taskId
+                                                  beforeId:lastTaskId
+                                                      page:@(1)
+                                                       per:@(_portionSize)
+                                                      sort:SORT_DIRECTION
+                                                   handler:^(BOOL success, NSArray * activities, NSData *responseData, NSError *error) {
+                                                       if (completion) {
+                                                           completion(error);
+                                                       }
+                                                   }];
     }
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadModelSourceControllerWithCompletion:completion];
     
-    //        [[IQService sharedService] contactsWithPage:@(1)
-    //                                                per:@(_portionSize)
-    //                                               sort:SORT_DIRECTION
-    //                                             search:_filter
-    //                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-    //                                                if(completion) {
-    //                                                    completion(error);
-    //                                                }
-    //                                            }];
+    NSDate * lastUpdatedDate = [self lastActivityChangedDate];
+    
+    [[IQService sharedService] activitiesForTaskWithId:self.taskId
+                                          updatedAfter:lastUpdatedDate
+                                                  page:@(1)
+                                                   per:@(_portionSize)
+                                                  sort:SORT_DIRECTION
+                                               handler:^(BOOL success, NSArray * activities, NSData *responseData, NSError *error) {
+                                                   if (completion) {
+                                                       completion(error);
+                                                   }
+                                               }];
 }
 
 - (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
@@ -146,10 +147,10 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
     
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
     
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"taskId == %@", self.taskId];
     
     if(!_fetchController && [IQService sharedService].context) {
-        NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQTaskHistoryItem"];
+        NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQTaskActivityItem"];
         [fetchRequest setSortDescriptors:_sortDescriptors];
         
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
@@ -194,6 +195,50 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
 }
 
 #pragma mark - Private methods
+
+- (NSDate*)lastActivityChangedDate {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTaskActivityItem"];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"updatedDate" ascending:NO]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"taskId == %@", self.taskId]];
+    fetchRequest.fetchLimit = 1;
+    
+    NSError *error = nil;
+    
+    NSArray *objects = [[IQService sharedService].context executeFetchRequest:fetchRequest error:&error];
+    if ([objects count] > 0) {
+        IQTaskActivityItem * lastActivity = ((IQTaskActivityItem*)[objects objectAtIndex:0]);
+        return lastActivity.updatedDate;
+    }
+
+    return nil;
+}
+
+- (NSNumber*)lastIdFromBottom {
+    NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTaskActivityItem"];
+    NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"taskId"];
+    NSExpression * maxIdExpression = [NSExpression expressionForFunction:@"min:"
+                                                               arguments:[NSArray arrayWithObject:keyPathExpression]];
+    
+    NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
+    [expressionDescription setName:@"taskId"];
+    [expressionDescription setExpression:maxIdExpression];
+    [expressionDescription setExpressionResultType:NSDecimalAttributeType];
+    
+    [fetchRequest setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
+    [fetchRequest setResultType:NSDictionaryResultType];
+    fetchRequest.fetchLimit = 1;
+    
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"taskId == %@", self.taskId]];
+    
+    NSError *error = nil;
+    
+    NSArray *objects = [[IQService sharedService].context executeFetchRequest:fetchRequest error:&error];
+    if ([objects count] > 0) {
+        return [[objects objectAtIndex:0] valueForKey:@"taskId"];
+    }
+    
+    return nil;
+}
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
