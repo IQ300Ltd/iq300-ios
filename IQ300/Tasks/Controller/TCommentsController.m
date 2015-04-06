@@ -86,6 +86,7 @@
                                                         [self hideActivityIndicator];
                                                     }];
                                                     [self.tableView reloadData];
+                                                    [self updateNoDataLabelVisibility];
                                                 }
                                             }];
     }
@@ -110,8 +111,6 @@
     else {
         [self.view addSubview:_noDataLabel];
     }
-    
-    [self updateNoDataLabelVisibility];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -121,6 +120,7 @@
     
     self.resetReadFlagAutomatically = YES;
     [self resetReadFlag];
+    [self updateNoDataLabelVisibility];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
