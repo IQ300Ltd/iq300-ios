@@ -26,6 +26,7 @@
 #import "NotificationsController.h"
 #import "IQDiscussion.h"
 #import "CommentsController.h"
+#import "TaskTabController.h"
 
 @interface NotificationsGroupController () <SWTableViewCellDelegate> {
     NotificationsView * _mainView;
@@ -178,26 +179,13 @@
     BOOL hasOneUnread = ([group.unreadCount integerValue] == 1);
     
     if ((hasOneUnread && self.model.loadUnreadOnly) || [group.totalCount integerValue] == 1) {
-        if(notification.discussionId) {
-            NSString * title = notification.notificable.title;
-            NSNumber * commentId = notification.commentId;
-            [[IQService sharedService] discussionWithId:notification.discussionId
-                                                handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
-                                                    if(success) {
-                                                        CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
-                                                        CommentsController * controller = [[CommentsController alloc] init];
-                                                        controller.hidesBottomBarWhenPushed = YES;
-                                                        controller.model = model;
-                                                        controller.title = title;
-                                                        controller.highlightedCommentId = commentId;
-                                                        
-                                                        [self.navigationController pushViewController:controller animated:YES];
-                                                        
-                                                        if(hasOneUnread) {
-                                                            [self .model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
-                                                        }
-                                                    }
-                                                }];
+        if ([notification.notificable.type isEqualToString:@"BaseTask"]) {
+            [self openTaskControllerForNotification:notification
+                                        atIndexPath:(hasOneUnread) ? indexPath : nil];
+        }
+        else if(notification.discussionId) {
+            [self openCommentsControllerForNotification:notification
+                                            atIndexPath:(hasOneUnread) ? indexPath : nil];
         }
     }
     else {
@@ -349,6 +337,48 @@
     if([counterName isEqualToString:@"notifications"]) {
         [self updateGlobalCounter];
     }
+}
+
+- (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    BOOL isDiscussionNotification = (notification.discussionId != nil);
+    NSInteger taskTabIndex = 1;
+    UITabBarController * mainTabController = self.tabBarController;
+    mainTabController.selectedIndex = taskTabIndex;
+    UINavigationController * navController = mainTabController.viewControllers[taskTabIndex];
+    [navController popToRootViewControllerAnimated:NO];
+    [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
+                                           completion:^(TaskTabController * controller, NSError *error) {
+                                               if (controller) {
+                                                   controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
+                                                   [navController setViewControllers:@[navController.viewControllers[0], controller]
+                                                                            animated:YES];
+                                                   if(indexPath) {
+                                                       [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
+                                                   }
+                                               }
+                                           }];
+}
+
+- (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    NSString * title = notification.notificable.title;
+    NSNumber * commentId = notification.commentId;
+    [[IQService sharedService] discussionWithId:notification.discussionId
+                                        handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
+                                            if(success) {
+                                                CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
+                                                CommentsController * controller = [[CommentsController alloc] init];
+                                                controller.hidesBottomBarWhenPushed = YES;
+                                                controller.model = model;
+                                                controller.title = title;
+                                                controller.highlightedCommentId = commentId;
+                                                
+                                                [self.navigationController pushViewController:controller animated:YES];
+                                                
+                                                if(indexPath) {
+                                                    [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
+                                                }
+                                            }
+                                        }];
 }
 
 - (void)dealloc {

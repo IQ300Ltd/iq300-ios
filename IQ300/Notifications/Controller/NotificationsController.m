@@ -25,6 +25,7 @@
 #import "DispatchAfterExecution.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQNotificationsGroup.h"
+#import "TaskTabController.h"
 
 @interface NotificationsController() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationGroupView * _mainView;
@@ -143,24 +144,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQNotification * notification = [self.model itemAtIndexPath:indexPath];
-    if(notification.discussionId) {
-        NSString * title = notification.notificable.title;
-        NSNumber * commentId = notification.commentId;
-        [[IQService sharedService] discussionWithId:notification.discussionId
-                                            handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
-                                                if(success) {
-                                                    CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];                                                    
-                                                    CommentsController * controller = [[CommentsController alloc] init];
-                                                    controller.hidesBottomBarWhenPushed = YES;
-                                                    controller.model = model;
-                                                    controller.title = title;
-                                                    controller.highlightedCommentId = commentId;
-                                                    
-                                                    [self.navigationController pushViewController:controller animated:YES];
-                                                    
-                                                    [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
-                                                }
-                                            }];
+    if ([notification.notificable.type isEqualToString:@"BaseTask"]) {
+        [self openTaskControllerForNotification:notification atIndexPath:indexPath];
+    }
+    else if(notification.discussionId) {
+        [self openCommentsControllerForNotification:notification atIndexPath:indexPath];
     }
 }
 
@@ -277,6 +265,46 @@
 
 - (void)updateNoDataLabelVisibility {
     [_mainView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
+}
+
+- (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    BOOL isDiscussionNotification = (notification.discussionId != nil);
+    NSInteger taskTabIndex = 1;
+    UITabBarController * mainTabController = self.tabBarController;
+    mainTabController.selectedIndex = taskTabIndex;
+    
+    UINavigationController * navController = mainTabController.viewControllers[taskTabIndex];
+    [navController popToRootViewControllerAnimated:NO];
+    [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
+                                           completion:^(TaskTabController * controller, NSError *error) {
+                                               if (controller) {
+                                                   controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
+                                                   [navController setViewControllers:@[navController.viewControllers[0], controller]
+                                                                            animated:YES];
+                                                   
+                                                   [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                               }
+                                           }];
+}
+
+- (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    NSString * title = notification.notificable.title;
+    NSNumber * commentId = notification.commentId;
+    [[IQService sharedService] discussionWithId:notification.discussionId
+                                        handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
+                                            if(success) {
+                                                CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
+                                                CommentsController * controller = [[CommentsController alloc] init];
+                                                controller.hidesBottomBarWhenPushed = YES;
+                                                controller.model = model;
+                                                controller.title = title;
+                                                controller.highlightedCommentId = commentId;
+                                                
+                                                [self.navigationController pushViewController:controller animated:YES];
+                                                
+                                                [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                            }
+                                        }];
 }
 
 - (void)dealloc {

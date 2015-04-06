@@ -31,6 +31,26 @@
 
 @implementation TaskTabController
 
++ (void)taskTabControllerForTaskWithId:(NSNumber*)taskId completion:(void (^)(TaskTabController * controller, NSError * error))completion {
+    [[IQService sharedService] taskWithId:taskId handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+        if (success) {
+            TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTask:task];
+            TaskTabController * controller = [[TaskTabController alloc] init];
+            controller.task = task;
+            controller.policyInspector = policyInspector;
+            
+            [policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
+                if (completion) {
+                    completion(controller, error);
+                }
+            }];
+        }
+        else if (completion) {
+            completion(nil, error);
+        }
+    }];
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
