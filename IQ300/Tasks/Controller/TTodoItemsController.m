@@ -19,7 +19,7 @@
 
 @interface TTodoItemsController() <SWTableViewCellDelegate, UITextViewDelegate> {
     CGFloat _tableBottomMarging;
-    __weak NSIndexPath * _editableIndexPath;
+    NSIndexPath * _editableIndexPath;
     UIView * _bottomSeparatorView;
     ExtendedButton * _doneButton;
     UILabel * _noDataLabel;
@@ -245,11 +245,8 @@
 }
 
 - (void)onKeyboardWillHide:(NSNotification *)notification {
-    if (_editableIndexPath) {
-        TodoListItemCell * cell = (TodoListItemCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
-        cell.titleTextView.editable = NO;
-        _editableIndexPath = nil;
-    }
+    [self endEditeCellAtindexPath:_editableIndexPath];
+    _editableIndexPath = nil;
 
     [self makeInputViewTransitionWithDownDirection:YES notification:notification];
 }
@@ -293,6 +290,9 @@
 }
 
 - (void)addButtonAction:(UIButton*)sender {
+    [self endEditeCellAtindexPath:_editableIndexPath];
+    _editableIndexPath = nil;
+
     __weak typeof(self) weakSelf = self;
     [self.model createItemWithCompletion:^(id<TodoItem> item, NSError *error) {
         if (item) {
@@ -324,8 +324,6 @@
                                       actualBounds.size.width,
                                       actualBounds.origin.y + actualBounds.size.height - tableOffset);
 }
-
-#pragma mark - Private methods
 
 - (void)doneButtonAction:(UIButton*)sender {
     Boolean validationSuccess = YES;
@@ -367,6 +365,13 @@
         [self.tableView scrollToRowAtIndexPath:_editableIndexPath
                               atScrollPosition:UITableViewScrollPositionTop
                                       animated:YES];
+    }
+}
+
+- (void)endEditeCellAtindexPath:(NSIndexPath*)indexPath {
+    if (indexPath) {
+        TodoListItemCell * cell = (TodoListItemCell*)[self.tableView cellForRowAtIndexPath:indexPath];
+        cell.titleTextView.editable = NO;
     }
 }
 
