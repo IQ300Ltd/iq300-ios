@@ -226,7 +226,15 @@
         }
     }
     else {
-        [self.model deleteItemAtIndexPath:indexPath];
+        [UIAlertView showWithTitle:@"IQ300"
+                           message:NSLocalizedString(@"You agree to remove the selected item?", nil)
+                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                              if (buttonIndex == 1) {
+                                  [self.model deleteItemAtIndexPath:indexPath];
+                              }
+                          }];
     }
 }
 
