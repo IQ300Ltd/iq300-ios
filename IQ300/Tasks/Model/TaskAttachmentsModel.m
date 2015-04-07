@@ -34,10 +34,6 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
         _attachments = [NSMutableArray array];
         _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"createDate" ascending:NO]];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
         [self resubscribeToIQNotifications];
     }
     return self;
@@ -160,6 +156,20 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
                                                     completion(error);
                                                 }
                                             }];
+}
+
+- (void)setSubscribedToNotifications:(BOOL)subscribed {
+    if(subscribed) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationWillEnterForeground)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIApplicationWillEnterForegroundNotification
+                                                      object:nil];
+    }
 }
 
 - (void)clearModelData {

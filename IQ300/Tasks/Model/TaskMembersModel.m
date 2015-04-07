@@ -41,10 +41,6 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
         
         _sortDescriptors = @[roleDescriptor, nameDescriptor];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
         [self resubscribeToIQNotifications];
     }
     
@@ -180,6 +176,20 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
                                                     completion(error);
                                                 }
                                             }];
+}
+
+- (void)setSubscribedToNotifications:(BOOL)subscribed {
+    if(subscribed) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationWillEnterForeground)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIApplicationWillEnterForegroundNotification
+                                                      object:nil];
+    }
 }
 
 - (void)clearModelData {

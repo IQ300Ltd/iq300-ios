@@ -133,6 +133,7 @@
     [self reloadModel];
     
     self.model.resetReadFlagAutomatically = YES;
+    [self.model setSubscribedToNotifications:YES];
     [self.model resetReadFlagWithCompletion:nil];
 }
 
@@ -140,6 +141,7 @@
     [super viewWillDisappear:animated];
     
     self.model.resetReadFlagAutomatically = NO;
+    [self.model setSubscribedToNotifications:NO];
 }
 
 - (void)viewDidLayoutSubviews {
