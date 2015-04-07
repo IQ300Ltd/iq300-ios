@@ -110,3 +110,4 @@
 "Todo item name can not be empty" = "Элемент чек-листа не может быть пустым";
 "History is empty" = "Записи в истории отсутствуют";
 "No comments" = "Комментарии отсутствуют";
+"Todo list for task is empty" = "Чек-лист задачи пуст";
