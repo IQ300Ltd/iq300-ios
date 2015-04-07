@@ -79,6 +79,10 @@
     _task = task;
     
     self.model.taskId = _task.taskId;
+    
+    if (self.isViewLoaded) {
+        [self.tableView reloadData];
+    }
 }
 
 - (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
