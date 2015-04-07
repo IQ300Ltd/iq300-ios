@@ -87,7 +87,7 @@
 
 - (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
     _policyInspector = policyInspector;
-    _editEnabled = ([self.policyInspector isActionAvailable:@"change_state" inCategory:@"todoItems"]);
+    _editEnabled = ([self.policyInspector isActionAvailable:@"update" inCategory:@"todoItems"]);
 }
 
 - (void)viewDidLoad {
