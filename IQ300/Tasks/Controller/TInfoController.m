@@ -20,6 +20,7 @@
 #import "IQTask.h"
 #import "IQUser.h"
 #import "TTodoItemsController.h"
+#import "TodoListModel.h"
 
 @interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
     __weak UIButton * _deferredActionButton;
@@ -58,7 +59,7 @@
         self.tabBarItem.customBadgeView = badgeView;
         self.tabBarItem.badgeOrigin = CGPointMake(37.5f, 3.5f);
 
-        TodoListModel * todoListModel = [[TodoListModel alloc] init];
+        ManagedTodoListModel * todoListModel = [[ManagedTodoListModel alloc] init];
         todoListModel.section = 1;
         self.model = todoListModel;
 
@@ -285,9 +286,8 @@
 }
 
 - (void)editTodoItemsAction:(UIButton*)sender {
-    TodoListModel * model = [[TodoListModel alloc] init];
+    TodoListModel * model = [[TodoListModel alloc] initWithManagedItems:self.model.items];
     model.taskId = self.task.taskId;
-    model.items = [TodoListModel makeTodoItemsFromManagedObjects:[self.task.todoItems array]];
     
     TTodoItemsController * controller = [[TTodoItemsController alloc] init];
     controller.model = model;

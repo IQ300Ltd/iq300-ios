@@ -91,7 +91,10 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
-    
+
+    [self setActivityIndicatorBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.3f]];
+    [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+
     _noDataLabel = [[UILabel alloc] init];
     [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
     [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];

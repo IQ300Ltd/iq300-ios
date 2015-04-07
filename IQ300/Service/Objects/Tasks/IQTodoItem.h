@@ -27,4 +27,6 @@
 
 + (RKObjectMapping*)requestObjectMapping;
 
+- (BOOL)isEqualToItem:(IQTodoItem*)item;
+
 @end

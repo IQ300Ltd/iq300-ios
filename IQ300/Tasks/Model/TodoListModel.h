@@ -12,14 +12,16 @@
 
 @interface TodoListModel : NSObject<IQTableModel>
 
+@property (nonatomic, readonly) NSArray * items;
+
 @property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, assign) NSInteger section;
-@property (nonatomic, strong) NSArray * items;
 @property (nonatomic, assign) CGFloat cellWidth;
+@property (nonatomic, readonly) BOOL hasChanges;
 
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
-+ (NSArray*)makeTodoItemsFromManagedObjects:(NSArray*)managedObjects;
+- (id)initWithManagedItems:(NSArray*)items;
 
 - (BOOL)isItemCheckedAtIndexPath:(NSIndexPath*)indexPath;
 
@@ -30,10 +32,6 @@
 - (void)createItemWithCompletion:(void (^)(id<TodoItem> item, NSError *error))completion;
 
 - (void)deleteItemAtIndexPath:(NSIndexPath*)indexPath;
-
-- (void)completeTodoItemAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
-
-- (void)rollbackTodoItemWithId:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 
 - (void)saveChangesWithCompletion:(void (^)(NSError * error))completion;
 

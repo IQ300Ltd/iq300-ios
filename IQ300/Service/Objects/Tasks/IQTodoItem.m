@@ -47,6 +47,22 @@
     return [objectMapping inverseMapping];
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    IQTodoItem * copy = [[[self class] allocWithZone:zone] init];
+    
+    if (copy) {
+        copy.itemId = [self.itemId copyWithZone:zone];
+        copy.taskId = [self.taskId copyWithZone:zone];
+        copy.title = [self.title copyWithZone:zone];
+        copy.completed = [self.completed copyWithZone:zone];
+        copy.position = [self.position copyWithZone:zone];
+        copy.createdDate = [self.createdDate copyWithZone:zone];
+        copy.updatedDate = [self.updatedDate copyWithZone:zone];
+    }
+    
+    return copy;
+}
+
 - (id)init {
     self = [super init];
     
@@ -55,6 +71,15 @@
     }
     
     return self;
+}
+
+- (BOOL)isEqualToItem:(IQTodoItem*)item {
+    if (item) {
+        return [self.position isEqualToNumber:item.position] &&
+               [self.title isEqualToString:item.title];
+    }
+    
+    return NO;
 }
 
 @end

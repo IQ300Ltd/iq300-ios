@@ -44,6 +44,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self setActivityIndicatorBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.3f]];
+    [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
     
@@ -176,10 +179,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    id<TodoItem> item = [self.model itemAtIndexPath:indexPath];
     BOOL isCellChecked = ![self.model isItemCheckedAtIndexPath:indexPath];
     [self.model makeItemAtIndexPath:indexPath checked:isCellChecked];
-    item.completed = @(isCellChecked);
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -345,13 +346,18 @@
     }
     
     if (validationSuccess) {
-        [self showActivityIndicator];
-        [self.model saveChangesWithCompletion:^(NSError *error) {
-            if (!error) {
-                [self.navigationController popViewControllerAnimated:YES];
-            }
-            [self hideActivityIndicator];
-        }];
+        if (self.model.hasChanges) {
+            [self showActivityIndicator];
+            [self.model saveChangesWithCompletion:^(NSError *error) {
+                if (!error) {
+                    [self.navigationController popViewControllerAnimated:YES];
+                }
+                [self hideActivityIndicator];
+            }];
+        }
+        else {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
 }
 
