@@ -8,14 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-@class IQTask;
 @class IQTaskMember;
+
+extern NSString * const IQTaskPolicyDidChangedNotification;
 
 @interface TaskPolicyInspector : NSObject
 
-@property (nonatomic, readonly) IQTask * task;
+@property (nonatomic, readonly) NSNumber * taskId;
 
-- (id)initWithTask:(IQTask*)task;
+- (id)initWithTaskId:(NSNumber*)task;
 
 - (void)requestUserPoliciesWithCompletion:(void (^)(NSError * error))completion;
 

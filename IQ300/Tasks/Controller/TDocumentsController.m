@@ -111,6 +111,11 @@
     else {
         [self.view addSubview:_noDataLabel];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(taskPolicyDidChanged:)
+                                                 name:IQTaskPolicyDidChangedNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -125,14 +130,7 @@
      }
      position:SVPullToRefreshPositionTop];
 
-    if([self.policyInspector isActionAvailable:@"create" inCategory:self.category]) {
-        UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(addButtonAction:)];
-        self.parentViewController.navigationItem.rightBarButtonItem = addButton;
-    }
-    
+    [self updateInterfaceFoPolicies];
     [self reloadModel];
     
     self.model.resetReadFlagAutomatically = YES;
@@ -315,6 +313,29 @@
                  otherButtonTitles:nil
                           tapBlock:nil];
     }
+}
+
+#pragma mark - Policies methods
+
+- (void)taskPolicyDidChanged:(NSNotification*)notification {
+    if (notification.object == _policyInspector && [self isVisible]) {
+        [self updateInterfaceFoPolicies];
+        [self.tableView reloadData];
+    }
+}
+
+- (void)updateInterfaceFoPolicies {
+    if([self.policyInspector isActionAvailable:@"create" inCategory:self.category]) {
+        UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(addButtonAction:)];
+        self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

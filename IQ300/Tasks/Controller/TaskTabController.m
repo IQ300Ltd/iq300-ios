@@ -24,7 +24,6 @@
 #import "IQTask.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate> {
-    TaskPolicyInspector * _policyInspector;
 }
 
 @end
@@ -34,7 +33,7 @@
 + (void)taskTabControllerForTaskWithId:(NSNumber*)taskId completion:(void (^)(TaskTabController * controller, NSError * error))completion {
     [[IQService sharedService] taskWithId:taskId handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
         if (success) {
-            TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTask:task];
+            TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:task.taskId];
             TaskTabController * controller = [[TaskTabController alloc] init];
             controller.task = task;
             controller.policyInspector = policyInspector;

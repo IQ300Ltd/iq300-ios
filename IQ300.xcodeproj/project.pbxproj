@@ -256,6 +256,7 @@
 		73BA989A1A10A1AB005AEC00 /* IQMenuSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA98991A10A1AB005AEC00 /* IQMenuSection.m */; };
 		73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA989C1A10A29C005AEC00 /* IQMenuSerializator.m */; };
 		73BA98A01A10A531005AEC00 /* NSBundle+Localization.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA989F1A10A531005AEC00 /* NSBundle+Localization.m */; };
+		73BF7C611AD5199C00C52D41 /* UIViewController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BF7C601AD5199C00C52D41 /* UIViewController+Additions.m */; };
 		73C286AD1A94AFD70011FD51 /* IQNotificationsGroupIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C286AC1A94AFD70011FD51 /* IQNotificationsGroupIds.m */; };
 		73C286B01A94B5E30011FD51 /* IQNotificationsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C286AF1A94B5E30011FD51 /* IQNotificationsHolder.m */; };
 		73C384C91A9725DA00B66D0F /* IQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C384C81A9725DA00B66D0F /* IQTask.m */; };
@@ -728,6 +729,8 @@
 		73BA989C1A10A29C005AEC00 /* IQMenuSerializator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQMenuSerializator.m; sourceTree = "<group>"; };
 		73BA989E1A10A531005AEC00 /* NSBundle+Localization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+Localization.h"; sourceTree = "<group>"; };
 		73BA989F1A10A531005AEC00 /* NSBundle+Localization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
+		73BF7C5F1AD5199C00C52D41 /* UIViewController+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Additions.h"; sourceTree = "<group>"; };
+		73BF7C601AD5199C00C52D41 /* UIViewController+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Additions.m"; sourceTree = "<group>"; };
 		73C286AB1A94AFD70011FD51 /* IQNotificationsGroupIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationsGroupIds.h; sourceTree = "<group>"; };
 		73C286AC1A94AFD70011FD51 /* IQNotificationsGroupIds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationsGroupIds.m; sourceTree = "<group>"; };
 		73C286AE1A94B5E30011FD51 /* IQNotificationsHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationsHolder.h; sourceTree = "<group>"; };
@@ -1148,6 +1151,8 @@
 				73A798381A359D79006F5721 /* ALAsset+Extension.m */,
 				73F2A53E1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.h */,
 				73F2A53F1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m */,
+				73BF7C5F1AD5199C00C52D41 /* UIViewController+Additions.h */,
+				73BF7C601AD5199C00C52D41 /* UIViewController+Additions.m */,
 				73A20C751A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.h */,
 				73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */,
 				73AF25A11A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.h */,
@@ -2131,6 +2136,7 @@
 				738FE71E1A164875009F26A2 /* UIImage+Extensions.m in Sources */,
 				73891FF51A2C97ED008D8885 /* UIAlertView+Blocks.m in Sources */,
 				73A7CA701A9F4BF70038DEF1 /* TaskFilterSectionView.m in Sources */,
+				73BF7C611AD5199C00C52D41 /* UIViewController+Additions.m in Sources */,
 				73A7D67E1AD2796D002B7AFF /* TCRequestItemsHolder.m in Sources */,
 				73A113F71A1C88DD00293EC5 /* IQMenuCellFactory.m in Sources */,
 				73841B6A1AB98FCC00B079BA /* TInfoLineView.m in Sources */,

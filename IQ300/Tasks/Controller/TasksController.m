@@ -185,7 +185,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQTask * task = [self.model itemAtIndexPath:indexPath];
 
-    TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTask:task];
+    TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:task.taskId];
     TaskTabController * controller = [[TaskTabController alloc] init];
     controller.task = task;
     controller.policyInspector = policyInspector;

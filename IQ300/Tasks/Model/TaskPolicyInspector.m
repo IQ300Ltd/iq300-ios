@@ -15,6 +15,8 @@
 #import "IQTask.h"
 #import "IQUser.h"
 
+NSString * const IQTaskPolicyDidChangedNotification = @"IQTaskPolicyDidChangedNotification";
+
 @interface  NSObject(Enhanced)
 
 + (BOOL)hasPropertyNamed:(NSString *)propertyNamed;
@@ -38,24 +40,28 @@
 @implementation TaskPolicyInspector
 
 - (id)init {
-    return [self initWithTask:nil];
+    return [self initWithTaskId:nil];
 }
 
-- (id)initWithTask:(IQTask*)task {
-    NSParameterAssert(task);
+- (id)initWithTaskId:(NSNumber*)taskId {
+    NSParameterAssert(taskId);
     
     self = [super init];
     if (self) {
-        _task = task;
+        _taskId = taskId;
     }
     return self;
 }
 
 - (void)requestUserPoliciesWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] policiesForTaskWithId:_task.taskId
+    [[IQService sharedService] policiesForTaskWithId:_taskId
                                              handler:^(BOOL success, TaskPolicies *  policies, NSData *responseData, NSError *error) {
                                                  if (success) {
                                                      _policies = policies;
+                                                     
+                                                     [[NSNotificationCenter defaultCenter] postNotificationName:IQTaskPolicyDidChangedNotification
+                                                                                                         object:self
+                                                                                                       userInfo:@{ @"taskId" : self.taskId }];
                                                  }
                                                  if(completion) {
                                                      completion(error);

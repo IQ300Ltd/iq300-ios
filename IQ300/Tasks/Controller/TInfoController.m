@@ -88,26 +88,18 @@
 
 - (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
     _policyInspector = policyInspector;
-    _editEnabled = ([self.policyInspector isActionAvailable:@"update" inCategory:@"todoItems"]);
+    [self updateInterfaceFoPolicies];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.view.backgroundColor = [UIColor whiteColor];
-
     self.tableView.tableFooterView = [UIView new];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    if([self.policyInspector isActionAvailable:@"update" inCategory:[self category]]) {
-//        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
-//                                                                        style:UIBarButtonItemStylePlain
-//                                                                       target:self
-//                                                                       action:@selector(editButtonAction:)];
-//        self.parentViewController.navigationItem.rightBarButtonItem = editButton;
-    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillEnterForeground)
@@ -115,7 +107,8 @@
                                                object:nil];
 
     [self markTaskAsReadedIfNeed];
-    
+    [self updateInterfaceFoPolicies];
+
     [self.model updateModelWithCompletion:^(NSError *error) {
         if (error == nil) {
             [self.tableView reloadData];
@@ -236,6 +229,7 @@
                                             handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                                 if (success) {
                                                     self.task = task;
+                                                    [self updateTaskPolicies];
                                                 }
                                                 else {
                                                     [actionButton setEnabled:YES];
@@ -266,6 +260,7 @@
                                         handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                             if (success) {
                                                 self.task = task;
+                                                [self updateTaskPolicies];
                                             }
                                             else {
                                                 [_deferredActionButton setEnabled:YES];
@@ -299,6 +294,7 @@
                                   handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                       if (success) {
                                           self.task = task;
+                                          [self updateTaskPolicies];
                                       }
                                   }];
 }
@@ -384,6 +380,33 @@
 
 - (NSString*)category {
     return @"details";
+}
+
+- (void)updateTaskPolicies {
+    [self.policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
+        if (error == nil) {
+            [self updateInterfaceFoPolicies];
+            
+            if ([self isVisible]) {
+                [self.tableView beginUpdates];
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                              withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView endUpdates];
+            }
+        }
+    }];
+}
+
+- (void)updateInterfaceFoPolicies {
+    _editEnabled = ([self.policyInspector isActionAvailable:@"update" inCategory:@"todoItems"]);
+
+    if([self.policyInspector isActionAvailable:@"update" inCategory:[self category]]) {
+        //        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
+        //                                                                        style:UIBarButtonItemStylePlain
+        //                                                                       target:self
+        //                                                                       action:@selector(editButtonAction:)];
+        //        self.parentViewController.navigationItem.rightBarButtonItem = editButton;
+    }
 }
 
 - (void)dealloc {
