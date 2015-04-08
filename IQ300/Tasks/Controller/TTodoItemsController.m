@@ -105,7 +105,7 @@
                                              selector:@selector(onKeyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
-
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
@@ -242,7 +242,17 @@
 #pragma mark - Keyboard Notifications
 
 - (void)onKeyboardWillShow:(NSNotification *)notification {
-    [self makeInputViewTransitionWithDownDirection:NO notification:notification];
+    [self makeInputViewTransitionWithDownDirection:NO
+                                      notification:notification];
+    
+    if (_editableIndexPath) {
+        [self.tableView scrollToRowAtIndexPath:_editableIndexPath
+                              atScrollPosition:UITableViewScrollPositionTop
+                                      animated:NO];
+    }
+}
+
+- (void)onKeyboardDidShow:(NSNotification *)notification {
 }
 
 - (void)onKeyboardWillHide:(NSNotification *)notification {
@@ -291,8 +301,7 @@
 }
 
 - (void)addButtonAction:(UIButton*)sender {
-    [self endEditeCellAtindexPath:_editableIndexPath];
-    _editableIndexPath = nil;
+    NSIndexPath * prevEditIndexPath = _editableIndexPath;
 
     __weak typeof(self) weakSelf = self;
     [self.model createItemWithCompletion:^(id<TodoItem> item, NSError *error) {
@@ -306,6 +315,8 @@
                 [cell hideUtilityButtonsAnimated:YES];
                 cell.titleTextView.editable = YES;
                 [cell.titleTextView becomeFirstResponder];
+                
+                [self endEditeCellAtindexPath:prevEditIndexPath];
             }];
 
             [weakSelf.tableView scrollToRowAtIndexPath:_editableIndexPath
