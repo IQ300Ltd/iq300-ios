@@ -76,7 +76,8 @@
 - (BOOL)isEqualToItem:(IQTodoItem*)item {
     if (item) {
         return [self.position isEqualToNumber:item.position] &&
-               [self.title isEqualToString:item.title];
+               [self.title isEqualToString:item.title] &&
+               [self.completed isEqualToNumber:item.completed];
     }
     
     return NO;
