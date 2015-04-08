@@ -25,7 +25,7 @@
 @interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
     __weak UIButton * _deferredActionButton;
     __weak id _notfObserver;
-    BOOL _editEnabled;
+    BOOL _changeStateEnabled;
 }
 
 @property (nonatomic, assign) BOOL resetReadFlagAutomatically;
@@ -152,7 +152,7 @@
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
     [cell setAccessoryType:(isCellChecked) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
     
-    cell.enabled = _editEnabled;
+    cell.enabled = _changeStateEnabled;
     
     return cell;
 }
@@ -169,9 +169,10 @@
         return [self mainHeaderView];
     }
     else {
-       TodoListSectionView * headerView = [[TodoListSectionView alloc] init];
-        [headerView.editButton setHidden:!_editEnabled];
-        if (_editEnabled) {
+        BOOL editEnabled = ([self.policyInspector isActionAvailable:@"update" inCategory:@"todoItems"]);
+        TodoListSectionView * headerView = [[TodoListSectionView alloc] init];
+        [headerView.editButton setHidden:!editEnabled];
+        if (editEnabled) {
             [headerView.editButton addTarget:self
                                       action:@selector(editTodoItemsAction:)
                             forControlEvents:UIControlEventTouchUpInside];
@@ -197,7 +198,7 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //Enable or disable change checked state
-    if(_editEnabled) {
+    if(_changeStateEnabled) {
         return ([self.model isItemSelectableAtIndexPath:indexPath]) ? indexPath : nil;
     }
     return nil;
@@ -398,7 +399,7 @@
 }
 
 - (void)updateInterfaceFoPolicies {
-    _editEnabled = ([self.policyInspector isActionAvailable:@"update" inCategory:@"todoItems"]);
+    _changeStateEnabled = ([self.policyInspector isActionAvailable:@"change_state" inCategory:@"todoItems"]);
 
     if([self.policyInspector isActionAvailable:@"update" inCategory:[self category]]) {
         //        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
