@@ -227,7 +227,7 @@
         }
     }
     else {
-        [UIAlertView showWithTitle:@"IQ300"
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"You agree to remove the selected item?", nil)
                  cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                  otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
@@ -345,7 +345,7 @@
             if ([NSNull null] == (NSNull*)title || [title length] == 0 ||
                 [[title stringByReplacingOccurrencesOfString:@" " withString:@""] length] == 0) {
                 
-                [UIAlertView showWithTitle:@"IQ300"
+                [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                                    message:NSLocalizedString(@"Item name can not be empty", nil)
                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
                          otherButtonTitles:nil

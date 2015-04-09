@@ -107,8 +107,9 @@
 "No attachments" = "Документы отсутствуют";
 "You can not leave the task" = "Вы не можете покинуть задачу";
 "You can not remove the user from the task" = "Вы не можете удалить пользователя из задачи";
-"Item name can not be empty" = "Название элемента не может быть пустым";
+"Item name can not be empty" = "Название ПУНКТА не может быть пустым";
 "History is empty" = "Записи в истории отсутствуют";
 "No comments" = "Комментарии отсутствуют";
 "Todo list for task is empty" = "Чек-лист задачи пуст";
-"You agree to remove the selected item?" = "Вы согласны удалить выбранный элемент?";
+"Attention" = "Внимание";
+"You agree to remove the selected item?" = "Вы согласны удалить выбранный пункт?";
