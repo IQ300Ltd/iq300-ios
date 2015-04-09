@@ -42,7 +42,9 @@
         stringDate = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"Today", nil), [timeFormatter stringFromDate:self]];
     }
     else if([beginningOfDay compare:yesterday] == NSOrderedSame) {
-        stringDate = NSLocalizedString(@"Yesterday", nil);
+        NSDateFormatter * timeFormatter = [self dateFormater];
+        [timeFormatter setDateFormat:@"HH:mm"];
+        stringDate = [NSString stringWithFormat:@"%@, %@", NSLocalizedString(@"Yesterday", nil), [timeFormatter stringFromDate:self]];
     }
     else {
         NSDateFormatter *dateFormatter = [self dateFormater];
