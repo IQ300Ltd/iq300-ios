@@ -24,6 +24,8 @@
 
 @implementation UserPickerController
 
+@dynamic model;
+
 - (void)setFilter:(NSString *)filter {
     _filter = filter;
     

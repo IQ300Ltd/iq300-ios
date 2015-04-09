@@ -45,6 +45,8 @@
 
 @implementation CommentsController
 
+@dynamic model;
+
 - (UITableView*)tableView {
     return _mainView.tableView;
 }

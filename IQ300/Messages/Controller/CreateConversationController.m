@@ -30,6 +30,8 @@
 
 @implementation CreateConversationController
 
+@dynamic model;
+
 - (void)loadView {
     _mainView = [[CreateConversationView alloc] init];
     self.view = _mainView;

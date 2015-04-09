@@ -52,6 +52,8 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
 
 @implementation IQService
 
+@dynamic session;
+
 - (id)initWithURL:(NSString *)url andSession:(id)session {
     self = [super initWithURL:url andSession:session];
     if (self) {

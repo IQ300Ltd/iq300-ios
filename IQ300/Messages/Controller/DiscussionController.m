@@ -40,6 +40,8 @@
 
 @implementation DiscussionController
 
+@dynamic model;
+
 - (UITableView*)tableView {
     return _mainView.tableView;
 }
