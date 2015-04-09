@@ -273,7 +273,7 @@
     }
 
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/activities", taskId]
-                parameters:nil
+                parameters:parameters
                    handler:handler];
 }
 
@@ -294,7 +294,7 @@
     }
     
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/activities", taskId]
-                parameters:nil
+                parameters:parameters
                    handler:handler];
   
 }
