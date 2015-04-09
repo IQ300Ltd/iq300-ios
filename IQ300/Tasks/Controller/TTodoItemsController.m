@@ -214,17 +214,21 @@
 #pragma mark - SWTableViewCell Delegate
 
 - (void)swipeableTableViewCell:(TodoListItemCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    NSIndexPath * prevEditIndexPath = _editableIndexPath;
     NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
     if (index == 0) {
         if (!cell.titleTextView.editable) {
             _editableIndexPath = indexPath;
-            [cell hideUtilityButtonsAnimated:YES];
             cell.titleTextView.editable = YES;
             [cell.titleTextView becomeFirstResponder];
             [self.tableView scrollToRowAtIndexPath:indexPath
                                   atScrollPosition:UITableViewScrollPositionTop
                                           animated:YES];
+            
+            [self endEditeCellAtindexPath:prevEditIndexPath];
         }
+        
+        [cell hideUtilityButtonsAnimated:YES];
     }
     else {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
