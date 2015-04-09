@@ -120,7 +120,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
         [[IQService sharedService] addAttachmentWithId:param.attachmentId
                                                 taskId:self.taskId
                                                handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
-                                                   if (success) {
+                                                   if (success && attachment) {
                                                        [self insertAttachment:attachment];
                                                    }
                                                    if (completion) {
