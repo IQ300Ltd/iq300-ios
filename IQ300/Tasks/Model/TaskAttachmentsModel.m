@@ -218,24 +218,26 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     
     _attachments = newState;
     
-    [self modelWillChangeContent];
-    
-    for (NSIndexPath * indexPath in deletePaths) {
-        [self modelDidChangeObject:nil
-                       atIndexPath:indexPath
-                     forChangeType:NSFetchedResultsChangeDelete
-                      newIndexPath:nil];
-    }
-    
-    for (NSIndexPath * indexPath in insertPaths) {
-        [self modelDidChangeObject:nil
-                       atIndexPath:nil
-                     forChangeType:NSFetchedResultsChangeInsert
-                      newIndexPath:indexPath];
+    if ([insertObjects count] > 0 || [deleteObjects count] > 0) {
+        [self modelWillChangeContent];
         
+        for (NSIndexPath * indexPath in deletePaths) {
+            [self modelDidChangeObject:nil
+                           atIndexPath:indexPath
+                         forChangeType:NSFetchedResultsChangeDelete
+                          newIndexPath:nil];
+        }
+        
+        for (NSIndexPath * indexPath in insertPaths) {
+            [self modelDidChangeObject:nil
+                           atIndexPath:nil
+                         forChangeType:NSFetchedResultsChangeInsert
+                          newIndexPath:indexPath];
+            
+        }
+        
+        [self modelDidChangeContent];
     }
-
-    [self modelDidChangeContent];
 }
 
 - (void)insertAttachment:(IQAttachment*)attachment {

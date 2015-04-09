@@ -126,7 +126,7 @@
     _item = item;
     
     _userNameLabel.text = _item.authorName;
-    _dateLabel.text = [_item.createdDate dateToDayTimeString];
+    _dateLabel.text = [_item.createdDate dateToTimeDayString];
     _actionLabel.text = _item.event;
     _descriptionLabel.text = _item.changes;
 }

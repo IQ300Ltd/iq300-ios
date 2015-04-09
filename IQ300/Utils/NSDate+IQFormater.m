@@ -55,6 +55,36 @@
     return stringDate;
 }
 
+- (NSString*)dateToTimeDayString {
+    NSString * stringDate = nil;
+    NSDate * today = [[NSDate date] beginningOfDay];
+    NSDate * yesterday = [today prevDay];
+    NSDate * beginningOfDay = [self beginningOfDay];
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents * todayYearComp = [calendar components:NSYearCalendarUnit fromDate:today];
+    NSDateComponents * dateYearComp = [calendar components:NSYearCalendarUnit fromDate:self];
+    
+    
+    if([beginningOfDay compare:today] == NSOrderedSame) {
+        NSDateFormatter * timeFormatter = [self dateFormater];
+        [timeFormatter setDateFormat:@"HH:mm"];
+        stringDate = [NSString stringWithFormat:@"%@, %@", [timeFormatter stringFromDate:self], NSLocalizedString(@"Today", nil)];
+    }
+    else if([beginningOfDay compare:yesterday] == NSOrderedSame) {
+        NSDateFormatter * timeFormatter = [self dateFormater];
+        [timeFormatter setDateFormat:@"HH:mm"];
+        stringDate = [NSString stringWithFormat:@"%@, %@", [timeFormatter stringFromDate:self], NSLocalizedString(@"Yesterday", nil)];
+    }
+    else {
+        NSDateFormatter *dateFormatter = [self dateFormater];
+        [dateFormatter setDateFormat:(todayYearComp.year == dateYearComp.year) ? @"HH:mm, dd MMMM" : @"HH:mm, dd MMMM yyyy"];
+        stringDate = [dateFormatter stringFromDate:self];
+    }
+    
+    return stringDate;
+}
+
 - (NSString*)dateToDayString {
     NSString * stringDate = nil;
     NSDate * today = [[NSDate date] beginningOfDay];
