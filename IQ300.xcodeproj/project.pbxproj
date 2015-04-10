@@ -2260,7 +2260,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "eddaa415-6d61-447a-97d4-e980cdb8e24b";
+				PROVISIONING_PROFILE = "6d3a24c8-d379-4982-8664-cbf6d824f933";
 				SDKROOT = iphoneos;
 			};
 			name = Production;
