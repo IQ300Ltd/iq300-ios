@@ -16,7 +16,7 @@
 #define LABELS_HEIGHT 17.0f
 #define LABELS_OFFSET 5.0f
 #define ACTION_MAX_HEIGHT 35
-#define DESCR_MAX_HEIGHT 52
+#define DESCR_MAX_HEIGHT 55
 
 @implementation TActivityItemCell
 

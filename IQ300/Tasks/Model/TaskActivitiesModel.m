@@ -229,12 +229,12 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
 
 - (NSNumber*)lastIdFromBottom {
     NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTaskActivityItem"];
-    NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"taskId"];
+    NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"itemId"];
     NSExpression * maxIdExpression = [NSExpression expressionForFunction:@"min:"
                                                                arguments:[NSArray arrayWithObject:keyPathExpression]];
     
     NSExpressionDescription *expressionDescription = [[NSExpressionDescription alloc] init];
-    [expressionDescription setName:@"taskId"];
+    [expressionDescription setName:@"itemId"];
     [expressionDescription setExpression:maxIdExpression];
     [expressionDescription setExpressionResultType:NSDecimalAttributeType];
     
@@ -248,7 +248,7 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
     
     NSArray *objects = [[IQService sharedService].context executeFetchRequest:fetchRequest error:&error];
     if ([objects count] > 0) {
-        return [[objects objectAtIndex:0] valueForKey:@"taskId"];
+        return [[objects objectAtIndex:0] valueForKey:@"itemId"];
     }
     
     return nil;
