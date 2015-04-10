@@ -224,13 +224,13 @@
             cell.titleTextView.editable = YES;
             [cell.titleTextView becomeFirstResponder];
             [self.tableView scrollToRowAtIndexPath:indexPath
-                                  atScrollPosition:UITableViewScrollPositionTop
+                                  atScrollPosition:UITableViewScrollPositionBottom
                                           animated:YES];
             
             [self endEditeCellAtindexPath:prevEditIndexPath];
         }
         
-        [cell hideUtilityButtonsAnimated:YES];
+        [cell hideUtilityButtonsAnimated:NO];
     }
     else {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
@@ -253,7 +253,7 @@
     
     if (_editableIndexPath) {
         [self.tableView scrollToRowAtIndexPath:_editableIndexPath
-                              atScrollPosition:UITableViewScrollPositionTop
+                              atScrollPosition:UITableViewScrollPositionBottom
                                       animated:NO];
     }
 }
@@ -318,7 +318,7 @@
             
             [CATransaction setCompletionBlock: ^{
                 TodoListItemCell * cell = (TodoListItemCell*)[weakSelf.tableView cellForRowAtIndexPath:_editableIndexPath];
-                [cell hideUtilityButtonsAnimated:YES];
+                [cell hideUtilityButtonsAnimated:NO];
                 cell.titleTextView.editable = YES;
                 [cell.titleTextView becomeFirstResponder];
                 
@@ -326,7 +326,7 @@
             }];
 
             [weakSelf.tableView scrollToRowAtIndexPath:_editableIndexPath
-                                  atScrollPosition:UITableViewScrollPositionTop
+                                  atScrollPosition:UITableViewScrollPositionBottom
                                           animated:NO];
             [CATransaction commit];
         }
@@ -386,7 +386,7 @@
         [self.tableView beginUpdates];
         [self.tableView endUpdates];
         [self.tableView scrollToRowAtIndexPath:_editableIndexPath
-                              atScrollPosition:UITableViewScrollPositionTop
+                              atScrollPosition:UITableViewScrollPositionBottom
                                       animated:YES];
     }
 }
