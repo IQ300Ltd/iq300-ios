@@ -45,7 +45,7 @@
 }
 
 - (UITableView*)tableView {
-    if(!_tableView && !_isDealocProcessing) {
+    if(!_tableView && !_isDealocProcessing && self.isViewLoaded) {
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
         _tableView.backgroundColor = [UIColor clearColor];
         _tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
