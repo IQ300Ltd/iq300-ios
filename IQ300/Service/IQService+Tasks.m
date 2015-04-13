@@ -18,7 +18,7 @@
                       per:(NSNumber*)per
                    search:(NSString*)search
                      sort:(NSString*)sort
-                  handler:(ObjectLoaderCompletionHandler)handler {
+                  handler:(ObjectRequestCompletionHandler)handler {
     
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"updated_at_after" : NSObjectNullForNil(date),
@@ -44,7 +44,7 @@
                   per:(NSNumber*)per
                search:(NSString*)search
                  sort:(NSString*)sort
-              handler:(ObjectLoaderCompletionHandler)handler {
+              handler:(ObjectRequestCompletionHandler)handler {
     
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"id_less_than" : NSObjectNullForNil(taskId),
@@ -66,7 +66,7 @@
 - (void)filterCountersForFolder:(NSString*)folder
                          status:(NSString*)status
                     communityId:(NSNumber*)communityId
-                        handler:(ObjectLoaderCompletionHandler)handler {
+                        handler:(ObjectRequestCompletionHandler)handler {
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"folder"       : NSStringNullForNil(folder),
                                                            @"by_status"    : NSStringNullForNil(status),
@@ -78,27 +78,27 @@
                    handler:handler];
 }
 
-- (void)tasksMenuCountersWithHandler:(ObjectLoaderCompletionHandler)handler {
+- (void)tasksMenuCountersWithHandler:(ObjectRequestCompletionHandler)handler {
     [self getObjectsAtPath:@"/api/v1/tasks/menu_counters"
                 parameters:nil
                    handler:handler];
 }
 
-- (void)taskChangesCounterById:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)taskChangesCounterById:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/changes", taskId]
                 parameters:nil
                    handler:handler];
 }
 
-- (void)taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)taskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/", taskId]
                 parameters:nil
                    handler:handler];
 }
 
-- (void)changeStatus:(NSString*)status forTaskWithId:(NSNumber*)taskId reason:(NSString*)reason handler:(ObjectLoaderCompletionHandler)handler {
+- (void)changeStatus:(NSString*)status forTaskWithId:(NSNumber*)taskId reason:(NSString*)reason handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"do"     : NSStringNullForNil(status),
@@ -111,7 +111,7 @@
             handler:handler];
 }
 
-- (void)completeTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)completeTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(itemId);
     NSParameterAssert(taskId);
 
@@ -121,7 +121,7 @@
             handler:handler];
 }
 
-- (void)rollbackTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)rollbackTaskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self putObject:nil
                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/rollback", taskId]
@@ -129,7 +129,7 @@
             handler:handler];
 }
 
-- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(itemId);
     NSParameterAssert(taskId);
 
@@ -139,7 +139,7 @@
             handler:handler];
 }
 
-- (void)todoListByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)todoListByTaskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     
     NSFetchRequest *(^fetchBlock)(NSURL *URL) = ^(NSURL *URL) {
@@ -155,7 +155,7 @@
                    handler:handler];
 }
 
-- (void)saveTodoList:(NSArray*)tododList taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)saveTodoList:(NSArray*)tododList taskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     
     NSFetchRequest *(^fetchBlock)(NSURL *URL) = ^(NSURL *URL) {
@@ -189,7 +189,7 @@
             }];
 }
 
-- (void)attachmentsByTaskId:(NSNumber *)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)attachmentsByTaskId:(NSNumber *)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/attachments", taskId]
@@ -197,7 +197,7 @@
                    handler:handler];
 }
 
-- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self postObject:nil
                 path:[NSString stringWithFormat:@"/api/v1/tasks/%@/attachments", taskId]
@@ -205,7 +205,7 @@
              handler:handler];
 }
 
-- (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSFetchRequest *(^fetchBlock)(NSURL *URL) = ^(NSURL *URL) {
         NSFetchRequest * fRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQTaskMember"];
         [fRequest setPredicate:[NSPredicate predicateWithFormat:@"taskId == %@", taskId]];
@@ -220,7 +220,7 @@
                    handler:handler];
 }
 
-- (void)addMemberWithUserId:(NSNumber*)userId inTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)addMemberWithUserId:(NSNumber*)userId inTaskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self postObject:nil
                 path:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users", taskId]
@@ -255,7 +255,7 @@
             }];
 }
 
-- (void)policiesForTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)policiesForTaskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/abilities", taskId]
                 parameters:nil
@@ -267,7 +267,7 @@
                            page:(NSNumber*)page
                             per:(NSNumber*)per
                            sort:(IQSortDirection)sort
-                        handler:(ObjectLoaderCompletionHandler)handler {
+                        handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
@@ -290,7 +290,7 @@
                            page:(NSNumber*)page
                             per:(NSNumber*)per
                            sort:(IQSortDirection)sort
-                        handler:(ObjectLoaderCompletionHandler)handler {
+                        handler:(ObjectRequestCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"id_less_than" : NSObjectNullForNil(beforeId),
                                                                   @"page"         : NSObjectNullForNil(page),

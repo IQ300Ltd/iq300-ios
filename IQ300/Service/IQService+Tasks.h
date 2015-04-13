@@ -18,7 +18,7 @@
                       per:(NSNumber*)per
                    search:(NSString*)search
                      sort:(NSString*)sort
-                  handler:(ObjectLoaderCompletionHandler)handler;
+                  handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)tasksBeforeId:(NSNumber*)taskId
                folder:(NSString*)folder
@@ -28,59 +28,59 @@
                   per:(NSNumber*)per
                search:(NSString*)search
                  sort:(NSString*)sort
-              handler:(ObjectLoaderCompletionHandler)handler;
+              handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)filterCountersForFolder:(NSString*)folder
                          status:(NSString*)status
                     communityId:(NSNumber*)communityId
-                        handler:(ObjectLoaderCompletionHandler)handler;
+                        handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)tasksMenuCountersWithHandler:(ObjectLoaderCompletionHandler)handler;
+- (void)tasksMenuCountersWithHandler:(ObjectRequestCompletionHandler)handler;
 
-- (void)taskChangesCounterById:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)taskChangesCounterById:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)taskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)taskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)changeStatus:(NSString*)status forTaskWithId:(NSNumber*)taskId reason:(NSString*)reason handler:(ObjectLoaderCompletionHandler)handler;
+- (void)changeStatus:(NSString*)status forTaskWithId:(NSNumber*)taskId reason:(NSString*)reason handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)completeTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)completeTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)rollbackTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)rollbackTaskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)todoListByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)todoListByTaskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)saveTodoList:(NSArray*)tododList taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)saveTodoList:(NSArray*)tododList taskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)markCategoryAsReaded:(NSString*)category taskId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
 
-- (void)attachmentsByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)attachmentsByTaskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)membersByTaskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)addMemberWithUserId:(NSNumber*)userId inTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)addMemberWithUserId:(NSNumber*)userId inTaskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)removeMemberWithId:(NSNumber*)memberId fromTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
 
 - (void)leaveTaskWithId:(NSNumber*)taskId handler:(RequestCompletionHandler)handler;
 
-- (void)policiesForTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)policiesForTaskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)activitiesForTaskWithId:(NSNumber*)taskId
                    updatedAfter:(NSDate*)date
                            page:(NSNumber*)page
                             per:(NSNumber*)per
                            sort:(IQSortDirection)sort
-                        handler:(ObjectLoaderCompletionHandler)handler;
+                        handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)activitiesForTaskWithId:(NSNumber*)taskId
                        beforeId:(NSNumber*)beforeId
                            page:(NSNumber*)page
                             per:(NSNumber*)per
                            sort:(IQSortDirection)sort
-                        handler:(ObjectLoaderCompletionHandler)handler;
+                        handler:(ObjectRequestCompletionHandler)handler;
 
 @end

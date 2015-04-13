@@ -10,7 +10,7 @@
 
 @implementation IQService (Messages)
 
-- (void)conversationsWithHandler:(ObjectLoaderCompletionHandler)handler {
+- (void)conversationsWithHandler:(ObjectRequestCompletionHandler)handler {
     [self conversationsUnread:nil page:nil per:nil search:nil sort:IQSortDirectionNo handler:handler];
 }
 
@@ -19,7 +19,7 @@
                         per:(NSNumber*)per
                      search:(NSString*)search
                        sort:(IQSortDirection)sort
-                    handler:(ObjectLoaderCompletionHandler)handler {
+                    handler:(ObjectRequestCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"unread" : NSObjectNullForNil(unread),
                                                                   @"page"   : NSObjectNullForNil(page),
@@ -36,20 +36,20 @@
                    handler:handler];
 }
 
-- (void)conversationWithId:(NSNumber*)conversationid handler:(ObjectLoaderCompletionHandler)handler {
+- (void)conversationWithId:(NSNumber*)conversationid handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(conversationid);
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/conversations/%@", conversationid]
                 parameters:nil
                    handler:handler];
 }
 
-- (void)conversationsCountersWithHandler:(ObjectLoaderCompletionHandler)handler {
+- (void)conversationsCountersWithHandler:(ObjectRequestCompletionHandler)handler {
     [self getObjectsAtPath:@"/api/v1/conversations/counters"
                 parameters:nil
                    handler:handler];
 }
 
-- (void)createConversationWithRecipientId:(NSNumber*)recipientId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)createConversationWithRecipientId:(NSNumber*)recipientId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(recipientId);
     [self postObject:nil
                 path:@"/api/v1/conversations"
@@ -59,7 +59,7 @@
 
 #pragma mark - Discussion methods
 
-- (void)discussionWithId:(NSNumber*)discussionId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)discussionWithId:(NSNumber*)discussionId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(discussionId);
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@", discussionId]
                 parameters:nil
@@ -81,7 +81,7 @@
                                page:(NSNumber*)page
                                 per:(NSNumber*)per
                                sort:(IQSortDirection)sort
-                            handler:(ObjectLoaderCompletionHandler)handler {
+                            handler:(ObjectRequestCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"page"   : NSObjectNullForNil(page),
                                                                   @"per"    : NSObjectNullForNil(per),
@@ -99,7 +99,7 @@
 - (void)createComment:(NSString*)comment
          discussionId:(NSNumber*)discussionId
         attachmentIds:(NSArray*)attachmentIds
-              handler:(ObjectLoaderCompletionHandler)handler {
+              handler:(ObjectRequestCompletionHandler)handler {
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"body"           : NSStringNullForNil(comment),
                                                            @"attachment_ids" : NSObjectNullForNil(attachmentIds)
@@ -112,7 +112,7 @@
 
 - (void)commentWithId:(NSNumber*)commentId
          discussionId:(NSNumber*)discussionId
-              handler:(ObjectLoaderCompletionHandler)handler {
+              handler:(ObjectRequestCompletionHandler)handler {
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/%@", discussionId, commentId]
                 parameters:nil
                    handler:handler];
@@ -122,7 +122,7 @@
                      per:(NSNumber*)per
                     sort:(IQSortDirection)sort
                   search:(NSString*)search
-                 handler:(ObjectLoaderCompletionHandler)handler {
+                 handler:(ObjectRequestCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"page"   : NSObjectNullForNil(page),
                                                                   @"per"    : NSObjectNullForNil(per),
@@ -137,6 +137,14 @@
                 parameters:parameters
                    handler:handler];
 
+}
+
+- (void)deletedCommentsIdsByDiscussionId:(NSNumber *)discussionId handler:(ObjectRequestCompletionHandler)handler {
+    NSParameterAssert(discussionId);
+    
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/deleted_ids", discussionId]
+                parameters:nil
+                   handler:handler];
 }
 
 @end

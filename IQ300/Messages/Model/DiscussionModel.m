@@ -622,7 +622,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)applicationWillEnterForeground {
     
-    ObjectLoaderCompletionHandler handler = ^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+    ObjectRequestCompletionHandler handler = ^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
         if(!error) {
             [self updateDefaultStatusesForComments:comments];
             [self modelDidChanged];

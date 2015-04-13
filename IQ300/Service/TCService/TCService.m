@@ -141,7 +141,7 @@ static id _sharedService = nil;
 
 #pragma mark - Private methods
 
-- (void)getObjectsAtPath:(NSString *)path parameters:(NSDictionary *)parameters handler:(ObjectLoaderCompletionHandler)handler {
+- (void)getObjectsAtPath:(NSString *)path parameters:(NSDictionary *)parameters handler:(ObjectRequestCompletionHandler)handler {
     [self getObjectsAtPath:path
                 parameters:parameters
                 fetchBlock:nil
@@ -151,7 +151,7 @@ static id _sharedService = nil;
 - (void)getObjectsAtPath:(NSString *)path
               parameters:(NSDictionary *)parameters
               fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
-                 handler:(ObjectLoaderCompletionHandler)handler {
+                 handler:(ObjectRequestCompletionHandler)handler {
     NSMutableDictionary * requesParameters = [parameters mutableCopy];
     
     RKObjectRequestOperation * operation = [_objectManager appropriateObjectRequestOperationWithObject:nil
@@ -182,7 +182,7 @@ static id _sharedService = nil;
 - (void)deleteObject:(id)object
                 path:(NSString *)path
           parameters:(NSDictionary *)parameters
-             handler:(ObjectLoaderCompletionHandler)handler {
+             handler:(ObjectRequestCompletionHandler)handler {
     [self deleteObject:object
                   path:path
             parameters:parameters
@@ -194,7 +194,7 @@ static id _sharedService = nil;
                 path:(NSString *)path
           parameters:(NSDictionary *)parameters
           fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
-             handler:(ObjectLoaderCompletionHandler)handler {
+             handler:(ObjectRequestCompletionHandler)handler {
     RKManagedObjectRequestOperation * operation = [_objectManager appropriateObjectRequestOperationWithObject:(object) ? object : [self emptyResponse]
                                                                                                        method:RKRequestMethodDELETE
                                                                                                          path:path
@@ -223,7 +223,7 @@ static id _sharedService = nil;
 - (void)putObject:(id)object
              path:(NSString *)path
        parameters:(NSDictionary *)parameters
-          handler:(ObjectLoaderCompletionHandler)handler {
+          handler:(ObjectRequestCompletionHandler)handler {
     [self putObject:object
                path:path
          parameters:parameters
@@ -235,7 +235,7 @@ static id _sharedService = nil;
              path:(NSString *)path
        parameters:(NSDictionary *)parameters
        fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
-          handler:(ObjectLoaderCompletionHandler)handler {
+          handler:(ObjectRequestCompletionHandler)handler {
     RKManagedObjectRequestOperation * operation = [_objectManager appropriateObjectRequestOperationWithObject:(object) ? object : [self emptyResponse]
                                                                                                        method:RKRequestMethodPUT
                                                                                                          path:path
@@ -264,7 +264,7 @@ static id _sharedService = nil;
 - (void)postObject:(id)object
               path:(NSString *)path
         parameters:(NSDictionary *)parameters
-           handler:(ObjectLoaderCompletionHandler)handler {
+           handler:(ObjectRequestCompletionHandler)handler {
     [self postObject:object
                 path:path
           parameters:parameters
@@ -276,7 +276,7 @@ static id _sharedService = nil;
               path:(NSString *)path
         parameters:(NSDictionary *)parameters
         fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
-           handler:(ObjectLoaderCompletionHandler)handler {
+           handler:(ObjectRequestCompletionHandler)handler {
     RKManagedObjectRequestOperation * operation = [_objectManager appropriateObjectRequestOperationWithObject: (object) ? object : [self emptyResponse]
                                                                                                        method:RKRequestMethodPOST
                                                                                                          path:path
@@ -302,7 +302,7 @@ static id _sharedService = nil;
     [_objectManager enqueueObjectRequestOperation:operation];
 }
 
-- (void)postObjects:(NSArray*)objects path:(NSString *)path handler:(ObjectLoaderCompletionHandler)handler {
+- (void)postObjects:(NSArray*)objects path:(NSString *)path handler:(ObjectRequestCompletionHandler)handler {
     NSError * error = nil;
     NSData * data = [NSJSONSerialization dataWithJSONObject:objects
                                                     options:0
@@ -317,7 +317,7 @@ static id _sharedService = nil;
     }
 }
 
-- (void)postData:(NSData*)data path:(NSString *)path handler:(ObjectLoaderCompletionHandler)handler {
+- (void)postData:(NSData*)data path:(NSString *)path handler:(ObjectRequestCompletionHandler)handler {
     NSMutableURLRequest * request = [_objectManager requestWithObject:[self emptyResponse]
                                                                method:RKRequestMethodPOST
                                                                  path:path
@@ -340,7 +340,7 @@ static id _sharedService = nil;
 fileAttributeName:(NSString*)fileAttributeName
         fileName:(NSString*)fileName
         mimeType:(NSString*)mimeType
-         handler:(ObjectLoaderCompletionHandler)handler {
+         handler:(ObjectRequestCompletionHandler)handler {
     
     void(^dataBlock)(id<AFMultipartFormData> formData) = ^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:fileData
@@ -363,7 +363,7 @@ fileAttributeName:(NSString*)fileAttributeName
 fileAttributeName:(NSString*)fileAttributeName
          fileName:(NSString*)fileName
          mimeType:(NSString*)mimeType
-          handler:(ObjectLoaderCompletionHandler)handler {
+          handler:(ObjectRequestCompletionHandler)handler {
     ALAssetRepresentation * rep = [asset defaultRepresentation];
     ALAssetInputStream * stream = [[ALAssetInputStream alloc] initWithAsset:asset];
     
@@ -390,7 +390,7 @@ fileAttributeName:(NSString*)fileAttributeName
      fileAttributeName:(NSString*)fileAttributeName
               fileName:(NSString*)fileName
               mimeType:(NSString*)mimeType
-               handler:(ObjectLoaderCompletionHandler)handler {
+               handler:(ObjectRequestCompletionHandler)handler {
     
     __block NSError * error = nil;
     void(^dataBlock)(id<AFMultipartFormData> formData) = ^(id<AFMultipartFormData> formData) {
@@ -412,7 +412,7 @@ fileAttributeName:(NSString*)fileAttributeName
 - (NSOperation *)createPostOperationAtPath:(NSString *)path
                                 parameters:(NSDictionary *)parameters
                  constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                                   handler:(ObjectLoaderCompletionHandler)handler {
+                                   handler:(ObjectRequestCompletionHandler)handler {
     NSMutableURLRequest * postRequest = [_objectManager multipartFormRequestWithObject:[self emptyResponse]
                                                                                 method:RKRequestMethodPOST
                                                                                   path:path
@@ -437,7 +437,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
 #pragma mark - Override Methods
 
-- (void)processErrorResponse:(id<TCResponse>)response handler:(ObjectLoaderCompletionHandler)handler {
+- (void)processErrorResponse:(id<TCResponse>)response handler:(ObjectRequestCompletionHandler)handler {
     if(handler) {
         handler(NO, nil, nil, [self makeErrorWithDescription:response.errorMessage code:[response.statusCode integerValue]]);
     }
@@ -446,7 +446,7 @@ fileAttributeName:(NSString*)fileAttributeName
 - (void)processError:(NSError*)error
             response:(id<TCResponse>)response
         forOperation:(RKObjectRequestOperation*)operation
-             handler:(ObjectLoaderCompletionHandler)handler {
+             handler:(ObjectRequestCompletionHandler)handler {
     
     if(handler) {
         handler(NO, nil, operation.HTTPRequestOperation.responseData, error);
@@ -474,7 +474,7 @@ fileAttributeName:(NSString*)fileAttributeName
     return error;
 }
 
-- (void(^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))makeSuccessBlockForHandler:(ObjectLoaderCompletionHandler)handler {
+- (void(^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))makeSuccessBlockForHandler:(ObjectRequestCompletionHandler)handler {
     void (^success)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) = ^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         if(handler) {
             BOOL conformsToProtocol = [[mappingResult firstObject] conformsToProtocol:@protocol(TCResponse)];
@@ -491,7 +491,7 @@ fileAttributeName:(NSString*)fileAttributeName
     return success;
 }
 
-- (void(^)(RKObjectRequestOperation *operation, NSError *error))makeFailureBlockForHandler:(ObjectLoaderCompletionHandler)handler {
+- (void(^)(RKObjectRequestOperation *operation, NSError *error))makeFailureBlockForHandler:(ObjectRequestCompletionHandler)handler {
     void (^failure)(RKObjectRequestOperation *operation, NSError *error) = ^(RKObjectRequestOperation *operation, NSError *error) {
         NSLog(@"%@", operation.HTTPRequestOperation.responseString);
         NSLog(@"%@", error);
