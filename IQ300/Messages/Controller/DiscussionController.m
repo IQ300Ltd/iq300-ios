@@ -40,6 +40,8 @@
 
 @implementation DiscussionController
 
+@dynamic model;
+
 - (UITableView*)tableView {
     return _mainView.tableView;
 }
@@ -95,7 +97,7 @@
     _mainView.tableView.hidden = YES;
 }
 
-- (BOOL)showMenuBarItem {
+- (BOOL)isLeftMenuEnabled {
     return NO;
 }
 
@@ -104,7 +106,8 @@
     
     UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
                                                                        style:UIBarButtonItemStylePlain
-                                                                      target:self action:@selector(backButtonAction:)];
+                                                                      target:self
+                                                                      action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
     [self.leftMenuController setModel:nil];
@@ -369,9 +372,7 @@
         [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
-                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              
-                          }];
+                          tapBlock:nil];
     }
 }
 

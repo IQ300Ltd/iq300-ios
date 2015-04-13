@@ -35,6 +35,8 @@
 
 @implementation TasksController
 
+@dynamic model;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -185,7 +187,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQTask * task = [self.model itemAtIndexPath:indexPath];
 
-    TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTask:task];
+    TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:task.taskId];
     TaskTabController * controller = [[TaskTabController alloc] init];
     controller.task = task;
     controller.policyInspector = policyInspector;
@@ -292,9 +294,7 @@
 }
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
-    BOOL hasUnreadNotf = (badgeValue > 0);
-    NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%ld", (long)badgeValue];
-    self.tabBarItem.badgeValue = (hasUnreadNotf) ? badgeStringValue : nil;
+    self.tabBarItem.badgeValue = BadgTextFromInteger(badgeValue);
 }
 
 @end

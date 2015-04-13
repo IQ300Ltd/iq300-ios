@@ -42,8 +42,15 @@
 + (void)logout {
     AppDelegate * delegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    
     LoginController * loginViewController = [[LoginController alloc] init];
     [delegate.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+   
+    [[IQService sharedService] logout];
+    [IQSession setDefaultSession:nil];
+    [[IQNotificationCenter defaultCenter] resetAllObservers];
+    [IQNotificationCenter setDefaultCenter:nil];
+
     UITabBarController * center = ((UITabBarController*)delegate.drawerController.centerViewController);
     
     for (UINavigationController * controller in center.viewControllers) {
@@ -52,10 +59,6 @@
     
     [center setSelectedIndex:0];
 
-    [[IQService sharedService] logout];
-    [IQSession setDefaultSession:nil];
-    [[IQNotificationCenter defaultCenter] resetAllObservers];
-    [IQNotificationCenter setDefaultCenter:nil];
     [delegate.drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:nil];
     [[UIApplication sharedApplication] unregisterForRemoteNotifications];
 }
@@ -143,7 +146,7 @@
         if (weakSelf.drawerController.openSide == MMDrawerSideNone &&
             [gesture isKindOfClass:[UIPanGestureRecognizer class]]) {
             
-            UIView *centerView = drawerController.centerViewController.view;
+            UIView * centerView = drawerController.centerViewController.view;
             CGRect rect = UIEdgeInsetsInsetRect(centerView.frame, UIEdgeInsetsMake(0.0, 0.0, 0.0, centerView.frame.size.width * 0.60f));
             if (CGRectContainsPoint(rect, [touch locationInView:centerView])) {
                 return YES;

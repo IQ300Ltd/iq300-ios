@@ -1,5 +1,5 @@
 //
-//  CheckListSectionView.m
+//  TodoListSectionView.m
 //  IQ300
 //
 //  Created by Tayphoon on 19.03.15.
@@ -26,11 +26,10 @@
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 1;
         _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _titleLabel.text = NSLocalizedString(@"Checklist", nil);
+        _titleLabel.text = NSLocalizedString(@"TodoList", nil);
         [self addSubview:_titleLabel];
         
         _editButton = [[UIButton alloc] init];
-        [_editButton setHidden:YES];
         [_editButton setImage:[UIImage imageNamed:@"edit_gray_ico.png"] forState:UIControlStateNormal];
         [self addSubview:_editButton];
     }

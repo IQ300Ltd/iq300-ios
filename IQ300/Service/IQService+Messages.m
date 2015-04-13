@@ -14,7 +14,12 @@
     [self conversationsUnread:nil page:nil per:nil search:nil sort:IQSortDirectionNo handler:handler];
 }
 
-- (void)conversationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
+- (void)conversationsUnread:(NSNumber*)unread
+                       page:(NSNumber*)page
+                        per:(NSNumber*)per
+                     search:(NSString*)search
+                       sort:(IQSortDirection)sort
+                    handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"unread" : NSObjectNullForNil(unread),
                                                                   @"page"   : NSObjectNullForNil(page),
@@ -72,7 +77,11 @@
             }];
 }
 
-- (void)commentsForDiscussionWithId:(NSNumber*)discussionId page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler {
+- (void)commentsForDiscussionWithId:(NSNumber*)discussionId
+                               page:(NSNumber*)page
+                                per:(NSNumber*)per
+                               sort:(IQSortDirection)sort
+                            handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"page"   : NSObjectNullForNil(page),
                                                                   @"per"    : NSObjectNullForNil(per),
@@ -87,7 +96,10 @@
                    handler:handler];
 }
 
-- (void)createComment:(NSString*)comment discussionId:(NSNumber*)discussionId attachmentIds:(NSArray*)attachmentIds handler:(ObjectLoaderCompletionHandler)handler {
+- (void)createComment:(NSString*)comment
+         discussionId:(NSNumber*)discussionId
+        attachmentIds:(NSArray*)attachmentIds
+              handler:(ObjectLoaderCompletionHandler)handler {
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"body"           : NSStringNullForNil(comment),
                                                            @"attachment_ids" : NSObjectNullForNil(attachmentIds)
@@ -98,13 +110,19 @@
              handler:handler];
 }
 
-- (void)commentWithId:(NSNumber*)commentId discussionId:(NSNumber*)discussionId handler:(ObjectLoaderCompletionHandler)handler {
+- (void)commentWithId:(NSNumber*)commentId
+         discussionId:(NSNumber*)discussionId
+              handler:(ObjectLoaderCompletionHandler)handler {
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/%@", discussionId, commentId]
                 parameters:nil
                    handler:handler];
 }
 
-- (void)contactsWithPage:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler {
+- (void)contactsWithPage:(NSNumber*)page
+                     per:(NSNumber*)per
+                    sort:(IQSortDirection)sort
+                  search:(NSString*)search
+                 handler:(ObjectLoaderCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"page"   : NSObjectNullForNil(page),
                                                                   @"per"    : NSObjectNullForNil(per),

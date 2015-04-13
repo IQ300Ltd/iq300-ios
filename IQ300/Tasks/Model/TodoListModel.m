@@ -9,34 +9,51 @@
 
 #import "TodoListModel.h"
 #import "TodoListItemCell.h"
-#import "IQTodoItem.h"
 #import "IQService+Tasks.h"
+#import "IQTodoItem.h"
 
 static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
 @interface TodoListModel() {
     NSArray * _sortDescriptors;
-    NSMutableArray * _checkedItems;
     NSMutableArray * _processableItems;
+    NSMutableArray * _deletedItems;
+    NSArray * _oldItems;
 }
 
 @end
 
 @implementation TodoListModel
 
-- (id)init {
+- (id)initWithManagedItems:(NSArray*)items {
     self = [super init];
     if (self) {
-        _checkedItems = [NSMutableArray array];
         _processableItems = [NSMutableArray array];
+        _deletedItems = [NSMutableArray array];
         _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"position" ascending:YES]];
+        
+        if (items) {
+            _oldItems = [[self todoItemsFromManagedObjects:items] sortedArrayUsingDescriptors:_sortDescriptors];
+            _items = [[NSMutableArray alloc] initWithArray:_oldItems copyItems:YES];;
+        }
     }
     return self;
 }
 
-- (void)setItems:(NSArray *)items {
-    _items = [items sortedArrayUsingDescriptors:_sortDescriptors];
-    [self updateCheckedProperties];
+- (BOOL)hasChanges {
+    if ([_items count] != [_oldItems count]) {
+        return YES;
+    }
+    
+    for (int i = 0; i < [_items count]; i++) {
+        IQTodoItem * oldItem = _oldItems[i];
+        IQTodoItem * newItem = _items[i];
+        if ([oldItem isEqualToItem:newItem] == NO) {
+            return YES;
+        }
+    }
+    
+    return NO;
 }
 
 - (NSUInteger)numberOfSections {
@@ -62,7 +79,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    IQTodoItem * item = [self itemAtIndexPath:indexPath];
+    id<TodoItem> item = [self itemAtIndexPath:indexPath];
     return [TodoListItemCell heightForItem:item width:self.cellWidth];
 }
 
@@ -87,13 +104,18 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
-    if(completion) {
-        completion(nil);
-    }
+    [[IQService sharedService] todoListByTaskId:self.taskId
+                                        handler:^(BOOL success, NSArray * todoItems, NSData *responseData, NSError *error) {
+                                            _items = todoItems;
+                                            if (completion) {
+                                                completion(error);
+                                            }
+                                        }];
 }
 
 - (BOOL)isItemCheckedAtIndexPath:(NSIndexPath*)indexPath {
-    return [_checkedItems containsObject:indexPath];
+    id<TodoItem> item = [self itemAtIndexPath:indexPath];
+    return [item.completed boolValue];
 }
 
 - (BOOL)isItemSelectableAtIndexPath:(NSIndexPath *)indexPath {
@@ -101,48 +123,75 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath checked:(BOOL)checked {
-    if (checked && ![_checkedItems containsObject:indexPath]) {
-        [_processableItems addObject:indexPath];
-        IQTodoItem * item = [self itemAtIndexPath:indexPath];
+    id<TodoItem> item = [self itemAtIndexPath:indexPath];
+    if (checked != [item.completed boolValue]) {
+        item.completed = @(checked);
         
-        [[IQService sharedService] completeTodoItemWithId:item.itemId
-                                                   taskId:self.taskId
-                                                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                                      if (success) {
-                                                          [_checkedItems addObject:indexPath];
-                                                          
-                                                          [self modelWillChangeContent];
-                                                          [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
-                                                                         atIndexPath:indexPath
-                                                                       forChangeType:NSFetchedResultsChangeUpdate
-                                                                        newIndexPath:nil];
-                                                          [self modelDidChangeContent];
-                                                      }
-                                                      
-                                                      [_processableItems removeObject:indexPath];
-                                                  }];
+        [self modelWillChangeContent];
+        [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
+                       atIndexPath:indexPath
+                     forChangeType:NSFetchedResultsChangeUpdate
+                      newIndexPath:nil];
+        [self modelDidChangeContent];
     }
-    else if(!checked && [_checkedItems containsObject:indexPath]) {
-        [_processableItems addObject:indexPath];
-        IQTodoItem * item = [self itemAtIndexPath:indexPath];
+}
+
+- (void)createItemWithCompletion:(void (^)(id<TodoItem> item, NSError *error))completion {
+    NSInteger newRow = [_items count];
+    NSIndexPath * newItemIndexPath = [NSIndexPath indexPathForRow:newRow inSection:self.section];
+    IQTodoItem * item = [[IQTodoItem alloc] init];
+    item.itemId = @(-1);
+    item.position = @(newRow + 1);
+    
+    _items = [_items arrayByAddingObject:item];
+    
+    [self modelWillChangeContent];
+
+    [self modelDidChangeObject:item
+                   atIndexPath:nil
+                 forChangeType:NSFetchedResultsChangeInsert
+                  newIndexPath:newItemIndexPath];
+    [self modelDidChangeContent];
+    
+    if (completion) {
+        completion(item, nil);
+    }
+}
+
+- (void)deleteItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == self.section && indexPath.row >= 0 &&
+        indexPath.row < [self.items count]) {
         
-        [[IQService sharedService] rollbackTodoItemWithId:item.itemId
-                                                   taskId:self.taskId
-                                                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                                      if (success) {
-                                                          [_checkedItems removeObject:indexPath];
-                                                          
-                                                          [self modelWillChangeContent];
-                                                          [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
-                                                                         atIndexPath:indexPath
-                                                                       forChangeType:NSFetchedResultsChangeUpdate
-                                                                        newIndexPath:nil];
-                                                          [self modelDidChangeContent];
-                                                      }
-                                                      
-                                                      [_processableItems removeObject:indexPath];
-                                                  }];
+        id<TodoItem> item = [self itemAtIndexPath:indexPath];
+        NSMutableArray * items = [self.items mutableCopy];
+        [items removeObject:item];
+        _items = [items copy];
+        
+        if (![item.itemId isEqualToNumber:@(-1)]) {
+            item.destroy = @(YES);
+            [_deletedItems addObject:item];
+        }
+        
+        [self updateItemsPosition];
+        
+        [self modelWillChangeContent];
+        [self modelDidChangeObject:[self itemAtIndexPath:indexPath]
+                       atIndexPath:indexPath
+                     forChangeType:NSFetchedResultsChangeDelete
+                      newIndexPath:nil];
+        [self modelDidChangeContent];
     }
+}
+
+- (void)saveChangesWithCompletion:(void (^)(NSError * error))completion {
+    NSArray * items = ([_deletedItems count] > 0) ? [_items arrayByAddingObjectsFromArray:_deletedItems] : _items;
+    [[IQService sharedService] saveTodoList:items
+                                     taskId:self.taskId
+                                    handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                        if (completion) {
+                                            completion(error);
+                                        }
+                                    }];
 }
 
 - (void)clearModelData {
@@ -151,15 +200,20 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
 #pragma mark - Private methods
 
-- (void)updateCheckedProperties {
-    [_checkedItems removeAllObjects];
-    
-    for (NSInteger index = 0; index < [_items count]; index++) {
-        IQTodoItem * item = _items[index];
-        if ([item.completed boolValue]) {
-            [_checkedItems addObject:[NSIndexPath indexPathForRow:index inSection:self.section]];
-        }
+- (void)updateItemsPosition {
+    for (int position = 0; position < [_items count]; position++) {
+        IQTodoItem * item = _items[position];
+        item.position = @(position + 1);
     }
+}
+
+- (NSArray*)todoItemsFromManagedObjects:(NSArray*)managedObjects {
+    NSMutableArray * items = [NSMutableArray array];
+    for (id<TodoItem> managedObject in managedObjects) {
+        IQTodoItem * item = [IQTodoItem itemFromObject:managedObject];
+        [items addObject:item];
+    }
+    return items;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

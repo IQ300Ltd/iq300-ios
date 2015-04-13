@@ -19,7 +19,10 @@
 
 @interface TCommentsController () {
     __weak id _notfObserver;
+    UILabel * _noDataLabel;
 }
+
+@property (nonatomic, assign) BOOL resetReadFlagAutomatically;
 
 @end
 
@@ -55,10 +58,6 @@
     return self;
 }
 
-- (NSString*)category {
-    return @"comments";
-}
-
 - (void)setBadgeValue:(NSNumber *)badgeValue {
     self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
 }
@@ -87,6 +86,7 @@
                                                         [self hideActivityIndicator];
                                                     }];
                                                     [self.tableView reloadData];
+                                                    [self updateNoDataLabelVisibility];
                                                 }
                                             }];
     }
@@ -94,14 +94,60 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _noDataLabel = [[UILabel alloc] init];
+    [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
+    [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
+    _noDataLabel.textAlignment = NSTextAlignmentCenter;
+    _noDataLabel.backgroundColor = [UIColor clearColor];
+    _noDataLabel.numberOfLines = 0;
+    _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [_noDataLabel setHidden:YES];
+    [_noDataLabel setText:NSLocalizedString(@"No comments", nil)];
+    
+    if (self.tableView) {
+        [self.view insertSubview:_noDataLabel belowSubview:self.tableView];
+    }
+    else {
+        [self.view addSubview:_noDataLabel];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
     self.parentViewController.navigationItem.rightBarButtonItem = nil;
+    
+    self.resetReadFlagAutomatically = YES;
+    [self resetReadFlag];
+    [self updateNoDataLabelVisibility];
 }
 
-#pragma mark - Private methods 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.resetReadFlagAutomatically = NO;
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    _noDataLabel.frame = self.tableView.frame;
+}
+
+#pragma mark - IQTableModel Delegate
+
+- (void)modelDidChangeContent:(id<IQTableModel>)model {
+    [super modelDidChangeContent:model];
+    [self updateNoDataLabelVisibility];
+}
+
+- (void)modelDidChanged:(id<IQTableModel>)model {
+    [super modelDidChanged:model];
+    [self updateNoDataLabelVisibility];
+}
+
+#pragma mark - Private methods
 
 - (void)resubscribeToIQNotifications {
     [self unsubscribeFromIQNotifications];
@@ -115,7 +161,12 @@
         if(curTask) {
             NSNumber * count = curTask[@"counter"];
             if(![weakSelf.badgeValue isEqualToNumber:count]) {
-                weakSelf.badgeValue = count;
+                if (weakSelf.resetReadFlagAutomatically) {
+                    [weakSelf resetReadFlag];
+                }
+                else {
+                    weakSelf.badgeValue = count;
+                }
             }
         }
     };
@@ -128,6 +179,24 @@
     if(_notfObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
     }
+}
+
+- (void)resetReadFlag {
+    [[IQService sharedService] markCategoryAsReaded:[self category]
+                                             taskId:self.taskId
+                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                if (success) {
+                                                    self.badgeValue = @(0);
+                                                }
+                                            }];
+}
+
+- (NSString*)category {
+    return @"comments";
+}
+
+- (void)updateNoDataLabelVisibility {
+    [_noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
 }
 
 - (void)dealloc {

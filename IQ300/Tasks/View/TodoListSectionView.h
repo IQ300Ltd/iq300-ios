@@ -1,5 +1,5 @@
 //
-//  CheckListSectionView.h
+//  TodoListSectionView.h
 //  IQ300
 //
 //  Created by Tayphoon on 19.03.15.

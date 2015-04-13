@@ -52,6 +52,8 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
 
 @implementation IQService
 
+@dynamic session;
+
 - (id)initWithURL:(NSString *)url andSession:(id)session {
     self = [super initWithURL:url andSession:session];
     if (self) {
@@ -756,7 +758,13 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTodoItem class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
+                                                        method:RKRequestMethodPUT
+                                                   pathPattern:@"/api/v1/tasks/:id/rollback"
+                                                   fromKeyPath:@"task"
+                                                         store:self.objectManager.managedObjectStore];
+
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedTodoItem class]
                                                         method:RKRequestMethodPUT
                                                    pathPattern:@"/api/v1/tasks/:id/todo_items/:id/complete"
                                                    fromKeyPath:@"todo_item"
@@ -764,10 +772,36 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
 
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTodoItem class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedTodoItem class]
                                                         method:RKRequestMethodPUT
                                                    pathPattern:@"/api/v1/tasks/:id/todo_items/:id/rollback"
                                                    fromKeyPath:@"todo_item"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedTodoItem class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/todo_items"
+                                                   fromKeyPath:@"todo_items"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    RKMapping * mapping = [TCRequestItemsHolder requestObjectMappingForClass:[IQTodoItem class]
+                                                                   toKeyPath:@"todo_items"
+                                                                       store:self.objectManager.managedObjectStore];
+    
+    RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:mapping
+                                                                                   objectClass:[TCRequestItemsHolder class]
+                                                                                   rootKeyPath:nil
+                                                                                        method:RKRequestMethodPOST];
+    [self.objectManager addRequestDescriptor:requestDescriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedTodoItem class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/tasks/:id/todo_items/apply_changes"
+                                                   fromKeyPath:@"todo_items"
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
@@ -832,6 +866,14 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/tasks/:id/abilities"
                                                    fromKeyPath:@"policy"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskActivityItem class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/:id/activities"
+                                                   fromKeyPath:@"activities"
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];

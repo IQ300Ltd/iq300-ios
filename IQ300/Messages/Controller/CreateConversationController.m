@@ -30,6 +30,8 @@
 
 @implementation CreateConversationController
 
+@dynamic model;
+
 - (void)loadView {
     _mainView = [[CreateConversationView alloc] init];
     self.view = _mainView;
@@ -58,7 +60,7 @@
     return _mainView.tableView;
 }
 
-- (BOOL)showMenuBarItem {
+- (BOOL)isLeftMenuEnabled {
     return NO;
 }
 

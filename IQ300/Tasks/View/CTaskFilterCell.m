@@ -62,7 +62,7 @@
 
 - (void)setItem:(id<TaskFilterItem>)item {
     self.titleLabel.text = item.title;
-    self.countLabel.text = [NSString stringWithFormat:@" - %@", ([item.count integerValue] > 99) ? @"99+" : item.count];
+    self.countLabel.text = [NSString stringWithFormat:@" - %@", BadgTextFromInteger([item.count integerValue])];
 }
 
 @end

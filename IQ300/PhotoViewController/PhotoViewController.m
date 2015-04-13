@@ -34,7 +34,7 @@
     [self.view addSubview:_activityIndicator];
 }
 
-- (BOOL)showMenuBarItem {
+- (BOOL)isLeftMenuEnabled {
     return NO;
 }
 

@@ -45,6 +45,8 @@
 
 @implementation CommentsController
 
+@dynamic model;
+
 - (UITableView*)tableView {
     return _mainView.tableView;
 }
@@ -103,7 +105,7 @@
     _mainView.tableView.hidden = YES;
 }
 
-- (BOOL)showMenuBarItem {
+- (BOOL)isLeftMenuEnabled {
     return NO;
 }
 
@@ -364,9 +366,7 @@
                            message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
-                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              
-                          }];
+                          tapBlock:nil];
     }
 }
 

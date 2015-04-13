@@ -32,6 +32,8 @@
 
 @implementation TMembersController
 
+@dynamic model;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -60,10 +62,6 @@
         self.model = [[TaskMembersModel alloc] init];
     }
     return self;
-}
-
-- (NSString*)category {
-    return @"users";
 }
 
 - (void)setBadgeValue:(NSNumber *)badgeValue {
@@ -121,20 +119,29 @@
     else {
         [self.view addSubview:_noDataLabel];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(taskPolicyDidChanged:)
+                                                 name:IQTaskPolicyDidChangedNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    if([self.policyInspector isActionAvailable:@"create" inCategory:self.category]) {
-        UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(addButtonAction:)];
-        self.parentViewController.navigationItem.rightBarButtonItem = addButton;
-    }
-    
+    [self updateInterfaceFoPolicies];
     [self reloadModel];
+    
+    self.model.resetReadFlagAutomatically = YES;
+    [self.model setSubscribedToNotifications:YES];
+    [self.model resetReadFlagWithCompletion:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.model.resetReadFlagAutomatically = NO;
+    [self.model setSubscribedToNotifications:NO];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -157,7 +164,7 @@
     cell.item = member;
     cell.delegate = self;
     cell.availableActions = [self.policyInspector availableActionsForMember:member
-                                                                   category:self.category];
+                                                                   category:self.model.category];
     return cell;
 }
 
@@ -269,6 +276,29 @@
             [self updateNoDataLabelVisibility];
         }];
     }
+}
+
+#pragma mark - Policies methods
+
+- (void)taskPolicyDidChanged:(NSNotification*)notification {
+    if (notification.object == _policyInspector && [self isVisible]) {
+        [self updateInterfaceFoPolicies];
+        [self.tableView reloadData];
+    }
+}
+
+- (void)updateInterfaceFoPolicies {
+    if([self.policyInspector isActionAvailable:@"create" inCategory:self.model.category]) {
+        UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(addButtonAction:)];
+        self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

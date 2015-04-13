@@ -7,7 +7,7 @@
 //
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
-#import "TAttachmentsModel.h"
+#import "TaskAttachmentsModel.h"
 #import "IQAttachment.h"
 #import "TAttachmentCell.h"
 #import "IQService+Tasks.h"
@@ -18,7 +18,7 @@
 
 static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
-@interface TAttachmentsModel() <NSFetchedResultsControllerDelegate> {
+@interface TaskAttachmentsModel() <NSFetchedResultsControllerDelegate> {
     NSArray * _sortDescriptors;
     NSArray * _attachments;
     __weak id _notfObserver;
@@ -26,7 +26,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
 @end
 
-@implementation TAttachmentsModel
+@implementation TaskAttachmentsModel
 
 - (id)init {
     self = [super init];
@@ -34,13 +34,13 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
         _attachments = [NSMutableArray array];
         _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"createDate" ascending:NO]];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
         [self resubscribeToIQNotifications];
     }
     return self;
+}
+
+- (NSString*)category {
+    return @"documents";
 }
 
 - (NSUInteger)numberOfSections {
@@ -120,7 +120,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
         [[IQService sharedService] addAttachmentWithId:param.attachmentId
                                                 taskId:self.taskId
                                                handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
-                                                   if (success) {
+                                                   if (success && attachment) {
                                                        [self insertAttachment:attachment];
                                                    }
                                                    if (completion) {
@@ -144,8 +144,8 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     }
 }
 
-- (void)updateReadStatusWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] markCategoryAsReaded:@"documents"
+- (void)resetReadFlagWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] markCategoryAsReaded:self.category
                                              taskId:self.taskId
                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                 if (success) {
@@ -158,8 +158,22 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
                                             }];
 }
 
+- (void)setSubscribedToNotifications:(BOOL)subscribed {
+    if(subscribed) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationWillEnterForeground)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIApplicationWillEnterForegroundNotification
+                                                      object:nil];
+    }
+}
+
 - (void)clearModelData {
-    _attachments = nil;;
+    _attachments = nil;
 }
 
 #pragma mark - Private methods
@@ -204,24 +218,26 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     
     _attachments = newState;
     
-    [self modelWillChangeContent];
-    
-    for (NSIndexPath * indexPath in deletePaths) {
-        [self modelDidChangeObject:nil
-                       atIndexPath:indexPath
-                     forChangeType:NSFetchedResultsChangeDelete
-                      newIndexPath:nil];
-    }
-    
-    for (NSIndexPath * indexPath in insertPaths) {
-        [self modelDidChangeObject:nil
-                       atIndexPath:nil
-                     forChangeType:NSFetchedResultsChangeInsert
-                      newIndexPath:indexPath];
+    if ([insertObjects count] > 0 || [deleteObjects count] > 0) {
+        [self modelWillChangeContent];
         
+        for (NSIndexPath * indexPath in deletePaths) {
+            [self modelDidChangeObject:nil
+                           atIndexPath:indexPath
+                         forChangeType:NSFetchedResultsChangeDelete
+                          newIndexPath:nil];
+        }
+        
+        for (NSIndexPath * indexPath in insertPaths) {
+            [self modelDidChangeObject:nil
+                           atIndexPath:nil
+                         forChangeType:NSFetchedResultsChangeInsert
+                          newIndexPath:indexPath];
+            
+        }
+        
+        [self modelDidChangeContent];
     }
-
-    [self modelDidChangeContent];
 }
 
 - (void)insertAttachment:(IQAttachment*)attachment {
@@ -250,8 +266,13 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
             
             NSNumber * count = curTask[@"counter"];
             if(![weakSelf.unreadCount isEqualToNumber:count]) {
-                weakSelf.unreadCount = count;
-                [weakSelf modelCountersDidChanged];
+                if (weakSelf.resetReadFlagAutomatically) {
+                    [weakSelf resetReadFlagWithCompletion:nil];
+                }
+                else {
+                    weakSelf.unreadCount = count;
+                    [weakSelf modelCountersDidChanged];
+                }
             }
         }
     };

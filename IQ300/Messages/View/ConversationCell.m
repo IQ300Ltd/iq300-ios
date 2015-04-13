@@ -211,7 +211,7 @@
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";
     body = (_lastCommentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;
     _descriptionLabel.text = body;
-    NSString * badgeValue = ([_item.unreadCommentsCount integerValue] > 99.0f) ? @"99+" : [_item.unreadCommentsCount stringValue];
+    NSString * badgeValue = BadgTextFromInteger([_item.unreadCommentsCount integerValue]);
     [self setBadgeText:(hasUnreadComments) ?  badgeValue : nil];
     
     BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);

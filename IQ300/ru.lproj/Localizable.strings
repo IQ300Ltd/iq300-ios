@@ -98,7 +98,7 @@
 "Send to execute" = "Отправить на исполнение";
 "Take as done" = "Принять как выполненную";
 "Return to work" = "Вернуть в работу";
-"Checklist" = "Чек-лист";
+"TodoList" = "Чек-лист";
 "Done" = "Готово";
 "Failed add document to task" = "Не удалось добавить документы к задаче";
 "Not in my competence" = "Не в моей компетенции";
@@ -107,3 +107,10 @@
 "No attachments" = "Документы отсутствуют";
 "You can not leave the task" = "Вы не можете покинуть задачу";
 "You can not remove the user from the task" = "Вы не можете удалить пользователя из задачи";
+"Item name can not be empty" = "Название пункта не может быть пустым";
+"History is empty" = "Записи в истории отсутствуют";
+"No comments" = "Комментарии отсутствуют";
+"Todo list for task is empty" = "Чек-лист задачи пуст";
+"Attention" = "Внимание";
+"You agree to remove the selected item?" = "Вы согласны удалить выбранный пункт?";
+"← Return to work" = "← Вернуть в работу";

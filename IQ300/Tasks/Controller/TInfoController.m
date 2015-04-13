@@ -19,17 +19,22 @@
 #import "TChangesCounter.h"
 #import "IQTask.h"
 #import "IQUser.h"
+#import "TTodoItemsController.h"
+#import "TodoListModel.h"
 
 @interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
-    TodoListModel * _todoListModel;
     __weak UIButton * _deferredActionButton;
     __weak id _notfObserver;
-    BOOL _editEnabled;
+    BOOL _changeStateEnabled;
 }
+
+@property (nonatomic, assign) BOOL resetReadFlagAutomatically;
 
 @end
 
 @implementation TInfoController
+
+@dynamic model;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -56,17 +61,13 @@
         self.tabBarItem.customBadgeView = badgeView;
         self.tabBarItem.badgeOrigin = CGPointMake(37.5f, 3.5f);
 
-        _todoListModel = [[TodoListModel alloc] init];
-        _todoListModel.section = 1;
-        self.model = _todoListModel;
+        ManagedTodoListModel * todoListModel = [[ManagedTodoListModel alloc] init];
+        todoListModel.section = 1;
+        self.model = todoListModel;
 
         [self resubscribeToIQNotifications];
     }
     return self;
-}
-
-- (NSString*)category {
-    return @"details";
 }
 
 - (void)setBadgeValue:(NSNumber *)badgeValue {
@@ -81,8 +82,7 @@
     _task = task;
     
     self.model.taskId = _task.taskId;
-    self.model.items = [_task.todoItems array];
-
+    
     if (self.isViewLoaded) {
         [self.tableView reloadData];
     }
@@ -90,26 +90,18 @@
 
 - (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
     _policyInspector = policyInspector;
-    _editEnabled = ([self.policyInspector isActionAvailable:@"change_state" inCategory:@"todoItems"]);
+    [self updateInterfaceFoPolicies];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.view.backgroundColor = [UIColor whiteColor];
-
     self.tableView.tableFooterView = [UIView new];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    if([self.policyInspector isActionAvailable:@"update" inCategory:self.category]) {
-//        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
-//                                                                        style:UIBarButtonItemStylePlain
-//                                                                       target:self
-//                                                                       action:@selector(editButtonAction:)];
-//        self.parentViewController.navigationItem.rightBarButtonItem = editButton;
-    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillEnterForeground)
@@ -117,10 +109,22 @@
                                                object:nil];
 
     [self markTaskAsReadedIfNeed];
+    [self updateInterfaceFoPolicies];
+
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        if (error == nil) {
+            [self.tableView reloadData];
+        }
+    }];
+
+    self.resetReadFlagAutomatically = YES;
+    [self resetReadFlag];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    self.resetReadFlagAutomatically = NO;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationWillEnterForegroundNotification
@@ -144,13 +148,13 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    IQTodoItem * item = [self.model itemAtIndexPath:indexPath];
+    id<TodoItem> item = [self.model itemAtIndexPath:indexPath];
     cell.item = item;
     
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
     [cell setAccessoryType:(isCellChecked) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
     
-    cell.enabled = _editEnabled;
+    cell.enabled = _changeStateEnabled;
     
     return cell;
 }
@@ -166,8 +170,17 @@
     if (section == 0) {
         return [self mainHeaderView];
     }
-
-    return [[TodoListSectionView alloc] init];
+    else {
+        BOOL editEnabled = ([self.policyInspector isActionAvailable:@"update" inCategory:@"todoItems"]);
+        TodoListSectionView * headerView = [[TodoListSectionView alloc] init];
+        [headerView.editButton setHidden:!editEnabled];
+        if (editEnabled) {
+            [headerView.editButton addTarget:self
+                                      action:@selector(editTodoItemsAction:)
+                            forControlEvents:UIControlEventTouchUpInside];
+        }
+        return headerView;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -177,12 +190,17 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
-    [self.model makeItemAtIndexPath:indexPath checked:!isCellChecked];
+    if (!isCellChecked) {
+        [self.model completeTodoItemAtIndexPath:indexPath completion:nil];
+    }
+    else {
+        [self.model rollbackTodoItemWithId:indexPath completion:nil];
+    }
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //Enable or disable change checked state
-    if(_editEnabled) {
+    if(_changeStateEnabled) {
         return ([self.model isItemSelectableAtIndexPath:indexPath]) ? indexPath : nil;
     }
     return nil;
@@ -214,6 +232,7 @@
                                             handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                                 if (success) {
                                                     self.task = task;
+                                                    [self updateTaskPolicies];
                                                 }
                                                 else {
                                                     [actionButton setEnabled:YES];
@@ -244,6 +263,7 @@
                                         handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                             if (success) {
                                                 self.task = task;
+                                                [self updateTaskPolicies];
                                             }
                                             else {
                                                 [_deferredActionButton setEnabled:YES];
@@ -263,11 +283,21 @@
     
 }
 
+- (void)editTodoItemsAction:(UIButton*)sender {
+    TodoListModel * model = [[TodoListModel alloc] initWithManagedItems:self.model.items];
+    model.taskId = self.task.taskId;
+    
+    TTodoItemsController * controller = [[TTodoItemsController alloc] init];
+    controller.model = model;
+    [self.navigationController pushViewController:controller animated:YES];
+}
+
 - (void)updateTask {
     [[IQService sharedService] taskWithId:self.task.taskId
                                   handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                       if (success) {
                                           self.task = task;
+                                          [self updateTaskPolicies];
                                       }
                                   }];
 }
@@ -275,7 +305,7 @@
 - (void)updateCounters {
     [[IQService sharedService] taskChangesCounterById:self.task.taskId
                                               handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
-                                                  if (success && counter) {
+                                                  if (success && counter && !self.resetReadFlagAutomatically) {
                                                       self.badgeValue = counter.details;
                                                   }
                                               }];
@@ -313,7 +343,14 @@
             [weakSelf updateTask];
             
             NSNumber * count = curTask[@"counter"];
-            self.badgeValue = count;
+            if(![weakSelf.badgeValue isEqualToNumber:count]) {
+                if (weakSelf.resetReadFlagAutomatically) {
+                    [weakSelf resetReadFlag];
+                }
+                else {
+                    weakSelf.badgeValue = count;
+                }
+            }
         }
     };
     _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTaskDetailsUpdatedNotification
@@ -327,11 +364,52 @@
     }
 }
 
+- (void)resetReadFlag {
+    [[IQService sharedService] markCategoryAsReaded:[self category]
+                                             taskId:self.task.taskId
+                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                if (success) {
+                                                    self.badgeValue = @(0);
+                                                }
+                                            }];
+}
+
 - (UIView*)mainHeaderView {
     TInfoHeaderView * headerView = [[TInfoHeaderView alloc] init];
     [headerView setupByTask:_task];
     headerView.delegate = self;
     return headerView;
+}
+
+- (NSString*)category {
+    return @"details";
+}
+
+- (void)updateTaskPolicies {
+    [self.policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
+        if (error == nil) {
+            [self updateInterfaceFoPolicies];
+            
+            if ([self isVisible]) {
+                [self.tableView beginUpdates];
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                              withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView endUpdates];
+            }
+        }
+    }];
+}
+
+- (void)updateInterfaceFoPolicies {
+    _changeStateEnabled = ([self.policyInspector isActionAvailable:@"change_state" inCategory:@"todoItems"]);
+
+    if([self.policyInspector isActionAvailable:@"update" inCategory:[self category]]) {
+        //        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
+        //                                                                        style:UIBarButtonItemStylePlain
+        //                                                                       target:self
+        //                                                                       action:@selector(editButtonAction:)];
+        //        self.parentViewController.navigationItem.rightBarButtonItem = editButton;
+    }
 }
 
 - (void)dealloc {

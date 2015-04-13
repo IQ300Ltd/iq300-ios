@@ -122,7 +122,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        NSNumber * notificationId = [self getLastIdFromTop:NO];
+        NSNumber * notificationId = [self lastIdFromTop:NO];
         [[IQService sharedService] notificationsGroupBeforeId:notificationId
                                                        unread:(_loadUnreadOnly) ? @(YES) : nil
                                                          page:@(1)
@@ -139,7 +139,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadModelSourceControllerWithCompletion:completion];
     
-    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+    NSDate * lastUpdatedDate = [self lastNotificationChangedDate];
     
     [[IQService sharedService] notificationsGroupUpdatedAfter:lastUpdatedDate
                                                        unread:(_loadUnreadOnly) ? @(YES) : nil
@@ -172,7 +172,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     
     [self updateCountersWithCompletion:nil];
     
-    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+    NSDate * lastUpdatedDate = [self lastNotificationChangedDate];
     if(!lastUpdatedDate) {
     [[IQService sharedService] notificationsGroupUpdatedAfter:nil
                                                        unread:(_loadUnreadOnly) ? @(YES) : nil
@@ -356,7 +356,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (void)groupUpdatesWithCompletion:(void (^)(NSError * error))completion {
-    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
+    NSDate * lastUpdatedDate = [self lastNotificationChangedDate];
     [self groupUpdatesAfterDate:lastUpdatedDate
                            page:@(1)
                      completion:completion];
@@ -486,7 +486,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     }
 }
 
-- (NSNumber*)getLastIdFromTop:(BOOL)top {
+- (NSNumber*)lastIdFromTop:(BOOL)top {
     NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQNotificationsGroup"];
     NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"lastNotificationId"];
     NSExpression * maxIdExpression = [NSExpression expressionForFunction:(top) ? @"max:" : @"min:"
@@ -517,7 +517,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     return nil;
 }
 
-- (NSDate*)getLastNotificationChangedDate {
+- (NSDate*)lastNotificationChangedDate {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQNotificationsGroup"];
     fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"lastNotification.updatedAt" ascending:NO]];
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ownerId = %@", [IQSession defaultSession].userId]];
@@ -534,7 +534,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
-    NSNumber * lastLoadedId = [self getLastIdFromTop:YES];
+    NSNumber * lastLoadedId = [self lastIdFromTop:YES];
 
     [[IQService sharedService] notificationsGroupBeforeId:lastLoadedId
                                                    unread:(_loadUnreadOnly) ? @(YES) : nil

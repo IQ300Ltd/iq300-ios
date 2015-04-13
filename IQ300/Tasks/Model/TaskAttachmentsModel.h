@@ -10,11 +10,14 @@
 
 @class ALAsset;
 
-@interface TAttachmentsModel : NSObject<IQTableModel>
+@interface TaskAttachmentsModel : NSObject<IQTableModel>
+
+@property (nonatomic, readonly) NSString * category;
 
 @property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, assign) NSInteger section;
 @property (nonatomic, strong) NSNumber * unreadCount;
+@property (nonatomic, assign) BOOL resetReadFlagAutomatically;
 
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
@@ -24,6 +27,8 @@
                       fileName:(NSString*)fileName
                 attachmentType:(NSString*)type completion:(void (^)(NSError * error))completion;
 
-- (void)updateReadStatusWithCompletion:(void (^)(NSError * error))completion;
+- (void)resetReadFlagWithCompletion:(void (^)(NSError * error))completion;
+
+- (void)setSubscribedToNotifications:(BOOL)subscribed;
 
 @end

@@ -90,7 +90,7 @@
 "Send to execute" = "Send to execute";
 "Take as done" = "Take as done";
 "Return to work" = "Вернуть в работу";
-"Checklist" = "Checklist";
+"TodoList" = "TodoList";
 "Done" = "Done";
 "Failed add document to task" = "Failed add document to task";
 "Not in my competence" = "Not in my competence";
@@ -99,3 +99,10 @@
 "No attachments" = "No attachments";
 "You can not leave the task" = "You can not leave the task";
 "You can not remove the user from the task" = "You can not remove the user from the task";
+"Item name can not be empty" = "Item name can not be empty";
+"History is empty" = "History is empty";
+"No comments" = "No comments";
+"Todo list for task is empty" = "Чек-лист задачи пуст";
+"Attention" = "Attention";
+"You agree to remove the selected item?" = "You agree to remove the selected item?";
+"← Return to work" = "Return to work";

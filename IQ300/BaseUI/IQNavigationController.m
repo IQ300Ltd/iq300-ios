@@ -41,14 +41,16 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    SEL selector = @selector(showMenuBarItem);
-    BOOL showMenuBarItem = ([viewController respondsToSelector:selector]) ? [[viewController performSelector:selector] boolValue] :
+    SEL selector = @selector(isLeftMenuEnabled);
+    BOOL isLeftMenuEnabled = ([viewController respondsToSelector:selector]) ? [[viewController performSelector:selector] boolValue] :
                                                                             YES;
     
-    if(showMenuBarItem) {
+    if(isLeftMenuEnabled) {
         MMDrawerBarButtonItem * leftDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self action:@selector(leftDrawerButtonPress:)];
         [viewController.navigationItem setLeftBarButtonItem:leftDrawerButton animated:YES];
     }
+
+    [self.mm_drawerController setOpenDrawerGestureModeMask:(isLeftMenuEnabled) ? MMOpenDrawerGestureModeAll : MMOpenDrawerGestureModeNone];
 #pragma clang diagnostic pop
 }
 

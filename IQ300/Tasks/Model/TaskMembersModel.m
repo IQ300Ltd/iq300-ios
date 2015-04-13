@@ -41,14 +41,14 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
         
         _sortDescriptors = @[roleDescriptor, nameDescriptor];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
         [self resubscribeToIQNotifications];
     }
     
     return self;
+}
+
+- (NSString*)category {
+    return @"users";
 }
 
 - (NSArray*)members {
@@ -164,8 +164,8 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
                                        }];
 }
 
-- (void)updateReadStatusWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] markCategoryAsReaded:@"users"
+- (void)resetReadFlagWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] markCategoryAsReaded:self.category
                                              taskId:self.taskId
                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                 if (success) {
@@ -176,6 +176,20 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
                                                     completion(error);
                                                 }
                                             }];
+}
+
+- (void)setSubscribedToNotifications:(BOOL)subscribed {
+    if(subscribed) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationWillEnterForeground)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIApplicationWillEnterForegroundNotification
+                                                      object:nil];
+    }
 }
 
 - (void)clearModelData {
@@ -271,8 +285,13 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
             
             NSNumber * count = curTask[@"counter"];
             if(![weakSelf.unreadCount isEqualToNumber:count]) {
-                weakSelf.unreadCount = count;
-                [weakSelf modelCountersDidChanged];
+                if (weakSelf.resetReadFlagAutomatically) {
+                    [weakSelf resetReadFlagWithCompletion:nil];
+                }
+                else {
+                    weakSelf.unreadCount = count;
+                    [weakSelf modelCountersDidChanged];
+                }
             }
         }
     };

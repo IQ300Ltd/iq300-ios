@@ -10,13 +10,12 @@
 #import "IQService+Messages.h"
 #import "ContactCell.h"
 
-#define CACHE_FILE_NAME @"UsersModelcache"
+#define CACHE_FILE_NAME @"UsersModelCache"
 #define SORT_DIRECTION IQSortDirectionAscending
 
 static NSString * UReuseIdentifier = @"UReuseIdentifier";
 
-@interface UsersModel()<NSFetchedResultsControllerDelegate> {
-    NSArray * _users;
+@interface UsersModel() <NSFetchedResultsControllerDelegate> {
     NSFetchedResultsController * _fetchController;
 }
 

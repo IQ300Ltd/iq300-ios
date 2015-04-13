@@ -11,12 +11,15 @@
 @interface TaskMembersModel : NSObject <IQTableModel>
 
 @property (nonatomic, readonly) NSArray * members;
+@property (nonatomic, readonly) NSString * category;
 
 @property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, strong) NSString * sectionNameKeyPath;
 @property (nonatomic, strong) NSPredicate * predicate;
 @property (nonatomic, strong) NSArray  * sortDescriptors;
 @property (nonatomic, strong) NSNumber * unreadCount;
+@property (nonatomic, assign) BOOL resetReadFlagAutomatically;
+
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
@@ -27,6 +30,8 @@
 
 - (void)leaveTaskWithMemberId:(NSNumber*)memberId completion:(void (^)(NSError * error))completion;
 
-- (void)updateReadStatusWithCompletion:(void (^)(NSError * error))completion;
+- (void)resetReadFlagWithCompletion:(void (^)(NSError * error))completion;
+
+- (void)setSubscribedToNotifications:(BOOL)subscribed;
 
 @end

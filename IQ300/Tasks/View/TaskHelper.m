@@ -47,7 +47,8 @@
                                 @"decline"       : @"Return to work",
                                 @"cancel"        : @"Cancel",
                                 @"resend"        : @"Send to execute",
-                                @"force_accept"  : @"Take as done"
+                                @"force_accept"  : @"Take as done",
+                                @"rollback"      : @"← Return to work"
                                 };
     });
     
@@ -62,7 +63,7 @@
     static NSArray * _positiveActionTypes = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
-        _positiveActionTypes = @[@"work", @"complete", @"accept", @"resend"];
+        _positiveActionTypes = @[@"work", @"complete", @"accept", @"resend", @"rollback"];
     });
     
     return [_positiveActionTypes containsObject:type];

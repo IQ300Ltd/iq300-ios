@@ -22,7 +22,7 @@
 #import "IQSession.h"
 
 @interface TDocumentsController () {
-    TAttachmentsModel * _attachmentsModel;
+    TaskAttachmentsModel * _attachmentsModel;
     UIDocumentInteractionController * _documentController;
     UILabel * _noDataLabel;
 }
@@ -30,6 +30,8 @@
 @end
 
 @implementation TDocumentsController
+
+@dynamic model;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -56,7 +58,7 @@
         self.tabBarItem.customBadgeView = badgeView;
         self.tabBarItem.badgeOrigin = CGPointMake(35.5f, 3.5f);
 
-        _attachmentsModel = [[TAttachmentsModel alloc] init];
+        _attachmentsModel = [[TaskAttachmentsModel alloc] init];
         _attachmentsModel.section = 0;
         self.model = _attachmentsModel;
     }
@@ -91,7 +93,10 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
-    
+
+    [self setActivityIndicatorBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.3f]];
+    [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+
     _noDataLabel = [[UILabel alloc] init];
     [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
     [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
@@ -108,11 +113,16 @@
     else {
         [self.view addSubview:_noDataLabel];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(taskPolicyDidChanged:)
+                                                 name:IQTaskPolicyDidChangedNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+  
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
@@ -122,15 +132,19 @@
      }
      position:SVPullToRefreshPositionTop];
 
-    if([self.policyInspector isActionAvailable:@"create" inCategory:self.category]) {
-        UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(addButtonAction:)];
-        self.parentViewController.navigationItem.rightBarButtonItem = addButton;
-    }
-    
+    [self updateInterfaceFoPolicies];
     [self reloadModel];
+    
+    self.model.resetReadFlagAutomatically = YES;
+    [self.model setSubscribedToNotifications:YES];
+    [self.model resetReadFlagWithCompletion:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.model.resetReadFlagAutomatically = NO;
+    [self.model setSubscribedToNotifications:NO];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -229,9 +243,7 @@
                                                        message:NSLocalizedString(@"Failed add document to task", nil)
                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                              otherButtonTitles:nil
-                                                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                                          
-                                                      }];
+                                                      tapBlock:nil];
                                 }
                                 [weakSelf hideActivityIndicator];
                             }];
@@ -255,7 +267,17 @@
 
 #pragma mark - IQTableModel Delegate
 
-- (void)modelCountersDidChanged:(TAttachmentsModel*)model {
+- (void)modelDidChangeContent:(id<IQTableModel>)model {
+    [super modelDidChangeContent:model];
+    [self updateNoDataLabelVisibility];
+}
+
+- (void)modelDidChanged:(id<IQTableModel>)model {
+    [super modelDidChanged:model];
+    [self updateNoDataLabelVisibility];
+}
+
+- (void)modelCountersDidChanged:(TaskAttachmentsModel*)model {
     self.badgeValue = self.model.unreadCount;
 }
 
@@ -291,10 +313,31 @@
         [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
-                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              
-                          }];
+                          tapBlock:nil];
     }
+}
+
+#pragma mark - Policies methods
+
+- (void)taskPolicyDidChanged:(NSNotification*)notification {
+    if (notification.object == _policyInspector && [self isVisible]) {
+        [self updateInterfaceFoPolicies];
+        [self.tableView reloadData];
+    }
+}
+
+- (void)updateInterfaceFoPolicies {
+    if([self.policyInspector isActionAvailable:@"create" inCategory:self.category]) {
+        UIBarButtonItem * addButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(addButtonAction:)];
+        self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

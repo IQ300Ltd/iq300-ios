@@ -26,6 +26,7 @@
 #import "NotificationsController.h"
 #import "IQDiscussion.h"
 #import "CommentsController.h"
+#import "TaskTabController.h"
 
 @interface NotificationsGroupController () <SWTableViewCellDelegate> {
     NotificationsView * _mainView;
@@ -35,6 +36,8 @@
 @end
 
 @implementation NotificationsGroupController
+
+@dynamic model;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -178,26 +181,13 @@
     BOOL hasOneUnread = ([group.unreadCount integerValue] == 1);
     
     if ((hasOneUnread && self.model.loadUnreadOnly) || [group.totalCount integerValue] == 1) {
-        if(notification.discussionId) {
-            NSString * title = notification.notificable.title;
-            NSNumber * commentId = notification.commentId;
-            [[IQService sharedService] discussionWithId:notification.discussionId
-                                                handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
-                                                    if(success) {
-                                                        CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
-                                                        CommentsController * controller = [[CommentsController alloc] init];
-                                                        controller.hidesBottomBarWhenPushed = YES;
-                                                        controller.model = model;
-                                                        controller.title = title;
-                                                        controller.highlightedCommentId = commentId;
-                                                        
-                                                        [self.navigationController pushViewController:controller animated:YES];
-                                                        
-                                                        if(hasOneUnread) {
-                                                            [self .model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
-                                                        }
-                                                    }
-                                                }];
+        if ([notification.notificable.type isEqualToString:@"BaseTask"]) {
+            [self openTaskControllerForNotification:notification
+                                        atIndexPath:(hasOneUnread) ? indexPath : nil];
+        }
+        else if(notification.discussionId) {
+            [self openCommentsControllerForNotification:notification
+                                            atIndexPath:(hasOneUnread) ? indexPath : nil];
         }
     }
     else {
@@ -299,9 +289,7 @@
         [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(NoUnreadNotificationFound, nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
-                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              
-                          }];
+                          tapBlock:nil];
     }
 }
 
@@ -341,9 +329,7 @@
 }
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
-    BOOL hasUnreadNotf = (badgeValue > 0);
-    NSString * badgeStringValue = (badgeValue > 99.0f) ? @"99+" : [NSString stringWithFormat:@"%ld", (long)badgeValue];
-    self.tabBarItem.badgeValue = (hasUnreadNotf) ? badgeStringValue : nil;
+    self.tabBarItem.badgeValue = BadgTextFromInteger(badgeValue);
 }
 
 - (void)countersDidChangedNotification:(NSNotification*)notification {
@@ -351,6 +337,48 @@
     if([counterName isEqualToString:@"notifications"]) {
         [self updateGlobalCounter];
     }
+}
+
+- (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    BOOL isDiscussionNotification = (notification.discussionId != nil);
+    NSInteger taskTabIndex = 1;
+    UITabBarController * mainTabController = self.tabBarController;
+    mainTabController.selectedIndex = taskTabIndex;
+    UINavigationController * navController = mainTabController.viewControllers[taskTabIndex];
+    [navController popToRootViewControllerAnimated:NO];
+    [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
+                                           completion:^(TaskTabController * controller, NSError *error) {
+                                               if (controller) {
+                                                   controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
+                                                   [navController setViewControllers:@[navController.viewControllers[0], controller]
+                                                                            animated:YES];
+                                                   if(indexPath) {
+                                                       [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
+                                                   }
+                                               }
+                                           }];
+}
+
+- (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    NSString * title = notification.notificable.title;
+    NSNumber * commentId = notification.commentId;
+    [[IQService sharedService] discussionWithId:notification.discussionId
+                                        handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
+                                            if(success) {
+                                                CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
+                                                CommentsController * controller = [[CommentsController alloc] init];
+                                                controller.hidesBottomBarWhenPushed = YES;
+                                                controller.model = model;
+                                                controller.title = title;
+                                                controller.highlightedCommentId = commentId;
+                                                
+                                                [self.navigationController pushViewController:controller animated:YES];
+                                                
+                                                if(indexPath) {
+                                                    [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
+                                                }
+                                            }
+                                        }];
 }
 
 - (void)dealloc {

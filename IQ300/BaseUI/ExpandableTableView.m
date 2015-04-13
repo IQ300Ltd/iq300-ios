@@ -19,6 +19,9 @@
 
 @implementation ExpandableTableView
 
+@dynamic dataSource;
+@dynamic delegate;
+
 - (id)init {
     self = [super init];
     

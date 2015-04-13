@@ -192,7 +192,7 @@
     
     if(!isReaded) {
         NSInteger badgeValue = [_item.unreadCount integerValue];
-        _badgeView.badgeValue = (badgeValue > 99.0f) ? @"99+" : [_item.unreadCount stringValue];
+        _badgeView.badgeValue = BadgTextFromInteger(badgeValue);
         _badgeView.hidden = NO;
     }
     

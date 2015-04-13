@@ -13,7 +13,7 @@
 #import "TCommentsController.h"
 #import "TMembersController.h"
 #import "TDocumentsController.h"
-#import "THistoryController.h"
+#import "TaskActivitiesController.h"
 #import "IQService+Tasks.h"
 #import "TChangesCounter.h"
 #import "IQNotificationCenter.h"
@@ -24,12 +24,31 @@
 #import "IQTask.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate> {
-    TaskPolicyInspector * _policyInspector;
 }
 
 @end
 
 @implementation TaskTabController
+
++ (void)taskTabControllerForTaskWithId:(NSNumber*)taskId completion:(void (^)(TaskTabController * controller, NSError * error))completion {
+    [[IQService sharedService] taskWithId:taskId handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+        if (success) {
+            TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:task.taskId];
+            TaskTabController * controller = [[TaskTabController alloc] init];
+            controller.task = task;
+            controller.policyInspector = policyInspector;
+            
+            [policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
+                if (completion) {
+                    completion(controller, error);
+                }
+            }];
+        }
+        else if (completion) {
+            completion(nil, error);
+        }
+    }];
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -39,7 +58,7 @@
                                    [[TCommentsController alloc] init],
                                    [[TMembersController alloc] init],
                                    [[TDocumentsController alloc] init],
-                                   [[THistoryController alloc] init]
+                                   [[TaskActivitiesController alloc] init]
                                    ]];
     }
     return self;
@@ -73,7 +92,7 @@
     [self updateCounters];
 }
 
-- (BOOL)showMenuBarItem {
+- (BOOL)isLeftMenuEnabled {
     return NO;
 }
 
@@ -85,26 +104,9 @@
 
 - (void)tabBarController:(IQTabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     self.title = viewController.title;
-    
-    if ([viewController conformsToProtocol:@protocol(TaskTabItemController)]) {
-        id<TaskTabItemController> controller = (id<TaskTabItemController>)viewController;
-        [self updateReadStatusForTabController:controller];
-    }
 }
 
 #pragma mark - Private methods
-
-- (void)updateReadStatusForTabController:(id<TaskTabItemController>)controller {
-    if (controller && [controller.badgeValue integerValue] > 0) {
-        [[IQService sharedService] markCategoryAsReaded:controller.category
-                                                 taskId:self.task.taskId
-                                                handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                    if (success) {
-                                                        controller.badgeValue = @(0);
-                                                    }
-                                                }];
-    }
-}
 
 - (void)updateControllerByTask:(IQTask*)task {
     if (task) {
@@ -124,6 +126,10 @@
         TDocumentsController * documentsController = self.viewControllers[3];
         [documentsController setTaskId:task.taskId];
         [documentsController setPolicyInspector:_policyInspector];
+        
+        TaskActivitiesController * activitiesController = self.viewControllers[4];
+        [activitiesController setTaskId:task.taskId];
+        [activitiesController setPolicyInspector:_policyInspector];
     }
 }
 
@@ -132,20 +138,23 @@
                                               handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
                                                   if (success && counter) {
                                                       TInfoController * infoController = self.viewControllers[0];
-                                                      infoController.badgeValue = counter.details;
+                                                      if (self.selectedIndex != 0) {
+                                                          infoController.badgeValue = counter.details;
+                                                      }
                                                       
                                                       TCommentsController * commentsController = self.viewControllers[1];
-                                                      commentsController.badgeValue = counter.comments;
+                                                      if (self.selectedIndex != 1) {
+                                                          commentsController.badgeValue = counter.comments;
+                                                      }
 
                                                       TMembersController * membersController = self.viewControllers[2];
-                                                      membersController.badgeValue = counter.users;
+                                                      if (self.selectedIndex != 2) {
+                                                          membersController.badgeValue = counter.users;
+                                                      }
 
                                                       TDocumentsController * documentsController = self.viewControllers[3];
-                                                      documentsController.badgeValue = counter.documents;
-                                                      
-                                                      if (self.selectedIndex != NSNotFound &&
-                                                          [self.viewControllers[self.selectedIndex] conformsToProtocol:@protocol(TaskTabItemController)]) {
-                                                          [self updateReadStatusForTabController:self.viewControllers[self.selectedIndex]];
+                                                      if (self.selectedIndex != 3) {
+                                                          documentsController.badgeValue = counter.documents;
                                                       }
                                                   }
                                               }];
