@@ -43,9 +43,11 @@
 
 - (void)changeStatus:(NSString*)status forTaskWithId:(NSNumber*)taskId reason:(NSString*)reason handler:(ObjectLoaderCompletionHandler)handler;
 
+- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+
 - (void)completeTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
 
-- (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)rollbackTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
 
 - (void)todoListByTaskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler;
 

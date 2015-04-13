@@ -758,6 +758,12 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
+                                                        method:RKRequestMethodPUT
+                                                   pathPattern:@"/api/v1/tasks/:id/rollback"
+                                                   fromKeyPath:@"task"
+                                                         store:self.objectManager.managedObjectStore];
+
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedTodoItem class]
                                                         method:RKRequestMethodPUT
                                                    pathPattern:@"/api/v1/tasks/:id/todo_items/:id/complete"

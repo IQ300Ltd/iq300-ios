@@ -121,6 +121,14 @@
             handler:handler];
 }
 
+- (void)rollbackTaskWithId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
+    NSParameterAssert(taskId);
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/rollback", taskId]
+         parameters:nil
+            handler:handler];
+}
+
 - (void)rollbackTodoItemWithId:(NSNumber*)itemId taskId:(NSNumber*)taskId handler:(ObjectLoaderCompletionHandler)handler {
     NSParameterAssert(itemId);
     NSParameterAssert(taskId);
