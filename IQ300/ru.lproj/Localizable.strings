@@ -114,3 +114,11 @@
 "Attention" = "Внимание";
 "You agree to remove the selected item?" = "Вы согласны удалить выбранный пункт?";
 "← Return to work" = "← Вернуть в работу";
+"Title" = "Название";
+"Description" = "Описание";
+"Community" = "Сообщество";
+"Begins" = "Начинается";
+"Ends" = "Заканчивается";
+"Performers" = "Исполнителей";
+"Executers" = "Исполнители";
+"Perform to" = "Выполнить к";

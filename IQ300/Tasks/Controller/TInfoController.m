@@ -21,6 +21,7 @@
 #import "IQUser.h"
 #import "TTodoItemsController.h"
 #import "TodoListModel.h"
+#import "TaskController.h"
 
 @interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
     __weak UIButton * _deferredActionButton;
@@ -280,7 +281,14 @@
 #pragma mark - Private methods
 
 - (void)editButtonAction:(UIButton*)sender {
+    TaskModel * model = [[TaskModel alloc] init];
+    model.task = self.task;
     
+    TaskController * controller = [[TaskController alloc] init];
+    controller.model = model;
+    controller.hidesBottomBarWhenPushed = YES;
+    [self.parentViewController.navigationController pushViewController:controller
+                                                              animated:YES];
 }
 
 - (void)editTodoItemsAction:(UIButton*)sender {
@@ -404,11 +412,11 @@
     _changeStateEnabled = ([self.policyInspector isActionAvailable:@"change_state" inCategory:@"todoItems"]);
 
     if([self.policyInspector isActionAvailable:@"update" inCategory:[self category]]) {
-        //        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
-        //                                                                        style:UIBarButtonItemStylePlain
-        //                                                                       target:self
-        //                                                                       action:@selector(editButtonAction:)];
-        //        self.parentViewController.navigationItem.rightBarButtonItem = editButton;
+                UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
+                                                                                style:UIBarButtonItemStylePlain
+                                                                               target:self
+                                                                               action:@selector(editButtonAction:)];
+                self.parentViewController.navigationItem.rightBarButtonItem = editButton;
     }
 }
 

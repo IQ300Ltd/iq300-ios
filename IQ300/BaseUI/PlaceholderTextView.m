@@ -18,7 +18,6 @@
 
 @end
 
-
 @implementation PlaceholderTextView
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -52,14 +51,22 @@
 	[self updatePlaceholderIfNeed];
 }
 
-
 - (void)setPlaceholder:(NSString *)string {
 	if ([string isEqual:_placeholder]) {
 		return;
 	}
+    
 	_placeholder = string;
 	
 	[self updatePlaceholderIfNeed];
+}
+
+- (UIFont*)placeholderFont {
+    if (_placeholderFont == nil) {
+        _placeholderFont = self.font;
+    }
+
+    return _placeholderFont;
 }
 
 #pragma mark - UIView
@@ -68,14 +75,32 @@
 	[super drawRect:rect];
 	
 	if (_drawPlaceholder) {
-        NSDictionary * attributes = @{NSFontAttributeName : _placeholderFont,
-                                      NSForegroundColorAttributeName : _placeholderColor};
         
-        [_placeholder drawInRect:CGRectMake(_placeholderInsets.left,
-                                            _placeholderInsets.top,
-                                            self.frame.size.width - _placeholderInsets.left - _placeholderInsets.right,
-                                            self.frame.size.height - _placeholderInsets.top - _placeholderInsets.bottom) withAttributes:attributes];
+        NSDictionary * attributes = @{ NSFontAttributeName : self.placeholderFont,
+                                       NSForegroundColorAttributeName : self.placeholderColor};
+        
+        CGRect placeholderRect = UIEdgeInsetsInsetRect(self.bounds, _placeholderInsets);
+        [self.placeholder drawInRect:placeholderRect withAttributes:attributes];
 	}
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+    if([self.placeholder length] > 0 && [self.text length] == 0) {
+        NSMutableParagraphStyle * paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        
+        NSDictionary * attributes = @{ NSFontAttributeName : self.placeholderFont,
+                                       NSParagraphStyleAttributeName : paragraphStyle};
+        
+        CGSize resultSize = [self.placeholder boundingRectWithSize:size
+                                                           options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                                        attributes:attributes
+                                                           context:nil].size;
+        return CGSizeMake(resultSize.width + _placeholderInsets.left + _placeholderInsets.right,
+                          resultSize.height + _placeholderInsets.top + _placeholderInsets.bottom);
+    }
+    
+    return [super sizeThatFits:size];
 }
 
 #pragma mark - Private

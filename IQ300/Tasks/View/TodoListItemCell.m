@@ -16,7 +16,6 @@
 #define CONTENT_HORIZONTAL_INSETS 13
 #define ACCESSORY_VIEW_SIZE 20.0f
 #define TITLE_OFFSET 10.0f
-#define TTTT 28
 
 @implementation TodoListItemCell
 

@@ -53,3 +53,16 @@
 - (void)clearModelData;
 
 @end
+
+@interface IQTableModel : NSObject<IQTableModel> {
+    NSArray * _items;
+}
+
+@property (nonatomic, assign) NSInteger section;
+@property (nonatomic, readonly) NSArray * items;
+@property (nonatomic, strong) NSArray * sortDescriptors;
+@property (nonatomic, strong) Class cellClass;
+
+@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+
+@end
