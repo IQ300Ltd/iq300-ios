@@ -99,7 +99,7 @@ static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
 
     if (self.task) {
         if (self.task.executor) {
-           // _executers = @[self.task.executor];
+            _executers = @[self.task.executor];
         }
         
         NSMutableArray * fields = [NSMutableArray array];
