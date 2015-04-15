@@ -117,6 +117,8 @@
 "Title" = "Название";
 "Description" = "Описание";
 "Community" = "Сообщество";
+"Communities" = "Сообщества";
+"No communities" = "Сообщества отсутствуют";
 "Begins" = "Начинается";
 "Ends" = "Заканчивается";
 "Performers" = "Исполнителей";

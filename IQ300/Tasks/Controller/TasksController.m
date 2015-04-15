@@ -199,6 +199,7 @@
     TaskTabController * controller = [[TaskTabController alloc] init];
     controller.task = task;
     controller.policyInspector = policyInspector;
+    controller.hidesBottomBarWhenPushed = YES;
     
     _isTaskOpenProcessing = YES;
     

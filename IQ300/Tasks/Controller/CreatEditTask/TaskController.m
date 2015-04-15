@@ -13,6 +13,8 @@
 #import "IQEditableTextCell.h"
 #import "IQTask.h"
 #import "ExtendedButton.h"
+#import "CommunitiesController.h"
+#import "IQCommunity.h"
 
 #define MAX_NUMBER_OF_CHARACTERS 255
 #define SEPARATOR_HEIGHT 0.5f
@@ -151,7 +153,17 @@
         [self showDataPickerForIndexPath:indexPath];
     }
     else if(indexPath.row != 0) {
-        
+        if (indexPath.row == 2) {
+            CommunitiesModel * model = [[CommunitiesModel alloc] init];
+            model.communityId = self.model.task.community.communityId;
+            
+            CommunitiesController * controller = [[CommunitiesController alloc] init];
+            controller.model = model;
+            [self.navigationController pushViewController:controller animated:YES];
+        }
+        else {
+            
+        }
     }
 }
 

@@ -36,7 +36,7 @@ extern NSString * DescriptionForSortField(NSString * sortField);
 - (void)setAscendingSortOrder:(BOOL)ascending forSection:(NSInteger)section;
 - (BOOL)isSortOrderAscendingForSection:(NSInteger)section;
 
-- (BOOL)isItemSellectedAtIndexPath:(NSIndexPath *)indexPath;
+- (BOOL)isItemSelectedAtIndexPath:(NSIndexPath *)indexPath;
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)selected;
 - (NSIndexPath*)selectedIndexPathForSection:(NSInteger)section;
 

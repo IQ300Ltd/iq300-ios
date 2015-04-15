@@ -152,7 +152,7 @@
     BOOL showBootomLine = !(indexPath.row == [_model numberOfItemsInSection:indexPath.section] - 1);
     [cell setBottomLineShown:showBootomLine];
         
-    BOOL isCellSelected = [self.model isItemSellectedAtIndexPath:indexPath];
+    BOOL isCellSelected = [self.model isItemSelectedAtIndexPath:indexPath];
     [cell setAccessoryType:(isCellSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
     
     return cell;
@@ -175,7 +175,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSIndexPath * selectedIndexPath = [self.model selectedIndexPathForSection:indexPath.section];
     if(indexPath.section != SORT_SECTION) {
-        BOOL isItemSelected = [self.model isItemSellectedAtIndexPath:indexPath];
+        BOOL isItemSelected = [self.model isItemSelectedAtIndexPath:indexPath];
         if(selectedIndexPath && [selectedIndexPath compare:indexPath] != NSOrderedSame) {
             [self.model makeItemAtIndexPath:selectedIndexPath selected:NO];
         }

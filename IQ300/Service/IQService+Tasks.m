@@ -307,4 +307,10 @@
   
 }
 
+- (void)taskCommunitiesWithHandler:(ObjectRequestCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/tasks/communities"
+                parameters:nil
+                   handler:handler];
+}
+
 @end

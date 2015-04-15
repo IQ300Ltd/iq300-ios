@@ -134,7 +134,7 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
     return nil;
 }
 
-- (BOOL)isItemSellectedAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)isItemSelectedAtIndexPath:(NSIndexPath *)indexPath {
     return [_selectedItems containsObject:indexPath];
 }
 

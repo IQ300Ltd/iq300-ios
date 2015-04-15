@@ -83,4 +83,6 @@
                            sort:(IQSortDirection)sort
                         handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)taskCommunitiesWithHandler:(ObjectRequestCompletionHandler)handler;
+
 @end

@@ -76,7 +76,7 @@
     }
 }
 
-- (NSPredicate*)predicate {
+- (NSPredicate*)fetchPredicate {
     return nil;
 }
 
@@ -88,7 +88,7 @@
     }
     
     if(!_fetchController && self.context && self.entityName) {
-        NSPredicate * predicate = [self predicate];
+        NSPredicate * predicate = [self fetchPredicate];
         NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
         [fetchRequest setPredicate:predicate];
         [fetchRequest setSortDescriptors:_sortDescriptors];
@@ -99,7 +99,7 @@
                                                                           cacheName:self.cacheFileName];
     }
     
-    NSPredicate * predicate = [self predicate];
+    NSPredicate * predicate = [self fetchPredicate];
     
     NSError * fetchError = nil;
     [_fetchController.fetchRequest setPredicate:predicate];

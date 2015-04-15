@@ -24,7 +24,7 @@
 
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
-- (NSPredicate*)predicate;
+- (NSPredicate*)fetchPredicate;
 
 - (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion;
 

@@ -287,6 +287,9 @@
 		73D7F1EA1ADE94B400023120 /* TodoListSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1E31ADE94B400023120 /* TodoListSectionView.m */; };
 		73D7F1F01ADE94CE00023120 /* IQDetailsTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1ED1ADE94CE00023120 /* IQDetailsTextCell.m */; };
 		73D7F1F11ADE94CE00023120 /* IQEditableTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1EF1ADE94CE00023120 /* IQEditableTextCell.m */; };
+		73D7F1F41ADE957F00023120 /* CommunitiesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1F31ADE957F00023120 /* CommunitiesController.m */; };
+		73D7F1F71ADE95A900023120 /* CommunitiesModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1F61ADE95A900023120 /* CommunitiesModel.m */; };
+		73D7F1FD1ADEA4EA00023120 /* IQCommunityInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1FC1ADEA4EA00023120 /* IQCommunityInfo.m */; };
 		73DD80091A68E83800A6ADA5 /* IQNotificationIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DD80081A68E83800A6ADA5 /* IQNotificationIds.m */; };
 		73E426001AAEC6BF00CD2093 /* UserPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E425FF1AAEC6BF00CD2093 /* UserPickerController.m */; };
 		73E426031AAEE6CA00CD2093 /* UsersPickerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E426021AAEE6CA00CD2093 /* UsersPickerModel.m */; };
@@ -788,6 +791,12 @@
 		73D7F1ED1ADE94CE00023120 /* IQDetailsTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQDetailsTextCell.m; sourceTree = "<group>"; };
 		73D7F1EE1ADE94CE00023120 /* IQEditableTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQEditableTextCell.h; sourceTree = "<group>"; };
 		73D7F1EF1ADE94CE00023120 /* IQEditableTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQEditableTextCell.m; sourceTree = "<group>"; };
+		73D7F1F21ADE957F00023120 /* CommunitiesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommunitiesController.h; sourceTree = "<group>"; };
+		73D7F1F31ADE957F00023120 /* CommunitiesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommunitiesController.m; sourceTree = "<group>"; };
+		73D7F1F51ADE95A900023120 /* CommunitiesModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommunitiesModel.h; sourceTree = "<group>"; };
+		73D7F1F61ADE95A900023120 /* CommunitiesModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommunitiesModel.m; sourceTree = "<group>"; };
+		73D7F1FB1ADEA4EA00023120 /* IQCommunityInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQCommunityInfo.h; sourceTree = "<group>"; };
+		73D7F1FC1ADEA4EA00023120 /* IQCommunityInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQCommunityInfo.m; sourceTree = "<group>"; };
 		73DD80071A68E83800A6ADA5 /* IQNotificationIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationIds.h; sourceTree = "<group>"; };
 		73DD80081A68E83800A6ADA5 /* IQNotificationIds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationIds.m; sourceTree = "<group>"; };
 		73E425FE1AAEC6BF00CD2093 /* UserPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPickerController.h; sourceTree = "<group>"; };
@@ -1664,6 +1673,8 @@
 				73FE0A3A1AC03121007176A1 /* IQTaskMember.m */,
 				738EF8221A9CA76700894755 /* IQCommunity.h */,
 				738EF8231A9CA76700894755 /* IQCommunity.m */,
+				73D7F1FB1ADEA4EA00023120 /* IQCommunityInfo.h */,
+				73D7F1FC1ADEA4EA00023120 /* IQCommunityInfo.m */,
 				738EF8251A9CA88400894755 /* IQProject.h */,
 				738EF8261A9CA88400894755 /* IQProject.m */,
 				73F5089B1ACACFF8009DBBD8 /* TodoItem.h */,
@@ -1692,6 +1703,8 @@
 			children = (
 				73D7F19F1ADE92BC00023120 /* TaskController.h */,
 				73D7F1A01ADE92BC00023120 /* TaskController.m */,
+				73D7F1F21ADE957F00023120 /* CommunitiesController.h */,
+				73D7F1F31ADE957F00023120 /* CommunitiesController.m */,
 			);
 			path = CreatEditTask;
 			sourceTree = "<group>";
@@ -1745,6 +1758,8 @@
 			children = (
 				73D7F1D21ADE940300023120 /* TaskModel.h */,
 				73D7F1D31ADE940300023120 /* TaskModel.m */,
+				73D7F1F51ADE95A900023120 /* CommunitiesModel.h */,
+				73D7F1F61ADE95A900023120 /* CommunitiesModel.m */,
 			);
 			path = CreatEditTask;
 			sourceTree = "<group>";
@@ -2157,6 +2172,7 @@
 				733A80541A7A6C5C00460C87 /* NotificationGroupView.m in Sources */,
 				73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */,
 				738EF82D1A9CB8D300894755 /* IQService+Tasks.m in Sources */,
+				73D7F1FD1ADEA4EA00023120 /* IQCommunityInfo.m in Sources */,
 				737E7C551A0CA88E00E8BB81 /* MenuSectionHeader.m in Sources */,
 				73D7F1CC1ADE93D600023120 /* TaskActivitiesModel.m in Sources */,
 				73C4A6821A3EFB4E003E1242 /* NSString+UUID.m in Sources */,
@@ -2232,6 +2248,7 @@
 				7393C4111A1A2FF400E9E944 /* LoginController.m in Sources */,
 				739C3B621A3076D60032C057 /* CommentCell.m in Sources */,
 				7379EEB31A11E26200D69BBD /* IQNavigationController.m in Sources */,
+				73D7F1F71ADE95A900023120 /* CommunitiesModel.m in Sources */,
 				739C3B681A3086BA0032C057 /* DiscussionView.m in Sources */,
 				737DD22D1A14EFE900CC4443 /* TCService.m in Sources */,
 				739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */,
@@ -2250,6 +2267,7 @@
 				73B3C1AB1A7B73B9005F972D /* NSString+MD5.m in Sources */,
 				736B6BEA1A0BC09300034D9B /* UIColor+Extensions.m in Sources */,
 				738FE71E1A164875009F26A2 /* UIImage+Extensions.m in Sources */,
+				73D7F1F41ADE957F00023120 /* CommunitiesController.m in Sources */,
 				73891FF51A2C97ED008D8885 /* UIAlertView+Blocks.m in Sources */,
 				73A7CA701A9F4BF70038DEF1 /* TaskFilterSectionView.m in Sources */,
 				73BF7C611AD5199C00C52D41 /* UIViewController+Additions.m in Sources */,
