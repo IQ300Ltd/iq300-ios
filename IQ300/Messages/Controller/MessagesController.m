@@ -117,7 +117,8 @@
     
     UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"createNewMessage.png"]
                                                                         style:UIBarButtonItemStylePlain
-                                                                       target:self action:@selector(createNewAction:)];
+                                                                       target:self
+                                                                       action:@selector(createNewAction:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
 
     

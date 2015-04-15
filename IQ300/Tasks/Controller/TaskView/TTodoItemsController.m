@@ -258,9 +258,6 @@
     }
 }
 
-- (void)onKeyboardDidShow:(NSNotification *)notification {
-}
-
 - (void)onKeyboardWillHide:(NSNotification *)notification {
     [self endEditeCellAtindexPath:_editableIndexPath];
     _editableIndexPath = nil;

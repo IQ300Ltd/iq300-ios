@@ -43,7 +43,8 @@
     
     UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
                                                                        style:UIBarButtonItemStylePlain
-                                                                      target:self action:@selector(backButtonAction:)];
+                                                                      target:self
+                                                                      action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
     self.title = self.fileName;

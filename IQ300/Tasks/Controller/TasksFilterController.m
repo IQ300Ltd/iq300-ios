@@ -97,11 +97,11 @@
                                             actualBounds.size.width,
                                             SEPARATOR_HEIGHT);
     
-    CGSize clearButtonSize = CGSizeMake(300, 40);
-    _doneButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - clearButtonSize.width) / 2.0f,
-                                    actualBounds.origin.y + actualBounds.size.height - clearButtonSize.height - 10.0f,
-                                    clearButtonSize.width,
-                                    clearButtonSize.height);
+    CGSize doneButtonSize = CGSizeMake(300, 40);
+    _doneButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - doneButtonSize.width) / 2.0f,
+                                    actualBounds.origin.y + actualBounds.size.height - doneButtonSize.height - 10.0f,
+                                    doneButtonSize.width,
+                                    doneButtonSize.height);
 }
 
 - (void)viewWillAppear:(BOOL)animated {

@@ -11,7 +11,10 @@
 #import "IQTask.h"
 #import "IQCommunity.h"
 #import "NSDate+IQFormater.h"
+#import "NSDate+CupertinoYankee.h"
 #import "NSManagedObject+ActiveRecord.h"
+#import "IQUser.h"
+#import "IQSession.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
@@ -34,7 +37,7 @@ static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
     if(indexPath.section < [self numberOfSections] &&
        indexPath.row < [self numberOfItemsInSection:indexPath.section]) {
         NSString * text = [_items objectAtIndex:indexPath.row];
-        return ((NSNull*)text != [NSNull null] && [text length] > 0) ? text : nil;
+        return ([text length] > 0) ? text : nil;
     }
     return nil;
 }
@@ -56,7 +59,7 @@ static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath *)indexPath {
     NSString * text = [self itemAtIndexPath:indexPath];
-    if (indexPath.row < 3 && (NSNull*)text != [NSNull null] && [text length] > 0) {
+    if (indexPath.row < 3 && [text length] > 0) {
         return (indexPath.row == 0) ? [IQEditableTextCell heightForItem:text width:self.cellWidth] :
                                       [IQDetailsTextCell heightForItem:text width:self.cellWidth];
    
@@ -69,14 +72,19 @@ static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
 }
 
 - (NSString*)placeholderForItemAtIndexPath:(NSIndexPath*)indexPath {
-    static NSArray * _placeholders = nil;
+    static NSDictionary * _placeholders = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
-        _placeholders = @[@"Title", @"Description", @"Community", @"Executers", @"Begins", @"Ends"];
+        _placeholders = @{ @(0) : @"Title",
+                           @(1) : @"Description",
+                           @(2) : @"Community",
+                           @(3) : @"Executers",
+                           @(4) : @"Begins",
+                           @(5) : @"Ends"};
     });
     
-    NSString * placeholder = (indexPath.row < [_placeholders count]) ? [_placeholders objectAtIndex:indexPath.row] : nil;
-    return ((NSNull*)placeholder != [NSNull null] && [placeholder length] > 0) ? NSLocalizedString(placeholder, nil) : nil;
+    NSString * placeholder = _placeholders[@(indexPath.row)];
+    return ([placeholder length] > 0) ? NSLocalizedString(placeholder, nil) : nil;
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError *))completion {
@@ -104,15 +112,15 @@ static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
         
         NSMutableArray * fields = [NSMutableArray array];
         
-        [fields addObject:([self.task.title length] > 0) ? self.task.title : [NSNull null]];
-        [fields addObject:([self.task.taskDescription length] > 0) ? self.task.taskDescription : [NSNull null]];
-        [fields addObject:(self.task.community) ? self.task.community.title : [NSNull null]];
+        [fields addObject:([self.task.title length] > 0) ? self.task.title : [NSString string]];
+        [fields addObject:([self.task.taskDescription length] > 0) ? self.task.taskDescription : [NSString string]];
+        [fields addObject:(self.task.community) ? self.task.community.title : [NSString string]];
         
         if ([_executers count] > 0) {
             [fields addObject:[NSString stringWithFormat:@"%@: %lu", NSLocalizedString(@"Performers", nil), (unsigned long)[self.executers count]]];
         }
         else {
-            [fields addObject:[NSNull null]];
+            [fields addObject:[NSString string]];
         }
         
         NSString * dateFormat = @"dd.MM.yyyy HH:mm";
@@ -121,7 +129,7 @@ static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
                                [self.task.startDate dateToStringWithFormat:dateFormat]]];
         }
         else {
-            [fields addObject:[NSNull null]];
+            [fields addObject:[NSString string]];
         }
         
         if (self.task.endDate) {
@@ -129,7 +137,7 @@ static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
                                [self.task.endDate dateToStringWithFormat:dateFormat]]];
         }
         else {
-            [fields addObject:[NSNull null]];
+            [fields addObject:[NSString string]];
         }
         
         _items = [fields copy];
@@ -137,8 +145,12 @@ static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
 }
 
 - (IQTask*)createTaskInContext:(NSManagedObjectContext*)context error:(NSError**)error {
+    NSDate * today = [NSDate date];
+    IQUser * curUser = [IQUser userWithId:[IQSession defaultSession].userId inContext:self.context];
     IQTask * task = [IQTask createInContext:context];
-    
+    task.customer = curUser;
+    task.startDate = [today beginningOfDay];
+    task.endDate = [today endOfDay];
     return task;
 }
 

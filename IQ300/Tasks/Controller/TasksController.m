@@ -23,6 +23,8 @@
 
 #import "TaskTabController.h"
 #import "TaskPolicyInspector.h"
+#import "TaskController.h"
+#import "IQService.h"
 
 @interface TasksController () <TasksFilterControllerDelegate> {
     TasksView * _mainView;
@@ -90,6 +92,12 @@
                                              selector:@selector(accountDidChanged)
                                                  name:AccountDidChangedNotification
                                                object:nil];
+    
+    UIBarButtonItem * createTaskBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(createTaskAction:)];
+    self.navigationItem.rightBarButtonItem = createTaskBarButton;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -287,6 +295,23 @@
     controller.model = model;
     controller.delegate = self;
     [self.navigationController pushViewController:controller animated:YES];
+}
+
+- (void)createTaskAction:(UIButton*)sender {
+    NSPersistentStoreCoordinator * coordinator = [IQService sharedService].context.persistentStoreCoordinator;
+    NSManagedObjectContext * editContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    [editContext performBlockAndWait:^{
+        editContext.persistentStoreCoordinator = coordinator;
+    }];
+    
+    TaskModel * model = [[TaskModel alloc] init];
+    model.context = editContext;
+    
+    TaskController * controller = [[TaskController alloc] init];
+    controller.model = model;
+    controller.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:controller
+                                         animated:YES];
 }
 
 - (void)updateNoDataLabelVisibility {
