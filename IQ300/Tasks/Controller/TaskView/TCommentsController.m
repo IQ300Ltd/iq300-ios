@@ -19,7 +19,6 @@
 
 @interface TCommentsController () {
     __weak id _notfObserver;
-    UILabel * _noDataLabel;
 }
 
 @property (nonatomic, assign) BOOL resetReadFlagAutomatically;
@@ -95,22 +94,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _noDataLabel = [[UILabel alloc] init];
-    [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-    [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
-    _noDataLabel.textAlignment = NSTextAlignmentCenter;
-    _noDataLabel.backgroundColor = [UIColor clearColor];
-    _noDataLabel.numberOfLines = 0;
-    _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [_noDataLabel setHidden:YES];
-    [_noDataLabel setText:NSLocalizedString(@"No comments", nil)];
-    
-    if (self.tableView) {
-        [self.view insertSubview:_noDataLabel belowSubview:self.tableView];
-    }
-    else {
-        [self.view addSubview:_noDataLabel];
-    }
+    [self.noDataLabel setText:NSLocalizedString(@"No comments", nil)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -127,24 +111,6 @@
     [super viewWillDisappear:animated];
     
     self.resetReadFlagAutomatically = NO;
-}
-
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    
-    _noDataLabel.frame = self.tableView.frame;
-}
-
-#pragma mark - IQTableModel Delegate
-
-- (void)modelDidChangeContent:(id<IQTableModel>)model {
-    [super modelDidChangeContent:model];
-    [self updateNoDataLabelVisibility];
-}
-
-- (void)modelDidChanged:(id<IQTableModel>)model {
-    [super modelDidChanged:model];
-    [self updateNoDataLabelVisibility];
 }
 
 #pragma mark - Private methods
@@ -193,10 +159,6 @@
 
 - (NSString*)category {
     return @"comments";
-}
-
-- (void)updateNoDataLabelVisibility {
-    [_noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
 }
 
 - (void)dealloc {

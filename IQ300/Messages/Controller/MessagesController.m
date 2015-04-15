@@ -208,16 +208,6 @@
 
 #pragma mark - IQTableModel Delegate
 
-- (void)modelDidChangeContent:(id<IQTableModel>)model {
-    [super modelDidChangeContent:model];
-    [self updateNoDataLabelVisibility];
-}
-
-- (void)modelDidChanged:(id<IQTableModel>)model {
-    [super modelDidChanged:model];
-    [self updateNoDataLabelVisibility];
-}
-
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     [self updateBarBadgeWithValue:self.model.unreadItemsCount];
 }

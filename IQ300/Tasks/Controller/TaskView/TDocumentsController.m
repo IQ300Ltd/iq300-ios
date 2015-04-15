@@ -24,7 +24,6 @@
 @interface TDocumentsController () {
     TaskAttachmentsModel * _attachmentsModel;
     UIDocumentInteractionController * _documentController;
-    UILabel * _noDataLabel;
 }
 
 @end
@@ -97,22 +96,7 @@
     [self setActivityIndicatorBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.3f]];
     [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
 
-    _noDataLabel = [[UILabel alloc] init];
-    [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-    [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
-    _noDataLabel.textAlignment = NSTextAlignmentCenter;
-    _noDataLabel.backgroundColor = [UIColor clearColor];
-    _noDataLabel.numberOfLines = 0;
-    _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [_noDataLabel setHidden:YES];
-    [_noDataLabel setText:NSLocalizedString(@"No attachments", nil)];
-
-    if (self.tableView) {
-        [self.view insertSubview:_noDataLabel belowSubview:self.tableView];
-    }
-    else {
-        [self.view addSubview:_noDataLabel];
-    }
+    [self.noDataLabel setText:NSLocalizedString(@"No attachments", nil)];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(taskPolicyDidChanged:)
@@ -145,12 +129,6 @@
     
     self.model.resetReadFlagAutomatically = NO;
     [self.model setSubscribedToNotifications:NO];
-}
-
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    
-    _noDataLabel.frame = self.tableView.frame;
 }
 
 #pragma mark - UITableView DataSource
@@ -267,16 +245,6 @@
 
 #pragma mark - IQTableModel Delegate
 
-- (void)modelDidChangeContent:(id<IQTableModel>)model {
-    [super modelDidChangeContent:model];
-    [self updateNoDataLabelVisibility];
-}
-
-- (void)modelDidChanged:(id<IQTableModel>)model {
-    [super modelDidChanged:model];
-    [self updateNoDataLabelVisibility];
-}
-
 - (void)modelCountersDidChanged:(TaskAttachmentsModel*)model {
     self.badgeValue = self.model.unreadCount;
 }
@@ -289,10 +257,6 @@
             [self updateNoDataLabelVisibility];
         }];
     }
-}
-
-- (void)updateNoDataLabelVisibility {
-    [_noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
 }
 
 - (void)addButtonAction:(UIButton*)sender {

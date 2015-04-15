@@ -22,7 +22,6 @@
     NSIndexPath * _editableIndexPath;
     UIView * _bottomSeparatorView;
     ExtendedButton * _doneButton;
-    UILabel * _noDataLabel;
 }
 
 @end
@@ -56,22 +55,7 @@
     [_bottomSeparatorView setBackgroundColor:SEPARATOR_COLOR];
     [self.view addSubview:_bottomSeparatorView];
     
-    _noDataLabel = [[UILabel alloc] init];
-    [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-    [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
-    _noDataLabel.textAlignment = NSTextAlignmentCenter;
-    _noDataLabel.backgroundColor = [UIColor clearColor];
-    _noDataLabel.numberOfLines = 0;
-    _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [_noDataLabel setHidden:YES];
-    [_noDataLabel setText:NSLocalizedString(@"Todo list for task is empty", nil)];
-
-    if (self.tableView) {
-        [self.view insertSubview:_noDataLabel belowSubview:self.tableView];
-    }
-    else {
-        [self.view addSubview:_noDataLabel];
-    }
+    [self.noDataLabel setText:NSLocalizedString(@"Todo list for task is empty", nil)];
     
     _doneButton = [[ExtendedButton alloc] init];
     _doneButton.layer.cornerRadius = 4.0f;
@@ -146,7 +130,7 @@
 
     [self layoutTabelView];
     
-    _noDataLabel.frame = self.tableView.frame;
+    self.noDataLabel.frame = self.tableView.frame;
 }
 
 #pragma mark - UITableView DataSource
@@ -265,18 +249,6 @@
     [self makeInputViewTransitionWithDownDirection:YES notification:notification];
 }
 
-#pragma mark - IQTableModel Delegate
-
-- (void)modelDidChangeContent:(id<IQTableModel>)model {
-    [super modelDidChangeContent:model];
-    [self updateNoDataLabelVisibility];
-}
-
-- (void)modelDidChanged:(id<IQTableModel>)model {
-    [super modelDidChanged:model];
-    [self updateNoDataLabelVisibility];
-}
-
 #pragma mark - Private methods
 
 - (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
@@ -393,10 +365,6 @@
         TodoListItemCell * cell = (TodoListItemCell*)[self.tableView cellForRowAtIndexPath:indexPath];
         cell.titleTextView.editable = NO;
     }
-}
-
-- (void)updateNoDataLabelVisibility {
-    [_noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
 }
 
 @end

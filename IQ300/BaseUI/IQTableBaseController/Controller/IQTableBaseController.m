@@ -59,6 +59,30 @@
     return _tableView;
 }
 
+- (UILabel*)noDataLabel {
+    if(_noDataLabel) {
+        _noDataLabel = [[UILabel alloc] init];
+        [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
+        [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
+        _noDataLabel.textAlignment = NSTextAlignmentCenter;
+        _noDataLabel.backgroundColor = [UIColor clearColor];
+        _noDataLabel.numberOfLines = 0;
+        _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        [_noDataLabel setHidden:YES];
+        [_noDataLabel setText:NSLocalizedString(@"No attachments", nil)];
+        
+        if (_tableView) {
+            [self.view insertSubview:_noDataLabel belowSubview:_tableView];
+        }
+        else {
+            [self.view addSubview:_noDataLabel];
+        }
+    }
+    
+    return _noDataLabel;
+}
+
 - (void)setModel:(id<IQTableModel>)model {
     _model.delegate = nil;
     _model = model;
@@ -162,10 +186,12 @@
 }
 
 - (void)modelDidChangeContent:(id<IQTableModel>)model {
+    [self updateNoDataLabelVisibility];
     [self.tableView endUpdates];
 }
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
+    [self updateNoDataLabelVisibility];
     [self.tableView reloadData];
 }
 
@@ -209,6 +235,12 @@
                                               animated:animated];
             }
         }
+    }
+}
+
+- (void)updateNoDataLabelVisibility {
+    if (_noDataLabel) {
+        [_noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
     }
 }
 
