@@ -68,7 +68,9 @@
     _doneButton = [[ExtendedButton alloc] init];
     _doneButton.layer.cornerRadius = 4.0f;
     _doneButton.layer.borderWidth = 0.5f;
-    [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
+    [_doneButton setTitle:(self.model.task.taskId == nil) ? NSLocalizedString(@"Set task", nil) :
+                                                            NSLocalizedString(@"Done", nil)
+                 forState:UIControlStateNormal];
     [_doneButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
     [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
     [_doneButton setBackgroundColor:IQ_CELADON_COLOR];
