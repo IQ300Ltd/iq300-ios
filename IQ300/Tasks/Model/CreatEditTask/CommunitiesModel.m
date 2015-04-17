@@ -9,7 +9,7 @@
 #import "CommunitiesModel.h"
 #import "IQDetailsTextCell.h"
 #import "IQService+Tasks.h"
-#import "IQCommunityInfo.h"
+#import "IQCommunity.h"
 
 @interface CommunitiesModel() {
 }
@@ -36,8 +36,8 @@
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath *)indexPath {
-    IQCommunityInfo * item = [self itemAtIndexPath:indexPath];
-   return [IQDetailsTextCell heightForItem:item.title width:self.cellWidth];
+    IQCommunity * item = [self itemAtIndexPath:indexPath];
+    return [IQDetailsTextCell heightForItem:item.title detailTitle:nil width:self.cellWidth];
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError *))completion {

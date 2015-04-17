@@ -332,13 +332,14 @@
 - (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
     BOOL isDiscussionNotification = (notification.discussionId != nil);
     NSInteger taskTabIndex = 1;
-    UITabBarController * mainTabController = self.tabBarController;
-    mainTabController.selectedIndex = taskTabIndex;
-    UINavigationController * navController = mainTabController.viewControllers[taskTabIndex];
-    [navController popToRootViewControllerAnimated:NO];
     [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
                                            completion:^(TaskTabController * controller, NSError *error) {
                                                if (controller) {
+                                                   UITabBarController * mainTabController = self.tabBarController;
+                                                   mainTabController.selectedIndex = taskTabIndex;
+                                                   UINavigationController * navController = mainTabController.viewControllers[taskTabIndex];
+                                                   [navController popToRootViewControllerAnimated:NO];
+
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
                                                    [navController setViewControllers:@[navController.viewControllers[0], controller]
                                                                             animated:YES];

@@ -10,7 +10,9 @@
 #import "IQDetailsTextCell.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQSession.h"
-#import "IQCommunityInfo.h"
+#import "IQCommunity.h"
+
+#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x358bae]
 
 @interface CommunitiesController () {
 }
@@ -25,12 +27,19 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.title = NSLocalizedString(@"Communities", nil);
+        
+        self.model = [[CommunitiesModel alloc] init];
     }
     return self;
 }
 
 - (BOOL)isLeftMenuEnabled {
     return NO;
+}
+
+- (void)setFieldValue:(IQCommunity *)fieldValue {
+    _fieldValue = fieldValue;
+    self.model.communityId = _fieldValue.communityId;
 }
 
 - (void)viewDidLoad {
@@ -70,12 +79,13 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    IQCommunityInfo * item = [self.model itemAtIndexPath:indexPath];
+    IQCommunity * item = [self.model itemAtIndexPath:indexPath];
     cell.titleTextView.text = item.title;
     
     BOOL isCellSelected = [self.model isItemSelectedAtIndexPath:indexPath];
-    [cell setAccessoryType:(isCellSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
-
+    cell.accessoryImage = (isCellSelected) ? [UIImage imageNamed:@"filterSelected"] : nil;
+    cell.titleTextView.textColor = (isCellSelected) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
+    
     return cell;
 }
 
@@ -87,12 +97,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSIndexPath * selectedIndexPath = self.model.selectedIndexPath;
-    [self modelWillChangeContent:self.model];
-    [self model:self.model didChangeObject:nil atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
-    [self model:self.model didChangeObject:nil atIndexPath:selectedIndexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
-    [self modelDidChangeContent:self.model];
-
+    IQCommunity * community = [self.model itemAtIndexPath:indexPath];
+    if ([self.delegate respondsToSelector:@selector(taskFieldEditController:didChangeFieldValue:)]) {
+        [self.delegate taskFieldEditController:self didChangeFieldValue:community];
+    }
     [self.navigationController popViewControllerAnimated:YES];
 }
 

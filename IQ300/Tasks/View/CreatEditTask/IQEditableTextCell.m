@@ -10,7 +10,9 @@
 
 @implementation IQEditableTextCell
 
-+ (CGFloat)heightForItem:(NSString*)text width:(CGFloat)width {
++ (CGFloat)heightForItem:(id)item detailTitle:(NSString*)detailTitle width:(CGFloat)width {
+    NSString * text = ([item isKindOfClass:[NSString class]]) ? item : detailTitle;
+    
     CGFloat textWidth = width - CONTENT_HORIZONTAL_INSETS * 2.0f;
     CGFloat height = CONTENT_VERTICAL_INSETS * 2.0f;
     
@@ -28,7 +30,7 @@
     CGFloat titleHeight = [titleTextView sizeThatFits:CGSizeMake(textWidth, CGFLOAT_MAX)].height;
     height += titleHeight;
     
-    return MAX(height, 50.0f);
+    return MAX(height, CELL_MIN_HEIGHT);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -50,7 +52,6 @@
         [_titleTextView setTextColor:TEXT_COLOR];
         _titleTextView.textAlignment = NSTextAlignmentLeft;
         _titleTextView.backgroundColor = [UIColor clearColor];
-        _titleTextView.editable = NO;
         _titleTextView.textContainer.lineBreakMode = NSLineBreakByWordWrapping;
         _titleTextView.textContainerInset = UIEdgeInsetsZero;
         _titleTextView.contentInset = UIEdgeInsetsZero;
@@ -74,6 +75,21 @@
                                       actualBounds.origin.y + (actualBounds.size.height - titleHeight) / 2.0f,
                                       actualBounds.size.width,
                                       titleHeight);
+}
+
+- (void)setItem:(id)item {
+    _item = item;
+    
+    if ([_item isKindOfClass:[NSString class]]) {
+        _titleTextView.text = item;
+    }
+}
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    _titleTextView.text = nil;
+    _titleTextView.placeholder = nil;
 }
 
 @end

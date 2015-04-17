@@ -299,14 +299,7 @@
 }
 
 - (void)createTaskAction:(UIButton*)sender {
-    NSPersistentStoreCoordinator * coordinator = [IQService sharedService].context.persistentStoreCoordinator;
-    NSManagedObjectContext * editContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    [editContext performBlockAndWait:^{
-        editContext.persistentStoreCoordinator = coordinator;
-    }];
-    
     TaskModel * model = [[TaskModel alloc] init];
-    model.context = editContext;
     
     TaskController * controller = [[TaskController alloc] init];
     controller.model = model;

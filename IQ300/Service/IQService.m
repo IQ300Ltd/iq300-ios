@@ -878,7 +878,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQCommunityInfo class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQCommunity class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/tasks/communities"
                                                    fromKeyPath:@"communities"

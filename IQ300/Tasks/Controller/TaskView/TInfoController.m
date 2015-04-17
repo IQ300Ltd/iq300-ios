@@ -22,6 +22,7 @@
 #import "TTodoItemsController.h"
 #import "TodoListModel.h"
 #import "TaskController.h"
+#import "IQTaskDataHolder.h"
 
 @interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
     __weak UIButton * _deferredActionButton;
@@ -281,15 +282,8 @@
 #pragma mark - Private methods
 
 - (void)editButtonAction:(UIButton*)sender {
-    NSPersistentStoreCoordinator * coordinator = [IQService sharedService].context.persistentStoreCoordinator;
-    NSManagedObjectContext * editContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    [editContext performBlockAndWait:^{
-        editContext.persistentStoreCoordinator = coordinator;
-    }];
-    
     TaskModel * model = [[TaskModel alloc] init];
-    model.context = editContext;
-    model.task = (IQTask*)[editContext objectWithID:self.task.objectID];
+    model.task = [IQTaskDataHolder holderWithTask:self.task];
     
     TaskController * controller = [[TaskController alloc] init];
     controller.model = model;

@@ -8,6 +8,8 @@
 
 #import "IQEditableTextCell.h"
 
+#define CELL_MAX_HEIGHT 71.5f
+
 @interface IQDetailsTextCell : IQEditableTextCell {
     UIImageView * _accessoryImageView;
 }

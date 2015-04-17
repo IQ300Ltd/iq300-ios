@@ -34,6 +34,5 @@
 #import "IQTaskMember.h"
 #import "TaskPolicies.h"
 #import "IQTaskActivityItem.h"
-#import "IQCommunityInfo.h"
 
 #endif

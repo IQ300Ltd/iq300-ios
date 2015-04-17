@@ -13,7 +13,8 @@
 
 @implementation IQDetailsTextCell
 
-+ (CGFloat)heightForItem:(NSString*)text width:(CGFloat)width {
++ (CGFloat)heightForItem:(id)item detailTitle:(NSString*)detailTitle width:(CGFloat)width {
+    NSString * text = ([item isKindOfClass:[NSString class]]) ? item : detailTitle;
     CGFloat cellWidth = width - CONTENT_HORIZONTAL_INSETS * 2.0f;
     CGFloat textWidth = cellWidth - ACCESSORY_VIEW_SIZE - TITLE_OFFSET;
     CGFloat height = CONTENT_VERTICAL_INSETS * 2.0f;
@@ -32,7 +33,7 @@
     CGFloat titleHeight = [titleTextView sizeThatFits:CGSizeMake(textWidth, CGFLOAT_MAX)].height;
     height += titleHeight;
     
-    return MAX(height, 50.0f);
+    return MIN(MAX(height, CELL_MIN_HEIGHT), CELL_MAX_HEIGHT);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -40,8 +41,14 @@
     
     if(self) {
         self.titleTextView.userInteractionEnabled = NO;
+        self.titleTextView.editable = NO;
+        self.titleTextView.textContainer.maximumNumberOfLines = 3;
+        self.titleTextView.textContainer.lineBreakMode = NSLineBreakByTruncatingTail;
+
+        
         _accessoryImageView = [[UIImageView alloc] init];
         _accessoryImageView.contentMode = UIViewContentModeCenter;
+        _accessoryImageView.image = [UIImage imageNamed:@"right_gray_arrow.png"];
         [self.contentView addSubview:_accessoryImageView];
     }
     

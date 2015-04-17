@@ -11,8 +11,9 @@
 #import "IQSession.h"
 #import "IQService+Tasks.h"
 #import "IQEditableTextCell.h"
-#import "IQTask.h"
+#import "IQTaskDataHolder.h"
 #import "ExtendedButton.h"
+#import "TaskDescriptionController.h"
 #import "CommunitiesController.h"
 #import "IQCommunity.h"
 
@@ -39,6 +40,7 @@
     if (self) {
         self.title = NSLocalizedString(@"Task", nil);
         _editableIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+        _tableBottomMarging = BOTTOM_VIEW_HEIGHT;
     }
     return self;
 }
@@ -132,12 +134,11 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    NSString * text = [self.model itemAtIndexPath:indexPath];
-    cell.titleTextView.text = text;
-    cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
+    id item = [self.model itemAtIndexPath:indexPath];
+    cell.detailTitle = [self.model detailTitleForItemAtIndexPath:indexPath];
     cell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
-    cell.titleTextView.editable = ([indexPath isEqual:_editableIndexPath]);
-    
+    cell.item = item;
+    cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
     
     return cell;
 }
@@ -153,16 +154,13 @@
         [self showDataPickerForIndexPath:indexPath];
     }
     else if(indexPath.row != 0) {
-        if (indexPath.row == 2) {
-            CommunitiesModel * model = [[CommunitiesModel alloc] init];
-            model.communityId = self.model.task.community.communityId;
-            
-            CommunitiesController * controller = [[CommunitiesController alloc] init];
-            controller.model = model;
+        UIViewController<TaskFieldEditController> * controller = [self controllerForItemIndexPath:indexPath];
+        if (controller) {
+            id item = [self.model itemAtIndexPath:indexPath];
+            controller.fieldIndexPath = indexPath;
+            controller.fieldValue = item;
+            controller.delegate = self;
             [self.navigationController pushViewController:controller animated:YES];
-        }
-        else {
-            
         }
     }
 }
@@ -172,10 +170,8 @@
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
     if (([newString length] <= MAX_NUMBER_OF_CHARACTERS)) {
-        self.model.task.title = newString;
         textView.text = newString;
-        [self.model updateModelWithCompletion:nil];
-        
+        [self.model updateFieldAtIndexPath:_editableIndexPath withValue:newString];
         [self updateCellFrameIfNeed];
     }
     
@@ -196,7 +192,26 @@
 }
 
 - (void)onKeyboardWillHide:(NSNotification *)notification {
-    [self makeInputViewTransitionWithDownDirection:YES notification:notification];
+    [self makeInputViewTransitionWithDownDirection:YES
+                                      notification:notification];
+}
+
+#pragma mark - TaskFieldEditController delegate
+
+- (void)taskFieldEditController:(id<TaskFieldEditController>)controller didChangeFieldValue:(id)value {
+    [self.model updateFieldAtIndexPath:controller.fieldIndexPath withValue:value];
+}
+
+#pragma mark - TaskDescriptionController delegate
+
+- (void)descriptionControllerDidChangedText:(TaskDescriptionController*)controller {
+    self.model.task.taskDescription = controller.textView.text;
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+    }];
 }
 
 #pragma mark - Private methods
@@ -251,6 +266,7 @@
 - (void)updateCellFrameIfNeed {
     IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
     CGFloat cellHeight = [IQEditableTextCell heightForItem:cell.titleTextView.text
+                                               detailTitle:cell.detailTitle
                                                      width:self.model.cellWidth];
     
     if (cell.frame.size.height != cellHeight) {
@@ -318,6 +334,25 @@
                                                             target:nil
                                                             action:nil]];
     [picker showActionSheetPicker];
+}
+
+- (UIViewController<TaskFieldEditController>*)controllerForItemIndexPath:(NSIndexPath*)indexPath {
+    static NSDictionary * _controllers = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _controllers = @{
+                         @(1)   : [TaskDescriptionController class],
+                         @(2)   : [CommunitiesController class]
+                         };
+    });
+    
+    if([_controllers objectForKey:@(indexPath.row)]) {
+        Class controllerClass = _controllers[@(indexPath.row)];
+        UIViewController<TaskFieldEditController> * controller = [[controllerClass alloc] init];
+        return controller;
+    }
+    
+    return nil;
 }
 
 @end

@@ -8,15 +8,17 @@
 
 #import "IQTableModel+Subclass.h"
 
-@class IQTask;
+@class IQTaskDataHolder;
 
 @interface TaskModel : IQTableModel
 
-@property (nonatomic, strong) IQTask * task;
-@property (nonatomic, strong) NSArray * executers;
-@property (nonatomic, strong) NSManagedObjectContext * context;
+@property (nonatomic, strong) IQTaskDataHolder * task;
 @property (nonatomic, assign) CGFloat cellWidth;
 
 - (NSString*)placeholderForItemAtIndexPath:(NSIndexPath*)indexPath;
+
+- (NSString*)detailTitleForItemAtIndexPath:(NSIndexPath*)indexPath;
+
+- (void)updateFieldAtIndexPath:(NSIndexPath*)indexPath withValue:(id)value;
 
 @end

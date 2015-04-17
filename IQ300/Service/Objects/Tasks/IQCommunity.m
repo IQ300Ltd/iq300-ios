@@ -17,6 +17,7 @@
 @dynamic thumbUrl;
 @dynamic mediumUrl;
 @dynamic normalUrl;
+@dynamic sortOrder;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
@@ -27,7 +28,8 @@
                                                   @"type"            : @"type",
                                                   @"logo.thumb_url"  : @"thumbUrl",
                                                   @"logo.medium_url" : @"mediumUrl",
-                                                  @"logo.normal_url" : @"normalUrl"
+                                                  @"logo.normal_url" : @"normalUrl",
+                                                  @"sort_order"      : @"sortOrder"
                                                   }];
     return mapping;
 }

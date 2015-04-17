@@ -85,7 +85,7 @@
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
-    if([self.placeholder length] > 0 && [self.text length] == 0) {
+    if(_drawPlaceholder && [self.text length] == 0) {
         NSMutableParagraphStyle * paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
         
