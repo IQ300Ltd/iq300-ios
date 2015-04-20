@@ -7,6 +7,7 @@
 //
 
 #import "TaskDescriptionController.h"
+#import "DispatchAfterExecution.h"
 
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
@@ -180,18 +181,20 @@
     [_textView resignFirstResponder];
     NSString * oldDescription = ([self.fieldValue length] > 0) ? self.fieldValue : @"";
     if (![oldDescription isEqualToString:_textView.text]) {
-        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                           message:NSLocalizedString(@"Save changes?", nil)
-                 cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
-                 otherButtonTitles:@[NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil)]
-                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              if (buttonIndex == 1 || buttonIndex == 2) {
-                                  if (buttonIndex == 1) {
-                                      [self saveChanges];
+        dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+            [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                               message:NSLocalizedString(@"Save changes?", nil)
+                     cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
+                     otherButtonTitles:@[NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil)]
+                              tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                  if (buttonIndex == 1 || buttonIndex == 2) {
+                                      if (buttonIndex == 1) {
+                                          [self saveChanges];
+                                      }
+                                      [self.navigationController popViewControllerAnimated:YES];
                                   }
-                                  [self.navigationController popViewControllerAnimated:YES];
-                              }
-                          }];
+                              }];
+        });
     }
     else {
         [self.navigationController popViewControllerAnimated:YES];
