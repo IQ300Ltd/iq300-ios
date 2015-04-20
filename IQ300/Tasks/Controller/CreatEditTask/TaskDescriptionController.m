@@ -178,11 +178,11 @@
 
 - (void)backButtonAction:(UIButton*)sender {
     [_textView resignFirstResponder];
-
-    if ([self.fieldValue isEqualToString:_textView.text] == NO) {
+    NSString * oldDescription = ([self.fieldValue length] > 0) ? self.fieldValue : @"";
+    if (![oldDescription isEqualToString:_textView.text]) {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"Save changes?", nil)
-                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                 cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
                  otherButtonTitles:@[NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil)]
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if (buttonIndex == 1 || buttonIndex == 2) {

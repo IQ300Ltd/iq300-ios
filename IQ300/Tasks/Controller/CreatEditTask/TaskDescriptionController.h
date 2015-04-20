@@ -16,11 +16,10 @@
 
 @property (nonatomic, strong)   NSIndexPath * fieldIndexPath;
 @property (nonatomic, strong)   NSString * fieldValue;
+@property (nonatomic, weak) id delegate;
 
 @property (nonatomic, readonly) PlaceholderTextView * textView;
 @property (nonatomic, readonly) UIView * bottomSeparatorView;
 @property (nonatomic, readonly) ExtendedButton * doneButton;
-
-@property (nonatomic, weak) id delegate;
 
 @end
