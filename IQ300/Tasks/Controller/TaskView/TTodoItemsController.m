@@ -260,7 +260,7 @@
     [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
     
     CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    _tableBottomMarging = down ? 0.0f : MIN(keyboardRect.size.width, keyboardRect.size.height) - 50.0f;
+    _tableBottomMarging = down ? 0.0f : MIN(keyboardRect.size.width, keyboardRect.size.height);
    
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:animationDuration];
