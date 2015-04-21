@@ -85,4 +85,6 @@
 
 - (void)taskCommunitiesWithHandler:(ObjectRequestCompletionHandler)handler;
 
+- (void)taskExecutorsForTaskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler;
+
 @end

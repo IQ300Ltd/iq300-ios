@@ -7,7 +7,7 @@
 //
 
 #import "CommunitiesController.h"
-#import "IQDetailsTextCell.h"
+#import "IQSelectableTextCell.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQSession.h"
 #import "IQCommunity.h"
@@ -73,7 +73,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQDetailsTextCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    IQSelectableTextCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
@@ -83,8 +83,7 @@
     cell.titleTextView.text = item.title;
     
     BOOL isCellSelected = [self.model isItemSelectedAtIndexPath:indexPath];
-    cell.accessoryImage = (isCellSelected) ? [UIImage imageNamed:@"filterSelected"] : nil;
-    cell.titleTextView.textColor = (isCellSelected) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
+    [cell setAccessoryType:(isCellSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
     
     return cell;
 }

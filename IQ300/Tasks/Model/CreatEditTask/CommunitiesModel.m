@@ -7,7 +7,7 @@
 //
 
 #import "CommunitiesModel.h"
-#import "IQDetailsTextCell.h"
+#import "IQSelectableTextCell.h"
 #import "IQService+Tasks.h"
 #import "IQCommunity.h"
 
@@ -28,7 +28,7 @@
 }
 
 - (Class)cellClass {
-    return [IQDetailsTextCell class];
+    return [IQSelectableTextCell class];
 }
 
 - (BOOL)isItemSelectedAtIndexPath:(NSIndexPath *)indexPath {
@@ -37,7 +37,7 @@
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath *)indexPath {
     IQCommunity * item = [self itemAtIndexPath:indexPath];
-    return [IQDetailsTextCell heightForItem:item.title detailTitle:nil width:self.cellWidth];
+    return [IQSelectableTextCell heightForItem:item.title detailTitle:nil width:self.cellWidth];
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError *))completion {

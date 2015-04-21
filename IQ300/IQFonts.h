@@ -10,5 +10,6 @@
 #define IQ300_IQFonts_h
 
 #define IQ_HELVETICA @"HelveticaNeue"
+#define IQ_HELVETICA_BOLD @"HelveticaNeue-Bold"
 
 #endif

@@ -40,6 +40,13 @@
 		734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQAttachment.m */; };
 		734965D11AB1A60100263B57 /* CTaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 734965D01AB1A60100263B57 /* CTaskFilterCell.m */; };
 		73506ED61A137D070071B4CB /* TasksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BC61A0B5B7500034D9B /* TasksController.m */; };
+		735D48F51AE4D6DB00F6A753 /* TaskExecutersController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */; };
+		735D48F81AE4D85000F6A753 /* TaskExecutorsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48F71AE4D85000F6A753 /* TaskExecutorsModel.m */; };
+		735D48FB1AE4DA7100F6A753 /* ExecutersGroupSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48FA1AE4DA7100F6A753 /* ExecutersGroupSection.m */; };
+		735D48FE1AE4E0C400F6A753 /* IQSelectableTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48FD1AE4E0C400F6A753 /* IQSelectableTextCell.m */; };
+		735D49011AE51D2100F6A753 /* TaskExecutorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49001AE51D2100F6A753 /* TaskExecutorCell.m */; };
+		735D49041AE51FA400F6A753 /* TaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49031AE51FA400F6A753 /* TaskExecutor.m */; };
+		735D49071AE5283600F6A753 /* TaskExecutorsGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49061AE5283500F6A753 /* TaskExecutorsGroup.m */; };
 		736B6BD01A0B5C0800034D9B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 736B6BCF1A0B5C0800034D9B /* Images.xcassets */; };
 		736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BD21A0B5C1E00034D9B /* MenuViewController.m */; };
 		736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BDA1A0B5F1D00034D9B /* MenuCell.m */; };
@@ -378,6 +385,20 @@
 		734433641A2DEBF300102FC8 /* IQAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachment.m; sourceTree = "<group>"; };
 		734965CF1AB1A60100263B57 /* CTaskFilterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTaskFilterCell.h; sourceTree = "<group>"; };
 		734965D01AB1A60100263B57 /* CTaskFilterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTaskFilterCell.m; sourceTree = "<group>"; };
+		735D48F31AE4D6DB00F6A753 /* TaskExecutersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutersController.h; sourceTree = "<group>"; };
+		735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutersController.m; sourceTree = "<group>"; };
+		735D48F61AE4D85000F6A753 /* TaskExecutorsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutorsModel.h; sourceTree = "<group>"; };
+		735D48F71AE4D85000F6A753 /* TaskExecutorsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutorsModel.m; sourceTree = "<group>"; };
+		735D48F91AE4DA7100F6A753 /* ExecutersGroupSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExecutersGroupSection.h; sourceTree = "<group>"; };
+		735D48FA1AE4DA7100F6A753 /* ExecutersGroupSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExecutersGroupSection.m; sourceTree = "<group>"; };
+		735D48FC1AE4E0C400F6A753 /* IQSelectableTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSelectableTextCell.h; sourceTree = "<group>"; };
+		735D48FD1AE4E0C400F6A753 /* IQSelectableTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSelectableTextCell.m; sourceTree = "<group>"; };
+		735D48FF1AE51D2100F6A753 /* TaskExecutorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutorCell.h; sourceTree = "<group>"; };
+		735D49001AE51D2100F6A753 /* TaskExecutorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutorCell.m; sourceTree = "<group>"; };
+		735D49021AE51FA400F6A753 /* TaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutor.h; sourceTree = "<group>"; };
+		735D49031AE51FA400F6A753 /* TaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutor.m; sourceTree = "<group>"; };
+		735D49051AE5283500F6A753 /* TaskExecutorsGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutorsGroup.h; sourceTree = "<group>"; };
+		735D49061AE5283500F6A753 /* TaskExecutorsGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutorsGroup.m; sourceTree = "<group>"; };
 		736B6BC51A0B5B7500034D9B /* TasksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TasksController.h; sourceTree = "<group>"; };
 		736B6BC61A0B5B7500034D9B /* TasksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TasksController.m; sourceTree = "<group>"; };
 		736B6BCF1A0B5C0800034D9B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -1707,6 +1728,10 @@
 				73FE0A371AC0294A007176A1 /* TChangesCounter.m */,
 				739D67D01AC29F8200859274 /* TaskPolicies.h */,
 				739D67D11AC29F8200859274 /* TaskPolicies.m */,
+				735D49021AE51FA400F6A753 /* TaskExecutor.h */,
+				735D49031AE51FA400F6A753 /* TaskExecutor.m */,
+				735D49051AE5283500F6A753 /* TaskExecutorsGroup.h */,
+				735D49061AE5283500F6A753 /* TaskExecutorsGroup.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1720,6 +1745,8 @@
 				73D7F1F31ADE957F00023120 /* CommunitiesController.m */,
 				73A50D0F1ADFAA4400251CB7 /* TaskDescriptionController.h */,
 				73A50D101ADFAA4400251CB7 /* TaskDescriptionController.m */,
+				735D48F31AE4D6DB00F6A753 /* TaskExecutersController.h */,
+				735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */,
 				73A50D151ADFDB0D00251CB7 /* TaskFieldEditController.h */,
 			);
 			path = CreatEditTask;
@@ -1776,6 +1803,8 @@
 				73D7F1D31ADE940300023120 /* TaskModel.m */,
 				73D7F1F51ADE95A900023120 /* CommunitiesModel.h */,
 				73D7F1F61ADE95A900023120 /* CommunitiesModel.m */,
+				735D48F61AE4D85000F6A753 /* TaskExecutorsModel.h */,
+				735D48F71AE4D85000F6A753 /* TaskExecutorsModel.m */,
 			);
 			path = CreatEditTask;
 			sourceTree = "<group>";
@@ -1808,12 +1837,18 @@
 				73D7F1ED1ADE94CE00023120 /* IQDetailsTextCell.m */,
 				73D7F1EE1ADE94CE00023120 /* IQEditableTextCell.h */,
 				73D7F1EF1ADE94CE00023120 /* IQEditableTextCell.m */,
+				735D48FC1AE4E0C400F6A753 /* IQSelectableTextCell.h */,
+				735D48FD1AE4E0C400F6A753 /* IQSelectableTextCell.m */,
 				73D260D11AE0FA070009CC38 /* TaskCommunityCell.h */,
 				73D260D21AE0FA070009CC38 /* TaskCommunityCell.m */,
 				73D260C91AE0EB790009CC38 /* IQDateDetailsCell.h */,
 				73D260CA1AE0EB790009CC38 /* IQDateDetailsCell.m */,
 				73D260CC1AE0ED460009CC38 /* TaskExecutersCell.h */,
 				73D260CD1AE0ED460009CC38 /* TaskExecutersCell.m */,
+				735D48FF1AE51D2100F6A753 /* TaskExecutorCell.h */,
+				735D49001AE51D2100F6A753 /* TaskExecutorCell.m */,
+				735D48F91AE4DA7100F6A753 /* ExecutersGroupSection.h */,
+				735D48FA1AE4DA7100F6A753 /* ExecutersGroupSection.m */,
 			);
 			path = CreatEditTask;
 			sourceTree = "<group>";
@@ -2153,6 +2188,7 @@
 				73D7F1B61ADE932700023120 /* TaskTabController.m in Sources */,
 				7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */,
 				73BA98A01A10A531005AEC00 /* NSBundle+Localization.m in Sources */,
+				735D48F81AE4D85000F6A753 /* TaskExecutorsModel.m in Sources */,
 				73E4260A1AAF04CF00CD2093 /* IQTextView.m in Sources */,
 				73D7F1BA1ADE932700023120 /* TMembersController.m in Sources */,
 				73C58C021A1F074900C83729 /* NotificationCell.m in Sources */,
@@ -2227,6 +2263,7 @@
 				739BC7981A4A9DC7007FC95C /* CommentsController.m in Sources */,
 				736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */,
 				732952B31A692EE90066B336 /* lcl.m in Sources */,
+				735D49071AE5283600F6A753 /* TaskExecutorsGroup.m in Sources */,
 				73B9EA0B1ADCFE9F00159A66 /* IQTableManagedModel.m in Sources */,
 				734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */,
 				731DEEC81A2F11A1002F5FEB /* MessagesModel.m in Sources */,
@@ -2241,6 +2278,7 @@
 				738FE7191A163C16009F26A2 /* NotificationsView.m in Sources */,
 				731DEECB1A2F27AE002F5FEB /* IQCounters.m in Sources */,
 				738FE7211A1652D2009F26A2 /* ExTextField.m in Sources */,
+				735D48FB1AE4DA7100F6A753 /* ExecutersGroupSection.m in Sources */,
 				738FE6D11A15F119009F26A2 /* RKMappingResult+Result.m in Sources */,
 				73D7F1CF1ADE93D600023120 /* TaskPolicyInspector.m in Sources */,
 				739850D31A2DD30E00DB5B21 /* IQNotification.m in Sources */,
@@ -2260,6 +2298,7 @@
 				739850D81A2DD32E00DB5B21 /* IQConversation.m in Sources */,
 				738EF8271A9CA88400894755 /* IQProject.m in Sources */,
 				73970E8F1AA5A7CC00AC2414 /* TaskFilterCounters.m in Sources */,
+				735D49011AE51D2100F6A753 /* TaskExecutorCell.m in Sources */,
 				73D7F1B51ADE932700023120 /* TaskActivitiesController.m in Sources */,
 				738EF8301A9CBAA200894755 /* IQTasksHolder.m in Sources */,
 				736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */,
@@ -2268,8 +2307,10 @@
 				73C286AD1A94AFD70011FD51 /* IQNotificationsGroupIds.m in Sources */,
 				739BC7A41A4AA516007FC95C /* CCommentCell.m in Sources */,
 				73D7F1B41ADE932700023120 /* ContactPickerController.m in Sources */,
+				735D49041AE51FA400F6A753 /* TaskExecutor.m in Sources */,
 				73B9EA081ADCFBA400159A66 /* IQTableModel.m in Sources */,
 				73D7F1B81ADE932700023120 /* TDocumentsController.m in Sources */,
+				735D48FE1AE4E0C400F6A753 /* IQSelectableTextCell.m in Sources */,
 				7393C4111A1A2FF400E9E944 /* LoginController.m in Sources */,
 				739C3B621A3076D60032C057 /* CommentCell.m in Sources */,
 				7379EEB31A11E26200D69BBD /* IQNavigationController.m in Sources */,
@@ -2297,6 +2338,7 @@
 				73891FF51A2C97ED008D8885 /* UIAlertView+Blocks.m in Sources */,
 				73A7CA701A9F4BF70038DEF1 /* TaskFilterSectionView.m in Sources */,
 				73BF7C611AD5199C00C52D41 /* UIViewController+Additions.m in Sources */,
+				735D48F51AE4D6DB00F6A753 /* TaskExecutersController.m in Sources */,
 				73A7D67E1AD2796D002B7AFF /* TCRequestItemsHolder.m in Sources */,
 				73A113F71A1C88DD00293EC5 /* IQMenuCellFactory.m in Sources */,
 				73D7F1EA1ADE94B400023120 /* TodoListSectionView.m in Sources */,

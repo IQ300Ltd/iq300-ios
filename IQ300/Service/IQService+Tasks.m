@@ -313,4 +313,12 @@
                    handler:handler];
 }
 
+- (void)taskExecutorsForTaskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
+    NSParameterAssert(taskId);
+
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/communities/%@/executors", taskId]
+                parameters:nil
+                   handler:handler];
+}
+
 @end
