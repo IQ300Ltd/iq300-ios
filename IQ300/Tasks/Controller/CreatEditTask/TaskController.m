@@ -52,7 +52,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = (self.model.task.taskId != nil) ? NSLocalizedString(@"Creating task", nil) :
+    self.title = (self.model.task.taskId == nil) ? NSLocalizedString(@"Creating task", nil) :
                                                    NSLocalizedString(@"Editing task", nil);
 
     self.view.backgroundColor = [UIColor whiteColor];
