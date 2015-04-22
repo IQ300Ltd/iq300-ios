@@ -86,7 +86,7 @@
         _toLabel.numberOfLines = 1;
         [contentView addSubview:_toLabel];
         
-        _dueIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bell_ico.png"]];
+        _dueIconImageView = [[UIImageView alloc] init];
         [contentView addSubview:_dueIconImageView];
         
         _dueDateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
@@ -118,6 +118,14 @@
                                              localaizedKey:nil];
         _statusLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_statusLabel];
+        
+        _showOverdue = YES;
+        _showLeftView = NO;
+        _leftView = [[UIView alloc] init];
+        _leftView.backgroundColor = [UIColor colorWithHexInt:0xe74545];
+        _leftView.userInteractionEnabled = NO;
+        _leftView.hidden = YES;
+        [contentView addSubview:_leftView];
     }
     
     return self;
@@ -217,6 +225,13 @@
                                     _commentsCountLabel.frame.origin.y,
                                     (actualBounds.origin.x + actualBounds.size.width) - statusLabelX,
                                     _commentsCountLabel.frame.size.height);
+    
+    if (self.isLeftViewShown) {
+        _leftView.frame = CGRectMake(bounds.origin.x,
+                                     bounds.origin.y,
+                                     5.0f,
+                                     bounds.size.height);
+    }
 }
 
 - (void)setItem:(IQTask *)item {
@@ -246,7 +261,42 @@
     
     _statusLabel.textColor = [TaskHelper colorForTaskType:_item.status];
     _statusLabel.text = NSLocalizedString(_item.status, nil);
+    [self updateUIForState];
+    
     [self setNeedsLayout];
+}
+
+- (void)updateUIForState {
+    if (self.showOverdue) {
+        if([_item.endDate compare:[NSDate date]] == NSOrderedDescending) {
+            _dueIconImageView.image = [UIImage imageNamed:@"bell_red_ico.png"];
+            _dueDateLabel.textColor = [UIColor colorWithHexInt:0xca301e];
+            self.showLeftView = YES;
+        }
+        else {
+            _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
+            _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
+            self.showLeftView = NO;
+        }
+    }
+}
+
+- (void)setShowLeftView:(BOOL)showLeftView {
+    if (_showLeftView != showLeftView) {
+        _showLeftView = showLeftView;
+        
+        _leftView.hidden = !_showLeftView;
+        [self setNeedsLayout];
+    }
+}
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    _showOverdue = YES;
+    _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
+    _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
+    self.showLeftView = NO;
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {

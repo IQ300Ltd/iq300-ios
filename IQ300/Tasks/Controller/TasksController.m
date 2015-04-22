@@ -185,6 +185,8 @@
     }
     
     IQTask * task = [self.model itemAtIndexPath:indexPath];
+    cell.showOverdue = !([self.model.folder isEqualToString:@"archive"] ||
+                         [self.model.folder isEqualToString:@"templates"]);
     cell.item = task;
     
     return cell;

@@ -274,6 +274,8 @@
 		73D260CB1AE0EB790009CC38 /* IQDateDetailsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260CA1AE0EB790009CC38 /* IQDateDetailsCell.m */; };
 		73D260CE1AE0ED460009CC38 /* TaskExecutersCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260CD1AE0ED460009CC38 /* TaskExecutersCell.m */; };
 		73D260D31AE0FA070009CC38 /* TaskCommunityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260D21AE0FA070009CC38 /* TaskCommunityCell.m */; };
+		73D7858C1AE7FDB400A952DF /* bell_red_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D7858A1AE7FDB400A952DF /* bell_red_ico.png */; };
+		73D7858D1AE7FDB400A952DF /* bell_red_ico@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D7858B1AE7FDB400A952DF /* bell_red_ico@2x.png */; };
 		73D7F1A11ADE92BC00023120 /* TaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A01ADE92BC00023120 /* TaskController.m */; };
 		73D7F1B41ADE932700023120 /* ContactPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A31ADE932700023120 /* ContactPickerController.m */; };
 		73D7F1B51ADE932700023120 /* TaskActivitiesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A51ADE932700023120 /* TaskActivitiesController.m */; };
@@ -775,6 +777,8 @@
 		73D260CD1AE0ED460009CC38 /* TaskExecutersCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutersCell.m; sourceTree = "<group>"; };
 		73D260D11AE0FA070009CC38 /* TaskCommunityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskCommunityCell.h; sourceTree = "<group>"; };
 		73D260D21AE0FA070009CC38 /* TaskCommunityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskCommunityCell.m; sourceTree = "<group>"; };
+		73D7858A1AE7FDB400A952DF /* bell_red_ico.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bell_red_ico.png; sourceTree = "<group>"; };
+		73D7858B1AE7FDB400A952DF /* bell_red_ico@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bell_red_ico@2x.png"; sourceTree = "<group>"; };
 		73D7F19F1ADE92BC00023120 /* TaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskController.h; sourceTree = "<group>"; };
 		73D7F1A01ADE92BC00023120 /* TaskController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskController.m; sourceTree = "<group>"; };
 		73D7F1A21ADE932700023120 /* ContactPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactPickerController.h; sourceTree = "<group>"; };
@@ -1595,6 +1599,8 @@
 				73A700471A95C0DC00A1C2AC /* nex_header_button@2x.png */,
 				73D0DDF51A95F2AB008710FF /* bell_ico.png */,
 				73D0DDF61A95F2AB008710FF /* bell_ico@2x.png */,
+				73D7858A1AE7FDB400A952DF /* bell_red_ico.png */,
+				73D7858B1AE7FDB400A952DF /* bell_red_ico@2x.png */,
 				73D0DDF71A95F2AB008710FF /* community_ico.png */,
 				73D0DDF81A95F2AB008710FF /* community_ico@2x.png */,
 				73D0DDF91A95F2AB008710FF /* message_blue_buble.png */,
@@ -1988,6 +1994,7 @@
 				73882D901A24B62500B8BE90 /* check_mark_medium.png in Resources */,
 				737E7C5C1A0CC8A400E8BB81 /* top_header_bg@2x.png in Resources */,
 				738FE7161A162B10009F26A2 /* tbar_sel_indicator@2x.png in Resources */,
+				73D7858D1AE7FDB400A952DF /* bell_red_ico@2x.png in Resources */,
 				73A7CA851A9F55ED0038DEF1 /* filterSelected@2x.png in Resources */,
 				73D0DDFC1A95F2AB008710FF /* bell_ico@2x.png in Resources */,
 				7311707F1AB80AFF008A4D09 /* task_documents_tab@2x.png in Resources */,
@@ -2047,6 +2054,7 @@
 				73F2A55C1A39AB3000E9D324 /* msg_sent.png in Resources */,
 				731170931AB80B0E008A4D09 /* project_ico@2x.png in Resources */,
 				738FE7031A162B10009F26A2 /* messgaes_tab_sel.png in Resources */,
+				73D7858C1AE7FDB400A952DF /* bell_red_ico.png in Resources */,
 				738FE6FF1A162B10009F26A2 /* calendar_tab_sel.png in Resources */,
 				73BA98941A109FDD005AEC00 /* notifications_menu.plist in Resources */,
 				739D67D61AC2C5C100859274 /* delete_ico@2x.png in Resources */,
