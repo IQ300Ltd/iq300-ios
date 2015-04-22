@@ -12,6 +12,7 @@
 
 @interface TaskExecutorsGroup : NSObject
 
+@property (nonatomic, strong) NSString * name;
 @property (nonatomic, strong) NSArray * executors;
 
 + (RKObjectMapping*)objectMapping;

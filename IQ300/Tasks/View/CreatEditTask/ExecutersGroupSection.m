@@ -10,6 +10,11 @@
 
 #define ACCESSORY_VIEW_SIZE 14.0f
 #define TITLE_OFFSET 10.0f
+#define CONTENT_INSETS 13.0f
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA_BOLD size:16]
+
+#define SECTION_MIN_HEIGHT 50.0f
+#define SECTION_MAX_HEIGHT 71.5f
 
 @interface ExecutersGroupSection() {
     UITapGestureRecognizer * _singleTapGesture;
@@ -19,31 +24,52 @@
 
 @implementation ExecutersGroupSection
 
++ (CGFloat)heightForTitle:(NSString*)title width:(CGFloat)cellWidth {
+    CGFloat height = CONTENT_INSETS * 2.0f;
+    
+    if([title length] > 0) {
+        CGFloat titleWidth = cellWidth - ACCESSORY_VIEW_SIZE - TITLE_OFFSET - CONTENT_INSETS * 2.0f;
+        CGSize titleSize = [title sizeWithFont:TITLE_FONT
+                                  constrainedToSize:CGSizeMake(titleWidth, CGFLOAT_MAX)
+                                      lineBreakMode:NSLineBreakByWordWrapping];
+        
+        height += titleSize.height;
+    }
+    
+    return MIN(MAX(height, SECTION_MIN_HEIGHT), SECTION_MAX_HEIGHT);
+}
+
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if(self) {
         _contentInsets = UIEdgeInsetsMakeWithInset(13.0f);
-        [self setBackgroundColor:[UIColor colorWithHexInt:0xf6f6f6]];
+        self.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        self.bottomLineColor = self.backgroundColor;
+        self.bottomLineHeight = 0.5f;
         
         _showLeftView = YES;
         _leftView = [[UIView alloc] init];
         _leftView.backgroundColor = [UIColor colorWithHexInt:0x4288a7];
+        _leftView.userInteractionEnabled = NO;
         [self addSubview:_leftView];
         
         _titleLabel = [[UILabel alloc] init];
-        [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA_BOLD size:16]];
-        [_titleLabel setTextColor:[UIColor colorWithHexInt:0x9f9f9f]];
+        [_titleLabel setFont:TITLE_FONT];
+        [_titleLabel setTextColor:[UIColor colorWithHexInt:0x272727]];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 0;
-        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        _titleLabel.userInteractionEnabled = NO;
         [self addSubview:_titleLabel];
         
         _accessoryImageView = [[UIImageView alloc] init];
+        _accessoryImageView.userInteractionEnabled = NO;
         [self addSubview:_accessoryImageView];
         
         _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapRecognized:)];
         _singleTapGesture.numberOfTapsRequired = 1;
+        [self addGestureRecognizer:_singleTapGesture];
     }
     return self;
 }
@@ -90,6 +116,7 @@
 - (void)setSelected:(BOOL)selected {
     if (_selected != selected) {
         _selected = selected;
+        [self updateUIForState];
     }
 }
 
@@ -113,7 +140,7 @@
 }
 
 - (void)updateUIForState {
-    _accessoryImageView.image = (_selected) ? [UIImage imageNamed:@"filterSelected"] : nil;
+    _accessoryImageView.image = (_selected) ? [UIImage imageNamed:@"filterSelected.png"] : nil;
 }
 
 @end

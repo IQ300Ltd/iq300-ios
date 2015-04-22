@@ -12,8 +12,9 @@
 
 @interface TaskExecutersController : IQTableBaseController<TaskFieldEditController>
 
-@property (nonatomic, strong)   NSIndexPath * fieldIndexPath;
-@property (nonatomic, strong)   NSArray * fieldValue;
+@property (nonatomic, strong) NSIndexPath * fieldIndexPath;
+@property (nonatomic, strong) NSArray * fieldValue;
+@property (nonatomic, strong) IQTaskDataHolder * task;
 @property (nonatomic, weak) id delegate;
 
 @property (nonatomic, strong) TaskExecutorsModel * model;

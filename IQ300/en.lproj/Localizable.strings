@@ -35,6 +35,7 @@
 "I" = "I";
 "Send" = "Send";
 "User name or email" = "User name or email";
+"User name" = "User name";
 "No contacts" = "No contacts";
 "No messages" = "No messages";
 "Сontacts" = "Сontacts";
@@ -122,3 +123,4 @@
 "Save changes?" = "Save changes?";
 "Set task" = "Set task";
 "Сancellation" = "Cancel";
+"Select all" = "Select all";

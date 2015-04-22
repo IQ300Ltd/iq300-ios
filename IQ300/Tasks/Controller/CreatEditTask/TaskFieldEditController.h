@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class IQTaskDataHolder;
 @protocol TaskFieldEditController;
 
 @protocol TaskFieldEditControllerDelegate <NSObject>
@@ -20,8 +21,9 @@
 
 @protocol TaskFieldEditController <NSObject>
 
-@property (nonatomic, strong)   NSIndexPath * fieldIndexPath;
-@property (nonatomic, strong)   id fieldValue;
-@property (nonatomic, weak)     id delegate;
+@property (nonatomic, strong) NSIndexPath * fieldIndexPath;
+@property (nonatomic, strong) id fieldValue;
+@property (nonatomic, strong) IQTaskDataHolder * task;
+@property (nonatomic, weak)   id delegate;
 
 @end

@@ -20,4 +20,17 @@
     return mapping;
 }
 
+- (BOOL)isEqual:(id)object {
+    if ([object isKindOfClass:[TaskExecutor class]]) {
+        TaskExecutor * executer = (TaskExecutor*)object;
+        return [self.executorId isEqualToNumber:executer.executorId] &&
+               [self.executorName isEqualToString:executer.executorName];
+    }
+    return NO;
+}
+
+- (NSUInteger)hash {
+    return [self.executorId hash] ^ [self.executorName hash];
+}
+
 @end

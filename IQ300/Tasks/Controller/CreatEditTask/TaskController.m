@@ -15,6 +15,7 @@
 #import "ExtendedButton.h"
 #import "TaskDescriptionController.h"
 #import "CommunitiesController.h"
+#import "TaskExecutersController.h"
 #import "IQCommunity.h"
 
 #define MAX_NUMBER_OF_CHARACTERS 255
@@ -161,6 +162,7 @@
             id item = [self.model itemAtIndexPath:indexPath];
             controller.fieldIndexPath = indexPath;
             controller.fieldValue = item;
+            controller.task = self.model.task;
             controller.delegate = self;
             [self.navigationController pushViewController:controller animated:YES];
         }
@@ -343,8 +345,9 @@
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
         _controllers = @{
-                         @(1)   : [TaskDescriptionController class],
-                         @(2)   : [CommunitiesController class]
+                         @(1) : [TaskDescriptionController class],
+                         @(2) : [CommunitiesController class],
+                         @(3) : [TaskExecutersController class]
                          };
     });
     

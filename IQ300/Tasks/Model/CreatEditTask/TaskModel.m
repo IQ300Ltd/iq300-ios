@@ -251,6 +251,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     IQTaskDataHolder * task = [[IQTaskDataHolder alloc] init];
     task.startDate = [today beginningOfDay];
     task.endDate = [today endOfDay];
+    task.community = self.defaultCommunity;
     return task;
 }
 

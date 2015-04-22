@@ -24,7 +24,7 @@
 #import "TaskTabController.h"
 #import "TaskPolicyInspector.h"
 #import "TaskController.h"
-#import "IQService.h"
+#import "IQService+Tasks.h"
 
 @interface TasksController () <TasksFilterControllerDelegate> {
     TasksView * _mainView;
@@ -299,13 +299,18 @@
 }
 
 - (void)createTaskAction:(UIButton*)sender {
-    TaskModel * model = [[TaskModel alloc] init];
-    
-    TaskController * controller = [[TaskController alloc] init];
-    controller.model = model;
-    controller.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:controller
-                                         animated:YES];
+    [[IQService sharedService] mostUsedCommunityWithHandler:^(BOOL success, id community, NSData *responseData, NSError *error) {
+        if (success) {
+            TaskModel * model = [[TaskModel alloc] init];
+            model.defaultCommunity = community;
+            
+            TaskController * controller = [[TaskController alloc] init];
+            controller.model = model;
+            controller.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:controller
+                                                 animated:YES];
+        }
+    }];
 }
 
 - (void)updateNoDataLabelVisibility {

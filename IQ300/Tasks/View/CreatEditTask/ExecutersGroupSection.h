@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "BottomLineView.h"
 
-@interface ExecutersGroupSection : UIView {
+@interface ExecutersGroupSection : BottomLineView {
     void (^_actionBlock)(ExecutersGroupSection * header);
     UIEdgeInsets _contentInsets;
 }
@@ -21,6 +21,8 @@
 @property (nonatomic, assign) NSInteger section;
 @property (nonatomic, assign, getter=isSelected) BOOL selected;
 @property (nonatomic, assign, getter=isLeftViewShown) BOOL showLeftView;
+
++ (CGFloat)heightForTitle:(NSString*)title width:(CGFloat)cellWidth;
 
 - (void)setActionBlock:(void (^)(ExecutersGroupSection * header))block;
 

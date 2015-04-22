@@ -313,10 +313,16 @@
                    handler:handler];
 }
 
-- (void)taskExecutorsForTaskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
-    NSParameterAssert(taskId);
+- (void)mostUsedCommunityWithHandler:(ObjectRequestCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/tasks/communities/most_used"
+                parameters:nil
+                   handler:handler];
+}
 
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/communities/%@/executors", taskId]
+- (void)taskExecutorsForCommunityId:(NSNumber*)communityId handler:(ObjectRequestCompletionHandler)handler {
+    NSParameterAssert(communityId);
+
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/communities/%@/executors", communityId]
                 parameters:nil
                    handler:handler];
 }

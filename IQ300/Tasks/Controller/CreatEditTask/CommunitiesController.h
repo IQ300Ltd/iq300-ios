@@ -16,6 +16,7 @@
 
 @property (nonatomic, strong) NSIndexPath * fieldIndexPath;
 @property (nonatomic, strong) IQCommunity * fieldValue;
+@property (nonatomic, strong) IQTaskDataHolder * task;
 @property (nonatomic, weak) id delegate;
 
 @property (nonatomic, strong) CommunitiesModel * model;

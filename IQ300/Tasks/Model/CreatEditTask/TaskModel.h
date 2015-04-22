@@ -9,11 +9,13 @@
 #import "IQTableModel+Subclass.h"
 
 @class IQTaskDataHolder;
+@class IQCommunity;
 
 @interface TaskModel : IQTableModel
 
 @property (nonatomic, strong) IQTaskDataHolder * task;
 @property (nonatomic, assign) CGFloat cellWidth;
+@property (nonatomic, strong) IQCommunity * defaultCommunity;
 
 - (NSString*)placeholderForItemAtIndexPath:(NSIndexPath*)indexPath;
 
