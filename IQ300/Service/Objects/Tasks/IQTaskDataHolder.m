@@ -29,23 +29,22 @@
     return holder;
 }
 
-+ (RKObjectMapping*)objectMapping {
++ (RKObjectMapping*)requestObjectMapping {
     RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"title"        : @"title",
                                                   @"community_id" : @"community.communityId",
-                                                  @"executors"    : @"executors",
+                                                  @"executor_ids" : @"executorIds",
                                                   @"start_date"   : @"startDate",
                                                   @"end_date"     : @"endDate",
                                                   @"description"  : @"taskDescription"
                                                   }];
-    return mapping;
+    
+    return [mapping inverseMapping];
 }
 
-+ (RKObjectMapping*)requestObjectMapping {
-    RKObjectMapping * objectMapping = [self objectMapping];
-    
-    return [objectMapping inverseMapping];
+- (NSArray*)executorIds {
+    return [self.executors valueForKey:@"executorId"];
 }
 
 @end

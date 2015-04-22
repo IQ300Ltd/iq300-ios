@@ -7,6 +7,7 @@
 //
 
 #import "IQService+Tasks.h"
+#import "IQTaskDataHolder.h"
 
 @implementation IQService (Tasks)
 
@@ -325,6 +326,20 @@
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/communities/%@/executors", communityId]
                 parameters:nil
                    handler:handler];
+}
+
+- (void)createTask:(IQTaskDataHolder*)task handler:(ObjectRequestCompletionHandler)handler {
+    [self postObject:task
+                path:@"/api/v1/tasks"
+          parameters:nil
+             handler:handler];
+}
+
+- (void)saveTask:(IQTaskDataHolder*)task handler:(ObjectRequestCompletionHandler)handler {
+    [self putObject:task
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@", task.taskId]
+         parameters:nil
+            handler:handler];
 }
 
 @end

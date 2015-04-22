@@ -207,6 +207,9 @@
     if([companion.thumbUrl length] > 0) {
         [_userImageView sd_setImageWithURL:[NSURL URLWithString:companion.thumbUrl]];
     }
+    else {
+        _userImageView.image = nil;
+    }
     
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";
     body = (_lastCommentIsMine) ? [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"I", nil), body] : body;

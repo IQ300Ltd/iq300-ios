@@ -8,6 +8,8 @@
 
 #import "IQService.h"
 
+@class IQTaskDataHolder;
+
 @interface IQService (Tasks)
 
 - (void)tasksUpdatedAfter:(NSDate*)date
@@ -88,5 +90,9 @@
 - (void)mostUsedCommunityWithHandler:(ObjectRequestCompletionHandler)handler;
 
 - (void)taskExecutorsForCommunityId:(NSNumber*)communityId handler:(ObjectRequestCompletionHandler)handler;
+
+- (void)createTask:(IQTaskDataHolder*)task handler:(ObjectRequestCompletionHandler)handler;
+
+- (void)saveTask:(IQTaskDataHolder*)task handler:(ObjectRequestCompletionHandler)handler;
 
 @end

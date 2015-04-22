@@ -104,10 +104,9 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 }
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath {
-    NSIndexPath * fackePath = [self fackeIndexPathForPath:indexPath];
-    if(fackePath.section < [self numberOfSections] &&
-       fackePath.row < [self numberOfItemsInSection:fackePath.section]) {
-        NSString * field = [self fieldAtIndexPath:fackePath];
+    if(indexPath.section < [self numberOfSections] &&
+       indexPath.row < [self numberOfItemsInSection:indexPath.section]) {
+        NSString * field = [self fieldAtIndexPath:indexPath];
         if ([self.task respondsToSelector:NSSelectorFromString(field)]) {
             return [self.task valueForKey:field];
         }

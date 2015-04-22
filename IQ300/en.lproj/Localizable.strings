@@ -124,3 +124,7 @@
 "Set task" = "Set task";
 "Сancellation" = "Cancel";
 "Select all" = "Select all";
+"Creating task" = "Creating task";
+"Editing task" = "Editing task";
+"Name can not be empty" = "Name can not be empty";
+"Failed to create a task:%@" = "Failed to create a task:%@";

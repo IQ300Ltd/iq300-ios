@@ -39,7 +39,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"Task", nil);
         _editableIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
         _tableBottomMarging = BOTTOM_VIEW_HEIGHT;
     }
@@ -52,6 +51,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.title = (self.model.task.taskId != nil) ? NSLocalizedString(@"Creating task", nil) :
+                                                   NSLocalizedString(@"Editing task", nil);
 
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
@@ -255,7 +257,33 @@
 }
 
 - (void)doneButtonAction:(UIButton*)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    if (self.model.task.taskId == nil) {
+        if ([self.model.task.title length] == 0) {
+            [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                               message:NSLocalizedString(@"Name can not be empty", nil)
+                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                     otherButtonTitles:nil
+                              tapBlock:nil];
+        }
+        else {
+            [[IQService sharedService] createTask:self.model.task
+                                          handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                              if (success) {
+                                                  [self.navigationController popViewControllerAnimated:YES];
+                                              }
+                                              else {
+                                                  [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                                                                     message:NSLocalizedStringWithFormat(@"Failed to create a task:%@", error)
+                                                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                           otherButtonTitles:nil
+                                                                    tapBlock:nil];
+                                              }
+                                          }];
+        }
+    }
+    else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)layoutTabelView {

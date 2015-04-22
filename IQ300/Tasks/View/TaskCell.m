@@ -234,6 +234,9 @@
         [_communityImageView sd_setImageWithURL:[NSURL URLWithString:_item.community.thumbUrl]
                                placeholderImage:[UIImage imageNamed:@"community_ico.png"]];
     }
+    else {
+        _communityImageView.image = [UIImage imageNamed:@"community_ico.png"];
+    }
     
     BOOL showCommentsCount = ([_item.commentsCount integerValue] > 0);
     

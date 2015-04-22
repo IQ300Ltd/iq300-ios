@@ -164,6 +164,9 @@
         [_communityInfoView.imageView sd_setImageWithURL:[NSURL URLWithString:task.community.thumbUrl]
                                         placeholderImage:[UIImage imageNamed:@"community_ico.png"]];
     }
+    else {
+        _communityInfoView.imageView.image = [UIImage imageNamed:@"community_ico.png"];
+    }
     
     NSArray * actions = [task.availableActions allObjects];
     for (NSInteger i = 0; i < [actions count]; i++) {

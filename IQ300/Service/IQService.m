@@ -901,6 +901,34 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:[IQTaskDataHolder requestObjectMapping]
+                                                              objectClass:[IQTaskDataHolder class]
+                                                              rootKeyPath:@"task"
+                                                                   method:RKRequestMethodPOST];
+    [self.objectManager addRequestDescriptor:requestDescriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/tasks"
+                                                   fromKeyPath:@"task"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:[IQTaskDataHolder requestObjectMapping]
+                                                              objectClass:[IQTaskDataHolder class]
+                                                              rootKeyPath:@"task"
+                                                                   method:RKRequestMethodPUT];
+    [self.objectManager addRequestDescriptor:requestDescriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
+                                                        method:RKRequestMethodPUT
+                                                   pathPattern:@"/api/v1/tasks/:id/"
+                                                   fromKeyPath:@"task"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 }
 
 @end
