@@ -17,6 +17,7 @@
 #import "CommunitiesController.h"
 #import "TaskExecutersController.h"
 #import "IQCommunity.h"
+#import "NSDate+CupertinoYankee.h"
 
 #define MAX_NUMBER_OF_CHARACTERS 255
 #define SEPARATOR_HEIGHT 0.5f
@@ -321,18 +322,19 @@
     NSDate * selectedDate = (isBeginDateEdit) ? self.model.task.startDate : self.model.task.endDate;
     
     __weak typeof (self) weakSelf = self;
-    ActionDateDoneBlock doneBlock = ^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
+    ActionDateDoneBlock doneBlock = ^(ActionSheetDatePicker *picker, NSDate * selectedDate, id origin) {
         if (isBeginDateEdit) {
             weakSelf.model.task.startDate = selectedDate;
+            if ([selectedDate compare:weakSelf.model.task.endDate] == NSOrderedDescending) {
+                weakSelf.model.task.endDate = [selectedDate endOfDay];
+            }
         }
         else {
             weakSelf.model.task.endDate = selectedDate;
         }
+        
         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-            [weakSelf.tableView beginUpdates];
-            [weakSelf.tableView reloadRowsAtIndexPaths:@[indexPath]
-                                      withRowAnimation:UITableViewRowAnimationAutomatic];
-            [weakSelf.tableView endUpdates];
+            [weakSelf.tableView reloadData];
         }];
     };
     
@@ -349,18 +351,13 @@
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
     
-    if (isBeginDateEdit) {
-        dayComponent.minute = -1;
-        picker.maximumDate = [calendar dateByAddingComponents:dayComponent
-                                                       toDate:self.model.task.endDate
-                                                      options:0];
-    }
-    else {
+    if (!isBeginDateEdit) {
         dayComponent.minute = 1;
         picker.minimumDate = [calendar dateByAddingComponents:dayComponent
                                                        toDate:self.model.task.startDate
                                                       options:0];
     }
+    
     [picker setDoneButton:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil)
                                                            style:UIBarButtonItemStylePlain
                                                           target:nil
