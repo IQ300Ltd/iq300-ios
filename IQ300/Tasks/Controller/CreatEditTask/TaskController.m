@@ -174,6 +174,11 @@
 #pragma mark - UITextViewDelegate Methods
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if ([text isEqualToString:@"\n"]) {
+        [textView resignFirstResponder];
+        return NO;
+    }
+
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
     if (([newString length] <= MAX_NUMBER_OF_CHARACTERS)) {
         textView.text = newString;
