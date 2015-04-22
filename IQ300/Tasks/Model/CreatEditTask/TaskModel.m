@@ -188,7 +188,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 }
 
 - (void)updateFieldAtIndexPath:(NSIndexPath*)indexPath withValue:(id)value {
-    if (indexPath != nil && value != nil) {
+    if (indexPath != nil) {
         NSIndexPath * fackePath = [self fackeIndexPathForPath:indexPath];
         NSString * field = [self fieldAtIndexPath:fackePath];
         if ([self.task respondsToSelector:NSSelectorFromString(field)]) {

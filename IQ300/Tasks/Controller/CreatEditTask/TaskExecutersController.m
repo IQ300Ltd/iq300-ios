@@ -78,7 +78,7 @@
     _doneButton = [[ExtendedButton alloc] init];
     _doneButton.layer.cornerRadius = 4.0f;
     _doneButton.layer.borderWidth = 0.5f;
-    [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
+    [_doneButton setTitle:NSLocalizedString(@"Save", nil) forState:UIControlStateNormal];
     [_doneButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
     [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
     [_doneButton setBackgroundColor:IQ_CELADON_COLOR];
@@ -286,14 +286,35 @@
 }
 
 - (void)backButtonAction:(UIButton*)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([_fieldValue count] != [self.model.executors count] ||
+        ![_fieldValue isEqualToArray:self.model.executors]) {
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:NSLocalizedString(@"Save changes?", nil)
+                 cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
+                 otherButtonTitles:@[NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil)]
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                              if (buttonIndex == 1 || buttonIndex == 2) {
+                                  if (buttonIndex == 1) {
+                                      [self saveChanges];
+                                  }
+                                  [self.navigationController popViewControllerAnimated:YES];
+                              }
+                          }];
+    }
+    else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)doneButtonAction:(UIButton*)sender {
+    [self saveChanges];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)saveChanges {
     if ([self.delegate respondsToSelector:@selector(taskFieldEditController:didChangeFieldValue:)]) {
         [self.delegate taskFieldEditController:self didChangeFieldValue:self.model.executors];
     }
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (UIView *)viewForHeaderInSection:(NSInteger)section {
