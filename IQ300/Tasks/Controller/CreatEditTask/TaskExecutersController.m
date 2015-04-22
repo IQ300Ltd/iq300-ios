@@ -286,8 +286,9 @@
 }
 
 - (void)backButtonAction:(UIButton*)sender {
+    BOOL selectionIsEmpty = (_fieldValue == nil && self.model.executors == nil);
     if ([_fieldValue count] != [self.model.executors count] ||
-        ![_fieldValue isEqualToArray:self.model.executors]) {
+        (!selectionIsEmpty && ![_fieldValue isEqualToArray:self.model.executors])) {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"Save changes?", nil)
                  cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)

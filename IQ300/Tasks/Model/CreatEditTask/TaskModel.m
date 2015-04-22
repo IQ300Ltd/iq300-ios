@@ -18,6 +18,7 @@
 #import "TaskExecutersCell.h"
 #import "TaskCommunityCell.h"
 #import "IQCommunity.h"
+#import "TaskExecutor.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
@@ -203,7 +204,12 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                     _isExecutersChangesEnabled = isExecutersChangesEnabled;
                     
                     if (_isExecutersChangesEnabled) {
-                        self.task.executors = @[[IQSession defaultSession].userId];
+                        IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
+                                                 inContext:[IQService sharedService].context];
+                        TaskExecutor * executor = [[TaskExecutor alloc] init];
+                        executor.executorId = user.userId;
+                        executor.executorName = user.displayName;
+                        self.task.executors = @[executor];
                     }
 
                     [self modelDidChanged];
