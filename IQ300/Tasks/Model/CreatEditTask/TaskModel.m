@@ -105,9 +105,10 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 }
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath {
+    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
     if(indexPath.section < [self numberOfSections] &&
        indexPath.row < [self numberOfItemsInSection:indexPath.section]) {
-        NSString * field = [self fieldAtIndexPath:indexPath];
+        NSString * field = [self fieldAtIndexPath:realIndexPath];
         if ([self.task respondsToSelector:NSSelectorFromString(field)]) {
             return [self.task valueForKey:field];
         }
@@ -116,20 +117,21 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    NSIndexPath * fackePath = [self fackeIndexPathForPath:indexPath];
-    Class cellClass = [TaskModel cellClassAtIndexPath:fackePath];
+    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
+    Class cellClass = [TaskModel cellClassAtIndexPath:realIndexPath];
     
     IQEditableTextCell * cell = [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                                 reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
+                                                 reuseIdentifier:[TaskModel cellIdentifierForItemAtIndexPath:realIndexPath]];
     
     return cell;
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSIndexPath * fackePath = [self fackeIndexPathForPath:indexPath];
-    Class cellClass = [TaskModel cellClassAtIndexPath:fackePath];
-    NSString * detaiTitle = [self detailTitleForItemAtIndexPath:fackePath];
-    id item = [self itemAtIndexPath:fackePath];
+    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
+    Class cellClass = [TaskModel cellClassAtIndexPath:realIndexPath];
+    
+    NSString * detaiTitle = [self detailTitleForItemAtIndexPath:indexPath];
+    id item = [self itemAtIndexPath:indexPath];
     if (cellClass) {
         return [cellClass heightForItem:item detailTitle:detaiTitle width:self.cellWidth];
     }
@@ -137,12 +139,12 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath *)indexPath {
-    NSIndexPath * fackePath = [self fackeIndexPathForPath:indexPath];
-    return [TaskModel cellIdentifierForItemAtIndexPath:fackePath];
+    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
+    return [TaskModel cellIdentifierForItemAtIndexPath:realIndexPath];
 }
 
 - (NSString*)detailTitleForItemAtIndexPath:(NSIndexPath*)indexPath {
-    NSIndexPath * fackePath = [self fackeIndexPathForPath:indexPath];
+    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
    static NSDictionary * _titlies = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
@@ -154,12 +156,12 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                       @(5) : @"Perform to"};
     });
     
-    NSString * title = _titlies[@(fackePath.row)];
+    NSString * title = _titlies[@(realIndexPath.row)];
     return title;
 }
 
 - (NSString*)placeholderForItemAtIndexPath:(NSIndexPath*)indexPath {
-    NSIndexPath * fackePath = [self fackeIndexPathForPath:indexPath];
+    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
     static NSDictionary * _placeholders = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
@@ -171,7 +173,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                            @(5) : @"Perform to"};
     });
     
-    NSString * placeholder = _placeholders[@(fackePath.row)];
+    NSString * placeholder = _placeholders[@(realIndexPath.row)];
     return NSLocalizedString(placeholder, nil);
 }
 
@@ -189,12 +191,12 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 
 - (void)updateFieldAtIndexPath:(NSIndexPath*)indexPath withValue:(id)value {
     if (indexPath != nil) {
-        NSIndexPath * fackePath = [self fackeIndexPathForPath:indexPath];
-        NSString * field = [self fieldAtIndexPath:fackePath];
+        NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
+        NSString * field = [self fieldAtIndexPath:realIndexPath];
         if ([self.task respondsToSelector:NSSelectorFromString(field)]) {
             [self.task setValue:value forKey:field];
             
-            if (fackePath.row == 2) {
+            if (realIndexPath.row == 2) {
                 IQCommunity * community = value;
                 
                 self.task.executors = nil;
@@ -216,10 +218,10 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                 }
             }
             
-            if (fackePath.row != 0) {
+            if (realIndexPath.row != 0) {
                 [self modelWillChangeContent];
                 [self modelDidChangeObject:nil
-                               atIndexPath:fackePath
+                               atIndexPath:indexPath
                              forChangeType:NSFetchedResultsChangeUpdate
                               newIndexPath:nil];
                 [self modelDidChangeContent];
@@ -228,10 +230,19 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     }
 }
 
+- (NSIndexPath*)realIndexPathForPath:(NSIndexPath*)indexPath {
+    if (_isExecutersChangesEnabled) {
+        if (indexPath.row > 2) {
+            return [NSIndexPath indexPathForRow:indexPath.row + 1
+                                      inSection:indexPath.section];
+        }
+    }
+    return indexPath;
+}
+
 #pragma mark - Private methods
 
 - (NSString*)fieldAtIndexPath:(NSIndexPath*)indexPath {
-    NSIndexPath * fackePath = [self fackeIndexPathForPath:indexPath];
     static NSDictionary * _fields = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
@@ -245,8 +256,8 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                     };
     });
     
-    if([_fields objectForKey:@(fackePath.row)]) {
-        return _fields[@(fackePath.row)];
+    if([_fields objectForKey:@(indexPath.row)]) {
+        return _fields[@(indexPath.row)];
     }
     return nil;
 }
@@ -258,16 +269,6 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     task.endDate = [today endOfDay];
     task.community = self.defaultCommunity;
     return task;
-}
-
-- (NSIndexPath*)fackeIndexPathForPath:(NSIndexPath*)indexPath {
-    if (_isExecutersChangesEnabled) {
-        if (indexPath.row > 2) {
-            return [NSIndexPath indexPathForRow:indexPath.row + 1
-                                      inSection:indexPath.section];
-        }
-    }
-    return indexPath;
 }
 
 @end

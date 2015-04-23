@@ -156,11 +156,13 @@
         [cell.titleTextView resignFirstResponder];
     }
     
-    if (indexPath.row > 3) {
-        [self showDataPickerForIndexPath:indexPath];
+    NSIndexPath * realIndexPath = [self.model realIndexPathForPath:indexPath];
+    
+    if (realIndexPath.row > 3) {
+        [self showDataPickerForIndexPath:realIndexPath];
     }
-    else if(indexPath.row != 0) {
-        UIViewController<TaskFieldEditController> * controller = [self controllerForItemIndexPath:indexPath];
+    else if(realIndexPath.row != 0) {
+        UIViewController<TaskFieldEditController> * controller = [self controllerForItemIndexPath:realIndexPath];
         if (controller) {
             id item = [self.model itemAtIndexPath:indexPath];
             controller.fieldIndexPath = indexPath;

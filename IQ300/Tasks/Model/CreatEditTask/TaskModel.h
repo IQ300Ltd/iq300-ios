@@ -23,4 +23,13 @@
 
 - (void)updateFieldAtIndexPath:(NSIndexPath*)indexPath withValue:(id)value;
 
+/**
+ *  Real index path
+ *
+ *  @param indexPath Selected index path
+ *
+ *  @return Real index path(exclude hidden index paths)
+ */
+- (NSIndexPath*)realIndexPathForPath:(NSIndexPath*)indexPath;
+
 @end
