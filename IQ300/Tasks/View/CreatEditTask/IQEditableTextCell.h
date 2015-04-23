@@ -21,6 +21,7 @@
 @property (nonatomic, strong) id item;
 @property (nonatomic, strong) NSString * detailTitle;
 @property (nonatomic, readonly) PlaceholderTextView * titleTextView;
+@property (nonatomic, getter = isEnabled) BOOL enabled;
 
 + (CGFloat)heightForItem:(id)item detailTitle:(NSString*)detailTitle width:(CGFloat)width;
 

@@ -337,7 +337,7 @@
 
 - (void)saveTask:(IQTaskDataHolder*)task handler:(ObjectRequestCompletionHandler)handler {
     [self putObject:task
-               path:[NSString stringWithFormat:@"/api/v1/tasks/%@", task.taskId]
+               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/", task.taskId]
          parameters:nil
             handler:handler];
 }

@@ -138,10 +138,14 @@
 }
 
 - (BOOL)isSectionSelected:(NSInteger)section {
-    return [_selectedSections containsIndex:section];
+    return (!self.isEditingMode) ? [_selectedSections containsIndex:section] : NO;
 }
 
 - (void)makeSection:(NSInteger)section selected:(BOOL)selected {
+    if (self.isEditingMode) {
+        return;
+    }
+    
     if (selected && ![_selectedSections containsIndex:section]) {
         [_selectedSections addIndex:section];
         
@@ -174,29 +178,38 @@
 }
 
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)selected {
-    _selectAll = NO;
-    
-    id item = [self itemAtIndexPath:indexPath];
+    TaskExecutor * executor = [self itemAtIndexPath:indexPath];
 
-    if (selected && ![_executors containsObject:item]) {
+    if (!self.isEditingMode) {
+        _selectAll = NO;
         
-        if (!_executors) {
-            _executors = [NSArray array];
+        if (selected && ![_executors containsObject:executor]) {
+            
+            if (!_executors) {
+                _executors = [NSArray array];
+            }
+            
+            _executors = [_executors arrayByAddingObject:executor];
+            [self updateSelectedIndexs];
+            
+            [self modelDidChanged];
         }
-
-        _executors = [_executors arrayByAddingObject:item];
-        [self updateSelectedIndexs];
-        
-        [self modelDidChanged];
+        else if(!selected && [_executors containsObject:executor]) {
+            
+            NSMutableArray * items = [_executors mutableCopy];
+            [items removeObject:executor];
+            _executors = [items copy];
+            [self updateSelectedIndexs];
+            
+            [self modelDidChanged];
+        }
     }
-    else if(!selected && [_executors containsObject:item]) {
-        
-        NSMutableArray * items = [_executors mutableCopy];
-        [items removeObject:item];
-        _executors = [items copy];
-        [self updateSelectedIndexs];
-       
-        [self modelDidChanged];
+    else {
+        NSIndexPath * selectedIndexPath = [self indexPathOfObject:[_executors firstObject]];
+        if (selected && ![selectedIndexPath isEqual:indexPath]) {
+            _executors = @[executor];
+            [self modelDidChanged];
+        }
     }
 }
 

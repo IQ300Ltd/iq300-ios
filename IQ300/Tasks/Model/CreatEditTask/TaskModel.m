@@ -232,6 +232,14 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     }
 }
 
+- (BOOL)isItemEditableAtIndexPath:(NSIndexPath*)indexPath {
+    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
+    if (self.task.taskId != nil && realIndexPath.row == 2) {
+        return NO;
+    }
+    return YES;
+}
+
 - (NSIndexPath*)realIndexPathForPath:(NSIndexPath*)indexPath {
     if (_isExecutersChangesEnabled) {
         if (indexPath.row > 2) {

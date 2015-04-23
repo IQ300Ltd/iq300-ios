@@ -73,7 +73,7 @@
     _doneButton.layer.cornerRadius = 4.0f;
     _doneButton.layer.borderWidth = 0.5f;
     [_doneButton setTitle:(self.model.task.taskId == nil) ? NSLocalizedString(@"Set task", nil) :
-                                                            NSLocalizedString(@"Done", nil)
+                                                            NSLocalizedString(@"Save", nil)
                  forState:UIControlStateNormal];
     [_doneButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
     [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
@@ -145,6 +145,7 @@
     cell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
     cell.item = item;
     cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
+    cell.enabled = [self.model isItemEditableAtIndexPath:indexPath];
     
     return cell;
 }
@@ -172,6 +173,10 @@
             [self.navigationController pushViewController:controller animated:YES];
         }
     }
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    return ([self.model isItemEditableAtIndexPath:indexPath]) ? indexPath : nil;
 }
 
 #pragma mark - UITextViewDelegate Methods
@@ -284,15 +289,15 @@
 }
 
 - (void)doneButtonAction:(UIButton*)sender {
-    if (self.model.task.taskId == nil) {
-        if ([self.model.task.title length] == 0) {
-            [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                               message:NSLocalizedString(@"Name can not be empty", nil)
-                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                     otherButtonTitles:nil
-                              tapBlock:nil];
-        }
-        else {
+    if ([self.model.task.title length] == 0) {
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:NSLocalizedString(@"Name can not be empty", nil)
+                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                 otherButtonTitles:nil
+                          tapBlock:nil];
+    }
+    else {
+        if (self.model.task.taskId == nil) {
             [[IQService sharedService] createTask:self.model.task
                                           handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                               if (success) {
@@ -307,9 +312,21 @@
                                               }
                                           }];
         }
-    }
-    else {
-        [self.navigationController popViewControllerAnimated:YES];
+        else {
+            [[IQService sharedService] saveTask:self.model.task
+                                        handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                            if (success) {
+                                                [self.navigationController popViewControllerAnimated:YES];
+                                            }
+                                            else {
+                                                [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                                                                   message:NSLocalizedStringWithFormat(@"Failed to change a task:%@", error)
+                                                         cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                         otherButtonTitles:nil
+                                                                  tapBlock:nil];
+                                            }
+                                        }];
+        }
     }
 }
 

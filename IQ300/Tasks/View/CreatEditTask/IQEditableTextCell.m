@@ -8,6 +8,8 @@
 
 #import "IQEditableTextCell.h"
 
+#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x9f9f9f]
+
 @implementation IQEditableTextCell
 
 + (CGFloat)heightForItem:(id)item detailTitle:(NSString*)detailTitle width:(CGFloat)width {
@@ -37,7 +39,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
     if(self) {
-        
+        _enabled = YES;
         _contentInsets = UIEdgeInsetsMake(CONTENT_VERTICAL_INSETS,
                                           CONTENT_HORIZONTAL_INSETS,
                                           CONTENT_VERTICAL_INSETS,
@@ -85,6 +87,14 @@
         _titleTextView.text = item;
     }
 }
+
+- (void)setEnabled:(BOOL)enabled {
+    if (_enabled != enabled) {
+        _enabled = enabled;
+        _titleTextView.textColor = (_enabled) ? TEXT_COLOR : SELECTED_TEXT_COLOR;
+    }
+}
+
 
 - (void)prepareForReuse {
     [super prepareForReuse];

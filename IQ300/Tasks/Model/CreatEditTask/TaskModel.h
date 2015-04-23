@@ -23,6 +23,8 @@
 
 - (void)updateFieldAtIndexPath:(NSIndexPath*)indexPath withValue:(id)value;
 
+- (BOOL)isItemEditableAtIndexPath:(NSIndexPath*)indexPath;
+
 /**
  *  Real index path
  *

@@ -131,9 +131,6 @@
 #pragma mark - Private methods
 
 - (void)singleTapRecognized:(UITapGestureRecognizer*)recognizer {
-    _selected = !_selected;
-    [self updateUIForState];
-    
     if (_actionBlock) {
         _actionBlock(self);
     }

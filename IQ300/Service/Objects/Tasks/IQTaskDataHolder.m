@@ -10,6 +10,8 @@
 #import "IQTaskDataHolder.h"
 #import "IQTask.h"
 #import "IQCommunity.h"
+#import "IQUser.h"
+#import "TaskExecutor.h"
 
 @implementation IQTaskDataHolder
 
@@ -23,18 +25,34 @@
     holder.taskDescription = task.taskDescription;
     
     if (task.executor) {
-        holder.executors = @[task.executor];
+        TaskExecutor * executor = [[TaskExecutor alloc] init];
+        executor.executorId = task.executor.userId;
+        executor.executorName = task.executor.displayName;
+        holder.executors = @[executor];
     }
     
     return holder;
 }
 
-+ (RKObjectMapping*)requestObjectMapping {
++ (RKObjectMapping*)createRequestObjectMapping {
     RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"title"        : @"title",
                                                   @"community_id" : @"community.communityId",
                                                   @"executor_ids" : @"executorIds",
+                                                  @"start_date"   : @"startDate",
+                                                  @"end_date"     : @"endDate",
+                                                  @"description"  : @"taskDescription"
+                                                  }];
+    
+    return [mapping inverseMapping];
+}
+
++ (RKObjectMapping*)editRequestObjectMapping {
+    RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
+    [mapping addAttributeMappingsFromDictionary:@{
+                                                  @"title"        : @"title",
+                                                  @"executor_id"  : @"firstExecutorId",
                                                   @"start_date"   : @"startDate",
                                                   @"end_date"     : @"endDate",
                                                   @"description"  : @"taskDescription"
@@ -62,6 +80,10 @@
 
 - (NSArray*)executorIds {
     return [self.executors valueForKey:@"executorId"];
+}
+
+- (NSNumber*)firstExecutorId {
+    return [self.executors.firstObject valueForKey:@"executorId"];
 }
 
 @end

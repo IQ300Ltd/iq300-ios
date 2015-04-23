@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSArray * executors;
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, assign, getter=isAllSelected) BOOL selectAll;
+@property (nonatomic, assign, getter=isEditingMode) BOOL editingMode;
 
 - (BOOL)isSectionSelected:(NSInteger)section;
 - (void)makeSection:(NSInteger)section selected:(BOOL)selected;

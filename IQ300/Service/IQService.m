@@ -902,7 +902,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-    requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:[IQTaskDataHolder requestObjectMapping]
+    requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:[IQTaskDataHolder createRequestObjectMapping]
                                                               objectClass:[IQTaskDataHolder class]
                                                               rootKeyPath:@"task"
                                                                    method:RKRequestMethodPOST];
@@ -916,7 +916,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
 
-    requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:[IQTaskDataHolder requestObjectMapping]
+    requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:[IQTaskDataHolder editRequestObjectMapping]
                                                               objectClass:[IQTaskDataHolder class]
                                                               rootKeyPath:@"task"
                                                                    method:RKRequestMethodPUT];

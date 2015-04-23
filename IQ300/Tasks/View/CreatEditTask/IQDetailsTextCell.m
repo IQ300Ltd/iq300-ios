@@ -59,6 +59,12 @@
     _accessoryImageView.image = accessoryImage;
 }
 
+- (void)setEnabled:(BOOL)enabled {
+    [super setEnabled:enabled];
+    
+    _accessoryImageView.image = (enabled) ? [UIImage imageNamed:@"right_gray_arrow.png"] : nil;
+}
+
 - (UIImage*)accessoryImage {
     return _accessoryImageView.image;
 }

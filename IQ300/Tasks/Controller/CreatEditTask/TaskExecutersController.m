@@ -63,6 +63,7 @@
 - (void)setTask:(IQTaskDataHolder *)task {
     _task = task;
     self.model.communityId = _task.community.communityId;
+    self.model.editingMode = (_task.taskId != nil);
 }
 
 - (void)viewDidLoad {
@@ -328,7 +329,8 @@
     
     __weak typeof(self) weakSelf = self;
     [sectionView setActionBlock:^(ExecutersGroupSection *header) {
-        [weakSelf.model makeSection:section selected:header.isSelected];
+        [weakSelf.model makeSection:section selected:!header.isSelected];
+        header.selected = [weakSelf.model isSectionSelected:section];
     }];
     
     return sectionView;

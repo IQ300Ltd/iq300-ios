@@ -128,3 +128,4 @@
 "Editing task" = "Editing task";
 "Name can not be empty" = "Name can not be empty";
 "Failed to create a task:%@" = "Failed to create a task:%@";
+"Failed to change a task:%@" = "Failed to change a task:%@";

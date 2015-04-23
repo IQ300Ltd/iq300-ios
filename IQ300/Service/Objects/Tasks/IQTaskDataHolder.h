@@ -19,12 +19,15 @@
 @property (nonatomic, strong) IQCommunity * community;
 @property (nonatomic, strong) NSArray * executors;
 @property (nonatomic, readonly) NSArray * executorIds;
+@property (nonatomic, readonly) NSNumber * firstExecutorId;
 @property (nonatomic, strong) NSDate  * startDate;
 @property (nonatomic, strong) NSDate  * endDate;
 @property (nonatomic, strong) NSString * taskDescription;
 
 + (IQTaskDataHolder*)holderWithTask:(IQTask*)task;
 
-+ (RKObjectMapping*)requestObjectMapping;
++ (RKObjectMapping*)createRequestObjectMapping;
+
++ (RKObjectMapping*)editRequestObjectMapping;
 
 @end
