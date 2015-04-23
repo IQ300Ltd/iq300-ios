@@ -43,6 +43,23 @@
     return [mapping inverseMapping];
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    IQTaskDataHolder * copy = [[[self class] allocWithZone:zone] init];
+    
+    if (copy) {
+        copy.taskId = [self.taskId copyWithZone:zone];
+        copy.title = [self.title copyWithZone:zone];
+        copy.community = self.community;
+        copy.startDate = [self.startDate copyWithZone:zone];
+        copy.endDate = [self.endDate copyWithZone:zone];
+        copy.taskDescription = [self.taskDescription copyWithZone:zone];
+        copy.executors = [self.executors copyWithZone:zone];
+    }
+    
+    return copy;
+}
+
+
 - (NSArray*)executorIds {
     return [self.executors valueForKey:@"executorId"];
 }

@@ -70,6 +70,13 @@
     [super viewWillAppear:animated];
     
     [self reloadModel];
+    [self.model setSubscribedToNotifications:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self.model setSubscribedToNotifications:NO];
 }
 
 #pragma mark - UITableView DataSource

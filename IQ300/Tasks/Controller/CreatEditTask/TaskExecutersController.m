@@ -155,12 +155,14 @@
             }
         }];
     }
+    [self.model setSubscribedToNotifications:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.model setSubscribedToNotifications:NO];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -313,8 +315,9 @@
 }
 
 - (void)saveChanges {
+    NSArray * items = ([self.model.executors count] > 0) ? self.model.executors : nil;
     if ([self.delegate respondsToSelector:@selector(taskFieldEditController:didChangeFieldValue:)]) {
-        [self.delegate taskFieldEditController:self didChangeFieldValue:self.model.executors];
+        [self.delegate taskFieldEditController:self didChangeFieldValue:items];
     }
 }
 

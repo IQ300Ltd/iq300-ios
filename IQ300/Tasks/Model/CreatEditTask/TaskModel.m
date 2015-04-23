@@ -34,6 +34,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 
 @interface TaskModel() {
     BOOL _isExecutersChangesEnabled;
+    IQTaskDataHolder * _initState;
 }
 
 @end
@@ -94,6 +95,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 
 - (void)setTask:(IQTaskDataHolder *)task {
     _task = task;
+    _initState = [_task copy];
 }
 
 - (NSUInteger)numberOfSections {
@@ -240,6 +242,19 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     return indexPath;
 }
 
+- (BOOL)modelHasChanges {
+    if (_task && _initState) {
+        return ![self isString:_task.title equalToString:_initState.title] ||
+               ![self isString:_task.taskDescription equalToString:_initState.taskDescription] ||
+               ![_task.community.communityId isEqualToNumber:_initState.community.communityId] ||
+               [self executrosHasChanges] ||
+               ![_task.startDate isEqualToDate:_initState.startDate] ||
+               ![_task.endDate isEqualToDate:_initState.endDate];
+    }
+    
+    return NO;
+}
+
 #pragma mark - Private methods
 
 - (NSString*)fieldAtIndexPath:(NSIndexPath*)indexPath {
@@ -269,6 +284,17 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     task.endDate = [today endOfDay];
     task.community = self.defaultCommunity;
     return task;
+}
+
+- (BOOL)executrosHasChanges {
+    BOOL selectionIsEmpty = (_task.executors == nil && _initState.executors == nil);
+    return  [_task.executors count] != [_initState.executors count] ||
+            (!selectionIsEmpty && ![_task.executors isEqualToArray:_initState.executors]);
+}
+
+- (BOOL)isString:(NSString*)firstString equalToString:(NSString*)secondString {
+    BOOL stringsIsEmpty = (firstString == nil && secondString == nil);
+    return stringsIsEmpty || (!stringsIsEmpty && [firstString isEqualToString:secondString]);
 }
 
 @end

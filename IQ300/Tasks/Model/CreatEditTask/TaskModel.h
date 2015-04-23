@@ -32,4 +32,6 @@
  */
 - (NSIndexPath*)realIndexPathForPath:(NSIndexPath*)indexPath;
 
+- (BOOL)modelHasChanges;
+
 @end

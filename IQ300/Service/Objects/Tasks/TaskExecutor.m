@@ -20,6 +20,17 @@
     return mapping;
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    TaskExecutor * copy = [[[self class] allocWithZone:zone] init];
+    
+    if (copy) {
+        copy.executorId = [self.executorId copyWithZone:zone];
+        copy.executorName = [self.executorName copyWithZone:zone];
+    }
+    
+    return copy;
+}
+
 - (BOOL)isEqual:(id)object {
     if ([object isKindOfClass:[TaskExecutor class]]) {
         TaskExecutor * executer = (TaskExecutor*)object;
