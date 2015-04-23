@@ -2470,7 +2470,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "6d3a24c8-d379-4982-8664-cbf6d824f933";
+				PROVISIONING_PROFILE = "d59eadc4-977d-45e2-b1cb-84b865cea673";
 				SDKROOT = iphoneos;
 			};
 			name = Production;
@@ -2601,7 +2601,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "36fb52f0-7312-44f1-b7bf-3bdfbff84d48";
+				PROVISIONING_PROFILE = "9359bc56-d489-4d3a-a25f-3a0cf0e95426";
 				SDKROOT = iphoneos;
 			};
 			name = Release;
