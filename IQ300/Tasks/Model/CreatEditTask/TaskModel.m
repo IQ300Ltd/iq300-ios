@@ -254,7 +254,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     if (_task && _initState) {
         return ![self isString:_task.title equalToString:_initState.title] ||
                ![self isString:_task.taskDescription equalToString:_initState.taskDescription] ||
-               ![_task.community.communityId isEqualToNumber:_initState.community.communityId] ||
+               ![self isNumber:_task.community.communityId equalToNumber:_initState.community.communityId] ||
                [self executrosHasChanges] ||
                ![_task.startDate isEqualToDate:_initState.startDate] ||
                ![_task.endDate isEqualToDate:_initState.endDate];
@@ -303,6 +303,11 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 - (BOOL)isString:(NSString*)firstString equalToString:(NSString*)secondString {
     BOOL stringsIsEmpty = (firstString == nil && secondString == nil);
     return stringsIsEmpty || (!stringsIsEmpty && [firstString isEqualToString:secondString]);
+}
+
+- (BOOL)isNumber:(NSNumber*)firstNumber equalToNumber:(NSNumber*)secondNumber {
+    BOOL numberIsEmpty = (firstNumber == nil && secondNumber == nil);
+    return numberIsEmpty || (!numberIsEmpty && secondNumber != nil && [firstNumber isEqualToNumber:secondNumber]);
 }
 
 @end
