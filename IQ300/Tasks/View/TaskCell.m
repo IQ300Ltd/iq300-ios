@@ -268,7 +268,7 @@
 
 - (void)updateUIForState {
     if (self.showOverdue) {
-        if([_item.endDate compare:[NSDate date]] == NSOrderedDescending) {
+        if([_item.endDate compare:[NSDate date]] == NSOrderedAscending) {
             _dueIconImageView.image = [UIImage imageNamed:@"bell_red_ico.png"];
             _dueDateLabel.textColor = [UIColor colorWithHexInt:0xca301e];
             self.showLeftView = YES;
