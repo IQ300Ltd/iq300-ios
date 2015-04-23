@@ -24,8 +24,7 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES],
-                                 [NSSortDescriptor sortDescriptorWithKey:@"executors.name" ascending:YES]];
+        self.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"executorName" ascending:YES]];
         
         _selectedSections = [[NSMutableIndexSet alloc] init];
     }
@@ -126,8 +125,7 @@
     [[IQService sharedService] taskExecutorsForCommunityId:self.communityId
                                               handler:^(BOOL success, NSArray * executors, NSData *responseData, NSError *error) {
                                                   if (success) {
-                                                      _itemsInternal = [executors sortedArrayUsingDescriptors:self.sortDescriptors];
-                                                      
+                                                      _itemsInternal = executors;
                                                       [self applyFilters];
                                                       [self updateSelectedIndexs];
                                                   }
@@ -264,11 +262,10 @@
             if ([executors count] > 0) {
                 TaskExecutorsGroup * filteredGroup = [[TaskExecutorsGroup alloc] init];
                 filteredGroup.name = group.name;
-                filteredGroup.executors = executors;
+                filteredGroup.executors = [executors sortedArrayUsingDescriptors:self.sortDescriptors];
                 [groups addObject:filteredGroup];
             }
         }
-        [groups sortUsingDescriptors:self.sortDescriptors];
         _items = [groups copy];
     }
     else {
