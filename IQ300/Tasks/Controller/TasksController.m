@@ -301,18 +301,22 @@
 }
 
 - (void)createTaskAction:(UIButton*)sender {
-    [[IQService sharedService] mostUsedCommunityWithHandler:^(BOOL success, id community, NSData *responseData, NSError *error) {
-        if (success) {
-            TaskModel * model = [[TaskModel alloc] init];
-            model.defaultCommunity = community;
-            
-            TaskController * controller = [[TaskController alloc] init];
-            controller.model = model;
-            controller.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:controller
-                                                 animated:YES];
-        }
-    }];
+    if (!_isTaskOpenProcessing) {
+        _isTaskOpenProcessing = YES;
+        [[IQService sharedService] mostUsedCommunityWithHandler:^(BOOL success, id community, NSData *responseData, NSError *error) {
+            if (success) {
+                TaskModel * model = [[TaskModel alloc] init];
+                model.defaultCommunity = community;
+                
+                TaskController * controller = [[TaskController alloc] init];
+                controller.model = model;
+                controller.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:controller
+                                                     animated:YES];
+            }
+            _isTaskOpenProcessing = NO;
+        }];
+    }
 }
 
 - (void)updateNoDataLabelVisibility {
