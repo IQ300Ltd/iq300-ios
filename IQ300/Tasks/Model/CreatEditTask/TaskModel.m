@@ -96,6 +96,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 - (void)setTask:(IQTaskDataHolder *)task {
     _task = task;
     _initState = [_task copy];
+    _isExecutersChangesEnabled = ([[_task.community.type lowercaseString] isEqualToString:@"defaultcommunity"]);
 }
 
 - (NSUInteger)numberOfSections {
