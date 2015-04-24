@@ -34,14 +34,13 @@
 - (BOOL)isEqual:(id)object {
     if ([object isKindOfClass:[TaskExecutor class]]) {
         TaskExecutor * executer = (TaskExecutor*)object;
-        return [self.executorId isEqualToNumber:executer.executorId] &&
-               [self.executorName isEqualToString:executer.executorName];
+        return [self.executorId isEqualToNumber:executer.executorId];
     }
     return NO;
 }
 
 - (NSUInteger)hash {
-    return [self.executorId hash] ^ [self.executorName hash];
+    return [self.executorId hash];
 }
 
 @end
