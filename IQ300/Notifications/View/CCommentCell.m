@@ -313,7 +313,7 @@
     
     if (_commentIsMine) {
         NSTimeInterval distanceBetweenDates = [[NSDate date] timeIntervalSinceDate:_item.createDate];
-        NSInteger minutesBetweenDates = distanceBetweenDates / 60;
+        NSInteger minutesBetweenDates = roundf(distanceBetweenDates / 60.0f);
 
         if (minutesBetweenDates < 15) {
             NSMutableArray *rightUtilityButtons = [NSMutableArray array];
