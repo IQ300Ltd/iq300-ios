@@ -139,11 +139,26 @@
 
 }
 
-- (void)deletedCommentsIdsByDiscussionId:(NSNumber *)discussionId handler:(ObjectRequestCompletionHandler)handler {
+- (void)deleteCommentWithId:(NSNumber*)commentId
+               discussionId:(NSNumber*)discussionId
+                    handler:(RequestCompletionHandler)handler {
+    [self deleteObject:nil
+                  path:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/%@", discussionId, commentId]
+            parameters:nil
+               handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                   if (handler) {
+                       handler(success, responseData, error);
+                   }
+               }];
+}
+
+- (void)commentIdsDeletedAfter:(NSDate*)deletedAfter
+                  discussionId:(NSNumber*)discussionId
+                       handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(discussionId);
     
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/deleted_ids", discussionId]
-                parameters:nil
+                parameters:@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) }
                    handler:handler];
 }
 

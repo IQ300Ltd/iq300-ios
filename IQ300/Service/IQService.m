@@ -929,6 +929,14 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[DeletedObjects class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/discussions/:id/comments/deleted_ids"
+                                                   fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 }
 
 @end

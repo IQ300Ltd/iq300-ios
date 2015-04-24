@@ -208,7 +208,7 @@
                               if(buttonIndex == 1) {
                                   [self.model resendLocalComment:comment withCompletion:^(NSError *error) {
                                       if(!error) {
-                                          [self.model deleteComment:comment];
+                                          [self.model deleteLocalComment:comment];
                                       }
                                       else {
                                           NSLog(@"Resend local comment error");

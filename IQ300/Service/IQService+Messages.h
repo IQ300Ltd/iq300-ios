@@ -50,6 +50,12 @@
                   search:(NSString*)search
                  handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)deletedCommentsIdsByDiscussionId:(NSNumber*)discussionId handler:(ObjectRequestCompletionHandler)handler;
+- (void)deleteCommentWithId:(NSNumber*)commentId
+               discussionId:(NSNumber*)discussionId
+                    handler:(RequestCompletionHandler)handler;
+
+- (void)commentIdsDeletedAfter:(NSDate*)deletedAfter
+                  discussionId:(NSNumber*)discussionId
+                       handler:(ObjectRequestCompletionHandler)handler;
 
 @end

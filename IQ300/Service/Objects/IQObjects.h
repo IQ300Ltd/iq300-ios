@@ -36,5 +36,6 @@
 #import "IQTaskActivityItem.h"
 #import "TaskExecutorsGroup.h"
 #import "IQTaskDataHolder.h"
+#import "DeletedObjects.h"
 
 #endif

@@ -20,9 +20,11 @@
 #import "ObjectSerializator.h"
 #import "MessagesModel.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
+#import "DeletedObjects.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
+#define LAST_REQUEST_DATE_KEY @"comment_ids_request_date"
 
 static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
@@ -39,6 +41,16 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 @end
 
 @implementation CommentsModel
+
++ (NSDate*)lastRequestDate {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:LAST_REQUEST_DATE_KEY];
+}
+
++ (void)setLastRequestDate:(NSDate*)date {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:date forKey:LAST_REQUEST_DATE_KEY];
+}
 
 - (id)init {
     self = [super init];
@@ -178,6 +190,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         [self reloadModelSourceControllerWithCompletion:nil];
     }
     
+    [self clearRemovedComments];
+    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
@@ -201,16 +215,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
+        [self resubscribeToAppEnterForegroundNotification];
         [self resubscribeToNewMessageNotification];
     }
     else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
+        [self unsubscribeFromAppEnterForegroundNotification];
         [self unsubscribeFromNewMessageNotification];
     }
 }
@@ -251,7 +260,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)resendLocalComment:(IQComment*)comment withCompletion:(void (^)(NSError * error))completion {
+- (void)resendLocalComment:(IQComment*)comment completion:(void (^)(NSError * error))completion {
     void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachments) {
         NSArray * attachmentIds = [attachments valueForKey:@"attachmentId"];
         [[IQService sharedService] createComment:comment.body
@@ -289,13 +298,23 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)deleteComment:(IQComment *)comment {
+- (void)deleteComment:(IQComment*)comment completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] deleteCommentWithId:comment.commentId
+                                      discussionId:comment.discussionId
+                                           handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                               if (success) {
+                                                   [self deleteLocalComment:comment];
+                                               }
+                                               if (completion) {
+                                                   completion(error);
+                                               }
+                                           }];
+}
+
+- (void)deleteLocalComment:(IQComment *)comment {
     NSArray * attachments = [comment.attachments allObjects];
     for (IQAttachment * attachment in attachments) {
-        NSError * removeError = nil;
-        if(![[NSFileManager defaultManager] removeItemAtPath:attachment.localURL error:&removeError]) {
-            NSLog(@"Failed delete tmp attachment file with error: %@", removeError);
-        }
+        [attachment.managedObjectContext deleteObject:attachment];
     }
     
     [comment.managedObjectContext deleteObject:comment];
@@ -455,6 +474,21 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }];
 }
 
+- (void)resubscribeToAppEnterForegroundNotification {
+    [self unsubscribeFromAppEnterForegroundNotification];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+}
+
+- (void)unsubscribeFromAppEnterForegroundNotification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
+}
+
 - (void)resubscribeToNewMessageNotification {
     [self unsubscribeFromNewMessageNotification];
     
@@ -497,6 +531,40 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)unsubscribeFromNewMessageNotification {
     if(_newMessageObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+    }
+}
+
+- (void)clearRemovedComments {
+    NSDate * lastRequestDate = [CommentsModel lastRequestDate];
+    
+    [[IQService sharedService] commentIdsDeletedAfter:lastRequestDate
+                                         discussionId:self.discussion.discussionId
+                                              handler:^(BOOL success, DeletedObjects * object, NSData *responseData, NSError *error) {
+                                                  if (success) {
+                                                      [CommentsModel setLastRequestDate:object.serverDate];
+                                                      [self removeLocalCommentsWithIds:object.objectIds];
+                                                  }
+                                              }];
+}
+
+- (void)removeLocalCommentsWithIds:(NSArray*)commentIds {
+    if ([commentIds count] > 0) {
+        NSManagedObjectContext * context = [IQService sharedService].context;
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQComment"];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"commentId IN %@", commentIds]];
+        
+        [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+            if ([objects count] > 0) {
+                for (NSManagedObject * object in objects) {
+                    [context deleteObject:object];
+                }
+                
+                NSError * saveError = nil;
+                if(![context saveToPersistentStore:&saveError] ) {
+                    NSLog(@"Failed save to presistent store after comments removed");
+                }
+            }
+        }];
     }
 }
 

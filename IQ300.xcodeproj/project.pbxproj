@@ -39,6 +39,7 @@
 		733A80541A7A6C5C00460C87 /* NotificationGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 733A80531A7A6C5C00460C87 /* NotificationGroupView.m */; };
 		734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQAttachment.m */; };
 		734965D11AB1A60100263B57 /* CTaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 734965D01AB1A60100263B57 /* CTaskFilterCell.m */; };
+		734FEABF1AEA27EC0050EF44 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 734FEABE1AEA27EC0050EF44 /* DeletedObjects.m */; };
 		73506ED61A137D070071B4CB /* TasksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BC61A0B5B7500034D9B /* TasksController.m */; };
 		735D48F51AE4D6DB00F6A753 /* TaskExecutersController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */; };
 		735D48F81AE4D85000F6A753 /* TaskExecutorsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48F71AE4D85000F6A753 /* TaskExecutorsModel.m */; };
@@ -387,6 +388,8 @@
 		734433641A2DEBF300102FC8 /* IQAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachment.m; sourceTree = "<group>"; };
 		734965CF1AB1A60100263B57 /* CTaskFilterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTaskFilterCell.h; sourceTree = "<group>"; };
 		734965D01AB1A60100263B57 /* CTaskFilterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTaskFilterCell.m; sourceTree = "<group>"; };
+		734FEABD1AEA27EC0050EF44 /* DeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedObjects.h; sourceTree = "<group>"; };
+		734FEABE1AEA27EC0050EF44 /* DeletedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedObjects.m; sourceTree = "<group>"; };
 		735D48F31AE4D6DB00F6A753 /* TaskExecutersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutersController.h; sourceTree = "<group>"; };
 		735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutersController.m; sourceTree = "<group>"; };
 		735D48F61AE4D85000F6A753 /* TaskExecutorsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutorsModel.h; sourceTree = "<group>"; };
@@ -1378,6 +1381,8 @@
 				73ADA8E61A36EE180032C1FA /* IQContact.m */,
 				731DEEC91A2F27AE002F5FEB /* IQCounters.h */,
 				731DEECA1A2F27AE002F5FEB /* IQCounters.m */,
+				734FEABD1AEA27EC0050EF44 /* DeletedObjects.h */,
+				734FEABE1AEA27EC0050EF44 /* DeletedObjects.m */,
 				7373ED591A89EF2000719FCD /* IQObjectsHolder.h */,
 				7373ED5A1A89EF2000719FCD /* IQObjectsHolder.m */,
 				7380E9731A4020FA00128BD9 /* ObjectSerializator.h */,
@@ -2191,6 +2196,7 @@
 				739850BF1A2DB05400DB5B21 /* MessagesView.m in Sources */,
 				73A7983C1A35B96F006F5721 /* ALAssetInputStream.m in Sources */,
 				738356301A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m in Sources */,
+				734FEABF1AEA27EC0050EF44 /* DeletedObjects.m in Sources */,
 				73A87EF61AA4591100C4A7C3 /* NActionGropCell.m in Sources */,
 				738EF8241A9CA76700894755 /* IQCommunity.m in Sources */,
 				73D7F1B61ADE932700023120 /* TaskTabController.m in Sources */,
