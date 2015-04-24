@@ -37,6 +37,8 @@
         _selectAll = selectAll;
         
         if (_selectAll) {
+            
+            
             NSMutableArray * items = [NSMutableArray array];
             for (int i = 0; i < [_items count]; i++) {
                 TaskExecutorsGroup * group = _items[i];
@@ -152,7 +154,8 @@
             _executors = [NSArray array];
         }
         
-        _executors = [_executors arrayByAddingObjectsFromArray:group.executors];
+        NSSet * executors = [NSSet setWithArray:[_executors arrayByAddingObjectsFromArray:group.executors]];
+        _executors = [executors allObjects];
         _selectAll = [_selectedSections count] == [_items count];
         
         [self modelDidChanged];
@@ -228,7 +231,9 @@
 #pragma mark - Private methods
 
 - (void)applicationWillEnterForeground {
-    [self updateModelWithCompletion:nil];
+    [self updateModelWithCompletion:^(NSError *error) {
+        [self modelDidChanged];
+    }];
 }
 
 - (void)updateSelectedIndexs {

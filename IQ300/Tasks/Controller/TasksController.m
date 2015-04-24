@@ -102,7 +102,9 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+ 
+    _isTaskOpenProcessing = NO;
+
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
@@ -314,7 +316,6 @@
                 [self.navigationController pushViewController:controller
                                                      animated:YES];
             }
-            _isTaskOpenProcessing = NO;
         }];
     }
 }

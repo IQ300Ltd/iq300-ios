@@ -98,7 +98,7 @@
     
     __weak typeof(self) weakSelf = self;
     [_headerView setActionBlock:^(ExecutersGroupSection *header) {
-        weakSelf.model.selectAll = header.selected;
+        weakSelf.model.selectAll = !header.selected;
     }];
     [self.view addSubview:_headerView];
     

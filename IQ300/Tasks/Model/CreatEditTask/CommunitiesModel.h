@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "IQTableModel.h"
+#import "IQTableModel+Subclass.h"
 
 @interface CommunitiesModel : IQTableModel
 

@@ -73,7 +73,9 @@
 #pragma mark - Private methods
 
 - (void)applicationWillEnterForeground {
-    [self updateModelWithCompletion:nil];
+    [self updateModelWithCompletion:^(NSError *error) {
+        [self modelDidChanged];
+    }];
 }
 
 @end
