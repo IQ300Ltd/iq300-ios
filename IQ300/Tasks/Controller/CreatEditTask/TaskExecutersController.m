@@ -157,6 +157,7 @@
         }];
     }
     [self.model setSubscribedToNotifications:YES];
+    _headerView.hidden = (self.task.taskId != nil);
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -185,7 +186,7 @@
     CGRect headerRect = CGRectMake(actualBounds.origin.x,
                                    CGRectBottom(_containerView.frame),
                                    actualBounds.size.width,
-                                   HEADER_HEIGHT);
+                                   (self.task.taskId == nil) ? HEADER_HEIGHT : 0.0f);
     _headerView.frame = headerRect;
     
     [self layoutTableView];

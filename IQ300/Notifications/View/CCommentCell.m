@@ -98,7 +98,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
     if(self) {
-        UIView * contentView = self.contentView;
+        UIView * contentView = [super valueForKey:@"_contentCellView"];
         [self setBackgroundColor:CONTEN_BACKGROUND_COLOR];
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
         
@@ -308,6 +308,19 @@
             [attachButton sizeToFit];
             [self.contentView addSubview:attachButton];
             [_attachButtons addObject:attachButton];
+        }
+    }
+    
+    if (_commentIsMine) {
+        NSTimeInterval distanceBetweenDates = [[NSDate date] timeIntervalSinceDate:_item.createDate];
+        NSInteger minutesBetweenDates = distanceBetweenDates / 60;
+
+        if (minutesBetweenDates < 15) {
+            NSMutableArray *rightUtilityButtons = [NSMutableArray array];
+            [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithHexInt:0x3b5b78]
+                                                         icon:[UIImage imageNamed:@"delete_ico.png"]];
+            
+            [self setRightUtilityButtons:rightUtilityButtons WithButtonWidth:68.0f];
         }
     }
     

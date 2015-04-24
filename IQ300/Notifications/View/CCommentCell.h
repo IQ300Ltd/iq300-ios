@@ -5,6 +5,7 @@
 //  Created by Tayphoon on 24.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
+#import <SWTableViewCell/SWTableViewCell.h>
 
 #import "IQTextView.h"
 
@@ -15,7 +16,7 @@
 
 @class IQComment;
 
-@interface CCommentCell : UITableViewCell {
+@interface CCommentCell : SWTableViewCell {
     UIEdgeInsets _contentInsets;
 }
 

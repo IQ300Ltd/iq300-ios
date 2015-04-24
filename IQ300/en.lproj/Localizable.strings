@@ -115,7 +115,8 @@
 "Begins" = "Begins";
 "Ends" = "Ends";
 "Performers" = "Executors";
-"Executers" = "Executors";
+"Executor" = "Исполнитель";
+"Executors" = "Executors";
 "Perform to" = "Perform to";
 "Save" = "Save";
 "Yes" = "Yes";

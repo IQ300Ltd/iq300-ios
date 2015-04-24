@@ -158,7 +158,7 @@
     NSParameterAssert(discussionId);
     
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/deleted_ids", discussionId]
-                parameters:@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) }
+                parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
                    handler:handler];
 }
 

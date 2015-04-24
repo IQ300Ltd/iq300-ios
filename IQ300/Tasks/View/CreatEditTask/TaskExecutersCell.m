@@ -7,6 +7,7 @@
 //
 
 #import "TaskExecutersCell.h"
+#import "TaskExecutor.h"
 
 @implementation TaskExecutersCell
 
@@ -22,9 +23,14 @@
 - (void)setItem:(NSArray *)items {
     [super setItem:items];
     
-    if ([items count] > 0) {
-        self.titleTextView.text = [NSString stringWithFormat:@"%@: %lu", NSLocalizedString(self.detailTitle, nil),
+    if ([items count] > 1) {
+        self.titleTextView.text = [NSString stringWithFormat:@"%@: %lu", NSLocalizedString(@"Executors", nil),
                                                                          (unsigned long)[items count]];
+    }
+    else if([items count] == 1) {
+        TaskExecutor * executor = [items firstObject];
+        self.titleTextView.text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Executor", nil),
+                                                                        executor.executorName];
     }
 }
 

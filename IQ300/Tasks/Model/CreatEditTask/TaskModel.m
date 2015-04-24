@@ -171,7 +171,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
         _placeholders = @{ @(0) : @"Title",
                            @(1) : @"Description",
                            @(2) : @"Community",
-                           @(3) : @"Executers",
+                           @(3) : @"Executors",
                            @(4) : @"Begins",
                            @(5) : @"Perform to"};
     });

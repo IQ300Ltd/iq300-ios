@@ -29,7 +29,7 @@
 #import "UserPickerController.h"
 #import "IQService.h"
 
-@interface CommentsController() <UserPickerControllerDelegate> {
+@interface CommentsController() <UserPickerControllerDelegate, SWTableViewCellDelegate> {
     CommentsView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachment;
@@ -173,6 +173,7 @@
     
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
+    cell.delegate = self;
     cell.descriptionTextView.attributedText = [self formatedTextFromText:comment.body];
     cell.descriptionTextView.delegate = (id<UITextViewDelegate>)self;
     
@@ -198,6 +199,15 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+}
+
+#pragma mark - SWTableViewCell Delegate
+
+- (void)swipeableTableViewCell:(CCommentCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
+    IQComment * comment = [self.model itemAtIndexPath:indexPath];
+    [self.model deleteComment:comment completion:nil];
 }
 
 #pragma mark - DiscussionModelDelegate Delegate

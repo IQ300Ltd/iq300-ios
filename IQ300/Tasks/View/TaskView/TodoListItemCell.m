@@ -152,7 +152,7 @@
     
     if ([_availableActions containsObject:@"delete"]) {
         [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithHexInt:0x3b5b78]
-                                                     icon:[UIImage imageNamed:@"delete_ico"]];
+                                                     icon:[UIImage imageNamed:@"delete_ico.png"]];
     }
     [self setRightUtilityButtons:rightUtilityButtons WithButtonWidth:68.0f];
 }
