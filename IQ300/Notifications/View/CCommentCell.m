@@ -345,6 +345,8 @@
     _expanded = NO;
     _expandable = NO;
  
+    [self setRightUtilityButtons:nil];
+    
     _descriptionTextView.delegate = nil;
     _descriptionTextView.selectable = NO;
     _descriptionTextView.text = nil;
