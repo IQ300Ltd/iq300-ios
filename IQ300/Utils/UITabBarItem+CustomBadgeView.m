@@ -40,11 +40,13 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     UIView * oldBadgeView = self.customBadgeView;
     if (oldBadgeView) {
         [oldBadgeView removeFromSuperview];
-        UIView * parentView = [self valueForKey:@"view"];
+        UIView * parentView = self.view;
         [parentView safelyRemoveObserver:self forKeyPath:@"frame"];
     }
     
     if(customBadgeView) {
+        NSString * badgeValue = [self internalBadgeValue];
+        customBadgeView.hidden = ([badgeValue length] == 0);
         objc_setAssociatedObject(self, &UITabBarItem_badgeViewKey, customBadgeView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [self setBadgeValueSwizzled:nil];
     }
@@ -76,7 +78,7 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     if(customBadgeView) {
         [self setBadgeValueSwizzled:nil];
         [self setInternalBadgeValue:badgeValue];
-        [customBadgeView setHidden:([badgeValue length] == 0)];
+        customBadgeView.hidden = ([badgeValue length] == 0);
         [self updateBadge];
     }
     else {
