@@ -14,6 +14,12 @@ NSString const *UITabBarItem_badgeViewKey = @"UITabBarItem_badgeViewKey";
 NSString const *UITabBarItem_badgeOriginKey = @"UITabBarItem_badgeOriginKey";
 NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginKey";
 
+@interface UITabBarItem(Private)
+
+@property(retain) UIView * view;
+
+@end
+
 @implementation UITabBarItem(CustomBadgeView)
 
 + (void)initialize {
@@ -23,6 +29,10 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     
     originalMethod = class_getInstanceMethod(self, @selector(badgeValue));
     overrideMethod = class_getInstanceMethod(self, @selector(badgeValueSwizzled));
+    method_exchangeImplementations(originalMethod, overrideMethod);
+    
+    originalMethod = class_getInstanceMethod(self, @selector(setView:));
+    overrideMethod = class_getInstanceMethod(self, @selector(setViewSwizzled:));
     method_exchangeImplementations(originalMethod, overrideMethod);
 }
 
@@ -37,7 +47,6 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     if(customBadgeView) {
         objc_setAssociatedObject(self, &UITabBarItem_badgeViewKey, customBadgeView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [self setBadgeValueSwizzled:nil];
-        [self updateBadge];
     }
 }
 
@@ -75,6 +84,11 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     }
 }
 
+- (void)setViewSwizzled:(UIView*)view {
+    [self.view safelyRemoveObserver:self forKeyPath:@"frame"];
+    [self setViewSwizzled:view];
+}
+
 - (NSString*)badgeValueSwizzled {
     UIView * customBadgeView = self.customBadgeView;
     if(customBadgeView) {
@@ -93,8 +107,8 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
 
 - (void)updateBadge {
     UIView * badgeView = self.customBadgeView;
-    
-    UIView * parentView = [self valueForKey:@"view"];
+    UIView * parentView = self.view;
+
     if (badgeView.superview == nil && parentView) {
         [parentView.superview addSubview:badgeView];
         [parentView safelyRemoveObserver:self forKeyPath:@"frame"];
@@ -123,7 +137,7 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
 }
 
 - (void)dealloc {
-    UIView * parentView = [self valueForKey:@"view"];
+    UIView * parentView = self.view;
     [parentView safelyRemoveObserver:self forKeyPath:@"frame"];
 }
 
