@@ -451,8 +451,6 @@
 		737E7C5E1A0CD57E00E8BB81 /* AccountHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountHeaderView.m; sourceTree = "<group>"; };
 		737E7C601A0D027700E8BB81 /* ExtendedButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtendedButton.h; sourceTree = "<group>"; };
 		737E7C611A0D027700E8BB81 /* ExtendedButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtendedButton.m; sourceTree = "<group>"; };
-		737F5DD31A22FC5F0095040B /* UITableView+BottomRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+BottomRefreshControl.h"; sourceTree = "<group>"; };
-		737F5DD41A22FC5F0095040B /* UITableView+BottomRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+BottomRefreshControl.m"; sourceTree = "<group>"; };
 		7380E9731A4020FA00128BD9 /* ObjectSerializator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectSerializator.h; sourceTree = "<group>"; };
 		7380E9741A4020FA00128BD9 /* ObjectSerializator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectSerializator.m; sourceTree = "<group>"; };
 		7381137A1A4C2A260061280F /* IQBadgeStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeStyle.h; sourceTree = "<group>"; };
@@ -1182,8 +1180,6 @@
 				738FE71D1A164875009F26A2 /* UIImage+Extensions.m */,
 				73C58C081A1F17FD00C83729 /* NSString+SizeWith.h */,
 				73C58C091A1F17FD00C83729 /* NSString+SizeWith.m */,
-				737F5DD31A22FC5F0095040B /* UITableView+BottomRefreshControl.h */,
-				737F5DD41A22FC5F0095040B /* UITableView+BottomRefreshControl.m */,
 				739C3B631A3077320032C057 /* NSDate+IQFormater.h */,
 				739C3B641A3077320032C057 /* NSDate+IQFormater.m */,
 				73A798371A359D79006F5721 /* ALAsset+Extension.h */,

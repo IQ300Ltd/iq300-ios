@@ -13,6 +13,7 @@
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQBadgeView.h"
 #import "TasksMenuModel.h"
+#import "IQMenuItem.h"
 #import "IQTask.h"
 #import "TaskCell.h"
 #import "UIScrollView+PullToRefreshInsert.h"
@@ -42,7 +43,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"Tasks", nil);
         UIImage * barImage = [[UIImage imageNamed:@"tasks_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIImage * barImageSel = [[UIImage imageNamed:@"tasks_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         
@@ -138,6 +138,7 @@
     }
     
     [self.model setSubscribedToNotifications:YES];
+    [self updateControllerTitle];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -152,6 +153,7 @@
 #pragma mark - Menu Responder Delegate
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
+    [self updateControllerTitle];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:indexPath];
     self.model.communityId = nil;
@@ -326,6 +328,13 @@
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
     self.tabBarItem.badgeValue = BadgTextFromInteger(badgeValue);
+}
+
+- (void)updateControllerTitle {
+    NSIndexPath * indexPath = [_menuModel indexPathForSelectedItem];
+    IQMenuItem * menuItem = [_menuModel itemAtIndexPath:indexPath];
+    NSString * title = (indexPath.row < 5) ? [NSString stringWithFormat:@"%@ %@", menuItem.title, [NSLocalizedString(@"Tasks", nil) lowercaseString]] : menuItem.title;
+    self.navigationController.navigationBar.topItem.title = title;
 }
 
 @end
