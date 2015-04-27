@@ -12,8 +12,10 @@
 
 @interface TaskCell : UITableViewCell {
     UIEdgeInsets _contentInsets;
+    UIEdgeInsets _contentBackgroundInsets;
 }
 
+@property (nonatomic, readonly) UIView * contentBackgroundView;
 @property (nonatomic, readonly) UILabel * titleLabel;
 @property (nonatomic, readonly) UILabel * taskIDLabel;
 @property (nonatomic, readonly) UILabel * fromLabel;
@@ -28,7 +30,6 @@
 @property (nonatomic, readonly) UIView * leftView;
 
 @property (nonatomic, assign) BOOL showOverdue;
-@property (nonatomic, assign, getter=isLeftViewShown) BOOL showLeftView;
 
 @property (nonatomic, strong) IQTask * item;
 
