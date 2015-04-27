@@ -86,7 +86,11 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
 
 - (void)setViewSwizzled:(UIView*)view {
     [self.view safelyRemoveObserver:self forKeyPath:@"frame"];
+    UIView * badgeView = self.customBadgeView;
+    [badgeView removeFromSuperview];
+    
     [self setViewSwizzled:view];
+    [self updateBadge];
 }
 
 - (NSString*)badgeValueSwizzled {
