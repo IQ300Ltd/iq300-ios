@@ -50,7 +50,7 @@
         badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(38.5f, 3.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(5.5f, 3.5f);
 
         [self resubscribeToIQNotifications];
     }

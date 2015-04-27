@@ -62,7 +62,7 @@
         badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(61.5f, 3.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(8.5f, 5.5f);
         
         self.model = [[TasksModel alloc] init];
         _menuModel = [[TasksMenuModel alloc] init];
