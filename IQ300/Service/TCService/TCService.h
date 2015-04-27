@@ -26,7 +26,7 @@ typedef void (^TCServiceReachabilityStatusBlock)(TCServiceReachabilityStatus sta
 extern NSString * const TCServiceErrorDomain;
 
 typedef void(^RequestCompletionHandler)(BOOL success, NSData * responseData, NSError * error);
-typedef void(^ObjectLoaderCompletionHandler)(BOOL success, id object, NSData * responseData, NSError * error);
+typedef void(^ObjectRequestCompletionHandler)(BOOL success, id object, NSData * responseData, NSError * error);
 
 @class RKObjectManager;
 

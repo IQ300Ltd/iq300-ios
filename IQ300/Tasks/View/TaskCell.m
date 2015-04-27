@@ -28,6 +28,12 @@
 #define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
 #define COMM_NAME_FONT [UIFont fontWithName:IQ_HELVETICA size:11.0f]
 
+#define STATUS_FLAG_WIDTH 4.0f
+#define NEW_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
+#define OVERDUE_FLAG_COLOR [UIColor colorWithHexInt:0xe74545]
+#define CONTEN_BACKGROUND_COLOR_NEW [UIColor colorWithHexInt:0xe9faff]
+#define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
+
 @implementation TaskCell
 
 + (CGFloat)heightForItem:(IQTask *)item andCellWidth:(CGFloat)cellWidth {
@@ -62,7 +68,14 @@
     if(self) {
         UIView * contentView = self.contentView;
         _contentInsets = UIEdgeInsetsMakeWithInset(CONTENT_INSETS);
+        _contentBackgroundInsets = UIEdgeInsetsZero;
         
+        [self setBackgroundColor:NEW_FLAG_COLOR];
+        
+        _contentBackgroundView = [[UIView alloc] init];
+        _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
+        [contentView addSubview:_contentBackgroundView];
+
         _titleLabel = [self makeLabelWithTextColor:[UIColor blackColor]
                                                  font:TITLE_FONT
                                         localaizedKey:nil];
@@ -86,7 +99,7 @@
         _toLabel.numberOfLines = 1;
         [contentView addSubview:_toLabel];
         
-        _dueIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bell_ico.png"]];
+        _dueIconImageView = [[UIImageView alloc] init];
         [contentView addSubview:_dueIconImageView];
         
         _dueDateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
@@ -118,6 +131,8 @@
                                              localaizedKey:nil];
         _statusLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_statusLabel];
+        
+        _showOverdue = YES;
     }
     
     return self;
@@ -129,6 +144,9 @@
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     
+    CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
+    _contentBackgroundView.frame = contentBackgroundBounds;
+
     CGSize taskIDSize = CGSizeMake(TASK_ID_WIDTH, TASK_ID_HEIGHT);
     _taskIDLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - taskIDSize.width,
                                     actualBounds.origin.y,
@@ -234,6 +252,9 @@
         [_communityImageView sd_setImageWithURL:[NSURL URLWithString:_item.community.thumbUrl]
                                placeholderImage:[UIImage imageNamed:@"community_ico.png"]];
     }
+    else {
+        _communityImageView.image = [UIImage imageNamed:@"community_ico.png"];
+    }
     
     BOOL showCommentsCount = ([_item.commentsCount integerValue] > 0);
     
@@ -243,7 +264,46 @@
     
     _statusLabel.textColor = [TaskHelper colorForTaskType:_item.status];
     _statusLabel.text = NSLocalizedString(_item.status, nil);
+    [self updateUIForState];
+    
     [self setNeedsLayout];
+}
+
+- (void)updateUIForState {
+    BOOL isStatusNew = ([_item.status isEqualToString:@"new"]);
+    if (self.showOverdue) {
+        if([_item.endDate compare:[NSDate date]] == NSOrderedAscending) {
+            _dueIconImageView.image = [UIImage imageNamed:@"bell_red_ico.png"];
+            _dueDateLabel.textColor = [UIColor colorWithHexInt:0xca301e];
+            _contentBackgroundInsets = UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0);
+            [self setBackgroundColor:OVERDUE_FLAG_COLOR];
+        }
+        else {
+            _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
+            _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
+            _contentBackgroundInsets = (isStatusNew) ? UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0) : UIEdgeInsetsZero;
+            _contentBackgroundView.backgroundColor = (isStatusNew) ? CONTEN_BACKGROUND_COLOR_NEW : CONTEN_BACKGROUND_COLOR;
+            self.backgroundColor = (isStatusNew) ? NEW_FLAG_COLOR : CONTEN_BACKGROUND_COLOR;
+        }
+    }
+    else {
+        _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
+        _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
+        _contentBackgroundInsets = (isStatusNew) ? UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0) : UIEdgeInsetsZero;
+        _contentBackgroundView.backgroundColor = (isStatusNew) ? CONTEN_BACKGROUND_COLOR_NEW : CONTEN_BACKGROUND_COLOR;
+        self.backgroundColor = (isStatusNew) ? NEW_FLAG_COLOR : CONTEN_BACKGROUND_COLOR;
+    }
+}
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    _showOverdue = YES;
+    _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
+    _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
+    _contentBackgroundInsets = UIEdgeInsetsZero;
+    _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
+    self.backgroundColor = CONTEN_BACKGROUND_COLOR;
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {

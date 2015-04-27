@@ -16,49 +16,49 @@
 
 - (void)getObjectsAtPath:(NSString *)path
               parameters:(NSDictionary *)parameters
-                 handler:(ObjectLoaderCompletionHandler)handler;
+                 handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)getObjectsAtPath:(NSString *)path
               parameters:(NSDictionary *)parameters
               fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
-                 handler:(ObjectLoaderCompletionHandler)handler;
+                 handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)deleteObject:(id)object
                 path:(NSString *)path
           parameters:(NSDictionary *)parameters
-             handler:(ObjectLoaderCompletionHandler)handler;
+             handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)deleteObject:(id)object
                 path:(NSString *)path
           parameters:(NSDictionary *)parameters
           fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
-             handler:(ObjectLoaderCompletionHandler)handler;
+             handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)putObject:(id)object
              path:(NSString *)path
        parameters:(NSDictionary *)parameters
-          handler:(ObjectLoaderCompletionHandler)handler;
+          handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)putObject:(id)object
              path:(NSString *)path
        parameters:(NSDictionary *)parameters
        fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
-          handler:(ObjectLoaderCompletionHandler)handler;
+          handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)postObject:(id)object
               path:(NSString *)path
         parameters:(NSDictionary *)parameters
-           handler:(ObjectLoaderCompletionHandler)handler;
+           handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)postObject:(id)object
               path:(NSString *)path
         parameters:(NSDictionary *)parameters
         fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
-           handler:(ObjectLoaderCompletionHandler)handler;
+           handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)postObjects:(NSArray*)objects path:(NSString *)path handler:(ObjectLoaderCompletionHandler)handler;
+- (void)postObjects:(NSArray*)objects path:(NSString *)path handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)postData:(NSData*)data path:(NSString *)path handler:(ObjectLoaderCompletionHandler)handler;
+- (void)postData:(NSData*)data path:(NSString *)path handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)postData:(NSData*)fileData
             path:(NSString *)path
@@ -66,7 +66,7 @@
 fileAttributeName:(NSString*)fileAttributeName
         fileName:(NSString*)fileName
         mimeType:(NSString*)mimeType
-         handler:(ObjectLoaderCompletionHandler)handler;
+         handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)postAsset:(ALAsset*)asset
              path:(NSString *)path
@@ -74,7 +74,7 @@ fileAttributeName:(NSString*)fileAttributeName
 fileAttributeName:(NSString*)fileAttributeName
          fileName:(NSString*)fileName
          mimeType:(NSString*)mimeType
-          handler:(ObjectLoaderCompletionHandler)handler;
+          handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)postFileAtPath:(NSURL*)filePath
                   path:(NSString*)path
@@ -82,19 +82,19 @@ fileAttributeName:(NSString*)fileAttributeName
      fileAttributeName:(NSString*)fileAttributeName
               fileName:(NSString*)fileName
               mimeType:(NSString*)mimeType
-               handler:(ObjectLoaderCompletionHandler)handler;
+               handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)initDescriptors;
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation*)operation;
 
 - (void)processErrorResponse:(id<TCResponse>)response
-                     handler:(ObjectLoaderCompletionHandler)handler;
+                     handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)processError:(NSError*)error
             response:(id<TCResponse>)response
         forOperation:(RKObjectRequestOperation*)operation
-             handler:(ObjectLoaderCompletionHandler)handler;
+             handler:(ObjectRequestCompletionHandler)handler;
 
 - (NSError*)makeErrorWithDescription:(NSString*)errorDescription code:(NSInteger)code;
 

@@ -23,9 +23,11 @@
 #import "NSDate+IQFormater.h"
 #import "NSDate+CupertinoYankee.h"
 #import "DispatchAfterExecution.h"
+#import "DeletedObjects.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
+#define LAST_REQUEST_DATE_KEY @"dcomment_ids_request_date"
 
 static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
@@ -44,6 +46,16 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 @end
 
 @implementation DiscussionModel
+
++ (NSDate*)lastRequestDate {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:LAST_REQUEST_DATE_KEY];
+}
+
++ (void)setLastRequestDate:(NSDate*)date {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:date forKey:LAST_REQUEST_DATE_KEY];
+}
 
 - (id)init {
     self = [super init];
@@ -217,6 +229,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         [self reloadModelSourceControllerWithCompletion:nil];
     }
     
+    [self clearRemovedComments];
+    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(40)
@@ -356,13 +370,27 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)deleteComment:(IQComment *)comment {
+- (void)deleteComment:(IQComment*)comment completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] deleteCommentWithId:comment.commentId
+                                      discussionId:comment.discussionId
+                                           handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                               if (success) {
+                                                   [self deleteLocalComment:comment];
+                                               }
+                                               if (completion) {
+                                                   completion(error);
+                                               }
+                                           }];
+}
+
+- (void)deleteLocalComment:(IQComment *)comment {
     NSArray * attachments = [comment.attachments allObjects];
     for (IQAttachment * attachment in attachments) {
         NSError * removeError = nil;
         if(![[NSFileManager defaultManager] removeItemAtPath:attachment.localURL error:&removeError]) {
             NSLog(@"Failed delete tmp attachment file with error: %@", removeError);
         }
+        [attachment.managedObjectContext deleteObject:attachment];
     }
     
     [comment.managedObjectContext deleteObject:comment];
@@ -622,10 +650,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)applicationWillEnterForeground {
     
-    ObjectLoaderCompletionHandler handler = ^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+    ObjectRequestCompletionHandler handler = ^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
         if(!error) {
             [self updateDefaultStatusesForComments:comments];
             [self modelDidChanged];
+            [self clearRemovedComments];
             
             [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
                                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
@@ -647,6 +676,40 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                        per:@(40)
                                                       sort:SORT_DIRECTION
                                                    handler:handler];
+}
+
+- (void)clearRemovedComments {
+    NSDate * lastRequestDate = [DiscussionModel lastRequestDate];
+    
+    [[IQService sharedService] commentIdsDeletedAfter:lastRequestDate
+                                         discussionId:_discussion.discussionId
+                                              handler:^(BOOL success, DeletedObjects * object, NSData *responseData, NSError *error) {
+                                                  if (success) {
+                                                      [DiscussionModel setLastRequestDate:object.serverDate];
+                                                      [self removeLocalCommentsWithIds:object.objectIds];
+                                                  }
+                                              }];
+}
+
+- (void)removeLocalCommentsWithIds:(NSArray*)commentIds {
+    if ([commentIds count] > 0) {
+        NSManagedObjectContext * context = [IQService sharedService].context;
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQComment"];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"commentId IN %@", commentIds]];
+        
+        [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+            if ([objects count] > 0) {
+                for (NSManagedObject * object in objects) {
+                    [context deleteObject:object];
+                }
+                
+                NSError * saveError = nil;
+                if(![context saveToPersistentStore:&saveError] ) {
+                    NSLog(@"Failed save to presistent store after comments removed");
+                }
+            }
+        }];
+    }
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

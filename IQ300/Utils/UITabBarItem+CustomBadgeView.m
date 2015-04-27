@@ -8,10 +8,17 @@
 #import <objc/runtime.h>
 
 #import "UITabBarItem+CustomBadgeView.h"
+#import "NSObject+SafelyRemoveObserver.h"
 
 NSString const *UITabBarItem_badgeViewKey = @"UITabBarItem_badgeViewKey";
 NSString const *UITabBarItem_badgeOriginKey = @"UITabBarItem_badgeOriginKey";
 NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginKey";
+
+@interface UITabBarItem(Private)
+
+@property(retain) UIView * view;
+
+@end
 
 @implementation UITabBarItem(CustomBadgeView)
 
@@ -23,16 +30,23 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     originalMethod = class_getInstanceMethod(self, @selector(badgeValue));
     overrideMethod = class_getInstanceMethod(self, @selector(badgeValueSwizzled));
     method_exchangeImplementations(originalMethod, overrideMethod);
+    
+    originalMethod = class_getInstanceMethod(self, @selector(setView:));
+    overrideMethod = class_getInstanceMethod(self, @selector(setViewSwizzled:));
+    method_exchangeImplementations(originalMethod, overrideMethod);
 }
 
 - (void)setCustomBadgeView:(UIView *)customBadgeView {
     UIView * oldBadgeView = self.customBadgeView;
-    [oldBadgeView removeFromSuperview];
+    if (oldBadgeView) {
+        [oldBadgeView removeFromSuperview];
+        UIView * parentView = [self valueForKey:@"view"];
+        [parentView safelyRemoveObserver:self forKeyPath:@"frame"];
+    }
     
-    objc_setAssociatedObject(self, &UITabBarItem_badgeViewKey, customBadgeView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     if(customBadgeView) {
+        objc_setAssociatedObject(self, &UITabBarItem_badgeViewKey, customBadgeView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [self setBadgeValueSwizzled:nil];
-        [self updateBadgeFrame];
     }
 }
 
@@ -53,7 +67,7 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     NSValue * origin = [NSValue valueWithBytes:&badgeOrigin objCType:@encode(CGPoint)];
     objc_setAssociatedObject(self, &UITabBarItem_badgeOriginKey, origin, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     if (self.customBadgeView) {
-        [self updateBadgeFrame];
+        [self updateBadge];
     }
 }
 
@@ -63,11 +77,16 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
         [self setBadgeValueSwizzled:nil];
         [self setInternalBadgeValue:badgeValue];
         [customBadgeView setHidden:([badgeValue length] == 0)];
-        [self updateBadgeFrame];
+        [self updateBadge];
     }
     else {
         [self setBadgeValueSwizzled:badgeValue];
     }
+}
+
+- (void)setViewSwizzled:(UIView*)view {
+    [self.view safelyRemoveObserver:self forKeyPath:@"frame"];
+    [self setViewSwizzled:view];
 }
 
 - (NSString*)badgeValueSwizzled {
@@ -86,12 +105,14 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     objc_setAssociatedObject(self, &UITabBarItem_badgeInternalValueKey, badgeValue, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)updateBadgeFrame {
+- (void)updateBadge {
     UIView * badgeView = self.customBadgeView;
-    
-    UIView * parentView = [self valueForKey:@"view"];
-    if (badgeView.superview == nil) {
+    UIView * parentView = self.view;
+
+    if (badgeView.superview == nil && parentView) {
         [parentView.superview addSubview:badgeView];
+        [parentView safelyRemoveObserver:self forKeyPath:@"frame"];
+        [parentView addObserver:self forKeyPath:@"frame" options:0 context:nil];
     }
     
     if([badgeView respondsToSelector:@selector(setBadgeValue:)]) {
@@ -100,12 +121,24 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     }
     
     CGPoint badgeOrigin = self.badgeOrigin;
-    badgeOrigin = CGPointMake(parentView.frame.origin.x + badgeOrigin.x,
-                              parentView.frame.origin.y + badgeOrigin.y);
+    badgeOrigin = CGPointMake(parentView.frame.origin.x + (parentView.frame.size.width) / 2.0f + badgeOrigin.x,
+                              badgeOrigin.y);
+
     
     CGSize expectedBadgeSize = badgeView.frame.size;
     badgeView.frame = CGRectMake(badgeOrigin.x, badgeOrigin.y, expectedBadgeSize.width, expectedBadgeSize.height);
     badgeView.layer.masksToBounds = YES;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"frame"]) {
+        [self updateBadge];
+    }
+}
+
+- (void)dealloc {
+    UIView * parentView = self.view;
+    [parentView safelyRemoveObserver:self forKeyPath:@"frame"];
 }
 
 @end

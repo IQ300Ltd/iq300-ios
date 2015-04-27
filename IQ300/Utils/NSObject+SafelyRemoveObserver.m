@@ -13,7 +13,8 @@
 - (void)safelyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath {
     @try{
         [self removeObserver:observer forKeyPath:keyPath];
-    }@catch(id anException){
+    }
+    @catch(id anException){
         //do nothing, obviously it wasn't attached because an exception was thrown
     }
 }

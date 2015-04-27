@@ -24,7 +24,7 @@
                                 @"basetask_accept"        : @"Accept",
                                 @"basetask_refuse"        : @"Refuse",
                                 @"basetask_decline"       : @"To refine",
-                                @"basetask_work"          : @"To work",
+                                @"basetask_work"          : @"Accept",
                                 
                                 @"basecommunity_accept"   : @"Accept",
                                 @"basecommunity_decline"  : @"Refuse",

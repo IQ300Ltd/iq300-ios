@@ -97,11 +97,11 @@
                                             actualBounds.size.width,
                                             SEPARATOR_HEIGHT);
     
-    CGSize clearButtonSize = CGSizeMake(300, 40);
-    _doneButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - clearButtonSize.width) / 2.0f,
-                                    actualBounds.origin.y + actualBounds.size.height - clearButtonSize.height - 10.0f,
-                                    clearButtonSize.width,
-                                    clearButtonSize.height);
+    CGSize doneButtonSize = CGSizeMake(300, 40);
+    _doneButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - doneButtonSize.width) / 2.0f,
+                                    actualBounds.origin.y + actualBounds.size.height - doneButtonSize.height - 10.0f,
+                                    doneButtonSize.width,
+                                    doneButtonSize.height);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -152,7 +152,7 @@
     BOOL showBootomLine = !(indexPath.row == [_model numberOfItemsInSection:indexPath.section] - 1);
     [cell setBottomLineShown:showBootomLine];
         
-    BOOL isCellSelected = [self.model isItemSellectedAtIndexPath:indexPath];
+    BOOL isCellSelected = [self.model isItemSelectedAtIndexPath:indexPath];
     [cell setAccessoryType:(isCellSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
     
     return cell;
@@ -175,7 +175,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSIndexPath * selectedIndexPath = [self.model selectedIndexPathForSection:indexPath.section];
     if(indexPath.section != SORT_SECTION) {
-        BOOL isItemSelected = [self.model isItemSellectedAtIndexPath:indexPath];
+        BOOL isItemSelected = [self.model isItemSelectedAtIndexPath:indexPath];
         if(selectedIndexPath && [selectedIndexPath compare:indexPath] != NSOrderedSame) {
             [self.model makeItemAtIndexPath:selectedIndexPath selected:NO];
         }

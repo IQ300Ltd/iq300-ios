@@ -48,9 +48,15 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
     _loginView.emailTextField.delegate = self;
     _loginView.passwordTextField.delegate = self;
     
-    [_loginView.enterButton addTarget:self action:@selector(enterButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [_loginView.registryButton addTarget:self action:@selector(registryButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [_loginView.restorePassButton addTarget:self action:@selector(restorePassButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [_loginView.enterButton addTarget:self
+                               action:@selector(enterButtonAction:)
+                     forControlEvents:UIControlEventTouchUpInside];
+    [_loginView.registryButton addTarget:self
+                                  action:@selector(registryButtonAction:)
+                        forControlEvents:UIControlEventTouchUpInside];
+    [_loginView.restorePassButton addTarget:self
+                                     action:@selector(restorePassButtonAction:)
+                           forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)enterButtonAction:(UIButton*)sender {

@@ -69,7 +69,7 @@
         badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(61.5f, 3.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(10.0f, 5.5f);
     }
     
     return self;
@@ -206,16 +206,6 @@
 
 #pragma mark - IQTableModel Delegate
 
-- (void)modelDidChangeContent:(id<IQTableModel>)model {
-    [super modelDidChangeContent:model];
-    [self updateNoDataLabelVisibility];
-}
-
-- (void)modelDidChanged:(id<IQTableModel>)model {
-    [super modelDidChanged:model];
-    [self updateNoDataLabelVisibility];
-}
-
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.totalItemsCount = self.model.totalItemsCount;
     _menuModel.unreadItemsCount = self.model.unreadItemsCount;
@@ -341,17 +331,12 @@
 
 - (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
     BOOL isDiscussionNotification = (notification.discussionId != nil);
-    NSInteger taskTabIndex = 1;
-    UITabBarController * mainTabController = self.tabBarController;
-    mainTabController.selectedIndex = taskTabIndex;
-    UINavigationController * navController = mainTabController.viewControllers[taskTabIndex];
-    [navController popToRootViewControllerAnimated:NO];
     [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
                                            completion:^(TaskTabController * controller, NSError *error) {
                                                if (controller) {
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
-                                                   [navController setViewControllers:@[navController.viewControllers[0], controller]
-                                                                            animated:YES];
+                                                   [self.navigationController pushViewController:controller animated:YES];
+                                                   
                                                    if(indexPath) {
                                                        [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
                                                    }

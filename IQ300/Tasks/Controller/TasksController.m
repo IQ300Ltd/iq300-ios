@@ -13,6 +13,7 @@
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQBadgeView.h"
 #import "TasksMenuModel.h"
+#import "IQMenuItem.h"
 #import "IQTask.h"
 #import "TaskCell.h"
 #import "UIScrollView+PullToRefreshInsert.h"
@@ -23,6 +24,8 @@
 
 #import "TaskTabController.h"
 #import "TaskPolicyInspector.h"
+#import "TaskController.h"
+#import "IQService+Tasks.h"
 
 @interface TasksController () <TasksFilterControllerDelegate> {
     TasksView * _mainView;
@@ -40,7 +43,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"Tasks", nil);
         UIImage * barImage = [[UIImage imageNamed:@"tasks_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIImage * barImageSel = [[UIImage imageNamed:@"tasks_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         
@@ -60,7 +62,7 @@
         badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(61.5f, 3.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(8.5f, 5.5f);
         
         self.model = [[TasksModel alloc] init];
         _menuModel = [[TasksMenuModel alloc] init];
@@ -90,11 +92,19 @@
                                              selector:@selector(accountDidChanged)
                                                  name:AccountDidChangedNotification
                                                object:nil];
+    
+    UIBarButtonItem * createTaskBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"white_add_ico.png"]
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(createTaskAction:)];
+    self.navigationItem.rightBarButtonItem = createTaskBarButton;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+ 
+    _isTaskOpenProcessing = NO;
+
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
@@ -128,6 +138,7 @@
     }
     
     [self.model setSubscribedToNotifications:YES];
+    [self updateControllerTitle];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -142,6 +153,7 @@
 #pragma mark - Menu Responder Delegate
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
+    [self updateControllerTitle];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:indexPath];
     self.model.communityId = nil;
@@ -177,6 +189,8 @@
     }
     
     IQTask * task = [self.model itemAtIndexPath:indexPath];
+    cell.showOverdue = !([self.model.folder isEqualToString:@"archive"] ||
+                         [self.model.folder isEqualToString:@"templates"]);
     cell.item = task;
     
     return cell;
@@ -191,6 +205,7 @@
     TaskTabController * controller = [[TaskTabController alloc] init];
     controller.task = task;
     controller.policyInspector = policyInspector;
+    controller.hidesBottomBarWhenPushed = YES;
     
     _isTaskOpenProcessing = YES;
     
@@ -289,12 +304,37 @@
     [self.navigationController pushViewController:controller animated:YES];
 }
 
+- (void)createTaskAction:(UIButton*)sender {
+    if (!_isTaskOpenProcessing) {
+        _isTaskOpenProcessing = YES;
+        [[IQService sharedService] mostUsedCommunityWithHandler:^(BOOL success, id community, NSData *responseData, NSError *error) {
+            if (success) {
+                TaskModel * model = [[TaskModel alloc] init];
+                model.defaultCommunity = community;
+                
+                TaskController * controller = [[TaskController alloc] init];
+                controller.model = model;
+                controller.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:controller
+                                                     animated:YES];
+            }
+        }];
+    }
+}
+
 - (void)updateNoDataLabelVisibility {
     [_mainView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
 }
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
     self.tabBarItem.badgeValue = BadgTextFromInteger(badgeValue);
+}
+
+- (void)updateControllerTitle {
+    NSIndexPath * indexPath = [_menuModel indexPathForSelectedItem];
+    IQMenuItem * menuItem = [_menuModel itemAtIndexPath:indexPath];
+    NSString * title = (indexPath.row < 5) ? [NSString stringWithFormat:@"%@ %@", menuItem.title, [NSLocalizedString(@"Tasks", nil) lowercaseString]] : menuItem.title;
+    self.navigationController.navigationBar.topItem.title = title;
 }
 
 @end

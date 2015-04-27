@@ -204,12 +204,10 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadSourceControllerWithCompletion:completion];
-   
-    NSDate * lastUpdatedDate = [self getLastChangedDate];
-    
     [self updateCountersWithCompletion:nil];
-    [[IQService sharedService] tasksUpdatedAfter:lastUpdatedDate
+
+    [self reloadSourceControllerWithCompletion:completion];
+    [[IQService sharedService] tasksUpdatedAfter:nil
                                           folder:self.folder
                                           status:self.statusFilter
                                      communityId:self.communityId
@@ -218,7 +216,9 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                           search:self.search
                                             sort:_sort
                                          handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
-                                             if(success && lastUpdatedDate && [_fetchController.fetchedObjects count] < _portionLenght) {
+                                             [self reloadSourceControllerWithCompletion:completion];
+                                             
+                                             if(success && [_fetchController.fetchedObjects count] < _portionLenght) {
                                                  [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
                                                      if(completion) {
                                                          completion(error);

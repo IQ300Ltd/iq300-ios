@@ -63,7 +63,6 @@ NSString * const NoUnreadNotificationFound = @"There are no unread notifications
         _noDataLabel.backgroundColor = [UIColor clearColor];
         _noDataLabel.numberOfLines = 0;
         _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [_noDataLabel setHidden:YES];
         [_noDataLabel setText:NSLocalizedString(NoNotificationFound, nil)];
         [self addSubview:_noDataLabel];
     }

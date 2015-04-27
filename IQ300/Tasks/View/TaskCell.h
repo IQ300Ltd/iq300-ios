@@ -12,19 +12,24 @@
 
 @interface TaskCell : UITableViewCell {
     UIEdgeInsets _contentInsets;
+    UIEdgeInsets _contentBackgroundInsets;
 }
 
-@property (nonatomic, strong) UILabel * titleLabel;
-@property (nonatomic, strong) UILabel * taskIDLabel;
-@property (nonatomic, strong) UILabel * fromLabel;
-@property (nonatomic, strong) UILabel * toLabel;
-@property (nonatomic, strong) UIImageView * dueIconImageView;
-@property (nonatomic, strong) UILabel * dueDateLabel;
-@property (nonatomic, strong) UIImageView * communityImageView;
-@property (nonatomic, strong) UILabel * communityNameLabel;
-@property (nonatomic, strong) UIImageView * messagesImageView;
-@property (nonatomic, strong) UILabel * commentsCountLabel;
-@property (nonatomic, strong) UILabel * statusLabel;
+@property (nonatomic, readonly) UIView * contentBackgroundView;
+@property (nonatomic, readonly) UILabel * titleLabel;
+@property (nonatomic, readonly) UILabel * taskIDLabel;
+@property (nonatomic, readonly) UILabel * fromLabel;
+@property (nonatomic, readonly) UILabel * toLabel;
+@property (nonatomic, readonly) UIImageView * dueIconImageView;
+@property (nonatomic, readonly) UILabel * dueDateLabel;
+@property (nonatomic, readonly) UIImageView * communityImageView;
+@property (nonatomic, readonly) UILabel * communityNameLabel;
+@property (nonatomic, readonly) UIImageView * messagesImageView;
+@property (nonatomic, readonly) UILabel * commentsCountLabel;
+@property (nonatomic, readonly) UILabel * statusLabel;
+@property (nonatomic, readonly) UIView * leftView;
+
+@property (nonatomic, assign) BOOL showOverdue;
 
 @property (nonatomic, strong) IQTask * item;
 

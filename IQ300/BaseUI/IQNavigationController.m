@@ -46,7 +46,8 @@
                                                                             YES;
     
     if(isLeftMenuEnabled) {
-        MMDrawerBarButtonItem * leftDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self action:@selector(leftDrawerButtonPress:)];
+        MMDrawerBarButtonItem * leftDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self
+                                                                                          action:@selector(leftDrawerButtonPress:)];
         [viewController.navigationItem setLeftBarButtonItem:leftDrawerButton animated:YES];
     }
 

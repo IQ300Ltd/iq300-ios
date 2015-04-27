@@ -10,22 +10,22 @@
 
 @interface IQService (Messages)
 
-- (void)conversationsWithHandler:(ObjectLoaderCompletionHandler)handler;
+- (void)conversationsWithHandler:(ObjectRequestCompletionHandler)handler;
 
 - (void)conversationsUnread:(NSNumber*)unread
                        page:(NSNumber*)page
                         per:(NSNumber*)per
                      search:(NSString*)search
                        sort:(IQSortDirection)sort
-                    handler:(ObjectLoaderCompletionHandler)handler;
+                    handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)conversationWithId:(NSNumber*)conversationid handler:(ObjectLoaderCompletionHandler)handler;
+- (void)conversationWithId:(NSNumber*)conversationid handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)conversationsCountersWithHandler:(ObjectLoaderCompletionHandler)handler;
+- (void)conversationsCountersWithHandler:(ObjectRequestCompletionHandler)handler;
 
-- (void)createConversationWithRecipientId:(NSNumber*)recipientId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)createConversationWithRecipientId:(NSNumber*)recipientId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)discussionWithId:(NSNumber*)discussionId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)discussionWithId:(NSNumber*)discussionId handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)markDiscussionAsReadedWithId:(NSNumber*)discussionId handler:(RequestCompletionHandler)handler;
 
@@ -33,21 +33,29 @@
                                page:(NSNumber*)page
                                 per:(NSNumber*)per
                                sort:(IQSortDirection)sort
-                            handler:(ObjectLoaderCompletionHandler)handler;
+                            handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)createComment:(NSString*)comment
          discussionId:(NSNumber*)discussionId
         attachmentIds:(NSArray*)attachmentIds
-              handler:(ObjectLoaderCompletionHandler)handler;
+              handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)commentWithId:(NSNumber*)commentId
          discussionId:(NSNumber*)discussionId
-              handler:(ObjectLoaderCompletionHandler)handler;
+              handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)contactsWithPage:(NSNumber*)page
                      per:(NSNumber*)per
                     sort:(IQSortDirection)sort
                   search:(NSString*)search
-                 handler:(ObjectLoaderCompletionHandler)handler;
+                 handler:(ObjectRequestCompletionHandler)handler;
+
+- (void)deleteCommentWithId:(NSNumber*)commentId
+               discussionId:(NSNumber*)discussionId
+                    handler:(RequestCompletionHandler)handler;
+
+- (void)commentIdsDeletedAfter:(NSDate*)deletedAfter
+                  discussionId:(NSNumber*)discussionId
+                       handler:(ObjectRequestCompletionHandler)handler;
 
 @end

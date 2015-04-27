@@ -35,7 +35,7 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 - (void)loginWithDeviceToken:(NSString*)deviceToken email:(NSString*)email password:(NSString*)password handler:(RequestCompletionHandler)handler;
 - (void)logout;
 
-- (void)userInfoWithHandler:(ObjectLoaderCompletionHandler)handler;
+- (void)userInfoWithHandler:(ObjectRequestCompletionHandler)handler;
 
 /**
  Request user notifications. There is an opportunity to receive notifications portions.
@@ -46,50 +46,50 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
  @param search Search text using as filter(optional).
  @param handler Handler block. Look `ObjectLoaderCompletionHandler`.
  */
-- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectLoaderCompletionHandler)handler;
+- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectLoaderCompletionHandler)handler;
+- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)notificationsAfterId:(NSNumber*)notificationId
                       unread:(NSNumber*)unread
                         page:(NSNumber*)page
                          per:(NSNumber*)per
                         sort:(IQSortDirection)sort
-                     handler:(ObjectLoaderCompletionHandler)handler;
+                     handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)notificationsBeforeId:(NSNumber*)notificationId
                        unread:(NSNumber*)unread
                          page:(NSNumber*)page
                           per:(NSNumber*)per
                          sort:(IQSortDirection)sort
-                      handler:(ObjectLoaderCompletionHandler)handler;
+                      handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)notificationsWithIds:(NSArray*)ids handler:(ObjectLoaderCompletionHandler)handler;
+- (void)notificationsWithIds:(NSArray*)ids handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)unreadNotificationIdsWithHandler:(ObjectLoaderCompletionHandler)handler;
+- (void)unreadNotificationIdsWithHandler:(ObjectRequestCompletionHandler)handler;
 
-- (void)unreadNotificationsGroupIdsWithHandler:(ObjectLoaderCompletionHandler)handler;
+- (void)unreadNotificationsGroupIdsWithHandler:(ObjectRequestCompletionHandler)handler;
 
 - (void)notificationsGroupAfterId:(NSNumber*)notificationId
                            unread:(NSNumber*)unread
                              page:(NSNumber*)page
                               per:(NSNumber*)per
                              sort:(IQSortDirection)sort
-                          handler:(ObjectLoaderCompletionHandler)handler;
+                          handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)notificationsGroupBeforeId:(NSNumber*)notificationId
                             unread:(NSNumber*)unread
                               page:(NSNumber*)page
                                per:(NSNumber*)per
                               sort:(IQSortDirection)sort
-                           handler:(ObjectLoaderCompletionHandler)handler;
+                           handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)notificationsGroupUpdatedAfter:(NSDate*)date
                                 unread:(NSNumber*)unread
                                   page:(NSNumber*)page
                                    per:(NSNumber*)per
                                   sort:(IQSortDirection)sort
-                               handler:(ObjectLoaderCompletionHandler)handler;
+                               handler:(ObjectRequestCompletionHandler)handler;
 
 /**
  *  Get notifications for group
@@ -108,7 +108,7 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
                                page:(NSNumber*)page
                                 per:(NSNumber*)per
                                sort:(IQSortDirection)sort
-                            handler:(ObjectLoaderCompletionHandler)handler;
+                            handler:(ObjectRequestCompletionHandler)handler;
 
 /**
  *  Get notifications for group
@@ -127,7 +127,7 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
                                page:(NSNumber*)page
                                 per:(NSNumber*)per
                                sort:(IQSortDirection)sort
-                            handler:(ObjectLoaderCompletionHandler)handler;
+                            handler:(ObjectRequestCompletionHandler)handler;
 
 /**
  *  Get notifications for group
@@ -146,7 +146,7 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
                                page:(NSNumber*)page
                                 per:(NSNumber*)per
                                sort:(IQSortDirection)sort
-                            handler:(ObjectLoaderCompletionHandler)handler;
+                            handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
@@ -158,15 +158,15 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
  *  @param notificationId Id of any notification in group (group secondary identifire)
  *  @param handler        Action handler
  */
-- (void)markNotificationsGroupAsReadWithId:(NSNumber*)notificationId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)markNotificationsGroupAsReadWithId:(NSNumber*)notificationId handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)markAllNotificationGroupsAsReadWithHandler:(ObjectLoaderCompletionHandler)handler;
+- (void)markAllNotificationGroupsAsReadWithHandler:(ObjectRequestCompletionHandler)handler;
 
-- (void)notificationsCountWithHandler:(ObjectLoaderCompletionHandler)handler;
+- (void)notificationsCountWithHandler:(ObjectRequestCompletionHandler)handler;
 
-- (void)notificationsGroupCountWithHandler:(ObjectLoaderCompletionHandler)handler;
+- (void)notificationsGroupCountWithHandler:(ObjectRequestCompletionHandler)handler;
 
-- (void)notificationsCountForGroupWithId:(NSNumber*)anyNotificationId handler:(ObjectLoaderCompletionHandler)handler;
+- (void)notificationsCountForGroupWithId:(NSNumber*)anyNotificationId handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)registerDeviceForRemoteNotificationsWithToken:(NSString*)token handler:(RequestCompletionHandler)handler;
 
@@ -175,8 +175,8 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 - (void)declineNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
 
-- (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler;
+- (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)createAttachmentWithFileAtPath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectLoaderCompletionHandler)handler;
+- (void)createAttachmentWithFileAtPath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler;
 
 @end

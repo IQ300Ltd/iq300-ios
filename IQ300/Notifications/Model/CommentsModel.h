@@ -46,9 +46,11 @@
      attachmentType:(NSString*)type
      withCompletion:(void (^)(NSError * error))completion;
 
-- (void)resendLocalComment:(IQComment*)comment withCompletion:(void (^)(NSError * error))completion;
+- (void)resendLocalComment:(IQComment*)comment completion:(void (^)(NSError * error))completion;
 
-- (void)deleteComment:(IQComment*)comment;
+- (void)deleteComment:(IQComment*)comment completion:(void (^)(NSError * error))completion;
+
+- (void)deleteLocalComment:(IQComment*)comment;
 
 - (NSIndexPath*)indexPathForCommentWithId:(NSNumber*)commentId;
 

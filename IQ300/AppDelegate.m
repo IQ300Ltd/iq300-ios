@@ -259,7 +259,7 @@
         
         MessagesController * messagesController = navController.viewControllers[0];
         
-        ObjectLoaderCompletionHandler handler = ^(BOOL success, IQConversation * conver, NSData *responseData, NSError *error) {
+        ObjectRequestCompletionHandler handler = ^(BOOL success, IQConversation * conver, NSData *responseData, NSError *error) {
             if(success) {
                 NSPredicate * companionsPredicate = [NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId];
                 NSArray * companions = [[conver.discussion.users filteredSetUsingPredicate:companionsPredicate] allObjects];

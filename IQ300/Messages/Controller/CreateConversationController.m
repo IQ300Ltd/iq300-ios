@@ -69,7 +69,8 @@
     
     UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
                                                                        style:UIBarButtonItemStylePlain
-                                                                      target:self action:@selector(backButtonAction:)];
+                                                                      target:self
+                                                                      action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
     [self setTitle:NSLocalizedString(@"Сontacts", nil)];
@@ -142,18 +143,6 @@
                                                   }
                                               }
                                           }];
-}
-
-#pragma mark - IQTableModel Delegate
-
-- (void)modelDidChangeContent:(id<IQTableModel>)model {
-    [super modelDidChangeContent:model];
-    [self updateNoDataLabelVisibility];
-}
-
-- (void)modelDidChanged:(id<IQTableModel>)model {
-    [super modelDidChanged:model];
-    [self updateNoDataLabelVisibility];
 }
 
 #pragma mark - TextField Delegate

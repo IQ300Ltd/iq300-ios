@@ -29,7 +29,7 @@
 #import "UserPickerController.h"
 #import "IQService.h"
 
-@interface CommentsController() <UserPickerControllerDelegate> {
+@interface CommentsController() <UserPickerControllerDelegate, SWTableViewCellDelegate> {
     CommentsView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachment;
@@ -114,7 +114,8 @@
     
     UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
                                                                        style:UIBarButtonItemStylePlain
-                                                                      target:self action:@selector(backButtonAction:)];
+                                                                      target:self
+                                                                      action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
         
     [self.leftMenuController setModel:nil];
@@ -172,6 +173,7 @@
     
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     cell.item = comment;
+    cell.delegate = self;
     cell.descriptionTextView.attributedText = [self formatedTextFromText:comment.body];
     cell.descriptionTextView.delegate = (id<UITextViewDelegate>)self;
     
@@ -197,6 +199,15 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+}
+
+#pragma mark - SWTableViewCell Delegate
+
+- (void)swipeableTableViewCell:(CCommentCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
+    NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
+    IQComment * comment = [self.model itemAtIndexPath:indexPath];
+    [self.model deleteComment:comment completion:nil];
 }
 
 #pragma mark - DiscussionModelDelegate Delegate
@@ -427,8 +438,7 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    CGFloat inset = keyboardRect.size.height - MAX((CGRectGetMaxY(self.view.superview.frame) - CGRectGetMaxY(self.view.frame)), 0);
-    inset -= (!self.hidesBottomBarWhenPushed) ? 6 : 0;
+    CGFloat inset = keyboardRect.size.height;
     [_mainView setInputOffset:down ? 0.0f : -inset];
     if(isTableScrolledToBottom) {
         [self scrollToBottomAnimated:NO delay:0.0f];
