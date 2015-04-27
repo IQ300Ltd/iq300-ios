@@ -65,7 +65,6 @@
         _noDataLabel.backgroundColor = [UIColor clearColor];
         _noDataLabel.numberOfLines = 0;
         _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [_noDataLabel setHidden:YES];
         [_noDataLabel setText:NSLocalizedString(@"No messages", nil)];
         [self addSubview:_noDataLabel];
     }

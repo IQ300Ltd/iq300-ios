@@ -60,7 +60,7 @@
 }
 
 - (UILabel*)noDataLabel {
-    if(_noDataLabel) {
+    if(!_noDataLabel) {
         _noDataLabel = [[UILabel alloc] init];
         [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
         [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
@@ -69,14 +69,14 @@
         _noDataLabel.numberOfLines = 0;
         _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        [_noDataLabel setHidden:YES];
-        [_noDataLabel setText:NSLocalizedString(@"No attachments", nil)];
         
         if (_tableView) {
             [self.view insertSubview:_noDataLabel belowSubview:_tableView];
+            _noDataLabel.frame = _tableView.frame;
         }
         else {
             [self.view addSubview:_noDataLabel];
+            _noDataLabel.frame = self.view.frame;
         }
     }
     
