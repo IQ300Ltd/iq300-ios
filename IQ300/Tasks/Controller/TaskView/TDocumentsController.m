@@ -15,7 +15,7 @@
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "ALAsset+Extension.h"
-#import "IQBadgeView.h"
+#import "IQBadgeIndicatorView.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "TaskPolicyInspector.h"
 #import "UIScrollView+PullToRefreshInsert.h"
@@ -43,16 +43,9 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImage];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
         
-        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
-        style.badgeTextColor = [UIColor whiteColor];
-        style.badgeFrameColor = [UIColor whiteColor];
-        style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
-        style.badgeFrame = YES;
-        
-        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
-        badgeView.badgeMinSize = 15;
-        badgeView.frameLineHeight = 1.0f;
-        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        IQBadgeIndicatorView * badgeView = [[IQBadgeIndicatorView alloc] init];
+        badgeView.badgeColor = [UIColor colorWithHexInt:0xe74545];
+        badgeView.frame = CGRectMake(0, 0, 5.0f, 5.0f);
         
         self.tabBarItem.customBadgeView = badgeView;
         self.tabBarItem.badgeOrigin = CGPointMake(5.5f, 3.5f);

@@ -271,20 +271,12 @@
 
 - (void)updateUIForState {
     BOOL isStatusNew = ([_item.status isEqualToString:@"new"]);
-    if (self.showOverdue) {
-        if([_item.endDate compare:[NSDate date]] == NSOrderedAscending) {
-            _dueIconImageView.image = [UIImage imageNamed:@"bell_red_ico.png"];
-            _dueDateLabel.textColor = [UIColor colorWithHexInt:0xca301e];
-            _contentBackgroundInsets = UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0);
-            [self setBackgroundColor:OVERDUE_FLAG_COLOR];
-        }
-        else {
-            _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
-            _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
-            _contentBackgroundInsets = (isStatusNew) ? UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0) : UIEdgeInsetsZero;
-            _contentBackgroundView.backgroundColor = (isStatusNew) ? CONTEN_BACKGROUND_COLOR_NEW : CONTEN_BACKGROUND_COLOR;
-            self.backgroundColor = (isStatusNew) ? NEW_FLAG_COLOR : CONTEN_BACKGROUND_COLOR;
-        }
+    BOOL isOutOfDate = ([_item.endDate compare:[NSDate date]] == NSOrderedAscending);
+    if (self.showOverdue && isOutOfDate) {
+        _dueIconImageView.image = [UIImage imageNamed:@"bell_red_ico.png"];
+        _dueDateLabel.textColor = [UIColor colorWithHexInt:0xca301e];
+        _contentBackgroundInsets = UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0);
+        [self setBackgroundColor:OVERDUE_FLAG_COLOR];
     }
     else {
         _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];

@@ -254,6 +254,7 @@
 		73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA989C1A10A29C005AEC00 /* IQMenuSerializator.m */; };
 		73BA98A01A10A531005AEC00 /* NSBundle+Localization.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA989F1A10A531005AEC00 /* NSBundle+Localization.m */; };
 		73BF7C611AD5199C00C52D41 /* UIViewController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BF7C601AD5199C00C52D41 /* UIViewController+Additions.m */; };
+		73C16C771AEF5D0500155BB1 /* IQBadgeIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C16C761AEF5D0500155BB1 /* IQBadgeIndicatorView.m */; };
 		73C286AD1A94AFD70011FD51 /* IQNotificationsGroupIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C286AC1A94AFD70011FD51 /* IQNotificationsGroupIds.m */; };
 		73C286B01A94B5E30011FD51 /* IQNotificationsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C286AF1A94B5E30011FD51 /* IQNotificationsHolder.m */; };
 		73C384C91A9725DA00B66D0F /* IQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C384C81A9725DA00B66D0F /* IQTask.m */; };
@@ -745,6 +746,8 @@
 		73BA989F1A10A531005AEC00 /* NSBundle+Localization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Localization.m"; sourceTree = "<group>"; };
 		73BF7C5F1AD5199C00C52D41 /* UIViewController+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Additions.h"; sourceTree = "<group>"; };
 		73BF7C601AD5199C00C52D41 /* UIViewController+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Additions.m"; sourceTree = "<group>"; };
+		73C16C751AEF5D0500155BB1 /* IQBadgeIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeIndicatorView.h; sourceTree = "<group>"; };
+		73C16C761AEF5D0500155BB1 /* IQBadgeIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBadgeIndicatorView.m; sourceTree = "<group>"; };
 		73C286AB1A94AFD70011FD51 /* IQNotificationsGroupIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationsGroupIds.h; sourceTree = "<group>"; };
 		73C286AC1A94AFD70011FD51 /* IQNotificationsGroupIds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationsGroupIds.m; sourceTree = "<group>"; };
 		73C286AE1A94B5E30011FD51 /* IQNotificationsHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationsHolder.h; sourceTree = "<group>"; };
@@ -1131,6 +1134,8 @@
 				738EA7B11A1DE15B0065D39F /* UIViewController+LeftMenu.m */,
 				7311709A1AB81505008A4D09 /* IQTabBarController.h */,
 				7311709B1AB81505008A4D09 /* IQTabBarController.m */,
+				73C16C751AEF5D0500155BB1 /* IQBadgeIndicatorView.h */,
+				73C16C761AEF5D0500155BB1 /* IQBadgeIndicatorView.m */,
 				73A20C781A42F62C006433C5 /* IQBadgeView.h */,
 				73A20C791A42F62C006433C5 /* IQBadgeView.m */,
 				7381137A1A4C2A260061280F /* IQBadgeStyle.h */,
@@ -2311,6 +2316,7 @@
 				735D49011AE51D2100F6A753 /* TaskExecutorCell.m in Sources */,
 				73D7F1B51ADE932700023120 /* TaskActivitiesController.m in Sources */,
 				738EF8301A9CBAA200894755 /* IQTasksHolder.m in Sources */,
+				73C16C771AEF5D0500155BB1 /* IQBadgeIndicatorView.m in Sources */,
 				736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */,
 				73A7004F1A95CF8C00A1C2AC /* TaskCell.m in Sources */,
 				73D7F1E91ADE94B400023120 /* TodoListItemCell.m in Sources */,
