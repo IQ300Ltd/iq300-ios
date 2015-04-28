@@ -41,7 +41,7 @@
 @property (nonatomic, strong) IQProject    * project;
 
 @property (nonatomic, strong) NSSet        * childIds;
-@property (nonatomic, strong) NSSet        * availableActions;
+@property (nonatomic, strong) NSOrderedSet * availableActions;
 @property (nonatomic, strong) NSOrderedSet * todoItems;
 @property (nonatomic, strong) NSOrderedSet * attachments;
 

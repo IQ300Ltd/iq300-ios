@@ -1,18 +1,18 @@
 //
-//  ArrayTransformer.m
-//  OBI
+//  OrderedArrayTransformer.m
+//  IQ300
 //
-//  Created by Tayphoon on 21.08.14.
-//  Copyright (c) 2014 Tayphoon. All rights reserved.
+//  Created by Tayphoon on 28.04.15.
+//  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "ArrayTransformer.h"
+#import "OrderedArrayTransformer.h"
 
-@implementation ArrayTransformer
+@implementation OrderedArrayTransformer
 
 + (Class)transformedValueClass
 {
-    return [NSSet class];
+    return [NSOrderedSet class];
 }
 
 + (BOOL)allowsReverseTransformation

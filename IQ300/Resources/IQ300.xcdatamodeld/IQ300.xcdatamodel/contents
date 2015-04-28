@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D131" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D136" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CViewInfo" representedClassName="CViewInfo" syncable="YES">
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -122,7 +122,7 @@
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="project" inverseEntity="IQTask" syncable="YES"/>
     </entity>
     <entity name="IQTask" representedClassName="IQTask" syncable="YES">
-        <attribute name="availableActions" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
+        <attribute name="availableActions" optional="YES" attributeType="Transformable" valueTransformerName="OrderedArrayTransformer" syncable="YES"/>
         <attribute name="childIds" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
         <attribute name="commentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>

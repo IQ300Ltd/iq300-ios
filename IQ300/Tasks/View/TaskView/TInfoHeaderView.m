@@ -38,7 +38,7 @@
 
 @implementation TInfoHeaderView
 
-+ (CGFloat)heightForTask:(IQTask*)task width:(CGFloat)width {
++ (CGFloat)heightForTask:(IQTask*)task width:(CGFloat)width descriptionExpanded:(BOOL)descriptionExpanded {
     CGFloat hederWidth = width - 10.0f - 7.0f;
     CGFloat height = HORIZONTAL_PADDING * 2 + TASK_ID_HEIGHT + TITLE_OFFSET + USER_OFFSET + USER_HEIGHT + LINE_HEIGHT;
     
@@ -47,6 +47,17 @@
                                              lineBreakMode:NSLineBreakByWordWrapping];
     
     height += titleLabelSize.height;
+    
+    if (descriptionExpanded) {
+        CGSize descriptionSize = [task.taskDescription sizeWithFont:TITLE_FONT
+                                                  constrainedToSize:CGSizeMake(hederWidth, CGFLOAT_MAX)
+                                                      lineBreakMode:NSLineBreakByWordWrapping];
+
+        height += LINE_HEIGHT + descriptionSize.height + HORIZONTAL_PADDING;
+    }
+    else {
+        height += LINE_HEIGHT;
+    }
     
     if([task.community.title length] > 0) {
         height += LINE_HEIGHT;
@@ -92,6 +103,12 @@
                                   localaizedKey:nil];
         _toLabel.numberOfLines = 1;
         [self addSubview:_toLabel];
+        
+        _descriptionView = [[TInfoExpandableLineView alloc] init];
+        _descriptionView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _descriptionView.drawTopSeparator = YES;
+        _descriptionView.textLabel.text = NSLocalizedString(@"Description", nil);
+        [self addSubview:_descriptionView];
 
         _statusView = [[TInfoLineView alloc] init];
         _statusView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
@@ -136,6 +153,9 @@
     _fromLabel.text = task.customer.displayName;
     _toLabel.text = [NSString stringWithFormat:@"> %@", task.executor.displayName];
     
+    _descriptionView.enabled = ([task.taskDescription length] > 0);
+    _descriptionView.detailsTextLabel.text = task.taskDescription;
+    
     _statusView.textLabel.textColor = [TaskHelper colorForTaskType:task.status];
     _statusView.textLabel.text = NSLocalizedString(task.status, nil);
 
@@ -151,10 +171,14 @@
                                    NSFontAttributeName            : _communityInfoView.textLabel.font ,
                                    NSParagraphStyleAttributeName  : paragraphStyle };
     
+
+    _communityInfoView.hidden = ([task.community.title length] == 0);
     if([task.community.title length] > 0) {
         _communityInfoView.textLabel.attributedText = [[NSAttributedString alloc] initWithString:task.community.title
                                                                                       attributes:attributes];
     }
+    
+    _projectInfoView.hidden = ([task.project.title length] == 0);
     if([task.project.title length] > 0) {
         _projectInfoView.textLabel.attributedText = [[NSAttributedString alloc] initWithString:task.project.title
                                                                                     attributes:attributes];
@@ -168,7 +192,7 @@
         _communityInfoView.imageView.image = [UIImage imageNamed:@"community_ico.png"];
     }
     
-    NSArray * actions = [task.availableActions allObjects];
+    NSArray * actions = [task.availableActions array];
     for (NSInteger i = 0; i < [actions count]; i++) {
         NSString * actionType = actions[i];
         BOOL isPositiveAction = [TaskHelper isPositiveActionWithType:actionType];
@@ -197,12 +221,7 @@
         [actionButton setClipsToBounds:YES];
         actionButton.tag = i;
         
-        if(isPositiveAction) {
-            [_buttonsHolder insertSubview:actionButton atIndex:0];
-        }
-        else {
-            [_buttonsHolder addSubview:actionButton];
-        }
+        [_buttonsHolder addSubview:actionButton];
     }
     
     [self setNeedsLayout];
@@ -257,10 +276,28 @@
                                 usersLabelFrame.size.width / 2.0f,
                                 usersLabelFrame.size.height);
     
+    if (_descriptionView.isExpanded) {
+        CGSize descriptionSize = [_descriptionView.detailsTextLabel.text sizeWithFont:TITLE_FONT
+                                                  constrainedToSize:CGSizeMake(headerBounds.size.width, CGFLOAT_MAX)
+                                                      lineBreakMode:NSLineBreakByWordWrapping];
+        
+        _descriptionView.frame = CGRectMake(bounds.origin.x,
+                                            CGRectBottom(_fromLabel.frame) + _headerInsets.bottom,
+                                            bounds.size.width,
+                                            LINE_HEIGHT + descriptionSize.height + HORIZONTAL_PADDING);
+    }
+    else {
+        _descriptionView.frame = CGRectMake(bounds.origin.x,
+                                            CGRectBottom(_fromLabel.frame) + _headerInsets.bottom,
+                                            bounds.size.width,
+                                            LINE_HEIGHT);
+    }
+
+    
     CGSize statusDueSize = CGSizeMake(bounds.size.width / 2.0f, LINE_HEIGHT);
     
     _statusView.frame = CGRectMake(bounds.origin.x,
-                                   CGRectBottom(_fromLabel.frame) + _headerInsets.bottom,
+                                   CGRectBottom(_descriptionView.frame),
                                    statusDueSize.width,
                                    statusDueSize.height);
     _dueDateView.frame = CGRectMake(CGRectRight(_statusView.frame),

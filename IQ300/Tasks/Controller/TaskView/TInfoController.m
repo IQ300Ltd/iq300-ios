@@ -28,6 +28,7 @@
     __weak UIButton * _deferredActionButton;
     __weak id _notfObserver;
     BOOL _changeStateEnabled;
+    BOOL _descriptionExpanded;
 }
 
 @property (nonatomic, assign) BOOL resetReadFlagAutomatically;
@@ -157,7 +158,7 @@
 #pragma mark - UITableView Delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    CGFloat height = (section == 0) ? [TInfoHeaderView heightForTask:self.task width:self.tableView.frame.size.width] : 50.0f;
+    CGFloat height = (section == 0) ? [TInfoHeaderView heightForTask:self.task width:self.tableView.frame.size.width descriptionExpanded:_descriptionExpanded] : 50.0f;
     return height;
 }
 
@@ -204,7 +205,7 @@
 #pragma mark - TInfoHeaderView Delegate
 
 - (void)headerView:(TInfoHeaderView*)headerView tapActionAtIndex:(NSInteger)actionIndex actionButton:(UIButton*)actionButton {
-    NSArray * actions = [self.task.availableActions allObjects];
+    NSArray * actions = [self.task.availableActions array];
     NSString * action = (actionIndex < [actions count]) ? actions[actionIndex] : nil;
     [actionButton setEnabled:NO];
     
@@ -378,6 +379,13 @@
 
 - (UIView*)mainHeaderView {
     TInfoHeaderView * headerView = [[TInfoHeaderView alloc] init];
+    headerView.descriptionView.expanded = _descriptionExpanded;
+    [headerView.descriptionView setActionBlock:^(TInfoExpandableLineView *view) {
+        if (view.enabled) {
+            _descriptionExpanded = !_descriptionExpanded;
+            [self.tableView reloadData];
+        }
+    }];
     [headerView setupByTask:_task];
     headerView.delegate = self;
     return headerView;
