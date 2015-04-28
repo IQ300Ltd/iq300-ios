@@ -49,7 +49,7 @@
         badgeView.frame = CGRectMake(0, 0, 5.0f, 5.0f);
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(5.5f, 3.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(13.0f, 3.5f);
 
         self.model = [[TaskMembersModel alloc] init];
     }

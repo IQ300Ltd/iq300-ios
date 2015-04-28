@@ -154,7 +154,7 @@
 
                                                       TDocumentsController * documentsController = self.viewControllers[3];
                                                       if (self.selectedIndex != 3) {
-                                                          documentsController.badgeValue = counter.documents;
+                                                          documentsController.badgeValue = @(1);//counter.documents;
                                                       }
                                                   }
                                               }];
