@@ -40,10 +40,11 @@
         
         IQBadgeIndicatorView * badgeView = [[IQBadgeIndicatorView alloc] init];
         badgeView.badgeColor = [UIColor colorWithHexInt:0xe74545];
-        badgeView.frame = CGRectMake(0, 0, 5.0f, 5.0f);
+        badgeView.strokeBadgeColor = [UIColor whiteColor];
+        badgeView.frame = CGRectMake(0, 0, 9.0f, 9.0f);
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(14.0f, 3.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(8.0f, 10.5f);
 
         [self resubscribeToIQNotifications];
     }

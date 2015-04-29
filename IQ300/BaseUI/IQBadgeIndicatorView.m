@@ -22,8 +22,10 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
     
-    CGContextSetFillColorWithColor(context, [self.badgeColor CGColor]);
+    CGContextSetFillColorWithColor(context, [self.strokeBadgeColor CGColor]);
     CGContextFillEllipseInRect(context, rect);
+    CGContextSetFillColorWithColor(context, [self.badgeColor CGColor]);
+    CGContextFillEllipseInRect(context, UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMakeWithInset(1.0f)));
     CGContextRestoreGState(context);
 }
 

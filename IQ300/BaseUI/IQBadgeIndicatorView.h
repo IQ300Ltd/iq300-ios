@@ -11,5 +11,6 @@
 @interface IQBadgeIndicatorView : UIView
 
 @property (nonatomic, strong) UIColor * badgeColor;
+@property (nonatomic, strong) UIColor * strokeBadgeColor;
 
 @end
