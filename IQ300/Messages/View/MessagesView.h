@@ -12,6 +12,7 @@
 @interface MessagesView : UIView
 
 @property (nonatomic, strong) ExTextField * searchBar;
+@property (nonatomic, readonly) UIButton * clearTextFieldButton;
 @property (nonatomic, strong) UITableView * tableView;
 @property (nonatomic, strong) UILabel * noDataLabel;
 @property (nonatomic, assign) CGFloat tableBottomMargin;
