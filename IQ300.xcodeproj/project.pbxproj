@@ -281,6 +281,8 @@
 		73D260CE1AE0ED460009CC38 /* TaskExecutersCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260CD1AE0ED460009CC38 /* TaskExecutersCell.m */; };
 		73D260D31AE0FA070009CC38 /* TaskCommunityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260D21AE0FA070009CC38 /* TaskCommunityCell.m */; };
 		73D3DF281AF0FB14000DD34F /* SubMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D3DF271AF0FB14000DD34F /* SubMenuCell.m */; };
+		73D3DF2B1AF11542000DD34F /* clear_button_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D3DF291AF11542000DD34F /* clear_button_icon.png */; };
+		73D3DF2C1AF11542000DD34F /* clear_button_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D3DF2A1AF11542000DD34F /* clear_button_icon@2x.png */; };
 		73D7858C1AE7FDB400A952DF /* bell_red_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D7858A1AE7FDB400A952DF /* bell_red_ico.png */; };
 		73D7858D1AE7FDB400A952DF /* bell_red_ico@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D7858B1AE7FDB400A952DF /* bell_red_ico@2x.png */; };
 		73D7F1A11ADE92BC00023120 /* TaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A01ADE92BC00023120 /* TaskController.m */; };
@@ -794,6 +796,8 @@
 		73D260D21AE0FA070009CC38 /* TaskCommunityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskCommunityCell.m; sourceTree = "<group>"; };
 		73D3DF261AF0FB14000DD34F /* SubMenuCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMenuCell.h; sourceTree = "<group>"; };
 		73D3DF271AF0FB14000DD34F /* SubMenuCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubMenuCell.m; sourceTree = "<group>"; };
+		73D3DF291AF11542000DD34F /* clear_button_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clear_button_icon.png; sourceTree = "<group>"; };
+		73D3DF2A1AF11542000DD34F /* clear_button_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "clear_button_icon@2x.png"; sourceTree = "<group>"; };
 		73D7858A1AE7FDB400A952DF /* bell_red_ico.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bell_red_ico.png; sourceTree = "<group>"; };
 		73D7858B1AE7FDB400A952DF /* bell_red_ico@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bell_red_ico@2x.png"; sourceTree = "<group>"; };
 		73D7F19F1ADE92BC00023120 /* TaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskController.h; sourceTree = "<group>"; };
@@ -1125,6 +1129,8 @@
 				7395C5101A3192C500A6D5DA /* backArrow@2x.png */,
 				73A9498D1A3821AD008EC469 /* backWhiteArrow.png */,
 				73A9498E1A3821AD008EC469 /* backWhiteArrow@2x.png */,
+				73D3DF291AF11542000DD34F /* clear_button_icon.png */,
+				73D3DF2A1AF11542000DD34F /* clear_button_icon@2x.png */,
 				736B6BCF1A0B5C0800034D9B /* Images.xcassets */,
 				73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */,
 			);
@@ -2064,6 +2070,7 @@
 				73F2A5501A39AB3000E9D324 /* attach_ico.png in Resources */,
 				738916BE1ABAFB800017EF86 /* gray_checked_checkbox@2x.png in Resources */,
 				731170801AB80AFF008A4D09 /* task_history_tab.png in Resources */,
+				73D3DF2B1AF11542000DD34F /* clear_button_icon.png in Resources */,
 				731170941AB80B0E008A4D09 /* task_status_ico.png in Resources */,
 				7311708E1AB80B0E008A4D09 /* edit_gray_ico.png in Resources */,
 				738FE7061A162B10009F26A2 /* more_tab@2x.png in Resources */,
@@ -2110,6 +2117,7 @@
 				73A7CA841A9F55ED0038DEF1 /* filterSelected.png in Resources */,
 				731170831AB80AFF008A4D09 /* task_info_tab@2x.png in Resources */,
 				731170991AB80CD4008A4D09 /* task_tab_sel@2x.png in Resources */,
+				73D3DF2C1AF11542000DD34F /* clear_button_icon@2x.png in Resources */,
 				738FE7081A162B10009F26A2 /* notif_tab@2x.png in Resources */,
 				731170981AB80CD4008A4D09 /* task_tab_sel.png in Resources */,
 				731170821AB80AFF008A4D09 /* task_info_tab.png in Resources */,

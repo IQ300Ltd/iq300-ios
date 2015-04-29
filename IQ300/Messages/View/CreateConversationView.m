@@ -29,7 +29,13 @@
         
         [self setBackgroundColor:[UIColor whiteColor]];
         
+        _clearTextFieldButton = [[UIButton alloc] init];
+        [_clearTextFieldButton setImage:[UIImage imageNamed:@"clear_button_icon.png"] forState:UIControlStateNormal];
+        [_clearTextFieldButton setFrame:CGRectMake(0, 0, 13.0f, 13.0f)];
+        
         _userTextField = [[ExTextField alloc] init];
+        _userTextField.rightView = _clearTextFieldButton;
+        _userTextField.rightViewMode = UITextFieldViewModeWhileEditing;
         _userNamelContainer = [self makeContainerWithField:_userTextField placeholder:@"User name or email"];
         [self addSubview:_userNamelContainer];
         

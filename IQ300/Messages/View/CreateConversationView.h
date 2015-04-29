@@ -15,6 +15,7 @@
 }
 
 @property (nonatomic, readonly) ExTextField * userTextField;
+@property (nonatomic, readonly) UIButton * clearTextFieldButton;
 @property (nonatomic, strong) UITableView * tableView;
 @property (nonatomic, assign) CGFloat tableBottomMargin;
 

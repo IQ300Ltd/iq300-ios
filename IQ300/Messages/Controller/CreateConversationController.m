@@ -54,6 +54,9 @@
                       forControlEvents:UIControlEventEditingChanged];
     
     _mainView.userTextField.delegate = (id<UITextFieldDelegate>)self;
+    [_mainView.clearTextFieldButton addTarget:self
+                                       action:@selector(clearFilter)
+                             forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (UITableView*)tableView {
@@ -226,6 +229,11 @@
 
 - (void)drawerDidShowNotification:(NSNotification*)notification {
     [_mainView.userTextField resignFirstResponder];
+}
+
+- (void)clearFilter {
+    _mainView.userTextField.text = nil;
+    [self filterWithText:nil];
 }
 
 @end
