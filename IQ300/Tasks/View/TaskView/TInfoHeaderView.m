@@ -18,6 +18,7 @@
 #import "ExtendedButton.h"
 
 #define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13.0f]
 #define LINE_HEIGHT 45.5f
 #define HORIZONTAL_PADDING 10.0f
 #define TASK_ID_HEIGHT 11.0f
@@ -38,6 +39,22 @@
 
 @implementation TInfoHeaderView
 
++ (CGFloat)heightForText:(NSString*)text font:(UIFont*)font width:(CGFloat)textWidth {
+    UITextView * titleTextView = [[UITextView alloc] init];
+    [titleTextView setFont:font];
+    titleTextView.textAlignment = NSTextAlignmentLeft;
+    titleTextView.backgroundColor = [UIColor clearColor];
+    titleTextView.textContainer.lineBreakMode = NSLineBreakByWordWrapping;
+    titleTextView.textContainerInset = UIEdgeInsetsZero;
+    titleTextView.contentInset = UIEdgeInsetsZero;
+    titleTextView.scrollEnabled = NO;
+    titleTextView.text = text;
+    [titleTextView sizeToFit];
+    
+    CGFloat textHeight = [titleTextView sizeThatFits:CGSizeMake(textWidth, CGFLOAT_MAX)].height;
+    return textHeight;
+}
+
 + (CGFloat)heightForTask:(IQTask*)task width:(CGFloat)width descriptionExpanded:(BOOL)descriptionExpanded {
     CGFloat hederWidth = width - 10.0f - 7.0f;
     CGFloat height = HORIZONTAL_PADDING * 2 + TASK_ID_HEIGHT + TITLE_OFFSET + USER_OFFSET + USER_HEIGHT + LINE_HEIGHT;
@@ -49,11 +66,11 @@
     height += titleLabelSize.height;
     
     if (descriptionExpanded) {
-        CGSize descriptionSize = [task.taskDescription sizeWithFont:TITLE_FONT
-                                                  constrainedToSize:CGSizeMake(hederWidth, CGFLOAT_MAX)
-                                                      lineBreakMode:NSLineBreakByWordWrapping];
+        CGFloat descriptionHeight = [TInfoHeaderView heightForText:task.taskDescription
+                                                              font:DESCRIPTION_FONT
+                                                             width:300];
 
-        height += LINE_HEIGHT + descriptionSize.height + HORIZONTAL_PADDING;
+        height += LINE_HEIGHT + descriptionHeight + HORIZONTAL_PADDING;
     }
     else {
         height += LINE_HEIGHT;
@@ -105,6 +122,7 @@
         [self addSubview:_toLabel];
         
         _descriptionView = [[TInfoExpandableLineView alloc] init];
+        _descriptionView.detailsTextLabel.font = DESCRIPTION_FONT;
         _descriptionView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
         _descriptionView.drawTopSeparator = YES;
         _descriptionView.textLabel.text = NSLocalizedString(@"Description", nil);
@@ -277,14 +295,14 @@
                                 usersLabelFrame.size.height);
     
     if (_descriptionView.isExpanded) {
-        CGSize descriptionSize = [_descriptionView.detailsTextLabel.text sizeWithFont:TITLE_FONT
-                                                  constrainedToSize:CGSizeMake(headerBounds.size.width, CGFLOAT_MAX)
-                                                      lineBreakMode:NSLineBreakByWordWrapping];
+        CGFloat descriptionHight = [TInfoHeaderView heightForText:_descriptionView.detailsTextLabel.text
+                                                             font:_descriptionView.detailsTextLabel.font
+                                                            width:300];
         
         _descriptionView.frame = CGRectMake(bounds.origin.x,
                                             CGRectBottom(_fromLabel.frame) + _headerInsets.bottom,
                                             bounds.size.width,
-                                            LINE_HEIGHT + descriptionSize.height + HORIZONTAL_PADDING);
+                                            LINE_HEIGHT + descriptionHight + HORIZONTAL_PADDING);
     }
     else {
         _descriptionView.frame = CGRectMake(bounds.origin.x,
