@@ -157,7 +157,7 @@
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:indexPath];
     self.model.communityId = nil;
-    self.model.statusFilter = nil;
+    self.model.statusFilter = [_menuModel statusForMenuItemAtIndexPath:indexPath];
     
     NSString * title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil), (self.model.ascending) ? @"↑" : @"↓"];
     _mainView.titleLabel.text = title;
@@ -243,6 +243,16 @@
         self.model.statusFilter = model.statusFilter;
         self.model.ascending = model.ascending;
         self.model.communityId = model.communityId;
+        
+        NSIndexPath * menuIndexPath = [_menuModel indexPathForItemWithStatus:self.model.statusFilter
+                                                                      folder:self.model.folder];
+        if (menuIndexPath) {
+            [_menuModel selectItemAtIndexPath:menuIndexPath];
+        }
+        else {
+            menuIndexPath = [_menuModel indexPathForItemWithFolder:self.model.folder];
+            [_menuModel selectItemAtIndexPath:menuIndexPath];
+        }
 
         NSMutableArray * fields = [NSMutableArray array];
         
@@ -278,9 +288,6 @@
 }
 
 - (void)setupInitState {
-    [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:0
-                                                         inSection:0]];
-
     self.model.communityId = nil;
     self.model.statusFilter = nil;
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];

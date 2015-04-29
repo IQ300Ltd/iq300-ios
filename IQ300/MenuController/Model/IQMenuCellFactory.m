@@ -9,9 +9,11 @@
 #import "IQMenuCellFactory.h"
 #import "RMenuCell.h"
 #import "IQMenuItem.h"
+#import "SubMenuCell.h"
 
 NSString * const MenuBaseCellReuseIdentifier = @"MenuBaseCellReuseIdentifier";
 NSString * const ImporatantMenuCellReuseIdentifier = @"ImporatantMenuCellReuseIdentifier";
+NSString * const SubMenuCellReuseIdentifier = @"SubMenuCellReuseIdentifier";
 
 @implementation IQMenuCellFactory
 
@@ -19,7 +21,8 @@ NSString * const ImporatantMenuCellReuseIdentifier = @"ImporatantMenuCellReuseId
     static NSDictionary * _cellsIdentifiers = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
-        _cellsIdentifiers = @{ @(IQMenuItemTypeImportant) : ImporatantMenuCellReuseIdentifier };
+        _cellsIdentifiers = @{ @(IQMenuItemTypeImportant) : ImporatantMenuCellReuseIdentifier,
+                               @(IQMenuItemTypeSub) : SubMenuCellReuseIdentifier };
     });
     
     if([_cellsIdentifiers objectForKey:@(type)]) {
@@ -33,7 +36,8 @@ NSString * const ImporatantMenuCellReuseIdentifier = @"ImporatantMenuCellReuseId
     static NSDictionary * _cellsClasses = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
-        _cellsClasses = @{ @(IQMenuItemTypeImportant) : [RMenuCell class] };
+        _cellsClasses = @{ @(IQMenuItemTypeImportant) : [RMenuCell class],
+                           @(IQMenuItemTypeSub) : [SubMenuCell class] };
     });
     
     Class cellClass = [_cellsClasses objectForKey:@(type)];

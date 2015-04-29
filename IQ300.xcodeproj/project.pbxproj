@@ -280,6 +280,7 @@
 		73D260CB1AE0EB790009CC38 /* IQDateDetailsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260CA1AE0EB790009CC38 /* IQDateDetailsCell.m */; };
 		73D260CE1AE0ED460009CC38 /* TaskExecutersCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260CD1AE0ED460009CC38 /* TaskExecutersCell.m */; };
 		73D260D31AE0FA070009CC38 /* TaskCommunityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260D21AE0FA070009CC38 /* TaskCommunityCell.m */; };
+		73D3DF281AF0FB14000DD34F /* SubMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D3DF271AF0FB14000DD34F /* SubMenuCell.m */; };
 		73D7858C1AE7FDB400A952DF /* bell_red_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D7858A1AE7FDB400A952DF /* bell_red_ico.png */; };
 		73D7858D1AE7FDB400A952DF /* bell_red_ico@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D7858B1AE7FDB400A952DF /* bell_red_ico@2x.png */; };
 		73D7F1A11ADE92BC00023120 /* TaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A01ADE92BC00023120 /* TaskController.m */; };
@@ -791,6 +792,8 @@
 		73D260CD1AE0ED460009CC38 /* TaskExecutersCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutersCell.m; sourceTree = "<group>"; };
 		73D260D11AE0FA070009CC38 /* TaskCommunityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskCommunityCell.h; sourceTree = "<group>"; };
 		73D260D21AE0FA070009CC38 /* TaskCommunityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskCommunityCell.m; sourceTree = "<group>"; };
+		73D3DF261AF0FB14000DD34F /* SubMenuCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubMenuCell.h; sourceTree = "<group>"; };
+		73D3DF271AF0FB14000DD34F /* SubMenuCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubMenuCell.m; sourceTree = "<group>"; };
 		73D7858A1AE7FDB400A952DF /* bell_red_ico.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bell_red_ico.png; sourceTree = "<group>"; };
 		73D7858B1AE7FDB400A952DF /* bell_red_ico@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bell_red_ico@2x.png"; sourceTree = "<group>"; };
 		73D7F19F1ADE92BC00023120 /* TaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskController.h; sourceTree = "<group>"; };
@@ -1088,6 +1091,8 @@
 				736B6BDA1A0B5F1D00034D9B /* MenuCell.m */,
 				73A113F81A1C8D1B00293EC5 /* RMenuCell.h */,
 				73A113F91A1C8D1B00293EC5 /* RMenuCell.m */,
+				73D3DF261AF0FB14000DD34F /* SubMenuCell.h */,
+				73D3DF271AF0FB14000DD34F /* SubMenuCell.m */,
 				737E7C531A0CA88E00E8BB81 /* MenuSectionHeader.h */,
 				737E7C541A0CA88E00E8BB81 /* MenuSectionHeader.m */,
 				73BA98781A109369005AEC00 /* MenuConsts.h */,
@@ -2278,6 +2283,7 @@
 				739BC7A11A4A9F21007FC95C /* CommentInputView.m in Sources */,
 				7373ED5B1A89EF2000719FCD /* IQObjectsHolder.m in Sources */,
 				73ADA8DC1A36DBEF0032C1FA /* CreateConversationView.m in Sources */,
+				73D3DF281AF0FB14000DD34F /* SubMenuCell.m in Sources */,
 				73D7F1B91ADE932700023120 /* TInfoController.m in Sources */,
 				73D7F1F11ADE94CE00023120 /* IQEditableTextCell.m in Sources */,
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,

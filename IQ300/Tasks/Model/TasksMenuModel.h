@@ -19,4 +19,10 @@
 
 - (NSString*)folderForMenuItemAtIndexPath:(NSIndexPath*)indexPath;
 
+- (NSIndexPath*)indexPathForItemWithFolder:(NSString*)folder;
+
+- (NSString*)statusForMenuItemAtIndexPath:(NSIndexPath*)indexPath;
+
+- (NSIndexPath*)indexPathForItemWithStatus:(NSString*)status folder:(NSString*)folder;
+
 @end

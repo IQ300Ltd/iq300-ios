@@ -11,6 +11,9 @@
 
 @class IQBadgeView;
 
+#define CONTENT_LEFT_INSET 12
+#define CONTENT_RIGHT_INSET 10
+
 @interface MenuCell : UITableViewCell {
     UIView * _cellContentView;
     UIEdgeInsets _contentInsets;

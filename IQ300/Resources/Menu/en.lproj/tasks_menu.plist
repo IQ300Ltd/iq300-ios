@@ -34,24 +34,56 @@
 			<dict>
 				<key>itemId</key>
 				<integer>3</integer>
+				<key>type</key>
+				<integer>2</integer>
 				<key>title</key>
-				<string>Outbox</string>
+				<string>New</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
 				<integer>4</integer>
+				<key>type</key>
+				<integer>2</integer>
 				<key>title</key>
-				<string>Оbserved</string>
+				<string>Viewed</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
 				<integer>5</integer>
 				<key>title</key>
-				<string>Archive</string>
+				<string>Outbox</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
 				<integer>6</integer>
+				<key>type</key>
+				<integer>2</integer>
+				<key>title</key>
+				<string>Upon verification</string>
+			</dict>
+			<dict>
+				<key>itemId</key>
+				<integer>7</integer>
+				<key>type</key>
+				<integer>2</integer>
+				<key>title</key>
+				<string>Refused</string>
+			</dict>
+			<dict>
+				<key>itemId</key>
+				<integer>8</integer>
+				<key>title</key>
+				<string>Оbserved</string>
+			</dict>
+			<dict>
+				<key>itemId</key>
+				<integer>9</integer>
+				<key>title</key>
+				<string>Archive</string>
+			</dict>
+			<dict>
+				<key>itemId</key>
+				<integer>10</integer>
 				<key>title</key>
 				<string>Templates</string>
 			</dict>
