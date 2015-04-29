@@ -12,7 +12,6 @@
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
 #define BOTTOM_VIEW_HEIGHT 65
-#define MAX_NUMBER_OF_CHARACTERS 255
 
 @interface TaskDescriptionController() <UITextViewDelegate> {
     CGFloat _textViewBottomMarging;
@@ -164,17 +163,6 @@
 
     CGRect textViewRect = UIEdgeInsetsInsetRect(actualBounds, _textViewInsets);
     _textView.frame = textViewRect;
-}
-
-#pragma mark - UITextViewDelegate Methods
-
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
-    if (([newString length] <= MAX_NUMBER_OF_CHARACTERS)) {
-        textView.text = newString;
-    }
-    
-    return NO;
 }
 
 - (void)backButtonAction:(UIButton*)sender {
