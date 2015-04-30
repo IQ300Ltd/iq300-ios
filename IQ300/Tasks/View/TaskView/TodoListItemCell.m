@@ -110,11 +110,9 @@
     
     if (accessoryType == UITableViewCellAccessoryCheckmark) {
         _accessoryImageView.image = [UIImage imageNamed:@"gray_checked_checkbox.png"];
-        _titleTextView.textColor = SELECTED_TEXT_COLOR;
     }
     else {
         _accessoryImageView.image = [UIImage imageNamed:@"gray_checkbox.png"];
-        _titleTextView.textColor = (_enabled) ? TEXT_COLOR : SELECTED_TEXT_COLOR;
     }
     
     [self updateText];
@@ -123,8 +121,7 @@
 - (void)setEnabled:(BOOL)enabled {
     if (_enabled != enabled) {
         _enabled = enabled;
-        UIColor * curColor = (self.accessoryType == UITableViewCellAccessoryCheckmark) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
-        _titleTextView.textColor = (_enabled) ? curColor : SELECTED_TEXT_COLOR;
+        [self updateText];
     }
 }
 
@@ -142,7 +139,6 @@
     
     _isChecked = NO;
     _enabled = YES;
-    [_titleTextView setTextColor:TEXT_COLOR];
     _titleTextView.editable = NO;
 
     [self setDelegate:nil];
@@ -181,13 +177,15 @@
 
 - (void)updateText {
     if ([_item.title length] > 0) {
+        UIColor * curColor = (_isChecked || !_enabled) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
+        
         NSMutableDictionary * attributes = @{
                                              NSFontAttributeName                : TITLE_FONT,
-                                             NSForegroundColorAttributeName     : TEXT_COLOR
+                                             NSForegroundColorAttributeName     : curColor
                                              }.mutableCopy;
         if(_isChecked) {
             [attributes setValue:@(NSUnderlineStyleSingle) forKey:NSStrikethroughStyleAttributeName];
-            [attributes setValue:TEXT_COLOR forKey:NSStrikethroughColorAttributeName];
+            [attributes setValue:curColor forKey:NSStrikethroughColorAttributeName];
         }
         
         _titleTextView.attributedText = [[NSAttributedString alloc] initWithString:_item.title
