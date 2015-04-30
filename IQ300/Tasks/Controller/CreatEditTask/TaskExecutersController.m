@@ -43,7 +43,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"Communities", nil);
+        self.title = NSLocalizedString(@"Executors", nil);
         
         _userNameInset = UIEdgeInsetsMake(0.0f, 13.0f, 0.0f, 13.0f);
         self.model = [[TaskExecutorsModel alloc] init];
