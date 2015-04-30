@@ -172,7 +172,7 @@
     }];
     
     _highlightTasks = !([self.model.folder isEqualToString:@"archive"] ||
-                               [self.model.folder isEqualToString:@"templates"]);
+                        [self.model.folder isEqualToString:@"templates"]);
 }
 
 - (void)updateGlobalCounter {
