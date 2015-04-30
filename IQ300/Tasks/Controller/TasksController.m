@@ -340,7 +340,14 @@
 - (void)updateControllerTitle {
     NSIndexPath * indexPath = [_menuModel indexPathForSelectedItem];
     IQMenuItem * menuItem = [_menuModel itemAtIndexPath:indexPath];
-    NSString * title = (indexPath.row < 5) ? [NSString stringWithFormat:@"%@ %@", menuItem.title, [NSLocalizedString(@"Tasks", nil) lowercaseString]] : menuItem.title;
+    NSString * title = menuItem.title;
+    if (indexPath.row == 3 || indexPath.row == 4) {
+        title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Inbox", nil), menuItem.title];
+    }
+    else     if (indexPath.row == 6 || indexPath.row == 7) {
+        title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Outbox", nil), menuItem.title];
+    }
+    
     self.navigationController.navigationBar.topItem.title = title;
 }
 
