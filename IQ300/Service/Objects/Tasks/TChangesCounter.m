@@ -14,10 +14,10 @@
 + (RKObjectMapping*)objectMapping {
     RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"details"  : @"details",
-                                                  @"comments" : @"comments",
-                                                  @"users"    : @"users",
-                                                  @"total"    : @"documents"
+                                                  @"details"   : @"details",
+                                                  @"comments"  : @"comments",
+                                                  @"users"     : @"users",
+                                                  @"documents" : @"documents"
                                                   }];
     return mapping;
 }

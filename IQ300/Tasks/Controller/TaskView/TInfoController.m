@@ -323,6 +323,9 @@
 }
 
 - (void)applicationWillEnterForeground {
+    if (self.resetReadFlagAutomatically) {
+        [self resetReadFlag];
+    }
     [self updateTask];
 }
 
@@ -416,6 +419,7 @@
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self unsubscribeFromIQNotifications];
 }
 

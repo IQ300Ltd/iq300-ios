@@ -108,19 +108,25 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
     [self updateInterfaceFoPolicies];
     [self reloadModel];
     
     self.model.resetReadFlagAutomatically = YES;
-    [self.model setSubscribedToNotifications:YES];
     [self.model resetReadFlagWithCompletion:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
     self.model.resetReadFlagAutomatically = NO;
-    [self.model setSubscribedToNotifications:NO];
 }
 
 #pragma mark - UITableView DataSource
@@ -251,6 +257,13 @@
                                                                       target:self
                                                                       action:@selector(addButtonAction:)];
         self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self.model updateModelWithCompletion:nil];
+    if (self.model.resetReadFlagAutomatically) {
+        [self.model resetReadFlagWithCompletion:nil];
     }
 }
 

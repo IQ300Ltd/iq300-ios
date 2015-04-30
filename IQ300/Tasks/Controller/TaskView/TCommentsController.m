@@ -97,7 +97,12 @@
     [super viewWillAppear:animated];
     
     self.parentViewController.navigationItem.rightBarButtonItem = nil;
-    
+ 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
     self.resetReadFlagAutomatically = YES;
     [self resetReadFlag];
     [self updateNoDataLabelVisibility];
@@ -106,6 +111,10 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
+
     self.resetReadFlagAutomatically = NO;
 }
 
@@ -157,7 +166,14 @@
     return @"comments";
 }
 
+- (void)applicationWillEnterForeground {
+    if (self.resetReadFlagAutomatically) {
+        [self resetReadFlag];
+    }
+}
+
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self unsubscribeFromIQNotifications];
 }
 
