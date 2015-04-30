@@ -89,7 +89,20 @@
                                                  name:IQTasksDidLeavedNotification
                                                object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
     [self updateCounters];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+        
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
 }
 
 - (BOOL)isLeftMenuEnabled {
@@ -173,6 +186,10 @@
     if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
         NSLog(@"Failed to delete task by id %@ with error: %@", taskId, saveError);
     }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateCounters];
 }
 
 @end

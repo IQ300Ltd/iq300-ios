@@ -52,7 +52,9 @@
 }
 
 - (void)setBadgeValue:(NSNumber *)badgeValue {
-    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    if(!self.resetReadFlagAutomatically) {
+        self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    }
 }
 
 - (NSNumber*)badgeValue {
@@ -146,7 +148,7 @@
                                              taskId:self.taskId
                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                 if (success) {
-                                                    self.badgeValue = @(0);
+                                                    self.tabBarItem.badgeValue = BadgTextFromInteger(0);
                                                 }
                                             }];
 }

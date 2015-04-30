@@ -75,7 +75,9 @@
 }
 
 - (void)setBadgeValue:(NSNumber *)badgeValue {
-    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    if(!self.model.resetReadFlagAutomatically) {
+        self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    }
 }
 
 - (NSNumber*)badgeValue {
@@ -240,7 +242,7 @@
 #pragma mark - IQTableModel Delegate
 
 - (void)modelCountersDidChanged:(TaskAttachmentsModel*)model {
-    self.badgeValue = self.model.unreadCount;
+    self.tabBarItem.badgeValue = BadgTextFromInteger([self.model.unreadCount integerValue]);
 }
 
 #pragma mark - Private methods

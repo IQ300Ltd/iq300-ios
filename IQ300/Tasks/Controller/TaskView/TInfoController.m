@@ -68,7 +68,9 @@
 }
 
 - (void)setBadgeValue:(NSNumber *)badgeValue {
-    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    if(!self.resetReadFlagAutomatically) {
+        self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    }
 }
 
 - (NSNumber*)badgeValue {
@@ -306,15 +308,6 @@
                                   }];
 }
 
-- (void)updateCounters {
-    [[IQService sharedService] taskChangesCounterById:self.task.taskId
-                                              handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
-                                                  if (success && counter && !self.resetReadFlagAutomatically) {
-                                                      self.badgeValue = counter.details;
-                                                  }
-                                              }];
-}
-
 - (void)markTaskAsReadedIfNeed {
     if ([self.task.status isEqualToString:@"new"] &&
         [self.task.executor.userId isEqualToNumber:[IQSession defaultSession].userId]) {
@@ -330,7 +323,6 @@
 }
 
 - (void)applicationWillEnterForeground {
-    [self updateCounters];
     [self updateTask];
 }
 
@@ -373,7 +365,7 @@
                                              taskId:self.task.taskId
                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                 if (success) {
-                                                    self.badgeValue = @(0);
+                                                    self.tabBarItem.badgeValue = BadgTextFromInteger(0);
                                                 }
                                             }];
 }
