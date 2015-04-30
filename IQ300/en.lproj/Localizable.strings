@@ -132,3 +132,4 @@
 "Failed to change a task:%@" = "Failed to change a task:%@";
 "Inbox" = "Inbox";
 "Outbox" = "Outbox";
+"template" = "Template";

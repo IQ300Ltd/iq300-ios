@@ -262,8 +262,9 @@
     _messagesImageView.hidden = !showCommentsCount;
     _commentsCountLabel.text = [NSString stringWithFormat:@"%@", _item.commentsCount];
     
-    _statusLabel.textColor = [TaskHelper colorForTaskType:_item.status];
-    _statusLabel.text = NSLocalizedString(_item.status, nil);
+    NSString * status = ([[_item.type lowercaseString] isEqualToString:@"templatetask"]) ? @"template" : _item.status;
+    _statusLabel.textColor = [TaskHelper colorForTaskType:status];
+    _statusLabel.text = NSLocalizedString(status, nil);
     [self updateUIForState];
     
     [self setNeedsLayout];
