@@ -14,10 +14,12 @@
 + (RKObjectMapping*)objectMapping {
     RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"overdue" : @"overdue",
-                                                  @"inbox"   : @"inbox",
-                                                  @"outbox"  : @"outbox",
-                                                  @"total"   : @"total"
+                                                  @"menu_counters.overdue"   : @"overdue",
+                                                  @"menu_counters.new"       : @"inboxNew",
+                                                  @"menu_counters.browsed"   : @"inboxBrowsed",
+                                                  @"menu_counters.completed" : @"outboxCompleted",
+                                                  @"menu_counters.refused"   : @"outboxRefused",
+                                                  @"total"                   : @"total"
                                                   }];
     return mapping;
 }

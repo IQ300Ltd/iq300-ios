@@ -729,7 +729,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     descriptor = [IQServiceResponse responseDescriptorForClass:[TasksMenuCounters class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/tasks/menu_counters"
-                                                   fromKeyPath:@"menu_counters"
+                                                   fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];

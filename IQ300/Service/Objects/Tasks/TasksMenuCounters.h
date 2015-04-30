@@ -13,8 +13,10 @@
 @interface TasksMenuCounters : NSObject
 
 @property (nonatomic, strong) NSNumber * overdue;
-@property (nonatomic, strong) NSNumber * inbox;
-@property (nonatomic, strong) NSNumber * outbox;
+@property (nonatomic, strong) NSNumber * inboxNew;
+@property (nonatomic, strong) NSNumber * inboxBrowsed;
+@property (nonatomic, strong) NSNumber * outboxCompleted;
+@property (nonatomic, strong) NSNumber * outboxRefused;
 @property (nonatomic, strong) NSNumber * total;
 
 + (RKObjectMapping*)objectMapping;

@@ -91,7 +91,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return nil;
 }
 
-
 - (id)init {
     self = [super init];
     if(self) {

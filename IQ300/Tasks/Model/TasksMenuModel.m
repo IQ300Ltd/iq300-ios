@@ -27,6 +27,22 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 @implementation TasksMenuModel
 
++ (NSString*)counterPropertyNameForIndexPath:(NSIndexPath*)indexPath {
+    static NSDictionary * _counterPropertyNames = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _counterPropertyNames = @{
+                                  @(1) : @"overdue",
+                                  @(3) : @"inboxNew",
+                                  @(4) : @"inboxBrowsed",
+                                  @(6) : @"outboxCompleted",
+                                  @(7) : @"outboxRefused"
+                                  };
+    });
+    
+    return [_counterPropertyNames objectForKey:@(indexPath.row)];
+}
+
 - (id)init {
     self = [super init];
     
@@ -125,10 +141,10 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (NSString*)badgeTextAtIndexPath:(NSIndexPath*)indexPath {
     NSInteger badgeValue = -1;
-//    NSString * propertyName = [self folderForMenuItemAtIndexPath:indexPath];
-//    if(propertyName && self.counters && [self.counters respondsToSelector:NSSelectorFromString(propertyName)]) {
-//        badgeValue = [[self.counters valueForKey:propertyName] integerValue];
-//    }
+    NSString * propertyName = [TasksMenuModel counterPropertyNameForIndexPath:indexPath];
+    if(propertyName && self.counters && [self.counters respondsToSelector:NSSelectorFromString(propertyName)]) {
+        badgeValue = [[self.counters valueForKey:propertyName] integerValue];
+    }
     
     return BadgTextFromInteger(badgeValue);
 }
