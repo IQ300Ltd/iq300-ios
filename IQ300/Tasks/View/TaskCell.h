@@ -29,7 +29,7 @@
 @property (nonatomic, readonly) UILabel * statusLabel;
 @property (nonatomic, readonly) UIView * leftView;
 
-@property (nonatomic, assign) BOOL showOverdue;
+@property (nonatomic, assign) BOOL highlightTasks;
 
 @property (nonatomic, strong) IQTask * item;
 

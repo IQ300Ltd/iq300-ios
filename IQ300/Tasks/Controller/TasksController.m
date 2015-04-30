@@ -32,6 +32,7 @@
     TasksMenuModel * _menuModel;
     BOOL _isTaskOpenProcessing;
     UITapGestureRecognizer * _singleTapGesture;
+    BOOL _highlightTasks;
 }
 
 @end
@@ -66,6 +67,7 @@
         
         self.model = [[TasksModel alloc] init];
         _menuModel = [[TasksMenuModel alloc] init];
+        _highlightTasks = YES;
     }
     return self;
 }
@@ -168,6 +170,9 @@
             [self scrollToTopAnimated:NO delay:0.0f];
         }
     }];
+    
+    _highlightTasks = !([self.model.folder isEqualToString:@"archive"] ||
+                               [self.model.folder isEqualToString:@"templates"]);
 }
 
 - (void)updateGlobalCounter {
@@ -189,8 +194,7 @@
     }
     
     IQTask * task = [self.model itemAtIndexPath:indexPath];
-    cell.showOverdue = !([self.model.folder isEqualToString:@"archive"] ||
-                         [self.model.folder isEqualToString:@"templates"]);
+    cell.highlightTasks = _highlightTasks;
     cell.item = task;
     
     return cell;
