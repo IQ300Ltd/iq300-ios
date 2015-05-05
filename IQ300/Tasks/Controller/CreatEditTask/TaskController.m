@@ -146,7 +146,7 @@
     cell.item = item;
     cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
     cell.enabled = [self.model isItemEditableAtIndexPath:indexPath];
-    
+
     return cell;
 }
 
@@ -355,6 +355,7 @@
 }
 
 - (void)showDataPickerForIndexPath:(NSIndexPath*)indexPath {
+    IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:indexPath];
     BOOL isBeginDateEdit = (indexPath.row == 4);
     NSString * title = [NSString stringWithFormat:@"%@:", NSLocalizedString((isBeginDateEdit) ? @"Begins" : @"Perform to", nil)];
     NSDate * selectedDate = (isBeginDateEdit) ? self.model.task.startDate : self.model.task.endDate;
@@ -381,7 +382,7 @@
                                                                      selectedDate:selectedDate
                                                                         doneBlock:doneBlock
                                                                       cancelBlock:nil
-                                                                           origin:self.view];
+                                                                           origin:cell.titleTextView];
     
 #ifdef USE_DEFAULT_LOCALIZATION
     picker.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"ru_RU"];
