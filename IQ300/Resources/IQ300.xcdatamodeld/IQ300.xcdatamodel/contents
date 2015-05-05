@@ -18,6 +18,7 @@
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="previewURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="unifiedContentType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unread" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQComment" inverseName="attachments" inverseEntity="IQComment" syncable="YES"/>
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="attachments" inverseEntity="IQTask" syncable="YES"/>
     </entity>
@@ -29,6 +30,7 @@
         <attribute name="createShortDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="unread" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="IQAttachment" inverseName="comments" inverseEntity="IQAttachment" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="comments" inverseEntity="IQUser" syncable="YES"/>
         <relationship name="conversation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="lastComment" inverseEntity="IQConversation" syncable="YES"/>
@@ -191,8 +193,8 @@
     </entity>
     <elements>
         <element name="CViewInfo" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="IQAttachment" positionX="0" positionY="0" width="128" height="240"/>
-        <element name="IQComment" positionX="0" positionY="0" width="128" height="195"/>
+        <element name="IQAttachment" positionX="0" positionY="0" width="128" height="255"/>
+        <element name="IQComment" positionX="0" positionY="0" width="128" height="210"/>
         <element name="IQCommunity" positionX="0" positionY="0" width="128" height="165"/>
         <element name="IQContact" positionX="0" positionY="0" width="128" height="105"/>
         <element name="IQConversation" positionX="0" positionY="0" width="128" height="195"/>
