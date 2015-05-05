@@ -10,8 +10,11 @@
 
 @class IQAttachment;
 
-@interface TAttachmentCell : UITableViewCell
+@interface TAttachmentCell : UITableViewCell {
+    UIEdgeInsets _contentBackgroundInsets;
+}
 
 @property (nonatomic, strong) IQAttachment * item;
+@property (nonatomic, readonly) UIView * contentBackgroundView;
 
 @end

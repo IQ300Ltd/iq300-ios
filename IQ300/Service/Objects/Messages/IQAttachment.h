@@ -24,6 +24,7 @@
 @property (nonatomic, strong) NSString * originalURL;
 @property (nonatomic, strong) NSString * localURL;
 @property (nonatomic, strong) NSString * previewURL;
+@property (nonatomic, strong) NSNumber * unread;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

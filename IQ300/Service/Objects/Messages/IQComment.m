@@ -21,6 +21,7 @@
 @dynamic author;
 @dynamic attachments;
 @dynamic commentStatus;
+@dynamic unread;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
@@ -29,7 +30,8 @@
                                                   @"id"            : @"commentId",
                                                   @"discussion_id" : @"discussionId",
                                                   @"created_at"    : @"createDate",
-                                                  @"body"          : @"body"
+                                                  @"body"          : @"body",
+                                                  @"unread"        : @"unread"
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"author"

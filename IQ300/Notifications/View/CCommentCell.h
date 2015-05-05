@@ -18,6 +18,7 @@
 
 @interface CCommentCell : SWTableViewCell {
     UIEdgeInsets _contentInsets;
+    UIEdgeInsets _contentBackgroundInsets;
 }
 
 @property (nonatomic, strong) UIView * contentBackgroundView;
