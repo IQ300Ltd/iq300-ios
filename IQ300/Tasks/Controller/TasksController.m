@@ -348,7 +348,7 @@
     if (indexPath.row == 3 || indexPath.row == 4) {
         title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Inbox", nil), menuItem.title];
     }
-    else     if (indexPath.row == 6 || indexPath.row == 7) {
+    else if (indexPath.row == 6 || indexPath.row == 7) {
         title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Outbox", nil), menuItem.title];
     }
     

@@ -7,7 +7,7 @@
 //
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
-#import "NGroupModel.h"
+#import "NotificationsGroupModel.h"
 #import "IQService.h"
 #import "IQNotificationGroupsHolder.h"
 #import "IQCounters.h"
@@ -24,7 +24,7 @@
 static NSString * NReuseIdentifier = @"NReuseIdentifier";
 static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
-@interface NGroupModel() <NSFetchedResultsControllerDelegate> {
+@interface NotificationsGroupModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;
     NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
@@ -35,7 +35,15 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 @end
 
-@implementation NGroupModel
+@implementation NotificationsGroupModel
+
++ (BOOL)isGroupHasUnreadNotificationsWithId:(NSString*)groupSid {
+    NSManagedObjectContext * context = [IQService sharedService].context;
+    NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"IQNotificationsGroup"];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"sID == %@", groupSid]];
+    IQNotificationsGroup * group = [[context executeFetchRequest:request error:nil] lastObject];
+    return ([group.unreadCount integerValue] > 0);
+}
 
 - (id)init {
     self = [super init];

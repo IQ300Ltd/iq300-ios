@@ -21,6 +21,7 @@
 #import "MessagesModel.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "DeletedObjects.h"
+#import "NotificationsModel.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -271,7 +272,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                              item.commentStatus = @(IQCommentStatusSent);
                                              [item.managedObjectContext saveToPersistentStore:&saveError];
                                              if(saveError) {
-                                                 NSLog(@"Create comment status error: %@", saveError);
+                                                 NSLog(@"Set comment status error: %@", saveError);
                                              }
                                              if (completion) {
                                                  completion(error);
@@ -333,6 +334,34 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         return [_fetchController indexPathForObject:[filteredItems lastObject]];
     }
     return nil;
+}
+
+- (void)markCommentsReadedAtIndexPaths:(NSArray *)indexPaths {
+    NSMutableArray * items = [NSMutableArray array];
+    for (NSIndexPath * indexPath in indexPaths) {
+        IQComment * comment = [self itemAtIndexPath:indexPath];
+        if ([comment.unread boolValue]) {
+            [items addObject:comment];
+        }
+    }
+    
+    if ([items count] > 0) {
+        [[IQService sharedService] markCommentsAsReadedWithIds:[items valueForKey:@"commentId"]
+                                                  discussionId:self.discussion.discussionId
+                                                       handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                           if (success) {
+                                                               [items setValue:@(NO) forKey:@"unread"];
+                                                               
+                                                               NSManagedObjectContext * context = [IQService sharedService].context;
+                                                               NSError * saveError = nil;
+                                                               if(![context saveToPersistentStore:&saveError] ) {
+                                                                   NSLog(@"Failed save after mark related notifications: %@", saveError);
+                                                               }
+
+                                                               [NotificationsModel markNotificationsRelatedToComments:items];
+                                                           }
+                                                       }];
+    }
 }
 
 #pragma mark - Private methods
@@ -515,7 +544,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                               destinationClass:[IQComment class]
                                                             managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
                                                                          error:&serializeError];
-                
+                comment.unread = @(YES);
                 if(comment) {
                     [weakSelf modelNewComment:comment];
                 }

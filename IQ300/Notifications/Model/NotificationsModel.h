@@ -19,6 +19,9 @@
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
+
++ (void)markNotificationsRelatedToComments:(NSArray*)comments;
+
 /**
  UpdateModelWithCompletion. Load new data.
  

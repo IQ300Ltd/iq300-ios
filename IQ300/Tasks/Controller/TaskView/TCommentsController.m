@@ -82,6 +82,7 @@
                                                     }];
                                                     [self.tableView reloadData];
                                                     [self updateNoDataLabelVisibility];
+                                                    [self markVisibleItemsAsReaded];
                                                 }
                                             }];
     }

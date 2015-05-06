@@ -258,11 +258,15 @@
 }
 
 - (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    //Enable pop to root only for unread mode
+    NSString * groupSid = self.model.loadUnreadOnly ? notification.groupSid : nil;
     BOOL isDiscussionNotification = (notification.discussionId != nil);
+    
     [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
                                            completion:^(TaskTabController * controller, NSError *error) {
                                                if (controller) {
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
+                                                   controller.notificationsGroupSid = groupSid;
                                                    [self.navigationController pushViewController:controller animated:YES];
                                                    
                                                    [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];

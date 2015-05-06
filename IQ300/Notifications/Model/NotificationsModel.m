@@ -36,6 +36,34 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 @implementation NotificationsModel
 
++ (void)markNotificationsRelatedToComments:(NSArray*)comments {
+    NSManagedObjectContext * context = [IQService sharedService].context;
+    NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQNotification"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"readed == NO AND commentId IN %@", [comments valueForKey:@"commentId"]]];
+    
+    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+        if ([objects count] > 0) {
+            [objects setValue:@(YES) forKey:@"readed"];
+            
+            IQNotification * notification = [objects firstObject];
+            NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"IQNotificationsGroup"];
+            [request setPredicate:[NSPredicate predicateWithFormat:@"sID == %@", notification.groupSid]];
+            IQNotificationsGroup * group = [[context executeFetchRequest:request error:nil] lastObject];
+            
+            if ([group.unreadCount integerValue] == [objects count]) {
+                group.unreadCount = @(0);
+                group.lastUnreadNotification = nil;
+            }
+            
+            NSError * saveError = nil;
+            if(![context saveToPersistentStore:&saveError] ) {
+                NSLog(@"Failed save after mark related notifications: %@", saveError);
+            }
+        }
+    }];
+}
+
+
 - (id)init {
     self = [super init];
     if(self) {

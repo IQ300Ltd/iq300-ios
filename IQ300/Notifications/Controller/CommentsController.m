@@ -24,10 +24,13 @@
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "IQDrawerController.h"
+#import "DispatchAfterExecution.h"
 
 #import "IQContact.h"
 #import "UserPickerController.h"
 #import "IQService.h"
+
+#define DISPATCH_DELAY 1.0f
 
 @interface CommentsController() <UserPickerControllerDelegate, SWTableViewCellDelegate> {
     CommentsView * _mainView;
@@ -39,6 +42,7 @@
     NSRange _inputWordRange;
     NSString * _curUserNick;
     NSArray * _avalibleNicks;
+    dispatch_after_block _cancelBlock;
 }
 
 @end
@@ -402,6 +406,7 @@
         dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
             _mainView.tableView.hidden = NO;
             [self hideActivityIndicator];
+            [self markVisibleItemsAsReaded];
         });
     }];
 }
@@ -493,6 +498,27 @@
     }
     
     return YES;
+}
+
+#pragma mark - ScrollView delefates
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self markVisibleItemsAsReaded];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self markVisibleItemsAsReaded];
+}
+
+- (void)markVisibleItemsAsReaded {
+    if(_cancelBlock) {
+        cancel_dispatch_after_block(_cancelBlock);
+    }
+    
+    NSArray * indexPaths = [[self.tableView indexPathsForVisibleRows] copy];
+    _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
+        [self.model markCommentsReadedAtIndexPaths:indexPaths];
+    });
 }
 
 #pragma mark - Scrolls

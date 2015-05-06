@@ -14,7 +14,7 @@
 #import "NotificationsView.h"
 #import "NotificationsMenuModel.h"
 #import "NGroupCell.h"
-#import "NGroupModel.h"
+#import "NotificationsGroupModel.h"
 #import "IQNotificationsGroup.h"
 #import "IQNotification.h"
 #import "IQCounters.h"
@@ -45,7 +45,7 @@
     if (self) {
         self.needFullReload = YES;
         
-        self.model = [[NGroupModel alloc] init];
+        self.model = [[NotificationsGroupModel alloc] init];
         
         _menuModel = [[NotificationsMenuModel alloc] init];
         
@@ -330,11 +330,15 @@
 }
 
 - (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    //Enable pop to root only for unread mode
+    NSString * groupSid = self.model.loadUnreadOnly ? notification.groupSid : nil;
     BOOL isDiscussionNotification = (notification.discussionId != nil);
+    
     [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
                                            completion:^(TaskTabController * controller, NSError *error) {
                                                if (controller) {
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
+                                                   controller.notificationsGroupSid = groupSid;
                                                    [self.navigationController pushViewController:controller animated:YES];
                                                    
                                                    if(indexPath) {

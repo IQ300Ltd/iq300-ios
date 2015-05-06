@@ -14,4 +14,6 @@
 @property (nonatomic, strong) CommentsModel * model;
 @property (nonatomic, strong) NSNumber * highlightedCommentId;
 
+- (void)markVisibleItemsAsReaded;
+
 @end

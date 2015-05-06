@@ -10,11 +10,13 @@
 
 @class IQCounters;
 
-@interface NGroupModel : NSObject<IQTableModel>
+@interface NotificationsGroupModel : NSObject<IQTableModel>
 
 @property (nonatomic, assign) BOOL loadUnreadOnly;
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+
++ (BOOL)isGroupHasUnreadNotificationsWithId:(NSString*)groupSid;
 
 /**
  UpdateModelWithCompletion. Load new data.
