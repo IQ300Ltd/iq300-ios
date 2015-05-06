@@ -35,7 +35,7 @@
         
         _clearTextFieldButton = [[UIButton alloc] init];
         [_clearTextFieldButton setImage:[UIImage imageNamed:@"clear_button_icon.png"] forState:UIControlStateNormal];
-        [_clearTextFieldButton setFrame:CGRectMake(0, 0, 13.0f, 13.0f)];
+        [_clearTextFieldButton setFrame:CGRectMake(0, 0, SEARCH_HEIGHT, SEARCH_HEIGHT)];
 
         _searchBar = [[ExTextField alloc] init];
         _searchBar.backgroundColor = [UIColor clearColor];

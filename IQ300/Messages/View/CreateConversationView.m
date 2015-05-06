@@ -31,7 +31,7 @@
         
         _clearTextFieldButton = [[UIButton alloc] init];
         [_clearTextFieldButton setImage:[UIImage imageNamed:@"clear_button_icon.png"] forState:UIControlStateNormal];
-        [_clearTextFieldButton setFrame:CGRectMake(0, 0, 13.0f, 13.0f)];
+        [_clearTextFieldButton setFrame:CGRectMake(0, 0, 29.0f, 29.0f)];
         
         _userTextField = [[ExTextField alloc] init];
         _userTextField.rightView = _clearTextFieldButton;

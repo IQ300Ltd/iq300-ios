@@ -109,7 +109,7 @@
 
     UIButton * clearUserNameButton = [[UIButton alloc] init];
     [clearUserNameButton setImage:[UIImage imageNamed:@"clear_button_icon.png"] forState:UIControlStateNormal];
-    [clearUserNameButton setFrame:CGRectMake(0, 0, 13.0f, 13.0f)];
+    [clearUserNameButton setFrame:CGRectMake(0, 0, 19.0f, 19.0f)];
     [clearUserNameButton addTarget:self
                             action:@selector(clearFilter)
                   forControlEvents:UIControlEventTouchUpInside];
