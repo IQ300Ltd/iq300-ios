@@ -544,7 +544,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                               destinationClass:[IQComment class]
                                                             managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
                                                                          error:&serializeError];
-                comment.unread = @(YES);
                 if(comment) {
                     [weakSelf modelNewComment:comment];
                 }
