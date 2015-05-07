@@ -23,6 +23,7 @@
 #import "TaskNotifications.h"
 #import "NotificationsGroupModel.h"
 #import "IQTask.h"
+#import "NSManagedObject+ActiveRecord.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate> {
 }
@@ -33,7 +34,13 @@
 
 + (void)taskTabControllerForTaskWithId:(NSNumber*)taskId completion:(void (^)(TaskTabController * controller, NSError * error))completion {
     [[IQService sharedService] taskWithId:taskId handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
-        if (success) {
+        if (error.code == kCFURLErrorNotConnectedToInternet && !task) {
+            NSPredicate * predicate = [NSPredicate predicateWithFormat:@"discussionId == %@", taskId];
+            task = [IQTask objectWithPredicate:predicate
+                                     inContext:[IQService sharedService].context];
+        }
+        
+        if (task) {
             TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:task.taskId];
             TaskTabController * controller = [[TaskTabController alloc] init];
             controller.task = task;

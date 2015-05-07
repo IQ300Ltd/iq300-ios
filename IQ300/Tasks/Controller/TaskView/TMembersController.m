@@ -184,14 +184,24 @@
                                                                   userInfo:@{ @"taskId" : self.model.taskId }];
             }
             else {
-                [self showErrorAlertWithMessage:NSLocalizedString(@"You can not leave the task", nil)];
+                if (error.code == kCFURLErrorNotConnectedToInternet) {
+                    [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+                }
+                else {
+                    [self showErrorAlertWithMessage:NSLocalizedString(@"You can not leave the task", nil)];
+                }
             }
         }];
     }
     else {
         [self.model removeMemberWithId:member.memberId completion:^(NSError *error) {
             if (error) {
-                [self showErrorAlertWithMessage:NSLocalizedString(@"You can not remove the user from the task", nil)];
+                if (error.code == kCFURLErrorNotConnectedToInternet) {
+                    [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+                }
+                else {
+                    [self showErrorAlertWithMessage:NSLocalizedString(@"You can not remove the user from the task", nil)];
+                }
             }
         }];
     }
@@ -200,10 +210,19 @@
 #pragma mark - ContactPickerController Delegate
 
 - (void)contactPickerController:(ContactPickerController *)picker didPickUser:(IQUser *)user {
+    __weak typeof (self) weakSelf = self;
     [self.model addMemberWithUserId:user.userId completion:^(NSError *error) {
-        
+        [weakSelf.navigationController popViewControllerAnimated:YES];
+
+        if (error) {
+            if (error.code == kCFURLErrorNotConnectedToInternet) {
+                [weakSelf showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+            }
+            else {
+                
+            }
+        }
     }];
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - IQTableModel Delegate

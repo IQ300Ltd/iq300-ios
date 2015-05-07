@@ -214,7 +214,7 @@
     [self.model deleteComment:comment completion:^(NSError *error) {
         if (error) {
             if (error.code == kCFURLErrorNotConnectedToInternet) {
-                [self showHudWindowWithText:NSLocalizedString(@"It is necessary to connect to the Internet", nil)];
+                [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
             }
             else {
                 
@@ -317,7 +317,7 @@
                      }
                      else {
                          if (error.code == kCFURLErrorNotConnectedToInternet) {
-                             [self showHudWindowWithText:NSLocalizedString(@"It is necessary to connect to the Internet", nil)];
+                             [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
                          }
                          else {
                              

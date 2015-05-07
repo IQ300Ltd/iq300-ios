@@ -226,10 +226,20 @@
 - (void)swipeableTableViewCell:(NGroupCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
     __weak typeof (self) weakSelf = self;
     void(^completion)(NSError *error) = ^(NSError *error) {
-        if([weakSelf.model numberOfItemsInSection:0] == 0) {
-            [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-                [weakSelf updateNoDataLabelVisibility];
-            }];
+        if (!error) {
+            if([weakSelf.model numberOfItemsInSection:0] == 0) {
+                [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+                    [weakSelf updateNoDataLabelVisibility];
+                }];
+            }
+            else {
+                if (error.code == kCFURLErrorNotConnectedToInternet) {
+                    [weakSelf showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+                }
+                else {
+                    
+                }
+            }
         }
     };
     
@@ -271,6 +281,14 @@
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if(buttonIndex == 1) {
                                   [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
+                                      if (error) {
+                                          if (error.code == kCFURLErrorNotConnectedToInternet) {
+                                              [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+                                          }
+                                          else {
+                                              
+                                          }
+                                      }
                                   }];
                               }
                           }];
@@ -345,6 +363,14 @@
                                                        [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
                                                    }
                                                }
+                                               else if (error) {
+                                                   if (error.code == kCFURLErrorNotConnectedToInternet) {
+                                                       [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+                                                   }
+                                                   else {
+                                                       
+                                                   }
+                                               }
                                            }];
 }
 
@@ -365,6 +391,14 @@
                                                 
                                                 if(indexPath) {
                                                     [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
+                                                }
+                                            }
+                                            else if (error) {
+                                                if (error.code == kCFURLErrorNotConnectedToInternet) {
+                                                    [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+                                                }
+                                                else {
+                                                    
                                                 }
                                             }
                                         }];

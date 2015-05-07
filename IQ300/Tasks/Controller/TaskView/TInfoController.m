@@ -189,11 +189,23 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
+    __weak typeof (self) weakSelf = self;
+    void(^completion)(NSError *error) = ^(NSError *error) {
+        if (error) {
+            if (error.code == kCFURLErrorNotConnectedToInternet) {
+                [weakSelf showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+            }
+            else {
+                
+            }
+        }
+    };
+
     if (!isCellChecked) {
-        [self.model completeTodoItemAtIndexPath:indexPath completion:nil];
+        [self.model completeTodoItemAtIndexPath:indexPath completion:completion];
     }
     else {
-        [self.model rollbackTodoItemWithId:indexPath completion:nil];
+        [self.model rollbackTodoItemWithId:indexPath completion:completion];
     }
 }
 
@@ -234,6 +246,13 @@
                                                     [self updateTaskPolicies];
                                                 }
                                                 else {
+                                                    if (error.code == kCFURLErrorNotConnectedToInternet) {
+                                                        [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+                                                    }
+                                                    else {
+                                                        
+                                                    }
+
                                                     [actionButton setEnabled:YES];
                                                 }
                                             }];
