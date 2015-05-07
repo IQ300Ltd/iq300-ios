@@ -128,6 +128,10 @@ static id _sharedService = nil;
     return _objectManager.managedObjectStore.mainQueueManagedObjectContext;
 }
 
+- (NSString*)serviceUrl {
+    return _serviceUrl;
+}
+
 #ifdef _SYSTEMCONFIGURATION_H
 - (void)setReachabilityStatusChangeBlock:(void (^)(TCServiceReachabilityStatus status))block {
     self.serviceReachabilityStatusBlock = block;

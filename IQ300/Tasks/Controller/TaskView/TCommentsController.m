@@ -5,6 +5,7 @@
 //  Created by Tayphoon on 17.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
+#import <Reachability/Reachability.h>
 
 #import "TCommentsController.h"
 #import "IQService+Messages.h"
@@ -16,6 +17,8 @@
 #import "IQService+Tasks.h"
 #import "TChangesCounter.h"
 #import "IQNotificationCenter.h"
+#import "NSManagedObject+ActiveRecord.h"
+#import "IQDiscussion.h"
 
 @interface TCommentsController () {
     __weak id _notfObserver;
@@ -64,27 +67,8 @@
 - (void)setDiscussionId:(NSNumber*)discussionId {
     if (discussionId && ![_discussionId isEqualToNumber:discussionId]) {
         _discussionId = discussionId;
-        
-        [[IQService sharedService] discussionWithId:discussionId
-                                            handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
-                                                if(success) {
-                                                    CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
-                                                    self.model = model;
-                                                    [self.model reloadModelWithCompletion:^(NSError *error) {
-                                                        if(!error) {
-                                                            [self.tableView reloadData];
-                                                            [self scrollToBottomAnimated:NO delay:0.0f];
-                                                            [self.tableView setHidden:NO];
-                                                        }
-                                                        
-                                                        self.needFullReload = NO;
-                                                        [self hideActivityIndicator];
-                                                    }];
-                                                    [self.tableView reloadData];
-                                                    [self updateNoDataLabelVisibility];
-                                                    [self markVisibleItemsAsReaded];
-                                                }
-                                            }];
+        self.model = nil; //if discussion id changed remove old model
+        [self createModelIfNeed];
     }
 }
 
@@ -117,6 +101,29 @@
                                                   object:nil];
 
     self.resetReadFlagAutomatically = NO;
+}
+
+#pragma mark - Reachability
+
+- (void)startReachabilityCheck {
+    // we probably have no internet connection, so lets check with Reachability
+    NSURL * serviceUrl = [NSURL URLWithString:[IQService sharedService].serviceUrl];
+    Reachability *reachability = [Reachability reachabilityWithHostname:serviceUrl.host];
+    
+    if (![reachability isReachable]) {
+        [reachability setReachableBlock:^(Reachability *reachability) {
+            if ([reachability isReachable]) {
+                DNSLog(@"Internet is now reachable");
+                [reachability stopNotifier];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self createModelIfNeed];
+                });
+            }
+        }];
+        
+        [reachability startNotifier];
+    }
 }
 
 #pragma mark - Private methods
@@ -170,6 +177,43 @@
 - (void)applicationWillEnterForeground {
     if (self.resetReadFlagAutomatically) {
         [self resetReadFlag];
+    }
+}
+
+- (void)createModelIfNeed {
+    if (!self.model) {
+        [[IQService sharedService] discussionWithId:self.discussionId
+                                            handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
+                                                if(!discussion) {
+                                                    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"discussionId == %@", self.discussionId];
+                                                    discussion = [IQDiscussion objectWithPredicate:predicate
+                                                                                         inContext:[IQService sharedService].context];
+                                                }
+                                                
+                                                if (discussion) {
+                                                    CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
+                                                    self.model = model;
+                                                    [self.model reloadModelWithCompletion:^(NSError *error) {
+                                                        if(!error) {
+                                                            [self.tableView reloadData];
+                                                            [self scrollToBottomAnimated:NO delay:0.0f];
+                                                            [self.tableView setHidden:NO];
+                                                            [self markVisibleItemsAsReaded];
+                                                        }
+                                                        
+                                                        self.needFullReload = NO;
+                                                    }];
+                                                    [self.tableView reloadData];
+                                                    [self updateNoDataLabelVisibility];
+                                                }
+                                                else {
+                                                    [self hideActivityIndicator];
+
+                                                    if(error.code == kCFURLErrorNotConnectedToInternet) {
+                                                        [self startReachabilityCheck];
+                                                    }
+                                                }
+                                            }];
     }
 }
 

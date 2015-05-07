@@ -66,6 +66,8 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
     if(self) {
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        
         UIView * contentView = self.contentView;
         _contentInsets = UIEdgeInsetsMakeWithInset(CONTENT_INSETS);
         _contentBackgroundInsets = UIEdgeInsetsZero;

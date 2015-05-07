@@ -147,7 +147,7 @@
                                                  name:IQDrawerDidShowNotification
                                                object:nil];
 
-    if([IQSession defaultSession]) {
+    if([IQSession defaultSession] && self.model) {
         if(self.needFullReload) {
             [self showActivityIndicatorOnView:_mainView];
         }

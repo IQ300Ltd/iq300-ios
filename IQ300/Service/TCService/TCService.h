@@ -37,6 +37,7 @@ typedef void(^ObjectRequestCompletionHandler)(BOOL success, id object, NSData * 
 @property (nonatomic, readonly) RKObjectManager * objectManager;
 @property (nonatomic, strong) Class<TCResponse> responseClass;
 @property (nonatomic, readonly) NSString * storeFileName;
+@property (nonatomic, readonly) NSString * serviceUrl;
 
 #ifdef _SYSTEMCONFIGURATION_H
 @property (readonly, nonatomic, assign) TCServiceReachabilityStatus serviceReachabilityStatus;
