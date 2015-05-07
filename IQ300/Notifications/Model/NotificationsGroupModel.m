@@ -292,7 +292,8 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)acceptNotificationsGroupAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
     IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
-    [[IQService sharedService] acceptNotificationWithId:item.lastNotification.notificationId
+    IQNotification * notification = (self.loadUnreadOnly) ? item.lastUnreadNotification : item.lastNotification;
+    [[IQService sharedService] acceptNotificationWithId:notification.notificationId
                                                 handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                     if(success) {
                                                         [self resetActionsForGroupNotification:item];
@@ -306,7 +307,8 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)declineNotificationsGroupAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
     IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
-   [[IQService sharedService] declineNotificationWithId:item.lastNotification.notificationId
+    IQNotification * notification = (self.loadUnreadOnly) ? item.lastUnreadNotification : item.lastNotification;
+    [[IQService sharedService] declineNotificationWithId:notification.notificationId
                                                  handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                      if(success) {
                                                          [self resetActionsForGroupNotification:item];
@@ -329,9 +331,10 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (void)resetActionsForGroupNotification:(IQNotificationsGroup*)group {
-    group.lastNotification.hasActions = @(NO);
-    group.lastNotification.availableActions = nil;
-    group.lastNotification.readed = @(YES);
+    IQNotification * notification = (self.loadUnreadOnly) ? group.lastUnreadNotification : group.lastNotification;
+    notification.hasActions = @(NO);
+    notification.availableActions = nil;
+    notification.readed = @(YES);
     
     group.unreadCount = @(0);
     
