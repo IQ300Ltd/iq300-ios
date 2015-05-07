@@ -5,6 +5,7 @@
 //  Created by Tayphoon on 20.11.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
+#import <MBProgressHUD/MBProgressHUD.h>
 
 #import "IQTableBaseController.h"
 #import "DispatchAfterExecution.h"
@@ -242,6 +243,18 @@
     if (_noDataLabel) {
         [_noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
     }
+}
+
+- (void)showHudWindowWithText:(NSString *)message {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    
+    // Configure for text only and offset down
+    hud.mode = MBProgressHUDModeText;
+    hud.detailsLabelText = message;
+    hud.margin = 10.f;
+    hud.removeFromSuperViewOnHide = YES;
+    
+    [hud hide:YES afterDelay:3];
 }
 
 - (void)dealloc {

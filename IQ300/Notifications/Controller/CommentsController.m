@@ -211,7 +211,17 @@
 - (void)swipeableTableViewCell:(CCommentCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
     NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
-    [self.model deleteComment:comment completion:nil];
+    [self.model deleteComment:comment completion:^(NSError *error) {
+        if (error) {
+            if (error.code == kCFURLErrorNotConnectedToInternet) {
+                [self showHudWindowWithText:NSLocalizedString(@"It is necessary to connect to the Internet", nil)];
+            }
+            else {
+                
+            }
+        }
+        [cell hideUtilityButtonsAnimated:YES];
+    }];
 }
 
 #pragma mark - DiscussionModelDelegate Delegate
@@ -305,8 +315,18 @@
                          _attachment = nil;
                          [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                      }
+                     else {
+                         if (error.code == kCFURLErrorNotConnectedToInternet) {
+                             [self showHudWindowWithText:NSLocalizedString(@"It is necessary to connect to the Internet", nil)];
+                         }
+                         else {
+                             
+                         }
+                     }
+                     
                      [_mainView.inputView.commentTextView setEditable:YES];
                      [_mainView.inputView.attachButton setEnabled:YES];
+                     _mainView.inputView.sendButton.enabled = ([_mainView.inputView.commentTextView.text length] > 0);
                      if(isTableScrolledToBottom) {
                          [self scrollToBottomAnimated:YES delay:0.5f];
                      }

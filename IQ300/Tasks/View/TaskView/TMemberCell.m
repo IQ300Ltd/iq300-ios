@@ -92,6 +92,7 @@
     [super prepareForReuse];
     
     [self hideUtilityButtonsAnimated:NO];
+    [self setRightUtilityButtons:nil];
 }
 
 - (void)setAvailableActions:(NSArray *)availableActions {

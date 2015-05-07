@@ -23,4 +23,6 @@
 
 - (void)updateNoDataLabelVisibility;
 
+- (void)showHudWindowWithText:(NSString*)message;
+
 @end

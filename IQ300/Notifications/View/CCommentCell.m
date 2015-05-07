@@ -360,6 +360,7 @@
     _contentBackgroundInsets = UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
     
+    [self hideUtilityButtonsAnimated:NO];
     [self setRightUtilityButtons:nil];
     
     _descriptionTextView.delegate = nil;
