@@ -117,6 +117,8 @@
     _userNameTextField = [[ExTextField alloc] init];
     _userNameTextField.rightView = clearUserNameButton;
     _userNameTextField.rightViewMode = UITextFieldViewModeWhileEditing;
+    _userNameTextField.placeholderInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 20.0f);
+    _userNameTextField.textInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 20.0f);
     _userNameTextField.font = [UIFont fontWithName:IQ_HELVETICA size:16];
     _userNameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     _userNameTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"User name", nil)

@@ -31,11 +31,13 @@
         
         _clearTextFieldButton = [[UIButton alloc] init];
         [_clearTextFieldButton setImage:[UIImage imageNamed:@"clear_button_icon.png"] forState:UIControlStateNormal];
-        [_clearTextFieldButton setFrame:CGRectMake(0, 0, 29.0f, 29.0f)];
+        [_clearTextFieldButton setFrame:CGRectMake(0, 0, 25.0f, 25.0f)];
         
         _userTextField = [[ExTextField alloc] init];
         _userTextField.rightView = _clearTextFieldButton;
         _userTextField.rightViewMode = UITextFieldViewModeWhileEditing;
+        _userTextField.placeholderInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 20.0f);
+        _userTextField.textInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 20.0f);
         _userNamelContainer = [self makeContainerWithField:_userTextField placeholder:@"User name or email"];
         [self addSubview:_userNamelContainer];
         
