@@ -485,14 +485,6 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     [self.objectManager addResponseDescriptor:descriptor];
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
-                                                              method:RKRequestMethodAny
-                                                         pathPattern:nil
-                                                             keyPath:nil
-                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassServerError)];
-    [self.objectManager addResponseDescriptor:descriptor];
-
-
-    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodDELETE
                                                          pathPattern:@"/api/v1/sessions"
                                                              keyPath:nil

@@ -339,12 +339,7 @@
                     [self.navigationController popViewControllerAnimated:YES];
                 }
                 else {
-                    if (error.code == kCFURLErrorNotConnectedToInternet) {
-                        [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-                    }
-                    else {
-                        
-                    }
+                    [self proccessServiceError:error];
                 }
                 [self hideActivityIndicator];
             }];

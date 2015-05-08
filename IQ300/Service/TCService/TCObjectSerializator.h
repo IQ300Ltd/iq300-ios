@@ -10,7 +10,7 @@
 
 @class RKManagedObjectStore;
 
-@interface ObjectSerializator : NSObject
+@interface TCObjectSerializator : NSObject
 
 + (id)objectFromJSONString:(NSString*)jsonString destinationClass:(Class)destinationClass managedObjectStore:(RKManagedObjectStore *)managedObjectStore error:(NSError**)error;
 + (id)objectFromJSONString:(NSString*)jsonString destinationClass:(Class)destinationClass error:(NSError**)error;

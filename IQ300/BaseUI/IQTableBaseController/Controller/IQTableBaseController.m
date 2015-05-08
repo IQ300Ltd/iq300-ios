@@ -257,6 +257,27 @@
     [hud hide:YES afterDelay:3];
 }
 
+- (void)showErrorAlertWithMessage:(NSString *)message {
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Attention", nil)
+                                                         message:message
+                                                        delegate:nil
+                                               cancelButtonTitle:@"OK"
+                                               otherButtonTitles:nil];
+    
+    [alertView show];
+}
+
+- (void)proccessServiceError:(NSError*)error {
+    if (error) {
+        if (error.code == kCFURLErrorNotConnectedToInternet) {
+            [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+        }
+        else {
+            [self showErrorAlertWithMessage:error.localizedDescription];
+        }
+    }
+}
+
 - (void)dealloc {
     _isDealocProcessing = YES;
     self.tableView.delegate = nil;

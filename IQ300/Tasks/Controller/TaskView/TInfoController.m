@@ -191,14 +191,7 @@
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
     __weak typeof (self) weakSelf = self;
     void(^completion)(NSError *error) = ^(NSError *error) {
-        if (error) {
-            if (error.code == kCFURLErrorNotConnectedToInternet) {
-                [weakSelf showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-            }
-            else {
-                
-            }
-        }
+        [weakSelf proccessServiceError:error];
     };
 
     if (!isCellChecked) {
@@ -246,12 +239,7 @@
                                                     [self updateTaskPolicies];
                                                 }
                                                 else {
-                                                    if (error.code == kCFURLErrorNotConnectedToInternet) {
-                                                        [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-                                                    }
-                                                    else {
-                                                        
-                                                    }
+                                                    [self proccessServiceError:error];
 
                                                     [actionButton setEnabled:YES];
                                                 }

@@ -304,16 +304,7 @@
                                                   [self.navigationController popViewControllerAnimated:YES];
                                               }
                                               else {
-                                                  if (error.code == kCFURLErrorNotConnectedToInternet) {
-                                                      [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-                                                  }
-                                                  else {
-                                                      [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                                                                         message:NSLocalizedStringWithFormat(@"Failed to create a task:%@", error)
-                                                               cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                               otherButtonTitles:nil
-                                                                        tapBlock:nil];
-                                                  }
+                                                  [self proccessServiceError:error];
                                               }
                                           }];
         }
@@ -324,16 +315,7 @@
                                                 [self.navigationController popViewControllerAnimated:YES];
                                             }
                                             else {
-                                                if (error.code == kCFURLErrorNotConnectedToInternet) {
-                                                    [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-                                                }
-                                                else {
-                                                    [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                                                                       message:NSLocalizedStringWithFormat(@"Failed to change a task:%@", error)
-                                                             cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                             otherButtonTitles:nil
-                                                                      tapBlock:nil];
-                                                }
+                                                [self proccessServiceError:error];
                                             }
                                         }];
         }

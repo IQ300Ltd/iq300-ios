@@ -212,14 +212,7 @@
     NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     [self.model deleteComment:comment completion:^(NSError *error) {
-        if (error) {
-            if (error.code == kCFURLErrorNotConnectedToInternet) {
-                [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-            }
-            else {
-                
-            }
-        }
+        [self proccessServiceError:error];
         [cell hideUtilityButtonsAnimated:YES];
     }];
 }
@@ -316,12 +309,7 @@
                          [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                      }
                      else {
-                         if (error.code == kCFURLErrorNotConnectedToInternet) {
-                             [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-                         }
-                         else {
-                             
-                         }
+                         [self proccessServiceError:error];
                      }
                      
                      [_mainView.inputView.commentTextView setEditable:YES];

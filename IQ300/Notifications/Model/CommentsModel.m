@@ -17,7 +17,7 @@
 #import "ALAsset+Extension.h"
 #import "NSString+UUID.h"
 #import "IQNotificationCenter.h"
-#import "ObjectSerializator.h"
+#import "TCObjectSerializator.h"
 #import "MessagesModel.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "DeletedObjects.h"
@@ -540,7 +540,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
             if(!requestError && count == 0) {
                 NSError * serializeError = nil;
                 Class commentClass = [IQComment class];
-                IQComment * comment = [ObjectSerializator objectFromDictionary:@{ NSStringFromClass(commentClass) : commentData }
+                IQComment * comment = [TCObjectSerializator objectFromDictionary:@{ NSStringFromClass(commentClass) : commentData }
                                                               destinationClass:[IQComment class]
                                                             managedObjectStore:[IQService sharedService].objectManager.managedObjectStore
                                                                          error:&serializeError];

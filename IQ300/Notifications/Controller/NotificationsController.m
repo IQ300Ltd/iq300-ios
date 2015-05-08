@@ -183,12 +183,7 @@
             }
         }
         else {
-            if (error.code == kCFURLErrorNotConnectedToInternet) {
-                [weakSelf showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-            }
-            else {
-                
-            }
+            [self proccessServiceError:error];
         }
     };
     
@@ -221,14 +216,7 @@
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if(buttonIndex == 1) {
                                   [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
-                                      if (error) {
-                                          if (error.code == kCFURLErrorNotConnectedToInternet) {
-                                              [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-                                          }
-                                          else {
-                                              
-                                          }
-                                      }
+                                      [self proccessServiceError:error];
                                   }];
                               }
                           }];
@@ -289,13 +277,8 @@
                                                    
                                                    [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
                                                }
-                                               else if (error) {
-                                                   if (error.code == kCFURLErrorNotConnectedToInternet) {
-                                                       [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-                                                   }
-                                                   else {
-                                                       
-                                                   }
+                                               else {
+                                                   [self proccessServiceError:error];
                                                }
                                            }];
 }
@@ -317,13 +300,8 @@
                                                 
                                                 [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
                                             }
-                                            else if (error) {
-                                                if (error.code == kCFURLErrorNotConnectedToInternet) {
-                                                    [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-                                                }
-                                                else {
-                                                    
-                                                }
+                                            else {
+                                                [self proccessServiceError:error];
                                             }
                                         }];
 }

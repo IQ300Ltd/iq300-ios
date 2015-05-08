@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Tayphoon. All rights reserved.
 //
 
-#import "ObjectSerializator.h"
+#import "TCObjectSerializator.h"
 #import <RestKit/RestKit.h>
 
 @interface NSObject(ObjectMapping)
@@ -17,7 +17,7 @@
 
 @end
 
-@implementation ObjectSerializator
+@implementation TCObjectSerializator
 
 + (id)objectFromJSONString:(NSString*)jsonString destinationClass:(Class)destinationClass managedObjectStore:(RKManagedObjectStore *)managedObjectStore error:(NSError**)error {
     NSDictionary * objectData = [self JSONDictionaryWithString:jsonString error:error];
@@ -28,7 +28,7 @@
 }
 
 + (id)objectFromJSONString:(NSString*)jsonString destinationClass:(Class)destinationClass error:(NSError**)error {
-    return [ObjectSerializator objectFromJSONString:jsonString destinationClass:destinationClass managedObjectStore:nil error:error];
+    return [TCObjectSerializator objectFromJSONString:jsonString destinationClass:destinationClass managedObjectStore:nil error:error];
 }
 
 + (id)objectFromDictionary:(NSDictionary*)data destinationClass:(Class)destinationClass managedObjectStore:(RKManagedObjectStore *)managedObjectStore error:(NSError**)error {
@@ -56,7 +56,7 @@
 }
 
 + (id)objectFromDictionary:(NSDictionary*)data destinationClass:(Class)destinationClass error:(NSError**)error {
-    return [ObjectSerializator objectFromDictionary:data destinationClass:destinationClass managedObjectStore:nil error:error];
+    return [TCObjectSerializator objectFromDictionary:data destinationClass:destinationClass managedObjectStore:nil error:error];
 }
 
 + (NSDictionary*)JSONDictionaryFromObject:(id)object error:(NSError**)error {    
@@ -100,7 +100,7 @@
 }
 
 + (RKObjectMapping*)objectMappingForClass:(Class)destinationClass request:(BOOL)request {
-    return [ObjectSerializator objectMappingForClass:destinationClass managedObjectStore:nil request:request];
+    return [TCObjectSerializator objectMappingForClass:destinationClass managedObjectStore:nil request:request];
 }
 
 + (RKObjectMapping*)objectMappingForClass:(Class)destinationClass managedObjectStore:(RKManagedObjectStore *)managedObjectStore request:(BOOL)request {
