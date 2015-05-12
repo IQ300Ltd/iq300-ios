@@ -58,6 +58,7 @@
 		7373ED661A8A2EB500719FCD /* DeviceToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 7373ED651A8A2EB500719FCD /* DeviceToken.m */; };
 		7379EEB31A11E26200D69BBD /* IQNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7379EEB21A11E26200D69BBD /* IQNavigationController.m */; };
 		7379EEBA1A11E47700D69BBD /* NotificationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7379EEB91A11E47700D69BBD /* NotificationsController.m */; };
+		737D6CBC1B022F95009F2DF8 /* IQService+Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 737D6CBB1B022F95009F2DF8 /* IQService+Notifications.m */; };
 		737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737DD2091A149C6900CC4443 /* IQDrawerController.m */; };
 		737DD2171A14E08000CC4443 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 737DD2151A14DFF000CC4443 /* SystemConfiguration.framework */; };
 		737DD2191A14E38100CC4443 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 737DD2181A14E38100CC4443 /* CoreData.framework */; };
@@ -435,6 +436,8 @@
 		7379EEB21A11E26200D69BBD /* IQNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNavigationController.m; sourceTree = "<group>"; };
 		7379EEB81A11E47700D69BBD /* NotificationsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsController.h; sourceTree = "<group>"; };
 		7379EEB91A11E47700D69BBD /* NotificationsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsController.m; sourceTree = "<group>"; };
+		737D6CBA1B022F95009F2DF8 /* IQService+Notifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IQService+Notifications.h"; sourceTree = "<group>"; };
+		737D6CBB1B022F95009F2DF8 /* IQService+Notifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IQService+Notifications.m"; sourceTree = "<group>"; };
 		737DD2081A149C6900CC4443 /* IQDrawerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQDrawerController.h; sourceTree = "<group>"; };
 		737DD2091A149C6900CC4443 /* IQDrawerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQDrawerController.m; sourceTree = "<group>"; };
 		737DD2151A14DFF000CC4443 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -1298,6 +1301,8 @@
 				738EA79D1A1DC5B40065D39F /* Objects */,
 				737DD22E1A14F00400CC4443 /* IQService.h */,
 				737DD22F1A14F00400CC4443 /* IQService.m */,
+				737D6CBA1B022F95009F2DF8 /* IQService+Notifications.h */,
+				737D6CBB1B022F95009F2DF8 /* IQService+Notifications.m */,
 				739850E41A2E023D00DB5B21 /* IQService+Messages.h */,
 				739850E51A2E023D00DB5B21 /* IQService+Messages.m */,
 				738EF82B1A9CB8D300894755 /* IQService+Tasks.h */,
@@ -2243,6 +2248,7 @@
 				73A50D141ADFBDAC00251CB7 /* IQTaskDataHolder.m in Sources */,
 				739850DF1A2DD4D700DB5B21 /* IQComment.m in Sources */,
 				739C3B651A3077320032C057 /* NSDate+IQFormater.m in Sources */,
+				737D6CBC1B022F95009F2DF8 /* IQService+Notifications.m in Sources */,
 				738EA7B21A1DE15B0065D39F /* UIViewController+LeftMenu.m in Sources */,
 				73A20C771A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m in Sources */,
 				73D7F1E41ADE94B400023120 /* TActivityItemCell.m in Sources */,

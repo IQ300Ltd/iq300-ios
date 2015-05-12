@@ -8,7 +8,7 @@
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
 #import "NotificationsModel.h"
-#import "IQService.h"
+#import "IQService+Notifications.h"
 #import "NotificationCell.h"
 #import "ActionNotificationCell.h"
 #import "IQCounters.h"
