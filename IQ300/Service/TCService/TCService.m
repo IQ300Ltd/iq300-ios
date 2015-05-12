@@ -490,6 +490,10 @@ fileAttributeName:(NSString*)fileAttributeName
                 return;
             }
             
+            if (response && conformsToProtocol) {
+                response.httpStatusCode = @(operation.HTTPRequestOperation.response.statusCode);
+            }
+            
             id returnedValue = (conformsToProtocol) ? response.returnedValue : [mappingResult result];
             handler(YES, returnedValue, operation.HTTPRequestOperation.responseData, nil);
         }
@@ -522,11 +526,16 @@ fileAttributeName:(NSString*)fileAttributeName
             error = [serviceError errorWithUnderlyingError:error];
         }
         
+        if (response && conformsToProtocol) {
+            response.httpStatusCode = @(operation.HTTPRequestOperation.response.statusCode);
+        }
+        
         [self processError:error
                   response:response
               forOperation:operation
                    handler:handler];
     };
+    
     return failure;
 }
 
