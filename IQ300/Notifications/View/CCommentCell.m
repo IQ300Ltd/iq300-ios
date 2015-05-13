@@ -284,6 +284,7 @@
     _userNameLabel.hidden = ([_item.author.displayName length] == 0);
     _userNameLabel.text = _item.author.displayName;
         
+    UIView * contentView = [super valueForKey:@"_contentCellView"];
     BOOL hasAttachment = ([_item.attachments count] > 0);
     
     if(hasAttachment) {
@@ -315,7 +316,7 @@
                                     forState:UIControlStateHighlighted];
             
             [attachButton sizeToFit];
-            [self.contentView addSubview:attachButton];
+            [contentView addSubview:attachButton];
             [_attachButtons addObject:attachButton];
         }
     }
