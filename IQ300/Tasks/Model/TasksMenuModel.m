@@ -154,7 +154,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)selectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if(_selectedItemIndexPath != indexPath) {
+    if(![_selectedItemIndexPath isEqual:indexPath]) {
         _selectedItemIndexPath = indexPath;
         [self modelDidChanged];
     }
@@ -189,7 +189,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (NSIndexPath*)indexPathForItemWithFolder:(NSString*)folder {
-    NSArray * keys = [_folders allKeysForObject:folder];
+    NSSortDescriptor * descriptor = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
+    NSArray * keys = [[_folders allKeysForObject:folder] sortedArrayUsingDescriptors:@[descriptor]];
     if ([keys count] > 0) {
         return [NSIndexPath indexPathForItem:[[keys firstObject] integerValue] inSection:0];
     }
