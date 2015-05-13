@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSString * sortField;
 @property (nonatomic, strong) NSString * statusFilter;
 @property (nonatomic, strong) NSNumber * communityId;
+@property (nonatomic, strong) NSString * communityDescription;
 @property (nonatomic, assign, getter=isAscending) BOOL ascending;
 
 @property (nonatomic, strong) TasksMenuCounters * counters;

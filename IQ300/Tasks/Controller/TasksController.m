@@ -161,8 +161,7 @@
     self.model.communityId = nil;
     self.model.statusFilter = [_menuModel statusForMenuItemAtIndexPath:indexPath];
     
-    NSString * title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil), (self.model.ascending) ? @"↑" : @"↓"];
-    _mainView.titleLabel.text = title;
+    [self updateSortFilterLabel];
     
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
@@ -247,6 +246,7 @@
         self.model.statusFilter = model.statusFilter;
         self.model.ascending = model.ascending;
         self.model.communityId = model.communityId;
+        self.model.communityDescription = controller.model.communityDescription;
         
         NSIndexPath * menuIndexPath = [_menuModel indexPathForItemWithStatus:self.model.statusFilter
                                                                       folder:self.model.folder];
@@ -258,23 +258,7 @@
             [_menuModel selectItemAtIndexPath:menuIndexPath];
         }
 
-        NSMutableArray * fields = [NSMutableArray array];
-        
-        if([self.model.sortField length] > 0) {
-            NSString * sort = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil),
-                                                                   (self.model.ascending) ? @"↑" : @"↓"];
-            [fields addObject:sort];
-        }
-        
-        if([self.model.statusFilter length] > 0) {
-            [fields addObject:NSLocalizedStringFromTable(self.model.statusFilter, @"FiltersLocalization", nil)];
-        }
-        
-        if([controller.model.communityDescription length] > 0) {
-            [fields addObject:controller.model.communityDescription];
-        }
-        
-        _mainView.titleLabel.text = [fields componentsJoinedByString:@", "];
+        [self updateSortFilterLabel];
         
         [self.model reloadModelWithCompletion:^(NSError *error) {
             if(!error) {
@@ -286,6 +270,26 @@
 }
 
 #pragma mark -  Private methods
+
+- (void)updateSortFilterLabel {
+    NSMutableArray * fields = [NSMutableArray array];
+    
+    if([self.model.sortField length] > 0) {
+        NSString * sort = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil),
+                           (self.model.ascending) ? @"↑" : @"↓"];
+        [fields addObject:sort];
+    }
+    
+    if([self.model.statusFilter length] > 0) {
+        [fields addObject:NSLocalizedStringFromTable(self.model.statusFilter, @"FiltersLocalization", nil)];
+    }
+    
+    if([self.model.communityDescription length] > 0) {
+        [fields addObject:self.model.communityDescription];
+    }
+    
+    _mainView.titleLabel.text = [fields componentsJoinedByString:@", "];
+}
 
 - (void)accountDidChanged {
     [self setupInitState];
