@@ -282,6 +282,8 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
 }
 
 - (void)selectItemsByFields {
+    [_selectedItems removeAllObjects];
+    
     TaskFilterSection * statusSection = _sections[STATUS_SECTION];
     if(self.statusFilter) {
         __weak typeof(self) weakSelf = self;
