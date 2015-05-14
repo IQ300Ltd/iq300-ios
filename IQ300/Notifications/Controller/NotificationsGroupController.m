@@ -206,6 +206,16 @@
 
 #pragma mark - IQTableModel Delegate
 
+- (void)modelDidChangeContent:(id<IQTableModel>)model {
+    [super modelDidChangeContent:model];
+    [self updateNoDataLabelVisibility];
+}
+
+- (void)modelDidChanged:(id<IQTableModel>)model {
+    [super modelDidChanged:model];
+    [self updateNoDataLabelVisibility];
+}
+
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.totalItemsCount = self.model.totalItemsCount;
     _menuModel.unreadItemsCount = self.model.unreadItemsCount;
@@ -291,9 +301,7 @@
 
 - (void)reloadModel {
     [self.model reloadModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
+        [self.tableView reloadData];
         [self scrollToTopAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;
@@ -302,10 +310,7 @@
 
 - (void)reloadFirstPart {
     [self.model reloadFirstPartWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
-        
+        [self.tableView reloadData];
         [self scrollToTopIfNeedAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;

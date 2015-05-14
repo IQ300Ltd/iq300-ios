@@ -175,7 +175,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
     BOOL hasObjects = ([_fetchController.fetchedObjects count] > 0);
     if(!hasObjects) {
-        [self reloadModelSourceControllerWithCompletion:nil];
+        [self reloadModelSourceControllerWithCompletion:completion];
     }
     
     [self updateCountersWithCompletion:nil];
