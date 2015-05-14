@@ -259,7 +259,7 @@
         }
 
         [self updateSortFilterLabel];
-        
+
         [self.model reloadModelWithCompletion:^(NSError *error) {
             if(!error) {
                 [self.tableView reloadData];
@@ -356,7 +356,7 @@
         title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Outbox", nil), menuItem.title];
     }
     
-    self.navigationController.navigationBar.topItem.title = title;
+    self.navigationItem.title = title;
 }
 
 @end
