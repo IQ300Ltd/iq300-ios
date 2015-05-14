@@ -6,13 +6,36 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 #import <RestKit/RestKit.h>
+#import <objc/runtime.h>
 
 #import "IQService.h"
 #import "IQServiceResponse.h"
 #import "IQObjects.h"
+#import "TCObjectSerializator.h"
+
+static const void *RKObjectRequestOperationBlock = &RKObjectRequestOperationBlock;
+
+@interface RKObjectRequestOperation(OperationBlock)
+
+@property (nonatomic, copy) void (^operationBlock)(void);
+
+@end
+
+@implementation RKObjectRequestOperation(OperationBlock)
+
+- (void)setOperationBlock:(void (^)(void))operationBlock {
+    objc_setAssociatedObject(self, RKObjectRequestOperationBlock, operationBlock, OBJC_ASSOCIATION_COPY);
+}
+
+- (void(^)(void))operationBlock {
+    return objc_getAssociatedObject(self, RKObjectRequestOperationBlock);
+}
+
+@end
 
 @interface IQToken : NSObject
 
+@property (nonatomic, strong) NSNumber * userId;
 @property (nonatomic, strong) NSString * token;
 
 + (RKObjectMapping*)objectMapping;
@@ -25,6 +48,7 @@
     RKObjectMapping* objectMapping = [RKObjectMapping mappingForClass:[IQToken class]];
     [objectMapping addAttributeMappingsFromDictionary:@{
                                                         @"access_token": @"token",
+                                                        @"userId" : @"userId"
                                                         }];
     
     return objectMapping;
@@ -49,6 +73,15 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     }
     return nil;
 }
+
+@interface IQService() {
+    dispatch_queue_t _extendTokenQueue;
+    dispatch_group_t _extendTokenGroup;
+    BOOL _isTokenExtended;
+    BOOL _isTokenExtensionsFiled;
+}
+
+@end
 
 @implementation IQService
 
@@ -79,6 +112,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
              handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
                  if (success && token) {
                      self.session = [IQSession sessionWithEmail:email andPassword:password token:token.token];
+                     self.session.userId = token.userId;
                  }
                  
                  if(handler) {
@@ -127,6 +161,158 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     }
 }
 
+#pragma mark - TCService override
+
+- (void)getObjectsAtPath:(NSString *)path
+              parameters:(NSDictionary *)parameters
+              fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+                 handler:(ObjectRequestCompletionHandler)handler {
+    
+    [super getObjectsAtPath:path parameters:parameters fetchBlock:fetchBlock handler:handler];
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self getObjectsAtPath:path
+                    parameters:parameters
+                       handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
+}
+
+- (void)deleteObject:(id)object
+                path:(NSString *)path
+          parameters:(NSDictionary *)parameters
+          fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+             handler:(ObjectRequestCompletionHandler)handler {
+    [super deleteObject:object
+                   path:path
+             parameters:parameters
+             fetchBlock:fetchBlock
+                handler:handler];
+    
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self deleteObject:object
+                      path:path
+                parameters:parameters
+                fetchBlock:fetchBlock
+                   handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
+}
+
+- (void)putObject:(id)object
+             path:(NSString *)path
+       parameters:(NSDictionary *)parameters
+       fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+          handler:(ObjectRequestCompletionHandler)handler {
+    [super putObject:object
+                path:path
+          parameters:parameters
+          fetchBlock:fetchBlock
+             handler:handler];
+    
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self putObject:object
+                   path:path
+             parameters:parameters
+             fetchBlock:fetchBlock
+                handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
+}
+
+- (void)postObject:(id)object
+              path:(NSString *)path
+        parameters:(NSDictionary *)parameters
+        fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+           handler:(ObjectRequestCompletionHandler)handler {
+    [super postObject:object
+                 path:path
+           parameters:parameters
+           fetchBlock:fetchBlock
+              handler:handler];
+    
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self postObject:object
+                    path:path
+              parameters:parameters
+              fetchBlock:fetchBlock
+                 handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
+}
+
+- (void)postAsset:(ALAsset*)asset
+             path:(NSString *)path
+       parameters:(NSDictionary *)parameters
+fileAttributeName:(NSString*)fileAttributeName
+         fileName:(NSString*)fileName
+         mimeType:(NSString*)mimeType
+          handler:(ObjectRequestCompletionHandler)handler {
+    [super postAsset:asset
+                path:path
+          parameters:parameters
+   fileAttributeName:fileAttributeName
+            fileName:fileName
+            mimeType:mimeType
+             handler:handler];
+    
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self postAsset:asset
+                   path:path
+             parameters:parameters
+      fileAttributeName:fileAttributeName
+               fileName:fileName
+               mimeType:mimeType
+                handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
+}
+
+- (void)postFileAtPath:(NSURL*)filePath
+                  path:(NSString*)path
+            parameters:(NSDictionary*)parameters
+     fileAttributeName:(NSString*)fileAttributeName
+              fileName:(NSString*)fileName
+              mimeType:(NSString*)mimeType
+               handler:(ObjectRequestCompletionHandler)handler {
+    [super postFileAtPath:filePath
+                     path:path
+               parameters:parameters
+        fileAttributeName:fileAttributeName
+                 fileName:fileName
+                 mimeType:mimeType
+                  handler:handler];
+    
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self postFileAtPath:filePath
+                        path:path
+                  parameters:parameters
+           fileAttributeName:fileAttributeName
+                    fileName:fileName
+                    mimeType:mimeType
+                     handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
+}
+
+
 #pragma mark - Attachments methods
 
 - (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler {
@@ -149,7 +335,145 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                  handler:handler];
 }
 
+#pragma mark - Token Extend methods
+
+- (dispatch_queue_t)dispatchQueue {
+    if(!_extendTokenQueue) {
+        _extendTokenQueue = dispatch_queue_create("com.iq300.token-extend-queue", DISPATCH_QUEUE_SERIAL);
+    }
+    
+    return _extendTokenQueue;
+}
+
+- (dispatch_group_t)dispatchGroup {
+    if(!_extendTokenGroup) {
+        _extendTokenGroup = dispatch_group_create();
+    }
+    
+    return _extendTokenGroup;
+}
+
+- (void)extendAccessToken:(ObjectRequestCompletionHandler)handler operationBlock:(void (^)(void))operationBlock {
+    
+    dispatch_group_async([self dispatchGroup], [self dispatchQueue], ^{
+        if(!_isTokenExtensionsFiled) {
+            if(!_isTokenExtended) {
+                IQLogDebug(@"Try extend token");
+
+                [self syncLoginWithDeviceToken:self.session.deviceToken
+                                         email:self.session.email
+                                      password:self.session.password
+                                       handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
+                                           if(success) {
+                                               IQLogDebug(@"Extend token success");
+                                               IQSession * session = [IQSession sessionWithEmail:self.session.email
+                                                                                     andPassword:self.session.password
+                                                                                           token:token.token];
+                                               session.deviceToken = self.session.deviceToken;
+                                               session.userId = token.userId;
+                                               self.session = session;
+                                               
+                                               [IQSession setDefaultSession:self.session];
+                                               
+                                               _isTokenExtended = YES;
+                                               _isTokenExtensionsFiled = NO;
+
+                                               if(operationBlock) {
+                                                   operationBlock();
+                                               }
+                                           }
+                                           else {
+                                               NSError * loginError = [self makeErrorWithDescription:@"Authorization failed" code:401];
+                                               IQLogError(@"%@", error);
+                                               _isTokenExtended = NO;
+                                               _isTokenExtensionsFiled = YES;
+
+                                               handler(NO, nil, nil, loginError);
+                                           }
+
+                                       }];
+                
+                [self waitTokenExtendGroupWithCompletionBlock:^{
+                    _isTokenExtended = NO;
+                    _isTokenExtensionsFiled = NO;
+                }];
+            }
+            else if(operationBlock) {
+                operationBlock();
+            }
+        }
+    });
+}
+
+- (void)waitTokenExtendGroupWithCompletionBlock:(void (^)(void))completion {
+    if (completion) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),^{
+            dispatch_group_wait([self dispatchGroup], DISPATCH_TIME_FOREVER);
+            completion();
+        });
+    }
+}
+
 #pragma mark - Private methods
+
+- (void)syncLoginWithDeviceToken:(NSString*)deviceToken email:(NSString*)email password:(NSString*)password handler:(ObjectRequestCompletionHandler)handler {
+    if(handler) {
+        NSDictionary * parameters = @{ @"device_token" : NSStringNullForNil(deviceToken),
+                                       @"email"        : NSStringNullForNil(email),
+                                       @"password"     : NSStringNullForNil(password) };
+        
+        NSURLRequest * loginRequest = [self.objectManager requestWithObject:nil
+                                                                     method:RKRequestMethodPOST
+                                                                       path:@"/api/v1/sessions"
+                                                                 parameters:parameters];
+        NSURLResponse *response = nil;
+        NSError * responseError = nil;
+        NSData * responseData = [NSURLConnection sendSynchronousRequest:loginRequest returningResponse:&response error:&responseError];
+        NSInteger responseStatusCode = [(NSHTTPURLResponse *)response statusCode];
+        if (responseError) {
+            handler(NO, nil, responseData, responseError);
+        }
+        else {
+            if (responseStatusCode >= 500 && responseStatusCode < 600) {
+                NSString * errorDescription = [NSString stringWithFormat:@"Failed with response status code %ld", (long)responseStatusCode];
+                NSDictionary * userInfo = @{ NSLocalizedDescriptionKey : errorDescription };
+                NSError * error = [NSError errorWithDomain:TCServiceErrorDomain
+                                                      code:responseStatusCode
+                                                  userInfo:userInfo];
+                handler(NO, nil, responseData, error);
+            }
+            else {
+                NSError * serializationError = nil;
+                NSString * responseString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+                NSDictionary * serviceResponse = [TCObjectSerializator JSONDictionaryWithString:responseString error:&serializationError];
+                if (!serializationError && serviceResponse) {
+                    NSDictionary * tokenData = @{ @"IQToken" : serviceResponse };
+                    IQToken * token = [TCObjectSerializator objectFromDictionary:tokenData
+                                                            destinationClass:[IQToken class]
+                                                                       error:&serializationError];
+                    handler((token != nil), token, responseData, serializationError);
+                }
+                else  {
+                    NSError * loginError = [self makeErrorWithDescription:[serviceResponse objectForKey:@"ErrorMessage"] code:401];
+                    handler(NO, nil, responseData, loginError);
+                }
+            }
+        }
+    }
+}
+
+- (void)processError:(NSError*)error
+            response:(id<TCResponse>)response
+        forOperation:(RKObjectRequestOperation*)operation
+             handler:(ObjectRequestCompletionHandler)handler {
+    
+    if (operation.HTTPRequestOperation.response.statusCode == 401) {
+        [self extendAccessToken:handler operationBlock:operation.operationBlock];
+    }
+    else if(handler) {
+        handler(NO, nil, operation.HTTPRequestOperation.responseData, error);
+    }
+}
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation *)operation {
     if(self.session) {
