@@ -104,7 +104,6 @@
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
         _contentBackgroundInsets = UIEdgeInsetsZero;
         _contentInsets = UIEdgeInsetsMake(VERTICAL_PADDING, CONTENT_INSET, 0.0f, CONTENT_INSET);
-        [self setBackgroundColor:NEW_FLAG_COLOR];
 
         _contentBackgroundView = [[UIView alloc] init];
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
@@ -351,6 +350,7 @@
     _contentBackgroundView.backgroundColor = (_commentHighlighted) ? CONTEN_BACKGROUND_COLOR_HIGHLIGHTED :
                                                                      CONTEN_BACKGROUND_COLOR;
     _contentBackgroundInsets = UIEdgeInsetsMake(0, (_commentHighlighted) ? NEW_FLAG_WIDTH : 0, 0, 0);
+    self.backgroundColor = (_commentHighlighted) ? NEW_FLAG_COLOR : [UIColor colorWithHexInt:0x3b5b78];
 }
 
 - (void)prepareForReuse {
@@ -360,6 +360,7 @@
     _expandable = NO;
     _contentBackgroundInsets = UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
+    self.backgroundColor = [UIColor colorWithHexInt:0x3b5b78];
     
     [self hideUtilityButtonsAnimated:NO];
     [self setRightUtilityButtons:nil];
