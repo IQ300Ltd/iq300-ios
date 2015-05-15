@@ -27,6 +27,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     NSInteger _totalItemsCount;
     NSInteger _unreadItemsCount;
     __weak id _newMessageObserver;
+    NSMutableSet * _filteredIds;
 }
 
 @end
@@ -80,6 +81,11 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         [self resubscribeToNewMessageNotification];
     }
     return self;
+}
+
+- (void)setFilter:(NSString *)filter {
+    _filter = filter;
+    _filteredIds = nil;
 }
 
 - (NSUInteger)numberOfSections {
@@ -139,29 +145,33 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                 search:_filter
                                                   sort:SORT_DIRECTION
                                                handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
-                                                   if(completion) {
-                                                       completion(error);
-                                                   }
                                                    if(success) {
                                                        [self updateCounters];
+                                                       [_filteredIds addObjectsFromArray:[conversations valueForKey:@"conversationId"]];
+                                                   }
+                                                   if(completion) {
+                                                       completion(error);
                                                    }
                                                }];
     }
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadModelSourceControllerWithCompletion:nil];
     [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
                                                per:@(_portionLenght)
                                             search:_filter
                                               sort:SORT_DIRECTION
                                            handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
-                                               if(completion) {
-                                                   completion(error);
-                                               }
                                                if(success) {
                                                    [self updateCounters];
+                                                   _filteredIds = [[NSMutableSet alloc] initWithArray:[conversations valueForKey:@"conversationId"]];
+                                               }
+
+                                               [self reloadModelSourceControllerWithCompletion:nil];
+
+                                               if(completion) {
+                                                   completion(error);
                                                }
                                            }];
 }
@@ -173,11 +183,13 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                             search:_filter
                                               sort:SORT_DIRECTION
                                            handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
-                                               if(completion) {
-                                                   completion(error);
-                                               }
                                                if(success) {
                                                    [self updateCounters];
+                                                   [_filteredIds addObjectsFromArray:[conversations valueForKey:@"conversationId"]];
+                                               }
+
+                                               if(completion) {
+                                                   completion(error);
                                                }
                                            }];
 }
@@ -203,9 +215,8 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
     }
     
-    if([_filter length] > 0) {
-        NSString * format = @"SUBQUERY(users, $user, $user.userId != %@ AND $user.displayName CONTAINS[cd] %@).@count > 0";
-        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:format, [IQSession defaultSession].userId, _filter];
+    if([_filteredIds count] > 0) {
+        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"conversationId IN %@", [_filteredIds allObjects]];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, filterPredicate]];
     }
     
@@ -222,6 +233,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
 - (void)clearModelData {
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
+    _filteredIds = nil;
     if(_fetchController) {
         [_fetchController.fetchRequest setPredicate:[NSPredicate predicateWithValue:NO]];
         [_fetchController performFetch:nil];
