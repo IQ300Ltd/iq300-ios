@@ -54,4 +54,6 @@
 
 - (NSIndexPath*)indexPathForCommentWithId:(NSNumber*)commentId;
 
+- (void)markCommentsReadedAtIndexPaths:(NSArray*)indexPaths;
+
 @end

@@ -24,7 +24,8 @@
                         @"accepted"  : [UIColor colorWithHexInt:0x7dc223],
                         @"declined"  : [UIColor colorWithHexInt:0xe976ba],
                         @"archived"  : [UIColor colorWithHexInt:0x272727],
-                        @"canceled"  : [UIColor colorWithHexInt:0x3b5b78]
+                        @"canceled"  : [UIColor colorWithHexInt:0x3b5b78],
+                        @"template"  : [UIColor colorWithHexInt:0x00b54f]
                         };
     });
     

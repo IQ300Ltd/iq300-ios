@@ -8,6 +8,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "MenuViewController.h"
+#import "NSManagedObject+ActiveRecord.h"
 
 #import "MenuConsts.h"
 #import "MenuCell.h"
@@ -282,13 +283,20 @@ CGFloat IQStatusBarHeight()
 - (void)updateUserAccount {
     if([IQSession defaultSession]) {
         [[IQService sharedService] userInfoWithHandler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
-            NSString * displayName = ([user.displayName length] > 0) ? user.displayName : @"Noname";
-            [_accountHeader.userNameLabel setText:displayName];
-            if([user.mediumUrl length] > 0) {
-                [_accountHeader.userImageView sd_setImageWithURL:[NSURL URLWithString:user.mediumUrl]];
+            if (error.code == kCFURLErrorNotConnectedToInternet) {
+                user = [IQUser userWithId:[IQSession defaultSession].userId
+                                inContext:[IQService sharedService].context];
             }
-            else {
-                [_accountHeader.userImageView setImage:[UIImage imageNamed:DEFAULT_AVATAR_IMAGE]];
+            
+            NSString * displayName = ([user.displayName length] > 0) ? user.displayName : @"Noname";
+            if (user) {
+                [_accountHeader.userNameLabel setText:displayName];
+                if([user.mediumUrl length] > 0) {
+                    [_accountHeader.userImageView sd_setImageWithURL:[NSURL URLWithString:user.mediumUrl]];
+                }
+                else {
+                    [_accountHeader.userImageView setImage:[UIImage imageNamed:DEFAULT_AVATAR_IMAGE]];
+                }
             }
         }];
     }

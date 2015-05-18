@@ -338,6 +338,9 @@
                 if (!error) {
                     [self.navigationController popViewControllerAnimated:YES];
                 }
+                else {
+                    [self proccessServiceError:error];
+                }
                 [self hideActivityIndicator];
             }];
         }

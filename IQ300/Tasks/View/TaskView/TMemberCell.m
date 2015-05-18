@@ -25,7 +25,9 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
     if(self) {
-        [self setBackgroundColor:[UIColor clearColor]];
+        UIView * contentView = [super valueForKey:@"_contentCellView"];
+        contentView.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor colorWithHexInt:0x3b5b78];
         
         _selectedBackgroundView = [[UIView alloc] init];
         [_selectedBackgroundView setBackgroundColor:SELECTED_BBACKGROUND_COLOR];
@@ -33,9 +35,11 @@
         
         self.textLabel.font = [UIFont fontWithName:IQ_HELVETICA size:15];
         self.textLabel.textColor = TEXT_COLOR;
+        self.textLabel.backgroundColor = [UIColor whiteColor];
         
         self.detailTextLabel.font = [UIFont fontWithName:IQ_HELVETICA size:12];
         self.detailTextLabel.textColor = [UIColor colorWithHexInt:0x8e8d8e];
+        self.detailTextLabel.backgroundColor = [UIColor whiteColor];
     }
     
     return self;
@@ -92,6 +96,7 @@
     [super prepareForReuse];
     
     [self hideUtilityButtonsAnimated:NO];
+    [self setRightUtilityButtons:nil];
 }
 
 - (void)setAvailableActions:(NSArray *)availableActions {

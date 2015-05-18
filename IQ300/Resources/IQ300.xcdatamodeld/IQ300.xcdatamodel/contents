@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D131" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14D136" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CViewInfo" representedClassName="CViewInfo" syncable="YES">
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -18,6 +18,7 @@
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="previewURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="unifiedContentType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unread" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQComment" inverseName="attachments" inverseEntity="IQComment" syncable="YES"/>
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="attachments" inverseEntity="IQTask" syncable="YES"/>
     </entity>
@@ -29,6 +30,7 @@
         <attribute name="createShortDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="unread" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="IQAttachment" inverseName="comments" inverseEntity="IQAttachment" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="comments" inverseEntity="IQUser" syncable="YES"/>
         <relationship name="conversation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="lastComment" inverseEntity="IQConversation" syncable="YES"/>
@@ -122,7 +124,7 @@
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="project" inverseEntity="IQTask" syncable="YES"/>
     </entity>
     <entity name="IQTask" representedClassName="IQTask" syncable="YES">
-        <attribute name="availableActions" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
+        <attribute name="availableActions" optional="YES" attributeType="Transformable" valueTransformerName="OrderedArrayTransformer" syncable="YES"/>
         <attribute name="childIds" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
         <attribute name="commentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -191,8 +193,8 @@
     </entity>
     <elements>
         <element name="CViewInfo" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="IQAttachment" positionX="0" positionY="0" width="128" height="240"/>
-        <element name="IQComment" positionX="0" positionY="0" width="128" height="195"/>
+        <element name="IQAttachment" positionX="0" positionY="0" width="128" height="255"/>
+        <element name="IQComment" positionX="0" positionY="0" width="128" height="210"/>
         <element name="IQCommunity" positionX="0" positionY="0" width="128" height="165"/>
         <element name="IQContact" positionX="0" positionY="0" width="128" height="105"/>
         <element name="IQConversation" positionX="0" positionY="0" width="128" height="195"/>

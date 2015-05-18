@@ -10,6 +10,7 @@
 
 #define USER_EMAIL_PREF_KEY @"user_email"
 #define USER_PASSWORD_PREF_KEY @"user_password"
+#define DEVICE_TOKEN_PREF_KEY @"device_token"
 #define USER_ID_PREF_KEY @"user_id"
 #define USER_TOKEN_PREF_KEY @"user_token"
 
@@ -22,11 +23,13 @@ static IQSession * _defaultSession = nil;
     NSString * email = [defaults stringForKey:USER_EMAIL_PREF_KEY];
     NSString * token = [defaults stringForKey:USER_TOKEN_PREF_KEY];
     NSString * password = [defaults stringForKey:USER_PASSWORD_PREF_KEY];
+    NSString * deviceToken = [defaults stringForKey:DEVICE_TOKEN_PREF_KEY];
     NSInteger userId = [defaults integerForKey:USER_ID_PREF_KEY];
     
     if([token length] > 0) {
         _defaultSession = [IQSession sessionWithEmail:email andPassword:password token:token];
         _defaultSession.userId = @(userId);
+        _defaultSession.deviceToken = deviceToken;
     }
 }
 
@@ -44,11 +47,13 @@ static IQSession * _defaultSession = nil;
             [defaults setValue:_defaultSession.email forKey:USER_EMAIL_PREF_KEY];
             [defaults setValue:_defaultSession.password forKey:USER_PASSWORD_PREF_KEY];
             [defaults setValue:_defaultSession.token forKey:USER_TOKEN_PREF_KEY];
+            [defaults setValue:_defaultSession.deviceToken forKey:DEVICE_TOKEN_PREF_KEY];
             [defaults setInteger:[_defaultSession.userId integerValue] forKey:USER_ID_PREF_KEY];
         }
         else { // clear old session
             [defaults removeObjectForKey:USER_EMAIL_PREF_KEY];
             [defaults removeObjectForKey:USER_PASSWORD_PREF_KEY];
+            [defaults removeObjectForKey:DEVICE_TOKEN_PREF_KEY];
             [defaults removeObjectForKey:USER_TOKEN_PREF_KEY];
             [defaults removeObjectForKey:USER_ID_PREF_KEY];
         }

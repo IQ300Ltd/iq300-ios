@@ -19,16 +19,57 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 @interface TasksMenuModel() {
     NSArray * _sections;
     NSIndexPath * _selectedItemIndexPath;
+    NSDictionary * _statuses;
+    NSDictionary * _folders;
 }
 
 @end
 
 @implementation TasksMenuModel
 
++ (NSString*)counterPropertyNameForIndexPath:(NSIndexPath*)indexPath {
+    static NSDictionary * _counterPropertyNames = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _counterPropertyNames = @{
+                                  @(1) : @"overdue",
+                                  @(3) : @"inboxNew",
+                                  @(4) : @"inboxBrowsed",
+                                  @(6) : @"outboxCompleted",
+                                  @(7) : @"outboxRefused"
+                                  };
+    });
+    
+    return [_counterPropertyNames objectForKey:@(indexPath.row)];
+}
+
 - (id)init {
     self = [super init];
     
     if (self) {
+        _statuses = @{
+                      @"inbox_3" : @"new",
+                      @"inbox_4" : @"browsed",
+                      @"outbox_6" : @"completed",
+                      @"outbox_7" : @"refused"
+                      };
+        
+        _folders = @{
+                     @(0) : @"actual",
+                     @(1) : @"overdue",
+                     @(2) : @"inbox",
+                     @(3) : @"inbox",
+                     @(4) : @"inbox",
+                     @(5) : @"outbox",
+                     @(6) : @"outbox",
+                     @(7) : @"outbox",
+                     @(8) : @"watchable",
+                     @(9) : @"archive",
+                     @(10) : @"templates"
+                     };
+        
+        _selectedItemIndexPath = [NSIndexPath indexPathForRow:0
+                                                    inSection:0];
     }
     
     return self;
@@ -100,7 +141,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (NSString*)badgeTextAtIndexPath:(NSIndexPath*)indexPath {
     NSInteger badgeValue = -1;
-    NSString * propertyName = [self folderForMenuItemAtIndexPath:indexPath];
+    NSString * propertyName = [TasksMenuModel counterPropertyNameForIndexPath:indexPath];
     if(propertyName && self.counters && [self.counters respondsToSelector:NSSelectorFromString(propertyName)]) {
         badgeValue = [[self.counters valueForKey:propertyName] integerValue];
     }
@@ -113,8 +154,9 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)selectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if(_selectedItemIndexPath != indexPath) {
+    if(![_selectedItemIndexPath isEqual:indexPath]) {
         _selectedItemIndexPath = indexPath;
+        [self modelDidChanged];
     }
 }
 
@@ -139,24 +181,40 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (NSString*)folderForMenuItemAtIndexPath:(NSIndexPath*)indexPath {
-    static NSDictionary * _folders = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _folders = @{
-                        @(0) : @"actual",
-                        @(1) : @"overdue",
-                        @(2) : @"inbox",
-                        @(3) : @"outbox",
-                        @(4) : @"watchable",
-                        @(5) : @"archive",
-                        @(6) : @"templates"
-                        };
-    });
-    
     if([_folders objectForKey:@(indexPath.row)]) {
         return [_folders objectForKey:@(indexPath.row)];
     }
     
+    return nil;
+}
+
+- (NSIndexPath*)indexPathForItemWithFolder:(NSString*)folder {
+    NSSortDescriptor * descriptor = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
+    NSArray * keys = [[_folders allKeysForObject:folder] sortedArrayUsingDescriptors:@[descriptor]];
+    if ([keys count] > 0) {
+        return [NSIndexPath indexPathForItem:[[keys firstObject] integerValue] inSection:0];
+    }
+    return nil;
+}
+
+- (NSString*)statusForMenuItemAtIndexPath:(NSIndexPath*)indexPath {
+    NSString * folder = [self folderForMenuItemAtIndexPath:indexPath];
+    if ([folder length] > 0) {
+        NSString * key = [NSString stringWithFormat:@"%@_%ld", folder, (long)indexPath.row];
+        return [_statuses objectForKey:key];
+
+    }
+    
+    return nil;
+}
+
+- (NSIndexPath*)indexPathForItemWithStatus:(NSString*)status folder:(NSString*)folder {
+    NSArray * keys = [_statuses allKeysForObject:status];
+    NSString * key = [keys lastObject];
+    if ([key length] > 0 && [key rangeOfString:folder].location != NSNotFound) {
+        NSInteger row = [[[key componentsSeparatedByString:@"_"] lastObject] integerValue];
+        return [NSIndexPath indexPathForItem:row inSection:0];
+    }
     return nil;
 }
 

@@ -158,20 +158,6 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
                                             }];
 }
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
 - (void)clearModelData {
     _attachments = nil;
 }
@@ -285,10 +271,6 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     if(_notfObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
     }
-}
-
-- (void)applicationWillEnterForeground {
-    [self updateModelWithCompletion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

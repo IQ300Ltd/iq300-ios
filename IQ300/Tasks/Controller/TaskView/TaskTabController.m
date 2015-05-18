@@ -21,7 +21,9 @@
 #import "TaskTabItemController.h"
 #import "TaskPolicyInspector.h"
 #import "TaskNotifications.h"
+#import "NotificationsGroupModel.h"
 #import "IQTask.h"
+#import "NSManagedObject+ActiveRecord.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate> {
 }
@@ -32,7 +34,13 @@
 
 + (void)taskTabControllerForTaskWithId:(NSNumber*)taskId completion:(void (^)(TaskTabController * controller, NSError * error))completion {
     [[IQService sharedService] taskWithId:taskId handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
-        if (success) {
+        if (error.code == kCFURLErrorNotConnectedToInternet && !task) {
+            NSPredicate * predicate = [NSPredicate predicateWithFormat:@"discussionId == %@", taskId];
+            task = [IQTask objectWithPredicate:predicate
+                                     inContext:[IQService sharedService].context];
+        }
+        
+        if (task) {
             TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:task.taskId];
             TaskTabController * controller = [[TaskTabController alloc] init];
             controller.task = task;
@@ -89,7 +97,20 @@
                                                  name:IQTasksDidLeavedNotification
                                                object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
     [self updateCounters];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+        
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
 }
 
 - (BOOL)isLeftMenuEnabled {
@@ -97,7 +118,17 @@
 }
 
 - (void)backButtonAction:(UIButton*)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([self.notificationsGroupSid length] > 0) {
+        if ([NotificationsGroupModel isGroupHasUnreadNotificationsWithId:self.notificationsGroupSid]) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+        else {
+            [self.navigationController popToRootViewControllerAnimated:YES];
+        }
+    }
+    else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 #pragma mark - IQTabBarController Delegate
@@ -173,6 +204,10 @@
     if(![[IQService sharedService].context saveToPersistentStore:&saveError] ) {
         NSLog(@"Failed to delete task by id %@ with error: %@", taskId, saveError);
     }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateCounters];
 }
 
 @end

@@ -15,7 +15,7 @@
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "ALAsset+Extension.h"
-#import "IQBadgeView.h"
+#import "IQBadgeIndicatorView.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "TaskPolicyInspector.h"
 #import "UIScrollView+PullToRefreshInsert.h"
@@ -43,19 +43,13 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImage];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
         
-        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
-        style.badgeTextColor = [UIColor whiteColor];
-        style.badgeFrameColor = [UIColor whiteColor];
-        style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
-        style.badgeFrame = YES;
-        
-        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
-        badgeView.badgeMinSize = 15;
-        badgeView.frameLineHeight = 1.0f;
-        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        IQBadgeIndicatorView * badgeView = [[IQBadgeIndicatorView alloc] init];
+        badgeView.badgeColor = [UIColor colorWithHexInt:0xe74545];
+        badgeView.strokeBadgeColor = [UIColor whiteColor];
+        badgeView.frame = CGRectMake(0, 0, 9.0f, 9.0f);
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(5.5f, 3.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(2.5f, 10.5f);
 
         _attachmentsModel = [[TaskAttachmentsModel alloc] init];
         _attachmentsModel.section = 0;
@@ -81,7 +75,9 @@
 }
 
 - (void)setBadgeValue:(NSNumber *)badgeValue {
-    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    if(!self.model.resetReadFlagAutomatically) {
+        self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    }
 }
 
 - (NSNumber*)badgeValue {
@@ -107,6 +103,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
   
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
@@ -120,15 +121,16 @@
     [self reloadModel];
     
     self.model.resetReadFlagAutomatically = YES;
-    [self.model setSubscribedToNotifications:YES];
     [self.model resetReadFlagWithCompletion:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
     self.model.resetReadFlagAutomatically = NO;
-    [self.model setSubscribedToNotifications:NO];
 }
 
 #pragma mark - UITableView DataSource
@@ -246,7 +248,7 @@
 #pragma mark - IQTableModel Delegate
 
 - (void)modelCountersDidChanged:(TaskAttachmentsModel*)model {
-    self.badgeValue = self.model.unreadCount;
+    self.tabBarItem.badgeValue = BadgTextFromInteger([self.model.unreadCount integerValue]);
 }
 
 #pragma mark - Private methods
@@ -297,6 +299,13 @@
                                                                       target:self
                                                                       action:@selector(addButtonAction:)];
         self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self.model updateModelWithCompletion:nil];
+    if (self.model.resetReadFlagAutomatically) {
+        [self.model resetReadFlagWithCompletion:nil];
     }
 }
 

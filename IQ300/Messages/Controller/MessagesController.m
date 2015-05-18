@@ -88,6 +88,10 @@
 
     _messagesView.searchBar.delegate = (id<UITextFieldDelegate>)self;
     
+    [_messagesView.clearTextFieldButton addTarget:self
+                                           action:@selector(clearSearch)
+                                 forControlEvents:UIControlEventTouchUpInside];
+    
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
@@ -305,10 +309,9 @@
     };
     
     [self.model setFilter:text];
-    [self.model reloadModelSourceControllerWithCompletion:compleationBlock];
     
     _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
-        [self.model reloadFirstPartWithCompletion:compleationBlock];
+        [self.model reloadModelWithCompletion:compleationBlock];
     });
 }
 
@@ -331,6 +334,11 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:CountersDidChangedNotification
                                                   object:nil];
+}
+
+- (void)clearSearch {
+    _messagesView.searchBar.text = nil;
+    [self filterWithText:nil];
 }
 
 @end

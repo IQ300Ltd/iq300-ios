@@ -138,3 +138,7 @@
 "Name can not be empty" = "Название не может быть пустым";
 "Failed to create a task:%@" = "Не удалось создать задачу:%@";
 "Failed to change a task:%@" = "Не удалось изменить задачу:%@";
+"Inbox" = "Входящие";
+"Outbox" = "Исходящие";
+"template" = "Шаблон";
+"It is necessary to connect to the Internet" = "Необходимо подключение к Internet";

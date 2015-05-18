@@ -7,10 +7,10 @@
 //
 
 #import "IQTableBaseController.h"
-#import "NGroupModel.h"
+#import "NotificationsGroupModel.h"
 @interface NotificationsGroupController : IQTableBaseController
 
-@property (nonatomic, strong) NGroupModel * model;
+@property (nonatomic, strong) NotificationsGroupModel * model;
 
 - (void)updateGlobalCounter;
 

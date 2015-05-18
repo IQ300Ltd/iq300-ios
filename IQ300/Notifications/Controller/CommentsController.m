@@ -24,10 +24,13 @@
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "IQDrawerController.h"
+#import "DispatchAfterExecution.h"
 
 #import "IQContact.h"
 #import "UserPickerController.h"
 #import "IQService.h"
+
+#define DISPATCH_DELAY 1.0f
 
 @interface CommentsController() <UserPickerControllerDelegate, SWTableViewCellDelegate> {
     CommentsView * _mainView;
@@ -39,6 +42,7 @@
     NSRange _inputWordRange;
     NSString * _curUserNick;
     NSArray * _avalibleNicks;
+    dispatch_after_block _cancelBlock;
 }
 
 @end
@@ -143,7 +147,7 @@
                                                  name:IQDrawerDidShowNotification
                                                object:nil];
 
-    if([IQSession defaultSession]) {
+    if([IQSession defaultSession] && self.model) {
         if(self.needFullReload) {
             [self showActivityIndicatorOnView:_mainView];
         }
@@ -207,7 +211,10 @@
 - (void)swipeableTableViewCell:(CCommentCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
     NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
-    [self.model deleteComment:comment completion:nil];
+    [self.model deleteComment:comment completion:^(NSError *error) {
+        [self proccessServiceError:error];
+        [cell hideUtilityButtonsAnimated:YES];
+    }];
 }
 
 #pragma mark - DiscussionModelDelegate Delegate
@@ -301,8 +308,13 @@
                          _attachment = nil;
                          [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                      }
+                     else {
+                         [self proccessServiceError:error];
+                     }
+                     
                      [_mainView.inputView.commentTextView setEditable:YES];
                      [_mainView.inputView.attachButton setEnabled:YES];
+                     _mainView.inputView.sendButton.enabled = ([_mainView.inputView.commentTextView.text length] > 0);
                      if(isTableScrolledToBottom) {
                          [self scrollToBottomAnimated:YES delay:0.5f];
                      }
@@ -402,6 +414,7 @@
         dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
             _mainView.tableView.hidden = NO;
             [self hideActivityIndicator];
+            [self markVisibleItemsAsReaded];
         });
     }];
 }
@@ -493,6 +506,27 @@
     }
     
     return YES;
+}
+
+#pragma mark - ScrollView delefates
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self markVisibleItemsAsReaded];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self markVisibleItemsAsReaded];
+}
+
+- (void)markVisibleItemsAsReaded {
+    if(_cancelBlock) {
+        cancel_dispatch_after_block(_cancelBlock);
+    }
+    
+    NSArray * indexPaths = [[self.tableView indexPathsForVisibleRows] copy];
+    _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
+        [self.model markCommentsReadedAtIndexPaths:indexPaths];
+    });
 }
 
 #pragma mark - Scrolls

@@ -18,14 +18,13 @@
 #import "DiscussionController.h"
 #import "MessagesModel.h"
 #import "IQConversation.h"
-#import "IQBadgeView.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "TaskPolicyInspector.h"
 #import "TaskNotifications.h"
+#import "IQBadgeIndicatorView.h"
 
-@interface TMembersController () <ContactPickerControllerDelegate, SWTableViewCellDelegate> {
-}
+@interface TMembersController () <ContactPickerControllerDelegate, SWTableViewCellDelegate>
 
 @end
 
@@ -44,19 +43,13 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImage];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
         
-        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
-        style.badgeTextColor = [UIColor whiteColor];
-        style.badgeFrameColor = [UIColor whiteColor];
-        style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
-        style.badgeFrame = YES;
-        
-        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
-        badgeView.badgeMinSize = 15;
-        badgeView.frameLineHeight = 1.0f;
-        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        IQBadgeIndicatorView * badgeView = [[IQBadgeIndicatorView alloc] init];
+        badgeView.badgeColor = [UIColor colorWithHexInt:0xe74545];
+        badgeView.strokeBadgeColor = [UIColor whiteColor];
+        badgeView.frame = CGRectMake(0, 0, 9.0f, 9.0f);
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(5.5f, 3.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(6.0f, 10.5f);
 
         self.model = [[TaskMembersModel alloc] init];
     }
@@ -64,7 +57,9 @@
 }
 
 - (void)setBadgeValue:(NSNumber *)badgeValue {
-    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    if(!self.model.resetReadFlagAutomatically) {
+        self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    }
 }
 
 - (NSNumber*)badgeValue {
@@ -113,19 +108,25 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
     [self updateInterfaceFoPolicies];
     [self reloadModel];
     
     self.model.resetReadFlagAutomatically = YES;
-    [self.model setSubscribedToNotifications:YES];
     [self.model resetReadFlagWithCompletion:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
     self.model.resetReadFlagAutomatically = NO;
-    [self.model setSubscribedToNotifications:NO];
 }
 
 #pragma mark - UITableView DataSource
@@ -183,15 +184,13 @@
                                                                   userInfo:@{ @"taskId" : self.model.taskId }];
             }
             else {
-                [self showErrorAlertWithMessage:NSLocalizedString(@"You can not leave the task", nil)];
+                [self proccessServiceError:error];
             }
         }];
     }
     else {
         [self.model removeMemberWithId:member.memberId completion:^(NSError *error) {
-            if (error) {
-                [self showErrorAlertWithMessage:NSLocalizedString(@"You can not remove the user from the task", nil)];
-            }
+            [self proccessServiceError:error];
         }];
     }
 }
@@ -199,28 +198,21 @@
 #pragma mark - ContactPickerController Delegate
 
 - (void)contactPickerController:(ContactPickerController *)picker didPickUser:(IQUser *)user {
+    __weak typeof (self) weakSelf = self;
     [self.model addMemberWithUserId:user.userId completion:^(NSError *error) {
-        
+        [weakSelf.navigationController popViewControllerAnimated:YES];
+
+        [weakSelf proccessServiceError:error];
     }];
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - IQTableModel Delegate
 
 - (void)modelCountersDidChanged:(TaskMembersModel*)model {
-    self.badgeValue = self.model.unreadCount;
+    self.tabBarItem.badgeValue = BadgTextFromInteger([self.model.unreadCount integerValue]);
 }
 
 #pragma mark - Private methods
-
-- (void)showErrorAlertWithMessage:(NSString*)errorMessage {
-    UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"IQ300"
-                                                      message:errorMessage
-                                                     delegate:nil
-                                            cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                            otherButtonTitles:nil];
-    [message show];
-}
 
 - (void)addButtonAction:(UIButton*)sender {
     NSArray * users = [self.model.members valueForKey:@"user"];
@@ -256,6 +248,13 @@
                                                                       target:self
                                                                       action:@selector(addButtonAction:)];
         self.parentViewController.navigationItem.rightBarButtonItem = addButton;
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self.model updateModelWithCompletion:nil];
+    if (self.model.resetReadFlagAutomatically) {
+        [self.model resetReadFlagWithCompletion:nil];
     }
 }
 

@@ -22,6 +22,7 @@
 @dynamic originalURL;
 @dynamic previewURL;
 @dynamic localURL;
+@dynamic unread;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
@@ -35,7 +36,8 @@
                                                   @"content_type"         : @"contentType",
                                                   @"unified_content_type" : @"unifiedContentType",
                                                   @"urls.original"        : @"originalURL",
-                                                  @"urls.preview"         : @"previewURL"
+                                                  @"urls.preview"         : @"previewURL",
+                                                  @"unread"               : @"unread"
                                                   }];
     return mapping;
 }

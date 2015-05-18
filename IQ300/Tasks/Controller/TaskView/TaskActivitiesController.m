@@ -67,7 +67,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.parentViewController.navigationItem.rightBarButtonItem = nil;
-    self.parentViewController.navigationItem.leftBarButtonItem = nil;
 
     __weak typeof(self) weakSelf = self;
     [self.tableView

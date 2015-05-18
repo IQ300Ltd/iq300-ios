@@ -11,6 +11,7 @@
 typedef NS_ENUM(NSUInteger, IQMenuItemType) {
     IQMenuItemTypeDefault = 0,
     IQMenuItemTypeImportant = 1,
+    IQMenuItemTypeSub = 2
 };
 
 @interface IQMenuItem : NSObject

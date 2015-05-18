@@ -14,7 +14,7 @@
 #import "NotificationsView.h"
 #import "NotificationsMenuModel.h"
 #import "NGroupCell.h"
-#import "NGroupModel.h"
+#import "NotificationsGroupModel.h"
 #import "IQNotificationsGroup.h"
 #import "IQNotification.h"
 #import "IQCounters.h"
@@ -45,7 +45,7 @@
     if (self) {
         self.needFullReload = YES;
         
-        self.model = [[NGroupModel alloc] init];
+        self.model = [[NotificationsGroupModel alloc] init];
         
         _menuModel = [[NotificationsMenuModel alloc] init];
         
@@ -206,6 +206,16 @@
 
 #pragma mark - IQTableModel Delegate
 
+- (void)modelDidChangeContent:(id<IQTableModel>)model {
+    [super modelDidChangeContent:model];
+    [self updateNoDataLabelVisibility];
+}
+
+- (void)modelDidChanged:(id<IQTableModel>)model {
+    [super modelDidChanged:model];
+    [self updateNoDataLabelVisibility];
+}
+
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.totalItemsCount = self.model.totalItemsCount;
     _menuModel.unreadItemsCount = self.model.unreadItemsCount;
@@ -226,10 +236,15 @@
 - (void)swipeableTableViewCell:(NGroupCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
     __weak typeof (self) weakSelf = self;
     void(^completion)(NSError *error) = ^(NSError *error) {
-        if([weakSelf.model numberOfItemsInSection:0] == 0) {
-            [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-                [weakSelf updateNoDataLabelVisibility];
-            }];
+        if (!error) {
+            if([weakSelf.model numberOfItemsInSection:0] == 0) {
+                [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+                    [weakSelf updateNoDataLabelVisibility];
+                }];
+            }
+            else {
+                [weakSelf proccessServiceError:error];
+            }
         }
     };
     
@@ -271,6 +286,7 @@
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if(buttonIndex == 1) {
                                   [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
+                                      [self proccessServiceError:error];
                                   }];
                               }
                           }];
@@ -285,9 +301,7 @@
 
 - (void)reloadModel {
     [self.model reloadModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
+        [self.tableView reloadData];
         [self scrollToTopAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;
@@ -296,10 +310,7 @@
 
 - (void)reloadFirstPart {
     [self.model reloadFirstPartWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
-        
+        [self.tableView reloadData];
         [self scrollToTopIfNeedAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;
@@ -330,16 +341,23 @@
 }
 
 - (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    //Enable pop to root only for unread mode
+    NSString * groupSid = self.model.loadUnreadOnly ? notification.groupSid : nil;
     BOOL isDiscussionNotification = (notification.discussionId != nil);
+    
     [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
                                            completion:^(TaskTabController * controller, NSError *error) {
                                                if (controller) {
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
+                                                   controller.notificationsGroupSid = groupSid;
                                                    [self.navigationController pushViewController:controller animated:YES];
                                                    
                                                    if(indexPath) {
                                                        [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
                                                    }
+                                               }
+                                               else {
+                                                   [self proccessServiceError:error];
                                                }
                                            }];
 }
@@ -362,6 +380,9 @@
                                                 if(indexPath) {
                                                     [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
                                                 }
+                                            }
+                                            else {
+                                                [self proccessServiceError:error];
                                             }
                                         }];
 }

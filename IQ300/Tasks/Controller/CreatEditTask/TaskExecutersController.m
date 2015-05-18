@@ -43,7 +43,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"Communities", nil);
+        self.title = NSLocalizedString(@"Executors", nil);
         
         _userNameInset = UIEdgeInsetsMake(0.0f, 13.0f, 0.0f, 13.0f);
         self.model = [[TaskExecutorsModel alloc] init];
@@ -107,7 +107,18 @@
     _containerView.bottomLineHeight = 0.5f;
     [_containerView setBackgroundColor:[UIColor clearColor]];
 
+    UIButton * clearUserNameButton = [[UIButton alloc] init];
+    [clearUserNameButton setImage:[UIImage imageNamed:@"clear_button_icon.png"] forState:UIControlStateNormal];
+    [clearUserNameButton setFrame:CGRectMake(0, 0, 19.0f, 19.0f)];
+    [clearUserNameButton addTarget:self
+                            action:@selector(clearFilter)
+                  forControlEvents:UIControlEventTouchUpInside];
+
     _userNameTextField = [[ExTextField alloc] init];
+    _userNameTextField.rightView = clearUserNameButton;
+    _userNameTextField.rightViewMode = UITextFieldViewModeWhileEditing;
+    _userNameTextField.placeholderInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 20.0f);
+    _userNameTextField.textInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 20.0f);
     _userNameTextField.font = [UIFont fontWithName:IQ_HELVETICA size:16];
     _userNameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     _userNameTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"User name", nil)
@@ -363,6 +374,11 @@
 
 - (void)filterWithText:(NSString *)text {
     [self.model setFilter:text];
+}
+
+- (void)clearFilter {
+    _userNameTextField.text = nil;
+    [self.model setFilter:nil];
 }
 
 @end

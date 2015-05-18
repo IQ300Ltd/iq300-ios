@@ -12,12 +12,12 @@
 
 }
 
-@property(nonatomic, strong) UIColor * badgeTextColor;
-@property(nonatomic, strong) UIColor * badgeInsetColor;
-@property(nonatomic, strong) UIColor * badgeFrameColor;
-@property(nonatomic, assign) BOOL badgeFrame;
-@property(nonatomic, assign) BOOL badgeShining;
-@property(nonatomic, assign) BOOL badgeShadow;
+@property (nonatomic, strong) UIColor * badgeTextColor;
+@property (nonatomic, strong) UIColor * badgeInsetColor;
+@property (nonatomic, strong) UIColor * badgeFrameColor;
+@property (nonatomic, assign) BOOL badgeFrame;
+@property (nonatomic, assign) BOOL badgeShining;
+@property (nonatomic, assign) BOOL badgeShadow;
 
 + (IQBadgeStyle*)defaultStyle;
 + (IQBadgeStyle*)oldStyle;

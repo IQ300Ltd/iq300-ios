@@ -175,10 +175,15 @@
 - (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
     __weak typeof (self) weakSelf = self;
     void(^completion)(NSError *error) = ^(NSError *error) {
-        if([weakSelf.model numberOfItemsInSection:0] == 0) {
-            [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-                [weakSelf updateNoDataLabelVisibility];
-            }];
+        if (!error) {
+            if([weakSelf.model numberOfItemsInSection:0] == 0) {
+                [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+                    [weakSelf updateNoDataLabelVisibility];
+                }];
+            }
+        }
+        else {
+            [self proccessServiceError:error];
         }
     };
     
@@ -211,6 +216,7 @@
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if(buttonIndex == 1) {
                                   [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
+                                      [self proccessServiceError:error];
                                   }];
                               }
                           }];
@@ -258,14 +264,21 @@
 }
 
 - (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    //Enable pop to root only for unread mode
+    NSString * groupSid = self.model.loadUnreadOnly ? notification.groupSid : nil;
     BOOL isDiscussionNotification = (notification.discussionId != nil);
+    
     [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
                                            completion:^(TaskTabController * controller, NSError *error) {
                                                if (controller) {
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
+                                                   controller.notificationsGroupSid = groupSid;
                                                    [self.navigationController pushViewController:controller animated:YES];
                                                    
                                                    [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                               }
+                                               else {
+                                                   [self proccessServiceError:error];
                                                }
                                            }];
 }
@@ -286,6 +299,9 @@
                                                 [self.navigationController pushViewController:controller animated:YES];
                                                 
                                                 [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                            }
+                                            else {
+                                                [self proccessServiceError:error];
                                             }
                                         }];
 }

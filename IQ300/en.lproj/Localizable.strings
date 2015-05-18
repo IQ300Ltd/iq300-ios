@@ -130,3 +130,7 @@
 "Name can not be empty" = "Name can not be empty";
 "Failed to create a task:%@" = "Failed to create a task:%@";
 "Failed to change a task:%@" = "Failed to change a task:%@";
+"Inbox" = "Inbox";
+"Outbox" = "Outbox";
+"template" = "Template";
+"It is necessary to connect to the Internet" = "It is necessary to connect to the Internet";

@@ -14,8 +14,6 @@
 #define BACKGROUND_COLOR [UIColor colorWithHexInt:0x272d31]
 #define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x383e43]
 #define BADGE_HEIGHT 25
-#define CONTENT_LEFT_INSET 12
-#define CONTENT_LEFT_RIGHT 10
 
 @interface MenuCell() {
     UIView * _selectedBackgroundView;
@@ -30,7 +28,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
         _selectedBackgroundInsets = UIEdgeInsetsMake(0, 0, 1, 0);
-        _contentInsets = UIEdgeInsetsMake(0, CONTENT_LEFT_INSET, 0, CONTENT_LEFT_RIGHT);
+        _contentInsets = UIEdgeInsetsMake(0, CONTENT_LEFT_INSET, 0, CONTENT_RIGHT_INSET);
         _isBottomLineShown = YES;
         
         _selectedBackgroundView = [[UIView alloc] init];
@@ -87,7 +85,7 @@
         _contentInsets = UIEdgeInsetsMake(0,
                                           CONTENT_LEFT_INSET,
                                           (_isBottomLineShown) ? 1 : 0,
-                                          CONTENT_LEFT_RIGHT);
+                                          CONTENT_RIGHT_INSET);
         [self setNeedsLayout];
     }
 }

@@ -33,13 +33,19 @@
         [imageView setContentMode:UIViewContentModeLeft];
         [imageView setFrame:CGRectMake(0.0f, 0.0f, imageView.frame.size.width + 10.0f, imageView.frame.size.height)];
         
+        _clearTextFieldButton = [[UIButton alloc] init];
+        [_clearTextFieldButton setImage:[UIImage imageNamed:@"clear_button_icon.png"] forState:UIControlStateNormal];
+        [_clearTextFieldButton setFrame:CGRectMake(0, 0, SEARCH_HEIGHT, SEARCH_HEIGHT)];
+
         _searchBar = [[ExTextField alloc] init];
         _searchBar.backgroundColor = [UIColor clearColor];
         _searchBar.textAlignment = NSTextAlignmentLeft;
-        _searchBar.placeholderInsets = UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 16.0f);
-        _searchBar.textInsets = UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 16.0f);
-        [_searchBar setRightView:imageView];
-        _searchBar.rightViewMode = UITextFieldViewModeAlways;
+        _searchBar.placeholderInsets = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 10.0f);
+        _searchBar.textInsets = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 10.0f);
+        _searchBar.rightView = _clearTextFieldButton;
+        _searchBar.rightViewMode = UITextFieldViewModeWhileEditing;
+        _searchBar.leftView = imageView;
+        _searchBar.leftViewMode = UITextFieldViewModeAlways;
         _searchBar.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Search", nil)
                                                                            attributes:@{NSForegroundColorAttributeName: [UIColor colorWithHexInt:0xa9a9a9]}];
         [_searchBar setFont:[UIFont fontWithName:IQ_HELVETICA size:18]];
@@ -75,7 +81,7 @@
     [super layoutSubviews];
     
     _searchBarContainer.frame = CGRectMake(0, 0, self.bounds.size.width, SEARCH_HEIGHT);
-    _searchBar.frame = _searchBarContainer.bounds;
+    _searchBar.frame = UIEdgeInsetsInsetRect(_searchBarContainer.bounds, UIEdgeInsetsHorizontalMake(7.0f));
     _tableView.frame = UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(SEARCH_HEIGHT, 0, _tableBottomMargin, 0));
     _noDataLabel.frame = self.bounds;
 }

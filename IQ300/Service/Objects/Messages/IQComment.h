@@ -30,6 +30,7 @@ typedef NS_ENUM(NSUInteger, IQCommentStatus) {
 @property (nonatomic, strong) IQUser * author;
 @property (nonatomic, strong) NSSet * attachments;
 @property (nonatomic, strong) NSNumber * commentStatus;
+@property (nonatomic, strong) NSNumber * unread;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

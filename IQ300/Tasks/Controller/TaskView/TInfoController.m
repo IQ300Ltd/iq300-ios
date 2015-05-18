@@ -11,7 +11,7 @@
 #import "TodoListSectionView.h"
 #import "IQTask.h"
 #import "TodoListItemCell.h"
-#import "IQBadgeView.h"
+#import "IQBadgeIndicatorView.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQService+Tasks.h"
 #import "TaskPolicyInspector.h"
@@ -28,6 +28,7 @@
     __weak UIButton * _deferredActionButton;
     __weak id _notfObserver;
     BOOL _changeStateEnabled;
+    BOOL _descriptionExpanded;
 }
 
 @property (nonatomic, assign) BOOL resetReadFlagAutomatically;
@@ -49,19 +50,13 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImage];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
         
-        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
-        style.badgeTextColor = [UIColor whiteColor];
-        style.badgeFrameColor = [UIColor whiteColor];
-        style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
-        style.badgeFrame = YES;
-        
-        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
-        badgeView.badgeMinSize = 15;
-        badgeView.frameLineHeight = 1.0f;
-        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        IQBadgeIndicatorView * badgeView = [[IQBadgeIndicatorView alloc] init];
+        badgeView.badgeColor = [UIColor colorWithHexInt:0xe74545];
+        badgeView.strokeBadgeColor = [UIColor whiteColor];
+        badgeView.frame = CGRectMake(0, 0, 9.0f, 9.0f);
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(5.5f, 3.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(6.5f, 10.5f);
 
         ManagedTodoListModel * todoListModel = [[ManagedTodoListModel alloc] init];
         todoListModel.section = 1;
@@ -73,7 +68,9 @@
 }
 
 - (void)setBadgeValue:(NSNumber *)badgeValue {
-    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    if(!self.resetReadFlagAutomatically) {
+        self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    }
 }
 
 - (NSNumber*)badgeValue {
@@ -164,7 +161,7 @@
 #pragma mark - UITableView Delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    CGFloat height = (section == 0) ? [TInfoHeaderView heightForTask:self.task width:self.tableView.frame.size.width] : 50.0f;
+    CGFloat height = (section == 0) ? [TInfoHeaderView heightForTask:self.task width:self.tableView.frame.size.width descriptionExpanded:_descriptionExpanded] : 50.0f;
     return height;
 }
 
@@ -192,11 +189,16 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL isCellChecked = [self.model isItemCheckedAtIndexPath:indexPath];
+    __weak typeof (self) weakSelf = self;
+    void(^completion)(NSError *error) = ^(NSError *error) {
+        [weakSelf proccessServiceError:error];
+    };
+
     if (!isCellChecked) {
-        [self.model completeTodoItemAtIndexPath:indexPath completion:nil];
+        [self.model completeTodoItemAtIndexPath:indexPath completion:completion];
     }
     else {
-        [self.model rollbackTodoItemWithId:indexPath completion:nil];
+        [self.model rollbackTodoItemWithId:indexPath completion:completion];
     }
 }
 
@@ -211,7 +213,7 @@
 #pragma mark - TInfoHeaderView Delegate
 
 - (void)headerView:(TInfoHeaderView*)headerView tapActionAtIndex:(NSInteger)actionIndex actionButton:(UIButton*)actionButton {
-    NSArray * actions = [self.task.availableActions allObjects];
+    NSArray * actions = [self.task.availableActions array];
     NSString * action = (actionIndex < [actions count]) ? actions[actionIndex] : nil;
     [actionButton setEnabled:NO];
     
@@ -237,6 +239,8 @@
                                                     [self updateTaskPolicies];
                                                 }
                                                 else {
+                                                    [self proccessServiceError:error];
+
                                                     [actionButton setEnabled:YES];
                                                 }
                                             }];
@@ -311,15 +315,6 @@
                                   }];
 }
 
-- (void)updateCounters {
-    [[IQService sharedService] taskChangesCounterById:self.task.taskId
-                                              handler:^(BOOL success, TChangesCounter * counter, NSData *responseData, NSError *error) {
-                                                  if (success && counter && !self.resetReadFlagAutomatically) {
-                                                      self.badgeValue = counter.details;
-                                                  }
-                                              }];
-}
-
 - (void)markTaskAsReadedIfNeed {
     if ([self.task.status isEqualToString:@"new"] &&
         [self.task.executor.userId isEqualToNumber:[IQSession defaultSession].userId]) {
@@ -335,7 +330,9 @@
 }
 
 - (void)applicationWillEnterForeground {
-    [self updateCounters];
+    if (self.resetReadFlagAutomatically) {
+        [self resetReadFlag];
+    }
     [self updateTask];
 }
 
@@ -378,13 +375,20 @@
                                              taskId:self.task.taskId
                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                 if (success) {
-                                                    self.badgeValue = @(0);
+                                                    self.tabBarItem.badgeValue = BadgTextFromInteger(0);
                                                 }
                                             }];
 }
 
 - (UIView*)mainHeaderView {
     TInfoHeaderView * headerView = [[TInfoHeaderView alloc] init];
+    headerView.descriptionView.expanded = _descriptionExpanded;
+    [headerView.descriptionView setActionBlock:^(TInfoExpandableLineView *view) {
+        if (view.enabled) {
+            _descriptionExpanded = !_descriptionExpanded;
+            [self.tableView reloadData];
+        }
+    }];
     [headerView setupByTask:_task];
     headerView.delegate = self;
     return headerView;
@@ -422,6 +426,7 @@
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self unsubscribeFromIQNotifications];
 }
 

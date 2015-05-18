@@ -96,6 +96,17 @@
                    handler:handler];
 }
 
+- (void)markCommentsAsReadedWithIds:(NSArray*)commentIds discussionId:(NSNumber*)discussionId handler:(RequestCompletionHandler)handler {
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/read", discussionId]
+         parameters:@{ @"comment_ids" : commentIds }
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if(handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
 - (void)createComment:(NSString*)comment
          discussionId:(NSNumber*)discussionId
         attachmentIds:(NSArray*)attachmentIds

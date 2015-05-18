@@ -54,6 +54,9 @@
                       forControlEvents:UIControlEventEditingChanged];
     
     _mainView.userTextField.delegate = (id<UITextFieldDelegate>)self;
+    [_mainView.clearTextFieldButton addTarget:self
+                                       action:@selector(clearFilter)
+                             forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (UITableView*)tableView {
@@ -142,6 +145,9 @@
                                                       [self.navigationController setViewControllers:newStack animated:YES];
                                                   }
                                               }
+                                              else {
+                                                  [self proccessServiceError:error];
+                                              }
                                           }];
 }
 
@@ -226,6 +232,11 @@
 
 - (void)drawerDidShowNotification:(NSNotification*)notification {
     [_mainView.userTextField resignFirstResponder];
+}
+
+- (void)clearFilter {
+    _mainView.userTextField.text = nil;
+    [self filterWithText:nil];
 }
 
 @end

@@ -23,4 +23,10 @@
 
 - (void)updateNoDataLabelVisibility;
 
+- (void)showHudWindowWithText:(NSString*)message;
+
+- (void)showErrorAlertWithMessage:(NSString*)message;
+
+- (void)proccessServiceError:(NSError*)error;
+
 @end

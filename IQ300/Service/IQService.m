@@ -6,13 +6,36 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 #import <RestKit/RestKit.h>
+#import <objc/runtime.h>
 
 #import "IQService.h"
 #import "IQServiceResponse.h"
 #import "IQObjects.h"
+#import "TCObjectSerializator.h"
+
+static const void *RKObjectRequestOperationBlock = &RKObjectRequestOperationBlock;
+
+@interface RKObjectRequestOperation(OperationBlock)
+
+@property (nonatomic, copy) void (^operationBlock)(void);
+
+@end
+
+@implementation RKObjectRequestOperation(OperationBlock)
+
+- (void)setOperationBlock:(void (^)(void))operationBlock {
+    objc_setAssociatedObject(self, RKObjectRequestOperationBlock, operationBlock, OBJC_ASSOCIATION_COPY);
+}
+
+- (void(^)(void))operationBlock {
+    return objc_getAssociatedObject(self, RKObjectRequestOperationBlock);
+}
+
+@end
 
 @interface IQToken : NSObject
 
+@property (nonatomic, strong) NSNumber * userId;
 @property (nonatomic, strong) NSString * token;
 
 + (RKObjectMapping*)objectMapping;
@@ -25,6 +48,7 @@
     RKObjectMapping* objectMapping = [RKObjectMapping mappingForClass:[IQToken class]];
     [objectMapping addAttributeMappingsFromDictionary:@{
                                                         @"access_token": @"token",
+                                                        @"userId" : @"userId"
                                                         }];
     
     return objectMapping;
@@ -49,6 +73,15 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     }
     return nil;
 }
+
+@interface IQService() {
+    dispatch_queue_t _extendTokenQueue;
+    dispatch_group_t _extendTokenGroup;
+    BOOL _isTokenExtended;
+    BOOL _isTokenExtensionsFiled;
+}
+
+@end
 
 @implementation IQService
 
@@ -79,6 +112,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
              handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
                  if (success && token) {
                      self.session = [IQSession sessionWithEmail:email andPassword:password token:token.token];
+                     self.session.userId = token.userId;
                  }
                  
                  if(handler) {
@@ -108,300 +142,6 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                    }];
 }
 
-- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search handler:(ObjectRequestCompletionHandler)handler {
-    [self notificationsUnread:unread page:page per:per search:search sort:IQSortDirectionNo handler:handler];
-}
-
-- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per search:(NSString*)search sort:(IQSortDirection)sort handler:(ObjectRequestCompletionHandler)handler {
-    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"unread" : NSObjectNullForNil(unread),
-                                                                  @"page"   : NSObjectNullForNil(page),
-                                                                  @"per"    : NSObjectNullForNil(per),
-                                                                  @"search" : NSStringNullForNil(search)
-                                                                  }).mutableCopy;
-    
-    if(sort != IQSortDirectionNo) {
-        parameters[@"sort"] = IQSortDirectionToString(sort);
-    }
-    
-    [self getObjectsAtPath:@"/api/v1/notifications"
-                parameters:parameters
-                   handler:handler];
-}
-
-- (void)notificationsUnread:(NSNumber*)unread page:(NSNumber*)page per:(NSNumber*)per sort:(IQSortDirection)sort handler:(ObjectRequestCompletionHandler)handler {
-    [self notificationsUnread:unread page:page per:per search:nil sort:sort handler:handler];
-}
-
-- (void)notificationsAfterId:(NSNumber*)notificationId
-                      unread:(NSNumber*)unread
-                        page:(NSNumber*)page
-                         per:(NSNumber*)per
-                        sort:(IQSortDirection)sort
-                     handler:(ObjectRequestCompletionHandler)handler {
-    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"id_more_than" : NSObjectNullForNil(notificationId),
-                                                                  @"unread"       : NSObjectNullForNil(unread),
-                                                                  @"page"         : NSObjectNullForNil(page),
-                                                                  @"per"          : NSObjectNullForNil(per),
-                                                                  }).mutableCopy;
-    
-    if(sort != IQSortDirectionNo) {
-        parameters[@"sort"] = IQSortDirectionToString(sort);
-    }
-    
-    [self getObjectsAtPath:@"/api/v1/notifications"
-                parameters:parameters
-                   handler:handler];
-}
-
-- (void)notificationsBeforeId:(NSNumber*)notificationId
-                       unread:(NSNumber*)unread
-                         page:(NSNumber*)page
-                          per:(NSNumber*)per
-                         sort:(IQSortDirection)sort
-                      handler:(ObjectRequestCompletionHandler)handler {
-    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"id_less_than" : NSObjectNullForNil(notificationId),
-                                                                  @"unread"       : NSObjectNullForNil(unread),
-                                                                  @"page"         : NSObjectNullForNil(page),
-                                                                  @"per"          : NSObjectNullForNil(per),
-                                                                  }).mutableCopy;
-    
-    if(sort != IQSortDirectionNo) {
-        parameters[@"sort"] = IQSortDirectionToString(sort);
-    }
-    
-    [self getObjectsAtPath:@"/api/v1/notifications"
-                parameters:parameters
-                   handler:handler];
-}
-
-- (void)notificationsWithIds:(NSArray*)ids handler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/notifications"
-                parameters:@{ @"by_ids" : ids, @"per" : @(NSIntegerMax) }
-                   handler:handler];
-}
-
-- (void)unreadNotificationIdsWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/notifications/unread_ids"
-                parameters:nil
-                   handler:^(BOOL success, IQNotificationIds * holder, NSData *responseData, NSError *error) {
-                       if(success && holder) {
-                           if(handler) {
-                               handler(success, holder.notificationIds, responseData, error);
-                           }
-                       }
-                       else if(handler) {
-                           handler(success, holder, responseData, error);
-                       }
-                   }];
-}
-
-- (void)unreadNotificationsGroupIdsWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/notifications/unread_group_sids"
-                parameters:nil
-                   handler:^(BOOL success, IQNotificationsGroupIds * holder, NSData *responseData, NSError *error) {
-                       if(success && holder) {
-                           if(handler) {
-                               handler(success, holder.groupIds, responseData, error);
-                           }
-                       }
-                       else if(handler) {
-                           handler(success, holder, responseData, error);
-                       }
-                   }];
-}
-
-- (void)notificationsGroupAfterId:(NSNumber*)notificationId
-                           unread:(NSNumber*)unread
-                             page:(NSNumber*)page
-                              per:(NSNumber*)per
-                             sort:(IQSortDirection)sort
-                          handler:(ObjectRequestCompletionHandler)handler {
-    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"id_more_than" : NSObjectNullForNil(notificationId),
-                                                                  @"unread"       : NSObjectNullForNil(unread),
-                                                                  @"page"         : NSObjectNullForNil(page),
-                                                                  @"per"          : NSObjectNullForNil(per),
-                                                                  }).mutableCopy;
-    
-    if(sort != IQSortDirectionNo) {
-        parameters[@"sort"] = IQSortDirectionToString(sort);
-    }
-    
-    [self getObjectsAtPath:@"/api/v1/notifications/groups"
-                parameters:parameters
-                   handler:handler];
-}
-
-- (void)notificationsGroupBeforeId:(NSNumber*)notificationId
-                            unread:(NSNumber*)unread
-                              page:(NSNumber*)page
-                               per:(NSNumber*)per
-                              sort:(IQSortDirection)sort
-                           handler:(ObjectRequestCompletionHandler)handler {
-    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"id_less_than" : NSObjectNullForNil(notificationId),
-                                                                  @"unread"       : NSObjectNullForNil(unread),
-                                                                  @"page"         : NSObjectNullForNil(page),
-                                                                  @"per"          : NSObjectNullForNil(per),
-                                                                  }).mutableCopy;
-    
-    if(sort != IQSortDirectionNo) {
-        parameters[@"sort"] = IQSortDirectionToString(sort);
-    }
-    
-    [self getObjectsAtPath:@"/api/v1/notifications/groups"
-                parameters:parameters
-                   handler:handler];
-}
-
-- (void)notificationsGroupUpdatedAfter:(NSDate*)date
-                                unread:(NSNumber*)unread
-                                  page:(NSNumber*)page
-                                   per:(NSNumber*)per
-                                  sort:(IQSortDirection)sort
-                               handler:(ObjectRequestCompletionHandler)handler {
-    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"updated_at_after" : NSObjectNullForNil(date),
-                                                                  @"unread"           : NSObjectNullForNil(unread),
-                                                                  @"page"             : NSObjectNullForNil(page),
-                                                                  @"per"              : NSObjectNullForNil(per),
-                                                                  }).mutableCopy;
-    
-    if(sort != IQSortDirectionNo) {
-        parameters[@"sort"] = IQSortDirectionToString(sort);
-    }
-
-    [self getObjectsAtPath:@"/api/v1/notifications/groups"
-                parameters:parameters
-                   handler:handler];
-}
-
-- (void)notificationsForGroupWithId:(NSNumber*)anyNotificationId
-                            afterId:(NSNumber*)notificationId
-                             unread:(NSNumber*)unread
-                               page:(NSNumber*)page
-                                per:(NSNumber*)per
-                               sort:(IQSortDirection)sort
-                            handler:(ObjectRequestCompletionHandler)handler {
-    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"id_more_than" : NSObjectNullForNil(notificationId),
-                                                                  @"unread"       : NSObjectNullForNil(unread),
-                                                                  @"page"         : NSObjectNullForNil(page),
-                                                                  @"per"          : NSObjectNullForNil(per),
-                                                                  }).mutableCopy;
-    
-    if(sort != IQSortDirectionNo) {
-        parameters[@"sort"] = IQSortDirectionToString(sort);
-    }
-    
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/notifications/%@/children", anyNotificationId]
-                parameters:parameters
-                   handler:handler];
-}
-
-- (void)notificationsForGroupWithId:(NSNumber*)anyNotificationId
-                           beforeId:(NSNumber*)notificationId
-                             unread:(NSNumber*)unread
-                               page:(NSNumber*)page
-                                per:(NSNumber*)per
-                               sort:(IQSortDirection)sort
-                              handler:(ObjectRequestCompletionHandler)handler {
-    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"id_less_than" : NSObjectNullForNil(notificationId),
-                                                                  @"unread"       : NSObjectNullForNil(unread),
-                                                                  @"page"         : NSObjectNullForNil(page),
-                                                                  @"per"          : NSObjectNullForNil(per),
-                                                                  }).mutableCopy;
-    
-    if(sort != IQSortDirectionNo) {
-        parameters[@"sort"] = IQSortDirectionToString(sort);
-    }
-    
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/notifications/%@/children", anyNotificationId]
-                parameters:parameters
-                   handler:handler];
-}
-
-- (void)notificationsForGroupWithId:(NSNumber*)anyNotificationId
-                       updatedAfter:(NSDate*)updatedAfter
-                             unread:(NSNumber*)unread
-                               page:(NSNumber*)page
-                                per:(NSNumber*)per
-                               sort:(IQSortDirection)sort
-                            handler:(ObjectRequestCompletionHandler)handler {
-    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"updated_at_after" : NSObjectNullForNil(updatedAfter),
-                                                                  @"unread"           : NSObjectNullForNil(unread),
-                                                                  @"page"             : NSObjectNullForNil(page),
-                                                                  @"per"              : NSObjectNullForNil(per),
-                                                                  }).mutableCopy;
-    
-    if(sort != IQSortDirectionNo) {
-        parameters[@"sort"] = IQSortDirectionToString(sort);
-    }
-    
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/notifications/%@/children", anyNotificationId]
-                parameters:parameters
-                   handler:handler];
-}
-
-- (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
-    [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/notifications/%@", notificationId]
-         parameters:nil
-            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                if(handler) {
-                    handler(success, responseData, error);
-                }
-            }];
-}
-
-- (void)markAllNotificationsAsReadWithHandler:(RequestCompletionHandler)handler {
-    [self putObject:nil
-               path:@"/api/v1/notifications/read_all"
-         parameters:nil
-            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                if(handler) {
-                    handler(success, responseData, error);
-                }
-            }];
-}
-
-- (void)markNotificationsGroupAsReadWithId:(NSNumber*)notificationId handler:(ObjectRequestCompletionHandler)handler {
-    [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/notifications/%@/read_group", notificationId]
-         parameters:nil
-            handler:handler];
-}
-
-- (void)markAllNotificationGroupsAsReadWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/notifications/read_all_groups"]
-         parameters:nil
-            handler:handler];
-}
-
-- (void)notificationsCountWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/notifications/counters"
-                parameters:nil
-                   handler:handler];
-}
-
-- (void)notificationsGroupCountWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/notifications/group_counters"
-                parameters:nil
-                   handler:handler];
-}
-
-- (void)notificationsCountForGroupWithId:(NSNumber*)anyNotificationId handler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/notifications/%@/group_counter", anyNotificationId]
-                parameters:nil
-                   handler:handler];
-}
-
 - (void)registerDeviceForRemoteNotificationsWithToken:(NSString*)token handler:(RequestCompletionHandler)handler {
     if([token length] > 0) {
         NSDictionary * parameters = @{ @"device" :
@@ -421,30 +161,159 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     }
 }
 
-- (void)acceptNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
-    [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/notifications/%@/accept", notificationId]
-         parameters:nil
-            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                if(handler) {
-                    handler(success, responseData, error);
-                }
-            }];
+#pragma mark - TCService override
+
+- (void)getObjectsAtPath:(NSString *)path
+              parameters:(NSDictionary *)parameters
+              fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+                 handler:(ObjectRequestCompletionHandler)handler {
+    
+    [super getObjectsAtPath:path parameters:parameters fetchBlock:fetchBlock handler:handler];
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self getObjectsAtPath:path
+                    parameters:parameters
+                       handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
 }
 
-- (void)declineNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
-    [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/notifications/%@/decline", notificationId]
-         parameters:nil
-            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                if(handler) {
-                    handler(success, responseData, error);
-                }
-            }];
+- (void)deleteObject:(id)object
+                path:(NSString *)path
+          parameters:(NSDictionary *)parameters
+          fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+             handler:(ObjectRequestCompletionHandler)handler {
+    [super deleteObject:object
+                   path:path
+             parameters:parameters
+             fetchBlock:fetchBlock
+                handler:handler];
+    
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self deleteObject:object
+                      path:path
+                parameters:parameters
+                fetchBlock:fetchBlock
+                   handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
 }
+
+- (void)putObject:(id)object
+             path:(NSString *)path
+       parameters:(NSDictionary *)parameters
+       fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+          handler:(ObjectRequestCompletionHandler)handler {
+    [super putObject:object
+                path:path
+          parameters:parameters
+          fetchBlock:fetchBlock
+             handler:handler];
+    
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self putObject:object
+                   path:path
+             parameters:parameters
+             fetchBlock:fetchBlock
+                handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
+}
+
+- (void)postObject:(id)object
+              path:(NSString *)path
+        parameters:(NSDictionary *)parameters
+        fetchBlock:(NSFetchRequest *(^)(NSURL *URL))fetchBlock
+           handler:(ObjectRequestCompletionHandler)handler {
+    [super postObject:object
+                 path:path
+           parameters:parameters
+           fetchBlock:fetchBlock
+              handler:handler];
+    
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self postObject:object
+                    path:path
+              parameters:parameters
+              fetchBlock:fetchBlock
+                 handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
+}
+
+- (void)postAsset:(ALAsset*)asset
+             path:(NSString *)path
+       parameters:(NSDictionary *)parameters
+fileAttributeName:(NSString*)fileAttributeName
+         fileName:(NSString*)fileName
+         mimeType:(NSString*)mimeType
+          handler:(ObjectRequestCompletionHandler)handler {
+    [super postAsset:asset
+                path:path
+          parameters:parameters
+   fileAttributeName:fileAttributeName
+            fileName:fileName
+            mimeType:mimeType
+             handler:handler];
+    
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self postAsset:asset
+                   path:path
+             parameters:parameters
+      fileAttributeName:fileAttributeName
+               fileName:fileName
+               mimeType:mimeType
+                handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
+}
+
+- (void)postFileAtPath:(NSURL*)filePath
+                  path:(NSString*)path
+            parameters:(NSDictionary*)parameters
+     fileAttributeName:(NSString*)fileAttributeName
+              fileName:(NSString*)fileName
+              mimeType:(NSString*)mimeType
+               handler:(ObjectRequestCompletionHandler)handler {
+    [super postFileAtPath:filePath
+                     path:path
+               parameters:parameters
+        fileAttributeName:fileAttributeName
+                 fileName:fileName
+                 mimeType:mimeType
+                  handler:handler];
+    
+    RKObjectRequestOperation * operation = [self.objectManager.operationQueue.operations lastObject];
+    
+    void (^operationBlock)(void) = ^{
+        [self postFileAtPath:filePath
+                        path:path
+                  parameters:parameters
+           fileAttributeName:fileAttributeName
+                    fileName:fileName
+                    mimeType:mimeType
+                     handler:handler];
+    };
+    
+    operation.operationBlock = operationBlock;
+}
+
 
 #pragma mark - Attachments methods
-
 
 - (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler {
     [self postAsset:asset
@@ -466,7 +335,145 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                  handler:handler];
 }
 
+#pragma mark - Token Extend methods
+
+- (dispatch_queue_t)dispatchQueue {
+    if(!_extendTokenQueue) {
+        _extendTokenQueue = dispatch_queue_create("com.iq300.token-extend-queue", DISPATCH_QUEUE_SERIAL);
+    }
+    
+    return _extendTokenQueue;
+}
+
+- (dispatch_group_t)dispatchGroup {
+    if(!_extendTokenGroup) {
+        _extendTokenGroup = dispatch_group_create();
+    }
+    
+    return _extendTokenGroup;
+}
+
+- (void)extendAccessToken:(ObjectRequestCompletionHandler)handler operationBlock:(void (^)(void))operationBlock {
+    
+    dispatch_group_async([self dispatchGroup], [self dispatchQueue], ^{
+        if(!_isTokenExtensionsFiled) {
+            if(!_isTokenExtended) {
+                IQLogDebug(@"Try extend token");
+
+                [self syncLoginWithDeviceToken:self.session.deviceToken
+                                         email:self.session.email
+                                      password:self.session.password
+                                       handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
+                                           if(success) {
+                                               IQLogDebug(@"Extend token success");
+                                               IQSession * session = [IQSession sessionWithEmail:self.session.email
+                                                                                     andPassword:self.session.password
+                                                                                           token:token.token];
+                                               session.deviceToken = self.session.deviceToken;
+                                               session.userId = token.userId;
+                                               self.session = session;
+                                               
+                                               [IQSession setDefaultSession:self.session];
+                                               
+                                               _isTokenExtended = YES;
+                                               _isTokenExtensionsFiled = NO;
+
+                                               if(operationBlock) {
+                                                   operationBlock();
+                                               }
+                                           }
+                                           else {
+                                               NSError * loginError = [self makeErrorWithDescription:@"Authorization failed" code:401];
+                                               IQLogError(@"%@", error);
+                                               _isTokenExtended = NO;
+                                               _isTokenExtensionsFiled = YES;
+
+                                               handler(NO, nil, nil, loginError);
+                                           }
+
+                                       }];
+                
+                [self waitTokenExtendGroupWithCompletionBlock:^{
+                    _isTokenExtended = NO;
+                    _isTokenExtensionsFiled = NO;
+                }];
+            }
+            else if(operationBlock) {
+                operationBlock();
+            }
+        }
+    });
+}
+
+- (void)waitTokenExtendGroupWithCompletionBlock:(void (^)(void))completion {
+    if (completion) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),^{
+            dispatch_group_wait([self dispatchGroup], DISPATCH_TIME_FOREVER);
+            completion();
+        });
+    }
+}
+
 #pragma mark - Private methods
+
+- (void)syncLoginWithDeviceToken:(NSString*)deviceToken email:(NSString*)email password:(NSString*)password handler:(ObjectRequestCompletionHandler)handler {
+    if(handler) {
+        NSDictionary * parameters = @{ @"device_token" : NSStringNullForNil(deviceToken),
+                                       @"email"        : NSStringNullForNil(email),
+                                       @"password"     : NSStringNullForNil(password) };
+        
+        NSURLRequest * loginRequest = [self.objectManager requestWithObject:nil
+                                                                     method:RKRequestMethodPOST
+                                                                       path:@"/api/v1/sessions"
+                                                                 parameters:parameters];
+        NSURLResponse *response = nil;
+        NSError * responseError = nil;
+        NSData * responseData = [NSURLConnection sendSynchronousRequest:loginRequest returningResponse:&response error:&responseError];
+        NSInteger responseStatusCode = [(NSHTTPURLResponse *)response statusCode];
+        if (responseError) {
+            handler(NO, nil, responseData, responseError);
+        }
+        else {
+            if (responseStatusCode >= 500 && responseStatusCode < 600) {
+                NSString * errorDescription = [NSString stringWithFormat:@"Failed with response status code %ld", (long)responseStatusCode];
+                NSDictionary * userInfo = @{ NSLocalizedDescriptionKey : errorDescription };
+                NSError * error = [NSError errorWithDomain:TCServiceErrorDomain
+                                                      code:responseStatusCode
+                                                  userInfo:userInfo];
+                handler(NO, nil, responseData, error);
+            }
+            else {
+                NSError * serializationError = nil;
+                NSString * responseString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+                NSDictionary * serviceResponse = [TCObjectSerializator JSONDictionaryWithString:responseString error:&serializationError];
+                if (!serializationError && serviceResponse) {
+                    NSDictionary * tokenData = @{ @"IQToken" : serviceResponse };
+                    IQToken * token = [TCObjectSerializator objectFromDictionary:tokenData
+                                                            destinationClass:[IQToken class]
+                                                                       error:&serializationError];
+                    handler((token != nil), token, responseData, serializationError);
+                }
+                else  {
+                    NSError * loginError = [self makeErrorWithDescription:[serviceResponse objectForKey:@"ErrorMessage"] code:401];
+                    handler(NO, nil, responseData, loginError);
+                }
+            }
+        }
+    }
+}
+
+- (void)processError:(NSError*)error
+            response:(id<TCResponse>)response
+        forOperation:(RKObjectRequestOperation*)operation
+             handler:(ObjectRequestCompletionHandler)handler {
+    
+    if (operation.HTTPRequestOperation.response.statusCode == 401) {
+        [self extendAccessToken:handler operationBlock:operation.operationBlock];
+    }
+    else if(handler) {
+        handler(NO, nil, operation.HTTPRequestOperation.responseData, error);
+    }
+}
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation *)operation {
     if(self.session) {
@@ -484,14 +491,6 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
-                                                              method:RKRequestMethodAny
-                                                         pathPattern:nil
-                                                             keyPath:nil
-                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassServerError)];
-    [self.objectManager addResponseDescriptor:descriptor];
-
-
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodDELETE
                                                          pathPattern:@"/api/v1/sessions"
@@ -632,6 +631,13 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/discussions/:id/comments/read"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQDiscussion class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/discussions/:id"
@@ -729,7 +735,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     descriptor = [IQServiceResponse responseDescriptorForClass:[TasksMenuCounters class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/tasks/menu_counters"
-                                                   fromKeyPath:@"menu_counters"
+                                                   fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];

@@ -10,9 +10,9 @@
 
 @protocol TCResponse <NSObject>
 
-@property (nonatomic, strong)   id returnedValue;
+@property (nonatomic, strong) id returnedValue;
 @property (nonatomic, strong) NSNumber * statusCode;
-@property (nonatomic, strong)   NSString * statusMessage;
-@property (nonatomic, strong)   NSString * errorMessage;
+@property (nonatomic, strong) NSString * statusMessage;
+@property (nonatomic, strong) NSString * errorMessage;
 
 @end

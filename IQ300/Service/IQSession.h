@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) NSString * email;
 @property (nonatomic, strong) NSString * password;
+@property (nonatomic, strong) NSString * deviceToken;
 @property (nonatomic, strong) NSString * tokenType;
 @property (nonatomic, strong) NSString * token;
 @property (nonatomic, strong) NSNumber * userId;

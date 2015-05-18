@@ -65,7 +65,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     if([_folders objectForKey:folder]) {
         NSString * format = [_folders objectForKey:folder];
         NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:format];
-        filterPredicate = [filterPredicate predicateWithSubstitutionVariables:@{ @"userId" : userId,
+        filterPredicate = [filterPredicate predicateWithSubstitutionVariables:@{ @"userId" : NSObjectNullForNil(userId),
                                                                                  @"nowDate" : [NSDate date]}];
         return filterPredicate;
     }
@@ -90,7 +90,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     
     return nil;
 }
-
 
 - (id)init {
     self = [super init];

@@ -11,6 +11,8 @@
 #import "TCService.h"
 #import "RKMappingResult+Result.h"
 #import "ALAssetInputStream.h"
+#import "NSError+Extension.h"
+#import "TCObjectSerializator.h"
 
 NSString * const TCServiceErrorDomain = @"com.tayphoon.TCService.ErrorDomain";
 
@@ -126,6 +128,10 @@ static id _sharedService = nil;
 
 - (NSManagedObjectContext*)context {
     return _objectManager.managedObjectStore.mainQueueManagedObjectContext;
+}
+
+- (NSString*)serviceUrl {
+    return _serviceUrl;
 }
 
 #ifdef _SYSTEMCONFIGURATION_H
@@ -500,15 +506,48 @@ fileAttributeName:(NSString*)fileAttributeName
         
         id errorResponseObject = error.userInfo[RKObjectMapperErrorObjectsKey];
         errorResponseObject = ([[errorResponseObject class]isSubclassOfClass:[NSArray class]]) ? [errorResponseObject firstObject] : errorResponseObject;
-        BOOL conformsToProtocol = [ errorResponseObject conformsToProtocol:@protocol(TCResponse)];
+        BOOL conformsToProtocol = [errorResponseObject conformsToProtocol:@protocol(TCResponse)];
         id<TCResponse> response = (conformsToProtocol) ? (id<TCResponse>)errorResponseObject : nil;
+        
+        if(!response && self.responseClass && [operation.HTTPRequestOperation.responseString length] > 0) {
+            NSError * serializeError = nil;
+            response = [self trySerializeResponseObjectFromString:operation.HTTPRequestOperation.responseString
+                                                            error:&serializeError];
+        }
+        
+        if ([response.errorMessage length] > 0) {
+            NSInteger serviceCode = [response.statusCode integerValue];
+            NSInteger code = (serviceCode != 0) ? serviceCode : error.code;
+            NSError * serviceError = [self makeErrorWithDescription:response.errorMessage code:code];
+            error = [serviceError errorWithUnderlyingError:error];
+        }
         
         [self processError:error
                   response:response
               forOperation:operation
                    handler:handler];
     };
+    
     return failure;
+}
+
+- (id<TCResponse>)trySerializeResponseObjectFromString:(NSString*)responseString error:(NSError**)error {
+    id<TCResponse> response = nil;
+    NSError * serializeError = nil;
+    NSDictionary * responseObject = [NSJSONSerialization JSONObjectWithData:[responseString dataUsingEncoding:NSUTF8StringEncoding]
+                                                                 options:0
+                                                                   error:&serializeError];
+    if (!serializeError && responseObject) {
+        response = [TCObjectSerializator objectFromDictionary:@{ NSStringFromClass(self.responseClass) : responseObject }
+                                             destinationClass:self.responseClass
+                                                        error:&serializeError];
+    }
+    
+    if (serializeError && error) {
+        *error = serializeError;
+    }
+    
+    return response;
 }
 
 #pragma mark - Private BD Helper methods

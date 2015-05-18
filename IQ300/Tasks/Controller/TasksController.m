@@ -32,6 +32,7 @@
     TasksMenuModel * _menuModel;
     BOOL _isTaskOpenProcessing;
     UITapGestureRecognizer * _singleTapGesture;
+    BOOL _highlightTasks;
 }
 
 @end
@@ -66,6 +67,7 @@
         
         self.model = [[TasksModel alloc] init];
         _menuModel = [[TasksMenuModel alloc] init];
+        _highlightTasks = YES;
     }
     return self;
 }
@@ -157,10 +159,9 @@
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:indexPath];
     self.model.communityId = nil;
-    self.model.statusFilter = nil;
+    self.model.statusFilter = [_menuModel statusForMenuItemAtIndexPath:indexPath];
     
-    NSString * title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil), (self.model.ascending) ? @"↑" : @"↓"];
-    _mainView.titleLabel.text = title;
+    [self updateSortFilterLabel];
     
     [self.model reloadModelWithCompletion:^(NSError *error) {
         if(!error) {
@@ -168,6 +169,9 @@
             [self scrollToTopAnimated:NO delay:0.0f];
         }
     }];
+    
+    _highlightTasks = !([self.model.folder isEqualToString:@"archive"] ||
+                        [self.model.folder isEqualToString:@"templates"]);
 }
 
 - (void)updateGlobalCounter {
@@ -189,8 +193,7 @@
     }
     
     IQTask * task = [self.model itemAtIndexPath:indexPath];
-    cell.showOverdue = !([self.model.folder isEqualToString:@"archive"] ||
-                         [self.model.folder isEqualToString:@"templates"]);
+    cell.highlightTasks = _highlightTasks;
     cell.item = task;
     
     return cell;
@@ -243,25 +246,20 @@
         self.model.statusFilter = model.statusFilter;
         self.model.ascending = model.ascending;
         self.model.communityId = model.communityId;
+        self.model.communityDescription = controller.model.communityDescription;
+        
+        NSIndexPath * menuIndexPath = [_menuModel indexPathForItemWithStatus:self.model.statusFilter
+                                                                      folder:self.model.folder];
+        if (menuIndexPath) {
+            [_menuModel selectItemAtIndexPath:menuIndexPath];
+        }
+        else {
+            menuIndexPath = [_menuModel indexPathForItemWithFolder:self.model.folder];
+            [_menuModel selectItemAtIndexPath:menuIndexPath];
+        }
 
-        NSMutableArray * fields = [NSMutableArray array];
-        
-        if([self.model.sortField length] > 0) {
-            NSString * sort = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil),
-                                                                   (self.model.ascending) ? @"↑" : @"↓"];
-            [fields addObject:sort];
-        }
-        
-        if([self.model.statusFilter length] > 0) {
-            [fields addObject:NSLocalizedStringFromTable(self.model.statusFilter, @"FiltersLocalization", nil)];
-        }
-        
-        if([controller.model.communityDescription length] > 0) {
-            [fields addObject:controller.model.communityDescription];
-        }
-        
-        _mainView.titleLabel.text = [fields componentsJoinedByString:@", "];
-        
+        [self updateSortFilterLabel];
+
         [self.model reloadModelWithCompletion:^(NSError *error) {
             if(!error) {
                 [self.tableView reloadData];
@@ -273,14 +271,31 @@
 
 #pragma mark -  Private methods
 
+- (void)updateSortFilterLabel {
+    NSMutableArray * fields = [NSMutableArray array];
+    
+    if([self.model.sortField length] > 0) {
+        NSString * sort = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil),
+                           (self.model.ascending) ? @"↑" : @"↓"];
+        [fields addObject:sort];
+    }
+    
+    if([self.model.statusFilter length] > 0) {
+        [fields addObject:NSLocalizedStringFromTable(self.model.statusFilter, @"FiltersLocalization", nil)];
+    }
+    
+    if([self.model.communityDescription length] > 0) {
+        [fields addObject:self.model.communityDescription];
+    }
+    
+    _mainView.titleLabel.text = [fields componentsJoinedByString:@", "];
+}
+
 - (void)accountDidChanged {
     [self setupInitState];
 }
 
 - (void)setupInitState {
-    [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:0
-                                                         inSection:0]];
-
     self.model.communityId = nil;
     self.model.statusFilter = nil;
     self.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];
@@ -333,8 +348,15 @@
 - (void)updateControllerTitle {
     NSIndexPath * indexPath = [_menuModel indexPathForSelectedItem];
     IQMenuItem * menuItem = [_menuModel itemAtIndexPath:indexPath];
-    NSString * title = (indexPath.row < 5) ? [NSString stringWithFormat:@"%@ %@", menuItem.title, [NSLocalizedString(@"Tasks", nil) lowercaseString]] : menuItem.title;
-    self.navigationController.navigationBar.topItem.title = title;
+    NSString * title = menuItem.title;
+    if (indexPath.row == 3 || indexPath.row == 4) {
+        title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Inbox", nil), menuItem.title];
+    }
+    else if (indexPath.row == 6 || indexPath.row == 7) {
+        title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Outbox", nil), menuItem.title];
+    }
+    
+    self.navigationItem.title = title;
 }
 
 @end

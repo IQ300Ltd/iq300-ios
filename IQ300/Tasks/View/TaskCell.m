@@ -66,6 +66,8 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
     if(self) {
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        
         UIView * contentView = self.contentView;
         _contentInsets = UIEdgeInsetsMakeWithInset(CONTENT_INSETS);
         _contentBackgroundInsets = UIEdgeInsetsZero;
@@ -132,7 +134,7 @@
         _statusLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_statusLabel];
         
-        _showOverdue = YES;
+        _highlightTasks = YES;
     }
     
     return self;
@@ -262,8 +264,9 @@
     _messagesImageView.hidden = !showCommentsCount;
     _commentsCountLabel.text = [NSString stringWithFormat:@"%@", _item.commentsCount];
     
-    _statusLabel.textColor = [TaskHelper colorForTaskType:_item.status];
-    _statusLabel.text = NSLocalizedString(_item.status, nil);
+    NSString * status = ([[_item.type lowercaseString] isEqualToString:@"templatetask"]) ? @"template" : _item.status;
+    _statusLabel.textColor = [TaskHelper colorForTaskType:status];
+    _statusLabel.text = NSLocalizedString(status, nil);
     [self updateUIForState];
     
     [self setNeedsLayout];
@@ -271,34 +274,27 @@
 
 - (void)updateUIForState {
     BOOL isStatusNew = ([_item.status isEqualToString:@"new"]);
-    if (self.showOverdue) {
-        if([_item.endDate compare:[NSDate date]] == NSOrderedAscending) {
-            _dueIconImageView.image = [UIImage imageNamed:@"bell_red_ico.png"];
-            _dueDateLabel.textColor = [UIColor colorWithHexInt:0xca301e];
-            _contentBackgroundInsets = UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0);
-            [self setBackgroundColor:OVERDUE_FLAG_COLOR];
-        }
-        else {
-            _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
-            _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
-            _contentBackgroundInsets = (isStatusNew) ? UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0) : UIEdgeInsetsZero;
-            _contentBackgroundView.backgroundColor = (isStatusNew) ? CONTEN_BACKGROUND_COLOR_NEW : CONTEN_BACKGROUND_COLOR;
-            self.backgroundColor = (isStatusNew) ? NEW_FLAG_COLOR : CONTEN_BACKGROUND_COLOR;
-        }
+    BOOL isOutOfDate = ([_item.endDate compare:[NSDate date]] == NSOrderedAscending);
+    if (_highlightTasks && isOutOfDate) {
+        _dueIconImageView.image = [UIImage imageNamed:@"bell_red_ico.png"];
+        _dueDateLabel.textColor = [UIColor colorWithHexInt:0xca301e];
+        _contentBackgroundInsets = UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0);
+        [self setBackgroundColor:OVERDUE_FLAG_COLOR];
     }
     else {
         _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
         _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
-        _contentBackgroundInsets = (isStatusNew) ? UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0) : UIEdgeInsetsZero;
-        _contentBackgroundView.backgroundColor = (isStatusNew) ? CONTEN_BACKGROUND_COLOR_NEW : CONTEN_BACKGROUND_COLOR;
-        self.backgroundColor = (isStatusNew) ? NEW_FLAG_COLOR : CONTEN_BACKGROUND_COLOR;
+        _contentBackgroundInsets = (isStatusNew && _highlightTasks) ? UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0) : UIEdgeInsetsZero;
+        self.backgroundColor = (isStatusNew && _highlightTasks) ? NEW_FLAG_COLOR : CONTEN_BACKGROUND_COLOR;
     }
+    
+    _contentBackgroundView.backgroundColor = (isStatusNew && _highlightTasks) ? CONTEN_BACKGROUND_COLOR_NEW : CONTEN_BACKGROUND_COLOR;
 }
 
 - (void)prepareForReuse {
     [super prepareForReuse];
     
-    _showOverdue = YES;
+    _highlightTasks = YES;
     _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
     _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
     _contentBackgroundInsets = UIEdgeInsetsZero;

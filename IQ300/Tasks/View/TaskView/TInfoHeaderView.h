@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "TInfoLineView.h"
+#import "TInfoExpandableLineView.h"
 
 @class IQTask;
 @class TInfoHeaderView;
@@ -21,12 +21,13 @@
 
 @interface TInfoHeaderView : UIView
 
-+ (CGFloat)heightForTask:(IQTask*)task width:(CGFloat)width;
++ (CGFloat)heightForTask:(IQTask*)task width:(CGFloat)width descriptionExpanded:(BOOL)descriptionExpanded;
 
 @property (nonatomic, readonly) UILabel * taskIDLabel;
 @property (nonatomic, readonly) UILabel * titleLabel;
 @property (nonatomic, readonly) UILabel * fromLabel;
 @property (nonatomic, readonly) UILabel * toLabel;
+@property (nonatomic, readonly) TInfoExpandableLineView * descriptionView;
 @property (nonatomic, readonly) TInfoLineView * statusView;
 @property (nonatomic, readonly) TInfoLineView * dueDateView;
 @property (nonatomic, readonly) TInfoLineView * projectInfoView;

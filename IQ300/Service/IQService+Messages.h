@@ -35,6 +35,8 @@
                                sort:(IQSortDirection)sort
                             handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)markCommentsAsReadedWithIds:(NSArray*)commentIds discussionId:(NSNumber*)discussionId handler:(RequestCompletionHandler)handler;
+
 - (void)createComment:(NSString*)comment
          discussionId:(NSNumber*)discussionId
         attachmentIds:(NSArray*)attachmentIds

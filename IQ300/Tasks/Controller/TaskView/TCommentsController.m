@@ -5,17 +5,20 @@
 //  Created by Tayphoon on 17.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
+#import <Reachability/Reachability.h>
 
 #import "TCommentsController.h"
 #import "IQService+Messages.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "IQTask.h"
-#import "IQBadgeView.h"
+#import "IQBadgeIndicatorView.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "TaskPolicyInspector.h"
 #import "IQService+Tasks.h"
 #import "TChangesCounter.h"
 #import "IQNotificationCenter.h"
+#import "NSManagedObject+ActiveRecord.h"
+#import "IQDiscussion.h"
 
 @interface TCommentsController () {
     __weak id _notfObserver;
@@ -38,19 +41,13 @@
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImage];
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
         
-        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
-        style.badgeTextColor = [UIColor whiteColor];
-        style.badgeFrameColor = [UIColor whiteColor];
-        style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
-        style.badgeFrame = YES;
-        
-        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
-        badgeView.badgeMinSize = 15;
-        badgeView.frameLineHeight = 1.0f;
-        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        IQBadgeIndicatorView * badgeView = [[IQBadgeIndicatorView alloc] init];
+        badgeView.badgeColor = [UIColor colorWithHexInt:0xe74545];
+        badgeView.strokeBadgeColor = [UIColor whiteColor];
+        badgeView.frame = CGRectMake(0, 0, 9.0f, 9.0f);
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(5.5f, 3.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(8.0f, 10.5f);
 
         [self resubscribeToIQNotifications];
     }
@@ -58,7 +55,9 @@
 }
 
 - (void)setBadgeValue:(NSNumber *)badgeValue {
-    self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    if(!self.resetReadFlagAutomatically) {
+        self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
+    }
 }
 
 - (NSNumber*)badgeValue {
@@ -68,26 +67,8 @@
 - (void)setDiscussionId:(NSNumber*)discussionId {
     if (discussionId && ![_discussionId isEqualToNumber:discussionId]) {
         _discussionId = discussionId;
-        
-        [[IQService sharedService] discussionWithId:discussionId
-                                            handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
-                                                if(success) {
-                                                    CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
-                                                    self.model = model;
-                                                    [self.model reloadModelWithCompletion:^(NSError *error) {
-                                                        if(!error) {
-                                                            [self.tableView reloadData];
-                                                            [self scrollToBottomAnimated:NO delay:0.0f];
-                                                            [self.tableView setHidden:NO];
-                                                        }
-                                                        
-                                                        self.needFullReload = NO;
-                                                        [self hideActivityIndicator];
-                                                    }];
-                                                    [self.tableView reloadData];
-                                                    [self updateNoDataLabelVisibility];
-                                                }
-                                            }];
+        self.model = nil; //if discussion id changed remove old model
+        [self createModelIfNeed];
     }
 }
 
@@ -101,7 +82,12 @@
     [super viewWillAppear:animated];
     
     self.parentViewController.navigationItem.rightBarButtonItem = nil;
-    
+ 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
     self.resetReadFlagAutomatically = YES;
     [self resetReadFlag];
     [self updateNoDataLabelVisibility];
@@ -110,7 +96,34 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
+
     self.resetReadFlagAutomatically = NO;
+}
+
+#pragma mark - Reachability
+
+- (void)startReachabilityCheck {
+    // we probably have no internet connection, so lets check with Reachability
+    NSURL * serviceUrl = [NSURL URLWithString:[IQService sharedService].serviceUrl];
+    Reachability *reachability = [Reachability reachabilityWithHostname:serviceUrl.host];
+    
+    if (![reachability isReachable]) {
+        [reachability setReachableBlock:^(Reachability *reachability) {
+            if ([reachability isReachable]) {
+                DNSLog(@"Internet is now reachable");
+                [reachability stopNotifier];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self createModelIfNeed];
+                });
+            }
+        }];
+        
+        [reachability startNotifier];
+    }
 }
 
 #pragma mark - Private methods
@@ -152,7 +165,7 @@
                                              taskId:self.taskId
                                             handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                 if (success) {
-                                                    self.badgeValue = @(0);
+                                                    self.tabBarItem.badgeValue = BadgTextFromInteger(0);
                                                 }
                                             }];
 }
@@ -161,7 +174,51 @@
     return @"comments";
 }
 
+- (void)applicationWillEnterForeground {
+    if (self.resetReadFlagAutomatically) {
+        [self resetReadFlag];
+    }
+}
+
+- (void)createModelIfNeed {
+    if (!self.model) {
+        [[IQService sharedService] discussionWithId:self.discussionId
+                                            handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
+                                                if(!discussion) {
+                                                    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"discussionId == %@", self.discussionId];
+                                                    discussion = [IQDiscussion objectWithPredicate:predicate
+                                                                                         inContext:[IQService sharedService].context];
+                                                }
+                                                
+                                                if (discussion) {
+                                                    CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
+                                                    self.model = model;
+                                                    [self.model reloadModelWithCompletion:^(NSError *error) {
+                                                        if(!error) {
+                                                            [self.tableView reloadData];
+                                                            [self scrollToBottomAnimated:NO delay:0.0f];
+                                                            [self.tableView setHidden:NO];
+                                                            [self markVisibleItemsAsReaded];
+                                                        }
+                                                        
+                                                        self.needFullReload = NO;
+                                                    }];
+                                                    [self.tableView reloadData];
+                                                    [self updateNoDataLabelVisibility];
+                                                }
+                                                else {
+                                                    [self hideActivityIndicator];
+
+                                                    if(error.code == kCFURLErrorNotConnectedToInternet) {
+                                                        [self startReachabilityCheck];
+                                                    }
+                                                }
+                                            }];
+    }
+}
+
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self unsubscribeFromIQNotifications];
 }
 

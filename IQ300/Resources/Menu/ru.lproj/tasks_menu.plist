@@ -34,24 +34,56 @@
 			<dict>
 				<key>itemId</key>
 				<integer>3</integer>
+				<key>type</key>
+				<integer>2</integer>
 				<key>title</key>
-				<string>Исходящие</string>
+				<string>Новые</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
 				<integer>4</integer>
+				<key>type</key>
+				<integer>2</integer>
 				<key>title</key>
-				<string>Наблюдаемые</string>
+				<string>Просмотренные</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
 				<integer>5</integer>
 				<key>title</key>
-				<string>Архив</string>
+				<string>Исходящие</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
 				<integer>6</integer>
+				<key>type</key>
+				<integer>2</integer>
+				<key>title</key>
+				<string>На проверке</string>
+			</dict>
+			<dict>
+				<key>itemId</key>
+				<integer>5</integer>
+				<key>type</key>
+				<integer>2</integer>
+				<key>title</key>
+				<string>Отказанные</string>
+			</dict>
+			<dict>
+				<key>itemId</key>
+				<integer>8</integer>
+				<key>title</key>
+				<string>Наблюдаемые</string>
+			</dict>
+			<dict>
+				<key>itemId</key>
+				<integer>9</integer>
+				<key>title</key>
+				<string>Архив</string>
+			</dict>
+			<dict>
+				<key>itemId</key>
+				<integer>10</integer>
 				<key>title</key>
 				<string>Шаблоны</string>
 			</dict>

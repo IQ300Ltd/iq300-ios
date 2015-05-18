@@ -17,6 +17,12 @@
 #define ACCESSORY_VIEW_SIZE 20.0f
 #define TITLE_OFFSET 10.0f
 
+@interface TodoListItemCell() {
+    BOOL _isChecked;
+}
+
+@end
+
 @implementation TodoListItemCell
 
 + (CGFloat)heightForItem:(id<TodoItem>)item width:(CGFloat)width {
@@ -67,6 +73,8 @@
         _titleTextView.scrollEnabled = NO;
         _titleTextView.returnKeyType = UIReturnKeyDone;
         [self.contentView addSubview:_titleTextView];
+        
+        _isChecked = NO;
     }
     
     return self;
@@ -98,26 +106,28 @@
 - (void)setAccessoryType:(UITableViewCellAccessoryType)accessoryType {
     //[super setAccessoryType:accessoryType];
     
+    _isChecked = (accessoryType == UITableViewCellAccessoryCheckmark);
+    
     if (accessoryType == UITableViewCellAccessoryCheckmark) {
         _accessoryImageView.image = [UIImage imageNamed:@"gray_checked_checkbox.png"];
-        _titleTextView.textColor = SELECTED_TEXT_COLOR;
-    } else {
-        _accessoryImageView.image = [UIImage imageNamed:@"gray_checkbox.png"];
-        _titleTextView.textColor = (_enabled) ? TEXT_COLOR : SELECTED_TEXT_COLOR;
     }
+    else {
+        _accessoryImageView.image = [UIImage imageNamed:@"gray_checkbox.png"];
+    }
+    
+    [self updateText];
 }
 
 - (void)setEnabled:(BOOL)enabled {
     if (_enabled != enabled) {
         _enabled = enabled;
-        UIColor * curColor = (self.accessoryType == UITableViewCellAccessoryCheckmark) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
-        _titleTextView.textColor = (_enabled) ? curColor : SELECTED_TEXT_COLOR;
+        [self updateText];
     }
 }
 
 - (void)setItem:(id<TodoItem>)item {
     _item = item;
-   _titleTextView.text = _item.title;
+   [self updateText];
 }
 
 - (void)setSelectionStyle:(UITableViewCellSelectionStyle)selectionStyle {
@@ -127,8 +137,8 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     
+    _isChecked = NO;
     _enabled = YES;
-    [_titleTextView setTextColor:TEXT_COLOR];
     _titleTextView.editable = NO;
 
     [self setDelegate:nil];
@@ -163,6 +173,24 @@
     separatorView.backgroundColor = [UIColor colorWithHexInt:0xc0c0c0];
     separatorView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleLeftMargin;
     [parentView addSubview:separatorView];
+}
+
+- (void)updateText {
+    if ([_item.title length] > 0) {
+        UIColor * curColor = (_isChecked || !_enabled) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
+        
+        NSMutableDictionary * attributes = @{
+                                             NSFontAttributeName                : TITLE_FONT,
+                                             NSForegroundColorAttributeName     : curColor
+                                             }.mutableCopy;
+        if(_isChecked) {
+            [attributes setValue:@(NSUnderlineStyleSingle) forKey:NSStrikethroughStyleAttributeName];
+            [attributes setValue:curColor forKey:NSStrikethroughColorAttributeName];
+        }
+        
+        _titleTextView.attributedText = [[NSAttributedString alloc] initWithString:_item.title
+                                                                        attributes:attributes];
+    }
 }
 
 @end

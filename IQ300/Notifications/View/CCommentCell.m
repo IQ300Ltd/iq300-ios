@@ -22,6 +22,8 @@
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
 #define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED [UIColor colorWithHexInt:0xe9faff]
 #define ATTACHMENT_VIEW_Y_OFFSET 7.0f
+#define NEW_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
+#define NEW_FLAG_WIDTH 4.0f
 
 @interface CCommentCell() {
     BOOL _commentIsMine;
@@ -99,10 +101,13 @@
     
     if(self) {
         UIView * contentView = [super valueForKey:@"_contentCellView"];
-        [self setBackgroundColor:CONTEN_BACKGROUND_COLOR];
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-        
+        _contentBackgroundInsets = UIEdgeInsetsZero;
         _contentInsets = UIEdgeInsetsMake(VERTICAL_PADDING, CONTENT_INSET, 0.0f, CONTENT_INSET);
+
+        _contentBackgroundView = [[UIView alloc] init];
+        _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
+        [contentView addSubview:_contentBackgroundView];
         
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
                                              font:[UIFont fontWithName:IQ_HELVETICA size:13]
@@ -193,6 +198,9 @@
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     CGFloat labelsOffset = 5.0f;
     
+    CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
+    _contentBackgroundView.frame = contentBackgroundBounds;
+    
     CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, 16.0f);
     if (([_userNameLabel.text length] > 0)) {
         CGSize userSize = [_userNameLabel.text sizeWithFont:_userNameLabel.font
@@ -275,6 +283,7 @@
     _userNameLabel.hidden = ([_item.author.displayName length] == 0);
     _userNameLabel.text = _item.author.displayName;
         
+    UIView * contentView = [super valueForKey:@"_contentCellView"];
     BOOL hasAttachment = ([_item.attachments count] > 0);
     
     if(hasAttachment) {
@@ -306,7 +315,7 @@
                                     forState:UIControlStateHighlighted];
             
             [attachButton sizeToFit];
-            [self.contentView addSubview:attachButton];
+            [contentView addSubview:attachButton];
             [_attachButtons addObject:attachButton];
         }
     }
@@ -324,6 +333,8 @@
         }
     }
     
+    self.commentHighlighted = [_item.unread boolValue];
+    
     [self setNeedsLayout];
 }
 
@@ -336,7 +347,10 @@
 
 - (void)setCommentHighlighted:(BOOL)commentHighlighted {
     _commentHighlighted = commentHighlighted;
-    [self setBackgroundColor:(_commentHighlighted) ? CONTEN_BACKGROUND_COLOR_HIGHLIGHTED : CONTEN_BACKGROUND_COLOR];
+    _contentBackgroundView.backgroundColor = (_commentHighlighted) ? CONTEN_BACKGROUND_COLOR_HIGHLIGHTED :
+                                                                     CONTEN_BACKGROUND_COLOR;
+    _contentBackgroundInsets = UIEdgeInsetsMake(0, (_commentHighlighted) ? NEW_FLAG_WIDTH : 0, 0, 0);
+    self.backgroundColor = (_commentHighlighted) ? NEW_FLAG_COLOR : [UIColor colorWithHexInt:0x3b5b78];
 }
 
 - (void)prepareForReuse {
@@ -344,7 +358,11 @@
     _commentIsMine = NO;
     _expanded = NO;
     _expandable = NO;
- 
+    _contentBackgroundInsets = UIEdgeInsetsZero;
+    _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
+    self.backgroundColor = [UIColor colorWithHexInt:0x3b5b78];
+    
+    [self hideUtilityButtonsAnimated:NO];
     [self setRightUtilityButtons:nil];
     
     _descriptionTextView.delegate = nil;
