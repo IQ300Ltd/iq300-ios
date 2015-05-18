@@ -301,6 +301,9 @@
             [[IQService sharedService] createTask:self.model.task
                                           handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                               if (success) {
+                                                  [GAIService sendEventForCategory:GAITasksListEventCategory
+                                                                            action:@"event_action_tasks_list_create_task"];
+
                                                   [self.navigationController popViewControllerAnimated:YES];
                                               }
                                               else {

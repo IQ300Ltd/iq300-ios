@@ -348,6 +348,9 @@
     [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
                                            completion:^(TaskTabController * controller, NSError *error) {
                                                if (controller) {
+                                                   [GAIService sendEventForCategory:GAITasksListEventCategory
+                                                                             action:GAIOpenTaskEventAction];
+
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
                                                    controller.notificationsGroupSid = groupSid;
                                                    [self.navigationController pushViewController:controller animated:YES];

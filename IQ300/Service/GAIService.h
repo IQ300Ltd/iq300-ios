@@ -16,11 +16,14 @@ extern NSString * const GAICommonEventCategory;
 
 extern NSString * const GAIFileUploadEventAction;
 extern NSString * const GAICreateMessageEventAction;
+extern NSString * const GAIOpenTaskEventAction;
 
 @interface GAIService : NSObject
 
 + (void)initializeGoogleAnalytics;
 
 + (void)sendEventForCategory:(NSString*)eventCategory action:(NSString*)action;
+
++ (void)sendEventForCategory:(NSString*)eventCategory action:(NSString*)action label:(NSString*)label;
 
 @end

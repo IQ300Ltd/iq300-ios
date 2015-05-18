@@ -18,6 +18,7 @@ NSString * const GAICommonEventCategory = @"event_group_common";
 
 NSString * const GAIFileUploadEventAction = @"event_action_common_file_upload";
 NSString * const GAICreateMessageEventAction = @"event_action_message_create";
+NSString * const GAIOpenTaskEventAction = @"event_action_tasks_list_open_task";
 
 @implementation GAIService
 
@@ -27,11 +28,15 @@ NSString * const GAICreateMessageEventAction = @"event_action_message_create";
 }
 
 + (void)sendEventForCategory:(NSString*)eventCategory action:(NSString*)action {
+    [GAIService sendEventForCategory:eventCategory action:action label:nil];
+}
+
++ (void)sendEventForCategory:(NSString*)eventCategory action:(NSString*)action label:(NSString*)label {
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     
     [tracker send:[[GAIDictionaryBuilder createEventWithCategory:eventCategory
                                                           action:action
-                                                           label:nil
+                                                           label:label
                                                            value:nil] build]];
 }
 
