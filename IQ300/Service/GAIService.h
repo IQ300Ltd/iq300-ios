@@ -15,6 +15,7 @@ extern NSString * const GAIMessagesEventCategory;
 extern NSString * const GAICommonEventCategory;
 
 extern NSString * const GAIFileUploadEventAction;
+extern NSString * const GAICreateMessageEventAction;
 
 @interface GAIService : NSObject
 

@@ -237,6 +237,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                     discussionId:_discussion.discussionId
                                    attachmentIds:attachmentIds
                                          handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
+                                             if (success) {
+                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                           action:GAICreateMessageEventAction];
+                                             }
+
                                              if (completion) {
                                                  completion(error);
                                              }
@@ -270,6 +275,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                     discussionId:comment.discussionId
                                    attachmentIds:attachmentIds
                                          handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
+                                             if (success) {
+                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                           action:GAICreateMessageEventAction];
+                                             }
+
                                              NSError * saveError = nil;
                                              item.commentStatus = @(IQCommentStatusSent);
                                              [item.managedObjectContext saveToPersistentStore:&saveError];

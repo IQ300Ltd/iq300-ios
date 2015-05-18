@@ -37,6 +37,11 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 + (void)createConversationWithRecipientId:(NSNumber*)recipientId completion:(void (^)(IQConversation * conv, NSError * error))completion {
     [[IQService sharedService] createConversationWithRecipientId:recipientId
                                                          handler:^(BOOL success, IQConversation * conv, NSData *responseData, NSError *error) {
+                                                             if (success) {
+                                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                                           action:@"event_action_message_conversation_create"];
+                                                             }
+                                                             
                                                              if(completion) {
                                                                  completion(conv, error);
                                                              }

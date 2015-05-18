@@ -17,6 +17,7 @@ NSString * const GAIMessagesEventCategory = @"event_group_message";
 NSString * const GAICommonEventCategory = @"event_group_common";
 
 NSString * const GAIFileUploadEventAction = @"event_action_common_file_upload";
+NSString * const GAICreateMessageEventAction = @"event_action_message_create";
 
 @implementation GAIService
 
