@@ -32,6 +32,7 @@
 #import "UIAlertView+Blocks.h"
 #import "UIEdgeInsetsExtend.h"
 #import "UIViewController+Additions.h"
+#import "GAIService.h"
 
 #ifdef PROD
 #define SERVICE_URL @"https://api.iq300.ru"

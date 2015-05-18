@@ -136,6 +136,8 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
                                                      handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
                                                          if(success) {
                                                              addAttachmentBlock(attachment);
+                                                             [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                       action:GAIFileUploadEventAction];
                                                          }
                                                          else if (completion) {
                                                              completion(error);

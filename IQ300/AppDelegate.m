@@ -30,7 +30,6 @@
 
 #define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
 
-
 @interface AppDelegate () {
     UIBackgroundTaskIdentifier _backgroundIdentifier;
 }
@@ -185,6 +184,8 @@
 #else
     [Fabric with:@[CrashlyticsKit]];
 #endif
+    
+    [GAIService initializeGoogleAnalytics];
 
     return YES;
 }
@@ -294,6 +295,9 @@
         [self updateGlobalCounters];
         [tabController setSelectedIndex:0];
     }
+    
+    [GAIService sendEventForCategory:GAICommonEventCategory
+                              action:@"event_action_common_push_transition"];
 }
 
 - (void)applyCustomizations {

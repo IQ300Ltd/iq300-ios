@@ -314,6 +314,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                      handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
                                                         if(success) {
                                                             sendCommentBlock(@[attachment]);
+                                                            [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                      action:GAIFileUploadEventAction];
                                                         }
                                                         else {
                                                             [self crecreateLocalAttachmentWithAsset:asset completion:^(IQAttachment * attachment, NSError *error) {
@@ -359,6 +361,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                           handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
                                                               if(success) {
                                                                   sendCommentBlock(@[attachment]);
+                                                                  [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                            action:GAIFileUploadEventAction];
                                                               }
                                                               else if (completion) {
                                                                   completion(error);
