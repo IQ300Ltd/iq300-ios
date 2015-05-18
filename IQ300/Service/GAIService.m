@@ -19,6 +19,7 @@ NSString * const GAICommonEventCategory = @"event_group_common";
 NSString * const GAIFileUploadEventAction = @"event_action_common_file_upload";
 NSString * const GAICreateMessageEventAction = @"event_action_message_create";
 NSString * const GAIOpenTaskEventAction = @"event_action_tasks_list_open_task";
+NSString * const GAIOpenNotificationEventAction = @"event_action_notification_transition";
 
 @implementation GAIService
 

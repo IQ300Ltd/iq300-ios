@@ -273,6 +273,10 @@
                                                if (controller) {
                                                    [GAIService sendEventForCategory:GAITasksListEventCategory
                                                                              action:GAIOpenTaskEventAction];
+                                                   
+                                                   [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                                                             action:GAIOpenNotificationEventAction
+                                                                              label:notification.notificable.type];
 
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
                                                    controller.notificationsGroupSid = groupSid;
@@ -292,6 +296,10 @@
     [[IQService sharedService] discussionWithId:notification.discussionId
                                         handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
                                             if(success) {
+                                                [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                                                          action:GAIOpenNotificationEventAction
+                                                                           label:notification.notificable.type];
+
                                                 CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
                                                 CommentsController * controller = [[CommentsController alloc] init];
                                                 controller.hidesBottomBarWhenPushed = YES;
