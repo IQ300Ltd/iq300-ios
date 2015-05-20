@@ -181,7 +181,7 @@
             break;
         case NSFetchedResultsChangeUpdate:
             [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
+                              withRowAnimation:UITableViewRowAnimationNone];
             break;
     }
 }
