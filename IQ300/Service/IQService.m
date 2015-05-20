@@ -387,10 +387,10 @@ fileAttributeName:(NSString*)fileAttributeName
                                                IQLogError(@"%@", error);
                                                _isTokenExtended = NO;
                                                _isTokenExtensionsFiled = YES;
-
-                                               handler(NO, nil, nil, loginError);
+                                               if (handler) {
+                                                   handler(NO, nil, nil, loginError);
+                                               }
                                            }
-
                                        }];
                 
                 [self waitTokenExtendGroupWithCompletionBlock:^{
@@ -434,7 +434,7 @@ fileAttributeName:(NSString*)fileAttributeName
             handler(NO, nil, responseData, responseError);
         }
         else {
-            if (responseStatusCode >= 500 && responseStatusCode < 600) {
+            if (responseStatusCode != 200) {
                 NSString * errorDescription = [NSString stringWithFormat:@"Failed with response status code %ld", (long)responseStatusCode];
                 NSDictionary * userInfo = @{ NSLocalizedDescriptionKey : errorDescription };
                 NSError * error = [NSError errorWithDomain:TCServiceErrorDomain
