@@ -280,6 +280,7 @@
 
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
                                                    controller.notificationsGroupSid = groupSid;
+                                                   controller.hidesBottomBarWhenPushed = YES;
                                                    [self.navigationController pushViewController:controller animated:YES];
                                                    
                                                    [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
