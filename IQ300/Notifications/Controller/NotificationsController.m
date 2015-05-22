@@ -278,6 +278,11 @@
                                                                              action:GAIOpenNotificationEventAction
                                                                               label:notification.notificable.type];
 
+                                                   if ([notification.readed boolValue]) {
+                                                       [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                                                                 action:GAIOpenReadedNotificationEventAction];
+                                                   }
+
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
                                                    controller.notificationsGroupSid = groupSid;
                                                    controller.hidesBottomBarWhenPushed = YES;
@@ -300,6 +305,11 @@
                                                 [GAIService sendEventForCategory:GAINotificationsEventCategory
                                                                           action:GAIOpenNotificationEventAction
                                                                            label:notification.notificable.type];
+
+                                                if ([notification.readed boolValue]) {
+                                                    [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                                                              action:GAIOpenReadedNotificationEventAction];
+                                                }
 
                                                 CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
                                                 CommentsController * controller = [[CommentsController alloc] init];
