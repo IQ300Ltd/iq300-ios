@@ -142,3 +142,4 @@
 "Outbox" = "Исходящие";
 "template" = "Шаблон";
 "It is necessary to connect to the Internet" = "Необходимо подключение к Internet";
+"You can not write a message to yourself" = "Вы не можете написать сообщение самому себе";

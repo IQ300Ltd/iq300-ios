@@ -150,7 +150,14 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
     IQTaskMember * member = [self.model itemAtIndexPath:indexPath];
+    if ([member.user.userId isEqualToNumber:[IQSession defaultSession].userId]) {
+        [self showErrorAlertWithMessage:NSLocalizedString(@"You can not write a message to yourself", nil)];
+        return;
+    }
+    
     NSString * companionName = member.user.displayName;
     NSNumber * userId = member.user.userId;
     [MessagesModel createConversationWithRecipientId:userId
@@ -166,6 +173,9 @@
                                                   
                                                   [MessagesModel markConversationAsRead:conv completion:nil];
                                                   [self.navigationController pushViewController:controller animated:YES];
+                                              }
+                                              else {
+                                                  [self proccessServiceError:error];
                                               }
                                           }];
 }
