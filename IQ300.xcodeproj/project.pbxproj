@@ -41,6 +41,7 @@
 		734965D11AB1A60100263B57 /* CTaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 734965D01AB1A60100263B57 /* CTaskFilterCell.m */; };
 		734FEABF1AEA27EC0050EF44 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 734FEABE1AEA27EC0050EF44 /* DeletedObjects.m */; };
 		73506ED61A137D070071B4CB /* TasksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BC61A0B5B7500034D9B /* TasksController.m */; };
+		7356C5D11B12070000BF0CB4 /* GAIEvents.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7356C5D31B12070000BF0CB4 /* GAIEvents.strings */; };
 		735D48F51AE4D6DB00F6A753 /* TaskExecutersController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */; };
 		735D48F81AE4D85000F6A753 /* TaskExecutorsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48F71AE4D85000F6A753 /* TaskExecutorsModel.m */; };
 		735D48FB1AE4DA7100F6A753 /* ExecutersGroupSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48FA1AE4DA7100F6A753 /* ExecutersGroupSection.m */; };
@@ -400,6 +401,7 @@
 		734965D01AB1A60100263B57 /* CTaskFilterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTaskFilterCell.m; sourceTree = "<group>"; };
 		734FEABD1AEA27EC0050EF44 /* DeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedObjects.h; sourceTree = "<group>"; };
 		734FEABE1AEA27EC0050EF44 /* DeletedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedObjects.m; sourceTree = "<group>"; };
+		7356C5D21B12070000BF0CB4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/GAIEvents.strings; sourceTree = "<group>"; };
 		735D48F31AE4D6DB00F6A753 /* TaskExecutersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutersController.h; sourceTree = "<group>"; };
 		735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutersController.m; sourceTree = "<group>"; };
 		735D48F61AE4D85000F6A753 /* TaskExecutorsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutorsModel.h; sourceTree = "<group>"; };
@@ -1396,6 +1398,7 @@
 				736B6BDF1A0B668700034D9B /* IQ300-Prefix.pch */,
 				738CE1E41A0B3F4E0096B374 /* Info.plist */,
 				738CE1E51A0B3F4E0096B374 /* main.m */,
+				7356C5D31B12070000BF0CB4 /* GAIEvents.strings */,
 				73A798351A3585FF006F5721 /* CTAssetsPickerController.strings */,
 				73BA987F1A10969E005AEC00 /* Localizable.strings */,
 				7393C41A1A1A379400E9E944 /* IQFonts.h */,
@@ -2145,6 +2148,7 @@
 				738916BD1ABAFB800017EF86 /* gray_checked_checkbox.png in Resources */,
 				73A9498F1A3821AD008EC469 /* backWhiteArrow.png in Resources */,
 				73F2A55D1A39AB3000E9D324 /* msg_sent@2x.png in Resources */,
+				7356C5D11B12070000BF0CB4 /* GAIEvents.strings in Resources */,
 				738FE7111A162B10009F26A2 /* tasks_tab.png in Resources */,
 				73F2A5561A39AB3000E9D324 /* createNewMessage.png in Resources */,
 				731170951AB80B0E008A4D09 /* task_status_ico@2x.png in Resources */,
@@ -2412,6 +2416,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		7356C5D31B12070000BF0CB4 /* GAIEvents.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7356C5D21B12070000BF0CB4 /* Base */,
+			);
+			name = GAIEvents.strings;
+			sourceTree = "<group>";
+		};
 		73A798351A3585FF006F5721 /* CTAssetsPickerController.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
