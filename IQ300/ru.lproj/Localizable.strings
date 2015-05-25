@@ -142,3 +142,7 @@
 "Outbox" = "Исходящие";
 "template" = "Шаблон";
 "It is necessary to connect to the Internet" = "Необходимо подключение к Internet";
+"Add attachment" = "Прикрепить документ";
+"Take a picture" = "Сделать фото";
+"Photos" = "Фотографии";
+"The camera is not available" = "Камера недоступна";

@@ -44,4 +44,6 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 
 - (void)createAttachmentWithFileAtPath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)createAttachmentWithImage:(UIImage*)image fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler;
+
 @end

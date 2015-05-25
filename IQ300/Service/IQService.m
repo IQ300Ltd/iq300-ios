@@ -335,6 +335,16 @@ fileAttributeName:(NSString*)fileAttributeName
                  handler:handler];
 }
 
+- (void)createAttachmentWithImage:(UIImage*)image fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler {
+    [self postData:UIImagePNGRepresentation(image)
+              path:@"/api/v1/attachments"
+        parameters:nil
+ fileAttributeName:@"attachment[file]"
+          fileName:fileName
+          mimeType:mimeType
+           handler:handler];
+}
+
 #pragma mark - Token Extend methods
 
 - (dispatch_queue_t)dispatchQueue {

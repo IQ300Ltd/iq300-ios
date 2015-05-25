@@ -196,10 +196,10 @@
         model.group = group;
         
         NotificationsController * controller = [[NotificationsController alloc] init];
-        controller.hidesBottomBarWhenPushed = YES;
         controller.title = NSLocalizedString(notification.notificable.type, nil);
         controller.model = model;
-        
+        controller.hidesBottomBarWhenPushed = YES;
+
         if ([notification.readed boolValue]) {
             [GAIService sendEventForCategory:GAINotificationsEventCategory
                                       action:GAIOpenReadedNotificationEventAction];
@@ -397,11 +397,11 @@
 
                                                 CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
                                                 CommentsController * controller = [[CommentsController alloc] init];
-                                                controller.hidesBottomBarWhenPushed = YES;
                                                 controller.model = model;
                                                 controller.title = title;
                                                 controller.highlightedCommentId = commentId;
-                                                
+                                                controller.hidesBottomBarWhenPushed = YES;
+
                                                 [self.navigationController pushViewController:controller animated:YES];
                                                 
                                                 if(indexPath) {

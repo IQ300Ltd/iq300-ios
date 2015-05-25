@@ -41,9 +41,9 @@
 - (void)setSubscribedToNotifications:(BOOL)subscribed;
 
 - (void)sendComment:(NSString*)comment
-    attachmentAsset:(ALAsset*)asset
+         attachment:(id)attachment
            fileName:(NSString*)fileName
-     attachmentType:(NSString*)type
+           mimeType:(NSString*)mimeType
      withCompletion:(void (^)(NSError * error))completion;
 
 - (void)resendLocalComment:(IQComment*)comment withCompletion:(void (^)(NSError * error))completion;
