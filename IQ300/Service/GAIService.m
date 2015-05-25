@@ -36,8 +36,8 @@ NSString * const GAIOpenReadedNotificationEventAction = @"event_action_notificat
 + (void)sendEventForCategory:(NSString*)eventCategory action:(NSString*)action label:(NSString*)label {
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     
-    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:eventCategory
-                                                          action:action
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:NSLocalizedStringFromTable(eventCategory, @"GAIEvents", nil)
+                                                          action:NSLocalizedStringFromTable(action, @"GAIEvents", nil)
                                                            label:label
                                                            value:nil] build]];
 }
