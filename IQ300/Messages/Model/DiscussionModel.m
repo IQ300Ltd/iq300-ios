@@ -376,14 +376,14 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                              if (success) {
                                                  [GAIService sendEventForCategory:GAIMessagesEventCategory
                                                                            action:GAICreateMessageEventAction];
+                                                 NSError * saveError = nil;
+                                                 item.commentStatus = @(IQCommentStatusSent);
+                                                 [item.managedObjectContext saveToPersistentStore:&saveError];
+                                                 if(saveError) {
+                                                     NSLog(@"Create comment status error: %@", saveError);
+                                                 }
                                              }
                                              
-                                             NSError * saveError = nil;
-                                             item.commentStatus = @(IQCommentStatusSent);
-                                             [item.managedObjectContext saveToPersistentStore:&saveError];
-                                             if(saveError) {
-                                                 NSLog(@"Create comment status error: %@", saveError);
-                                             }
                                              if (completion) {
                                                  completion(error);
                                              }
