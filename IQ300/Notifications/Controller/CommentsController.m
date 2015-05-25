@@ -360,7 +360,7 @@
         [_mainView.inputView.commentTextView setEditable:NO];
         [_mainView.inputView.commentTextView resignFirstResponder];
         
-        NSString * fileName = (_attachmentAsset != nil) ? [_attachmentAsset fileName] : @"IMG";
+        NSString * fileName = (_attachmentAsset != nil) ? [_attachmentAsset fileName] : @"IMG.png";
         NSString * mimeType = (_attachmentAsset != nil) ? [_attachmentAsset MIMEType] : @"image/png";
         id attachment = (_attachmentAsset != nil) ? _attachmentAsset : _attachmentImage;
 
