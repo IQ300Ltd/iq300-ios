@@ -355,10 +355,11 @@ fileAttributeName:(NSString*)fileAttributeName
                                 mimeType:mimeType];
     };
     
-    NSOperation * operation = [self createPostOperationAtPath:path
-                                                   parameters:parameters
-                                    constructingBodyWithBlock:dataBlock
-                                                      handler:handler];
+    RKObjectRequestOperation * operation = [self createPostOperationAtPath:path
+                                                                parameters:parameters
+                                                 constructingBodyWithBlock:dataBlock
+                                                                   handler:handler];
+    [((NSMutableURLRequest*)operation.HTTPRequestOperation.request) setTimeoutInterval:120];
     // enqueue operation
     [_objectManager enqueueObjectRequestOperation:(RKManagedObjectRequestOperation*)operation];
 }
@@ -382,10 +383,11 @@ fileAttributeName:(NSString*)fileAttributeName
                                    mimeType:mimeType];
     };
     
-    NSOperation * operation = [self createPostOperationAtPath:path
-                                                   parameters:parameters
-                                    constructingBodyWithBlock:dataBlock
+    RKObjectRequestOperation * operation = [self createPostOperationAtPath:path
+                                                                parameters:parameters
+                                                 constructingBodyWithBlock:dataBlock
                                                       handler:handler];
+    [((NSMutableURLRequest*)operation.HTTPRequestOperation.request) setTimeoutInterval:120];
     // enqueue operation
     [_objectManager enqueueObjectRequestOperation:(RKManagedObjectRequestOperation*)operation];
 }
@@ -407,18 +409,20 @@ fileAttributeName:(NSString*)fileAttributeName
                                   error:&error];
     };
     
-    NSOperation * operation = [self createPostOperationAtPath:path
-                                                   parameters:parameters
-                                    constructingBodyWithBlock:dataBlock
-                                                      handler:handler];
+    RKObjectRequestOperation * operation = [self createPostOperationAtPath:path
+                                                                parameters:parameters
+                                                 constructingBodyWithBlock:dataBlock
+                                                                   handler:handler];
+    
+    [((NSMutableURLRequest*)operation.HTTPRequestOperation.request) setTimeoutInterval:120];
     // enqueue operation
     [_objectManager enqueueObjectRequestOperation:(RKManagedObjectRequestOperation*)operation];
 }
 
-- (NSOperation *)createPostOperationAtPath:(NSString *)path
-                                parameters:(NSDictionary *)parameters
-                 constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-                                   handler:(ObjectRequestCompletionHandler)handler {
+- (RKObjectRequestOperation *)createPostOperationAtPath:(NSString *)path
+                                             parameters:(NSDictionary *)parameters
+                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+                                                handler:(ObjectRequestCompletionHandler)handler {
     NSMutableURLRequest * postRequest = [_objectManager multipartFormRequestWithObject:[self emptyResponse]
                                                                                 method:RKRequestMethodPOST
                                                                                   path:path

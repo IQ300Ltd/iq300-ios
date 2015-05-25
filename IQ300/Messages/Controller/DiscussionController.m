@@ -9,7 +9,6 @@
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 #import <CTAssetsPickerController/CTAssetsPickerController.h>
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
-#import <ActionSheetPicker-3.0/ActionSheetPicker.h>
 
 #import "UIViewController+LeftMenu.h"
 #import "IQSession.h"
@@ -26,9 +25,9 @@
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "CSectionHeaderView.h"
 #import "IQDrawerController.h"
+#import "UIImage+Extensions.h"
 
 #define SECTION_HEIGHT 12
-#define IS_IPAD UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
 
 @interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIActionSheetDelegate> {
     DiscussionView * _mainView;
@@ -295,9 +294,10 @@
         
         NSString * fileName = (_attachmentAsset != nil) ? [_attachmentAsset fileName] : @"IMG";
         NSString * mimeType = (_attachmentAsset != nil) ? [_attachmentAsset MIMEType] : @"image/png";
-        
+        id attachment = (_attachmentAsset != nil) ? _attachmentAsset : _attachmentImage;
+
         [self.model sendComment:_mainView.inputView.commentTextView.text
-                     attachment:(_attachmentAsset != nil) ? _attachmentAsset : _attachmentImage
+                     attachment:attachment
                        fileName:fileName
                        mimeType:mimeType
                  withCompletion:^(NSError *error) {
@@ -409,11 +409,6 @@
             [self hideActivityIndicator];
         });
     }];
-}
-
--(BOOL)prefersStatusBarHidden   // iOS8 definitely needs this one. checked.
-{
-    return NO;
 }
 
 #pragma mark - Keyboard Helpers
@@ -534,7 +529,7 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage * image = info[UIImagePickerControllerOriginalImage];
-    _attachmentImage = image;
+    _attachmentImage = [image imageWithFixedOrientation];
     [_mainView.inputView.sendButton setEnabled:(_attachmentImage != nil)];
     [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                       forState:UIControlStateNormal];

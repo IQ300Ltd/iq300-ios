@@ -29,13 +29,16 @@
 #import "IQContact.h"
 #import "UserPickerController.h"
 #import "IQService.h"
+#import "UIImage+Extensions.h"
 
 #define DISPATCH_DELAY 1.0f
 
-@interface CommentsController() <UserPickerControllerDelegate, SWTableViewCellDelegate> {
+@interface CommentsController() <UserPickerControllerDelegate, SWTableViewCellDelegate, UIImagePickerControllerDelegate,
+                                 UINavigationControllerDelegate, UIActionSheetDelegate> {
     CommentsView * _mainView;
     BOOL _enterCommentProcessing;
-    ALAsset * _attachment;
+    ALAsset * _attachmentAsset;
+    UIImage * _attachmentImage;
     UIDocumentInteractionController * _documentController;
     UISwipeGestureRecognizer * _tableGesture;
     UserPickerController * _userPickerController;
@@ -43,6 +46,7 @@
     NSString * _curUserNick;
     NSArray * _avalibleNicks;
     dispatch_after_block _cancelBlock;
+    CGPoint _tableContentOffset;
 }
 
 @end
@@ -256,6 +260,66 @@
     [_mainView.inputView.commentTextView resignFirstResponder];
 }
 
+#pragma mark - ActionSheet Delegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+            _tableContentOffset = self.tableView.contentOffset;
+            UIImagePickerController * imagePicker = [[UIImagePickerController alloc] init];
+            [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
+            [imagePicker setCameraDevice:UIImagePickerControllerCameraDeviceRear];
+            [imagePicker setAllowsEditing:NO];
+            [imagePicker setShowsCameraControls:YES];
+            [imagePicker setDelegate:self];
+            imagePicker.hidesBottomBarWhenPushed = YES;
+            [self presentViewController:imagePicker animated:YES completion:nil];
+        }
+        else {
+            [UIAlertView showWithTitle:@"IQ300"
+                               message:NSLocalizedString(@"The camera is not available", nil)
+                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                     otherButtonTitles:nil
+                              tapBlock:nil];
+        }
+    }
+    else if (buttonIndex == 1) {
+        CTAssetsPickerController *picker = [[CTAssetsPickerController alloc] init];
+        picker.assetsFilter = [ALAssetsFilter allAssets];
+        picker.showsCancelButton = YES;
+        picker.delegate = (id<CTAssetsPickerControllerDelegate>)self;
+        picker.showsNumberOfAssets = NO;
+        [self presentViewController:picker animated:YES completion:nil];
+    }
+}
+
+#pragma mark - UIImagePickerController delegate
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    //Fix offset changed by image picker
+    if (!CGPointEqualToPoint(_tableContentOffset, self.tableView.contentOffset)) {
+        self.tableView.contentOffset = _tableContentOffset;
+    }
+    _tableContentOffset = CGPointZero;
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage * image = info[UIImagePickerControllerOriginalImage];
+    _attachmentImage = [image imageWithFixedOrientation];
+    [_mainView.inputView.sendButton setEnabled:(_attachmentImage != nil)];
+    [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
+                                      forState:UIControlStateNormal];
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    //Fix offset changed by image picker
+    if (!CGPointEqualToPoint(_tableContentOffset, self.tableView.contentOffset)) {
+        self.tableView.contentOffset = _tableContentOffset;
+    }
+    _tableContentOffset = CGPointZero;
+}
+
 #pragma mark - Private methods
 
 - (CCommentCell*)cellForView:(UIView*)view {
@@ -290,16 +354,20 @@
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
     BOOL isTextValid = [self isTextValid:_mainView.inputView.commentTextView.text];
-    if(isTextValid || _attachment) {
+    if(isTextValid || (_attachmentAsset || _attachmentImage)) {
         [_mainView.inputView.sendButton setEnabled:NO];
         [_mainView.inputView.attachButton setEnabled:NO];
         [_mainView.inputView.commentTextView setEditable:NO];
         [_mainView.inputView.commentTextView resignFirstResponder];
         
+        NSString * fileName = (_attachmentAsset != nil) ? [_attachmentAsset fileName] : @"IMG";
+        NSString * mimeType = (_attachmentAsset != nil) ? [_attachmentAsset MIMEType] : @"image/png";
+        id attachment = (_attachmentAsset != nil) ? _attachmentAsset : _attachmentImage;
+
         [self.model sendComment:_mainView.inputView.commentTextView.text
-                attachmentAsset:_attachment
-                       fileName:[_attachment fileName]
-                 attachmentType:[_attachment MIMEType]
+                     attachment:attachment
+                       fileName:fileName
+                       mimeType:mimeType
                  withCompletion:^(NSError *error) {
                      if(!error) {
                          BOOL isTaskComment = ([self isKindOfClass:NSClassFromString(@"TCommentsController")]);
@@ -309,7 +377,8 @@
                          _mainView.inputView.commentTextView.text = nil;
                          [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG]
                                                            forState:UIControlStateNormal];
-                         _attachment = nil;
+                         _attachmentAsset = nil;
+                         _attachmentImage = nil;
                          [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                      }
                      else {
@@ -329,12 +398,13 @@
 - (void)attachButtonAction:(UIButton*)sender {
     [self hideUserPickerController];
     
-    CTAssetsPickerController *picker = [[CTAssetsPickerController alloc] init];
-    picker.assetsFilter = [ALAssetsFilter allAssets];
-    picker.showsCancelButton = YES;
-    picker.delegate = (id<CTAssetsPickerControllerDelegate>)self;
-    picker.showsNumberOfAssets = NO;
-    [self presentViewController:picker animated:YES completion:nil];
+    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                              delegate:self
+                                                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                destructiveButtonTitle:nil
+                                                     otherButtonTitles:NSLocalizedString(@"Take a picture", nil),
+                                   NSLocalizedString(@"Photos", nil), nil];
+    [actionSheet showInView:self.view];
 }
 
 - (void)attachViewButtonAction:(UIButton*)sender {
@@ -574,8 +644,8 @@
 }
 
 - (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
-    _attachment = asset;
-    [_mainView.inputView.sendButton setEnabled:(_attachment != nil)];
+    _attachmentAsset = asset;
+    [_mainView.inputView.sendButton setEnabled:(_attachmentAsset != nil)];
     [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                       forState:UIControlStateNormal];
     [picker dismissViewControllerAnimated:YES completion:nil];

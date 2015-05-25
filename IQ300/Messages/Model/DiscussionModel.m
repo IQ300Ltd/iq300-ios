@@ -337,7 +337,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                     }];
     }
     else if(attachment && [attachment isKindOfClass:[UIImage class]]) {
-        [[IQService sharedService] createAttachmentWithImage:(UIImage*)attachment
+        [[IQService sharedService] createAttachmentWithImage:attachment
                                                     fileName:fileName
                                                     mimeType:mimeType
                                                      handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
