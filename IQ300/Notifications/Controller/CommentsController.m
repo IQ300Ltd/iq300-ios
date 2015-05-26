@@ -275,10 +275,7 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage * image = info[UIImagePickerControllerOriginalImage];
-    _attachmentImage = [image imageWithFixedOrientation];
-    [_mainView.inputView.sendButton setEnabled:(_attachmentImage != nil)];
-    [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
-                                      forState:UIControlStateNormal];
+    
     [picker dismissViewControllerAnimated:YES completion:^{
         //Fix offset changed by image picker
         if (!CGPointEqualToPoint(_tableContentOffset, self.tableView.contentOffset)) {
@@ -286,16 +283,16 @@
         }
         _tableContentOffset = CGPointZero;
         
-        if (_attachmentImage) {
+        if (image) {
             NSString * title = @"You can reduce the image size by scaling it to one of the following sizes";
             UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(title, nil)
                                                                       delegate:nil
                                                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                                                         destructiveButtonTitle:nil
-                                                             otherButtonTitles:NSLocalizedStringWithFormat(@"Small (%1.2f KB)", 776.31f, nil),
-                                                                               NSLocalizedStringWithFormat(@"Medium (%1.2f MB)", 2.73f, nil),
-                                                                               NSLocalizedStringWithFormat(@"Large (%1.2f MB)", 5.44f, nil),
-                                                                               NSLocalizedStringWithFormat(@"Actual (%1.2f MB)", 10.72f, nil), nil];
+                                                             otherButtonTitles:NSLocalizedStringWithFormat(@"Small (%ld%%)", 30, nil),
+                                                                               NSLocalizedStringWithFormat(@"Medium (%ld%%)", 50, nil),
+                                                                               NSLocalizedStringWithFormat(@"Large (%ld%%)", 80, nil),
+                                                                               NSLocalizedString(@"Actual", nil), nil];
             
             [actionSheet setDidDismissBlock:^(UIActionSheet * __nonnull actionSheet, NSInteger buttonIndex) {
                 if (buttonIndex <= 2) {
@@ -316,12 +313,23 @@
                         default:
                             break;
                     }
-                    CGSize scaledSize = CGSizeMake(_attachmentImage.size.width * scale,
-                                                   _attachmentImage.size.height * scale);
-                    UIImage * scaledImage = [UIImage scaleImage:_attachmentImage size:scaledSize];
-                    _attachmentImage = scaledImage;
+                    CGSize scaledSize = CGSizeMake(image.size.width * scale,
+                                                   image.size.height * scale);
+                    UIImage * scaledImage = [image imageWithFixedOrientation];
+                    _attachmentImage = [UIImage scaleImage:scaledImage size:scaledSize];
+                }
+                else if(buttonIndex != actionSheet.cancelButtonIndex) {
+                    _attachmentImage = [image imageWithFixedOrientation];
+                }
+                
+                if (_attachmentImage != nil) {
+                    _attachmentAsset = nil;
+                    [_mainView.inputView.sendButton setEnabled:YES];
+                    [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
+                                                      forState:UIControlStateNormal];
                 }
             }];
+            
             [actionSheet showInView:self.view];
         }
     }];
@@ -685,9 +693,12 @@
 
 - (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
     _attachmentAsset = asset;
-    [_mainView.inputView.sendButton setEnabled:(_attachmentAsset != nil)];
-    [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
-                                      forState:UIControlStateNormal];
+    if (_attachmentAsset != nil) {
+        _attachmentImage = nil;
+        [_mainView.inputView.sendButton setEnabled:YES];
+        [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
+                                          forState:UIControlStateNormal];
+    }
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
