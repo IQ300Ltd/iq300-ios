@@ -578,6 +578,7 @@
                 }
                 
                 if (_attachmentImage != nil) {
+                    _attachmentAsset = nil;
                     [_mainView.inputView.sendButton setEnabled:YES];
                     [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                                       forState:UIControlStateNormal];
@@ -606,6 +607,7 @@
 - (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
     _attachmentAsset = asset;
     if (_attachmentAsset != nil) {
+        _attachmentImage = nil;
         [_mainView.inputView.sendButton setEnabled:YES];
         [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                           forState:UIControlStateNormal];
