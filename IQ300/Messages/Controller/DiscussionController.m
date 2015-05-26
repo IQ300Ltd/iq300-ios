@@ -26,10 +26,11 @@
 #import "CSectionHeaderView.h"
 #import "IQDrawerController.h"
 #import "UIImage+Extensions.h"
+#import "UIActionSheet+Blocks.h"
 
 #define SECTION_HEIGHT 12
 
-@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIActionSheetDelegate> {
+@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachmentAsset;
@@ -320,11 +321,44 @@
 
 - (void)attachButtonAction:(UIButton*)sender {
     UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                              delegate:self
+                                                              delegate:nil
                                                      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                                                 destructiveButtonTitle:nil
                                                      otherButtonTitles:NSLocalizedString(@"Take a picture", nil),
                                                                        NSLocalizedString(@"Photos", nil), nil];
+    
+    [actionSheet setDidDismissBlock:^(UIActionSheet * __nonnull actionSheet, NSInteger buttonIndex) {
+        if (buttonIndex == 0) {
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                _tableContentOffset = self.tableView.contentOffset;
+                
+                UIImagePickerController * imagePicker = [[UIImagePickerController alloc] init];
+                [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
+                [imagePicker setCameraDevice:UIImagePickerControllerCameraDeviceRear];
+                [imagePicker setAllowsEditing:NO];
+                [imagePicker setShowsCameraControls:YES];
+                [imagePicker setDelegate:self];
+                imagePicker.hidesBottomBarWhenPushed = YES;
+                [self presentViewController:imagePicker animated:YES completion:nil];
+            }
+            else {
+                [UIAlertView showWithTitle:@"IQ300"
+                                   message:NSLocalizedString(@"The camera is not available", nil)
+                         cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                         otherButtonTitles:nil
+                                  tapBlock:nil];
+            }
+        }
+        else if (buttonIndex == 1) {
+            CTAssetsPickerController *picker = [[CTAssetsPickerController alloc] init];
+            picker.assetsFilter = [ALAssetsFilter allAssets];
+            picker.showsCancelButton = YES;
+            picker.delegate = (id<CTAssetsPickerControllerDelegate>)self;
+            picker.showsNumberOfAssets = NO;
+            [self presentViewController:picker animated:YES completion:nil];
+        }
+    }];
+    
     [actionSheet showInView:self.view];
 }
 
@@ -482,39 +516,6 @@
     }
 }
 
-#pragma mark - ActionSheet Delegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 0) {
-        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-            _tableContentOffset = self.tableView.contentOffset;
-            UIImagePickerController * imagePicker = [[UIImagePickerController alloc] init];
-            [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
-            [imagePicker setCameraDevice:UIImagePickerControllerCameraDeviceRear];
-            [imagePicker setAllowsEditing:NO];
-            [imagePicker setShowsCameraControls:YES];
-            [imagePicker setDelegate:self];
-            imagePicker.hidesBottomBarWhenPushed = YES;
-            [self presentViewController:imagePicker animated:YES completion:nil];
-        }
-        else {
-            [UIAlertView showWithTitle:@"IQ300"
-                               message:NSLocalizedString(@"The camera is not available", nil)
-                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                     otherButtonTitles:nil
-                              tapBlock:nil];
-        }
-    }
-    else if (buttonIndex == 1) {
-        CTAssetsPickerController *picker = [[CTAssetsPickerController alloc] init];
-        picker.assetsFilter = [ALAssetsFilter allAssets];
-        picker.showsCancelButton = YES;
-        picker.delegate = (id<CTAssetsPickerControllerDelegate>)self;
-        picker.showsNumberOfAssets = NO;
-        [self presentViewController:picker animated:YES completion:nil];
-    }
-}
-
 #pragma mark - UIImagePickerController delegate
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -530,16 +531,56 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage * image = info[UIImagePickerControllerOriginalImage];
     _attachmentImage = [image imageWithFixedOrientation];
+    
     [_mainView.inputView.sendButton setEnabled:(_attachmentImage != nil)];
     [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                       forState:UIControlStateNormal];
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    
-    //Fix offset changed by image picker
-    if (!CGPointEqualToPoint(_tableContentOffset, self.tableView.contentOffset)) {
-        self.tableView.contentOffset = _tableContentOffset;
-    }
-    _tableContentOffset = CGPointZero;
+    [picker dismissViewControllerAnimated:YES completion:^{
+        //Fix offset changed by image picker
+        if (!CGPointEqualToPoint(_tableContentOffset, self.tableView.contentOffset)) {
+            self.tableView.contentOffset = _tableContentOffset;
+        }
+        _tableContentOffset = CGPointZero;
+        
+        if (_attachmentImage) {
+            NSString * title = @"You can reduce the image size by scaling it to one of the following sizes";
+            UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(title, nil)
+                                                                      delegate:nil
+                                                             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                        destructiveButtonTitle:nil
+                                                             otherButtonTitles:NSLocalizedStringWithFormat(@"Small (%1.2f KB)", 776.31f, nil),
+                                                                               NSLocalizedStringWithFormat(@"Medium (%1.2f MB)", 2.73f, nil),
+                                                                               NSLocalizedStringWithFormat(@"Large (%1.2f MB)", 5.44f, nil),
+                                                                               NSLocalizedStringWithFormat(@"Actual (%1.2f MB)", 10.72f, nil), nil];
+            
+            [actionSheet setDidDismissBlock:^(UIActionSheet * __nonnull actionSheet, NSInteger buttonIndex) {
+                if (buttonIndex <= 2) {
+                    CGFloat scale = 1.0f;
+                    switch (buttonIndex) {
+                        case 0:
+                            scale = 0.3f;
+                            break;
+                            
+                        case 1:
+                            scale = 0.5f;
+                            break;
+                            
+                        case 2:
+                            scale = 0.8f;
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                    CGSize scaledSize = CGSizeMake(_attachmentImage.size.width * scale,
+                                                   _attachmentImage.size.height * scale);
+                    UIImage * scaledImage = [UIImage scaleImage:_attachmentImage size:scaledSize];
+                    _attachmentImage = scaledImage;
+                }
+            }];
+            [actionSheet showInView:self.view];
+        }
+    }];
 }
 
 #pragma mark - Assets Picker Delegate

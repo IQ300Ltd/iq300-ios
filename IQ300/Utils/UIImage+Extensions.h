@@ -10,10 +10,12 @@
 
 @interface UIImage (Extensions)
 
-+ (UIImage *)imageWithColor:(UIColor *)color;
++ (UIImage*)imageWithColor:(UIColor *)color;
 
-+ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;
++ (UIImage*)imageWithColor:(UIColor *)color size:(CGSize)size;
 
-- (UIImage *)imageWithFixedOrientation;
++ (UIImage*)scaleImage:(UIImage*)image size:(CGSize)size;
+
+- (UIImage*)imageWithFixedOrientation;
 
 @end

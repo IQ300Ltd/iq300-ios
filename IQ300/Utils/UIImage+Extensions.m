@@ -25,6 +25,15 @@
     return img;
 }
 
++ (UIImage*)scaleImage:(UIImage*)image size:(CGSize)size {    
+    UIGraphicsBeginImageContext(size);
+    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+}
+
 - (UIImage *)imageWithFixedOrientation {
     if (self.imageOrientation == UIImageOrientationUp) {
         return self;

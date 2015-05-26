@@ -183,6 +183,7 @@
 		73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A113FC1A1CAA5900293EC5 /* default_avatar@2x.png */; };
 		73A20C771A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */; };
 		73A20C7A1A42F62C006433C5 /* IQBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A20C791A42F62C006433C5 /* IQBadgeView.m */; };
+		73A26C571B1443B5000F4763 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A26C561B1443B5000F4763 /* UIActionSheet+Blocks.m */; };
 		73A50D111ADFAA4400251CB7 /* TaskDescriptionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A50D101ADFAA4400251CB7 /* TaskDescriptionController.m */; };
 		73A50D141ADFBDAC00251CB7 /* IQTaskDataHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A50D131ADFBDAC00251CB7 /* IQTaskDataHolder.m */; };
 		73A700441A95BC4100A1C2AC /* TasksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A700431A95BC4100A1C2AC /* TasksView.m */; };
@@ -635,6 +636,8 @@
 		73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarItem+CustomBadgeView.m"; sourceTree = "<group>"; };
 		73A20C781A42F62C006433C5 /* IQBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeView.h; sourceTree = "<group>"; };
 		73A20C791A42F62C006433C5 /* IQBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBadgeView.m; sourceTree = "<group>"; };
+		73A26C551B1443B5000F4763 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
+		73A26C561B1443B5000F4763 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
 		73A50D0F1ADFAA4400251CB7 /* TaskDescriptionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskDescriptionController.h; sourceTree = "<group>"; };
 		73A50D101ADFAA4400251CB7 /* TaskDescriptionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskDescriptionController.m; sourceTree = "<group>"; };
 		73A50D121ADFBDAC00251CB7 /* IQTaskDataHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskDataHolder.h; sourceTree = "<group>"; };
@@ -1190,6 +1193,8 @@
 				73C16C801AEFBA6B00155BB1 /* OrderedArrayTransformer.m */,
 				73891FF31A2C97ED008D8885 /* UIAlertView+Blocks.h */,
 				73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */,
+				73A26C551B1443B5000F4763 /* UIActionSheet+Blocks.h */,
+				73A26C561B1443B5000F4763 /* UIActionSheet+Blocks.m */,
 				73C4A6801A3EFB4E003E1242 /* NSString+UUID.h */,
 				73C4A6811A3EFB4E003E1242 /* NSString+UUID.m */,
 				7395C50B1A31848700A6D5DA /* UIView+RoundedCorners.h */,
@@ -2367,6 +2372,7 @@
 				738EF8301A9CBAA200894755 /* IQTasksHolder.m in Sources */,
 				73C16C771AEF5D0500155BB1 /* IQBadgeIndicatorView.m in Sources */,
 				736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */,
+				73A26C571B1443B5000F4763 /* UIActionSheet+Blocks.m in Sources */,
 				73A7004F1A95CF8C00A1C2AC /* TaskCell.m in Sources */,
 				73D7F1E91ADE94B400023120 /* TodoListItemCell.m in Sources */,
 				73C286AD1A94AFD70011FD51 /* IQNotificationsGroupIds.m in Sources */,
