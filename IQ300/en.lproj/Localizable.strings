@@ -134,3 +134,13 @@
 "Outbox" = "Outbox";
 "template" = "Template";
 "It is necessary to connect to the Internet" = "It is necessary to connect to the Internet";
+"Add attachment" = "Add attachment";
+"Take a picture" = "Take a picture";
+"Photos" = "Photos";
+"The camera is not available" = "The camera is not available";
+"You can not write a message to yourself" = "You can not write a message to yourself";
+"Small (%ld%%)" = "Small (%ld%%)";
+"Medium (%ld%%)" = "Medium (%ld%%)";
+"Large (%ld%%)" = "Large (%ld%%)";
+"Actual" = "Actual";
+"You can reduce the image size by scaling it to one of the following sizes" = "Вы можете уменьшить размер изображения путем масштабирования его на один из следующих размеров";

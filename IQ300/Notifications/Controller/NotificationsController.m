@@ -273,6 +273,7 @@
                                                if (controller) {
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
                                                    controller.notificationsGroupSid = groupSid;
+                                                   controller.hidesBottomBarWhenPushed = YES;
                                                    [self.navigationController pushViewController:controller animated:YES];
                                                    
                                                    [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
@@ -291,11 +292,11 @@
                                             if(success) {
                                                 CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
                                                 CommentsController * controller = [[CommentsController alloc] init];
-                                                controller.hidesBottomBarWhenPushed = YES;
                                                 controller.model = model;
                                                 controller.title = title;
                                                 controller.highlightedCommentId = commentId;
-                                                
+                                                controller.hidesBottomBarWhenPushed = YES;
+
                                                 [self.navigationController pushViewController:controller animated:YES];
                                                 
                                                 [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];

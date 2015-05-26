@@ -142,3 +142,13 @@
 "Outbox" = "Исходящие";
 "template" = "Шаблон";
 "It is necessary to connect to the Internet" = "Необходимо подключение к Internet";
+"Add attachment" = "Прикрепить документ";
+"Take a picture" = "Сделать фото";
+"Photos" = "Фотографии";
+"The camera is not available" = "Камера недоступна";
+"You can not write a message to yourself" = "Вы не можете написать сообщение самому себе";
+"Small (%ld%%)" = "Мелкий (%ld%%)";
+"Medium (%ld%%)" = "Средний (%ld%%)";
+"Large (%ld%%)" = "Большой (%ld%%)";
+"Actual" = "Исходный";
+"You can reduce the image size by scaling it to one of the following sizes" = "Вы можете уменьшить размер изображения путем масштабирования его в один из следующих размеров";

@@ -335,6 +335,16 @@ fileAttributeName:(NSString*)fileAttributeName
                  handler:handler];
 }
 
+- (void)createAttachmentWithImage:(UIImage*)image fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler {
+    [self postData:UIImagePNGRepresentation(image)
+              path:@"/api/v1/attachments"
+        parameters:nil
+ fileAttributeName:@"attachment[file]"
+          fileName:fileName
+          mimeType:mimeType
+           handler:handler];
+}
+
 #pragma mark - Token Extend methods
 
 - (dispatch_queue_t)dispatchQueue {
@@ -387,10 +397,10 @@ fileAttributeName:(NSString*)fileAttributeName
                                                IQLogError(@"%@", error);
                                                _isTokenExtended = NO;
                                                _isTokenExtensionsFiled = YES;
-
-                                               handler(NO, nil, nil, loginError);
+                                               if (handler) {
+                                                   handler(NO, nil, nil, loginError);
+                                               }
                                            }
-
                                        }];
                 
                 [self waitTokenExtendGroupWithCompletionBlock:^{
@@ -434,7 +444,7 @@ fileAttributeName:(NSString*)fileAttributeName
             handler(NO, nil, responseData, responseError);
         }
         else {
-            if (responseStatusCode >= 500 && responseStatusCode < 600) {
+            if (responseStatusCode != 200) {
                 NSString * errorDescription = [NSString stringWithFormat:@"Failed with response status code %ld", (long)responseStatusCode];
                 NSDictionary * userInfo = @{ NSLocalizedDescriptionKey : errorDescription };
                 NSError * error = [NSError errorWithDomain:TCServiceErrorDomain

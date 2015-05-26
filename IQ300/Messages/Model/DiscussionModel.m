@@ -226,23 +226,24 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
     BOOL hasObjects = ([_fetchController.fetchedObjects count] > 0);
     if(!hasObjects) {
-        [self reloadModelSourceControllerWithCompletion:nil];
+        [self reloadModelWithCompletion:completion];
     }
-    
-    [self clearRemovedComments];
-    
-    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                      page:@(1)
-                                                       per:@(40)
-                                                      sort:SORT_DIRECTION
-                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                       if(!error) {
-                                                           [self updateDefaultStatusesForComments:comments];
-                                                           if(completion) {
-                                                               completion(error);
+    else {
+        [self clearRemovedComments];
+        
+        [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                          page:@(1)
+                                                           per:@(_portionLenght)
+                                                          sort:SORT_DIRECTION
+                                                       handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                           if(!error) {
+                                                               [self updateDefaultStatusesForComments:comments];
+                                                               if(completion) {
+                                                                   completion(error);
+                                                               }
                                                            }
-                                                       }
-                                                   }];
+                                                       }];
+    }
 }
 
 - (void)clearModelData {
@@ -273,9 +274,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)sendComment:(NSString*)comment
-    attachmentAsset:(ALAsset*)asset
+         attachment:(id)attachment
            fileName:(NSString*)fileName
-     attachmentType:(NSString*)type
+           mimeType:(NSString*)mimeType
      withCompletion:(void (^)(NSError * error))completion {
     
     void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachments) {
@@ -307,25 +308,51 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                          }];
     };
     
-    if(asset) {
-        [[IQService sharedService] createAttachmentWithAsset:asset
+    if(attachment && [attachment isKindOfClass:[ALAsset class]]) {
+        [[IQService sharedService] createAttachmentWithAsset:attachment
                                                     fileName:fileName
-                                                    mimeType:type
-                                                     handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
+                                                    mimeType:mimeType
+                                                     handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                         if(success) {
-                                                            sendCommentBlock(@[attachment]);
+                                                            sendCommentBlock(@[attachmentObject]);
                                                         }
                                                         else {
-                                                            [self crecreateLocalAttachmentWithAsset:asset completion:^(IQAttachment * attachment, NSError *error) {
-                                                                if(attachment) {
-                                                                    sendCommentBlock(@[attachment]);
-                                                                }
-                                                                else if (completion) {
-                                                                    completion(error);
-                                                                }
-                                                            }];
+                                                            [self createLocalAttachmentWithAsset:(ALAsset*)attachment
+                                                                                        fileName:fileName
+                                                                                        mimeType:mimeType
+                                                                                      completion:^(IQAttachment * attachmentObject, NSError *error) {
+                                                                                          if(attachmentObject) {
+                                                                                              sendCommentBlock(@[attachmentObject]);
+                                                                                          }
+                                                                                          else if (completion) {
+                                                                                              completion(error);
+                                                                                          }
+                                                                                      }];
                                                         }
                                                     }];
+    }
+    else if(attachment && [attachment isKindOfClass:[UIImage class]]) {
+        [[IQService sharedService] createAttachmentWithImage:attachment
+                                                    fileName:fileName
+                                                    mimeType:mimeType
+                                                     handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
+                                                         if(success) {
+                                                             sendCommentBlock(@[attachmentObject]);
+                                                         }
+                                                         else {
+                                                             [self createLocalAttachmentWithImage:(UIImage*)attachment
+                                                                                         fileName:fileName
+                                                                                         mimeType:mimeType
+                                                                                       completion:^(IQAttachment * attachmentObject, NSError *error) {
+                                                                 if(attachmentObject) {
+                                                                     sendCommentBlock(@[attachmentObject]);
+                                                                 }
+                                                                 else if (completion) {
+                                                                     completion(error);
+                                                                 }
+                                                             }];
+                                                         }
+                                                     }];
     }
     else {
         sendCommentBlock(nil);
@@ -339,12 +366,15 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                     discussionId:comment.discussionId
                                    attachmentIds:attachmentIds
                                          handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
-                                             NSError * saveError = nil;
-                                             item.commentStatus = @(IQCommentStatusSent);
-                                             [item.managedObjectContext saveToPersistentStore:&saveError];
-                                             if(saveError) {
-                                                 NSLog(@"Create comment status error: %@", saveError);
+                                             if (success) {
+                                                 NSError * saveError = nil;
+                                                 item.commentStatus = @(IQCommentStatusSent);
+                                                 [item.managedObjectContext saveToPersistentStore:&saveError];
+                                                 if(saveError) {
+                                                     NSLog(@"Create comment status error: %@", saveError);
+                                                 }
                                              }
+                                             
                                              if (completion) {
                                                  completion(error);
                                              }
@@ -459,51 +489,103 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     return nil;
 }
 
-- (void)crecreateLocalAttachmentWithAsset:(ALAsset*)asset completion:(void (^)(IQAttachment * attachment, NSError * error))completion {
+- (void)createLocalAttachmentWithAsset:(ALAsset*)asset
+                              fileName:(NSString*)fileName
+                              mimeType:(NSString *)mimeType
+                            completion:(void (^)(IQAttachment * attachment, NSError * error))completion {
     NSError * error = nil;
     NSString * diskCachePath = [self createCacheDirIfNeedWithError:&error];
     NSURL * filePath = [NSURL fileURLWithPath:[[diskCachePath stringByAppendingPathComponent:[NSString UUIDString]]
                                                stringByAppendingPathExtension:[asset.fileName pathExtension]]];
-    NSManagedObjectContext * context = [IQService sharedService].context;
-    NSNumber * uniqId = (!error) ? [IQAttachment uniqueLocalIdInContext:context error:&error] : nil;
     
-    if (uniqId && !error) {
+    if (!error) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSError * exportAssetError = nil;
             
             if([asset writeToFile:filePath error:&exportAssetError]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    NSError * saveError = nil;
-                    NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass([IQAttachment class])
-                                                               inManagedObjectContext:context];
-                    
-                    IQAttachment * attachment = (IQAttachment*)[[NSManagedObject alloc] initWithEntity:entity
-                                                                        insertIntoManagedObjectContext:context];
-                    
-                    attachment.localId = uniqId;
-                    attachment.createDate = [NSDate date];
-                    attachment.displayName = [asset fileName];
-                    attachment.ownerId = [IQSession defaultSession].userId;
-                    attachment.contentType = [asset MIMEType];
-                    attachment.originalURL = [filePath absoluteString];
-                    attachment.localURL = [filePath path];
-                    attachment.previewURL = [filePath absoluteString];
-                    
-                    if([attachment.managedObjectContext saveToPersistentStore:&saveError] ) {
-                        if(completion) {
-                            completion(attachment, nil);
-                        }
+                    NSError * createEntityError = nil;
+                    IQAttachment * attachment =[self createLocalAttachmentWithFilePath:[filePath absoluteString]
+                                                                              fileName:fileName
+                                                                           contentType:mimeType
+                                                                                 error:&createEntityError];
+                    if(completion) {
+                        completion(attachment, createEntityError);
                     }
                 });
             }
             else if(completion) {
-                completion(nil, error);
+                completion(nil, exportAssetError);
             }
         });
     }
     else if(completion) {
         completion(nil, error);
     }
+}
+
+- (void)createLocalAttachmentWithImage:(UIImage*)image
+                              fileName:(NSString*)fileName
+                              mimeType:(NSString *)mimeType
+                            completion:(void (^)(IQAttachment * attachment, NSError * error))completion {
+    NSError * error = nil;
+    NSString * diskCachePath = [self createCacheDirIfNeedWithError:&error];
+    NSURL * filePath = [NSURL fileURLWithPath:[[diskCachePath stringByAppendingPathComponent:[NSString UUIDString]]
+                                               stringByAppendingPathExtension:@"png"]];
+    
+    if (!error) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSError * saveDataError = nil;
+            NSData * imageData = UIImagePNGRepresentation(image);
+            [imageData writeToURL:filePath
+                          options:NSDataWritingAtomic error:&saveDataError];
+            if (!saveDataError) {
+                NSError * createEntityError = nil;
+                IQAttachment * attachment = [self createLocalAttachmentWithFilePath:[filePath absoluteString]
+                                                                           fileName:fileName
+                                                                        contentType:mimeType
+                                                                              error:&createEntityError];
+                if(completion) {
+                    completion(attachment, createEntityError);
+                }
+            }
+            else if(completion) {
+                completion(nil, saveDataError);
+            }
+        });
+    }
+    else if(completion) {
+        completion(nil, error);
+    }
+}
+
+- (IQAttachment*)createLocalAttachmentWithFilePath:(NSString*)filePath fileName:(NSString*)fileName contentType:(NSString*)contentType error:(NSError**)error {
+    NSManagedObjectContext * context = [IQService sharedService].context;
+    NSNumber * uniqId = [IQAttachment uniqueLocalIdInContext:context error:error];
+    if (*error || !uniqId) {
+        return nil;
+    }
+
+    NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass([IQAttachment class])
+                                               inManagedObjectContext:context];
+    
+    IQAttachment * attachment = (IQAttachment*)[[NSManagedObject alloc] initWithEntity:entity
+                                                        insertIntoManagedObjectContext:context];
+    
+    attachment.localId = uniqId;
+    attachment.createDate = [NSDate date];
+    attachment.displayName = fileName;
+    attachment.ownerId = [IQSession defaultSession].userId;
+    attachment.contentType = contentType;
+    attachment.originalURL = filePath;
+    attachment.localURL = filePath;
+    attachment.previewURL = filePath;
+    
+    if([attachment.managedObjectContext saveToPersistentStore:error] ) {
+        return attachment;
+    }
+    
+    return nil;
 }
 
 - (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {

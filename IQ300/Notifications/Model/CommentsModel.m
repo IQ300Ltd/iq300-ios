@@ -226,9 +226,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)sendComment:(NSString*)comment
-    attachmentAsset:(ALAsset*)asset
+         attachment:(id)attachment
            fileName:(NSString*)fileName
-     attachmentType:(NSString*)type
+           mimeType:(NSString*)mimeType
      withCompletion:(void (^)(NSError * error))completion {
     
     void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachments) {
@@ -243,13 +243,26 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                          }];
     };
     
-    if(asset) {
-        [[IQService sharedService] createAttachmentWithAsset:asset
+    if(attachment && [attachment isKindOfClass:[ALAsset class]]) {
+        [[IQService sharedService] createAttachmentWithAsset:attachment
                                                     fileName:fileName
-                                                    mimeType:type
-                                                     handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
+                                                    mimeType:mimeType
+                                                     handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                          if(success) {
-                                                             sendCommentBlock(@[attachment]);
+                                                             sendCommentBlock(@[attachmentObject]);
+                                                         }
+                                                         else if (completion) {
+                                                             completion(error);
+                                                         }
+                                                     }];
+    }
+    else if(attachment && [attachment isKindOfClass:[UIImage class]]) {
+        [[IQService sharedService] createAttachmentWithImage:attachment
+                                                    fileName:fileName
+                                                    mimeType:mimeType
+                                                     handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
+                                                         if(success) {
+                                                             sendCommentBlock(@[attachmentObject]);
                                                          }
                                                          else if (completion) {
                                                              completion(error);

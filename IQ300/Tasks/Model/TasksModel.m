@@ -206,6 +206,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     [self updateCountersWithCompletion:nil];
 
     [self reloadSourceControllerWithCompletion:completion];
+    
     [[IQService sharedService] tasksUpdatedAfter:nil
                                           folder:self.folder
                                           status:self.statusFilter
@@ -217,6 +218,13 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                          handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
                                              [self reloadSourceControllerWithCompletion:completion];
                                              
+                                             //update archive folder because task may move from selected folder to archive
+                                             [self archiveTasksUpdatesWithCompletion:^(NSError *error) {
+                                                 if (error) {
+                                                     NSLog(@"Archive tasks updates error: %@", error);
+                                                 }
+                                             }];
+
                                              if(success && [_fetchController.fetchedObjects count] < _portionLenght) {
                                                  [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
                                                      if(completion) {
@@ -290,10 +298,65 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)tasksUpdatesAfterDateWithCompletion:(void (^)(NSError * error))completion {
-    NSDate * lastUpdatedDate = [self getLastChangedDate];
+    NSDate * lastUpdatedDate = [self taskLastChangedDate];
     [self tasksUpdatesAfterDate:lastUpdatedDate
                            page:@(1)
                      completion:completion];
+    
+    //update archive folder because task may move from selected folder to archive
+    [self archiveTasksUpdatesWithCompletion:^(NSError *error) {
+        if (error) {
+            NSLog(@"Archive tasks updates error: %@", error);
+        }
+    }];
+}
+
+- (void)archiveTasksUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] tasksUpdatedAfter:lastUpdatedDate
+                                          folder:@"archive"
+                                          status:self.statusFilter
+                                     communityId:self.communityId
+                                            page:page
+                                             per:@(_portionLenght)
+                                          search:self.search
+                                            sort:_sort
+                                         handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
+                                             if(success && holder.currentPage < holder.totalPages) {
+                                                 [self archiveTasksUpdatesAfterDate:lastUpdatedDate
+                                                                        page:@([page integerValue] + 1)
+                                                                  completion:completion];
+                                             }
+                                             else if(completion) {
+                                                 completion(error);
+                                             }
+                                         }];
+}
+
+- (void)archiveTasksUpdatesWithCompletion:(void (^)(NSError * error))completion {
+    if (![self.folder isEqualToString:@"archive"] && ![self.folder isEqualToString:@"watchable"] &&
+        ![self.folder isEqualToString:@"templates"]) {
+        NSDate * archiveTaskUpdatedDate = [self archiveFolderLastChangedDate];
+        if (archiveTaskUpdatedDate) {
+            [self archiveTasksUpdatesAfterDate:archiveTaskUpdatedDate
+                                          page:@(1)
+                                    completion:completion];
+        }
+        else {
+            [[IQService sharedService] tasksUpdatedAfter:nil
+                                                  folder:@"archive"
+                                                  status:self.statusFilter
+                                             communityId:self.communityId
+                                                    page:@(1)
+                                                     per:@(_portionLenght)
+                                                  search:self.search
+                                                    sort:_sort
+                                                 handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
+                                                     if (completion) {
+                                                        completion(error);
+                                                     }
+                                                 }];
+        }
+    }
 }
 
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
@@ -374,13 +437,13 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 /**
- *  Get task id by max/min sort field
+ *  Last task id by max/min sort field
  *
  *  @param top If top return max sort field
  *
  *  @return Task id
  */
-- (NSNumber*)getLastTaskIdFromTop:(BOOL)top {
+- (NSNumber*)lastTaskIdFromTop:(BOOL)top {
     NSString * keyPath = [TasksModel propertyNameForSortField:self.sortField];
     NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
     [fetchRequest setPredicate:[self makeFilterPredicate]];
@@ -398,7 +461,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return nil;
 }
 
-- (NSDate*)getLastChangedDate {
+- (NSDate*)taskLastChangedDate {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
     [fetchRequest setPredicate:[self makeFilterPredicate]];
     fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"updatedDate" ascending:NO]];
@@ -414,32 +477,64 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return nil;
 }
 
+- (NSDate*)archiveFolderLastChangedDate {
+    NSPredicate * predicate = [self makeFilterPredicateForFolder:@"archive"
+                                                     communityId:self.communityId
+                                                    statusFilter:self.statusFilter
+                                                          search:self.search];
+
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
+    fetchRequest.predicate = predicate;
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"updatedDate" ascending:NO]];
+    fetchRequest.fetchLimit = 1;
+    
+    NSError *error = nil;
+    
+    NSArray *objects = [[IQService sharedService].context executeFetchRequest:fetchRequest error:&error];
+    if ([objects count] > 0) {
+        IQTask * task = [objects objectAtIndex:0];
+        return task.updatedDate;
+    }
+    return nil;
+}
+
+
 - (NSPredicate*)makeFilterPredicate {
+    return [self makeFilterPredicateForFolder:self.folder
+                                  communityId:self.communityId
+                                 statusFilter:self.statusFilter
+                                       search:self.search];
+}
+
+- (NSPredicate*)makeFilterPredicateForFolder:(NSString*)folder
+                                 communityId:(NSNumber*)communityId
+                                statusFilter:(NSString*)statusFilter
+                                      search:(NSString*)search {
     NSPredicate * predicate = [NSPredicate predicateWithFormat:@"recipientId == %@", [IQSession defaultSession].userId];
     
-    if([self.folder length] > 0) {
-        NSPredicate * folderPredicate = [TasksModel predicateForFolder:self.folder userId:[IQSession defaultSession].userId];
+    if([folder length] > 0) {
+        NSPredicate * folderPredicate = [TasksModel predicateForFolder:folder userId:[IQSession defaultSession].userId];
         if(folderPredicate) {
             predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, folderPredicate]];
         }
     }
     
-    if (self.communityId) {
-        NSPredicate * communityFilter = [NSPredicate predicateWithFormat:@"community.communityId == %@", self.communityId];
+    if (communityId) {
+        NSPredicate * communityFilter = [NSPredicate predicateWithFormat:@"community.communityId == %@", communityId];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, communityFilter]];
     }
     
-    if(self.statusFilter) {
-        NSPredicate * statusFilter = [NSPredicate predicateWithFormat:@"status LIKE[c] %@", self.statusFilter];
-        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, statusFilter]];
+    if([statusFilter length] > 0) {
+        NSPredicate * statusFilterPredicate = [NSPredicate predicateWithFormat:@"status LIKE[c] %@", statusFilter];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, statusFilterPredicate]];
     }
     
-    if([self.search length] > 0) {
+    if([search length] > 0) {
         NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"(user.displayName CONTAINS[cd] $filter) OR (user.email CONTAINS[cd] $filter)"];
-        filterPredicate = [filterPredicate predicateWithSubstitutionVariables:@{ @"filter" : self.search }];
+        filterPredicate = [filterPredicate predicateWithSubstitutionVariables:@{ @"filter" : search }];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, filterPredicate]];
     }
-
+    
     return predicate;
 }
 

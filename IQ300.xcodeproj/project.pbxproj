@@ -181,6 +181,7 @@
 		73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A113FC1A1CAA5900293EC5 /* default_avatar@2x.png */; };
 		73A20C771A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */; };
 		73A20C7A1A42F62C006433C5 /* IQBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A20C791A42F62C006433C5 /* IQBadgeView.m */; };
+		73A26C5C1B1478AC000F4763 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A26C5B1B1478AC000F4763 /* UIActionSheet+Blocks.m */; };
 		73A50D111ADFAA4400251CB7 /* TaskDescriptionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A50D101ADFAA4400251CB7 /* TaskDescriptionController.m */; };
 		73A50D141ADFBDAC00251CB7 /* IQTaskDataHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A50D131ADFBDAC00251CB7 /* IQTaskDataHolder.m */; };
 		73A700441A95BC4100A1C2AC /* TasksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A700431A95BC4100A1C2AC /* TasksView.m */; };
@@ -492,7 +493,7 @@
 		738C7F671A792D3200A25C70 /* NotificationsGroupController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsGroupController.m; sourceTree = "<group>"; };
 		738C7F6C1A792D7500A25C70 /* NGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGroupCell.h; sourceTree = "<group>"; };
 		738C7F6D1A792D7500A25C70 /* NGroupCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NGroupCell.m; sourceTree = "<group>"; };
-		738CE1E01A0B3F4E0096B374 /* IQ300.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IQ300.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		738CE1E01A0B3F4E0096B374 /* IQ 300.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IQ 300.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		738CE1E41A0B3F4E0096B374 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		738CE1E51A0B3F4E0096B374 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		738CE1E71A0B3F4E0096B374 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -630,6 +631,8 @@
 		73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarItem+CustomBadgeView.m"; sourceTree = "<group>"; };
 		73A20C781A42F62C006433C5 /* IQBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeView.h; sourceTree = "<group>"; };
 		73A20C791A42F62C006433C5 /* IQBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBadgeView.m; sourceTree = "<group>"; };
+		73A26C5A1B1478AC000F4763 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
+		73A26C5B1B1478AC000F4763 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
 		73A50D0F1ADFAA4400251CB7 /* TaskDescriptionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskDescriptionController.h; sourceTree = "<group>"; };
 		73A50D101ADFAA4400251CB7 /* TaskDescriptionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskDescriptionController.m; sourceTree = "<group>"; };
 		73A50D121ADFBDAC00251CB7 /* IQTaskDataHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskDataHolder.h; sourceTree = "<group>"; };
@@ -1185,6 +1188,8 @@
 				73C16C801AEFBA6B00155BB1 /* OrderedArrayTransformer.m */,
 				73891FF31A2C97ED008D8885 /* UIAlertView+Blocks.h */,
 				73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */,
+				73A26C5A1B1478AC000F4763 /* UIActionSheet+Blocks.h */,
+				73A26C5B1B1478AC000F4763 /* UIActionSheet+Blocks.m */,
 				73C4A6801A3EFB4E003E1242 /* NSString+UUID.h */,
 				73C4A6811A3EFB4E003E1242 /* NSString+UUID.m */,
 				7395C50B1A31848700A6D5DA /* UIView+RoundedCorners.h */,
@@ -1357,7 +1362,7 @@
 		738CE1E11A0B3F4E0096B374 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				738CE1E01A0B3F4E0096B374 /* IQ300.app */,
+				738CE1E01A0B3F4E0096B374 /* IQ 300.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1956,9 +1961,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		738CE1DF1A0B3F4E0096B374 /* IQ300 */ = {
+		738CE1DF1A0B3F4E0096B374 /* IQ 300 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 738CE2031A0B3F4E0096B374 /* Build configuration list for PBXNativeTarget "IQ300" */;
+			buildConfigurationList = 738CE2031A0B3F4E0096B374 /* Build configuration list for PBXNativeTarget "IQ 300" */;
 			buildPhases = (
 				98DBA4C8145B6256D6CC040B /* Check Pods Manifest.lock */,
 				738CE1DC1A0B3F4E0096B374 /* Sources */,
@@ -1971,9 +1976,9 @@
 			);
 			dependencies = (
 			);
-			name = IQ300;
+			name = "IQ 300";
 			productName = IQ300;
-			productReference = 738CE1E01A0B3F4E0096B374 /* IQ300.app */;
+			productReference = 738CE1E01A0B3F4E0096B374 /* IQ 300.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1987,7 +1992,7 @@
 				TargetAttributes = {
 					738CE1DF1A0B3F4E0096B374 = {
 						CreatedOnToolsVersion = 6.1;
-						DevelopmentTeam = 2375DJV45D;
+						DevelopmentTeam = D3Q8V8UU4B;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -2013,7 +2018,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				738CE1DF1A0B3F4E0096B374 /* IQ300 */,
+				738CE1DF1A0B3F4E0096B374 /* IQ 300 */,
 			);
 		};
 /* End PBXProject section */
@@ -2384,6 +2389,7 @@
 				739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */,
 				73ADA8D91A36DB8D0032C1FA /* CreateConversationController.m in Sources */,
 				73D7F1E71ADE94B400023120 /* TInfoLineView.m in Sources */,
+				73A26C5C1B1478AC000F4763 /* UIActionSheet+Blocks.m in Sources */,
 				73F63E8C1AA08ED0000DA319 /* TaskFilterSortItem.m in Sources */,
 				73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */,
 				73B3C1AB1A7B73B9005F972D /* NSString+MD5.m in Sources */,
@@ -2495,8 +2501,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Inostudio Solutions (2375DJV45D)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Inostudio Solutions (2375DJV45D)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2517,8 +2523,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e84e41df-9319-4880-8976-fe3e16ce986b";
+				PRODUCT_NAME = "IQ 300";
+				PROVISIONING_PROFILE = "10cd635c-7c93-41cd-a95b-68a03fa80e72";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -2606,8 +2612,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Evgeny Kulinchenko (5A5WW9MX3F)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Shamil Hamadeev (DDMRH6LAJY)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Shamil Hamadeev (DDMRH6LAJY)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2621,8 +2627,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "416c23ff-fe6a-426e-99bf-71cfb9687183";
+				PRODUCT_NAME = "IQ 300";
+				PROVISIONING_PROFILE = "4c2eda23-04db-4d95-942f-e1b02afc55d4";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -2634,8 +2640,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Inostudio Solutions (2375DJV45D)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Inostudio Solutions (2375DJV45D)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2645,13 +2651,19 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IQ300/IQ300-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"kPTPusherClientLibraryVersion=@\\\"1.5\\\"",
+					"PROD=1",
+				);
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
 				INFOPLIST_FILE = IQ300/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9359bc56-d489-4d3a-a25f-3a0cf0e95426";
+				PRODUCT_NAME = "IQ 300";
+				PROVISIONING_PROFILE = "ba62a303-a83a-4d4c-8ef1-8ad27abaefe7";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -2670,7 +2682,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		738CE2031A0B3F4E0096B374 /* Build configuration list for PBXNativeTarget "IQ300" */ = {
+		738CE2031A0B3F4E0096B374 /* Build configuration list for PBXNativeTarget "IQ 300" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				738CE2041A0B3F4E0096B374 /* Debug */,

@@ -196,10 +196,10 @@
         model.group = group;
         
         NotificationsController * controller = [[NotificationsController alloc] init];
-        controller.hidesBottomBarWhenPushed = YES;
         controller.title = NSLocalizedString(group.lastNotification.notificable.type, nil);
         controller.model = model;
-        
+        controller.hidesBottomBarWhenPushed = YES;
+
         [self.navigationController pushViewController:controller animated:YES];
     }
 }
@@ -350,6 +350,7 @@
                                                if (controller) {
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
                                                    controller.notificationsGroupSid = groupSid;
+                                                   controller.hidesBottomBarWhenPushed = YES;
                                                    [self.navigationController pushViewController:controller animated:YES];
                                                    
                                                    if(indexPath) {
@@ -370,11 +371,11 @@
                                             if(success) {
                                                 CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
                                                 CommentsController * controller = [[CommentsController alloc] init];
-                                                controller.hidesBottomBarWhenPushed = YES;
                                                 controller.model = model;
                                                 controller.title = title;
                                                 controller.highlightedCommentId = commentId;
-                                                
+                                                controller.hidesBottomBarWhenPushed = YES;
+
                                                 [self.navigationController pushViewController:controller animated:YES];
                                                 
                                                 if(indexPath) {

@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "738CE1DF1A0B3F4E0096B374"
-               BuildableName = "IQ300.app"
-               BlueprintName = "IQ300"
+               BuildableName = "IQ 300.app"
+               BlueprintName = "IQ 300"
                ReferencedContainer = "container:IQ300.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,8 +47,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "738CE1DF1A0B3F4E0096B374"
-            BuildableName = "IQ300.app"
-            BlueprintName = "IQ300"
+            BuildableName = "IQ 300.app"
+            BlueprintName = "IQ 300"
             ReferencedContainer = "container:IQ300.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -76,8 +76,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "738CE1DF1A0B3F4E0096B374"
-            BuildableName = "IQ300.app"
-            BlueprintName = "IQ300"
+            BuildableName = "IQ 300.app"
+            BlueprintName = "IQ 300"
             ReferencedContainer = "container:IQ300.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -88,15 +88,15 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       debugDocumentVersioning = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "738CE1DF1A0B3F4E0096B374"
-            BuildableName = "IQ300.app"
-            BlueprintName = "IQ300"
+            BuildableName = "IQ 300.app"
+            BlueprintName = "IQ 300"
             ReferencedContainer = "container:IQ300.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
