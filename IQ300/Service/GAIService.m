@@ -26,7 +26,7 @@ NSString * const GAIOpenReadedNotificationEventAction = @"event_action_notificat
 
 + (void)initializeGoogleAnalytics {
     [GAI sharedInstance].dispatchInterval = 20;
-    [[GAI sharedInstance] trackerWithTrackingId:@"UA-62928896-1"];
+    [[GAI sharedInstance] trackerWithTrackingId:@"UA-63230129-1"];
 }
 
 + (void)sendEventForCategory:(NSString*)eventCategory action:(NSString*)action {
