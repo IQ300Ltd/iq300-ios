@@ -11,6 +11,7 @@
 
 #define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x2e4865]
 #define TEXT_COLOR [UIColor colorWithHexInt:0x2c74a4]
+#define DETAIL_TEXT_COLOR [UIColor colorWithHexInt:0x8e8d8e]
 #define SELECTED_TEXT_COLOR [UIColor whiteColor]
 
 @interface ContactCell() {
@@ -33,9 +34,11 @@
         
         self.textLabel.font = [UIFont fontWithName:IQ_HELVETICA size:15];
         self.textLabel.textColor = TEXT_COLOR;
-        
+        self.textLabel.highlightedTextColor = [UIColor whiteColor];
+
         self.detailTextLabel.font = [UIFont fontWithName:IQ_HELVETICA size:12];
-        self.detailTextLabel.textColor = [UIColor colorWithHexInt:0x8e8d8e];
+        self.detailTextLabel.textColor = DETAIL_TEXT_COLOR;
+        self.detailTextLabel.highlightedTextColor = [UIColor whiteColor];
     }
     
     return self;
@@ -44,11 +47,13 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
     self.textLabel.textColor = (selected) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
+    self.detailTextLabel.textColor = (selected) ? SELECTED_TEXT_COLOR : DETAIL_TEXT_COLOR;
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
     [super setHighlighted:highlighted animated:animated];
     self.textLabel.textColor = (highlighted) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
+    self.detailTextLabel.textColor = (highlighted) ? SELECTED_TEXT_COLOR : DETAIL_TEXT_COLOR;
 }
 
 - (void)setItem:(IQUser *)item {

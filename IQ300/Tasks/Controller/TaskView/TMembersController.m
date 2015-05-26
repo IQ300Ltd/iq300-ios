@@ -150,7 +150,7 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
     IQTaskMember * member = [self.model itemAtIndexPath:indexPath];
     if ([member.user.userId isEqualToNumber:[IQSession defaultSession].userId]) {
