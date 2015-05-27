@@ -1,0 +1,27 @@
+/* 
+  GAIEvents.strings
+  IQ300
+
+  Created by Tayphoon on 24.05.15.
+  Copyright (c) 2015 Tayphoon. All rights reserved.
+*/
+
+"event_group_notification" = "Уведомления";
+"event_action_notification_read" = "Пользователь просматривает прочитанное уведомление";
+"event_action_notification_transition" = "Переход из уведомления";
+"event_group_tasks_list" = "Список задач";
+"event_action_tasks_list_menu" = "Меню";
+"event_action_tasks_list_create_task" = "Создание задачи";
+"event_action_tasks_list_open_task" = "Открытие задачи";
+"event_group_task" = "Зачачи";
+"event_action_task_edit" = "Редактирование задачи";
+"event_action_task_comment" = "Создание комментария";
+"event_action_task_add_user" = "Добавление участника";
+"event_group_message" = "Сообщения";
+"event_action_message_create" = "Создание сообщения";
+"event_action_message_conversation_create" = "Создание нового диалога";
+"event_group_common" = "Общие";
+"event_action_common_file_upload" = "Загрузка файла";
+"event_action_common_registration" = "Регистрация";
+"event_action_common_login" = "Логин";
+"event_action_common_push_transition" = "Переход с пуш уведомления";
