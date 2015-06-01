@@ -446,10 +446,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     NSNumber * userId = [IQSession defaultSession].userId;
     for (IQComment * comment in comments) {
         if([comment.commentStatus integerValue] != IQCommentStatusSendError) {
-            BOOL isViewed = [comment.createDate compare:_lastViewDate] == NSOrderedAscending;
+            BOOL isViewed = (_lastViewDate) ? [comment.createDate compare:_lastViewDate] == NSOrderedAscending : NO;
             IQCommentStatus status = (isViewed) ? IQCommentStatusViewed : IQCommentStatusSent;
             
-            if([comment.commentStatus integerValue] != status && [comment.author.userId isEqualToNumber:userId]) {
+            if([comment.commentStatus integerValue] != status &&
+               userId != nil && [comment.author.userId isEqualToNumber:userId]) {
                 comment.commentStatus = @(status);
             }
         }

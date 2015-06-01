@@ -253,42 +253,42 @@
     UINavigationController * navController = tabController.viewControllers[messagesTab];
     BOOL isDiscussionOpen = (tabController.selectedIndex == messagesTab && [navController.topViewController isKindOfClass:[DiscussionController class]]);
     NSNumber * conversationId = (isDiscussionOpen) ? ((DiscussionController*)navController.topViewController).model.discussion.conversation.conversationId : nil;
-
-    if([[objectType lowercaseString] isEqualToString:@"conversation"] &&
-       ((isDiscussionOpen && ![conversationId isEqualToNumber:objectId]) || !isDiscussionOpen)) {
-        
-        MessagesController * messagesController = navController.viewControllers[0];
-        
-        ObjectRequestCompletionHandler handler = ^(BOOL success, IQConversation * conver, NSData *responseData, NSError *error) {
-            if(success) {
-                NSPredicate * companionsPredicate = [NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId];
-                NSArray * companions = [[conver.discussion.users filteredSetUsingPredicate:companionsPredicate] allObjects];
-                IQUser * companion = [companions lastObject];
-                
-                DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
-                model.companionId = companion.userId;
-                
-                DiscussionController * controller = [[DiscussionController alloc] init];
-                controller.hidesBottomBarWhenPushed = YES;
-                controller.title = companion.displayName;
-                controller.model = model;
-                
-                if(!isDiscussionOpen) {
-                    [tabController setSelectedIndex:messagesTab];
-                    [navController pushViewController:controller animated:NO];
+    
+    if([[objectType lowercaseString] isEqualToString:@"conversation"]) {
+        if((isDiscussionOpen && ![conversationId isEqualToNumber:objectId]) || !isDiscussionOpen) {
+            MessagesController * messagesController = navController.viewControllers[0];
+            
+            ObjectRequestCompletionHandler handler = ^(BOOL success, IQConversation * conver, NSData *responseData, NSError *error) {
+                if(success) {
+                    NSPredicate * companionsPredicate = [NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId];
+                    NSArray * companions = [[conver.discussion.users filteredSetUsingPredicate:companionsPredicate] allObjects];
+                    IQUser * companion = [companions lastObject];
+                    
+                    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
+                    model.companionId = companion.userId;
+                    
+                    DiscussionController * controller = [[DiscussionController alloc] init];
+                    controller.hidesBottomBarWhenPushed = YES;
+                    controller.title = companion.displayName;
+                    controller.model = model;
+                    
+                    if(!isDiscussionOpen) {
+                        [tabController setSelectedIndex:messagesTab];
+                        [navController pushViewController:controller animated:NO];
+                    }
+                    else  {
+                        NSArray * newStack = @[navController.viewControllers[0], controller];
+                        [navController setViewControllers:newStack animated:YES];
+                    }
+                    
+                    [MessagesModel markConversationAsRead:conver completion:^(NSError *error) {
+                        [messagesController updateGlobalCounter];
+                    }];
                 }
-                else  {
-                    NSArray * newStack = @[navController.viewControllers[0], controller];
-                    [navController setViewControllers:newStack animated:YES];
-                }
-                
-                [MessagesModel markConversationAsRead:conver completion:^(NSError *error) {
-                    [messagesController updateGlobalCounter];
-                }];
-            }
-        };
-        
-        [[IQService sharedService] conversationWithId:objectId  handler:handler];
+            };
+            
+            [[IQService sharedService] conversationWithId:objectId  handler:handler];
+        }
     }
     else if([objectType length] > 0) {
         [self updateGlobalCounters];
