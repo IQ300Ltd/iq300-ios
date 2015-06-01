@@ -140,6 +140,7 @@
     _isChecked = NO;
     _enabled = YES;
     _titleTextView.editable = NO;
+    _titleTextView.text = nil;
 
     [self setDelegate:nil];
     [self hideUtilityButtonsAnimated:NO];
