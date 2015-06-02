@@ -128,7 +128,7 @@
     NSNumber * userId = contact.user.userId;
     [MessagesModel createConversationWithRecipientId:userId
                                           completion:^(IQConversation * conv, NSError *error) {
-                                              if(!error) {
+                                              if(!error) {                                                  
                                                   DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conv.discussion];
                                                   model.companionId = userId;
                                                   

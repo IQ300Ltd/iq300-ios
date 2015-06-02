@@ -296,6 +296,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                 }
                                              }
                                              else {
+                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                           action:GAICreateMessageEventAction];
+
                                                  item.commentStatus = @(IQCommentStatusSent);
                                                  [item.managedObjectContext saveToPersistentStore:&saveError];
                                                  if(saveError) {
@@ -315,6 +318,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                      handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                         if(success) {
                                                             sendCommentBlock(@[attachmentObject]);
+                                                            [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                      action:GAIFileUploadEventAction];
                                                         }
                                                         else {
                                                             [self createLocalAttachmentWithAsset:(ALAsset*)attachment
@@ -338,6 +343,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                      handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                          if(success) {
                                                              sendCommentBlock(@[attachmentObject]);
+                                                             [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                       action:GAIFileUploadEventAction];
                                                          }
                                                          else {
                                                              [self createLocalAttachmentWithImage:(UIImage*)attachment
@@ -367,6 +374,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                    attachmentIds:attachmentIds
                                          handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
                                              if (success) {
+                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                           action:GAICreateMessageEventAction];
                                                  NSError * saveError = nil;
                                                  item.commentStatus = @(IQCommentStatusSent);
                                                  [item.managedObjectContext saveToPersistentStore:&saveError];
@@ -389,6 +398,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                           handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
                                                               if(success) {
                                                                   sendCommentBlock(@[attachment]);
+                                                                  [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                            action:GAIFileUploadEventAction];
                                                               }
                                                               else if (completion) {
                                                                   completion(error);

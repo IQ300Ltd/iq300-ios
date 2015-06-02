@@ -237,6 +237,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                     discussionId:_discussion.discussionId
                                    attachmentIds:attachmentIds
                                          handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
+                                             if (success) {
+                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                           action:GAICreateMessageEventAction];
+                                             }
+
                                              if (completion) {
                                                  completion(error);
                                              }
@@ -250,6 +255,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                      handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                          if(success) {
                                                              sendCommentBlock(@[attachmentObject]);
+                                                             [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                       action:GAIFileUploadEventAction];
                                                          }
                                                          else if (completion) {
                                                              completion(error);
@@ -263,6 +270,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                      handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                          if(success) {
                                                              sendCommentBlock(@[attachmentObject]);
+                                                             [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                       action:GAIFileUploadEventAction];
                                                          }
                                                          else if (completion) {
                                                              completion(error);
@@ -301,6 +310,8 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                           handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
                                                               if(success) {
                                                                   sendCommentBlock(@[attachment]);
+                                                                  [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                            action:GAIFileUploadEventAction];
                                                               }
                                                               else if (completion) {
                                                                   completion(error);

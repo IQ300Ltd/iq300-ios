@@ -210,7 +210,10 @@
 - (void)contactPickerController:(ContactPickerController *)picker didPickUser:(IQUser *)user {
     __weak typeof (self) weakSelf = self;
     [self.model addMemberWithUserId:user.userId completion:^(NSError *error) {
-        if (!error) {            
+        if (!error) {
+            [GAIService sendEventForCategory:GAITaskEventCategory
+                                      action:@"event_action_task_add_user"];
+            
             [weakSelf.navigationController popViewControllerAnimated:YES];
         }
         else {

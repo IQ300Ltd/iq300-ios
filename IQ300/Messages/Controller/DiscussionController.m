@@ -545,9 +545,9 @@
                                                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                                                         destructiveButtonTitle:nil
                                                              otherButtonTitles:NSLocalizedStringWithFormat(@"Small (%ld%%)", 30, nil),
-                                           NSLocalizedStringWithFormat(@"Medium (%ld%%)", 50, nil),
-                                           NSLocalizedStringWithFormat(@"Large (%ld%%)", 80, nil),
-                                           NSLocalizedString(@"Actual", nil), nil];
+                                                                               NSLocalizedStringWithFormat(@"Medium (%ld%%)", 50, nil),
+                                                                               NSLocalizedStringWithFormat(@"Large (%ld%%)", 80, nil),
+                                                                               NSLocalizedString(@"Actual", nil), nil];
             
             [actionSheet setDidDismissBlock:^(UIActionSheet * __nonnull actionSheet, NSInteger buttonIndex) {
                 if (buttonIndex <= 2) {

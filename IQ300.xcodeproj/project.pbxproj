@@ -41,6 +41,7 @@
 		734965D11AB1A60100263B57 /* CTaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 734965D01AB1A60100263B57 /* CTaskFilterCell.m */; };
 		734FEABF1AEA27EC0050EF44 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 734FEABE1AEA27EC0050EF44 /* DeletedObjects.m */; };
 		73506ED61A137D070071B4CB /* TasksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BC61A0B5B7500034D9B /* TasksController.m */; };
+		7356C5D11B12070000BF0CB4 /* GAIEvents.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7356C5D31B12070000BF0CB4 /* GAIEvents.strings */; };
 		735D48F51AE4D6DB00F6A753 /* TaskExecutersController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */; };
 		735D48F81AE4D85000F6A753 /* TaskExecutorsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48F71AE4D85000F6A753 /* TaskExecutorsModel.m */; };
 		735D48FB1AE4DA7100F6A753 /* ExecutersGroupSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48FA1AE4DA7100F6A753 /* ExecutersGroupSection.m */; };
@@ -48,6 +49,7 @@
 		735D49011AE51D2100F6A753 /* TaskExecutorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49001AE51D2100F6A753 /* TaskExecutorCell.m */; };
 		735D49041AE51FA400F6A753 /* TaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49031AE51FA400F6A753 /* TaskExecutor.m */; };
 		735D49071AE5283600F6A753 /* TaskExecutorsGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49061AE5283500F6A753 /* TaskExecutorsGroup.m */; };
+		736110651B0A1827005ACEB5 /* GAIService.m in Sources */ = {isa = PBXBuildFile; fileRef = 736110641B0A1827005ACEB5 /* GAIService.m */; };
 		736B6BD01A0B5C0800034D9B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 736B6BCF1A0B5C0800034D9B /* Images.xcassets */; };
 		736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BD21A0B5C1E00034D9B /* MenuViewController.m */; };
 		736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BDA1A0B5F1D00034D9B /* MenuCell.m */; };
@@ -181,7 +183,7 @@
 		73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A113FC1A1CAA5900293EC5 /* default_avatar@2x.png */; };
 		73A20C771A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */; };
 		73A20C7A1A42F62C006433C5 /* IQBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A20C791A42F62C006433C5 /* IQBadgeView.m */; };
-		73A26C5C1B1478AC000F4763 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A26C5B1B1478AC000F4763 /* UIActionSheet+Blocks.m */; };
+		73A26C571B1443B5000F4763 /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A26C561B1443B5000F4763 /* UIActionSheet+Blocks.m */; };
 		73A50D111ADFAA4400251CB7 /* TaskDescriptionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A50D101ADFAA4400251CB7 /* TaskDescriptionController.m */; };
 		73A50D141ADFBDAC00251CB7 /* IQTaskDataHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A50D131ADFBDAC00251CB7 /* IQTaskDataHolder.m */; };
 		73A700441A95BC4100A1C2AC /* TasksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A700431A95BC4100A1C2AC /* TasksView.m */; };
@@ -414,6 +416,8 @@
 		735D49031AE51FA400F6A753 /* TaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutor.m; sourceTree = "<group>"; };
 		735D49051AE5283500F6A753 /* TaskExecutorsGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutorsGroup.h; sourceTree = "<group>"; };
 		735D49061AE5283500F6A753 /* TaskExecutorsGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutorsGroup.m; sourceTree = "<group>"; };
+		736110631B0A1827005ACEB5 /* GAIService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIService.h; sourceTree = "<group>"; };
+		736110641B0A1827005ACEB5 /* GAIService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GAIService.m; sourceTree = "<group>"; };
 		736B6BC51A0B5B7500034D9B /* TasksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TasksController.h; sourceTree = "<group>"; };
 		736B6BC61A0B5B7500034D9B /* TasksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TasksController.m; sourceTree = "<group>"; };
 		736B6BCF1A0B5C0800034D9B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -631,8 +635,8 @@
 		73A20C761A42DF9D006433C5 /* UITabBarItem+CustomBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarItem+CustomBadgeView.m"; sourceTree = "<group>"; };
 		73A20C781A42F62C006433C5 /* IQBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBadgeView.h; sourceTree = "<group>"; };
 		73A20C791A42F62C006433C5 /* IQBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBadgeView.m; sourceTree = "<group>"; };
-		73A26C5A1B1478AC000F4763 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
-		73A26C5B1B1478AC000F4763 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
+		73A26C551B1443B5000F4763 /* UIActionSheet+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+Blocks.h"; sourceTree = "<group>"; };
+		73A26C561B1443B5000F4763 /* UIActionSheet+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+Blocks.m"; sourceTree = "<group>"; };
 		73A50D0F1ADFAA4400251CB7 /* TaskDescriptionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskDescriptionController.h; sourceTree = "<group>"; };
 		73A50D101ADFAA4400251CB7 /* TaskDescriptionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskDescriptionController.m; sourceTree = "<group>"; };
 		73A50D121ADFBDAC00251CB7 /* IQTaskDataHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskDataHolder.h; sourceTree = "<group>"; };
@@ -870,6 +874,8 @@
 		73E426091AAF04CF00CD2093 /* IQTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTextView.m; sourceTree = "<group>"; };
 		73E4260B1AAF07D700CD2093 /* IQLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQLayoutManager.h; sourceTree = "<group>"; };
 		73E4260C1AAF07D700CD2093 /* IQLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQLayoutManager.m; sourceTree = "<group>"; };
+		73EE934B1B15CF4700B29381 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GAIEvents.strings; sourceTree = "<group>"; };
+		73EE934D1B15CF5000B29381 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/GAIEvents.strings; sourceTree = "<group>"; };
 		73F27D611AFCA94D00D72FF8 /* TCObjectSerializator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCObjectSerializator.h; sourceTree = "<group>"; };
 		73F27D621AFCA94D00D72FF8 /* TCObjectSerializator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCObjectSerializator.m; sourceTree = "<group>"; };
 		73F2A53E1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ScreenActivityIndicator.h"; sourceTree = "<group>"; };
@@ -1188,8 +1194,8 @@
 				73C16C801AEFBA6B00155BB1 /* OrderedArrayTransformer.m */,
 				73891FF31A2C97ED008D8885 /* UIAlertView+Blocks.h */,
 				73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */,
-				73A26C5A1B1478AC000F4763 /* UIActionSheet+Blocks.h */,
-				73A26C5B1B1478AC000F4763 /* UIActionSheet+Blocks.m */,
+				73A26C551B1443B5000F4763 /* UIActionSheet+Blocks.h */,
+				73A26C561B1443B5000F4763 /* UIActionSheet+Blocks.m */,
 				73C4A6801A3EFB4E003E1242 /* NSString+UUID.h */,
 				73C4A6811A3EFB4E003E1242 /* NSString+UUID.m */,
 				7395C50B1A31848700A6D5DA /* UIView+RoundedCorners.h */,
@@ -1316,6 +1322,8 @@
 				73F90CE91A1B6B6D00225255 /* IQSession.m */,
 				73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */,
 				73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */,
+				736110631B0A1827005ACEB5 /* GAIService.h */,
+				736110641B0A1827005ACEB5 /* GAIService.m */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -1396,6 +1404,7 @@
 				736B6BDF1A0B668700034D9B /* IQ300-Prefix.pch */,
 				738CE1E41A0B3F4E0096B374 /* Info.plist */,
 				738CE1E51A0B3F4E0096B374 /* main.m */,
+				7356C5D31B12070000BF0CB4 /* GAIEvents.strings */,
 				73A798351A3585FF006F5721 /* CTAssetsPickerController.strings */,
 				73BA987F1A10969E005AEC00 /* Localizable.strings */,
 				7393C41A1A1A379400E9E944 /* IQFonts.h */,
@@ -2145,6 +2154,7 @@
 				738916BD1ABAFB800017EF86 /* gray_checked_checkbox.png in Resources */,
 				73A9498F1A3821AD008EC469 /* backWhiteArrow.png in Resources */,
 				73F2A55D1A39AB3000E9D324 /* msg_sent@2x.png in Resources */,
+				7356C5D11B12070000BF0CB4 /* GAIEvents.strings in Resources */,
 				738FE7111A162B10009F26A2 /* tasks_tab.png in Resources */,
 				73F2A5561A39AB3000E9D324 /* createNewMessage.png in Resources */,
 				731170951AB80B0E008A4D09 /* task_status_ico@2x.png in Resources */,
@@ -2287,6 +2297,7 @@
 				739C3B5C1A3075B00032C057 /* DiscussionController.m in Sources */,
 				73C286B01A94B5E30011FD51 /* IQNotificationsHolder.m in Sources */,
 				73A7CA671A9F10DE0038DEF1 /* TasksFilterController.m in Sources */,
+				736110651B0A1827005ACEB5 /* GAIService.m in Sources */,
 				733A80541A7A6C5C00460C87 /* NotificationGroupView.m in Sources */,
 				73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */,
 				738EF82D1A9CB8D300894755 /* IQService+Tasks.m in Sources */,
@@ -2362,6 +2373,7 @@
 				738EF8301A9CBAA200894755 /* IQTasksHolder.m in Sources */,
 				73C16C771AEF5D0500155BB1 /* IQBadgeIndicatorView.m in Sources */,
 				736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */,
+				73A26C571B1443B5000F4763 /* UIActionSheet+Blocks.m in Sources */,
 				73A7004F1A95CF8C00A1C2AC /* TaskCell.m in Sources */,
 				73D7F1E91ADE94B400023120 /* TodoListItemCell.m in Sources */,
 				73C286AD1A94AFD70011FD51 /* IQNotificationsGroupIds.m in Sources */,
@@ -2389,7 +2401,6 @@
 				739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */,
 				73ADA8D91A36DB8D0032C1FA /* CreateConversationController.m in Sources */,
 				73D7F1E71ADE94B400023120 /* TInfoLineView.m in Sources */,
-				73A26C5C1B1478AC000F4763 /* UIActionSheet+Blocks.m in Sources */,
 				73F63E8C1AA08ED0000DA319 /* TaskFilterSortItem.m in Sources */,
 				73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */,
 				73B3C1AB1A7B73B9005F972D /* NSString+MD5.m in Sources */,
@@ -2412,6 +2423,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		7356C5D31B12070000BF0CB4 /* GAIEvents.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				73EE934B1B15CF4700B29381 /* en */,
+				73EE934D1B15CF5000B29381 /* ru */,
+			);
+			name = GAIEvents.strings;
+			sourceTree = "<group>";
+		};
 		73A798351A3585FF006F5721 /* CTAssetsPickerController.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2501,7 +2521,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				COPY_PHASE_STRIP = NO;
@@ -2523,8 +2543,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_NAME = "IQ 300";
-				PROVISIONING_PROFILE = "10cd635c-7c93-41cd-a95b-68a03fa80e72";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "3a4658b4-2b08-4a2a-b39f-82fab3815e15";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -2612,7 +2632,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Shamil Hamadeev (DDMRH6LAJY)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Shamil Hamadeev (DDMRH6LAJY)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2627,8 +2647,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_NAME = "IQ 300";
-				PROVISIONING_PROFILE = "4c2eda23-04db-4d95-942f-e1b02afc55d4";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "7479d0de-8e33-458b-ae91-b7b95f6cafa5";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -2640,7 +2660,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				COPY_PHASE_STRIP = NO;
@@ -2662,7 +2682,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_NAME = "IQ 300";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "ba62a303-a83a-4d4c-8ef1-8ad27abaefe7";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;

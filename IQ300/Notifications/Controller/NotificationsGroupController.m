@@ -196,9 +196,14 @@
         model.group = group;
         
         NotificationsController * controller = [[NotificationsController alloc] init];
-        controller.title = NSLocalizedString(group.lastNotification.notificable.type, nil);
+        controller.title = NSLocalizedString(notification.notificable.type, nil);
         controller.model = model;
         controller.hidesBottomBarWhenPushed = YES;
+
+        if ([notification.readed boolValue]) {
+            [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                      action:GAIOpenReadedNotificationEventAction];
+        }
 
         [self.navigationController pushViewController:controller animated:YES];
     }
@@ -348,6 +353,18 @@
     [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
                                            completion:^(TaskTabController * controller, NSError *error) {
                                                if (controller) {
+                                                   [GAIService sendEventForCategory:GAITasksListEventCategory
+                                                                             action:GAIOpenTaskEventAction];
+
+                                                   [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                                                             action:GAIOpenNotificationEventAction
+                                                                              label:notification.notificable.type];
+
+                                                   if ([notification.readed boolValue]) {
+                                                       [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                                                                 action:GAIOpenReadedNotificationEventAction];
+                                                   }
+
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
                                                    controller.notificationsGroupSid = groupSid;
                                                    controller.hidesBottomBarWhenPushed = YES;
@@ -369,6 +386,15 @@
     [[IQService sharedService] discussionWithId:notification.discussionId
                                         handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
                                             if(success) {
+                                                [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                                                          action:GAIOpenNotificationEventAction
+                                                                           label:notification.notificable.type];
+
+                                                if ([notification.readed boolValue]) {
+                                                    [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                                                              action:GAIOpenReadedNotificationEventAction];
+                                                }
+
                                                 CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
                                                 CommentsController * controller = [[CommentsController alloc] init];
                                                 controller.model = model;

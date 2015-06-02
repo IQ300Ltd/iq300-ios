@@ -10,8 +10,6 @@
 	<string>IQ300</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>95763F6EB1DBAD7A7B0EE2F5B902B34D4AB5220B</key>
-		<string>https://github.com/IQ300Ltd/iq300-ios</string>
 		<key>EE4E104C9C5EB34E2EB0A8D75AADC2205D6A6076</key>
 		<string>git.inostudio.net:e.kulinchenko/iq300_ios.git</string>
 	</dict>
@@ -19,17 +17,15 @@
 	<string>IQ300.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>95763F6EB1DBAD7A7B0EE2F5B902B34D4AB5220B</key>
-		<string>..</string>
 		<key>EE4E104C9C5EB34E2EB0A8D75AADC2205D6A6076</key>
-		<string>../../ios</string>
+		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/IQ300Ltd/iq300-ios</string>
+	<string>git.inostudio.net:e.kulinchenko/iq300_ios.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>95763F6EB1DBAD7A7B0EE2F5B902B34D4AB5220B</string>
+	<string>EE4E104C9C5EB34E2EB0A8D75AADC2205D6A6076</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -39,14 +35,6 @@
 			<string>EE4E104C9C5EB34E2EB0A8D75AADC2205D6A6076</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ios</string>
-		</dict>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>95763F6EB1DBAD7A7B0EE2F5B902B34D4AB5220B</string>
-			<key>IDESourceControlWCCName</key>
-			<string>ios_publish</string>
 		</dict>
 	</array>
 </dict>

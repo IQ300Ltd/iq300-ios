@@ -27,6 +27,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     NSInteger _totalItemsCount;
     NSInteger _unreadItemsCount;
     __weak id _newMessageObserver;
+    __weak id _conversationsChangedObserver;
     NSMutableSet * _filteredIds;
 }
 
@@ -37,6 +38,11 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 + (void)createConversationWithRecipientId:(NSNumber*)recipientId completion:(void (^)(IQConversation * conv, NSError * error))completion {
     [[IQService sharedService] createConversationWithRecipientId:recipientId
                                                          handler:^(BOOL success, IQConversation * conv, NSData *responseData, NSError *error) {
+                                                             if (success) {
+                                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                                           action:@"event_action_message_conversation_create"];
+                                                             }
+                                                             
                                                              if(completion) {
                                                                  completion(conv, error);
                                                              }
@@ -78,7 +84,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                      name:AccountDidChangedNotification
                                                    object:nil];
 
-        [self resubscribeToNewMessageNotification];
+        [self resubscribeToIQNotification];
     }
     return self;
 }
@@ -148,6 +154,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                    if(success) {
                                                        [self updateCounters];
                                                        [_filteredIds addObjectsFromArray:[conversations valueForKey:@"conversationId"]];
+                                                       [self reloadModelSourceControllerWithCompletion:nil];
                                                    }
                                                    if(completion) {
                                                        completion(error);
@@ -166,9 +173,8 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                if(success) {
                                                    [self updateCounters];
                                                    _filteredIds = [[NSMutableSet alloc] initWithArray:[conversations valueForKey:@"conversationId"]];
+                                                   [self reloadModelSourceControllerWithCompletion:nil];
                                                }
-
-                                               [self reloadModelSourceControllerWithCompletion:nil];
 
                                                if(completion) {
                                                    completion(error);
@@ -186,6 +192,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                if(success) {
                                                    [self updateCounters];
                                                    [_filteredIds addObjectsFromArray:[conversations valueForKey:@"conversationId"]];
+                                                   [self reloadModelSourceControllerWithCompletion:nil];
                                                }
 
                                                if(completion) {
@@ -280,7 +287,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
 - (void)reloadFirstPart {
     [self reloadFirstPartWithCompletion:^(NSError *error) {
-        
+        [self modelDidChanged];
     }];
 }
 
@@ -292,8 +299,8 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     }];
 }
 
-- (void)resubscribeToNewMessageNotification {
-    [self unsubscribeFromNewMessageNotification];
+- (void)resubscribeToIQNotification {
+    [self unsubscribeFromIQNotification];
     
     __weak typeof(self) weakSelf = self;
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
@@ -310,21 +317,33 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     _newMessageObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNewMessageNotification
                                                                              queue:nil
                                                                         usingBlock:block];
+    
+    void (^conversationsBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        [weakSelf reloadFirstPart];
+    };
+    
+    _conversationsChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQConversationsDidChanged
+                                                                                       queue:nil
+                                                                                  usingBlock:conversationsBlock];
 }
 
-- (void)unsubscribeFromNewMessageNotification {
+- (void)unsubscribeFromIQNotification {
     if(_newMessageObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+    }
+    
+    if (_conversationsChangedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_conversationsChangedObserver];
     }
 }
 
 - (void)accountDidChanged {
     if([IQSession defaultSession]) {
-        [self resubscribeToNewMessageNotification];
+        [self resubscribeToIQNotification];
         [self updateCounters];
     }
     else {
-        [self unsubscribeFromNewMessageNotification];
+        [self unsubscribeFromIQNotification];
         [self clearModelData];
         [self modelDidChanged];
     }
@@ -399,7 +418,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+    [self unsubscribeFromIQNotification];
 }
 
 @end

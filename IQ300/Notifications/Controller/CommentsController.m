@@ -385,6 +385,10 @@
                        mimeType:mimeType
                  withCompletion:^(NSError *error) {
                      if(!error) {
+                         BOOL isTaskComment = ([self isKindOfClass:NSClassFromString(@"TCommentsController")]);
+                         [GAIService sendEventForCategory:(isTaskComment) ? GAITaskEventCategory : GAIMessagesEventCategory
+                                                   action:(isTaskComment) ? @"event_action_task_comment" : GAICreateMessageEventAction];
+                         
                          _mainView.inputView.commentTextView.text = nil;
                          [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG]
                                                            forState:UIControlStateNormal];

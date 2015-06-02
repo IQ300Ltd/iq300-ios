@@ -161,6 +161,12 @@
     self.model.communityId = nil;
     self.model.statusFilter = [_menuModel statusForMenuItemAtIndexPath:indexPath];
     
+    NSString * status = ([self.model.statusFilter length] > 0) ? [NSString stringWithFormat:@"_%@", self.model.statusFilter] : @"";
+    NSString * label = [NSString stringWithFormat:@"%@%@", self.model.folder, status];
+    [GAIService sendEventForCategory:GAITasksListEventCategory
+                              action:@"event_action_tasks_list_menu"
+                               label:label];
+    
     [self updateSortFilterLabel];
     
     [self.model reloadModelWithCompletion:^(NSError *error) {
@@ -216,6 +222,10 @@
         if (error) {
             NSLog(@"Failed request policies for taskId %@ with error:%@", task.taskId, error);
         }
+
+        [GAIService sendEventForCategory:GAITasksListEventCategory
+                                  action:GAIOpenTaskEventAction];
+
         [self.navigationController pushViewController:controller animated:YES];
         _isTaskOpenProcessing = NO;
     }];

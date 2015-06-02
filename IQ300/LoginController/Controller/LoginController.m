@@ -86,6 +86,8 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
 
 - (void)registryButtonAction:(UIButton*)sender {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:SERVICE_REGISTRATION_URL]];
+    [GAIService sendEventForCategory:GAICommonEventCategory
+                              action:@"event_action_common_registration"];
 }
 
 - (void)restorePassButtonAction:(UIButton*)sender {
@@ -102,7 +104,9 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
             [IQSession setDefaultSession:[IQService sharedService].session];
             [AppDelegate setupNotificationCenter];
             [AppDelegate registerForRemoteNotifications];
-                    
+            [GAIService sendEventForCategory:GAICommonEventCategory
+                                      action:@"event_action_common_login"];
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
                                                                 object:nil];
             
