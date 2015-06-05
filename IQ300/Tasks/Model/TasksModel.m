@@ -572,8 +572,10 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)applicationWillEnterForeground {
-    [self updateCountersWithCompletion:nil];
-    [self tasksUpdatesAfterDateWithCompletion:nil];
+    if ([IQSession defaultSession]) {
+        [self updateCountersWithCompletion:nil];
+        [self tasksUpdatesAfterDateWithCompletion:nil];
+    }
 }
 
 - (void)resubscribeToIQNotifications {

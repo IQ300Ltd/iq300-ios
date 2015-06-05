@@ -27,6 +27,7 @@
 #import "IQConversation.h"
 #import "DiscussionModel.h"
 #import "IQDiscussion.h"
+#import "LeftSideTabBarController.h"
 
 #define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
 
@@ -111,22 +112,28 @@
     [AppDelegate setupNotificationCenter];
     [AppDelegate registerForRemoteNotifications];
 
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
+    Class navigationControllerClass = [IQNavigationController class];
     NotificationsGroupController * notifications = [[NotificationsGroupController alloc] init];
-    IQNavigationController * notificationsNav = [[IQNavigationController alloc] initWithRootViewController:notifications];
+    UINavigationController * notificationsNav = [[navigationControllerClass alloc] initWithRootViewController:notifications];
     
     TasksController * tasks = [[TasksController alloc] init];
-    IQNavigationController * tasksNav = [[IQNavigationController alloc] initWithRootViewController:tasks];
+    UINavigationController * tasksNav = [[navigationControllerClass alloc] initWithRootViewController:tasks];
    
     MessagesController * messages = [[MessagesController alloc] init];
-    IQNavigationController * messagesNav = [[IQNavigationController alloc] initWithRootViewController:messages];
+    UINavigationController * messagesNav = [[navigationControllerClass alloc] initWithRootViewController:messages];
     
-    UITabBarController * center = [[UITabBarController alloc] init];
+    Class tabBarClass = (IS_IPAD) ? [LeftSideTabBarController class] : [UITabBarController class];
+    UITabBarController * center = [[tabBarClass alloc] init];
     center.tabBar.layer.borderWidth = 0;
     
     [center setViewControllers:@[notificationsNav, tasksNav, messagesNav]];
     
+#ifndef IPAD
+    center.tabBar.backgroundImage = [UIImage imageNamed:@"tabbar_background.png"];
     MMDrawerController * drawerController = [[IQDrawerController alloc]
                                              initWithCenterViewController:center
                                              leftDrawerViewController:leftDrawer];
@@ -134,11 +141,10 @@
     [self.drawerController setRestorationIdentifier:@"MMDrawer"];
     [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
     [self.drawerController setMaximumLeftDrawerWidth:MENU_WIDTH];
-    [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModePanningDrawerView | MMCloseDrawerGestureModePanningCenterView];
+    [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModePanningDrawerView |
+     MMCloseDrawerGestureModePanningCenterView];
     [self.drawerController setShowsShadow:YES];
     [self.drawerController setShouldStretchDrawer:NO];
-    
-    [self applyCustomizations];
     
     __weak typeof(self) weakSelf = self;
     [self.drawerController setGestureShouldRecognizeTouchBlock:^BOOL(MMDrawerController *drawerController, UIGestureRecognizer *gesture, UITouch *touch) {
@@ -153,9 +159,19 @@
         }
         return NO;
     }];
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = self.drawerController;
+#else
+    LeftSideTabBarController * tabController = (LeftSideTabBarController*)center;
+    tabController.menuController = leftDrawer;
+    tabController.menuControllerHidden = NO;
+    tabController.menuControllerWidth = 224.0f;
+    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"tabbar_selected_image.png"];
+    tabController.tabBar.backgroundImage = [UIImage imageNamed:@"left_tabbar_background.png"];
+    self.window.rootViewController = tabController;
+#endif
     
+    [self applyCustomizations];
+
     [self.window makeKeyAndVisible];
     
     if(![IQSession defaultSession]) {
@@ -197,7 +213,9 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [self updateGlobalCounters];
+    if ([IQSession defaultSession]) {
+        [self updateGlobalCounters];
+    }
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
 }
@@ -301,12 +319,15 @@
 }
 
 - (void)applyCustomizations {
+    //[self debugAllNotification];
+    
     //set status bar black color
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
+    CGFloat fontSize = (IS_IPAD) ? 17.0f : 15.0f;
     [[UINavigationBar appearance] setTitleTextAttributes:@{
                                                            NSForegroundColorAttributeName : [UIColor whiteColor],
-                                                           NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:15]
+                                                           NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:fontSize]
                                                            }];
     
     //custromize navigation bar background
@@ -318,8 +339,6 @@
     
     [[UINavigationBar appearance] setShadowImage:[UIImage new]];
     
-    UIImage* tabBarBackground = [UIImage imageNamed:@"tabbar_background.png"];
-    [[UITabBar appearance] setBackgroundImage:tabBarBackground];
     [[UITabBar appearance] setShadowImage:[UIImage new]];
     
     [[UITabBarItem appearance] setTitleTextAttributes:@{
@@ -335,7 +354,8 @@
 }
 
 - (void)updateGlobalCounters {
-    UITabBarController * tabBarController = (UITabBarController*)self.drawerController.centerViewController;
+    UITabBarController * tabBarController =  (IS_IPAD) ? (UITabBarController*)self.window.rootViewController :
+                                                         (UITabBarController*)self.drawerController.centerViewController;
     
     for (UINavigationController * navController in tabBarController.viewControllers) {
         UIViewController * controller = [navController.viewControllers objectAtIndex:0];
@@ -397,5 +417,24 @@ void SignalHandler(int sig) {
 }
 
 #endif
+
+- (void)debugAllNotification {
+    CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
+                                    NULL,
+                                    NotificationCenterCallBack,
+                                    NULL,
+                                    NULL,
+                                    CFNotificationSuspensionBehaviorDeliverImmediately);
+}
+
+void NotificationCenterCallBack (CFNotificationCenterRef center,
+                                 void *observer,
+                                 CFStringRef name,
+                                 const void *object,
+                                 CFDictionaryRef userInfo)
+{
+    NSLog(@"name: %@", name);
+    NSLog(@"userinfo: %@", userInfo);
+}
 
 @end

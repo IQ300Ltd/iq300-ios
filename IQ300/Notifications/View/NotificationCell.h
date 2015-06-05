@@ -23,9 +23,7 @@
 }
 
 @property (nonatomic, strong) UIView * contentBackgroundView;
-@property (nonatomic, strong) UILabel * typeLabel;
 @property (nonatomic, strong) UILabel * dateLabel;
-@property (nonatomic, strong) UILabel * titleLabel;
 @property (nonatomic, strong) UILabel * userNameLabel;
 @property (nonatomic, strong) UILabel * actionLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;

@@ -11,6 +11,7 @@
 
 #define LOGO_IMAGE_SIZE CGSizeMake(70, 30)
 #define LABEL_HEIGHT 25.0f
+#define LOGIN_WIDTH 450.0f
 
 @interface LoginView() {
     BottomLineView * _emailContainer;
@@ -81,13 +82,22 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
+    CGRect bounds = self.bounds;
     CGSize logoSize = LOGO_IMAGE_SIZE;
-    _logoImageView.frame = CGRectMake((self.bounds.size.width - logoSize.width) / 2,
-                                      28,
+    
+#ifdef IPAD
+    bounds = CGRectMake((self.bounds.size.width - LOGIN_WIDTH) / 2.0f,
+                        100.0f,
+                        LOGIN_WIDTH,
+                        self.bounds.size.height);
+#endif
+    
+    _logoImageView.frame = CGRectMake((self.bounds.size.width - logoSize.width) / 2.0f,
+                                      bounds.origin.y + 28,
                                       logoSize.width,
                                       logoSize.height);
-    
-    CGRect fieldsRect = UIEdgeInsetsInsetRect(self.bounds, _fieldsInsets);
+   
+    CGRect fieldsRect = UIEdgeInsetsInsetRect(bounds, _fieldsInsets);
     
     _emailContainer.frame = CGRectMake(fieldsRect.origin.x,
                                        _logoImageView.frame.origin.y + _logoImageView.frame.size.height + 44,
@@ -105,20 +115,20 @@
                                    20);
     
     CGFloat horizontalOffset = 10.0f;
-    _enterButton.frame = CGRectMake(horizontalOffset,
+    _enterButton.frame = CGRectMake(bounds.origin.x + horizontalOffset,
                                     _passwordContainer.frame.origin.y + _passwordContainer.frame.size.height + 42,
-                                    self.bounds.size.width - horizontalOffset * 2.0f,
+                                    bounds.size.width - horizontalOffset * 2.0f,
                                     40);
     
-    _restorePassButton.frame = CGRectMake(0.0f,
+    _restorePassButton.frame = CGRectMake(bounds.origin.x,
                                           _enterButton.frame.origin.y + _enterButton.frame.size.height + 34,
-                                          self.bounds.size.width,
+                                          bounds.size.width,
                                           10);
     
-    _registryButton.frame = CGRectMake(0.0f,
-                                          _restorePassButton.frame.origin.y + _restorePassButton.frame.size.height + 30,
-                                          self.bounds.size.width,
-                                          10);
+    _registryButton.frame = CGRectMake(bounds.origin.x,
+                                       _restorePassButton.frame.origin.y + _restorePassButton.frame.size.height + 30,
+                                       bounds.size.width,
+                                       10);
 }
 
 - (BottomLineView*)makeContainerWithField:(ExTextField*)textField placeholder:(NSString*)placeholder {

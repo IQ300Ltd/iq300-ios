@@ -84,7 +84,8 @@
                                                                       target:self action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
-    [self.tabBar setSelectionIndicatorImage:[UIImage imageNamed:@"task_tab_sel.png"]];
+    self.tabBar.backgroundImage = [UIImage imageNamed:@"tabbar_background.png"];
+    self.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"task_tab_sel.png"];
     
     [self updateControllerByTask:self.task];
 }

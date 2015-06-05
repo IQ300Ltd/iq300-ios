@@ -115,7 +115,7 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     UIView * badgeView = self.customBadgeView;
     UIView * parentView = self.view;
 
-    if (badgeView.superview == nil && parentView) {
+    if (badgeView.superview == nil && parentView.superview) {
         [parentView.superview addSubview:badgeView];
         [parentView safelyRemoveObserver:self forKeyPath:@"frame"];
         [parentView addObserver:self forKeyPath:@"frame" options:0 context:nil];
@@ -127,9 +127,9 @@ NSString const *UITabBarItem_badgeInternalValueKey = @"UITabBarItem_badgeOriginK
     }
     
     CGPoint badgeOrigin = self.badgeOrigin;
+    
     badgeOrigin = CGPointMake(parentView.frame.origin.x + (parentView.frame.size.width) / 2.0f + badgeOrigin.x,
-                              badgeOrigin.y);
-
+                              parentView.frame.origin.y + badgeOrigin.y);
     
     CGSize expectedBadgeSize = badgeView.frame.size;
     badgeView.frame = CGRectMake(badgeOrigin.x, badgeOrigin.y, expectedBadgeSize.width, expectedBadgeSize.height);

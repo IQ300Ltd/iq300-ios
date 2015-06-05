@@ -52,10 +52,10 @@
 }
 
 - (id)initWithString:(NSString *)badgeString withScale:(CGFloat)scale withStyle:(IQBadgeStyle*)style {
-    self = [super initWithFrame:CGRectMake(0, 0, 25, 25)];
+    self = [super initWithFrame:CGRectMake(0, 0, BADGE_MIN_SIZE, BADGE_MIN_SIZE)];
     if(self != nil) {
         _badgeValue = badgeString;
-        _badgeMinSize = 25;
+        _badgeMinSize = BADGE_MIN_SIZE;
 
         self.contentScaleFactor = [[UIScreen mainScreen] scale];
         self.backgroundColor = [UIColor clearColor];
@@ -64,6 +64,7 @@
         self.badgeScaleFactor = scale;
         self.frameLineHeight = 1.5f;
         [self autoBadgeSizeWithString:badgeString];
+        self.userInteractionEnabled = NO;
     }
     return self;
 }

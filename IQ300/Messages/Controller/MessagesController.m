@@ -46,7 +46,7 @@
         self.needFullReload = YES;
 
         UIImage * barImage = [[UIImage imageNamed:@"messages_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        UIImage * barImageSel = [[UIImage imageNamed:@"messgaes_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        UIImage * barImageSel = [[UIImage imageNamed:@"messages_tab_selected.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         
         float imageOffset = 6;
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSel];
@@ -76,6 +76,10 @@
 
 - (UITableView*)tableView {
     return _messagesView.tableView;
+}
+
+- (BOOL)isLeftMenuEnabled {
+    return NO;
 }
 
 - (void)viewDidLoad {

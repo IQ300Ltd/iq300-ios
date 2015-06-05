@@ -13,26 +13,39 @@
 #import "IQBadgeView.h"
 #import "IQNotification.h"
 
+#ifdef IPAD
+#define DEFAULT_FONT_SIZE 14
+#define DESCRIPTION_MIN_HEIGHT 17.0f
+#else
+#define DEFAULT_FONT_SIZE 13
+#define DESCRIPTION_MIN_HEIGHT 19.0f
+#endif
+
 #define HORIZONTAL_INSETS 8.0f
 #define VERTICAL_INSETS 5.0f
-#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
-#define DESCRIPTION_MIN_HEIGHT 19.0f
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
+
 
 @implementation NGroupCell
+
++ (IQNotification*)notificationFromGroup:(IQNotificationsGroup*)group showUnreadOnly:(BOOL)showUnreadOnly {
+    BOOL showUnread = ([group.unreadCount integerValue] > 0 && group.lastUnreadNotification && showUnreadOnly);
+    IQNotification * notification = (showUnread) ? group.lastUnreadNotification : group.lastNotification;
+    return notification;
+}
 
 + (CGFloat)heightForItem:(IQNotificationsGroup *)item andCellWidth:(CGFloat)cellWidth showUnreadOnly:(BOOL)showUnreadOnly {
     CGFloat width = cellWidth - HORIZONTAL_INSETS * 2.0f - 40;
     CGFloat height = GROUP_CELL_MIN_HEIGHT - DESCRIPTION_MIN_HEIGHT;
-    BOOL showUnread = ([item.unreadCount integerValue] == 1 && item.lastUnreadNotification && showUnreadOnly);
-    IQNotification * notification = (showUnread) ? item.lastUnreadNotification : item.lastNotification;
+    IQNotification * notification = [NGroupCell notificationFromGroup:item showUnreadOnly:showUnreadOnly];
     
     if([notification.additionalDescription length] > 0) {
         CGSize constrainedSize = CGSizeMake(width,
                                             GROUP_CELL_MAX_HEIGHT);
         
-        CGSize desSize = [item.lastNotification.additionalDescription sizeWithFont:DESCRIPTION_FONT
-                                         constrainedToSize:constrainedSize
-                                             lineBreakMode:NSLineBreakByWordWrapping];
+        CGSize desSize = [notification.additionalDescription sizeWithFont:DESCRIPTION_FONT
+                                                        constrainedToSize:constrainedSize
+                                                            lineBreakMode:NSLineBreakByWordWrapping];
         height = MAX(height + desSize.height, height);
     }
     
@@ -60,24 +73,25 @@
         [contentView addSubview:_contentBackgroundView];
         
         _typeLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                             font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                     localaizedKey:@"Project"];
         [contentView addSubview:_typeLabel];
         
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                             font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
+        CGFloat titleFontSize = (IS_IPAD) ? 17 : 15;
         _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
-                                              font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                              font:[UIFont fontWithName:IQ_HELVETICA size:titleFontSize]
                                      localaizedKey:nil];
         _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_titleLabel];
         
         _userNameLabel = [self makeLabelWithTextColor:[UIColor whiteColor]
-                                                 font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                                 font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                         localaizedKey:nil];
         _userNameLabel.backgroundColor = [UIColor colorWithHexInt:0xcccccc];
         _userNameLabel.layer.cornerRadius = 3;
@@ -86,13 +100,13 @@
         [contentView addSubview:_userNameLabel];
         
         _actionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
-                                               font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                               font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                       localaizedKey:nil];
         _actionLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_actionLabel];
         
         _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9b9c9e]
-                                                    font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                                    font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                            localaizedKey:nil];
         _descriptionLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_descriptionLabel];
@@ -102,8 +116,8 @@
         style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
         
         _badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
-        _badgeView.badgeMinSize = 17;
-        _badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:10];
+        _badgeView.badgeMinSize = (IS_IPAD) ? 21 : 17;
+        _badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 13 : 10];
         [_badgeView setHidden:YES];
         [contentView addSubview:_badgeView];
 
@@ -115,7 +129,7 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    IQNotification * notification = _item.lastNotification;
+    IQNotification * notification = [NGroupCell notificationFromGroup:_item showUnreadOnly:self.showUnreadOnly];
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     CGFloat labelsOffset = 5.0f;
@@ -139,10 +153,11 @@
                                   _badgeView.frame.size.width,
                                   _badgeView.frame.size.height);
     
+    CGFloat titleHeight = (IS_IPAD) ? 18 : 16;
     _titleLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                    _typeLabel.frame.origin.y + _typeLabel.frame.size.height + 4,
                                    actualBounds.size.width - _badgeView.frame.size.width - 5.0f,
-                                   16);
+                                   titleHeight);
     
     CGFloat userNameHeight = 17;
     CGFloat userNameMaxWidth = actualBounds.size.width / 2.0f;
@@ -182,8 +197,7 @@
 - (void)setItem:(IQNotificationsGroup *)item {
     _item = item;
     
-    BOOL showUnread = ([_item.unreadCount integerValue] > 0 && _item.lastUnreadNotification && self.showUnreadOnly);
-    IQNotification * notification = (showUnread) ? _item.lastUnreadNotification : _item.lastNotification;
+    IQNotification * notification = [NGroupCell notificationFromGroup:_item showUnreadOnly:self.showUnreadOnly];
     BOOL isReaded = ([_item.unreadCount integerValue] == 0);
     _contentBackgroundInsets = (isReaded) ? UIEdgeInsetsZero : UIEdgeInsetsMake(0, READ_FLAG_WIDTH, 0, 0);
     _contentBackgroundView.backgroundColor = (isReaded) ? CONTEN_BACKGROUND_COLOR_R :

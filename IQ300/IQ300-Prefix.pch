@@ -50,6 +50,7 @@
 
 #define USE_DEFAULT_LOCALIZATION
 #define INTERNET_UNREACHABLE_MESSAGE @"It is necessary to connect to the Internet"
+#define IS_IPAD UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
 
 static NSString * AccountDidChangedNotification = @"AccountDidChangedNotification";
 static NSString * CountersDidChangedNotification = @"CountersDidChangedNotification";

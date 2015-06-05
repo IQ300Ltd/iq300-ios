@@ -233,9 +233,10 @@
                                            messagesImageSize.height);
     
     CGFloat statusLabelX = CGRectRight(_commentsCountLabel.frame) + 5.0f;
-    _statusLabel.frame = CGRectMake(statusLabelX,
+    CGFloat labelWidth = MIN(100.0f, (actualBounds.origin.x + actualBounds.size.width) - statusLabelX);
+    _statusLabel.frame = CGRectMake((actualBounds.origin.x + actualBounds.size.width) - labelWidth,
                                     _commentsCountLabel.frame.origin.y,
-                                    (actualBounds.origin.x + actualBounds.size.width) - statusLabelX,
+                                    labelWidth,
                                     _commentsCountLabel.frame.size.height);
 }
 

@@ -9,6 +9,7 @@
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
 #import "IQNavigationController.h"
+#import "UIViewController+LeftMenu.h"
 
 @interface IQNavigationController() <UINavigationControllerDelegate> {
     UIView * _statusBarView;
@@ -37,22 +38,72 @@
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
 
+//- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
+//    BOOL isLeftMenuEnabled = [self isLeftMenuEnabledForController:viewController];
+//    
+//#ifdef IPAD
+//    LeftSideTabBarController * rootTabController = self.leftTabBarController;
+//    [rootTabController setMenuControllerHidden:!isLeftMenuEnabled animated:animated];
+//#endif
+//
+//    if (animated) {
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [super pushViewController:viewController animated:animated];
+//        });
+//    }
+//    else {
+//        [super pushViewController:viewController animated:animated];
+//    }
+//}
+//
+//- (UIViewController*)popViewControllerAnimated:(BOOL)animated {
+//    UIViewController * viewController = ([self.viewControllers count] > 1) ? self.viewControllers[[self.viewControllers count] - 2] : nil;
+//    BOOL isLeftMenuEnabled = [self isLeftMenuEnabledForController:viewController];
+//    
+//    LeftSideTabBarController * rootTabController = self.leftTabBarController;
+//    [rootTabController setMenuControllerHidden:!isLeftMenuEnabled animated:animated];
+//    
+//    if (animated) {
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [super popViewControllerAnimated:animated];
+//        });
+//    }
+//    else {
+//        return [super popViewControllerAnimated:animated];
+//    }
+//    
+//    return nil;
+//}
+
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    BOOL isLeftMenuEnabled = [self isLeftMenuEnabledForController:viewController];
+
+#ifdef IPAD
+    LeftSideTabBarController * rootTabController = self.leftTabBarController;
+    [rootTabController setMenuControllerHidden:!isLeftMenuEnabled animated:animated];
+#else
+    if(isLeftMenuEnabled) {
+        MMDrawerBarButtonItem * leftDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self
+                                                                                          action:@selector(leftDrawerButtonPress:)];
+        [viewController.navigationItem setLeftBarButtonItem:leftDrawerButton
+                                                   animated:YES];
+    }
+    
+    [self.mm_drawerController setOpenDrawerGestureModeMask:(isLeftMenuEnabled) ? MMOpenDrawerGestureModeAll :
+                                                                                 MMOpenDrawerGestureModeNone];
+#endif
+}
+
+- (BOOL)isLeftMenuEnabledForController:(UIViewController *)viewController {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     SEL selector = @selector(isLeftMenuEnabled);
-    BOOL isLeftMenuEnabled = ([viewController respondsToSelector:selector]) ? [[viewController performSelector:selector] boolValue] :
-                                                                            YES;
-    
-    if(isLeftMenuEnabled) {
-        MMDrawerBarButtonItem * leftDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self
-                                                                                          action:@selector(leftDrawerButtonPress:)];
-        [viewController.navigationItem setLeftBarButtonItem:leftDrawerButton animated:YES];
+    if ([viewController respondsToSelector:selector]) {
+        return [[viewController performSelector:selector] boolValue];
     }
-
-    [self.mm_drawerController setOpenDrawerGestureModeMask:(isLeftMenuEnabled) ? MMOpenDrawerGestureModeAll : MMOpenDrawerGestureModeNone];
 #pragma clang diagnostic pop
+    return  YES;
 }
 
 @end

@@ -7,12 +7,28 @@
 //
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 #import "UIViewController+LeftMenu.h"
+#import "LeftSideTabBarController.h"
 
 @implementation UIViewController (LeftMenu)
 
 - (MenuViewController*)leftMenuController {
-    if(self.mm_drawerController) {
+    if(!IS_IPAD && self.mm_drawerController) {
         return ((MenuViewController*)self.mm_drawerController.leftDrawerViewController);
+    }
+    else if(IS_IPAD) {
+        LeftSideTabBarController * leftTabBarController = self.leftTabBarController;
+        return (MenuViewController*)leftTabBarController.menuController;
+    }
+    return nil;
+}
+
+- (LeftSideTabBarController*)leftTabBarController {
+    UIViewController *parentViewController = self.parentViewController;
+    while (parentViewController != nil) {
+        if([parentViewController isKindOfClass:[LeftSideTabBarController class]]){
+            return (LeftSideTabBarController *)parentViewController;
+        }
+        parentViewController = parentViewController.parentViewController;
     }
     return nil;
 }
