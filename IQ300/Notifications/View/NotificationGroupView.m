@@ -50,15 +50,15 @@
                                    actualBounds.size.width,
                                    HEADER_HEIGHT);
     
-    CGSize backButtonImageSize = [_backButton imageForState:UIControlStateNormal].size;
+    CGSize backButtonImageSize = (IS_IPAD) ? CGSizeZero : [_backButton imageForState:UIControlStateNormal].size;
     _backButton.frame = CGRectMake(-4.0f,
                                    (_headerView.frame.size.height - backButtonImageSize.height) / 2,
                                    backButtonImageSize.width,
                                    backButtonImageSize.height);
     
-    CGFloat titleX = CGRectRight(_backButton.frame) - 5.0f;
+    CGFloat titleX = (IS_IPAD) ? actualBounds.origin.x + 10.0f : CGRectRight(_backButton.frame) - 5.0f;
     _titleLabel.frame = CGRectMake(titleX,
-                                   0.0f,
+                                   actualBounds.origin.y,
                                    _headerView.frame.size.width - titleX,
                                    _headerView.frame.size.height);
     

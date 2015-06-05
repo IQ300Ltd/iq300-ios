@@ -61,7 +61,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-        
+    
     _mainView.noDataLabel.text = NSLocalizedString((self.model.loadUnreadOnly) ? NoUnreadNotificationFound : NoNotificationFound, nil);
     
     _menuModel = [[NotificationsMenuModel alloc] init];

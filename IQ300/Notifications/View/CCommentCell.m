@@ -15,15 +15,23 @@
 
 #define CONTENT_INSET 8.0f
 #define ATTACHMENT_VIEW_HEIGHT 15.0f
-#define HEIGHT_DELTA 1.0f
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
-#define CELL_HEADER_MIN_HEIGHT 17
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
 #define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED [UIColor colorWithHexInt:0xe9faff]
 #define ATTACHMENT_VIEW_Y_OFFSET 7.0f
 #define NEW_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
 #define NEW_FLAG_WIDTH 4.0f
+
+#ifdef IPAD
+#define DEFAULT_FONT_SIZE 14
+#define HEIGHT_DELTA 2.0f
+#define CELL_HEADER_MIN_HEIGHT 19
+#else
+#define DEFAULT_FONT_SIZE 13
+#define HEIGHT_DELTA 1.0f
+#define CELL_HEADER_MIN_HEIGHT 17
+#endif
 
 @interface CCommentCell() {
     BOOL _commentIsMine;
@@ -110,13 +118,13 @@
         [contentView addSubview:_contentBackgroundView];
         
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                             font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
         _userNameLabel = [self makeLabelWithTextColor:[UIColor whiteColor]
-                                                 font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                                 font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                         localaizedKey:nil];
         _userNameLabel.backgroundColor = [UIColor clearColor];
         _userNameLabel.textAlignment = NSTextAlignmentCenter;
@@ -201,7 +209,8 @@
     CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
     _contentBackgroundView.frame = contentBackgroundBounds;
     
-    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, 16.0f);
+    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f,
+                                     (IS_IPAD) ? 22 : 16.0f);
     if (([_userNameLabel.text length] > 0)) {
         CGSize userSize = [_userNameLabel.text sizeWithFont:_userNameLabel.font
                                           constrainedToSize:topLabelSize
