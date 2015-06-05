@@ -83,7 +83,7 @@
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
-        CGFloat titleFontSize = (IS_IPAD) ? 17 : 15;
+        CGFloat titleFontSize = (IS_IPAD) ? 17 : 14;
         _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
                                               font:[UIFont fontWithName:IQ_HELVETICA size:titleFontSize]
                                      localaizedKey:nil];
@@ -153,7 +153,7 @@
                                   _badgeView.frame.size.width,
                                   _badgeView.frame.size.height);
     
-    CGFloat titleHeight = (IS_IPAD) ? 18 : 16;
+    CGFloat titleHeight = (IS_IPAD) ? 18 : 17;
     _titleLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                    _typeLabel.frame.origin.y + _typeLabel.frame.size.height + 4,
                                    actualBounds.size.width - _badgeView.frame.size.width - 5.0f,
