@@ -29,7 +29,8 @@ static const CGFloat HEADER_HEIGHT = 45.5f;
         _enabled = YES;
         
         _detailsTextLabel = [[UITextView alloc] init];
-        [_detailsTextLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:13.0f]];
+        [_detailsTextLabel setFont:[UIFont fontWithName:IQ_HELVETICA
+                                                   size:(IS_IPAD) ? 14.0f : 13.0f]];
         [_detailsTextLabel setTextColor:[UIColor colorWithHexInt:0x20272a]];
         _detailsTextLabel.textAlignment = NSTextAlignmentLeft;
         _detailsTextLabel.backgroundColor = [UIColor clearColor];

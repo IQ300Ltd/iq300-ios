@@ -11,12 +11,20 @@
 #import "NSDate+IQFormater.h"
 
 #define CONTENT_INSETS 13.0f
-#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:15]
-#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
-#define LABELS_HEIGHT 17.0f
 #define LABELS_OFFSET 5.0f
 #define ACTION_MAX_HEIGHT 35
 #define DESCR_MAX_HEIGHT 55
+
+#ifdef IPAD
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:17.0f]
+#define LABELS_FONT [UIFont fontWithName:IQ_HELVETICA size:14.0f]
+#define LABELS_HEIGHT 17.0f
+#else
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
+#define LABELS_FONT [UIFont fontWithName:IQ_HELVETICA size:13.0f]
+#define LABELS_HEIGHT 17.0f
+#endif
+
 
 @implementation TActivityItemCell
 
@@ -25,7 +33,7 @@
     CGFloat height = CONTENT_INSETS * 2 + LABELS_HEIGHT;
     
     if([item.event length] > 0) {
-        CGSize titleSize = [item.event sizeWithFont:TITLE_FONT
+        CGSize titleSize = [item.event sizeWithFont:LABELS_FONT
                                   constrainedToSize:CGSizeMake(width, ACTION_MAX_HEIGHT)
                                       lineBreakMode:NSLineBreakByWordWrapping];
         height += ceilf(titleSize.height) + LABELS_OFFSET;
@@ -52,21 +60,21 @@
         self.backgroundColor = [UIColor whiteColor];
         
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                             font:LABELS_FONT
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentLeft;
         _dateLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_dateLabel];
         
         _userNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                                 font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                                 font:LABELS_FONT
                                         localaizedKey:nil];
         _userNameLabel.textAlignment = NSTextAlignmentRight;
         _dateLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_userNameLabel];
         
         _actionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                               font:TITLE_FONT
+                                               font:LABELS_FONT
                                       localaizedKey:nil];
         _actionLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_actionLabel];

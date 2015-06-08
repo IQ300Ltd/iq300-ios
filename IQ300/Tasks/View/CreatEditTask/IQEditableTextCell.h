@@ -8,11 +8,16 @@
 
 #import "PlaceholderTextView.h"
 
-#define TEXT_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define TEXT_COLOR [UIColor colorWithHexInt:0x272727]
 #define CONTENT_VERTICAL_INSETS 12
 #define CONTENT_HORIZONTAL_INSETS 13
 #define CELL_MIN_HEIGHT 50.0f
+
+#ifdef IPAD
+#define TEXT_FONT [UIFont fontWithName:IQ_HELVETICA size:14]
+#else
+#define TEXT_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#endif
 
 @interface IQEditableTextCell : UITableViewCell {
     UIEdgeInsets _contentInsets;

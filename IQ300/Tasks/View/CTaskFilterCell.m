@@ -14,7 +14,8 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
         _countLabel = [[UILabel alloc] init];
-        [_countLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:13]];
+        [_countLabel setFont:[UIFont fontWithName:IQ_HELVETICA
+                                             size:(IS_IPAD) ? 14 : 13]];
         [_countLabel setTextColor:TEXT_COLOR];
         _countLabel.textAlignment = NSTextAlignmentLeft;
         _countLabel.backgroundColor = [UIColor clearColor];
@@ -28,7 +29,7 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGFloat countLabelWidth = 35.0f;
+    CGFloat countLabelWidth = (IS_IPAD) ? 39.0f : 35.0f;
     CGRect actualBounds = self.contentView.bounds;
     CGRect mainRect = UIEdgeInsetsInsetRect(actualBounds, _contentInsets);
     

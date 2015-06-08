@@ -46,7 +46,8 @@
         [self addSubview:_passwordContainer];
         
         _errorLabel = [[UILabel alloc] init];
-        [_errorLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:13]];
+        [_errorLabel setFont:[UIFont fontWithName:IQ_HELVETICA
+                                             size:(IS_IPAD) ? 14.0f : 13.0f]];
         [_errorLabel setTextColor:[UIColor colorWithHexInt:0xca301e]];
         _errorLabel.textAlignment = NSTextAlignmentLeft;
         _errorLabel.backgroundColor = [UIColor clearColor];
@@ -66,13 +67,13 @@
         
         _restorePassButton = [[UIButton alloc] init];
         [_restorePassButton setTitle:NSLocalizedString(@"Forgot your password?", nil) forState:UIControlStateNormal];
-        [_restorePassButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
+        [_restorePassButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 13.0f : 12.0f]];
         [_restorePassButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
         [self addSubview:_restorePassButton];
         
         _registryButton = [[UIButton alloc] init];
         [_registryButton setTitle:NSLocalizedString(@"Registry", nil) forState:UIControlStateNormal];
-        [_registryButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
+        [_registryButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 13.0f : 12.0f]];
         [_registryButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
         [self addSubview:_registryButton];
     }
@@ -112,7 +113,7 @@
     _errorLabel.frame = CGRectMake(fieldsRect.origin.x,
                                    _passwordContainer.frame.origin.y + _passwordContainer.frame.size.height + 8,
                                    fieldsRect.size.width,
-                                   20);
+                                   LABEL_HEIGHT);
     
     CGFloat horizontalOffset = 10.0f;
     _enterButton.frame = CGRectMake(bounds.origin.x + horizontalOffset,
@@ -120,15 +121,16 @@
                                     bounds.size.width - horizontalOffset * 2.0f,
                                     40);
     
+    CGFloat labelsSize = (IS_IPAD) ? 11 : 10;
     _restorePassButton.frame = CGRectMake(bounds.origin.x,
                                           _enterButton.frame.origin.y + _enterButton.frame.size.height + 34,
                                           bounds.size.width,
-                                          10);
+                                          labelsSize);
     
     _registryButton.frame = CGRectMake(bounds.origin.x,
                                        _restorePassButton.frame.origin.y + _restorePassButton.frame.size.height + 30,
                                        bounds.size.width,
-                                       10);
+                                       labelsSize);
 }
 
 - (BottomLineView*)makeContainerWithField:(ExTextField*)textField placeholder:(NSString*)placeholder {

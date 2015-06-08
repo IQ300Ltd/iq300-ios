@@ -9,13 +9,18 @@
 #import "TodoListItemCell.h"
 #import "TodoItem.h"
 
-#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define TEXT_COLOR [UIColor colorWithHexInt:0x272727]
 #define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x9f9f9f]
 #define CONTENT_VERTICAL_INSETS 12
 #define CONTENT_HORIZONTAL_INSETS 13
 #define ACCESSORY_VIEW_SIZE 20.0f
 #define TITLE_OFFSET 10.0f
+
+#ifdef IPAD
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:14]
+#else
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#endif
 
 @interface TodoListItemCell() {
     BOOL _isChecked;

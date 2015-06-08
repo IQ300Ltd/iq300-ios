@@ -17,10 +17,10 @@
 #import "TaskHelper.h"
 #import "ExtendedButton.h"
 
-#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
-#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13.0f]
 #define LINE_HEIGHT 45.5f
 #define HORIZONTAL_PADDING 10.0f
+#define CONTENT_LEFT_INSET 10.0f
+#define CONTENT_RIGHT_INSET 7.0f
 #define TASK_ID_HEIGHT 11.0f
 #define TITLE_OFFSET 2.5f
 #define USER_OFFSET 5.0f
@@ -29,6 +29,14 @@
 #define BUTTON_VERTICAL_PADDING 22.0f
 #define BUTTON_HEIGHT 40.0f
 #define BUTTON_OFFSET 13.0f
+
+#ifdef IPAD
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:17.0f]
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:14.0f]
+#else
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13.0f]
+#endif
 
 @interface TInfoHeaderView() {
     UIEdgeInsets _headerInsets;
@@ -56,7 +64,7 @@
 }
 
 + (CGFloat)heightForTask:(IQTask*)task width:(CGFloat)width descriptionExpanded:(BOOL)descriptionExpanded {
-    CGFloat hederWidth = width - 10.0f - 7.0f;
+    CGFloat hederWidth = width - CONTENT_LEFT_INSET - CONTENT_RIGHT_INSET;
     CGFloat height = HORIZONTAL_PADDING * 2 + TASK_ID_HEIGHT + TITLE_OFFSET + USER_OFFSET + USER_HEIGHT + LINE_HEIGHT;
     
     CGSize titleLabelSize = [task.title sizeWithFont:TITLE_FONT
@@ -68,7 +76,7 @@
     if (descriptionExpanded) {
         CGFloat descriptionHeight = [TInfoHeaderView heightForText:task.taskDescription
                                                               font:DESCRIPTION_FONT
-                                                             width:300];
+                                                             width:hederWidth];
 
         height += LINE_HEIGHT + descriptionHeight + HORIZONTAL_PADDING;
     }
@@ -96,7 +104,7 @@
     if (self) {
         [self setBackgroundColor:[UIColor whiteColor]];
 
-        _headerInsets = UIEdgeInsetsMake(HORIZONTAL_PADDING, 10, HORIZONTAL_PADDING, 7);
+        _headerInsets = UIEdgeInsetsMake(HORIZONTAL_PADDING, CONTENT_LEFT_INSET, HORIZONTAL_PADDING, CONTENT_RIGHT_INSET);
         
         _taskIDLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
                                                font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
@@ -297,7 +305,7 @@
     if (_descriptionView.isExpanded) {
         CGFloat descriptionHight = [TInfoHeaderView heightForText:_descriptionView.detailsTextLabel.text
                                                              font:_descriptionView.detailsTextLabel.font
-                                                            width:300];
+                                                            width:headerBounds.size.width];
         
         _descriptionView.frame = CGRectMake(bounds.origin.x,
                                             CGRectBottom(_fromLabel.frame) + _headerInsets.bottom,

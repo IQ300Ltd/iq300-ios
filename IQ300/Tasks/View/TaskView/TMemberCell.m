@@ -66,7 +66,8 @@
     self.textLabel.text = _item.user.displayName;
     self.detailTextLabel.numberOfLines = 0;
     
-    UIFont * font = [UIFont fontWithName:IQ_HELVETICA size:13];
+    UIFont * font = [UIFont fontWithName:IQ_HELVETICA
+                                    size:(IS_IPAD) ? 14.0f : 13.0f];
     NSMutableParagraphStyle * paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.maximumLineHeight = 1000;
     paragraphStyle.minimumLineHeight = 3;
