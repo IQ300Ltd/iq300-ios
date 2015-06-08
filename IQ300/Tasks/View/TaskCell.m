@@ -15,24 +15,31 @@
 #import "TaskHelper.h"
 
 #define CONTENT_INSETS 10.0f
-#define TASK_ID_HEIGHT 11.0f
 #define TASK_ID_WIDTH 50.0f
 #define TITLE_MAX_HEIGHT 36.0f
-#define COMM_NAME_MAX_HEIGHT 27.0f
 #define COMM_NAME_WIDTH 140.0f
-#define DUE_DATE_HEIGHT 13.0f
 #define VERTICAL_PADDING 5.0f
 
 #define COMMUNITY_ICO_SIZE 17.0f
-
-#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
-#define COMM_NAME_FONT [UIFont fontWithName:IQ_HELVETICA size:11.0f]
 
 #define STATUS_FLAG_WIDTH 4.0f
 #define NEW_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
 #define OVERDUE_FLAG_COLOR [UIColor colorWithHexInt:0xe74545]
 #define CONTEN_BACKGROUND_COLOR_NEW [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
+
+#ifdef IPAD
+
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:17.0f]
+#define LABELS_FONT [UIFont fontWithName:IQ_HELVETICA size:12.0f]
+#define LABELS_HEIGHT 15.0f
+#define COMM_NAME_MAX_HEIGHT 32.0f
+#else
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
+#define LABELS_FONT [UIFont fontWithName:IQ_HELVETICA size:11.0f]
+#define LABELS_HEIGHT 13.0f
+#define COMM_NAME_MAX_HEIGHT 27.0f
+#endif
 
 @implementation TaskCell
 
@@ -48,11 +55,11 @@
         height += MIN(MAX(titleSize.height, TITLE_MAX_HEIGHT / 2.0f),  TITLE_MAX_HEIGHT);
     }
     
-    height += DUE_DATE_HEIGHT + VERTICAL_PADDING * 2.0f;
+    height += LABELS_HEIGHT + VERTICAL_PADDING * 2.0f;
     
     if([item.community.title length] > 0) {
         
-        CGSize commSize = [item.community.title sizeWithFont:COMM_NAME_FONT
+        CGSize commSize = [item.community.title sizeWithFont:LABELS_FONT
                constrainedToSize:CGSizeMake(COMM_NAME_WIDTH, COMM_NAME_MAX_HEIGHT)
                    lineBreakMode:NSLineBreakByWordWrapping];
         
@@ -84,19 +91,19 @@
         [contentView addSubview:_titleLabel];
         
         _taskIDLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                font:LABELS_FONT
                        localaizedKey:nil];
         _taskIDLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_taskIDLabel];
         
         _fromLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                             font:LABELS_FONT
                                     localaizedKey:nil];
         _fromLabel.numberOfLines = 1;
         [contentView addSubview:_fromLabel];
         
         _toLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                           font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                           font:LABELS_FONT
                                   localaizedKey:nil];
         _toLabel.numberOfLines = 1;
         [contentView addSubview:_toLabel];
@@ -105,7 +112,7 @@
         [contentView addSubview:_dueIconImageView];
         
         _dueDateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
-                                               font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                               font:LABELS_FONT
                                       localaizedKey:nil];
         _dueDateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dueDateLabel];
@@ -116,7 +123,7 @@
         [contentView addSubview:_communityImageView];
         
         _communityNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                                         font:COMM_NAME_FONT
+                                                         font:LABELS_FONT
                                                 localaizedKey:nil];
         [contentView addSubview:_communityNameLabel];
         
@@ -124,12 +131,12 @@
         [contentView addSubview:_messagesImageView];
 
         _commentsCountLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
-                                                font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                                font:LABELS_FONT
                                        localaizedKey:nil];
         [contentView addSubview:_commentsCountLabel];
         
         _statusLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                               font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                               font:LABELS_FONT
                                              localaizedKey:nil];
         _statusLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_statusLabel];
@@ -149,7 +156,7 @@
     CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
     _contentBackgroundView.frame = contentBackgroundBounds;
 
-    CGSize taskIDSize = CGSizeMake(TASK_ID_WIDTH, TASK_ID_HEIGHT);
+    CGSize taskIDSize = CGSizeMake(TASK_ID_WIDTH, LABELS_HEIGHT);
     _taskIDLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - taskIDSize.width,
                                     actualBounds.origin.y,
                                     taskIDSize.width,
@@ -237,7 +244,7 @@
     _statusLabel.frame = CGRectMake((actualBounds.origin.x + actualBounds.size.width) - labelWidth,
                                     _commentsCountLabel.frame.origin.y,
                                     labelWidth,
-                                    _commentsCountLabel.frame.size.height);
+                                   LABELS_HEIGHT);
 }
 
 - (void)setItem:(IQTask *)item {
