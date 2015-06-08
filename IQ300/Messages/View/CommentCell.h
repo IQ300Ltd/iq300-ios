@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 
 #define COMMENT_CELL_MAX_HEIGHT CGFLOAT_MAX
-#define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 182.0f
 #define COMMENT_CELL_MIN_HEIGHT 47.0f
 
 @class IQComment;
