@@ -805,7 +805,7 @@
 		7383562E1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SafelyRemoveObserver.h"; sourceTree = "<group>"; };
 		7383562F1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SafelyRemoveObserver.m"; sourceTree = "<group>"; };
 		73840F0F1B1C75A500BCEAFC /* IQ 300 HD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IQ 300 HD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		73840F121B1C762600BCEAFC /* IQ 300 HD-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "IQ 300 HD-Info.plist"; sourceTree = "<group>"; };
+		73840F121B1C762600BCEAFC /* IQ300_HD-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "IQ300_HD-Info.plist"; sourceTree = "<group>"; };
 		73841B6B1AB9A78A00B079BA /* TaskHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskHelper.h; sourceTree = "<group>"; };
 		73841B6C1AB9A78A00B079BA /* TaskHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskHelper.m; sourceTree = "<group>"; };
 		7385D4AB1A288ED2000B94BD /* IQNotificationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationCenter.h; sourceTree = "<group>"; };
@@ -1817,7 +1817,7 @@
 			children = (
 				736B6BDF1A0B668700034D9B /* IQ300-Prefix.pch */,
 				738CE1E41A0B3F4E0096B374 /* Info.plist */,
-				73840F121B1C762600BCEAFC /* IQ 300 HD-Info.plist */,
+				73840F121B1C762600BCEAFC /* IQ300_HD-Info.plist */,
 				738CE1E51A0B3F4E0096B374 /* main.m */,
 				7356C5D31B12070000BF0CB4 /* GAIEvents.strings */,
 				73A798351A3585FF006F5721 /* CTAssetsPickerController.strings */,
@@ -3371,7 +3371,7 @@
 					"IPAD=1",
 				);
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
-				INFOPLIST_FILE = "IQ300/IQ 300 HD-Info.plist";
+				INFOPLIST_FILE = "IQ300/IQ300_HD-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -3407,7 +3407,7 @@
 					"IPAD=1",
 				);
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
-				INFOPLIST_FILE = "IQ300/IQ 300 HD-Info.plist";
+				INFOPLIST_FILE = "IQ300/IQ300_HD-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -3443,7 +3443,7 @@
 					"IPAD=1",
 				);
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
-				INFOPLIST_FILE = "IQ300/IQ 300 HD-Info.plist";
+				INFOPLIST_FILE = "IQ300/IQ300_HD-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
