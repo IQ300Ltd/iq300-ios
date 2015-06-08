@@ -14,7 +14,7 @@
 #define MENU_SEPARATOR_COLOR [UIColor colorWithHexInt:0x1e272e]
 #define MENU_CELL_SEPARATOR_COLOR [UIColor colorWithHexInt:0x1e272e]
 #define MENU_CELL_BACKGROUND_COLOR [UIColor colorWithHexInt:0x26313a]
-#define MENU_CELL_SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x31404c]
+#define MENU_CELL_SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x2d3b46]
 #define MENU_WIDTH 224.0f
 #define MENU_ITEM_HEIGHT 44.5f
 #else

@@ -125,7 +125,7 @@ CGFloat const LogoImageHeight = 54.0f;
         UIView * tabItemView = item.view;
         tabItemView.frame = CGRectMake(actualBounds.origin.x,
                                 tabItemViewY,
-                                actualBounds.size.width,
+                                actualBounds.size.width - 1.0f,
                                 64.0f);
         tabItemViewY += tabItemView.frame.size.height;
     }
