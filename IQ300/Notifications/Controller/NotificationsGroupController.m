@@ -66,7 +66,7 @@
         IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
         badgeView.badgeMinSize = 20;
         badgeView.frameLineHeight = 1.0f;
-        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:10];
         
         self.tabBarItem.customBadgeView = badgeView;
         self.tabBarItem.badgeOrigin = CGPointMake(10.0f, 5.5f);

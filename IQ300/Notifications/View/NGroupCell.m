@@ -116,11 +116,10 @@
         style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
         
         _badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
-        _badgeView.badgeMinSize = (IS_IPAD) ? 21 : 17;
+        _badgeView.badgeMinSize = (IS_IPAD) ? 26 : 17;
         _badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 13 : 10];
         [_badgeView setHidden:YES];
         [contentView addSubview:_badgeView];
-
     }
     
     return self;

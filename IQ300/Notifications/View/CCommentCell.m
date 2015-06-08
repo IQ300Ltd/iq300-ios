@@ -25,7 +25,7 @@
 
 #ifdef IPAD
 #define DEFAULT_FONT_SIZE 14
-#define HEIGHT_DELTA 2.0f
+#define HEIGHT_DELTA 3.5f
 #define CELL_HEADER_MIN_HEIGHT 19
 #else
 #define DEFAULT_FONT_SIZE 13
