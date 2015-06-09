@@ -45,9 +45,10 @@
 
 + (CGFloat)heightForItem:(IQTask *)item andCellWidth:(CGFloat)cellWidth {
     CGFloat height = CONTENT_INSETS * 2.0f;
+    CGFloat width = cellWidth - CONTENT_INSETS * 2.0f;
 
     if([item.title length] > 0) {
-        CGFloat titleWidth = cellWidth - CONTENT_INSETS * 2.0f - TASK_ID_WIDTH;
+        CGFloat titleWidth = width - TASK_ID_WIDTH;
         CGSize titleSize = [item.title sizeWithFont:TITLE_FONT
                                   constrainedToSize:CGSizeMake(titleWidth, CGFLOAT_MAX)
                                       lineBreakMode:NSLineBreakByWordWrapping];
@@ -58,9 +59,9 @@
     height += LABELS_HEIGHT + VERTICAL_PADDING * 2.0f;
     
     if([item.community.title length] > 0) {
-        
+        CGFloat commWidth = width / 2.0f - 30.0f;
         CGSize commSize = [item.community.title sizeWithFont:LABELS_FONT
-               constrainedToSize:CGSizeMake(COMM_NAME_WIDTH, COMM_NAME_MAX_HEIGHT)
+               constrainedToSize:CGSizeMake(commWidth, COMM_NAME_MAX_HEIGHT)
                    lineBreakMode:NSLineBreakByWordWrapping];
         
         height += MIN(MAX(commSize.height, COMM_NAME_MAX_HEIGHT / 2.0f),  CGFLOAT_MAX);
@@ -218,18 +219,8 @@
                                            COMMUNITY_ICO_SIZE,
                                            COMMUNITY_ICO_SIZE);
     
-    constrainedSize = CGSizeMake(COMM_NAME_WIDTH, COMM_NAME_MAX_HEIGHT);
-    CGSize communityNameSize = [_communityNameLabel.text sizeWithFont:_communityNameLabel.font
-                                                    constrainedToSize:constrainedSize
-                                                        lineBreakMode:NSLineBreakByWordWrapping];
-    
-    _communityNameLabel.frame = CGRectMake(CGRectRight(_communityImageView.frame) + 5.0f,
-                                              _communityImageView.frame.origin.y + 1.8f,
-                                              140,
-                                              communityNameSize.height);
-    
     CGSize messagesImageSize = [_messagesImageView image].size;
-    _messagesImageView.frame = CGRectMake(CGRectRight(_communityNameLabel.frame) + 5.0f,
+    _messagesImageView.frame = CGRectMake((actualBounds.origin.x + actualBounds.size.width) / 2.0f,
                                           _communityImageView.frame.origin.y + 2.0f,
                                           messagesImageSize.width,
                                           messagesImageSize.height);
@@ -238,6 +229,17 @@
                                            _messagesImageView.frame.origin.y,
                                            20.0f,
                                            messagesImageSize.height);
+
+    CGFloat communityWidth = _messagesImageView.frame.origin.x - _communityImageView.frame.origin.x - actualBounds.origin.x - 10.0f;
+    constrainedSize = CGSizeMake(communityWidth, COMM_NAME_MAX_HEIGHT);
+    CGSize communityNameSize = [_communityNameLabel.text sizeWithFont:_communityNameLabel.font
+                                                    constrainedToSize:constrainedSize
+                                                        lineBreakMode:NSLineBreakByWordWrapping];
+    
+    _communityNameLabel.frame = CGRectMake(CGRectRight(_communityImageView.frame) + 5.0f,
+                                           _communityImageView.frame.origin.y + 1.8f,
+                                           constrainedSize.width,
+                                           communityNameSize.height);
     
     CGFloat statusLabelX = CGRectRight(_commentsCountLabel.frame) + 5.0f;
     CGFloat labelWidth = MIN(100.0f, (actualBounds.origin.x + actualBounds.size.width) - statusLabelX);
