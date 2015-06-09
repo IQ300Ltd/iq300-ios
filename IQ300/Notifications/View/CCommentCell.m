@@ -19,7 +19,6 @@
 #define DESCRIPTION_Y_OFFSET 3.0f
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
 #define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED [UIColor colorWithHexInt:0xe9faff]
-#define ATTACHMENT_VIEW_Y_OFFSET 7.0f
 #define NEW_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
 #define NEW_FLAG_WIDTH 4.0f
 
@@ -27,10 +26,12 @@
 #define DEFAULT_FONT_SIZE 14
 #define HEIGHT_DELTA 3.5f
 #define CELL_HEADER_MIN_HEIGHT 19
+#define ATTACHMENT_VIEW_Y_OFFSET 10.0f
 #else
 #define DEFAULT_FONT_SIZE 13
 #define HEIGHT_DELTA 1.0f
 #define CELL_HEADER_MIN_HEIGHT 17
+#define ATTACHMENT_VIEW_Y_OFFSET 7.0f
 #endif
 
 @interface CCommentCell() {
@@ -240,8 +241,8 @@
                                             (hasDescription) ? descriptionHeight : 0.0f);
     
     if(hasExpandView) {
-        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + ATTACHMENT_VIEW_Y_OFFSET,
-                                         CGRectBottom(_descriptionTextView.frame) + ATTACHMENT_VIEW_Y_OFFSET,
+        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + 7.0f,
+                                         CGRectBottom(_descriptionTextView.frame) + 5.0f,
                                          (IS_IPAD) ? 100.0f : 90.0f,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
@@ -250,7 +251,7 @@
         CGFloat attachmentY = (hasAttachment && !hasDescription) ? _descriptionTextView.frame.origin.y + 2.0f : CGRectBottom(_descriptionTextView.frame) + 5.0f;
         
         if(hasExpandView) {
-            attachmentY = CGRectBottom(_expandButton.frame) + 5.0f;
+            attachmentY = CGRectBottom(_expandButton.frame) + ATTACHMENT_VIEW_Y_OFFSET;
         }
         
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
@@ -262,7 +263,7 @@
                                             MIN(attachmentSize.width + 5.0f, actualBounds.size.width - attachmentX),
                                             attachmentSize.height);
             
-            attachmentY = CGRectBottom(attachButton.frame) + 7.0f;
+            attachmentY = CGRectBottom(attachButton.frame) + ATTACHMENT_VIEW_Y_OFFSET;
         }
     }
 }
