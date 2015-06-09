@@ -152,7 +152,7 @@
                                   _badgeView.frame.size.width,
                                   _badgeView.frame.size.height);
     
-    CGFloat titleHeight = (IS_IPAD) ? 18 : 17;
+    CGFloat titleHeight = (IS_IPAD) ? 20 : 17;
     _titleLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                    _typeLabel.frame.origin.y + _typeLabel.frame.size.height + 4,
                                    actualBounds.size.width - _badgeView.frame.size.width - 5.0f,
