@@ -3412,7 +3412,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "IQ 300 HD";
-				PROVISIONING_PROFILE = "bc2b524d-1559-4b97-ac33-6ea4f4617263";
+				PROVISIONING_PROFILE = "d5bbba5a-0cad-4a78-8a76-86d9dd31e1ff";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -3448,7 +3448,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "IQ 300 HD";
-				PROVISIONING_PROFILE = "bc2b524d-1559-4b97-ac33-6ea4f4617263";
+				PROVISIONING_PROFILE = "d5bbba5a-0cad-4a78-8a76-86d9dd31e1ff";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
