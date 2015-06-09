@@ -3341,6 +3341,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "3a4658b4-2b08-4a2a-b39f-82fab3815e15";
 				SDKROOT = iphoneos;
@@ -3375,6 +3376,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobileHD;
 				PRODUCT_NAME = "IQ 300 HD";
 				PROVISIONING_PROFILE = "88289e02-7324-4ad0-b013-32f131d12ebe";
 				SDKROOT = iphoneos;
@@ -3411,6 +3413,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobileHD;
 				PRODUCT_NAME = "IQ 300 HD";
 				PROVISIONING_PROFILE = "d5bbba5a-0cad-4a78-8a76-86d9dd31e1ff";
 				SDKROOT = iphoneos;
@@ -3447,6 +3450,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobileHD;
 				PRODUCT_NAME = "IQ 300 HD";
 				PROVISIONING_PROFILE = "d5bbba5a-0cad-4a78-8a76-86d9dd31e1ff";
 				SDKROOT = iphoneos;
@@ -3551,6 +3555,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "4c2eda23-04db-4d95-942f-e1b02afc55d4";
 				SDKROOT = iphoneos;
@@ -3586,6 +3591,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "ba62a303-a83a-4d4c-8ef1-8ad27abaefe7";
 				SDKROOT = iphoneos;

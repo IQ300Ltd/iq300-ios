@@ -283,7 +283,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     if(hasExpandView) {
         _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + CONTENT_Y_OFFSET,
                                          CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET,
-                                         90,
+                                         (IS_IPAD) ? 100.0f : 90.0f,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
     
@@ -460,10 +460,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 }
 
 - (void)setExpandButtonTitle:(NSString*)title {
+    CGFloat expandFontSize = (IS_IPAD) ? 12 : 11.0f;
     UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
     UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
     NSDictionary *underlineAttribute = @{
-                                         NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                         NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                                          NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                          NSForegroundColorAttributeName : titleColor
                                          };
@@ -472,7 +473,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                              forState:UIControlStateNormal];
     
     underlineAttribute = @{
-                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                            NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                            NSForegroundColorAttributeName : titleHighlightedColor
                            };
