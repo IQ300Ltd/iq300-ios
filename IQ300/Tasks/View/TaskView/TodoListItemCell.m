@@ -147,6 +147,7 @@
     _titleTextView.editable = NO;
     _titleTextView.text = nil;
 
+    [self updateText];
     [self setDelegate:nil];
     [self hideUtilityButtonsAnimated:NO];
     [self setRightUtilityButtons:nil];
@@ -182,21 +183,20 @@
 }
 
 - (void)updateText {
-    if ([_item.title length] > 0) {
-        UIColor * curColor = (_isChecked || !_enabled) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
-        
-        NSMutableDictionary * attributes = @{
-                                             NSFontAttributeName                : TITLE_FONT,
-                                             NSForegroundColorAttributeName     : curColor
-                                             }.mutableCopy;
-        if(_isChecked) {
-            [attributes setValue:@(NSUnderlineStyleSingle) forKey:NSStrikethroughStyleAttributeName];
-            [attributes setValue:curColor forKey:NSStrikethroughColorAttributeName];
-        }
-        
-        _titleTextView.attributedText = [[NSAttributedString alloc] initWithString:_item.title
-                                                                        attributes:attributes];
+    NSString * title = ([_item.title length] > 0) ? _item.title : @"";
+    UIColor * curColor = (_isChecked || !_enabled) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
+    
+    NSMutableDictionary * attributes = @{
+                                         NSFontAttributeName                : TITLE_FONT,
+                                         NSForegroundColorAttributeName     : curColor
+                                         }.mutableCopy;
+    if(_isChecked) {
+        [attributes setValue:@(NSUnderlineStyleSingle) forKey:NSStrikethroughStyleAttributeName];
+        [attributes setValue:curColor forKey:NSStrikethroughColorAttributeName];
     }
+    
+    _titleTextView.attributedText = [[NSAttributedString alloc] initWithString:title
+                                                                    attributes:attributes];
 }
 
 @end
