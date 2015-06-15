@@ -145,7 +145,7 @@
                                       USER_ICON_SEZE,
                                       USER_ICON_SEZE);
 
-    CGFloat dateMaxWidth = 150;
+    CGFloat dateMaxWidth = 160;
     CGSize dateLabelSize = [_dateLabel.text sizeWithFont:_dateLabel.font
                                        constrainedToSize:CGSizeMake(dateMaxWidth, CELL_HEADER_MIN_HEIGHT)
                                            lineBreakMode:_dateLabel.lineBreakMode];
