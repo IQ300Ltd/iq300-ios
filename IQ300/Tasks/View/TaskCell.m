@@ -214,39 +214,48 @@
                                 usersLabelFrame.size.width / 2.0f,
                                 usersLabelFrame.size.height);
     
+    CGFloat boundsCenterX = (actualBounds.origin.x + actualBounds.size.width) / 2.0f;
+    CGFloat labelsOffset = 5.0f;
+    CGFloat labelsMaxWidth = boundsCenterX / 2.0f;
     _communityImageView.frame = CGRectMake(actualBounds.origin.x,
                                            CGRectBottom(_fromLabel.frame) + VERTICAL_PADDING,
                                            COMMUNITY_ICO_SIZE,
                                            COMMUNITY_ICO_SIZE);
     
-    CGSize messagesImageSize = [_messagesImageView image].size;
-    _messagesImageView.frame = CGRectMake((actualBounds.origin.x + actualBounds.size.width) / 2.0f,
-                                          _communityImageView.frame.origin.y + 2.0f,
-                                          messagesImageSize.width,
-                                          messagesImageSize.height);
-    
-    _commentsCountLabel.frame = CGRectMake(CGRectRight(_messagesImageView.frame) + 5.0f,
-                                           _messagesImageView.frame.origin.y,
-                                           20.0f,
-                                           messagesImageSize.height);
-
-    CGFloat communityWidth = _messagesImageView.frame.origin.x - _communityImageView.frame.origin.x - actualBounds.origin.x - 10.0f;
-    constrainedSize = CGSizeMake(communityWidth, COMM_NAME_MAX_HEIGHT);
+    CGFloat communityMaxWidth = boundsCenterX - CGRectRight(_communityImageView.frame) - labelsOffset;
+    constrainedSize = CGSizeMake(communityMaxWidth, COMM_NAME_MAX_HEIGHT);
     CGSize communityNameSize = [_communityNameLabel.text sizeWithFont:_communityNameLabel.font
                                                     constrainedToSize:constrainedSize
                                                         lineBreakMode:NSLineBreakByWordWrapping];
     
-    _communityNameLabel.frame = CGRectMake(CGRectRight(_communityImageView.frame) + 5.0f,
+    _communityNameLabel.frame = CGRectMake(CGRectRight(_communityImageView.frame) + labelsOffset,
                                            _communityImageView.frame.origin.y + 1.8f,
-                                           constrainedSize.width,
+                                           communityNameSize.width,
                                            communityNameSize.height);
+
+    CGSize messagesImageSize = [_messagesImageView image].size;
+    _messagesImageView.frame = CGRectMake(boundsCenterX,
+                                          _communityImageView.frame.origin.y + 2.0f,
+                                          messagesImageSize.width,
+                                          messagesImageSize.height);
     
-    CGFloat statusLabelX = CGRectRight(_commentsCountLabel.frame) + 5.0f;
-    CGFloat labelWidth = MIN(100.0f, (actualBounds.origin.x + actualBounds.size.width) - statusLabelX);
-    _statusLabel.frame = CGRectMake((actualBounds.origin.x + actualBounds.size.width) - labelWidth,
-                                    _commentsCountLabel.frame.origin.y,
-                                    labelWidth,
-                                   LABELS_HEIGHT);
+    constrainedSize = CGSizeMake(labelsMaxWidth, LABELS_HEIGHT);
+    CGSize statusLabelSize = [_statusLabel.text sizeWithFont:_statusLabel.font
+                                           constrainedToSize:constrainedSize
+                                               lineBreakMode:NSLineBreakByWordWrapping];
+
+    _statusLabel.frame = CGRectMake((actualBounds.origin.x + actualBounds.size.width) - statusLabelSize.width,
+                                    _messagesImageView.frame.origin.y,
+                                    statusLabelSize.width,
+                                    LABELS_HEIGHT);
+
+    CGFloat countMaxWidth = labelsMaxWidth - messagesImageSize.width - labelsOffset;
+    countMaxWidth = MAX(countMaxWidth, _statusLabel.frame.origin.x - CGRectRight(_messagesImageView.frame) - labelsOffset);
+
+    _commentsCountLabel.frame = CGRectMake(CGRectRight(_messagesImageView.frame) + labelsOffset,
+                                           _messagesImageView.frame.origin.y,
+                                           countMaxWidth,
+                                           messagesImageSize.height);
 }
 
 - (void)setItem:(IQTask *)item {
