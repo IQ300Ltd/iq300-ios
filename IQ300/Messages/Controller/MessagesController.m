@@ -265,7 +265,8 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    [_messagesView setTableBottomMargin:down ? 0.0f : MIN(keyboardRect.size.width, keyboardRect.size.height) - 50.0f];
+    CGFloat inset = MIN(keyboardRect.size.height, keyboardRect.size.width);
+    [_messagesView setTableBottomMargin:down ? 0.0f : inset - 50.0f];
     
     [UIView commitAnimations];
 }
