@@ -129,7 +129,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
     IQComment * comment = [self itemAtIndexPath:indexPath];
     
-    if(comment && ![_expandableCells objectForKey:comment.commentId]) {
+    if(comment && ![_expandableCells objectForKey:comment.commentId] && self.cellWidth > 0) {
         BOOL expandable = [CommentCell cellNeedToBeExpandableForItem:comment
                                                            сellWidth:self.cellWidth];
         
