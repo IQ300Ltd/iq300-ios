@@ -23,18 +23,19 @@
 #define CONTENT_Y_OFFSET 5.0f
 #define CELL_HEADER_HEIGHT TIME_LABEL_HEIGHT + CONTENT_Y_OFFSET
 
+#define BUBBLE_WIDTH_PERCENT 0.54f
 #define BUBBLE_BOTTOM_OFFSET 6.0f
 
 #ifdef IPAD
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:14]
 #define HEIGHT_DELTA 0.0f
 #define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 193.0f
-#define BUBBLE_WIDTH 500
+//#define BUBBLE_WIDTH 500
 #else
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define HEIGHT_DELTA 1.0f
 #define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 182.0f
-#define BUBBLE_WIDTH 205
+//#define BUBBLE_WIDTH 205
 #endif
 
 typedef NS_ENUM(NSInteger, CommentCellStyle) {
@@ -91,8 +92,9 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     return nil;
 }
 
-+ (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded {
-    CGFloat descriptionWidth = BUBBLE_WIDTH - DESCRIPTION_PADDING * 2.0f;
++ (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded сellWidth:(CGFloat)cellWidth {
+    CGFloat bubbleWidth = (cellWidth - CONTENT_INSET * 2.0f) * BUBBLE_WIDTH_PERCENT;
+    CGFloat descriptionWidth = bubbleWidth - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
@@ -129,8 +131,9 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     return height;
 }
 
-+ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item {
-    CGFloat descriptionWidth = BUBBLE_WIDTH - DESCRIPTION_PADDING * 2.0f;
++ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item сellWidth:(CGFloat)cellWidth {
+    CGFloat bubbleWidth = (cellWidth - CONTENT_INSET * 2.0f) * BUBBLE_WIDTH_PERCENT;
+    CGFloat descriptionWidth = bubbleWidth - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
@@ -246,6 +249,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     CGFloat bubleOffset = 5.0f;
+    CGFloat bubbleWidth = actualBounds.size.width * BUBBLE_WIDTH_PERCENT;
  
     _timeLabel.frame = CGRectMake(actualBounds.origin.x,
                                   actualBounds.origin.y,
@@ -255,7 +259,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat bubdleImageY = CGRectBottom(_timeLabel.frame) + CONTENT_Y_OFFSET;
 
     if(_commentIsMine) {
-        _statusImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - CONTENT_Y_OFFSET - BUBBLE_WIDTH - STATUS_IMAGE_SIZE,
+        _statusImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - CONTENT_Y_OFFSET - bubbleWidth - STATUS_IMAGE_SIZE,
                                             bubdleImageY + 10.0f,
                                             STATUS_IMAGE_SIZE,
                                             STATUS_IMAGE_SIZE);
@@ -267,7 +271,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat bubdleImageX = (_commentIsMine) ? CGRectRight(_statusImageView.frame) + bubleOffset : actualBounds.origin.x;
     _bubbleImageView.frame = CGRectMake(bubdleImageX,
                                         bubdleImageY,
-                                        BUBBLE_WIDTH,
+                                        bubbleWidth,
                                         actualBounds.size.height - bubdleImageY - BUBBLE_BOTTOM_OFFSET);
     
     

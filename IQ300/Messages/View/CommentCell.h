@@ -28,7 +28,7 @@
 
 @property (nonatomic, strong) IQComment * item;
 
-+ (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded;
-+ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item;
++ (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded сellWidth:(CGFloat)cellWidth;
++ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item сellWidth:(CGFloat)cellWidth;
 
 @end
