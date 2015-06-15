@@ -93,7 +93,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 }
 
 + (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded сellWidth:(CGFloat)cellWidth {
-    CGFloat bubbleWidth = (cellWidth - CONTENT_INSET * 2.0f) * BUBBLE_WIDTH_PERCENT;
+    CGFloat bubbleWidth = ceilf((cellWidth - CONTENT_INSET * 2.0f) * BUBBLE_WIDTH_PERCENT);
     CGFloat descriptionWidth = bubbleWidth - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
@@ -132,7 +132,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 }
 
 + (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item сellWidth:(CGFloat)cellWidth {
-    CGFloat bubbleWidth = (cellWidth - CONTENT_INSET * 2.0f) * BUBBLE_WIDTH_PERCENT;
+    CGFloat bubbleWidth = ceilf((cellWidth - CONTENT_INSET * 2.0f) * BUBBLE_WIDTH_PERCENT);
     CGFloat descriptionWidth = bubbleWidth - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
@@ -249,8 +249,8 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     CGFloat bubleOffset = 5.0f;
-    CGFloat bubbleWidth = actualBounds.size.width * BUBBLE_WIDTH_PERCENT;
- 
+    CGFloat bubbleWidth = ceilf(actualBounds.size.width * BUBBLE_WIDTH_PERCENT);
+
     _timeLabel.frame = CGRectMake(actualBounds.origin.x,
                                   actualBounds.origin.y,
                                   actualBounds.size.width,
@@ -293,7 +293,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     }
     
     if(hasAttachment) {
-        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET + 1 :
+        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET :
                                                     _bubbleImageView.frame.origin.y + CONTENT_Y_OFFSET;
         
         if(hasExpandView) {
