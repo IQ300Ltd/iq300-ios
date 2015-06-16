@@ -28,6 +28,7 @@
 
 #define BUTTON_VERTICAL_PADDING 22.0f
 #define BUTTON_HEIGHT 40.0f
+#define BUTTON_WIDTH 215.0f
 #define BUTTON_OFFSET 13.0f
 
 #ifdef IPAD
@@ -64,6 +65,10 @@
 }
 
 + (CGFloat)heightForTask:(IQTask*)task width:(CGFloat)width descriptionExpanded:(BOOL)descriptionExpanded {
+    if (width <= 0) {
+        return 0;
+    }
+    
     CGFloat hederWidth = width - CONTENT_LEFT_INSET - CONTENT_RIGHT_INSET;
     CGFloat height = HORIZONTAL_PADDING * 2 + TASK_ID_HEIGHT + TITLE_OFFSET + USER_OFFSET + USER_HEIGHT + LINE_HEIGHT;
     
@@ -93,7 +98,13 @@
     }
     
     if ([task.availableActions count] > 0) {
+#ifdef IPAD
+        CGFloat buttonsInRow = roundf(hederWidth / (BUTTON_OFFSET + BUTTON_WIDTH));
+        NSUInteger buttonRowsCount = ceil([task.availableActions count] / buttonsInRow);
+        height += BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * buttonRowsCount - BUTTON_OFFSET;
+#else
         height += BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * [task.availableActions count] - BUTTON_OFFSET;
+#endif
     }
 
     return height;
@@ -357,23 +368,55 @@
                                               0.0f);
     }
     
-    CGRect buttonsHolderRect = CGRectMake(bounds.origin.x,
-                                          CGRectBottom(_communityInfoView.frame),
-                                          bounds.size.width,
-                                          0);
     
-    if([[_buttonsHolder subviews] count] > 0) {
+    if([_buttonsHolder.subviews count] > 0) {
+        NSUInteger buttonsCount = [_buttonsHolder.subviews count];
+#ifdef IPAD
+        CGFloat maxButtonsInRow = roundf(bounds.size.width / (BUTTON_OFFSET + BUTTON_WIDTH));
+        NSUInteger buttonRowsCount = ceil(buttonsCount / maxButtonsInRow);
+        NSUInteger buttonsInRow = MIN(maxButtonsInRow, buttonsCount);
+        NSUInteger prevButtonRow = 0;
+        CGFloat holderWidth = (BUTTON_OFFSET + BUTTON_WIDTH) * buttonsInRow;
+        CGFloat firstButtonX = (BUTTON_OFFSET + bounds.size.width - holderWidth) / 2.0f;
+        CGFloat buttonX = firstButtonX;
+ 
+        CGFloat buttonsHolderHeight = BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * buttonRowsCount - BUTTON_OFFSET;
+        CGRect buttonsHolderRect = CGRectMake(bounds.origin.x,
+                                              CGRectBottom(_communityInfoView.frame),
+                                              bounds.size.width,
+                                              buttonsHolderHeight);
+#else
+        CGFloat buttonY = BUTTON_VERTICAL_PADDING;
         CGFloat buttonsHolderHeight = BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * [[_buttonsHolder subviews] count] - BUTTON_OFFSET;
-        buttonsHolderRect.size.height = buttonsHolderHeight;
+        CGRect buttonsHolderRect = CGRectMake(bounds.origin.x,
+                                              CGRectBottom(_communityInfoView.frame),
+                                              bounds.size.width,
+                                              buttonsHolderHeight);
+#endif
+
         _buttonsHolder.frame = buttonsHolderRect;
         
-        CGFloat buttonY = BUTTON_VERTICAL_PADDING;
-        for (UIView * view in [_buttonsHolder subviews]) {
+        for (NSUInteger index = 0; index < buttonsCount; index++) {
+            UIView * view = _buttonsHolder.subviews[index];
+#ifdef IPAD
+            NSUInteger buttonRow = floor(index / buttonsInRow);
+            if (prevButtonRow != buttonRow) {
+                buttonX = firstButtonX;
+                prevButtonRow = buttonsInRow;
+            }
+            
+            view.frame = CGRectMake(buttonX,
+                                    BUTTON_VERTICAL_PADDING + (BUTTON_HEIGHT + BUTTON_OFFSET) * buttonRow,
+                                    BUTTON_WIDTH,
+                                    BUTTON_HEIGHT);
+            buttonX = CGRectRight(view.frame) + BUTTON_OFFSET;
+#else
             view.frame = CGRectMake(BUTTON_OFFSET,
                                     buttonY,
                                     _buttonsHolder.frame.size.width - BUTTON_OFFSET * 2,
                                     BUTTON_HEIGHT);
             buttonY = CGRectBottom(view.frame) + BUTTON_OFFSET;
+#endif
         }
     }
 }
