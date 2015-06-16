@@ -18,13 +18,10 @@
 #import "ExtendedButton.h"
 
 #define LINE_HEIGHT 45.5f
-#define HORIZONTAL_PADDING 10.0f
 #define CONTENT_LEFT_INSET 10.0f
 #define CONTENT_RIGHT_INSET 7.0f
-#define TASK_ID_HEIGHT 11.0f
 #define TITLE_OFFSET 2.5f
 #define USER_OFFSET 5.0f
-#define USER_HEIGHT 13.0f
 
 #define BUTTON_VERTICAL_PADDING 22.0f
 #define BUTTON_HEIGHT 40.0f
@@ -34,9 +31,17 @@
 #ifdef IPAD
 #define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:17.0f]
 #define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:14.0f]
+#define TASK_ID_HEIGHT 16.0f
+#define LABEL_FONT_SIZE 14.0f
+#define USER_HEIGHT 16.0f
+#define HORIZONTAL_PADDING 15.0f
 #else
 #define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
 #define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13.0f]
+#define TASK_ID_HEIGHT 11.0f
+#define LABEL_FONT_SIZE 11.0f
+#define USER_HEIGHT 13.0f
+#define HORIZONTAL_PADDING 10.0f
 #endif
 
 @interface TInfoHeaderView() {
@@ -118,7 +123,7 @@
         _headerInsets = UIEdgeInsetsMake(HORIZONTAL_PADDING, CONTENT_LEFT_INSET, HORIZONTAL_PADDING, CONTENT_RIGHT_INSET);
         
         _taskIDLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                               font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                               font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
                                       localaizedKey:nil];
         _taskIDLabel.numberOfLines = 1;
         [self addSubview:_taskIDLabel];
@@ -129,13 +134,13 @@
         [self addSubview:_titleLabel];
 
         _fromLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                             font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
                                     localaizedKey:nil];
         _fromLabel.numberOfLines = 1;
         [self addSubview:_fromLabel];
         
         _toLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                           font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                           font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
                                   localaizedKey:nil];
         _toLabel.numberOfLines = 1;
         [self addSubview:_toLabel];
