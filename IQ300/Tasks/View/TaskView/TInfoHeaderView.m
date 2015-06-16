@@ -20,7 +20,6 @@
 #define LINE_HEIGHT 45.5f
 #define CONTENT_LEFT_INSET 10.0f
 #define CONTENT_RIGHT_INSET 7.0f
-#define TITLE_OFFSET 2.5f
 #define USER_OFFSET 5.0f
 
 #define BUTTON_VERTICAL_PADDING 22.0f
@@ -35,6 +34,7 @@
 #define LABEL_FONT_SIZE 14.0f
 #define USER_HEIGHT 16.0f
 #define HORIZONTAL_PADDING 15.0f
+#define TITLE_OFFSET 5.0f
 #else
 #define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
 #define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13.0f]
@@ -42,6 +42,7 @@
 #define LABEL_FONT_SIZE 11.0f
 #define USER_HEIGHT 13.0f
 #define HORIZONTAL_PADDING 10.0f
+#define TITLE_OFFSET 2.5f
 #endif
 
 @interface TInfoHeaderView() {
