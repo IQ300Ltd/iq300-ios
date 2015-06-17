@@ -266,7 +266,10 @@
     [UIView setAnimationCurve:animationCurve];
     
     CGFloat inset = MIN(keyboardRect.size.height, keyboardRect.size.width);
-    [_messagesView setTableBottomMargin:down ? 0.0f : inset - 50.0f];
+    if (!IS_IPAD) {
+        inset -= self.tabBarController.tabBar.frame.size.height;
+    }
+    [_messagesView setTableBottomMargin:down ? 0.0f : inset];
     
     [UIView commitAnimations];
 }
