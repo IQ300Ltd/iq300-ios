@@ -15,6 +15,7 @@
 @property(nonatomic, assign) UITabBarItem * selectedItem;
 @property(nonatomic, strong) UIImage * selectionIndicatorImage;
 @property(nonatomic, strong) UIImage * backgroundImage;
+@property(nonatomic, assign) CGFloat itemWidth;
 
 - (void)setItems:(NSArray *)items animated:(BOOL)animated;
 

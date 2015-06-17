@@ -26,6 +26,8 @@ static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
 static NSString * CommunityCellReuseIdentifier = @"CommunityCellReuseIdentifier";
 static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier";
 
+#define MAX_NUMBER_OF_CHARACTERS 255
+
 @interface NSObject(TaskModelCells)
 
 + (CGFloat)heightForItem:(id)item detailTitle:(NSString*)detailTitle width:(CGFloat)width;
@@ -49,7 +51,11 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     dispatch_once(&oncePredicate, ^{
         _cellsClasses = @{
                           @(0) : [IQEditableTextCell class],
+#ifdef IPAD
+                          @(1) : [IQEditableTextCell class],
+#else
                           @(1) : [IQDetailsTextCell class],
+#endif
                           @(2) : [TaskCommunityCell class],
                           @(3) : [TaskExecutersCell class],
                           @(4) : [IQDateDetailsCell class],
@@ -59,7 +65,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     
     Class cellClass = [_cellsClasses objectForKey:@(indexPath.row)];
     
-    return (cellClass) ? cellClass :  [IQEditableTextCell class];
+    return (cellClass) ? cellClass : [IQEditableTextCell class];
 }
 
 + (NSString*)cellIdentifierForItemAtIndexPath:(NSIndexPath*)indexPath {
@@ -68,7 +74,12 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     dispatch_once(&oncePredicate, ^{
         _cellsIdentifiers = @{
                               @(0) : CellReuseIdentifier,
+#ifdef IPAD
+                              @(1) : CellReuseIdentifier,
+#else
                               @(1) : DetailCellReuseIdentifier,
+#endif
+
                               @(2) : CommunityCellReuseIdentifier,
                               @(3) : ExecutorsCellReuseIdentifier,
                               @(4) : DateCellReuseIdentifier,
@@ -221,7 +232,11 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                 }
             }
             
+#ifdef IPAD
+            if (realIndexPath.row != 0 && realIndexPath.row != 1) {
+#else
             if (realIndexPath.row != 0) {
+#endif
                 [self modelWillChangeContent];
                 [self modelDidChangeObject:nil
                                atIndexPath:indexPath
@@ -233,7 +248,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     }
 }
 
-- (BOOL)isItemEditableAtIndexPath:(NSIndexPath*)indexPath {
+- (BOOL)isItemEnabledAtIndexPath:(NSIndexPath*)indexPath {
     NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
     if (self.task.taskId != nil && realIndexPath.row == 2) {
         return NO;
@@ -249,6 +264,11 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
         }
     }
     return indexPath;
+}
+
+- (NSInteger)maxNumberOfCharactersForPath:(NSIndexPath*)indexPath {
+    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
+    return (realIndexPath.row == 0) ? MAX_NUMBER_OF_CHARACTERS : NSIntegerMax;
 }
 
 - (BOOL)modelHasChanges {

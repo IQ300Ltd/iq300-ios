@@ -57,7 +57,7 @@
         
         self.tabBarItem.customBadgeView = badgeView;
         self.tabBarItem.badgeOrigin = CGPointMake(6.5f, 10.5f);
-
+        
         ManagedTodoListModel * todoListModel = [[ManagedTodoListModel alloc] init];
         todoListModel.section = 1;
         self.model = todoListModel;

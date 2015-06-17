@@ -19,7 +19,6 @@
 #import "IQCommunity.h"
 #import "NSDate+CupertinoYankee.h"
 
-#define MAX_NUMBER_OF_CHARACTERS 255
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
 #define BOTTOM_VIEW_HEIGHT 65
@@ -40,7 +39,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        _editableIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
         _tableBottomMarging = BOTTOM_VIEW_HEIGHT;
     }
     return self;
@@ -145,7 +143,7 @@
     cell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
     cell.item = item;
     cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
-    cell.enabled = [self.model isItemEditableAtIndexPath:indexPath];
+    cell.enabled = [self.model isItemEnabledAtIndexPath:indexPath];
 
     return cell;
 }
@@ -176,10 +174,15 @@
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    return ([self.model isItemEditableAtIndexPath:indexPath]) ? indexPath : nil;
+    return ([self.model isItemEnabledAtIndexPath:indexPath]) ? indexPath : nil;
 }
 
 #pragma mark - UITextViewDelegate Methods
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+    _editableIndexPath = [self indexPathForCellChildView:textView];
+    return YES;
+}
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     if ([text isEqualToString:@"\n"]) {
@@ -188,7 +191,7 @@
     }
 
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
-    if (([newString length] <= MAX_NUMBER_OF_CHARACTERS)) {
+    if (([newString length] <= [self.model maxNumberOfCharactersForPath:_editableIndexPath])) {
         textView.text = newString;
         [self.model updateFieldAtIndexPath:_editableIndexPath withValue:newString];
         [self updateCellFrameIfNeed];
@@ -211,6 +214,7 @@
 }
 
 - (void)onKeyboardWillHide:(NSNotification *)notification {
+    _editableIndexPath = nil;
     [self makeInputViewTransitionWithDownDirection:YES
                                       notification:notification];
 }
@@ -426,6 +430,15 @@
     }
     
     return nil;
+}
+
+- (NSIndexPath*)indexPathForCellChildView:(UIView*)childView {
+    if ([childView.superview isKindOfClass:[UITableViewCell class]] || !childView.superview) {
+        UITableViewCell * cell = (UITableViewCell*)childView.superview;
+        return [self.tableView indexPathForCell:cell];
+    }
+    
+    return [self indexPathForCellChildView:childView.superview];
 }
 
 @end
