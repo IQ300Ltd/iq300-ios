@@ -36,6 +36,15 @@ extern NSString * IQSortDirectionToString(IQSortDirection direction);
 
 - (void)logout;
 
+- (void)signupWithFirstName:(NSString*)firstName
+                   lastName:(NSString*)lastName
+             communityTitle:(NSString*)communityTitle
+                      email:(NSString*)email
+                   password:(NSString*)password
+                    handler:(RequestCompletionHandler)handler;
+
+- (void)confirmRegistrationWithToken:(NSString*)token deviceToken:(NSString*)deviceToken handler:(RequestCompletionHandler)handler;
+
 - (void)userInfoWithHandler:(ObjectRequestCompletionHandler)handler;
 
 - (void)registerDeviceForRemoteNotificationsWithToken:(NSString*)token handler:(RequestCompletionHandler)handler;

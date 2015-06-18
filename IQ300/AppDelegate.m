@@ -28,6 +28,9 @@
 #import "DiscussionModel.h"
 #import "IQDiscussion.h"
 #import "LeftSideTabBarController.h"
+#import "DispatchAfterExecution.h"
+#import "DeviceToken.h"
+#import "RegistrationStatusController.h"
 
 #define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
 
@@ -44,7 +47,9 @@
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
     LoginController * loginViewController = [[LoginController alloc] init];
-    [delegate.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+    UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+    [navigationController setNavigationBarHidden:YES];
+    [delegate.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
    
     [[IQService sharedService] logout];
     [IQSession setDefaultSession:nil];
@@ -58,8 +63,9 @@
     }
     
     [center setSelectedIndex:0];
-
-    [delegate.drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:nil];
+    if (delegate.drawerController.openSide == MMDrawerSideLeft) {
+        [delegate.drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:nil];
+    }
     [[UIApplication sharedApplication] unregisterForRemoteNotifications];
 }
 
@@ -178,7 +184,9 @@
         [[UIApplication sharedApplication] unregisterForRemoteNotifications];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
         LoginController * loginViewController = [[LoginController alloc] init];
-        [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+        UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+        [navigationController setNavigationBarHidden:YES];
+        [self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
     }
     else {
         [self updateGlobalCounters];
@@ -226,6 +234,89 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
 }
 
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    if ([IQSession defaultSession]) {
+        [IQService sharedService].session = nil;
+        [AppDelegate logout];
+    }
+    
+    NSMutableParagraphStyle * paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    [paragraphStyle setAlignment:NSTextAlignmentCenter];
+    
+    NSMutableDictionary * attributes = @{
+                                         NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x272727],
+                                         NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:18],
+                                         NSParagraphStyleAttributeName  : paragraphStyle
+                                         }.mutableCopy;
+    NSString * title = [NSString stringWithFormat:@"%@\n\n", NSLocalizedString(@"Thank you for registering!", nil)];
+    NSMutableAttributedString * statusMessage = [[NSMutableAttributedString alloc] initWithString:title
+                                                                                       attributes:attributes];
+    
+    [attributes setValue:[UIFont fontWithName:IQ_HELVETICA size:15]
+                  forKey:NSFontAttributeName];
+
+    [statusMessage appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Account activation", nil)
+                                                                          attributes:attributes]];
+    
+    UINavigationController * navController = ((UINavigationController*)self.window.rootViewController.presentedViewController);
+    RegistrationStatusController * controller = [[RegistrationStatusController alloc] init];
+    controller.statusMessage = statusMessage;
+    [navController pushViewController:controller animated:NO];
+    
+    RequestCompletionHandler handler = ^(BOOL success, NSData *responseData, NSError *error) {
+        if(success) {
+            [self continueLoginProccess];
+        }
+        else if (error) {
+            NSDictionary * attributes = @{
+                                          NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x272727],
+                                          NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:18]
+                                          }.mutableCopy;
+            
+            NSMutableAttributedString * statusMessage = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"Thank you for registering!", nil)
+                                                                                               attributes:attributes];
+            NSString * errorDescription = nil;
+            if (error.code == kCFURLErrorNotConnectedToInternet || ![IQService sharedService].isServiceReachable) {
+                errorDescription = NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil);
+            }
+            else {
+                errorDescription = error.localizedDescription;
+            }
+            
+            [attributes setValue:[UIFont fontWithName:IQ_HELVETICA size:15]
+                          forKey:NSFontAttributeName];
+            [attributes setValue:[UIColor colorWithHexInt:0xca301e]
+                          forKey:NSForegroundColorAttributeName];
+
+            [statusMessage appendAttributedString:[[NSAttributedString alloc] initWithString:errorDescription
+                                                                                  attributes:attributes]];
+            controller.statusMessage = statusMessage;
+        }
+    };
+
+    [[IQService sharedService] confirmRegistrationWithToken:[url lastPathComponent]
+                                                deviceToken:[DeviceToken uniqueIdentifier]
+                                                    handler:handler];
+    return YES;
+}
+
+- (void)continueLoginProccess {
+    [[IQService sharedService] userInfoWithHandler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
+        if(success) {
+            [IQSession setDefaultSession:[IQService sharedService].session];
+            [AppDelegate setupNotificationCenter];
+            [AppDelegate registerForRemoteNotifications];
+            [GAIService sendEventForCategory:GAICommonEventCategory
+                                      action:@"event_action_common_login"];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
+                                                                object:nil];
+            
+            [self.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        }
+    }];
+}
 #pragma mark - Notifications
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {

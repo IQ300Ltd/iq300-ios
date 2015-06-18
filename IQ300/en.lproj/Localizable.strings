@@ -13,7 +13,6 @@
 "Password" = "Password";
 "Enter" = "Enter";
 "Forgot your password?" = "Forgot your password?";
-"Registry" = "Registry";
 "Change" = "Change";
 "Logout" = "Log out";
 "Project" = "Project";
@@ -142,4 +141,14 @@
 "Medium (%ld%%)" = "Medium (%ld%%)";
 "Large (%ld%%)" = "Large (%ld%%)";
 "Actual" = "Actual";
-"You can reduce the image size by scaling it to one of the following sizes" = "Вы можете уменьшить размер изображения путем масштабирования его на один из следующих размеров";
+"You can reduce the image size by scaling it to one of the following sizes" = "ou can reduce the image size by scaling it to one of the following sizes";
+"Name" = "Имя";
+"Surname" = "Surname";
+"Organization name" = "Organization name";
+"Replay password" = "Replay password";
+"Sign up" = "Sign up";
+"registration_help_message" = "If you have a problem, please contact us support@iq300.ru";
+"Return to main screen" = "Вернуться на стартовый экран";
+"Thank you for registering!" = "Thank you for registering!";
+"registration_status_message" = "Account created. In your e-mail letter with instructions on how to activate.";
+"Account activation" = "Account activation...";

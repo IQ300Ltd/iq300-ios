@@ -8,14 +8,15 @@
 
 #import "LoginView.h"
 #import "BottomLineView.h"
+#import "IQTextContainer.h"
 
 #define LOGO_IMAGE_SIZE CGSizeMake(70, 30)
 #define LABEL_HEIGHT 25.0f
 #define LOGIN_WIDTH 450.0f
 
 @interface LoginView() {
-    BottomLineView * _emailContainer;
-    BottomLineView * _passwordContainer;
+    IQTextContainer * _emailContainer;
+    IQTextContainer * _passwordContainer;
     UIEdgeInsets _fieldsInsets;
 }
 
@@ -33,16 +34,16 @@
         [_logoImageView setImage:[UIImage imageNamed:@"login_logo.png"]];
         [self addSubview:_logoImageView];
         
-        _emailTextField = [[ExTextField alloc] init];
-        _emailTextField.tag = 0;
-        _emailTextField.keyboardType = UIKeyboardTypeEmailAddress;
-        _emailContainer = [self makeContainerWithField:_emailTextField placeholder:@"Email"];
+        _emailContainer = [[IQTextContainer alloc] init];
+        _emailContainer.textField.tag = 0;
+        _emailContainer.textField.keyboardType = UIKeyboardTypeEmailAddress;
+        [_emailContainer setLocalizedPlaceholder:@"Email"];
         [self addSubview:_emailContainer];
     
-        _passwordTextField = [[ExTextField alloc] init];
-        _passwordTextField.tag = 1;
-        _passwordContainer = [self makeContainerWithField:_passwordTextField placeholder:@"Password"];
-        _passwordTextField.secureTextEntry = YES;
+        _passwordContainer = [[IQTextContainer alloc] init];
+        _passwordContainer.textField.tag = 1;
+        _passwordContainer.textField.secureTextEntry = YES;
+        [_passwordContainer setLocalizedPlaceholder:@"Password"];
         [self addSubview:_passwordContainer];
         
         _errorLabel = [[UILabel alloc] init];
@@ -72,12 +73,20 @@
         [self addSubview:_restorePassButton];
         
         _registryButton = [[UIButton alloc] init];
-        [_registryButton setTitle:NSLocalizedString(@"Registry", nil) forState:UIControlStateNormal];
+        [_registryButton setTitle:NSLocalizedString(@"Sign up", nil) forState:UIControlStateNormal];
         [_registryButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 13.0f : 12.0f]];
         [_registryButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
         [self addSubview:_registryButton];
     }
     return self;
+}
+
+- (ExTextField*)emailTextField {
+    return _emailContainer.textField;
+}
+
+- (ExTextField*)passwordTextField {
+    return _passwordContainer.textField;
 }
 
 - (void)layoutSubviews {
@@ -121,7 +130,7 @@
                                     bounds.size.width - horizontalOffset * 2.0f,
                                     40);
     
-    CGFloat labelsSize = (IS_IPAD) ? 11 : 10;
+    CGFloat labelsSize = (IS_IPAD) ? 15 : 14;
     _restorePassButton.frame = CGRectMake(bounds.origin.x,
                                           _enterButton.frame.origin.y + _enterButton.frame.size.height + 34,
                                           bounds.size.width,
@@ -131,22 +140,6 @@
                                        _restorePassButton.frame.origin.y + _restorePassButton.frame.size.height + 30,
                                        bounds.size.width,
                                        labelsSize);
-}
-
-- (BottomLineView*)makeContainerWithField:(ExTextField*)textField placeholder:(NSString*)placeholder {
-    BottomLineView * containerView = [[BottomLineView alloc] init];
-    containerView.bottomLineColor = [UIColor colorWithHexInt:0xc8c9c9];
-    containerView.bottomLineHeight = 0.5f;
-    [containerView setBackgroundColor:[UIColor clearColor]];
-    
-    textField.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    textField.font = [UIFont fontWithName:IQ_HELVETICA size:16];
-    textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(placeholder, nil)
-                                                                      attributes:@{NSForegroundColorAttributeName: [UIColor colorWithHexInt:0xb6b6b6]}];
-
-    [containerView addSubview:textField];
-    return containerView;
 }
 
 @end

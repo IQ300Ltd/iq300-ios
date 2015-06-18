@@ -13,7 +13,6 @@
 "Password" = "Пароль";
 "Enter" = "Войти";
 "Forgot your password?" = "Забыли пароль?";
-"Registry" = "Зарегистрироваться";
 "Change" = "Изменить";
 "Logout" = "Выйти";
 "Project" = "Проект";
@@ -27,6 +26,7 @@
 "no_data_formart" = "Ни одного %@ не найдено";
 "Email and password fields is required" = "Эл. почта и пароль являются обязательными";
 "Email address is invalid" = "Неверный адрес эл. почты";
+"Email" = "Эл. почта";
 "Wrong credentials" = "Неверный адрес эл. почты или пароль";
 "Pull to refresh..." = "Потяните, чтобы обновить...";
 "Release to refresh..." = "Отпустите, чтобы обновить...";
@@ -151,3 +151,13 @@
 "Large (%ld%%)" = "Большой (%ld%%)";
 "Actual" = "Исходный";
 "You can reduce the image size by scaling it to one of the following sizes" = "Вы можете уменьшить размер изображения путем масштабирования его в один из следующих размеров";
+"Name" = "Имя";
+"Surname" = "Фамилия";
+"Organization name" = "Название организации";
+"Replay password" = "Повтор пароля";
+"Sign up" = "Зарегистрироваться";
+"registration_help_message" = "Если у вас что-то не получается, напишите нам support@iq300.ru";
+"Return to main screen" = "Вернуться на стартовый экран";
+"Thank you for registering!" = "Спасибо за регистрацию!";
+"registration_status_message" = "Учетная запись создана. На указанный Вами адрес электронной почты отправлено письмо с инструкцией по активации.";
+"Account activation" = "Активация аккаунта...";
