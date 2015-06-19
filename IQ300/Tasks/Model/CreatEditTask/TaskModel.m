@@ -134,8 +134,8 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
     NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
     Class cellClass = [TaskModel cellClassAtIndexPath:realIndexPath];
     
-    IQEditableTextCell * cell = [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                                 reuseIdentifier:[TaskModel cellIdentifierForItemAtIndexPath:realIndexPath]];
+    UITableViewCell * cell = [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                              reuseIdentifier:[TaskModel cellIdentifierForItemAtIndexPath:realIndexPath]];
     
     return cell;
 }

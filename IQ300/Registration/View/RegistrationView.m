@@ -178,14 +178,21 @@
                                           fieldsRect.size.width,
                                           LABEL_HEIGHT);
     
+    CGSize constrainedSize = CGSizeMake(fieldsRect.size.width,
+                                        100.0f);
+    
+    CGSize errorLabelSize = [_errorLabel.text sizeWithFont:_errorLabel.font
+                                            constrainedToSize:constrainedSize
+                                                lineBreakMode:NSLineBreakByWordWrapping];
+
     _errorLabel.frame = CGRectMake(fieldsRect.origin.x,
                                    CGRectBottom(_passwordContainer.frame) + 8,
                                    fieldsRect.size.width,
-                                   30);
+                                   errorLabelSize.height);
     
     CGFloat horizontalOffset = 10.0f;
     _signupButton.frame = CGRectMake(bounds.origin.x + horizontalOffset,
-                                       CGRectBottom(_passwordContainer.frame) + 42,
+                                       CGRectBottom(_errorLabel.frame) + 20.0f,
                                        bounds.size.width - horizontalOffset * 2.0f,
                                        40);
     

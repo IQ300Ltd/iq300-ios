@@ -160,7 +160,11 @@
     if (realIndexPath.row > 3) {
         [self showDataPickerForIndexPath:realIndexPath];
     }
+#ifdef IPAD
+    else if(realIndexPath.row > 1) {
+#else
     else if(realIndexPath.row != 0) {
+#endif
         UIViewController<TaskFieldEditController> * controller = [self controllerForItemIndexPath:realIndexPath];
         if (controller) {
             id item = [self.model itemAtIndexPath:indexPath];

@@ -186,6 +186,7 @@
 
 - (void)showErrorMessage:(NSString*)errorMessage {
     _registrationView.errorLabel.text = NSLocalizedString(errorMessage, nil);
+    [_registrationView setNeedsLayout];
 }
 
 @end

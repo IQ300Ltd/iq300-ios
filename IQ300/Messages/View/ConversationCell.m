@@ -148,7 +148,7 @@
     CGFloat dateMaxWidth = 160;
     CGSize dateLabelSize = [_dateLabel.text sizeWithFont:_dateLabel.font
                                        constrainedToSize:CGSizeMake(dateMaxWidth, CELL_HEADER_MIN_HEIGHT)
-                                           lineBreakMode:_dateLabel.lineBreakMode];
+                                           lineBreakMode:NSLineBreakByWordWrapping];
     CGFloat dateLabelWidth = MIN(dateLabelSize.width + 6.0f, dateMaxWidth);
     CGFloat dateLabelX = actualBounds.origin.x + actualBounds.size.width - dateLabelWidth;
     _dateLabel.frame = CGRectMake(dateLabelX,

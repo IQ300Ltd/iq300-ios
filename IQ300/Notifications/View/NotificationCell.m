@@ -119,7 +119,7 @@
     if (([_item.user.displayName length] > 0)) {
         CGSize userSize = [_userNameLabel.text sizeWithFont:_userNameLabel.font
                                           constrainedToSize:constrainedSize
-                                              lineBreakMode:_userNameLabel.lineBreakMode];
+                                              lineBreakMode:NSLineBreakByWordWrapping];
         
         _userNameLabel.frame = CGRectMake(actualBounds.origin.x,
                                           CGRectBottom(_dateLabel.frame) + 5,

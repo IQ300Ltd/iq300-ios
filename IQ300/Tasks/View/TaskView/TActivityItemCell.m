@@ -100,7 +100,7 @@
 
     CGSize dateSize = [_dateLabel.text sizeWithFont:_dateLabel.font
                                   constrainedToSize:constrainedSize
-                                      lineBreakMode:_dateLabel.lineBreakMode];
+                                      lineBreakMode:NSLineBreakByWordWrapping];
 
     _dateLabel.frame = CGRectMake(actualBounds.origin.x,
                                   actualBounds.origin.y,

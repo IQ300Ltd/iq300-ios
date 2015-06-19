@@ -31,6 +31,7 @@
 		731170981AB80CD4008A4D09 /* task_tab_sel.png in Resources */ = {isa = PBXBuildFile; fileRef = 731170961AB80CD4008A4D09 /* task_tab_sel.png */; };
 		731170991AB80CD4008A4D09 /* task_tab_sel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 731170971AB80CD4008A4D09 /* task_tab_sel@2x.png */; };
 		7311709C1AB81505008A4D09 /* IQTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7311709B1AB81505008A4D09 /* IQTabBarController.m */; };
+		7314627B1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7314627A1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m */; };
 		731DEEC81A2F11A1002F5FEB /* MessagesModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 731DEEC71A2F11A1002F5FEB /* MessagesModel.m */; };
 		731DEECB1A2F27AE002F5FEB /* IQCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 731DEECA1A2F27AE002F5FEB /* IQCounters.m */; };
 		731E5BC11B31548E00DF56C7 /* IQTextContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 731E5BC01B31548E00DF56C7 /* IQTextContainer.m */; };
@@ -724,6 +725,8 @@
 		731170971AB80CD4008A4D09 /* task_tab_sel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "task_tab_sel@2x.png"; sourceTree = "<group>"; };
 		7311709A1AB81505008A4D09 /* IQTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTabBarController.h; sourceTree = "<group>"; };
 		7311709B1AB81505008A4D09 /* IQTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTabBarController.m; sourceTree = "<group>"; };
+		731462791B3400F700E9CC60 /* IQDoubleDetailsTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQDoubleDetailsTextCell.h; sourceTree = "<group>"; };
+		7314627A1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQDoubleDetailsTextCell.m; sourceTree = "<group>"; };
 		731DEEC61A2F11A1002F5FEB /* MessagesModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagesModel.h; sourceTree = "<group>"; };
 		731DEEC71A2F11A1002F5FEB /* MessagesModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesModel.m; sourceTree = "<group>"; };
 		731DEEC91A2F27AE002F5FEB /* IQCounters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQCounters.h; sourceTree = "<group>"; };
@@ -2389,6 +2392,8 @@
 			children = (
 				73D7F1EC1ADE94CE00023120 /* IQDetailsTextCell.h */,
 				73D7F1ED1ADE94CE00023120 /* IQDetailsTextCell.m */,
+				731462791B3400F700E9CC60 /* IQDoubleDetailsTextCell.h */,
+				7314627A1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m */,
 				73D7F1EE1ADE94CE00023120 /* IQEditableTextCell.h */,
 				73D7F1EF1ADE94CE00023120 /* IQEditableTextCell.m */,
 				735D48FC1AE4E0C400F6A753 /* IQSelectableTextCell.h */,
@@ -3249,6 +3254,7 @@
 				73D7F1CE1ADE93D600023120 /* TaskMembersModel.m in Sources */,
 				73D7F1F01ADE94CE00023120 /* IQDetailsTextCell.m in Sources */,
 				73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */,
+				7314627B1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m in Sources */,
 				73BA98771A1092DF005AEC00 /* MTableHeaderView.m in Sources */,
 				73D7F1B71ADE932700023120 /* TCommentsController.m in Sources */,
 				73B3C1A81A7B5D0F005F972D /* IQNotificationsGroup.m in Sources */,

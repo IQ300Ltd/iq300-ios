@@ -179,7 +179,7 @@
     CGFloat dateMaxWidth = 150;
     CGSize dateLabelSize = [_dueDateLabel.text sizeWithFont:_dueDateLabel.font
                                           constrainedToSize:CGSizeMake(dateMaxWidth, dateHeight)
-                                              lineBreakMode:_dueDateLabel.lineBreakMode];
+                                              lineBreakMode:NSLineBreakByWordWrapping];
     CGFloat dateLabelWidth = MIN(dateLabelSize.width, dateMaxWidth);
     CGFloat dateLabelX = actualBounds.origin.x + actualBounds.size.width - dateLabelWidth;
     _dueDateLabel.frame = CGRectMake(dateLabelX,
@@ -200,7 +200,7 @@
     CGFloat userMaxWidth = usersLabelFrame.size.width / 2.0f;
     CGSize userLabelSize = [_fromLabel.text sizeWithFont:_fromLabel.font
                                           constrainedToSize:CGSizeMake(userMaxWidth, usersLabelFrame.size.height)
-                                              lineBreakMode:_fromLabel.lineBreakMode];
+                                              lineBreakMode:NSLineBreakByWordWrapping];
     BOOL needOffset = (userLabelSize.width <= userMaxWidth - 5.0f);
     CGFloat userLabelWidth = MIN(userLabelSize.width, userMaxWidth);
     

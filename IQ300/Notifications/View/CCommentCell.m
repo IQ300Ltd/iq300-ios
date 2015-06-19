@@ -216,7 +216,7 @@
     if (([_userNameLabel.text length] > 0)) {
         CGSize userSize = [_userNameLabel.text sizeWithFont:_userNameLabel.font
                                           constrainedToSize:topLabelSize
-                                              lineBreakMode:_userNameLabel.lineBreakMode];
+                                              lineBreakMode:NSLineBreakByWordWrapping];
         
         _userNameLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                           actualBounds.origin.y,

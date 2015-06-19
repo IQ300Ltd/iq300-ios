@@ -38,7 +38,7 @@
 
     CGSize titleSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font
                                       constrainedToSize:constrainedSize
-                                          lineBreakMode:self.titleLabel.lineBreakMode];
+                                          lineBreakMode:NSLineBreakByWordWrapping];
 
     self.titleLabel.frame = CGRectMake(mainRect.origin.x,
                                        mainRect.origin.y,

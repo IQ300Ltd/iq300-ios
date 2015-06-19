@@ -305,7 +305,7 @@
     CGFloat userMaxWidth = usersLabelFrame.size.width / 2.0f;
     CGSize userLabelSize = [_fromLabel.text sizeWithFont:_fromLabel.font
                                        constrainedToSize:CGSizeMake(userMaxWidth, usersLabelFrame.size.height)
-                                           lineBreakMode:_fromLabel.lineBreakMode];
+                                           lineBreakMode:NSLineBreakByWordWrapping];
     BOOL needOffset = (userLabelSize.width <= userMaxWidth - 5.0f);
     CGFloat userLabelWidth = MIN(userLabelSize.width, userMaxWidth);
     
