@@ -186,7 +186,7 @@
                                                 lineBreakMode:NSLineBreakByWordWrapping];
 
     _errorLabel.frame = CGRectMake(fieldsRect.origin.x,
-                                   CGRectBottom(_passwordContainer.frame) + 8,
+                                   CGRectBottom(_passwordContainer.frame) + 15,
                                    fieldsRect.size.width,
                                    errorLabelSize.height);
     
