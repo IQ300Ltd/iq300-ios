@@ -198,7 +198,7 @@
     _helpTextView.frame = CGRectMake(bounds.origin.x,
                                   CGRectBottom(_enterButton.frame) + 30,
                                   bounds.size.width,
-                                  (IS_IPAD) ? 37 : 35);
+                                  (IS_IPAD) ? 39 : 37);
     _scrollView.contentSize = CGSizeMake(bounds.size.width,
                                          CGRectBottom(_helpTextView.frame) + 20.0f);
 }
