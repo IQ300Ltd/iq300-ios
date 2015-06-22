@@ -9,8 +9,7 @@
 #import "TCService+Subclass.h"
 #import "IQSession.h"
 
-#define SERVICE_REGISTRATION_URL [NSString stringWithFormat:@"%@/%@", SERVICE_URL, @"users/sign_up"]
-#define SERVICE_RESET_PASSWORD_URL [NSString stringWithFormat:@"%@/%@", SERVICE_URL, @"users/password/new"]
+#define SERVICE_RESET_PASSWORD_URL [NSString stringWithFormat:@"%@/%@", SERVER_URL, @"users/password/new"]
 
 typedef NS_ENUM(NSUInteger, IQSortDirection) {
     IQSortDirectionNo = -1,
