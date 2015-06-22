@@ -12,8 +12,6 @@
 #define READ_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
-#define GROUP_CELL_MAX_HEIGHT 105.0f
-#define GROUP_CELL_MIN_HEIGHT 93.0f
 
 @class IQNotificationsGroup;
 @class IQBadgeView;

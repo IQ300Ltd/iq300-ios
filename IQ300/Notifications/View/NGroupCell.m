@@ -15,10 +15,18 @@
 
 #ifdef IPAD
 #define DEFAULT_FONT_SIZE 14
-#define DESCRIPTION_MIN_HEIGHT 17.0f
+#define DESCRIPTION_MIN_HEIGHT 19.0f
+#define GROUP_CELL_MAX_HEIGHT 105.0f
+#define GROUP_CELL_MIN_HEIGHT 83.0f
+#define TITLE_MAX_HEIGHT 20
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:17]
 #else
 #define DEFAULT_FONT_SIZE 13
-#define DESCRIPTION_MIN_HEIGHT 19.0f
+#define DESCRIPTION_MIN_HEIGHT 17.0f
+#define GROUP_CELL_MAX_HEIGHT 105.0f
+#define GROUP_CELL_MIN_HEIGHT 78.0f
+#define TITLE_MAX_HEIGHT 17
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:14]
 #endif
 
 #define HORIZONTAL_INSETS 8.0f
@@ -38,6 +46,10 @@
     CGFloat width = cellWidth - HORIZONTAL_INSETS * 2.0f - 40;
     CGFloat height = GROUP_CELL_MIN_HEIGHT - DESCRIPTION_MIN_HEIGHT;
     IQNotification * notification = [NGroupCell notificationFromGroup:item showUnreadOnly:showUnreadOnly];
+    
+    if([notification.notificable.title length] > 0) {
+        height = MAX(height + TITLE_MAX_HEIGHT, height);
+    }
     
     if([notification.additionalDescription length] > 0) {
         CGSize constrainedSize = CGSizeMake(width,
@@ -83,9 +95,8 @@
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
-        CGFloat titleFontSize = (IS_IPAD) ? 17 : 14;
         _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
-                                              font:[UIFont fontWithName:IQ_HELVETICA size:titleFontSize]
+                                              font:TITLE_FONT
                                      localaizedKey:nil];
         _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_titleLabel];
@@ -136,7 +147,8 @@
     CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
     _contentBackgroundView.frame = contentBackgroundBounds;
     
-    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, 14);
+    CGSize topLabelSize = CGSizeMake((actualBounds.size.width - labelsOffset) / 2.0f,
+                                     (IS_IPAD) ? 17.0f : 14.0f);
     _typeLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                   actualBounds.origin.y,
                                   topLabelSize.width,
@@ -152,11 +164,18 @@
                                   _badgeView.frame.size.width,
                                   _badgeView.frame.size.height);
     
-    CGFloat titleHeight = (IS_IPAD) ? 20 : 17;
-    _titleLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
-                                   _typeLabel.frame.origin.y + _typeLabel.frame.size.height + 4,
-                                   actualBounds.size.width - _badgeView.frame.size.width - 5.0f,
-                                   titleHeight);
+    if([notification.notificable.title length] > 0) {
+        _titleLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+                                       _typeLabel.frame.origin.y + _typeLabel.frame.size.height + 4,
+                                       actualBounds.size.width - _badgeView.frame.size.width - 5.0f,
+                                       TITLE_MAX_HEIGHT);
+    }
+    else {
+        _titleLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
+                                       _typeLabel.frame.origin.y + _typeLabel.frame.size.height + 4,
+                                       0.0f,
+                                       0.0f);
+    }
     
     CGFloat userNameHeight = 17;
     CGFloat userNameMaxWidth = actualBounds.size.width / 2.0f;
@@ -186,7 +205,7 @@
                                     actualBounds.size.width - actionLabelLocation.x,
                                     userNameHeight);
     
-    CGFloat descriptionY = CGRectBottom(_actionLabel.frame) + 2.0f;
+    CGFloat descriptionY = CGRectBottom(_actionLabel.frame) + 5.0f;
     _descriptionLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                          descriptionY,
                                          actualBounds.size.width - 40.0f,
