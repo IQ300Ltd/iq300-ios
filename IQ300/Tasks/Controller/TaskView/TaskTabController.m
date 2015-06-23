@@ -72,6 +72,11 @@
     return self;
 }
 
+- (void)setTask:(IQTask *)task {
+    _task = task;
+    [self updateControllerByTask:_task];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -86,8 +91,6 @@
     
     self.tabBar.backgroundImage = [UIImage imageNamed:@"tabbar_background.png"];
     self.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"task_tab_sel.png"];
-    
-    [self updateControllerByTask:self.task];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

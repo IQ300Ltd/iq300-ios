@@ -191,10 +191,10 @@
 }
 
 - (void)setupByTask:(IQTask *)task {
-    _taskIDLabel.text = [NSString stringWithFormat:@"#%@", task.taskId];
+    _taskIDLabel.text = (task.taskId) ? [NSString stringWithFormat:@"#%@", task.taskId] : @"";
     _titleLabel.text = task.title;
     _fromLabel.text = task.customer.displayName;
-    _toLabel.text = [NSString stringWithFormat:@"> %@", task.executor.displayName];
+    _toLabel.text = ([task.executor.displayName length] > 0) ? [NSString stringWithFormat:@"> %@", task.executor.displayName] : @"";
     
     _descriptionView.enabled = ([task.taskDescription length] > 0);
     _descriptionView.detailsTextLabel.text = task.taskDescription;

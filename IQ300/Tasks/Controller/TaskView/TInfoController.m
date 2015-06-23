@@ -79,12 +79,16 @@
 
 - (void)setTask:(IQTask *)task {
     _task = task;
-    
-    self.model.taskId = _task.taskId;
-    
+    self.taskId = _task.taskId;
+  
     if (self.isViewLoaded) {
         [self.tableView reloadData];
     }
+}
+
+- (void)setTaskId:(NSNumber *)taskId {
+    _taskId = taskId;
+    self.model.taskId = _taskId;
 }
 
 - (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
@@ -97,6 +101,7 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
+    [self updateTask];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -161,7 +166,12 @@
 #pragma mark - UITableView Delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    CGFloat height = (section == 0) ? [TInfoHeaderView heightForTask:self.task width:self.tableView.frame.size.width descriptionExpanded:_descriptionExpanded] : 50.0f;
+    CGFloat height = 50.0f;
+    if (section == 0) {
+        height = [TInfoHeaderView heightForTask:self.task
+                                          width:self.tableView.frame.size.width
+                            descriptionExpanded:_descriptionExpanded];
+    }
     return height;
 }
 
@@ -231,7 +241,7 @@
         }
         else {
             [[IQService sharedService] changeStatus:action
-                                      forTaskWithId:self.task.taskId
+                                      forTaskWithId:self.taskId
                                              reason:nil
                                             handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                                 if (success) {
@@ -264,7 +274,7 @@
     NSString * reason = [reasons objectForKey:@(buttonIndex)];
     if(reason) {
         [[IQService sharedService] changeStatus:@"refuse"
-                                  forTaskWithId:self.task.taskId
+                                  forTaskWithId:self.taskId
                                          reason:reason
                                         handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                             if (success) {
@@ -298,7 +308,7 @@
 
 - (void)editTodoItemsAction:(UIButton*)sender {
     TodoListModel * model = [[TodoListModel alloc] initWithManagedItems:self.model.items];
-    model.taskId = self.task.taskId;
+    model.taskId = self.taskId;
     
     TTodoItemsController * controller = [[TTodoItemsController alloc] init];
     controller.model = model;
@@ -306,17 +316,19 @@
 }
 
 - (void)updateTask {
-    [[IQService sharedService] taskWithId:self.task.taskId
-                                  handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
-                                      if (success) {
-                                          self.task = task;
-                                          [self updateTaskPolicies];
-                                      }
-                                  }];
+    if (self.taskId) {
+        [[IQService sharedService] taskWithId:self.taskId
+                                      handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                          if (success) {
+                                              self.task = task;
+                                              [self updateTaskPolicies];
+                                          }
+                                      }];
+    }
 }
 
 - (void)markTaskAsReadedIfNeed {
-    if ([self.task.status isEqualToString:@"new"] &&
+    if (self.task && [self.task.status isEqualToString:@"new"] &&
         [self.task.executor.userId isEqualToNumber:[IQSession defaultSession].userId]) {
         [[IQService sharedService] changeStatus:@"browse"
                                   forTaskWithId:self.task.taskId
@@ -324,6 +336,7 @@
                                         handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
                                             if(success) {
                                                 self.task = task;
+                                                [self updateTaskPolicies];
                                             }
                                         }];
     }
@@ -371,13 +384,15 @@
 }
 
 - (void)resetReadFlag {
-    [[IQService sharedService] markCategoryAsReaded:[self category]
-                                             taskId:self.task.taskId
-                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                if (success) {
-                                                    self.tabBarItem.badgeValue = BadgTextFromInteger(0);
-                                                }
-                                            }];
+    if (self.taskId) {
+        [[IQService sharedService] markCategoryAsReaded:[self category]
+                                                 taskId:self.taskId
+                                                handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                    if (success) {
+                                                        self.tabBarItem.badgeValue = BadgTextFromInteger(0);
+                                                    }
+                                                }];
+    }
 }
 
 - (UIView*)mainHeaderView {
