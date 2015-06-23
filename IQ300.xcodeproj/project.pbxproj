@@ -31,7 +31,9 @@
 		731170981AB80CD4008A4D09 /* task_tab_sel.png in Resources */ = {isa = PBXBuildFile; fileRef = 731170961AB80CD4008A4D09 /* task_tab_sel.png */; };
 		731170991AB80CD4008A4D09 /* task_tab_sel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 731170971AB80CD4008A4D09 /* task_tab_sel@2x.png */; };
 		7311709C1AB81505008A4D09 /* IQTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7311709B1AB81505008A4D09 /* IQTabBarController.m */; };
-		7314627B1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7314627A1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m */; };
+		7314627C1B341D2300E9CC60 /* IQDoubleDetailsTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7314627A1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m */; };
+		731462801B34249600E9CC60 /* IQDoubleDateTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7314627E1B34242200E9CC60 /* IQDoubleDateTextCell.m */; };
+		731462841B3443B500E9CC60 /* IQCommunityExecutorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 731462821B3441E600E9CC60 /* IQCommunityExecutorCell.m */; };
 		731DEEC81A2F11A1002F5FEB /* MessagesModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 731DEEC71A2F11A1002F5FEB /* MessagesModel.m */; };
 		731DEECB1A2F27AE002F5FEB /* IQCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 731DEECA1A2F27AE002F5FEB /* IQCounters.m */; };
 		731E5BC11B31548E00DF56C7 /* IQTextContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 731E5BC01B31548E00DF56C7 /* IQTextContainer.m */; };
@@ -727,6 +729,10 @@
 		7311709B1AB81505008A4D09 /* IQTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTabBarController.m; sourceTree = "<group>"; };
 		731462791B3400F700E9CC60 /* IQDoubleDetailsTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQDoubleDetailsTextCell.h; sourceTree = "<group>"; };
 		7314627A1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQDoubleDetailsTextCell.m; sourceTree = "<group>"; };
+		7314627D1B34242200E9CC60 /* IQDoubleDateTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQDoubleDateTextCell.h; sourceTree = "<group>"; };
+		7314627E1B34242200E9CC60 /* IQDoubleDateTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQDoubleDateTextCell.m; sourceTree = "<group>"; };
+		731462811B3441E600E9CC60 /* IQCommunityExecutorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQCommunityExecutorCell.h; sourceTree = "<group>"; };
+		731462821B3441E600E9CC60 /* IQCommunityExecutorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQCommunityExecutorCell.m; sourceTree = "<group>"; };
 		731DEEC61A2F11A1002F5FEB /* MessagesModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagesModel.h; sourceTree = "<group>"; };
 		731DEEC71A2F11A1002F5FEB /* MessagesModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesModel.m; sourceTree = "<group>"; };
 		731DEEC91A2F27AE002F5FEB /* IQCounters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQCounters.h; sourceTree = "<group>"; };
@@ -2392,16 +2398,20 @@
 			children = (
 				73D7F1EC1ADE94CE00023120 /* IQDetailsTextCell.h */,
 				73D7F1ED1ADE94CE00023120 /* IQDetailsTextCell.m */,
+				73D260C91AE0EB790009CC38 /* IQDateDetailsCell.h */,
+				73D260CA1AE0EB790009CC38 /* IQDateDetailsCell.m */,
 				731462791B3400F700E9CC60 /* IQDoubleDetailsTextCell.h */,
 				7314627A1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m */,
+				731462811B3441E600E9CC60 /* IQCommunityExecutorCell.h */,
+				731462821B3441E600E9CC60 /* IQCommunityExecutorCell.m */,
+				7314627D1B34242200E9CC60 /* IQDoubleDateTextCell.h */,
+				7314627E1B34242200E9CC60 /* IQDoubleDateTextCell.m */,
 				73D7F1EE1ADE94CE00023120 /* IQEditableTextCell.h */,
 				73D7F1EF1ADE94CE00023120 /* IQEditableTextCell.m */,
 				735D48FC1AE4E0C400F6A753 /* IQSelectableTextCell.h */,
 				735D48FD1AE4E0C400F6A753 /* IQSelectableTextCell.m */,
 				73D260D11AE0FA070009CC38 /* TaskCommunityCell.h */,
 				73D260D21AE0FA070009CC38 /* TaskCommunityCell.m */,
-				73D260C91AE0EB790009CC38 /* IQDateDetailsCell.h */,
-				73D260CA1AE0EB790009CC38 /* IQDateDetailsCell.m */,
 				73D260CC1AE0ED460009CC38 /* TaskExecutersCell.h */,
 				73D260CD1AE0ED460009CC38 /* TaskExecutersCell.m */,
 				735D48FF1AE51D2100F6A753 /* TaskExecutorCell.h */,
@@ -3043,7 +3053,9 @@
 				73840E291B1C75A500BCEAFC /* IQMenuSerializator.m in Sources */,
 				73840E2A1B1C75A500BCEAFC /* MTableHeaderView.m in Sources */,
 				73840E2B1B1C75A500BCEAFC /* TCommentsController.m in Sources */,
+				7314627C1B341D2300E9CC60 /* IQDoubleDetailsTextCell.m in Sources */,
 				73840E2C1B1C75A500BCEAFC /* IQNotificationsGroup.m in Sources */,
+				731462801B34249600E9CC60 /* IQDoubleDateTextCell.m in Sources */,
 				73840E2D1B1C75A500BCEAFC /* FileStore.m in Sources */,
 				73840E2E1B1C75A500BCEAFC /* NotificationsView.m in Sources */,
 				73840E2F1B1C75A500BCEAFC /* IQCounters.m in Sources */,
@@ -3085,6 +3097,7 @@
 				73840E501B1C75A500BCEAFC /* TaskExecutor.m in Sources */,
 				73840E511B1C75A500BCEAFC /* IQTableModel.m in Sources */,
 				73840E521B1C75A500BCEAFC /* TDocumentsController.m in Sources */,
+				731462841B3443B500E9CC60 /* IQCommunityExecutorCell.m in Sources */,
 				73840E531B1C75A500BCEAFC /* IQSelectableTextCell.m in Sources */,
 				73840E541B1C75A500BCEAFC /* LoginController.m in Sources */,
 				73840E551B1C75A500BCEAFC /* CommentCell.m in Sources */,
@@ -3254,7 +3267,6 @@
 				73D7F1CE1ADE93D600023120 /* TaskMembersModel.m in Sources */,
 				73D7F1F01ADE94CE00023120 /* IQDetailsTextCell.m in Sources */,
 				73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */,
-				7314627B1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m in Sources */,
 				73BA98771A1092DF005AEC00 /* MTableHeaderView.m in Sources */,
 				73D7F1B71ADE932700023120 /* TCommentsController.m in Sources */,
 				73B3C1A81A7B5D0F005F972D /* IQNotificationsGroup.m in Sources */,

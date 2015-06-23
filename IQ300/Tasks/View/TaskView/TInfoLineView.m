@@ -82,7 +82,7 @@
                                        rect.size.width,
                                        0.5f);
         
-        //Draw left line
+        //Draw top line
         CGContextSetStrokeColorWithColor(contex, SEPARATOR_COLOR.CGColor);
         CGContextSetLineWidth(contex, 0.5f);
         CGContextStrokeRect(contex, bottomLine);

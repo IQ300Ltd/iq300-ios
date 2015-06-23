@@ -19,6 +19,10 @@
 #import "IQCommunity.h"
 #import "NSDate+CupertinoYankee.h"
 
+#ifdef IPAD
+#import "IQDoubleDetailsTextCell.h"
+#endif
+
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
 #define BOTTOM_VIEW_HEIGHT 65
@@ -128,6 +132,14 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.model.cellWidth = tableView.frame.size.width;
+#ifdef IPAD
+    if (indexPath.row > 1) {
+        CGFloat firstHeight = [self.model heightForItemAtIndexPath:indexPath];
+        CGFloat secondHeight = [self.model heightForItemAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1
+                                                                                       inSection:indexPath.section]];
+        return MAX(firstHeight, secondHeight);
+    }
+#endif
     return [self.model heightForItemAtIndexPath:indexPath];
 }
 
@@ -138,12 +150,44 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    id item = [self.model itemAtIndexPath:indexPath];
-    cell.detailTitle = [self.model detailTitleForItemAtIndexPath:indexPath];
-    cell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
-    cell.item = item;
-    cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
-    cell.enabled = [self.model isItemEnabledAtIndexPath:indexPath];
+#ifdef IPAD
+    if ([cell isKindOfClass:[IQDoubleDetailsTextCell class]]) {
+        NSIndexPath * itemIndexPath = [indexPath copy];
+        if (indexPath.row == 3) {
+            itemIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1
+                                               inSection:indexPath.section];
+        }
+        
+        IQDoubleDetailsTextCell * doubleCell = (IQDoubleDetailsTextCell*)cell;
+        cell.tag = itemIndexPath.row;
+        NSIndexPath * secondIndexPath = [NSIndexPath indexPathForRow:itemIndexPath.row + 1
+                                                           inSection:itemIndexPath.section];
+        
+        doubleCell.detailTitle = [self.model detailTitleForItemAtIndexPath:itemIndexPath];
+        doubleCell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:itemIndexPath];
+        doubleCell.titleTextView.delegate = (id<UITextViewDelegate>)self;
+        doubleCell.enabled = [self.model isItemEnabledAtIndexPath:itemIndexPath];
+        
+        doubleCell.secondDetailTitle = [self.model detailTitleForItemAtIndexPath:secondIndexPath];
+        doubleCell.secondTitleTextView.placeholder = [self.model placeholderForItemAtIndexPath:secondIndexPath];
+        doubleCell.secondTitleTextView.delegate = (id<UITextViewDelegate>)self;
+        doubleCell.secondEnabled = [self.model isItemEnabledAtIndexPath:secondIndexPath];
+        
+        id item = [self.model itemAtIndexPath:itemIndexPath];
+        id secondItem = [self.model itemAtIndexPath:secondIndexPath];
+        
+        doubleCell.item = @[NSObjectNullForNil(item), NSObjectNullForNil(secondItem)];
+    }
+    else {
+#endif
+        cell.detailTitle = [self.model detailTitleForItemAtIndexPath:indexPath];
+        cell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
+        cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
+        cell.enabled = [self.model isItemEnabledAtIndexPath:indexPath];
+        cell.item = [self.model itemAtIndexPath:indexPath];
+#ifdef IPAD
+    }
+#endif
 
     return cell;
 }
@@ -160,6 +204,7 @@
     if (realIndexPath.row > 3) {
         [self showDataPickerForIndexPath:realIndexPath];
     }
+
 #ifdef IPAD
     else if(realIndexPath.row > 1) {
 #else
@@ -178,6 +223,12 @@
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+#ifdef IPAD
+    //Disable select for double details cell. See IQDoubleDetailsTextCell.
+    if(indexPath.row > 1) {
+        return nil;
+    }
+#endif
     return ([self.model isItemEnabledAtIndexPath:indexPath]) ? indexPath : nil;
 }
 
@@ -283,7 +334,7 @@
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if (buttonIndex == 1 || buttonIndex == 2) {
                                   if (buttonIndex == 1) {
-                                      [self doneButtonAction:nil];
+                                      [self doneButtonAction:_doneButton];
                                   }
                                   else {
                                       [self.navigationController popViewControllerAnimated:YES];
@@ -298,13 +349,15 @@
 }
 
 - (void)doneButtonAction:(UIButton*)sender {
+    [_doneButton setEnabled:NO];
     if ([self.model.task.title length] == 0) {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"Name can not be empty", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
                           tapBlock:nil];
-    }
+        [_doneButton setEnabled:YES];
+   }
     else {
         if (self.model.task.taskId == nil) {
             [[IQService sharedService] createTask:self.model.task
@@ -318,7 +371,8 @@
                                               else {
                                                   [self proccessServiceError:error];
                                               }
-                                          }];
+                                              [_doneButton setEnabled:YES];
+                                         }];
         }
         else {
             [[IQService sharedService] saveTask:self.model.task
@@ -331,6 +385,7 @@
                                             }
                                             else {
                                                 [self proccessServiceError:error];
+                                                [_doneButton setEnabled:YES];
                                             }
                                         }];
         }
@@ -362,7 +417,15 @@
 }
 
 - (void)showDataPickerForIndexPath:(NSIndexPath*)indexPath {
+#ifdef IPAD
+    IQDoubleDetailsTextCell * cell = (IQDoubleDetailsTextCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3
+                                                                                                                        inSection:indexPath.section]];
+    UIView * showInView = (indexPath.row == 4) ? cell.titleTextView : cell.secondTitleTextView;
+#else
     IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:indexPath];
+    UIView * showInView = cell.titleTextView;
+#endif
+    
     BOOL isBeginDateEdit = (indexPath.row == 4);
     NSString * title = [NSString stringWithFormat:@"%@:", NSLocalizedString((isBeginDateEdit) ? @"Begins" : @"Perform to", nil)];
     NSDate * selectedDate = (isBeginDateEdit) ? self.model.task.startDate : self.model.task.endDate;
@@ -389,7 +452,7 @@
                                                                      selectedDate:selectedDate
                                                                         doneBlock:doneBlock
                                                                       cancelBlock:nil
-                                                                           origin:cell.titleTextView];
+                                                                           origin:showInView];
     
 #ifdef USE_DEFAULT_LOCALIZATION
     picker.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"ru_RU"];

@@ -95,11 +95,12 @@
     }
 }
 
-
 - (void)prepareForReuse {
     [super prepareForReuse];
     
+    _enabled = YES;
     _titleTextView.text = nil;
+    _titleTextView.textColor = TEXT_COLOR;
     _titleTextView.placeholder = nil;
 }
 

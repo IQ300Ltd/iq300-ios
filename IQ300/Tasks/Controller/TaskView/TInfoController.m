@@ -389,7 +389,7 @@
             [self.tableView reloadData];
         }
     }];
-    [headerView setupByTask:_task];
+    [headerView setupByTask:self.task];
     headerView.delegate = self;
     return headerView;
 }
@@ -417,11 +417,14 @@
     _changeStateEnabled = ([self.policyInspector isActionAvailable:@"change_state" inCategory:@"todoItems"]);
 
     if([self.policyInspector isActionAvailable:@"update" inCategory:[self category]]) {
-                UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
-                                                                                style:UIBarButtonItemStylePlain
-                                                                               target:self
-                                                                               action:@selector(editButtonAction:)];
-                self.parentViewController.navigationItem.rightBarButtonItem = editButton;
+        UIBarButtonItem * editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_white_ico.png"]
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(editButtonAction:)];
+        self.parentViewController.navigationItem.rightBarButtonItem = editButton;
+    }
+    else {
+        self.parentViewController.navigationItem.rightBarButtonItem = nil;
     }
 }
 
