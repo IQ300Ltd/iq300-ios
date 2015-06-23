@@ -98,6 +98,15 @@
                                              selector:@selector(taskPolicyDidChanged:)
                                                  name:IQTaskPolicyDidChangedNotification
                                                object:nil];
+    
+    __weak typeof(self) weakSelf = self;
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf reloadDataWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -107,15 +116,6 @@
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
-
-    __weak typeof(self) weakSelf = self;
-    [self.tableView
-     insertPullToRefreshWithActionHandler:^{
-         [weakSelf reloadDataWithCompletion:^(NSError *error) {
-             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
-         }];
-     }
-     position:SVPullToRefreshPositionTop];
 
     [self updateInterfaceFoPolicies];
     [self reloadModel];

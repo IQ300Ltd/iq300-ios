@@ -82,6 +82,23 @@
     
     [self setupInitState];
     
+    __weak typeof(self) weakSelf = self;
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
+    
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionBottom];
+    
     _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFilterController)];
     _singleTapGesture.numberOfTapsRequired = 1;
 
@@ -106,23 +123,6 @@
     [super viewWillAppear:animated];
  
     _isTaskOpenProcessing = NO;
-
-    __weak typeof(self) weakSelf = self;
-    [self.tableView
-     insertPullToRefreshWithActionHandler:^{
-         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
-         }];
-     }
-     position:SVPullToRefreshPositionTop];
-    
-    [self.tableView
-     insertPullToRefreshWithActionHandler:^{
-         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
-             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
-         }];
-     }
-     position:SVPullToRefreshPositionBottom];
 
     [self.leftMenuController setMenuResponder:self];
     [self.leftMenuController setTableHaderHidden:YES];

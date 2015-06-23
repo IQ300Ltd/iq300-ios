@@ -62,12 +62,8 @@
     self.tableView.tableFooterView = [UIView new];
     
     [self.noDataLabel setText:NSLocalizedString(@"History is empty", nil)];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    self.parentViewController.navigationItem.rightBarButtonItem = nil;
-
+    
+    
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
@@ -84,6 +80,11 @@
          }];
      }
      position:SVPullToRefreshPositionBottom];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.parentViewController.navigationItem.rightBarButtonItem = nil;
 
     [self reloadModel];
     [self.model setSubscribedToNotifications:YES];
