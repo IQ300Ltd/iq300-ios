@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7306742A1B1C8F16003961B5 /* LeftSideTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730674291B1C8F16003961B5 /* LeftSideTabBarController.m */; };
 		7306742B1B1C91E8003961B5 /* LeftSideTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730674291B1C8F16003961B5 /* LeftSideTabBarController.m */; };
 		73086B0C1A8E64D80013582E /* IQGroupCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73086B0B1A8E64D80013582E /* IQGroupCounter.m */; };
 		7311707C1AB80AFF008A4D09 /* task_comments_tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 731170721AB80AFF008A4D09 /* task_comments_tab.png */; };
@@ -664,7 +663,6 @@
 		73D7F1F11ADE94CE00023120 /* IQEditableTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1EF1ADE94CE00023120 /* IQEditableTextCell.m */; };
 		73D7F1F41ADE957F00023120 /* CommunitiesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1F31ADE957F00023120 /* CommunitiesController.m */; };
 		73D7F1F71ADE95A900023120 /* CommunitiesModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1F61ADE95A900023120 /* CommunitiesModel.m */; };
-		73DA02ED1B1D8E8800CA24E5 /* LeftSideTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DA02EC1B1D8E8800CA24E5 /* LeftSideTabBar.m */; };
 		73DA02EE1B1D9A5B00CA24E5 /* LeftSideTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DA02EC1B1D8E8800CA24E5 /* LeftSideTabBar.m */; };
 		73DD80091A68E83800A6ADA5 /* IQNotificationIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DD80081A68E83800A6ADA5 /* IQNotificationIds.m */; };
 		73E426001AAEC6BF00CD2093 /* UserPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E425FF1AAEC6BF00CD2093 /* UserPickerController.m */; };
@@ -3190,7 +3188,6 @@
 				73A87EF91AA4597800C4A7C3 /* NotificationsHelper.m in Sources */,
 				734B91151B31BE500084CA8E /* RegistrationStatusView.m in Sources */,
 				73D7F1CD1ADE93D600023120 /* TaskAttachmentsModel.m in Sources */,
-				7306742A1B1C8F16003961B5 /* LeftSideTabBarController.m in Sources */,
 				73ACB0BD1A7A1882004F5D99 /* NotificationsGroupModel.m in Sources */,
 				7311709C1AB81505008A4D09 /* IQTabBarController.m in Sources */,
 				739C3B5F1A3075D90032C057 /* DiscussionModel.m in Sources */,
@@ -3280,7 +3277,6 @@
 				739850D31A2DD30E00DB5B21 /* IQNotification.m in Sources */,
 				73A700551A95D0E600A1C2AC /* TasksMenuModel.m in Sources */,
 				7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */,
-				73DA02ED1B1D8E8800CA24E5 /* LeftSideTabBar.m in Sources */,
 				739073BC1A4877860057BA18 /* IQUtilityButtonView.m in Sources */,
 				738C7F681A792D3200A25C70 /* NotificationsGroupController.m in Sources */,
 				7381137C1A4C2A260061280F /* IQBadgeStyle.m in Sources */,

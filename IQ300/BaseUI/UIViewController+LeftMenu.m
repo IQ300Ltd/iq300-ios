@@ -7,21 +7,26 @@
 //
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 #import "UIViewController+LeftMenu.h"
+
+#ifdef IPAD
 #import "LeftSideTabBarController.h"
+#endif
 
 @implementation UIViewController (LeftMenu)
 
 - (MenuViewController*)leftMenuController {
-    if(!IS_IPAD && self.mm_drawerController) {
-        return ((MenuViewController*)self.mm_drawerController.leftDrawerViewController);
-    }
-    else if(IS_IPAD) {
+#ifdef IPAD
         LeftSideTabBarController * leftTabBarController = self.leftTabBarController;
         return (MenuViewController*)leftTabBarController.menuController;
+#else
+    if(self.mm_drawerController) {
+        return ((MenuViewController*)self.mm_drawerController.leftDrawerViewController);
     }
     return nil;
+#endif
 }
 
+#ifdef IPAD
 - (LeftSideTabBarController*)leftTabBarController {
     UIViewController *parentViewController = self.parentViewController;
     while (parentViewController != nil) {
@@ -32,5 +37,6 @@
     }
     return nil;
 }
+#endif
 
 @end

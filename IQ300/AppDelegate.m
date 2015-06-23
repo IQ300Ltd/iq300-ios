@@ -27,10 +27,13 @@
 #import "IQConversation.h"
 #import "DiscussionModel.h"
 #import "IQDiscussion.h"
-#import "LeftSideTabBarController.h"
 #import "DispatchAfterExecution.h"
 #import "DeviceToken.h"
 #import "RegistrationStatusController.h"
+
+#ifdef IPAD
+#import "LeftSideTabBarController.h"
+#endif
 
 #define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
 
@@ -132,7 +135,11 @@
     MessagesController * messages = [[MessagesController alloc] init];
     UINavigationController * messagesNav = [[navigationControllerClass alloc] initWithRootViewController:messages];
     
-    Class tabBarClass = (IS_IPAD) ? [LeftSideTabBarController class] : [UITabBarController class];
+#ifdef IPAD
+    Class tabBarClass = [LeftSideTabBarController class];
+#else
+    Class tabBarClass = [UITabBarController class];
+#endif
     UITabBarController * center = [[tabBarClass alloc] init];
     center.tabBar.layer.borderWidth = 0;
     
