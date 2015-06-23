@@ -31,6 +31,12 @@
     return self;
 }
 
+- (void)setEnabled:(BOOL)enabled {
+    [super setEnabled:enabled];
+    
+    _accessoryImageView.image = (self.enabled) ? [UIImage imageNamed:@"calendar_accessory_image.png"] : nil;
+}
+
 - (void)setItem:(NSDate*)date {
     [super setItem:date];
     

@@ -129,15 +129,17 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
     IQComment * comment = [self itemAtIndexPath:indexPath];
     
-    if(comment && ![_expandableCells objectForKey:comment.commentId]) {
-        BOOL expandable = [CommentCell cellNeedToBeExpandableForItem:comment];
+    if(comment && ![_expandableCells objectForKey:comment.commentId] && self.cellWidth > 0) {
+        BOOL expandable = [CommentCell cellNeedToBeExpandableForItem:comment
+                                                           сellWidth:self.cellWidth];
         
         [_expandableCells setObject:@(expandable) forKey:comment.commentId];
     }
     
     BOOL isExpanded = [self isItemExpandedAtIndexPath:indexPath];
     return [CommentCell heightForItem:comment
-                             expanded:isExpanded];
+                             expanded:isExpanded
+                            сellWidth:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {

@@ -46,7 +46,7 @@
         self.needFullReload = YES;
 
         UIImage * barImage = [[UIImage imageNamed:@"messages_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        UIImage * barImageSel = [[UIImage imageNamed:@"messgaes_tab_sel.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        UIImage * barImageSel = [[UIImage imageNamed:@"messages_tab_selected.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         
         float imageOffset = 6;
         self.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:barImage selectedImage:barImageSel];
@@ -59,12 +59,12 @@
         style.badgeFrame = YES;
         
         IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
-        badgeView.badgeMinSize = 18;
+        badgeView.badgeMinSize = 20;
         badgeView.frameLineHeight = 1.0f;
-        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:9];
+        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:10];
         
         self.tabBarItem.customBadgeView = badgeView;
-        self.tabBarItem.badgeOrigin = CGPointMake(10.5f, 5.5f);
+        self.tabBarItem.badgeOrigin = CGPointMake(5.5f, 5.5f);
     }
     return self;
 }
@@ -76,6 +76,10 @@
 
 - (UITableView*)tableView {
     return _messagesView.tableView;
+}
+
+- (BOOL)isLeftMenuEnabled {
+    return NO;
 }
 
 - (void)viewDidLoad {
@@ -261,7 +265,11 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    [_messagesView setTableBottomMargin:down ? 0.0f : MIN(keyboardRect.size.width, keyboardRect.size.height) - 50.0f];
+    CGFloat inset = MIN(keyboardRect.size.height, keyboardRect.size.width);
+    if (!IS_IPAD) {
+        inset -= self.tabBarController.tabBar.frame.size.height;
+    }
+    [_messagesView setTableBottomMargin:down ? 0.0f : inset];
     
     [UIView commitAnimations];
 }

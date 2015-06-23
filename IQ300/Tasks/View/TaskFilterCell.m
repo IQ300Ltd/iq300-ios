@@ -34,7 +34,8 @@
         _isBottomLineShown = YES;
                 
         _titleLabel = [[UILabel alloc] init];
-        [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:13]];
+        [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA
+                                             size:(IS_IPAD) ? 14 : 13]];
         [_titleLabel setTextColor:TEXT_COLOR];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];

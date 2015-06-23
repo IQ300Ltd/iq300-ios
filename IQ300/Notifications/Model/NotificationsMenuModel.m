@@ -12,6 +12,7 @@
 #import "IQMenuSection.h"
 #import "IQMenuCellFactory.h"
 #import "IQMenuItem.h"
+#import "MenuConsts.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
@@ -81,7 +82,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return 42;
+    return MENU_ITEM_HEIGHT;
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {

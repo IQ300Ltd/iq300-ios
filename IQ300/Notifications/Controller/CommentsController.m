@@ -573,7 +573,7 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    CGFloat inset = keyboardRect.size.height;
+    CGFloat inset = MIN(keyboardRect.size.height, keyboardRect.size.width);
     [_mainView setInputOffset:down ? 0.0f : -inset];
     if(isTableScrolledToBottom) {
         [self scrollToBottomAnimated:NO delay:0.0f];

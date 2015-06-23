@@ -83,7 +83,7 @@
     _tableView.frame = CGRectMake(actualBounds.origin.x,
                                   tableViewY,
                                   actualBounds.size.width,
-                                  actualBounds.size.height - tableViewY - _tableBottomMargin);
+                                  actualBounds.origin.y + actualBounds.size.height - tableViewY - _tableBottomMargin);
     _noDataLabel.frame = _tableView.frame;
 }
 
@@ -98,7 +98,7 @@
     _tableView.frame = CGRectMake(actualBounds.origin.x,
                                   tableViewY,
                                   actualBounds.size.width,
-                                  actualBounds.size.height - tableViewY - _tableBottomMargin);
+                                  actualBounds.origin.y + actualBounds.size.height - tableViewY - _tableBottomMargin);
     _noDataLabel.frame = _tableView.frame;
 }
 

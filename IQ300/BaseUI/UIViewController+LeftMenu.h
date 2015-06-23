@@ -7,9 +7,15 @@
 //
 
 #import "MenuViewController.h"
+#ifdef IPAD
+#import "LeftSideTabBarController.h"
+#endif
 
 @interface UIViewController (LeftMenu)
 
 @property (nonatomic, readonly) MenuViewController * leftMenuController;
+#ifdef IPAD
+@property (nonatomic, readonly) LeftSideTabBarController * leftTabBarController;
+#endif
 
 @end

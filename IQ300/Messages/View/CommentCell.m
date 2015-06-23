@@ -15,9 +15,7 @@
 
 #define CONTENT_INSET 8.0f
 #define ATTACHMENT_VIEW_HEIGHT 15.0f
-#define HEIGHT_DELTA 1.0f
 #define DESCRIPTION_PADDING 7
-#define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define DESCRIPTION_LEFT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
 #define DESCRIPTION_RIGHT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
 #define STATUS_IMAGE_SIZE 11
@@ -25,8 +23,20 @@
 #define CONTENT_Y_OFFSET 5.0f
 #define CELL_HEADER_HEIGHT TIME_LABEL_HEIGHT + CONTENT_Y_OFFSET
 
-#define BUBBLE_WIDTH 205
+#define BUBBLE_WIDTH_PERCENT 0.66f
 #define BUBBLE_BOTTOM_OFFSET 6.0f
+
+#ifdef IPAD
+#define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:14]
+#define HEIGHT_DELTA 0.0f
+#define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 193.0f
+//#define BUBBLE_WIDTH 500
+#else
+#define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#define HEIGHT_DELTA 1.0f
+#define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 182.0f
+//#define BUBBLE_WIDTH 205
+#endif
 
 typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CommentCellStyleLeft,
@@ -82,8 +92,9 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     return nil;
 }
 
-+ (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded {
-    CGFloat descriptionWidth = BUBBLE_WIDTH - DESCRIPTION_PADDING * 2.0f;
++ (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded сellWidth:(CGFloat)cellWidth {
+    CGFloat bubbleWidth = ceilf((cellWidth - CONTENT_INSET * 2.0f) * BUBBLE_WIDTH_PERCENT);
+    CGFloat descriptionWidth = bubbleWidth - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
@@ -120,8 +131,9 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     return height;
 }
 
-+ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item {
-    CGFloat descriptionWidth = BUBBLE_WIDTH - DESCRIPTION_PADDING * 2.0f;
++ (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item сellWidth:(CGFloat)cellWidth {
+    CGFloat bubbleWidth = ceilf((cellWidth - CONTENT_INSET * 2.0f) * BUBBLE_WIDTH_PERCENT);
+    CGFloat descriptionWidth = bubbleWidth - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
     
     if([item.body length] > 0) {
@@ -151,7 +163,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _contentInsets = UIEdgeInsetsMake(0.0f, CONTENT_INSET, 0.0f, CONTENT_INSET);
         
         _timeLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:9]
+                                             font:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 10.0f : 9.0f]
                                     localaizedKey:nil];
         _timeLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_timeLabel];
@@ -184,19 +196,20 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         [_descriptionTextView addGestureRecognizer:_singleTapGesture];
         [contentView addSubview:_descriptionTextView];
         
+        CGFloat expendFontSize = (IS_IPAD) ? 12 : 11.0f;
         UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
         UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
         UIImage * bacgroundImage = [UIImage imageNamed:@"view_all_ico.png"];
         _expandButton = [[UIButton alloc] init];
         [_expandButton setImage:bacgroundImage forState:UIControlStateNormal];
-        [_expandButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+        [_expandButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:expendFontSize]];
         [_expandButton setTitleColor:titleColor forState:UIControlStateNormal];
         [_expandButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
         [_expandButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
         _expandButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         
         NSDictionary *underlineAttribute = @{
-                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expendFontSize],
                                              NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                              NSForegroundColorAttributeName : titleColor
                                              };
@@ -205,7 +218,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                 forState:UIControlStateNormal];
         
         underlineAttribute = @{
-                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expendFontSize],
                                NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                NSForegroundColorAttributeName : titleHighlightedColor
                                };
@@ -236,7 +249,8 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     CGFloat bubleOffset = 5.0f;
- 
+    CGFloat bubbleWidth = ceilf(actualBounds.size.width * BUBBLE_WIDTH_PERCENT);
+
     _timeLabel.frame = CGRectMake(actualBounds.origin.x,
                                   actualBounds.origin.y,
                                   actualBounds.size.width,
@@ -245,7 +259,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat bubdleImageY = CGRectBottom(_timeLabel.frame) + CONTENT_Y_OFFSET;
 
     if(_commentIsMine) {
-        _statusImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - CONTENT_Y_OFFSET - BUBBLE_WIDTH - STATUS_IMAGE_SIZE,
+        _statusImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - CONTENT_Y_OFFSET - bubbleWidth - STATUS_IMAGE_SIZE,
                                             bubdleImageY + 10.0f,
                                             STATUS_IMAGE_SIZE,
                                             STATUS_IMAGE_SIZE);
@@ -257,7 +271,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat bubdleImageX = (_commentIsMine) ? CGRectRight(_statusImageView.frame) + bubleOffset : actualBounds.origin.x;
     _bubbleImageView.frame = CGRectMake(bubdleImageX,
                                         bubdleImageY,
-                                        BUBBLE_WIDTH,
+                                        bubbleWidth,
                                         actualBounds.size.height - bubdleImageY - BUBBLE_BOTTOM_OFFSET);
     
     
@@ -274,12 +288,12 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     if(hasExpandView) {
         _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + CONTENT_Y_OFFSET,
                                          CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET,
-                                         90,
+                                         (IS_IPAD) ? 100.0f : 90.0f,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
     
     if(hasAttachment) {
-        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET + 1 :
+        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET :
                                                     _bubbleImageView.frame.origin.y + CONTENT_Y_OFFSET;
         
         if(hasExpandView) {
@@ -342,20 +356,21 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
     if(hasAttachment) {
+        CGFloat attachFontSize = (IS_IPAD) ? 12 : 11.0f;
         UIColor * titleColor = [UIColor colorWithHexInt:0x358bae];
         UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x224f60];
         UIImage * bacgroundImage = [UIImage imageNamed:@"attach_ico.png"];
         for (IQAttachment * attachment in _item.attachments) {
             UIButton * attachButton = [[UIButton alloc] init];
             [attachButton setImage:bacgroundImage forState:UIControlStateNormal];
-            [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+            [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:attachFontSize]];
             [attachButton setTitleColor:titleColor forState:UIControlStateNormal];
             [attachButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
             [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
             attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
 
             NSDictionary *underlineAttribute = @{
-                                                 NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                                 NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:attachFontSize],
                                                  NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                                  NSForegroundColorAttributeName : titleColor
                                                  };
@@ -364,7 +379,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                     forState:UIControlStateNormal];
             
             underlineAttribute = @{
-                                   NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                   NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:attachFontSize],
                                    NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                    NSForegroundColorAttributeName : titleHighlightedColor
                                    };
@@ -450,10 +465,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 }
 
 - (void)setExpandButtonTitle:(NSString*)title {
+    CGFloat expandFontSize = (IS_IPAD) ? 12 : 11.0f;
     UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
     UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
     NSDictionary *underlineAttribute = @{
-                                         NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                         NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                                          NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                          NSForegroundColorAttributeName : titleColor
                                          };
@@ -462,7 +478,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                              forState:UIControlStateNormal];
     
     underlineAttribute = @{
-                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                            NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                            NSForegroundColorAttributeName : titleHighlightedColor
                            };

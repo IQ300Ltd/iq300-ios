@@ -15,15 +15,24 @@
 
 #define CONTENT_INSET 8.0f
 #define ATTACHMENT_VIEW_HEIGHT 15.0f
-#define HEIGHT_DELTA 1.0f
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
-#define CELL_HEADER_MIN_HEIGHT 17
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
 #define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED [UIColor colorWithHexInt:0xe9faff]
-#define ATTACHMENT_VIEW_Y_OFFSET 7.0f
 #define NEW_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
 #define NEW_FLAG_WIDTH 4.0f
+
+#ifdef IPAD
+#define DEFAULT_FONT_SIZE 14
+#define HEIGHT_DELTA 3.5f
+#define CELL_HEADER_MIN_HEIGHT 19
+#define ATTACHMENT_VIEW_Y_OFFSET 10.0f
+#else
+#define DEFAULT_FONT_SIZE 13
+#define HEIGHT_DELTA 1.0f
+#define CELL_HEADER_MIN_HEIGHT 17
+#define ATTACHMENT_VIEW_Y_OFFSET 7.0f
+#endif
 
 @interface CCommentCell() {
     BOOL _commentIsMine;
@@ -110,13 +119,13 @@
         [contentView addSubview:_contentBackgroundView];
         
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                             font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
         _userNameLabel = [self makeLabelWithTextColor:[UIColor whiteColor]
-                                                 font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                                 font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                         localaizedKey:nil];
         _userNameLabel.backgroundColor = [UIColor clearColor];
         _userNameLabel.textAlignment = NSTextAlignmentCenter;
@@ -148,16 +157,17 @@
         UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
         UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
         UIImage * bacgroundImage = [UIImage imageNamed:@"view_all_ico.png"];
+        CGFloat expandFontSize = (IS_IPAD) ? 12 : 11.0f;
         _expandButton = [[UIButton alloc] init];
         [_expandButton setImage:bacgroundImage forState:UIControlStateNormal];
-        [_expandButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+        [_expandButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:expandFontSize]];
         [_expandButton setTitleColor:titleColor forState:UIControlStateNormal];
         [_expandButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
         [_expandButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
         _expandButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
 
         NSDictionary *underlineAttribute = @{
-                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                             NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                                              NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                              NSForegroundColorAttributeName : titleColor
                                              };
@@ -166,7 +176,7 @@
                                  forState:UIControlStateNormal];
         
         underlineAttribute = @{
-                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                               NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                                NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                NSForegroundColorAttributeName : titleHighlightedColor
                                };
@@ -201,11 +211,12 @@
     CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
     _contentBackgroundView.frame = contentBackgroundBounds;
     
-    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f, 16.0f);
+    CGSize topLabelSize = CGSizeMake(actualBounds.size.width / 2.0f,
+                                     (IS_IPAD) ? 22 : 16.0f);
     if (([_userNameLabel.text length] > 0)) {
         CGSize userSize = [_userNameLabel.text sizeWithFont:_userNameLabel.font
                                           constrainedToSize:topLabelSize
-                                              lineBreakMode:_userNameLabel.lineBreakMode];
+                                              lineBreakMode:NSLineBreakByWordWrapping];
         
         _userNameLabel.frame = CGRectMake(actualBounds.origin.x + labelsOffset,
                                           actualBounds.origin.y,
@@ -230,9 +241,9 @@
                                             (hasDescription) ? descriptionHeight : 0.0f);
     
     if(hasExpandView) {
-        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + ATTACHMENT_VIEW_Y_OFFSET,
-                                         CGRectBottom(_descriptionTextView.frame) + ATTACHMENT_VIEW_Y_OFFSET,
-                                         90,
+        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + 7.0f,
+                                         CGRectBottom(_descriptionTextView.frame) + 5.0f,
+                                         (IS_IPAD) ? 100.0f : 90.0f,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
     
@@ -240,7 +251,7 @@
         CGFloat attachmentY = (hasAttachment && !hasDescription) ? _descriptionTextView.frame.origin.y + 2.0f : CGRectBottom(_descriptionTextView.frame) + 5.0f;
         
         if(hasExpandView) {
-            attachmentY = CGRectBottom(_expandButton.frame) + 5.0f;
+            attachmentY = CGRectBottom(_expandButton.frame) + ATTACHMENT_VIEW_Y_OFFSET;
         }
         
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
@@ -252,7 +263,7 @@
                                             MIN(attachmentSize.width + 5.0f, actualBounds.size.width - attachmentX),
                                             attachmentSize.height);
             
-            attachmentY = CGRectBottom(attachButton.frame) + 7.0f;
+            attachmentY = CGRectBottom(attachButton.frame) + ATTACHMENT_VIEW_Y_OFFSET;
         }
     }
 }
@@ -287,17 +298,18 @@
     BOOL hasAttachment = ([_item.attachments count] > 0);
     
     if(hasAttachment) {
+        CGFloat attachFontSize = (IS_IPAD) ? 12 : 11.0f;
         for (IQAttachment * attachment in _item.attachments) {
             UIButton * attachButton = [[UIButton alloc] init];
             [attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
-            [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+            [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:attachFontSize]];
             [attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
             [attachButton setTitleColor:[UIColor colorWithHexInt:0x446b7a] forState:UIControlStateHighlighted];
             [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
             attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
             
             NSDictionary *underlineAttribute = @{
-                                                 NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                                 NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:attachFontSize],
                                                  NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                                  NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x358bae]
                                                  };
@@ -306,7 +318,7 @@
                                     forState:UIControlStateNormal];
             
             underlineAttribute = @{
-                                   NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                   NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:attachFontSize],
                                    NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                    NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x446b7a]
                                    };
@@ -420,10 +432,11 @@
 }
 
 - (void)setExpandButtonTitle:(NSString*)title {
+    CGFloat expandFontSize = (IS_IPAD) ? 12 : 11.0f;
     UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
     UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
     NSDictionary *underlineAttribute = @{
-                                         NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                                         NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                                          NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                                          NSForegroundColorAttributeName : titleColor
                                          };
@@ -432,7 +445,7 @@
                              forState:UIControlStateNormal];
     
     underlineAttribute = @{
-                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:11],
+                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                            NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
                            NSForegroundColorAttributeName : titleHighlightedColor
                            };

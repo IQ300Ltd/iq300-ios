@@ -111,7 +111,7 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
           parameters:parameters
              handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
                  if (success && token) {
-                     self.session = [IQSession sessionWithEmail:email andPassword:password token:token.token];
+                     self.session = [IQSession sessionWithEmail:nil andPassword:nil token:token.token];
                      self.session.userId = token.userId;
                  }
                  
@@ -122,11 +122,53 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
 }
 
 - (void)logout {
-    [self deleteObject:nil
-                  path:@"/api/v1/sessions"
-            parameters:@{ @"access_token" : self.session.token }
-               handler:nil];
-    self.session = nil;
+    if (self.session.token) {
+        [self deleteObject:nil
+                      path:@"/api/v1/sessions"
+                parameters:@{ @"access_token" : self.session.token }
+                   handler:nil];
+        self.session = nil;
+    }
+}
+
+- (void)signupWithFirstName:(NSString*)firstName
+                   lastName:(NSString*)lastName
+             communityTitle:(NSString*)communityTitle
+                      email:(NSString*)email
+                   password:(NSString*)password
+                    handler:(RequestCompletionHandler)handler {
+    NSDictionary * parameters = @{ @"first_name"      : NSStringNullForNil(firstName),
+                                   @"last_name"       : NSStringNullForNil(lastName),
+                                   @"community_title" : NSStringNullForNil(communityTitle),
+                                   @"email"           : NSStringNullForNil(email),
+                                   @"password"        : NSStringNullForNil(password) };
+    [self postObject:nil
+                path:@"/api/v1/registrations"
+          parameters:parameters
+             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                 if(handler) {
+                     handler(success, responseData, error);
+                 }
+             }];
+}
+
+- (void)confirmRegistrationWithToken:(NSString*)token deviceToken:(NSString*)deviceToken handler:(RequestCompletionHandler)handler {
+    NSDictionary * parameters = @{ @"device_token"       : NSStringNullForNil(deviceToken),
+                                   @"confirmation_token" : NSStringNullForNil(token)};
+    [self postObject:nil
+                path:@"/api/v1/confirmation"
+          parameters:parameters
+             handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
+                 if (success && token) {
+                     self.session = [IQSession sessionWithEmail:nil andPassword:nil token:token.token];
+                     self.session.userId = token.userId;
+                 }
+                 
+                 if(handler) {
+                     handler(success, responseData, error);
+                 }
+             }];
+
 }
 
 - (void)userInfoWithHandler:(ObjectRequestCompletionHandler)handler {
@@ -477,7 +519,8 @@ fileAttributeName:(NSString*)fileAttributeName
         forOperation:(RKObjectRequestOperation*)operation
              handler:(ObjectRequestCompletionHandler)handler {
     
-    if (operation.HTTPRequestOperation.response.statusCode == 401) {
+    if (operation.HTTPRequestOperation.response.statusCode == 401 &&
+        self.session.email && self.session.password) {
         [self extendAccessToken:handler operationBlock:operation.operationBlock];
     }
     else if(handler) {
@@ -506,6 +549,21 @@ fileAttributeName:(NSString*)fileAttributeName
                                                          pathPattern:@"/api/v1/sessions"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPOST
+                                                         pathPattern:@"/api/v1/registrations"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQToken class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/confirmation"
+                                                   fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
+    
     [self.objectManager addResponseDescriptor:descriptor];
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotification class]

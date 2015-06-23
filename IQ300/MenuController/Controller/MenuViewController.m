@@ -91,7 +91,7 @@ CGFloat IQStatusBarHeight()
     CGFloat tableViewOffset = _accountHeader.frame.origin.y + _accountHeader.frame.size.height;
     _tableView.frame = CGRectMake(0,
                                   tableViewOffset,
-                                  MENU_WIDTH,
+                                  MIN(MENU_WIDTH, actualBounds.size.width),
                                   actualBounds.size.height - tableViewOffset);
 }
 
@@ -178,11 +178,11 @@ CGFloat IQStatusBarHeight()
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return SECTION_HEIGHT;
+    return (!IS_IPAD) ? SECTION_HEIGHT : 0.0f;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return [self viewForHeaderInSection:section];
+    return (!IS_IPAD) ? [self viewForHeaderInSection:section] : nil;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

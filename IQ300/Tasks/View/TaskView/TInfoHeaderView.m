@@ -17,18 +17,33 @@
 #import "TaskHelper.h"
 #import "ExtendedButton.h"
 
-#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
-#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13.0f]
 #define LINE_HEIGHT 45.5f
-#define HORIZONTAL_PADDING 10.0f
-#define TASK_ID_HEIGHT 11.0f
-#define TITLE_OFFSET 2.5f
+#define CONTENT_LEFT_INSET 10.0f
+#define CONTENT_RIGHT_INSET 10.0f
 #define USER_OFFSET 5.0f
-#define USER_HEIGHT 13.0f
 
 #define BUTTON_VERTICAL_PADDING 22.0f
 #define BUTTON_HEIGHT 40.0f
+#define BUTTON_WIDTH 215.0f
 #define BUTTON_OFFSET 13.0f
+
+#ifdef IPAD
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:17.0f]
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:14.0f]
+#define TASK_ID_HEIGHT 16.0f
+#define LABEL_FONT_SIZE 14.0f
+#define USER_HEIGHT 16.0f
+#define HORIZONTAL_PADDING 15.0f
+#define TITLE_OFFSET 5.0f
+#else
+#define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:15.0f]
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13.0f]
+#define TASK_ID_HEIGHT 11.0f
+#define LABEL_FONT_SIZE 11.0f
+#define USER_HEIGHT 13.0f
+#define HORIZONTAL_PADDING 10.0f
+#define TITLE_OFFSET 2.5f
+#endif
 
 @interface TInfoHeaderView() {
     UIEdgeInsets _headerInsets;
@@ -56,7 +71,11 @@
 }
 
 + (CGFloat)heightForTask:(IQTask*)task width:(CGFloat)width descriptionExpanded:(BOOL)descriptionExpanded {
-    CGFloat hederWidth = width - 10.0f - 7.0f;
+    if (width <= 0) {
+        return 0;
+    }
+    
+    CGFloat hederWidth = width - CONTENT_LEFT_INSET - CONTENT_RIGHT_INSET;
     CGFloat height = HORIZONTAL_PADDING * 2 + TASK_ID_HEIGHT + TITLE_OFFSET + USER_OFFSET + USER_HEIGHT + LINE_HEIGHT;
     
     CGSize titleLabelSize = [task.title sizeWithFont:TITLE_FONT
@@ -68,7 +87,7 @@
     if (descriptionExpanded) {
         CGFloat descriptionHeight = [TInfoHeaderView heightForText:task.taskDescription
                                                               font:DESCRIPTION_FONT
-                                                             width:300];
+                                                             width:hederWidth];
 
         height += LINE_HEIGHT + descriptionHeight + HORIZONTAL_PADDING;
     }
@@ -85,7 +104,13 @@
     }
     
     if ([task.availableActions count] > 0) {
+#ifdef IPAD
+        CGFloat buttonsInRow = roundf(hederWidth / (BUTTON_OFFSET + BUTTON_WIDTH));
+        NSUInteger buttonRowsCount = ceil([task.availableActions count] / buttonsInRow);
+        height += BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * buttonRowsCount - BUTTON_OFFSET;
+#else
         height += BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * [task.availableActions count] - BUTTON_OFFSET;
+#endif
     }
 
     return height;
@@ -96,10 +121,10 @@
     if (self) {
         [self setBackgroundColor:[UIColor whiteColor]];
 
-        _headerInsets = UIEdgeInsetsMake(HORIZONTAL_PADDING, 10, HORIZONTAL_PADDING, 7);
+        _headerInsets = UIEdgeInsetsMake(HORIZONTAL_PADDING, CONTENT_LEFT_INSET, HORIZONTAL_PADDING, CONTENT_RIGHT_INSET);
         
         _taskIDLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                               font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                               font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
                                       localaizedKey:nil];
         _taskIDLabel.numberOfLines = 1;
         [self addSubview:_taskIDLabel];
@@ -110,13 +135,13 @@
         [self addSubview:_titleLabel];
 
         _fromLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                             font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
                                     localaizedKey:nil];
         _fromLabel.numberOfLines = 1;
         [self addSubview:_fromLabel];
         
         _toLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                           font:[UIFont fontWithName:IQ_HELVETICA size:11.0f]
+                                           font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
                                   localaizedKey:nil];
         _toLabel.numberOfLines = 1;
         [self addSubview:_toLabel];
@@ -166,10 +191,10 @@
 }
 
 - (void)setupByTask:(IQTask *)task {
-    _taskIDLabel.text = [NSString stringWithFormat:@"#%@", task.taskId];
+    _taskIDLabel.text = (task.taskId) ? [NSString stringWithFormat:@"#%@", task.taskId] : @"";
     _titleLabel.text = task.title;
     _fromLabel.text = task.customer.displayName;
-    _toLabel.text = [NSString stringWithFormat:@"> %@", task.executor.displayName];
+    _toLabel.text = ([task.executor.displayName length] > 0) ? [NSString stringWithFormat:@"> %@", task.executor.displayName] : @"";
     
     _descriptionView.enabled = ([task.taskDescription length] > 0);
     _descriptionView.detailsTextLabel.text = task.taskDescription;
@@ -280,7 +305,7 @@
     CGFloat userMaxWidth = usersLabelFrame.size.width / 2.0f;
     CGSize userLabelSize = [_fromLabel.text sizeWithFont:_fromLabel.font
                                        constrainedToSize:CGSizeMake(userMaxWidth, usersLabelFrame.size.height)
-                                           lineBreakMode:_fromLabel.lineBreakMode];
+                                           lineBreakMode:NSLineBreakByWordWrapping];
     BOOL needOffset = (userLabelSize.width <= userMaxWidth - 5.0f);
     CGFloat userLabelWidth = MIN(userLabelSize.width, userMaxWidth);
     
@@ -297,7 +322,7 @@
     if (_descriptionView.isExpanded) {
         CGFloat descriptionHight = [TInfoHeaderView heightForText:_descriptionView.detailsTextLabel.text
                                                              font:_descriptionView.detailsTextLabel.font
-                                                            width:300];
+                                                            width:headerBounds.size.width];
         
         _descriptionView.frame = CGRectMake(bounds.origin.x,
                                             CGRectBottom(_fromLabel.frame) + _headerInsets.bottom,
@@ -349,23 +374,55 @@
                                               0.0f);
     }
     
-    CGRect buttonsHolderRect = CGRectMake(bounds.origin.x,
-                                          CGRectBottom(_communityInfoView.frame),
-                                          bounds.size.width,
-                                          0);
     
-    if([[_buttonsHolder subviews] count] > 0) {
+    if([_buttonsHolder.subviews count] > 0) {
+        NSUInteger buttonsCount = [_buttonsHolder.subviews count];
+#ifdef IPAD
+        CGFloat maxButtonsInRow = roundf(bounds.size.width / (BUTTON_OFFSET + BUTTON_WIDTH));
+        NSUInteger buttonRowsCount = ceil(buttonsCount / maxButtonsInRow);
+        NSUInteger buttonsInRow = MIN(maxButtonsInRow, buttonsCount);
+        NSUInteger prevButtonRow = 0;
+        CGFloat holderWidth = (BUTTON_OFFSET + BUTTON_WIDTH) * buttonsInRow;
+        CGFloat firstButtonX = (BUTTON_OFFSET + bounds.size.width - holderWidth) / 2.0f;
+        CGFloat buttonX = firstButtonX;
+ 
+        CGFloat buttonsHolderHeight = BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * buttonRowsCount - BUTTON_OFFSET;
+        CGRect buttonsHolderRect = CGRectMake(bounds.origin.x,
+                                              CGRectBottom(_communityInfoView.frame),
+                                              bounds.size.width,
+                                              buttonsHolderHeight);
+#else
+        CGFloat buttonY = BUTTON_VERTICAL_PADDING;
         CGFloat buttonsHolderHeight = BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * [[_buttonsHolder subviews] count] - BUTTON_OFFSET;
-        buttonsHolderRect.size.height = buttonsHolderHeight;
+        CGRect buttonsHolderRect = CGRectMake(bounds.origin.x,
+                                              CGRectBottom(_communityInfoView.frame),
+                                              bounds.size.width,
+                                              buttonsHolderHeight);
+#endif
+
         _buttonsHolder.frame = buttonsHolderRect;
         
-        CGFloat buttonY = BUTTON_VERTICAL_PADDING;
-        for (UIView * view in [_buttonsHolder subviews]) {
+        for (NSUInteger index = 0; index < buttonsCount; index++) {
+            UIView * view = _buttonsHolder.subviews[index];
+#ifdef IPAD
+            NSUInteger buttonRow = floor(index / buttonsInRow);
+            if (prevButtonRow != buttonRow) {
+                buttonX = firstButtonX;
+                prevButtonRow = buttonsInRow;
+            }
+            
+            view.frame = CGRectMake(buttonX,
+                                    BUTTON_VERTICAL_PADDING + (BUTTON_HEIGHT + BUTTON_OFFSET) * buttonRow,
+                                    BUTTON_WIDTH,
+                                    BUTTON_HEIGHT);
+            buttonX = CGRectRight(view.frame) + BUTTON_OFFSET;
+#else
             view.frame = CGRectMake(BUTTON_OFFSET,
                                     buttonY,
                                     _buttonsHolder.frame.size.width - BUTTON_OFFSET * 2,
                                     BUTTON_HEIGHT);
             buttonY = CGRectBottom(view.frame) + BUTTON_OFFSET;
+#endif
         }
     }
 }

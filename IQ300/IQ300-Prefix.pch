@@ -36,9 +36,11 @@
 
 #ifdef PROD
 #define SERVICE_URL @"https://api.iq300.ru"
+#define SERVER_URL @"https://app.iq300.ru"
 #define PUSHER_APP_KEY @"7baa6a182eefe7314de0"
 #else
 #define SERVICE_URL @"http://edge.iq300.ru"
+#define SERVER_URL @"http://edge.iq300.ru"
 #define PUSHER_APP_KEY @"2d3e4d45c8824ea2d1b0"
 #endif
 
@@ -50,6 +52,7 @@
 
 #define USE_DEFAULT_LOCALIZATION
 #define INTERNET_UNREACHABLE_MESSAGE @"It is necessary to connect to the Internet"
+#define IS_IPAD UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
 
 static NSString * AccountDidChangedNotification = @"AccountDidChangedNotification";
 static NSString * CountersDidChangedNotification = @"CountersDidChangedNotification";

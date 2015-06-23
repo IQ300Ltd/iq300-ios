@@ -599,8 +599,10 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (void)applicationWillEnterForeground {
-    [self updateCounters];
-    [self groupUpdatesWithCompletion:nil];
+    if ([IQSession defaultSession]) {
+        [self updateCounters];
+        [self groupUpdatesWithCompletion:nil];
+    }
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

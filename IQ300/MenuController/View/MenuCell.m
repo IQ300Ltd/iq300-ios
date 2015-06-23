@@ -11,8 +11,6 @@
 #import "MenuConsts.h"
 #import "IQBadgeView.h"
 
-#define BACKGROUND_COLOR [UIColor colorWithHexInt:0x272d31]
-#define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x383e43]
 #define BADGE_HEIGHT 25
 
 @interface MenuCell() {
@@ -32,16 +30,16 @@
         _isBottomLineShown = YES;
         
         _selectedBackgroundView = [[UIView alloc] init];
-        [_selectedBackgroundView setBackgroundColor:SELECTED_BBACKGROUND_COLOR];
+        [_selectedBackgroundView setBackgroundColor:MENU_CELL_SELECTED_BBACKGROUND_COLOR];
         [self setSelectedBackgroundView:_selectedBackgroundView];
        
         _cellContentView = [[BottomLineView alloc] init];
-        [_cellContentView setBackgroundColor:BACKGROUND_COLOR];
+        [_cellContentView setBackgroundColor:MENU_CELL_BACKGROUND_COLOR];
         [((BottomLineView*)_cellContentView) setBottomLineColor:MENU_CELL_SEPARATOR_COLOR];
         [((BottomLineView*)_cellContentView) setBottomLineHeight:1.0f];
         
         _titleLabel = [[UILabel alloc] init];
-        [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:13]];
+        [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 14 : 13]];
         [_titleLabel setTextColor:[UIColor whiteColor]];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];

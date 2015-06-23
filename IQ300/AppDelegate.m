@@ -27,6 +27,10 @@
 #import "IQConversation.h"
 #import "DiscussionModel.h"
 #import "IQDiscussion.h"
+#import "LeftSideTabBarController.h"
+#import "DispatchAfterExecution.h"
+#import "DeviceToken.h"
+#import "RegistrationStatusController.h"
 
 #define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
 
@@ -43,7 +47,9 @@
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
     LoginController * loginViewController = [[LoginController alloc] init];
-    [delegate.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+    UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+    [navigationController setNavigationBarHidden:YES];
+    [delegate.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
    
     [[IQService sharedService] logout];
     [IQSession setDefaultSession:nil];
@@ -57,8 +63,9 @@
     }
     
     [center setSelectedIndex:0];
-
-    [delegate.drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:nil];
+    if (delegate.drawerController.openSide == MMDrawerSideLeft) {
+        [delegate.drawerController toggleDrawerSide:MMDrawerSideLeft animated:NO completion:nil];
+    }
     [[UIApplication sharedApplication] unregisterForRemoteNotifications];
 }
 
@@ -111,22 +118,28 @@
     [AppDelegate setupNotificationCenter];
     [AppDelegate registerForRemoteNotifications];
 
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
+    Class navigationControllerClass = [IQNavigationController class];
     NotificationsGroupController * notifications = [[NotificationsGroupController alloc] init];
-    IQNavigationController * notificationsNav = [[IQNavigationController alloc] initWithRootViewController:notifications];
+    UINavigationController * notificationsNav = [[navigationControllerClass alloc] initWithRootViewController:notifications];
     
     TasksController * tasks = [[TasksController alloc] init];
-    IQNavigationController * tasksNav = [[IQNavigationController alloc] initWithRootViewController:tasks];
+    UINavigationController * tasksNav = [[navigationControllerClass alloc] initWithRootViewController:tasks];
    
     MessagesController * messages = [[MessagesController alloc] init];
-    IQNavigationController * messagesNav = [[IQNavigationController alloc] initWithRootViewController:messages];
+    UINavigationController * messagesNav = [[navigationControllerClass alloc] initWithRootViewController:messages];
     
-    UITabBarController * center = [[UITabBarController alloc] init];
+    Class tabBarClass = (IS_IPAD) ? [LeftSideTabBarController class] : [UITabBarController class];
+    UITabBarController * center = [[tabBarClass alloc] init];
     center.tabBar.layer.borderWidth = 0;
     
     [center setViewControllers:@[notificationsNav, tasksNav, messagesNav]];
     
+#ifndef IPAD
+    center.tabBar.backgroundImage = [UIImage imageNamed:@"tabbar_background.png"];
     MMDrawerController * drawerController = [[IQDrawerController alloc]
                                              initWithCenterViewController:center
                                              leftDrawerViewController:leftDrawer];
@@ -134,11 +147,10 @@
     [self.drawerController setRestorationIdentifier:@"MMDrawer"];
     [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
     [self.drawerController setMaximumLeftDrawerWidth:MENU_WIDTH];
-    [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModePanningDrawerView | MMCloseDrawerGestureModePanningCenterView];
+    [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModePanningDrawerView |
+     MMCloseDrawerGestureModePanningCenterView];
     [self.drawerController setShowsShadow:YES];
     [self.drawerController setShouldStretchDrawer:NO];
-    
-    [self applyCustomizations];
     
     __weak typeof(self) weakSelf = self;
     [self.drawerController setGestureShouldRecognizeTouchBlock:^BOOL(MMDrawerController *drawerController, UIGestureRecognizer *gesture, UITouch *touch) {
@@ -153,16 +165,28 @@
         }
         return NO;
     }];
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = self.drawerController;
+#else
+    LeftSideTabBarController * tabController = (LeftSideTabBarController*)center;
+    tabController.menuController = leftDrawer;
+    tabController.menuControllerHidden = NO;
+    tabController.menuControllerWidth = 224.0f;
+    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"tabbar_selected_image.png"];
+    tabController.tabBar.backgroundImage = [UIImage imageNamed:@"left_tabbar_background.png"];
+    self.window.rootViewController = tabController;
+#endif
     
+    [self applyCustomizations];
+
     [self.window makeKeyAndVisible];
     
     if(![IQSession defaultSession]) {
         [[UIApplication sharedApplication] unregisterForRemoteNotifications];
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
         LoginController * loginViewController = [[LoginController alloc] init];
-        [self.window.rootViewController presentViewController:loginViewController animated:NO completion:nil];
+        UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+        [navigationController setNavigationBarHidden:YES];
+        [self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
     }
     else {
         [self updateGlobalCounters];
@@ -197,7 +221,9 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [self updateGlobalCounters];
+    if ([IQSession defaultSession]) {
+        [self updateGlobalCounters];
+    }
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
 }
@@ -208,6 +234,89 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
 }
 
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    if ([IQSession defaultSession]) {
+        [IQService sharedService].session = nil;
+        [AppDelegate logout];
+    }
+    
+    NSMutableParagraphStyle * paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    [paragraphStyle setAlignment:NSTextAlignmentCenter];
+    
+    NSMutableDictionary * attributes = @{
+                                         NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x272727],
+                                         NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:18],
+                                         NSParagraphStyleAttributeName  : paragraphStyle
+                                         }.mutableCopy;
+    NSString * title = [NSString stringWithFormat:@"%@\n\n", NSLocalizedString(@"Thank you for registering!", nil)];
+    NSMutableAttributedString * statusMessage = [[NSMutableAttributedString alloc] initWithString:title
+                                                                                       attributes:attributes];
+    
+    [attributes setValue:[UIFont fontWithName:IQ_HELVETICA size:15]
+                  forKey:NSFontAttributeName];
+
+    [statusMessage appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Account activation", nil)
+                                                                          attributes:attributes]];
+    
+    UINavigationController * navController = ((UINavigationController*)self.window.rootViewController.presentedViewController);
+    RegistrationStatusController * controller = [[RegistrationStatusController alloc] init];
+    controller.statusMessage = statusMessage;
+    [navController pushViewController:controller animated:NO];
+    
+    RequestCompletionHandler handler = ^(BOOL success, NSData *responseData, NSError *error) {
+        if(success) {
+            [self continueLoginProccess];
+        }
+        else if (error) {
+            NSDictionary * attributes = @{
+                                          NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x272727],
+                                          NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:18]
+                                          }.mutableCopy;
+            
+            NSMutableAttributedString * statusMessage = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"Thank you for registering!", nil)
+                                                                                               attributes:attributes];
+            NSString * errorDescription = nil;
+            if (error.code == kCFURLErrorNotConnectedToInternet || ![IQService sharedService].isServiceReachable) {
+                errorDescription = NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil);
+            }
+            else {
+                errorDescription = error.localizedDescription;
+            }
+            
+            [attributes setValue:[UIFont fontWithName:IQ_HELVETICA size:15]
+                          forKey:NSFontAttributeName];
+            [attributes setValue:[UIColor colorWithHexInt:0xca301e]
+                          forKey:NSForegroundColorAttributeName];
+
+            [statusMessage appendAttributedString:[[NSAttributedString alloc] initWithString:errorDescription
+                                                                                  attributes:attributes]];
+            controller.statusMessage = statusMessage;
+        }
+    };
+
+    [[IQService sharedService] confirmRegistrationWithToken:[url lastPathComponent]
+                                                deviceToken:[DeviceToken uniqueIdentifier]
+                                                    handler:handler];
+    return YES;
+}
+
+- (void)continueLoginProccess {
+    [[IQService sharedService] userInfoWithHandler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
+        if(success) {
+            [IQSession setDefaultSession:[IQService sharedService].session];
+            [AppDelegate setupNotificationCenter];
+            [AppDelegate registerForRemoteNotifications];
+            [GAIService sendEventForCategory:GAICommonEventCategory
+                                      action:@"event_action_common_login"];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
+                                                                object:nil];
+            
+            [self.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        }
+    }];
+}
 #pragma mark - Notifications
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {
@@ -301,12 +410,15 @@
 }
 
 - (void)applyCustomizations {
+    //[self debugAllNotification];
+    
     //set status bar black color
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
+    CGFloat fontSize = (IS_IPAD) ? 17.0f : 15.0f;
     [[UINavigationBar appearance] setTitleTextAttributes:@{
                                                            NSForegroundColorAttributeName : [UIColor whiteColor],
-                                                           NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:15]
+                                                           NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:fontSize]
                                                            }];
     
     //custromize navigation bar background
@@ -318,8 +430,6 @@
     
     [[UINavigationBar appearance] setShadowImage:[UIImage new]];
     
-    UIImage* tabBarBackground = [UIImage imageNamed:@"tabbar_background.png"];
-    [[UITabBar appearance] setBackgroundImage:tabBarBackground];
     [[UITabBar appearance] setShadowImage:[UIImage new]];
     
     [[UITabBarItem appearance] setTitleTextAttributes:@{
@@ -335,7 +445,8 @@
 }
 
 - (void)updateGlobalCounters {
-    UITabBarController * tabBarController = (UITabBarController*)self.drawerController.centerViewController;
+    UITabBarController * tabBarController =  (IS_IPAD) ? (UITabBarController*)self.window.rootViewController :
+                                                         (UITabBarController*)self.drawerController.centerViewController;
     
     for (UINavigationController * navController in tabBarController.viewControllers) {
         UIViewController * controller = [navController.viewControllers objectAtIndex:0];
@@ -397,5 +508,24 @@ void SignalHandler(int sig) {
 }
 
 #endif
+
+- (void)debugAllNotification {
+    CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
+                                    NULL,
+                                    NotificationCenterCallBack,
+                                    NULL,
+                                    NULL,
+                                    CFNotificationSuspensionBehaviorDeliverImmediately);
+}
+
+void NotificationCenterCallBack (CFNotificationCenterRef center,
+                                 void *observer,
+                                 CFStringRef name,
+                                 const void *object,
+                                 CFDictionaryRef userInfo)
+{
+    NSLog(@"name: %@", name);
+    NSLog(@"userinfo: %@", userInfo);
+}
 
 @end

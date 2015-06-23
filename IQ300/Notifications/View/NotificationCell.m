@@ -11,9 +11,15 @@
 #import "IQNotification.h"
 #import "NSDate+IQFormater.h"
 
+#ifdef IPAD
+#define DEFAULT_FONT_SIZE 14
+#else
+#define DEFAULT_FONT_SIZE 13
+#endif
+
 #define HORIZONTAL_INSETS 8.0f
 #define VERTICAL_INSETS 5.0f
-#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
 #define DESCRIPTION_MIN_HEIGHT 19.0f
 
 @interface NotificationCell() {
@@ -60,13 +66,13 @@
         [contentView addSubview:_contentBackgroundView];
         
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                             font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentLeft;
         [contentView addSubview:_dateLabel];
         
         _userNameLabel = [self makeLabelWithTextColor:[UIColor whiteColor]
-                                                 font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                                 font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                         localaizedKey:nil];
         _userNameLabel.backgroundColor = [UIColor colorWithHexInt:0xcccccc];
         _userNameLabel.layer.cornerRadius = 3;
@@ -75,7 +81,7 @@
         [contentView addSubview:_userNameLabel];
         
         _actionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
-                                               font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                               font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                       localaizedKey:nil];
         [contentView addSubview:_actionLabel];
         
@@ -113,7 +119,7 @@
     if (([_item.user.displayName length] > 0)) {
         CGSize userSize = [_userNameLabel.text sizeWithFont:_userNameLabel.font
                                           constrainedToSize:constrainedSize
-                                              lineBreakMode:_userNameLabel.lineBreakMode];
+                                              lineBreakMode:NSLineBreakByWordWrapping];
         
         _userNameLabel.frame = CGRectMake(actualBounds.origin.x,
                                           CGRectBottom(_dateLabel.frame) + 5,
@@ -148,9 +154,7 @@
                                                           CONTEN_BACKGROUND_COLOR;
     self.rightUtilityButtons = (isReaded) ? nil : @[_markAsReadedButton];
     
-    _typeLabel.text = NSLocalizedString(_item.notificable.type, nil);
     _dateLabel.text = [_item.createdAt dateToDayTimeString];
-    _titleLabel.text = _item.notificable.title;
     _userNameLabel.hidden = ([_item.user.displayName length] == 0);
     _userNameLabel.text = _item.user.displayName;
     _actionLabel.text = _item.mainDescription;

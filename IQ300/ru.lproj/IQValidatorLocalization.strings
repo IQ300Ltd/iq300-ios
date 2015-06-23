@@ -1,0 +1,12 @@
+/* 
+  IQValidatorLocalization.strings
+  IQ300
+
+  Created by Tayphoon on 18.06.15.
+  Copyright (c) 2015 Tayphoon. All rights reserved.
+*/
+
+"%@ can not be empty" = "%@ не может быть пустым";
+"%@ can not be emptys" = "%@ не может быть пустой";
+"Password is too short (can be less than 6 characters)" = "Пароль недостаточной длины (не может быть меньше 6 символов)";
+"Email address is invalid" = "Неверный адрес эл. почты";

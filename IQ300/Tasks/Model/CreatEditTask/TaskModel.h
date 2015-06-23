@@ -23,7 +23,7 @@
 
 - (void)updateFieldAtIndexPath:(NSIndexPath*)indexPath withValue:(id)value;
 
-- (BOOL)isItemEditableAtIndexPath:(NSIndexPath*)indexPath;
+- (BOOL)isItemEnabledAtIndexPath:(NSIndexPath*)indexPath;
 
 /**
  *  Real index path
@@ -33,6 +33,8 @@
  *  @return Real index path(exclude hidden index paths)
  */
 - (NSIndexPath*)realIndexPathForPath:(NSIndexPath*)indexPath;
+
+- (NSInteger)maxNumberOfCharactersForPath:(NSIndexPath*)indexPath;
 
 - (BOOL)modelHasChanges;
 

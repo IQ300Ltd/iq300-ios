@@ -300,6 +300,9 @@
                                                                       action:@selector(addButtonAction:)];
         self.parentViewController.navigationItem.rightBarButtonItem = addButton;
     }
+    else {
+        self.parentViewController.navigationItem.rightBarButtonItem = nil;
+    }
 }
 
 - (void)applicationWillEnterForeground {

@@ -13,15 +13,8 @@
 #import "IQNotificationCenter.h"
 #import "AppDelegate.h"
 #import "DeviceToken.h"
-
-BOOL NSStringIsValidEmail(NSString * checkString) {
-    BOOL stricterFilter = NO;
-    NSString *stricterFilterString = @"[A-Z0-9a-z\\._%+-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}";
-    NSString *laxString = @".+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2}[A-Za-z]*";
-    NSString *emailRegex = stricterFilter ? stricterFilterString : laxString;
-    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
-    return [emailTest evaluateWithObject:checkString];
-}
+#import "IQValidationHelper.h"
+#import "RegistrationController.h"
 
 @interface LoginController() <UITextFieldDelegate> {
     LoginView * _loginView;
@@ -85,7 +78,9 @@ BOOL NSStringIsValidEmail(NSString * checkString) {
 }
 
 - (void)registryButtonAction:(UIButton*)sender {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:SERVICE_REGISTRATION_URL]];
+    RegistrationController * controller = [[RegistrationController alloc] init];
+    [self.navigationController pushViewController:controller animated:YES];
+    
     [GAIService sendEventForCategory:GAICommonEventCategory
                               action:@"event_action_common_registration"];
 }

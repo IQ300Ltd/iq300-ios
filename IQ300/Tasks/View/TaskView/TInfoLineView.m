@@ -29,7 +29,8 @@
         [self addSubview:_imageView];
         
         _textLabel = [[UILabel alloc] init];
-        _textLabel.font = [UIFont fontWithName:IQ_HELVETICA size:13.0f];
+        _textLabel.font = [UIFont fontWithName:IQ_HELVETICA
+                                          size:(IS_IPAD) ? 14.0f : 13.0f];
         _textLabel.textColor = [UIColor colorWithHexInt:0x20272a];
         _textLabel.textAlignment = NSTextAlignmentLeft;
         _textLabel.backgroundColor = [UIColor clearColor];
@@ -81,7 +82,7 @@
                                        rect.size.width,
                                        0.5f);
         
-        //Draw left line
+        //Draw top line
         CGContextSetStrokeColorWithColor(contex, SEPARATOR_COLOR.CGColor);
         CGContextSetLineWidth(contex, 0.5f);
         CGContextStrokeRect(contex, bottomLine);

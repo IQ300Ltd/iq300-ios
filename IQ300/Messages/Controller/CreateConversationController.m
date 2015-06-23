@@ -188,7 +188,8 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    [_mainView setTableBottomMargin:down ? 0.0f : MIN(keyboardRect.size.width, keyboardRect.size.height) - 50.0f];
+    CGFloat inset = MIN(keyboardRect.size.height, keyboardRect.size.width);
+    [_mainView setTableBottomMargin:down ? 0.0f : inset];
     
     [UIView commitAnimations];
 }

@@ -15,4 +15,6 @@
 @property (nonatomic, readonly) UIButton * backButton;
 @property (nonatomic, readonly) UILabel * titleLabel;
 
+- (void)setHeaderViewHidden:(BOOL)hidden;
+
 @end

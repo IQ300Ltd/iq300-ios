@@ -11,10 +11,6 @@
 #define TABBAR_HEIGHT 44
 
 @interface IQTabBarController () {
-    UITabBar * _tabBar;
-    UIView * _transitionView;
-    UIView * _separatorView;
-    NSMutableArray * _tabBarItems;
 }
 
 @end
@@ -32,10 +28,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    _tabBar = [[UITabBar alloc] init];
-    _tabBar.delegate = self;
-    [self.view addSubview:_tabBar];
     
     _transitionView = [[UIView alloc] init];
     [_transitionView setClipsToBounds:YES];
@@ -58,7 +50,7 @@
     
     //try fix ios 7 tab not selected
     if (_selectedIndex != NSNotFound) {
-        [_tabBar setSelectedItem:_tabBarItems[_selectedIndex]];
+        [self.tabBar setSelectedItem:self.tabBar.items[_selectedIndex]];
     }
 }
 
@@ -75,18 +67,18 @@
     }
     
     CGFloat tabBarY = (!_separatorHidden) ? CGRectBottom(_separatorView.frame) : actualBounds.origin.y;
-    _tabBar.frame = CGRectMake(actualBounds.origin.x,
+    self.tabBar.frame = CGRectMake(actualBounds.origin.x,
                                tabBarY,
                                actualBounds.size.width,
                                TABBAR_HEIGHT);
     
-    CGFloat transitionY = CGRectBottom(_tabBar.frame);
+    CGFloat transitionY = CGRectBottom(self.tabBar.frame);
     _transitionView.frame = CGRectMake(actualBounds.origin.x,
                                        transitionY,
                                        actualBounds.size.width,
                                        actualBounds.size.height - transitionY);
     
-    UIView * childView = ([_transitionView.subviews count] > 0) ? [[_transitionView subviews] objectAtIndex:0] : nil;
+    UIView * childView = [_transitionView.subviews firstObject];
     childView.frame = _transitionView.bounds;
 }
 
@@ -127,7 +119,12 @@
     }
 }
 
-- (UITabBar*)tabBar {
+- (UIView<IQTabBar>*)tabBar {
+    if (!_tabBar) {
+        _tabBar = (UIView<IQTabBar>*)[[UITabBar alloc] init];
+        _tabBar.delegate = self;
+        [self.view addSubview:_tabBar];
+    }
     return _tabBar;
 }
 
@@ -136,8 +133,7 @@
 }
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated {
-    
-    UIViewController *oldSelectedViewController = self.selectedViewController;
+    UIViewController * oldSelectedViewController = self.selectedViewController;
     
     for (UIViewController *viewController in _viewControllers) {
         [viewController willMoveToParentViewController:nil];
@@ -176,79 +172,81 @@
 }
 
 - (void)setSelectedIndex:(NSUInteger)newSelectedIndex {
-    [self setSelectedIndex:newSelectedIndex animated:YES];
+        [self setSelectedIndex:newSelectedIndex animated:YES];
+}
+
+- (void)setSelectedIndex:(NSUInteger)newSelectedIndex animated:(BOOL)animated {
+    if (_selectedIndex != newSelectedIndex) {
+        NSAssert(newSelectedIndex < [self.viewControllers count], @"View controller index out of bounds");
+        
+        if ([self.delegate respondsToSelector:@selector(tabBarController:shouldSelectViewController:)]) {
+            UIViewController * toViewController = self.viewControllers[newSelectedIndex];
+            if (![self.delegate tabBarController:self shouldSelectViewController:toViewController]) {
+                return;
+            }
+        }
+        
+        if(![self isViewLoaded]) {
+            _selectedIndex = newSelectedIndex;
+        }
+        else if(_selectedIndex != newSelectedIndex) {
+            UIViewController * fromViewController = (_selectedIndex != NSNotFound) ? self.viewControllers[_selectedIndex] : nil;
+            UIViewController * toViewController = self.viewControllers[newSelectedIndex];
+            
+            _selectedIndex = newSelectedIndex;
+         
+            if(fromViewController) {
+                [fromViewController willMoveToParentViewController:nil];
+                [fromViewController removeFromParentViewController];
+                [fromViewController.view removeFromSuperview];
+            }
+            
+            [toViewController willMoveToParentViewController:self];
+            [self addChildViewController:toViewController];
+            [toViewController didMoveToParentViewController:self];
+            
+            toViewController.view.frame = _transitionView.bounds;
+            [_transitionView addSubview:toViewController.view];
+            
+            NSInteger tabIndex = [self.tabBar.items indexOfObject:self.tabBar.selectedItem];
+            if (tabIndex != _selectedIndex) {
+                [self.tabBar setSelectedItem:self.tabBar.items[_selectedIndex]];
+            }
+            
+            if ([self.delegate respondsToSelector:@selector(tabBarController:didSelectViewController:)]) {
+                [self.delegate tabBarController:self didSelectViewController:toViewController];
+            }
+        }
+    }
 }
 
 #pragma mark - TabBar Delegate
 
-- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
-    NSUInteger selectedIndex = [_tabBarItems indexOfObject:item];
+- (void)tabBar:(UIView<IQTabBar> *)tabBar didSelectItem:(UITabBarItem *)item {
+    NSUInteger selectedIndex = [self.tabBar.items indexOfObject:item];
     [self setSelectedIndex:selectedIndex];
 }
 
 #pragma mark - Private methods
 
-- (void)setSelectedIndex:(NSUInteger)newSelectedIndex animated:(BOOL)animated {
-    NSAssert(newSelectedIndex < [self.viewControllers count], @"View controller index out of bounds");
-    
-    if ([self.delegate respondsToSelector:@selector(tabBarController:shouldSelectViewController:)]) {
-        UIViewController * toViewController = self.viewControllers[newSelectedIndex];
-        if (![self.delegate tabBarController:self shouldSelectViewController:toViewController]) {
-            return;
-        }
-    }
-    
-    if(![self isViewLoaded]) {
-        _selectedIndex = newSelectedIndex;
-    }
-    else if(_selectedIndex != newSelectedIndex) {
-        UIViewController * fromViewController = (_selectedIndex != NSNotFound) ? self.viewControllers[_selectedIndex] : nil;
-        UIViewController * toViewController = self.viewControllers[newSelectedIndex];
-
-        _selectedIndex = newSelectedIndex;
-
-        if(fromViewController) {
-            [fromViewController willMoveToParentViewController:nil];
-            [fromViewController removeFromParentViewController];
-            [fromViewController.view removeFromSuperview];
-        }
-        
-        [toViewController willMoveToParentViewController:self];
-        [self addChildViewController:toViewController];
-        [toViewController didMoveToParentViewController:self];
-
-        toViewController.view.frame = _transitionView.bounds;
-        [_transitionView addSubview:toViewController.view];
-        
-        NSInteger tabIndex = [_tabBarItems indexOfObject:_tabBar.selectedItem];
-        if (tabIndex != _selectedIndex) {
-            [_tabBar setSelectedItem:_tabBarItems[_selectedIndex]];
-        }
-        
-        if ([self.delegate respondsToSelector:@selector(tabBarController:didSelectViewController:)]) {
-            [self.delegate tabBarController:self didSelectViewController:toViewController];
-        }
-    }
-}
-
 - (void)rebuildTabBarItemsAnimated:(BOOL)animated {
-    _tabBarItems = [NSMutableArray array];
+    NSMutableArray * tabBarItems = [NSMutableArray array];
     
     for (NSInteger index = 0; index < [_viewControllers count]; index++) {
         UIViewController * controller = _viewControllers[index];
         if(controller.tabBarItem) {
-            [_tabBarItems insertObject:controller.tabBarItem atIndex:index];
+            [tabBarItems insertObject:controller.tabBarItem atIndex:index];
         }
         else {
             UITabBarItem * tabBarItem = [[UITabBarItem alloc] initWithTitle:controller.title image:[UIImage new] tag:index];
-            [_tabBarItems insertObject:tabBarItem atIndex:index];
+            [tabBarItems insertObject:tabBarItem atIndex:index];
         }
     }
     
-    [_tabBar setItems:_tabBarItems animated:animated];
+    [self.tabBar setItems:tabBarItems animated:animated];
     
-    if(_selectedIndex > 0 && _selectedIndex < [_tabBarItems count]) {
-        [_tabBar setSelectedItem:_tabBarItems[_selectedIndex]];
+    if(_selectedIndex > 0 && _selectedIndex < [tabBarItems count]) {
+        [self.tabBar setSelectedItem:tabBarItems[_selectedIndex]];
     }
 }
 

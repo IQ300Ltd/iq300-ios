@@ -52,10 +52,10 @@
 }
 
 - (id)initWithString:(NSString *)badgeString withScale:(CGFloat)scale withStyle:(IQBadgeStyle*)style {
-    self = [super initWithFrame:CGRectMake(0, 0, 25, 25)];
+    self = [super initWithFrame:CGRectMake(0, 0, BADGE_MIN_SIZE, BADGE_MIN_SIZE)];
     if(self != nil) {
         _badgeValue = badgeString;
-        _badgeMinSize = 25;
+        _badgeMinSize = BADGE_MIN_SIZE;
 
         self.contentScaleFactor = [[UIScreen mainScreen] scale];
         self.backgroundColor = [UIColor clearColor];
@@ -64,6 +64,7 @@
         self.badgeScaleFactor = scale;
         self.frameLineHeight = 1.5f;
         [self autoBadgeSizeWithString:badgeString];
+        self.userInteractionEnabled = NO;
     }
     return self;
 }
@@ -101,8 +102,9 @@
     CGFloat flexSpace = 1.0f;
     
     if ([badgeString length] > 2) {
-        flexSpace = [badgeString length];
-        rectWidth = self.badgeMinSize + (stringSize.width + flexSpace); rectHeight = self.badgeMinSize;
+        flexSpace = -10;//[badgeString length];
+        rectWidth = self.badgeMinSize + (stringSize.width + flexSpace);
+        rectHeight = self.badgeMinSize;
         retValue = CGSizeMake(rectWidth * self.badgeScaleFactor, rectHeight * self.badgeScaleFactor);
     }
     else {
@@ -225,7 +227,8 @@
         UIFont *textFont =  [self fontForBadgeWithSize:sizeOfFont];
         NSDictionary *fontAttr = @{ NSFontAttributeName : textFont, NSForegroundColorAttributeName : self.badgeStyle.badgeTextColor };
         CGSize textSize = [self.badgeValue sizeWithAttributes:fontAttr];
-        CGPoint textPoint = CGPointMake((rect.size.width/2-textSize.width/2), (rect.size.height/2-textSize.height/2) - 0.5f);
+        CGPoint textPoint = CGPointMake((rect.size.width / 2.0f - textSize.width / 2.0f) + 0.5f,
+                                        (rect.size.height / 2.0f - textSize.height / 2.0f) - 0.5f);
         [self.badgeValue drawAtPoint:textPoint withAttributes:fontAttr];
     }
 }

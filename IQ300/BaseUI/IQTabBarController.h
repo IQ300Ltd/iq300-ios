@@ -6,16 +6,20 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "IQTabBar.h"
 
 @protocol IQTabBarControllerDelegate;
 
-@interface IQTabBarController : UIViewController <UITabBarDelegate>
+@interface IQTabBarController : UIViewController <IQTabBarDelegate> {
+@protected
+    UIView * _transitionView;
+    UIView * _separatorView;
+}
 
 @property (nonatomic, copy) NSArray *viewControllers;
 @property (nonatomic, assign) UIViewController * selectedViewController;
 @property (nonatomic, assign) NSUInteger selectedIndex;
-@property (nonatomic, readonly) UITabBar * tabBar;
+@property (nonatomic, strong) UIView<IQTabBar> * tabBar;
 
 @property (nonatomic, getter=isSeparatorHidden) BOOL separatorHidden;
 @property (nonatomic, assign) CGFloat separatorHeight;
@@ -24,6 +28,7 @@
 @property(nonatomic, weak) id<IQTabBarControllerDelegate> delegate;
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated;
+- (void)setSelectedIndex:(NSUInteger)newSelectedIndex animated:(BOOL)animated;
 
 @end
 

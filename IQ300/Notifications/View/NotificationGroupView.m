@@ -11,12 +11,19 @@
 #define HEADER_HEIGHT 52.0f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xc0c0c0]
 
+@interface NotificationGroupView() {
+    BOOL _headerViewHidden;
+}
+
+@end
+
 @implementation NotificationGroupView
 
 - (id)init {
     self = [super init];
     
     if (self) {
+        _headerViewHidden = NO;
         _headerView = [[BottomLineView alloc] init];
         _headerView.bottomLineColor = SEPARATOR_COLOR;
         _headerView.bottomLineHeight = 0.5f;
@@ -45,25 +52,35 @@
     [super layoutSubviews];
     
     CGRect actualBounds = self.bounds;
-    _headerView.frame = CGRectMake(actualBounds.origin.x,
-                                   actualBounds.origin.y,
-                                   actualBounds.size.width,
-                                   HEADER_HEIGHT);
+    if (!_headerViewHidden) {
+        _headerView.frame = CGRectMake(actualBounds.origin.x,
+                                       actualBounds.origin.y,
+                                       actualBounds.size.width,
+                                       HEADER_HEIGHT);
+        
+        CGSize backButtonImageSize = (IS_IPAD) ? CGSizeZero : [_backButton imageForState:UIControlStateNormal].size;
+        _backButton.frame = CGRectMake(-4.0f,
+                                       (_headerView.frame.size.height - backButtonImageSize.height) / 2,
+                                       backButtonImageSize.width,
+                                       backButtonImageSize.height);
+        
+        CGFloat titleX = (IS_IPAD) ? actualBounds.origin.x + 10.0f : CGRectRight(_backButton.frame) - 5.0f;
+        _titleLabel.frame = CGRectMake(titleX,
+                                       actualBounds.origin.y,
+                                       _headerView.frame.size.width - titleX,
+                                       _headerView.frame.size.height);
+    }
     
-    CGSize backButtonImageSize = [_backButton imageForState:UIControlStateNormal].size;
-    _backButton.frame = CGRectMake(-4.0f,
-                                   (_headerView.frame.size.height - backButtonImageSize.height) / 2,
-                                   backButtonImageSize.width,
-                                   backButtonImageSize.height);
-    
-    CGFloat titleX = CGRectRight(_backButton.frame) - 5.0f;
-    _titleLabel.frame = CGRectMake(titleX,
-                                   0.0f,
-                                   _headerView.frame.size.width - titleX,
-                                   _headerView.frame.size.height);
-    
-    self.tableView.frame = UIEdgeInsetsInsetRect(actualBounds, UIEdgeInsetsMake(HEADER_HEIGHT, 0, 0, 0));
+    UIEdgeInsets tableInsets = (_headerViewHidden) ? UIEdgeInsetsZero : UIEdgeInsetsMake(HEADER_HEIGHT, 0, 0, 0);
+    self.tableView.frame = UIEdgeInsetsInsetRect(actualBounds, tableInsets);
     self.noDataLabel.frame = self.tableView.frame;
+}
+
+- (void)setHeaderViewHidden:(BOOL)hidden {
+    if (_headerViewHidden != hidden) {
+        _headerViewHidden = hidden;
+        [self setNeedsLayout];
+    }
 }
 
 @end

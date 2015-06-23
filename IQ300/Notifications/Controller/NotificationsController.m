@@ -61,7 +61,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-        
+    
     _mainView.noDataLabel.text = NSLocalizedString((self.model.loadUnreadOnly) ? NoUnreadNotificationFound : NoNotificationFound, nil);
     
     _menuModel = [[NotificationsMenuModel alloc] init];
@@ -89,8 +89,16 @@
      }
      position:SVPullToRefreshPositionBottom];
     
-    if(self.model.group.lastNotification) {
+    IQNotification * notification = self.model.group.lastNotification;
+    if([notification.notificable.title length] > 0) {
         _mainView.titleLabel.text = self.model.group.lastNotification.notificable.title;
+    }
+    else {
+#ifdef IPAD
+        [_mainView setHeaderViewHidden:YES];
+#else
+        _mainView.titleLabel.text = NSLocalizedString(notification.notificable.type, nil);
+#endif
     }
 }
 
@@ -297,7 +305,8 @@
 }
 
 - (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
-    NSString * title = notification.notificable.title;
+    NSString * title = ([notification.notificable.title length] > 0) ? notification.notificable.title :
+                                                                       NSLocalizedString(notification.notificable.type, nil);
     NSNumber * commentId = notification.commentId;
     [[IQService sharedService] discussionWithId:notification.discussionId
                                         handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {

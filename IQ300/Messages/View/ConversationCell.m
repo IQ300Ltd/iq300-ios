@@ -16,14 +16,20 @@
 
 #define DEFAULT_AVATAR_IMAGE @"default_avatar.png"
 #define USER_ICON_SEZE 20
-#define ATTACHMENT_VIEW_HEIGHT 15.0f
 #define HEIGHT_DELTA 1.0f
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
 #define CELL_HEADER_MIN_HEIGHT USER_ICON_SEZE
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
-#define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+
+#ifdef IPAD
+#define LABELS_FONT [UIFont fontWithName:IQ_HELVETICA size:14]
+#define ATTACHMENT_VIEW_HEIGHT 15.0f
+#else
+#define LABELS_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#define ATTACHMENT_VIEW_HEIGHT 15.0f
+#endif
 
 @interface ConversationCell() {
     BOOL _lastCommentIsMine;
@@ -39,7 +45,7 @@
     CGFloat height = CONVERSATION_CELL_MIN_HEIGHT;
 
     if([item.lastComment.body length] > 0) {
-        CGSize descriptionSize = [item.lastComment.body sizeWithFont:DESCRIPTION_LABEL_FONT
+        CGSize descriptionSize = [item.lastComment.body sizeWithFont:LABELS_FONT
                                                    constrainedToSize:CGSizeMake(descriptionWidth, CONVERSATION_CELL_MAX_HEIGHT)
                                                        lineBreakMode:NSLineBreakByWordWrapping];
         height = MAX(descriptionY + descriptionSize.height + VERTICAL_PADDING * 2.0f + DESCRIPTION_Y_OFFSET + HEIGHT_DELTA,
@@ -79,20 +85,20 @@
         [contentView addSubview:_userImageView];
         
         _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
-                                             font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                             font:LABELS_FONT
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
         _userNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x358bae]
-                                                 font:[UIFont fontWithName:IQ_HELVETICA size:13]
+                                                 font:LABELS_FONT
                                         localaizedKey:nil];
         _userNameLabel.backgroundColor = [UIColor clearColor];
         _userNameLabel.textAlignment = NSTextAlignmentLeft;
         [contentView addSubview:_userNameLabel];
                 
         _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x8b8b8b]
-                                                    font:DESCRIPTION_LABEL_FONT
+                                                    font:LABELS_FONT
                                            localaizedKey:nil];
         [contentView addSubview:_descriptionLabel];
         
@@ -101,15 +107,16 @@
         style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
      
         _badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
-        _badgeView.badgeMinSize = 17;
-        _badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:10];
+        _badgeView.badgeMinSize = (IS_IPAD) ? 26 : 17;
+        _badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 13 : 10];
         [_badgeView setHidden:YES];
         [contentView addSubview:_badgeView];
         
         _attachButton = [[UIButton alloc] init];
         [_attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
         [_attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateDisabled];
-        [_attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:11]];
+        [_attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA
+                                                          size:(IS_IPAD) ? 13 : 11]];
         [_attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
         [_attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateDisabled];
         [_attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
@@ -138,10 +145,10 @@
                                       USER_ICON_SEZE,
                                       USER_ICON_SEZE);
 
-    CGFloat dateMaxWidth = 150;
+    CGFloat dateMaxWidth = 160;
     CGSize dateLabelSize = [_dateLabel.text sizeWithFont:_dateLabel.font
                                        constrainedToSize:CGSizeMake(dateMaxWidth, CELL_HEADER_MIN_HEIGHT)
-                                           lineBreakMode:_dateLabel.lineBreakMode];
+                                           lineBreakMode:NSLineBreakByWordWrapping];
     CGFloat dateLabelWidth = MIN(dateLabelSize.width + 6.0f, dateMaxWidth);
     CGFloat dateLabelX = actualBounds.origin.x + actualBounds.size.width - dateLabelWidth;
     _dateLabel.frame = CGRectMake(dateLabelX,
@@ -182,7 +189,7 @@
     }
     
     _badgeView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - _badgeView.frame.size.width,
-                                  actualBounds.origin.y + (actualBounds.size.height - _badgeView.frame.size.height) / 2,
+                                  CGRectBottom(_dateLabel.frame),
                                   _badgeView.frame.size.width,
                                   _badgeView.frame.size.height);
 }

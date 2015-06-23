@@ -345,7 +345,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 - (void)reinitUrlSession {
     if (_backgroundSession) {
-        [_backgroundSession resetWithCompletionHandler:nil];
+        [_backgroundSession resetWithCompletionHandler:^{}];
         _backgroundSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration backgroundSessionConfiguration:OBIBackgroundSessionIdenttificator]
                                                            delegate:self
                                                       delegateQueue:_taskQueue];
