@@ -75,6 +75,11 @@
     }
 }
 
+- (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
+    _policyInspector = policyInspector;
+    [self updateInterfaceFoPolicies];
+}
+
 - (void)setBadgeValue:(NSNumber *)badgeValue {
     if(!self.model.resetReadFlagAutomatically) {
         self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);

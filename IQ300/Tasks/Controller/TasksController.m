@@ -30,7 +30,6 @@
 @interface TasksController () <TasksFilterControllerDelegate> {
     TasksView * _mainView;
     TasksMenuModel * _menuModel;
-    BOOL _isTaskOpenProcessing;
     UITapGestureRecognizer * _singleTapGesture;
     BOOL _highlightTasks;
 }
@@ -122,8 +121,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
  
-    _isTaskOpenProcessing = NO;
-
     [self.leftMenuController setMenuResponder:self];
     [self.leftMenuController setTableHaderHidden:YES];
     [self.leftMenuController setModel:_menuModel];
@@ -216,23 +213,10 @@
     controller.policyInspector = policyInspector;
     controller.hidesBottomBarWhenPushed = YES;
     
-    _isTaskOpenProcessing = YES;
+    [GAIService sendEventForCategory:GAITasksListEventCategory
+                              action:GAIOpenTaskEventAction];
     
-    [policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
-        if (error) {
-            NSLog(@"Failed request policies for taskId %@ with error:%@", task.taskId, error);
-        }
-
-        [GAIService sendEventForCategory:GAITasksListEventCategory
-                                  action:GAIOpenTaskEventAction];
-
-        [self.navigationController pushViewController:controller animated:YES];
-        _isTaskOpenProcessing = NO;
-    }];
-}
-
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    return (!_isTaskOpenProcessing) ? indexPath : nil;
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 #pragma mark - IQTableModel Delegate
@@ -330,21 +314,18 @@
 }
 
 - (void)createTaskAction:(UIButton*)sender {
-    if (!_isTaskOpenProcessing) {
-        _isTaskOpenProcessing = YES;
-        [[IQService sharedService] mostUsedCommunityWithHandler:^(BOOL success, id community, NSData *responseData, NSError *error) {
-            if (success) {
-                TaskModel * model = [[TaskModel alloc] init];
-                model.defaultCommunity = community;
-                
-                TaskController * controller = [[TaskController alloc] init];
-                controller.model = model;
-                controller.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:controller
-                                                     animated:YES];
-            }
-        }];
-    }
+    [[IQService sharedService] mostUsedCommunityWithHandler:^(BOOL success, id community, NSData *responseData, NSError *error) {
+        if (success) {
+            TaskModel * model = [[TaskModel alloc] init];
+            model.defaultCommunity = community;
+            
+            TaskController * controller = [[TaskController alloc] init];
+            controller.model = model;
+            controller.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:controller
+                                                 animated:YES];
+        }
+    }];
 }
 
 - (void)updateNoDataLabelVisibility {
