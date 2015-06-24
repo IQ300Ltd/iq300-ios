@@ -22,6 +22,12 @@
 #import "IQService.h"
 #import "IQUser.h"
 
+#ifndef IPAD
+#import <MMDrawerController/UIViewController+MMDrawerController.h>
+#import "FeedbacksController.h"
+#import "MTableFooterView.h"
+#endif
+
 #define SECTION_HEIGHT 39
 #define ACCOUNT_HEADER_HEIGHT 64.5
 #define TABLE_HEADER_HEIGHT 42.5
@@ -55,8 +61,8 @@ CGFloat IQStatusBarHeight()
     self.view.backgroundColor = MENU_BACKGROUND_COLOR;
     
     _accountHeader = [[AccountHeaderView alloc] init];
-    [_accountHeader.editButton addTarget:self
-                                  action:@selector(editButtonAction:)
+    [_accountHeader.logoutButton addTarget:self
+                                  action:@selector(logoutButtonAction:)
                         forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_accountHeader];
     
@@ -65,7 +71,7 @@ CGFloat IQStatusBarHeight()
     _tableView = [[ExpandableTableView alloc] init];
     _tableView.backgroundColor = self.view.backgroundColor;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.tableFooterView = [UIView new];
+    _tableView.tableFooterView = [[UIView alloc] init];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     
@@ -89,7 +95,7 @@ CGFloat IQStatusBarHeight()
                                       ACCOUNT_HEADER_HEIGHT);
     
     CGFloat tableViewOffset = _accountHeader.frame.origin.y + _accountHeader.frame.size.height;
-    _tableView.frame = CGRectMake(0,
+    _tableView.frame = CGRectMake(actualBounds.origin.x,
                                   tableViewOffset,
                                   MIN(MENU_WIDTH, actualBounds.size.width),
                                   actualBounds.size.height - tableViewOffset);
@@ -274,7 +280,7 @@ CGFloat IQStatusBarHeight()
     return headerView;
 }
 
-- (void)editButtonAction:(UIButton*)sender {
+- (void)logoutButtonAction:(UIButton*)sender {
     [AppDelegate logout];
     [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
                                                         object:nil];
