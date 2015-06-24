@@ -20,6 +20,7 @@
 #import "TaskPolicyInspector.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQSession.h"
+#import "IQService.h"
 
 @interface TDocumentsController () {
     TaskAttachmentsModel * _attachmentsModel;
@@ -219,11 +220,12 @@
                         attachmentType:[asset MIMEType]
                             completion:^(NSError *error) {
                                 if (error) {
-                                    [UIAlertView showWithTitle:@"IQ300"
-                                                       message:NSLocalizedString(@"Failed add document to task", nil)
-                                             cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                             otherButtonTitles:nil
-                                                      tapBlock:nil];
+                                    if([IQService sharedService].serviceReachabilityStatus == TCServicekReachabilityStatusNotReachable) {
+                                        [weakSelf showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+                                    }
+                                    else {
+                                        [weakSelf showErrorAlertWithMessage:NSLocalizedString(@"Failed add document to task", nil)];
+                                    }
                                 }
                                 [weakSelf hideActivityIndicator];
                             }];

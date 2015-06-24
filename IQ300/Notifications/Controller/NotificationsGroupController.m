@@ -247,9 +247,9 @@
                     [weakSelf updateNoDataLabelVisibility];
                 }];
             }
-            else {
-                [weakSelf proccessServiceError:error];
-            }
+        }
+        else {
+            [weakSelf proccessServiceError:error];
         }
     };
     

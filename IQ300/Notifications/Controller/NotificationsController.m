@@ -217,23 +217,28 @@
 }
 
 - (void)markAllAsReaded:(id)sender {
-    if(self.model.unreadItemsCount > 0) {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_readed_question", nil)
-                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
-                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              if(buttonIndex == 1) {
-                                  [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
-                                      [self proccessServiceError:error];
-                                  }];
-                              }
-                          }];
+    if([IQService sharedService].serviceReachabilityStatus == TCServicekReachabilityStatusNotReachable) {
+        [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
     }
     else {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(NoUnreadNotificationFound, nil)
-                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                 otherButtonTitles:nil
-                          tapBlock:nil];
+        if(self.model.unreadItemsCount > 0) {
+            [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_readed_question", nil)
+                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                     otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                              tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                  if(buttonIndex == 1) {
+                                      [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
+                                          [self proccessServiceError:error];
+                                      }];
+                                  }
+                              }];
+        }
+        else {
+            [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(NoUnreadNotificationFound, nil)
+                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                     otherButtonTitles:nil
+                              tapBlock:nil];
+        }
     }
 }
 
