@@ -16,6 +16,6 @@
 
 @property (nonatomic, readonly) UIImageView * userImageView;
 @property (nonatomic, readonly) UILabel * userNameLabel;
-@property (nonatomic, readonly) UIButton * editButton;
+@property (nonatomic, readonly) UIButton * logoutButton;
 
 @end

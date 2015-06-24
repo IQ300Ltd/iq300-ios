@@ -39,12 +39,12 @@
         _userNameLabel.text = @"Noname";
         [self addSubview:_userNameLabel];
         
-        _editButton = [[UIButton alloc] init];
-        [_editButton setTitle:NSLocalizedString(@"Logout", nil) forState:UIControlStateNormal];
-        [_editButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
-        [_editButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        _editButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        [self addSubview:_editButton];
+        _logoutButton = [[UIButton alloc] init];
+        [_logoutButton setTitle:NSLocalizedString(@"Logout", nil) forState:UIControlStateNormal];
+        [_logoutButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
+        [_logoutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _logoutButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [self addSubview:_logoutButton];
     }
     return self;
 }
@@ -67,7 +67,7 @@
                                       mainRect.size.width - userNameLabelX,
                                       17);
     
-    _editButton.frame = CGRectMake(_userNameLabel.frame.origin.x,
+    _logoutButton.frame = CGRectMake(_userNameLabel.frame.origin.x,
                                    _userNameLabel.frame.origin.y + _userNameLabel.frame.size.height + 7.0f,
                                    54,
                                    9);

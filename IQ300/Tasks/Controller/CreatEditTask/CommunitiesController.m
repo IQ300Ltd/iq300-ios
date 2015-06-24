@@ -12,8 +12,6 @@
 #import "IQSession.h"
 #import "IQCommunity.h"
 
-#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x358bae]
-
 @interface CommunitiesController () {
 }
 
@@ -89,7 +87,7 @@
     }
     
     IQCommunity * item = [self.model itemAtIndexPath:indexPath];
-    cell.titleTextView.text = item.title;
+    cell.item = item.title;
     
     BOOL isCellSelected = [self.model isItemSelectedAtIndexPath:indexPath];
     [cell setAccessoryType:(isCellSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
