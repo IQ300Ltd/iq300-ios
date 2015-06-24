@@ -101,7 +101,15 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
-    [self updateTask];
+    
+    if (self.taskId) {
+        [[IQService sharedService] taskWithId:self.taskId
+                                      handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                          if (success) {
+                                              self.task = task;
+                                          }
+                                      }];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
