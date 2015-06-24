@@ -22,12 +22,6 @@
 #import "IQService.h"
 #import "IQUser.h"
 
-#ifndef IPAD
-#import <MMDrawerController/UIViewController+MMDrawerController.h>
-#import "FeedbacksController.h"
-#import "MTableFooterView.h"
-#endif
-
 #define SECTION_HEIGHT 39
 #define ACCOUNT_HEADER_HEIGHT 64.5
 #define TABLE_HEADER_HEIGHT 42.5
