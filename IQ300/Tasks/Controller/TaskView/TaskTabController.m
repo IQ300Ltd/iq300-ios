@@ -79,14 +79,7 @@
 
 - (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
     _policyInspector = policyInspector;
-    [_policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
-        if (!error) {
-            [self updateControllersInspector:_policyInspector];
-        }
-        else {
-            NSLog(@"Failed request policies for taskId %@ with error:%@", _task.taskId, error);
-        }
-    }];
+    [self updateControllersInspector:_policyInspector];
 }
 
 - (void)viewDidLoad {
@@ -119,6 +112,14 @@
                                                object:nil];
 
     [self updateCounters];
+    [_policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self updateControllersInspector:_policyInspector];
+        }
+        else {
+            NSLog(@"Failed request policies for taskId %@ with error:%@", _task.taskId, error);
+        }
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

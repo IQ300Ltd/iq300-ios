@@ -152,3 +152,8 @@
 "Thank you for registering!" = "Thank you for registering!";
 "registration_status_message" = "Account created. In your e-mail letter with instructions on how to activate.";
 "Account activation" = "Account activation...";
+"Feedback" = "Feedback";
+"No feedbacks" = "No feedbacks";
+"New feedback" = "New feedback";
+"Feedback type" = "Feedback type";
+"Feedback category" = "Feedback category";

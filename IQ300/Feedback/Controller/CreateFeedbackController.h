@@ -7,10 +7,10 @@
 //
 
 #import "IQTableBaseController.h"
-#import "FeedbackModel.h"
+#import "CreateFeedbackModel.h"
 
-@interface FeedbackController : IQTableBaseController
+@interface CreateFeedbackController : IQTableBaseController
 
-@property (nonatomic, strong) FeedbackModel * model;
+@property (nonatomic, strong) CreateFeedbackModel * model;
 
 @end

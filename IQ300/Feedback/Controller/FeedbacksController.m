@@ -7,6 +7,7 @@
 //
 
 #import "FeedbacksController.h"
+#import "CreateFeedbackController.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 
 @interface FeedbacksController ()
@@ -17,9 +18,36 @@
 
 @dynamic model;
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    
+    if (self) {
+        self.needFullReload = YES;
+        
+        self.model = [[FeedbacksModel alloc] init];
+        
+        self.title = NSLocalizedString(@"Feedback", nil);
+    }
+    
+    return self;
+}
+
+- (BOOL)isLeftMenuEnabled {
+    return NO;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.tableView.tableFooterView = [[UIView alloc] init];
+
+    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(backButtonAction:)];
+    self.navigationItem.leftBarButtonItem = backBarButton;
+
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
@@ -37,7 +65,7 @@
      }
      position:SVPullToRefreshPositionBottom];
     
-    [self.noDataLabel setText:NSLocalizedString(@"No Feedbacks", nil)];
+    [self.noDataLabel setText:NSLocalizedString(@"No feedbacks", nil)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -53,7 +81,14 @@
 #pragma mark - Private methods
 
 - (void)createNewAction:(id)sender {
+    CreateFeedbackModel * model = [[CreateFeedbackModel alloc] init];
+    CreateFeedbackController * controller = [[CreateFeedbackController alloc] init];
+    controller.model = model;
+    [self.navigationController pushViewController:controller animated:YES];
+}
 
+- (void)backButtonAction:(UIButton*)sender {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end
