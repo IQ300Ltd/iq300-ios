@@ -129,7 +129,7 @@ CGFloat IQStatusBarHeight()
     _tableView.frame = CGRectMake(actualBounds.origin.x,
                                   tableViewOffset,
                                   MIN(MENU_WIDTH, actualBounds.size.width),
-                                  actualBounds.size.height - tableViewOffset - MENU_ITEM_HEIGHT);
+                                  actualBounds.size.height - tableViewOffset - MENU_ITEM_HEIGHT + 1.0f);
 #endif
 }
 
