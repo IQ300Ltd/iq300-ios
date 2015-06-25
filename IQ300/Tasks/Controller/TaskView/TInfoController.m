@@ -94,6 +94,12 @@
 - (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
     _policyInspector = policyInspector;
     [self updateInterfaceFoPolicies];
+    if (self.isViewLoaded) {
+        [self.tableView beginUpdates];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                      withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView endUpdates];
+    }
 }
 
 - (void)viewDidLoad {
@@ -426,7 +432,7 @@
         if (error == nil) {
             [self updateInterfaceFoPolicies];
             
-            if ([self isVisible]) {
+            if (self.isVisible) {
                 [self.tableView beginUpdates];
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                               withRowAnimation:UITableViewRowAnimationNone];
