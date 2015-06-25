@@ -77,6 +77,8 @@ CGFloat IQStatusBarHeight()
     _tableView.tableFooterView = [[UIView alloc] init];
     _tableView.delegate = self;
     _tableView.dataSource = self;
+    _tableView.showsHorizontalScrollIndicator = NO;
+    _tableView.showsVerticalScrollIndicator = NO;
     
     [self.view addSubview:_tableView];
     
