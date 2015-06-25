@@ -5,16 +5,29 @@
 //  Created by Tayphoon on 02.06.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
+#import <objc/runtime.h>
 
 #import "LeftSideTabBar.h"
 
 CGFloat const LogoImageHeight = 54.0f;
 
-@interface UITabBarItem()
+NSString const * UITabBarItemViewKey = @"UITabBarItemViewKey";
 
-- (id)view;
-- (void)setView:(id)view;
-- (void)setViewIsCustom:(BOOL)isCustomView;
+@interface UITabBarItem(TabItemView)
+
+@property (nonatomic, strong) id tabItemView;
+
+@end
+
+@implementation UITabBarItem(TabItemView)
+
+- (void)setTabItemView:(id)tabItemView {
+    objc_setAssociatedObject(self, &UITabBarItemViewKey, tabItemView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (id)tabItemView {
+    return objc_getAssociatedObject(self, &UITabBarItemViewKey);
+}
 
 @end
 
@@ -51,7 +64,7 @@ CGFloat const LogoImageHeight = 54.0f;
 - (void)setSelectedItem:(UITabBarItem *)selectedItem {
     if (_selectedItem != selectedItem) {
         if (_selectedItem) {
-            UIButton * tabItemButton = _selectedItem.view;
+            UIButton * tabItemButton = _selectedItem.tabItemView;
             
             [tabItemButton setImage:_selectedItem.image
                            forState:UIControlStateNormal];
@@ -63,7 +76,7 @@ CGFloat const LogoImageHeight = 54.0f;
         _selectedItem = selectedItem;
         
         if (_selectedItem) {
-            UIButton * tabItemButton = _selectedItem.view;
+            UIButton * tabItemButton = _selectedItem.tabItemView;
             UIImage * selectedImage = _selectedItem.selectedImage;
             
             [tabItemButton setImage:selectedImage
@@ -76,7 +89,7 @@ CGFloat const LogoImageHeight = 54.0f;
 
 - (void)setItems:(NSArray *)items animated:(BOOL)animated {
     for (UITabBarItem * tabItem in _items) {
-        id tabItemView = tabItem.view;
+        id tabItemView = tabItem.tabItemView;
         [tabItemView removeFromSuperview];
     }
     
@@ -85,7 +98,7 @@ CGFloat const LogoImageHeight = 54.0f;
     if ([_items count] > 0) {
         for (NSUInteger index = 0; index < [_items count]; index++) {
             UITabBarItem * tabItem = _items[index];
-            id tabItemView = tabItem.view;
+            id tabItemView = tabItem.tabItemView;
             if(tabItemView == nil) {
                 UIButton * tabItemButton = [[UIButton alloc] init];
                 tabItemButton.adjustsImageWhenHighlighted = NO;
@@ -98,8 +111,10 @@ CGFloat const LogoImageHeight = 54.0f;
                                   action:@selector(tabItemButtonAction:)
                         forControlEvents:UIControlEventTouchUpInside];
                 tabItemView = tabItemButton;
-                [tabItem setView:tabItemView];
-                [tabItem setViewIsCustom:YES];
+                [tabItem setTabItemView:tabItemView];
+                if ([tabItem respondsToSelector:@selector(setView:)]) {
+                    [tabItem setValue:tabItemView forKey:@"view"];
+                }
             }
             
             [self addSubview:tabItemView];
@@ -122,7 +137,7 @@ CGFloat const LogoImageHeight = 54.0f;
     CGFloat tabItemViewY = CGRectBottom(_logoImageView.frame);
 
     for (UITabBarItem * item in _items) {
-        UIView * tabItemView = item.view;
+        UIView * tabItemView = item.tabItemView;
         tabItemView.frame = CGRectMake(actualBounds.origin.x,
                                 tabItemViewY,
                                 actualBounds.size.width - 1.0f,
@@ -137,7 +152,7 @@ CGFloat const LogoImageHeight = 54.0f;
     _backgroundImageView.image = [self internalBackgroundImage];
     
     if (_selectedItem) {
-        UIButton * tabItemButton = _selectedItem.view;
+        UIButton * tabItemButton = _selectedItem.tabItemView;
         [tabItemButton setBackgroundImage:[self internalSelectionIndicatorImage]
                                  forState:UIControlStateNormal];
     }
