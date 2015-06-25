@@ -8,6 +8,7 @@
 
 #import "LeftSideTabBarController.h"
 #import "LeftSideTabBar.h"
+#import "FeedbacksController.h"
 
 CGFloat const TabBarWidth = 64.0f;
 NSTimeInterval const LSAnimationDuration = 0.15f;
@@ -21,7 +22,12 @@ NSTimeInterval const LSAnimationDuration = 0.15f;
 @implementation LeftSideTabBarController
 
 - (void)viewDidLoad {
-    self.tabBar = [[LeftSideTabBar alloc] init];
+    LeftSideTabBar * tabBar = [[LeftSideTabBar alloc] init];
+    [tabBar.feedbackButton addTarget:self
+                              action:@selector(feedbacButtonAction:)
+                    forControlEvents:UIControlEventTouchUpInside];
+    
+    self.tabBar = tabBar;
     self.tabBar.delegate = self;
     [self.view addSubview:self.tabBar];
     
@@ -178,6 +184,15 @@ NSTimeInterval const LSAnimationDuration = 0.15f;
     animation.duration = 0.35f;
     layer.frame = frame;
     [layer addAnimation:animation forKey:@"frame"];
+}
+
+- (void)feedbacButtonAction:(id)sender {
+    if ([self.selectedViewController isKindOfClass:[UINavigationController class]]) {
+        FeedbacksController * controller = [[FeedbacksController alloc] init];
+        
+        UINavigationController * navController = (UINavigationController*)self.selectedViewController;
+        [navController pushViewController:controller animated:YES];
+    }
 }
 
 @end

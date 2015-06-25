@@ -11,7 +11,9 @@
 @implementation FeedbacksModel
 
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion {
-    
+    if (completion) {
+        completion(nil);
+    }
 }
 
 @end

@@ -53,6 +53,17 @@ NSString const * UITabBarItemViewKey = @"UITabBarItemViewKey";
         _logoImageView.contentMode = UIViewContentModeCenter;
         [self addSubview:_logoImageView];
 
+        _feedbackButton = [[UIButton alloc] init];
+        _feedbackButton.clipsToBounds = YES;
+        _feedbackButton.adjustsImageWhenHighlighted = NO;
+        [_feedbackButton setImage:[UIImage imageNamed:@"feedback_ico.png"]
+                         forState:UIControlStateNormal];
+        
+        [_feedbackButton setImage:[UIImage imageNamed:@"feedback_ico_selected.png"]
+                         forState:UIControlStateHighlighted];
+        
+        [self addSubview:_feedbackButton];
+
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(appearanceDidChangeNotification)
                                                      name:@"_UIAppearanceInvocationsDidChangeNotification"
@@ -120,6 +131,8 @@ NSString const * UITabBarItemViewKey = @"UITabBarItemViewKey";
             [self addSubview:tabItemView];
         }
     }
+    
+    [self bringSubviewToFront:_feedbackButton];
 }
 
 - (void)layoutSubviews {
@@ -135,15 +148,21 @@ NSString const * UITabBarItemViewKey = @"UITabBarItemViewKey";
                                       LogoImageHeight);
     
     CGFloat tabItemViewY = CGRectBottom(_logoImageView.frame);
-
+    CGFloat itemsViewHeight = 64.0f;
+    
     for (UITabBarItem * item in _items) {
         UIView * tabItemView = item.tabItemView;
         tabItemView.frame = CGRectMake(actualBounds.origin.x,
                                 tabItemViewY,
                                 actualBounds.size.width - 1.0f,
-                                64.0f);
+                               itemsViewHeight);
         tabItemViewY += tabItemView.frame.size.height;
     }
+    
+    _feedbackButton.frame = CGRectMake(actualBounds.origin.x,
+                                       actualBounds.origin.y + actualBounds.size.height - itemsViewHeight,
+                                       actualBounds.size.width - 1.0f,
+                                       itemsViewHeight);
 }
 
 #pragma mark - UIAppearance notification

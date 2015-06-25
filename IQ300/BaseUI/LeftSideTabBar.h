@@ -14,6 +14,7 @@
 @property(nonatomic, copy)   NSArray * items;
 @property(nonatomic, assign) UITabBarItem * selectedItem;
 @property(nonatomic, strong) UIImage * selectionIndicatorImage;
+@property(nonatomic, strong) UIButton * feedbackButton;
 @property(nonatomic, strong) UIImage * backgroundImage;
 @property(nonatomic, assign) CGFloat itemWidth;
 
