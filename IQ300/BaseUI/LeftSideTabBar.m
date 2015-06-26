@@ -53,17 +53,6 @@ NSString const * UITabBarItemViewKey = @"UITabBarItemViewKey";
         _logoImageView.contentMode = UIViewContentModeCenter;
         [self addSubview:_logoImageView];
 
-        _feedbackButton = [[UIButton alloc] init];
-        _feedbackButton.clipsToBounds = YES;
-        _feedbackButton.adjustsImageWhenHighlighted = NO;
-        [_feedbackButton setImage:[UIImage imageNamed:@"feedback_ico.png"]
-                         forState:UIControlStateNormal];
-        
-        [_feedbackButton setImage:[UIImage imageNamed:@"feedback_ico_selected.png"]
-                         forState:UIControlStateHighlighted];
-        
-        [self addSubview:_feedbackButton];
-
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(appearanceDidChangeNotification)
                                                      name:@"_UIAppearanceInvocationsDidChangeNotification"
@@ -131,8 +120,6 @@ NSString const * UITabBarItemViewKey = @"UITabBarItemViewKey";
             [self addSubview:tabItemView];
         }
     }
-    
-    [self bringSubviewToFront:_feedbackButton];
 }
 
 - (void)layoutSubviews {
@@ -150,7 +137,10 @@ NSString const * UITabBarItemViewKey = @"UITabBarItemViewKey";
     CGFloat tabItemViewY = CGRectBottom(_logoImageView.frame);
     CGFloat itemsViewHeight = 64.0f;
     
-    for (UITabBarItem * item in _items) {
+    //Exclude last item
+    NSUInteger itemsCount = ([_items count] > 1) ? [_items count] - 1 : [_items count];
+    for (NSUInteger index = 0; index < itemsCount; index++) {
+        UITabBarItem * item = _items[index];
         UIView * tabItemView = item.tabItemView;
         tabItemView.frame = CGRectMake(actualBounds.origin.x,
                                 tabItemViewY,
@@ -159,10 +149,15 @@ NSString const * UITabBarItemViewKey = @"UITabBarItemViewKey";
         tabItemViewY += tabItemView.frame.size.height;
     }
     
-    _feedbackButton.frame = CGRectMake(actualBounds.origin.x,
+    //Move last item to bottom
+    if ([_items count] > 1) {
+        UITabBarItem * item = [_items lastObject];
+        UIView * tabItemView = item.tabItemView;
+        tabItemView.frame = CGRectMake(actualBounds.origin.x,
                                        actualBounds.origin.y + actualBounds.size.height - itemsViewHeight,
                                        actualBounds.size.width - 1.0f,
                                        itemsViewHeight);
+    }
 }
 
 #pragma mark - UIAppearance notification

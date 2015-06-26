@@ -11,6 +11,7 @@
 #define TABBAR_HEIGHT 44
 
 @interface IQTabBarController () {
+    __weak UIViewController * _presentedController;
 }
 
 @end
@@ -195,12 +196,18 @@
             
             _selectedIndex = newSelectedIndex;
          
+            if (!fromViewController) {
+                fromViewController = _presentedController;
+            }
+
             if(fromViewController) {
+                [self willTransitionFromViewController:fromViewController];
                 [fromViewController willMoveToParentViewController:nil];
                 [fromViewController removeFromParentViewController];
                 [fromViewController.view removeFromSuperview];
             }
             
+            [self willTransitionToViewController:toViewController];
             [toViewController willMoveToParentViewController:self];
             [self addChildViewController:toViewController];
             [toViewController didMoveToParentViewController:self];
@@ -218,6 +225,39 @@
             }
         }
     }
+}
+
+- (void)presentViewController:(UIViewController *)viewControllerToPresent {
+    UIViewController * fromViewController = (_selectedIndex != NSNotFound) ? self.viewControllers[_selectedIndex] : nil;
+    
+    if (!fromViewController) {
+        fromViewController = _presentedController;
+    }
+    
+    if(fromViewController) {
+        [self willTransitionFromViewController:fromViewController];
+        [fromViewController willMoveToParentViewController:nil];
+        [fromViewController removeFromParentViewController];
+        [fromViewController.view removeFromSuperview];
+    }
+    
+    [self willTransitionToViewController:_presentedController];
+    [viewControllerToPresent willMoveToParentViewController:self];
+    [self addChildViewController:viewControllerToPresent];
+    [viewControllerToPresent didMoveToParentViewController:self];
+    
+    viewControllerToPresent.view.frame = _transitionView.bounds;
+    [_transitionView addSubview:viewControllerToPresent.view];
+    _presentedController = viewControllerToPresent;
+    [self.tabBar setSelectedItem:nil];
+}
+
+- (void)willTransitionToViewController:(UIViewController *)viewController {
+    
+}
+
+- (void)willTransitionFromViewController:(UIViewController *)viewController {
+    
 }
 
 #pragma mark - TabBar Delegate

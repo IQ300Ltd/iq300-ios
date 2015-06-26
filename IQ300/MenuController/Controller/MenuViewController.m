@@ -88,10 +88,12 @@ CGFloat IQStatusBarHeight()
     _footerView.title = NSLocalizedString(@"Feedback", nil);
     [_footerView setActionBlock:^(MTableFooterView *footerView) {
         [weakSelf.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
+        
         FeedbacksController * controller = [[FeedbacksController alloc] init];
-        UITabBarController * tabController = (UITabBarController*)weakSelf.mm_drawerController.centerViewController;
-        UINavigationController * navController = (UINavigationController*)tabController.selectedViewController;
-        [navController pushViewController:controller animated:YES];
+        UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+        [weakSelf.mm_drawerController presentViewController:navigationController
+                                                   animated:YES
+                                                 completion:nil];
     }];
     [self.view addSubview:_footerView];
 #endif

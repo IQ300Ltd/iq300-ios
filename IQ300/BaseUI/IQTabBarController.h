@@ -25,10 +25,17 @@
 @property (nonatomic, assign) CGFloat separatorHeight;
 @property (nonatomic, strong) UIColor * separatorColor;
 
+@property (nonatomic, readonly) UIViewController * presentedController;
+
 @property(nonatomic, weak) id<IQTabBarControllerDelegate> delegate;
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated;
 - (void)setSelectedIndex:(NSUInteger)newSelectedIndex animated:(BOOL)animated;
+
+- (void)presentViewController:(UIViewController *)viewControllerToPresent;
+
+- (void)willTransitionToViewController:(UIViewController *)viewController;
+- (void)willTransitionFromViewController:(UIViewController *)viewController;
 
 @end
 

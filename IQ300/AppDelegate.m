@@ -33,6 +33,7 @@
 
 #ifdef IPAD
 #import "LeftSideTabBarController.h"
+#import "FeedbacksController.h"
 #endif
 
 #define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
@@ -140,10 +141,17 @@
 #else
     Class tabBarClass = [UITabBarController class];
 #endif
+   
     UITabBarController * center = [[tabBarClass alloc] init];
-    center.tabBar.layer.borderWidth = 0;
     
+#ifdef IPAD
+    FeedbacksController * feedbacksController = [[FeedbacksController alloc] init];
+    UINavigationController * feedbacksNav = [[navigationControllerClass alloc] initWithRootViewController:feedbacksController];
+    [center setViewControllers:@[notificationsNav, tasksNav, messagesNav, feedbacksNav]];
+#else
+    center.tabBar.layer.borderWidth = 0;
     [center setViewControllers:@[notificationsNav, tasksNav, messagesNav]];
+#endif
     
 #ifndef IPAD
     center.tabBar.backgroundImage = [UIImage imageNamed:@"tabbar_background.png"];
