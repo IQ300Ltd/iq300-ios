@@ -10,6 +10,11 @@
 
 @interface FeedbacksModel : IQTableManagedModel
 
+@property (nonatomic, assign) CGFloat cellWidth;
+@property (nonatomic, strong) NSString * search;
+
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
+
+- (void)setSubscribedToNotifications:(BOOL)subscribed;
 
 @end

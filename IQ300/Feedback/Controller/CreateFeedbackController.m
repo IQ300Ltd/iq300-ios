@@ -9,6 +9,9 @@
 #import "CreateFeedbackController.h"
 #import "IQDetailsTextCell.h"
 #import "ExtendedButton.h"
+#import "FeedbackCategoriesModel.h"
+#import "FeedbackTypesModel.h"
+#import "IQSelectionController.h"
 
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
@@ -19,6 +22,8 @@
     NSIndexPath * _editableIndexPath;
     UIView * _bottomSeparatorView;
     ExtendedButton * _doneButton;
+    FeedbackCategoriesModel * _categoriesModel;
+    FeedbackTypesModel * _typesModel;
 }
 
 @end
@@ -32,7 +37,10 @@
     
     if (self) {
         _tableBottomMarging = BOTTOM_VIEW_HEIGHT;
-            
+        
+        _categoriesModel = [[FeedbackCategoriesModel alloc] init];
+        _typesModel = [[FeedbackTypesModel alloc] init];
+        
         self.title = NSLocalizedString(@"New feedback", nil);
     }
     
@@ -122,6 +130,11 @@
         [cell.titleTextView resignFirstResponder];
     }
     
+    if (indexPath.row < 2) {
+        IQSelectionController * controller = [self controllerForItemIndexPath:indexPath];
+        controller.delegate = self;
+        [self.navigationController pushViewController:controller animated:YES];
+    }
 }
 
 #pragma mark - UITextViewDelegate Methods
@@ -164,6 +177,14 @@
                                       notification:notification];
 }
 
+#pragma mark - SelectionController delegate
+
+- (void)selectionControllerController:(IQSelectionController*)controller didSelectItem:(id)item {
+    NSIndexPath * editIndexPath = [NSIndexPath indexPathForItem:controller.view.tag inSection:0];
+    [self.model updateFieldAtIndexPath:editIndexPath
+                             withValue:item];
+}
+
 #pragma mark - Private methods
 
 - (void)backButtonAction:(UIButton*)sender {
@@ -171,6 +192,11 @@
 }
 
 - (void)saveButtonAction:(UIButton*)sender {
+    [self.model createFeedbackWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }];
 }
 
 - (NSIndexPath*)indexPathForCellChildView:(UIView*)childView {
@@ -225,6 +251,13 @@
                                       actualBounds.origin.y,
                                       actualBounds.size.width,
                                       actualBounds.origin.y + actualBounds.size.height - _tableBottomMarging);
+}
+
+- (IQSelectionController*)controllerForItemIndexPath:(NSIndexPath*)indexPath {
+    IQSelectionController * controller = [[IQSelectionController alloc] init];
+    controller.model = (indexPath.row == 0) ? _typesModel : _categoriesModel;
+    controller.view.tag = indexPath.row;
+    return controller;
 }
 
 @end

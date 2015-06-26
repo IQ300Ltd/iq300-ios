@@ -9,6 +9,8 @@
 #import "FeedbacksController.h"
 #import "CreateFeedbackController.h"
 #import "UIScrollView+PullToRefreshInsert.h"
+#import "IQSession.h"
+#import "FeedbackCell.h"
 
 @interface FeedbacksController ()
 
@@ -74,6 +76,16 @@
      }
      position:SVPullToRefreshPositionBottom];
     
+    if([IQSession defaultSession]) {
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
+            [self updateNoDataLabelVisibility];
+        }];
+    }
+    
     [self.noDataLabel setText:NSLocalizedString(@"No feedbacks", nil)];
 }
 
@@ -85,6 +97,37 @@
                                                                        target:self
                                                                        action:@selector(createNewAction:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
+    [self.model setSubscribedToNotifications:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self.model setSubscribedToNotifications:NO];
+}
+
+#pragma mark - UITableView DataSource
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.model.cellWidth = tableView.frame.size.width;
+    return [self.model heightForItemAtIndexPath:indexPath];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    FeedbackCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    
+    if (!cell) {
+        cell = [self.model createCellForIndexPath:indexPath];
+    }
+    
+    cell.item = [self.model itemAtIndexPath:indexPath];
+    
+    return cell;
+}
+
+#pragma mark - UITableView Delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 #pragma mark - Private methods

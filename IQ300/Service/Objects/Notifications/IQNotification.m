@@ -16,7 +16,8 @@
 @dynamic title;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
-    RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:@"IQNotificable" inManagedObjectStore:store];
+    RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class])
+                                                    inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"notificableId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"    : @"notificableId",
@@ -47,7 +48,8 @@
 @dynamic commentId;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
-    RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:@"IQNotification" inManagedObjectStore:store];
+    RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class])
+                                                    inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"notificationId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                    @"id"                : @"notificationId",

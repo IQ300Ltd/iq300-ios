@@ -22,7 +22,8 @@
 @dynamic lastUnreadNotification;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
-    RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:@"IQNotificationsGroup" inManagedObjectStore:store];
+    RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class])
+                                                    inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"sID"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"sid"                            : @"sID",

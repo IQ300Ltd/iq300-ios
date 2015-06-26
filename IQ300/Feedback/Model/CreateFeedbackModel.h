@@ -18,4 +18,6 @@
 
 - (void)updateFieldAtIndexPath:(NSIndexPath*)indexPath withValue:(id)value;
 
+- (void)createFeedbackWithCompletion:(void (^)(NSError * error))completion;
+
 @end

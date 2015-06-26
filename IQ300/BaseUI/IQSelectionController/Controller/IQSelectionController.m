@@ -56,10 +56,12 @@
     [super viewWillAppear:animated];
     
     [self reloadModel];
+    [self.model setSubscribedToNotifications:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [self.model setSubscribedToNotifications:NO];
 }
 
 #pragma mark - UITableView DataSource
@@ -87,6 +89,11 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    id item = [self.model itemAtIndexPath:indexPath];
+    if ([self.delegate respondsToSelector:@selector(selectionControllerController:didSelectItem:)]) {
+        [self.delegate selectionControllerController:self didSelectItem:item];
+    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -7,10 +7,21 @@
 //
 
 #import "IQTableBaseController.h"
-#import "IQSelectionModel.h"
+#import "IQSelectionControllerModel.h"
+
+@class IQSelectionController;
+@protocol IQSelectionControllerDelegate <NSObject>
+
+@optional
+
+- (void)selectionControllerController:(IQSelectionController*)controller didSelectItem:(id)item;
+
+@end
+
 
 @interface IQSelectionController : IQTableBaseController
 
-@property (nonatomic, strong) IQSelectionModel * model;
+@property (nonatomic, strong) id<IQTableModel, IQSelectionControllerModel> model;
+@property (nonatomic, weak)   id delegate;
 
 @end

@@ -8,9 +8,19 @@
 
 #import "CreateFeedbackModel.h"
 #import "IQDetailsTextCell.h"
+#import "IQFeedback.h"
+#import "IQFeedbackCategory.h"
+#import "IQFeedbackType.h"
+#import "IQService+Feedback.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
+
+@interface CreateFeedbackModel() {
+    IQFeedback * _feedback;
+}
+
+@end
 
 @implementation CreateFeedbackModel
 
@@ -55,7 +65,7 @@ static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
 - (id)init {
     self = [super init];
     if(self) {
-        
+        _feedback = [[IQFeedback alloc] init];
     }
     return self;
 }
@@ -66,6 +76,18 @@ static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
 
 - (NSUInteger)numberOfItemsInSection:(NSInteger)section {
     return 3;
+}
+
+- (id)itemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 0) {
+        return _feedback.feedbackType.localizedTitle;
+    }
+    else if(indexPath.row == 1) {
+        return _feedback.feedbackCategory.title;
+    }
+    else {
+       return _feedback.feedbackDescription;
+    }
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
@@ -121,7 +143,34 @@ static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
 }
 
 - (void)updateFieldAtIndexPath:(NSIndexPath *)indexPath withValue:(id)value {
-    
+    if (indexPath.row < 2) {
+        
+        if (indexPath.row == 0) {
+            _feedback.feedbackType = value;
+        }
+        else {
+            _feedback.feedbackCategory = value;
+        }
+        
+        [self modelWillChangeContent];
+        [self modelDidChangeObject:nil
+                       atIndexPath:indexPath
+                     forChangeType:NSFetchedResultsChangeUpdate
+                      newIndexPath:nil];
+        [self modelDidChangeContent];
+    }
+    else {
+        _feedback.feedbackDescription = value;
+    }
+}
+
+- (void)createFeedbackWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] createFeedback:_feedback
+                                      handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                          if (completion) {
+                                              completion(error);
+                                          }
+                                      }];
 }
 
 @end

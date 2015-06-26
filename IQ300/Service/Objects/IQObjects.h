@@ -37,5 +37,9 @@
 #import "TaskExecutorsGroup.h"
 #import "IQTaskDataHolder.h"
 #import "DeletedObjects.h"
+#import "IQFeedbacksHolder.h"
+#import "IQFeedbackCategory.h"
+#import "IQFeedbackType.h"
+#import "IQFeedback.h"
 
 #endif
