@@ -46,7 +46,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath *)indexPath {
     IQFeedbackType * item = [self itemAtIndexPath:indexPath];
-    return [IQSelectableTextCell heightForItem:item.localizedTitle detailTitle:nil width:self.cellWidth];
+    return [IQSelectableTextCell heightForItem:item.title detailTitle:nil width:self.cellWidth];
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError *))completion {

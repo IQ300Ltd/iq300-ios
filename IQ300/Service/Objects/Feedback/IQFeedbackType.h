@@ -15,7 +15,7 @@
 
 @property (nonatomic, strong) NSNumber * typeId;
 @property (nonatomic, strong) NSString * type;
-@property (nonatomic, strong) NSString * localizedTitle;
+@property (nonatomic, strong) NSString * title;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

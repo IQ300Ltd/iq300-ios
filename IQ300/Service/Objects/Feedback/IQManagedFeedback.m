@@ -9,13 +9,14 @@
 
 #import "IQManagedFeedback.h"
 #import "IQUser.h"
+#import "IQFeedbackType.h"
 #import "IQFeedbackCategory.h"
 #import "IQAttachment.h"
 
 @implementation IQManagedFeedback
 
 @dynamic feedbackId;
-@dynamic type;
+@dynamic feedbackType;
 @dynamic state;
 @dynamic feedbackDescription;
 @dynamic discussionId;
@@ -30,11 +31,10 @@
     [mapping setIdentificationAttributes:@[@"feedbackId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"            : @"feedbackId",
-                                                  @"report_type"   : @"type",
                                                   @"description"   : @"feedbackDescription",
                                                   @"state"         : @"state",
                                                   @"discussion_id" : @"discussionId",
-                                                  @"created_date"  : @"createdDate"
+                                                  @"created_at"    : @"createdDate"
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"author"
@@ -42,6 +42,11 @@
                                                                                  withMapping:[IQUser objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:relation];
     
+    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"report_type"
+                                                           toKeyPath:@"feedbackType"
+                                                         withMapping:[IQFeedbackType objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"category"
                                                            toKeyPath:@"category"
                                                          withMapping:[IQFeedbackCategory objectMappingForManagedObjectStore:store]];

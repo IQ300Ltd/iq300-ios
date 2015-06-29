@@ -81,7 +81,7 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 0) {
-        return _feedback.feedbackType.localizedTitle;
+        return _feedback.feedbackType.title;
     }
     else if(indexPath.row == 1) {
         return _feedback.feedbackCategory.title;

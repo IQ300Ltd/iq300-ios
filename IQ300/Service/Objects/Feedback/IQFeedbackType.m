@@ -13,16 +13,16 @@
 
 @dynamic typeId;
 @dynamic type;
-@dynamic localizedTitle;
+@dynamic title;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class])
                                                     inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"typeId"]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"id"               : @"typeId",
-                                                  @"title"            : @"type",
-                                                  @"translated_title" : @"localizedTitle"
+                                                  @"id"    : @"typeId",
+                                                  @"type"  : @"type",
+                                                  @"title" : @"title"
                                                   }];
     return mapping;
 }

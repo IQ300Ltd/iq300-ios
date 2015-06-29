@@ -12,17 +12,18 @@
 @class IQFeedbackCategory;
 @class RKObjectMapping;
 @class RKManagedObjectStore;
+@class IQFeedbackType;
 
 @interface IQManagedFeedback : NSManagedObject
 
 @property (nonatomic, strong) NSNumber * feedbackId;
-@property (nonatomic, strong) NSString * type;
 @property (nonatomic, strong) NSString * state;
 @property (nonatomic, strong) NSString * feedbackDescription;
 @property (nonatomic, strong) NSNumber * discussionId;
 @property (nonatomic, strong) NSDate * createdDate;
 
 @property (nonatomic, strong) IQUser * author;
+@property (nonatomic, strong) IQFeedbackType * feedbackType;
 @property (nonatomic, strong) IQFeedbackCategory * category;
 @property (nonatomic, strong) NSOrderedSet * attachments;
 

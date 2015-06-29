@@ -15,7 +15,7 @@
 
 - (void)setItem:(IQFeedbackType*)item {
     [super setItem:item];
-    self.titleTextView.text = item.localizedTitle;
+    self.titleTextView.text = item.title;
 }
 
 @end
