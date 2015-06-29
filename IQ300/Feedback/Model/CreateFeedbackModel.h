@@ -20,4 +20,6 @@
 
 - (void)createFeedbackWithCompletion:(void (^)(NSError * error))completion;
 
+- (BOOL)isAllFieldsValidWithError:(NSError**)error;
+
 @end

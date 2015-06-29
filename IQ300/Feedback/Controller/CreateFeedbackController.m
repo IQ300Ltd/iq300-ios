@@ -21,7 +21,7 @@
     CGFloat _tableBottomMarging;
     NSIndexPath * _editableIndexPath;
     UIView * _bottomSeparatorView;
-    ExtendedButton * _doneButton;
+    ExtendedButton * _sendButton;
     FeedbackCategoriesModel * _categoriesModel;
     FeedbackTypesModel * _typesModel;
 }
@@ -67,20 +67,20 @@
     [_bottomSeparatorView setBackgroundColor:SEPARATOR_COLOR];
     [self.view addSubview:_bottomSeparatorView];
     
-    _doneButton = [[ExtendedButton alloc] init];
-    _doneButton.layer.cornerRadius = 4.0f;
-    _doneButton.layer.borderWidth = 0.5f;
-    [_doneButton setTitle:NSLocalizedString(@"Save", nil)
+    _sendButton = [[ExtendedButton alloc] init];
+    _sendButton.layer.cornerRadius = 4.0f;
+    _sendButton.layer.borderWidth = 0.5f;
+    [_sendButton setTitle:NSLocalizedString(@"Send", nil)
                  forState:UIControlStateNormal];
-    [_doneButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
-    [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
-    [_doneButton setBackgroundColor:IQ_CELADON_COLOR];
-    [_doneButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
-    [_doneButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
-    _doneButton.layer.borderColor = _doneButton.backgroundColor.CGColor;
-    [_doneButton setClipsToBounds:YES];
-    [_doneButton addTarget:self action:@selector(saveButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_doneButton];
+    [_sendButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
+    [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
+    [_sendButton setBackgroundColor:IQ_CELADON_COLOR];
+    [_sendButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
+    [_sendButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
+    _sendButton.layer.borderColor = _sendButton.backgroundColor.CGColor;
+    [_sendButton setClipsToBounds:YES];
+    [_sendButton addTarget:self action:@selector(sendButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_sendButton];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -94,7 +94,7 @@
                                             SEPARATOR_HEIGHT);
     
     CGSize doneButtonSize = CGSizeMake(300, 40);
-    _doneButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - doneButtonSize.width) / 2.0f,
+    _sendButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - doneButtonSize.width) / 2.0f,
                                    actualBounds.origin.y + actualBounds.size.height - doneButtonSize.height - 10.0f,
                                    doneButtonSize.width,
                                    doneButtonSize.height);
@@ -132,6 +132,7 @@
     
     if (indexPath.row < 2) {
         IQSelectionController * controller = [self controllerForItemIndexPath:indexPath];
+        controller.title = [self.model placeholderForItemAtIndexPath:indexPath];
         controller.delegate = self;
         [self.navigationController pushViewController:controller animated:YES];
     }
@@ -191,12 +192,14 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)saveButtonAction:(UIButton*)sender {
-    [self.model createFeedbackWithCompletion:^(NSError *error) {
-        if (!error) {
-            [self.navigationController popViewControllerAnimated:YES];
-        }
-    }];
+- (void)sendButtonAction:(UIButton*)sender {
+    if ([self isAllFieldsValid]) {
+        [self.model createFeedbackWithCompletion:^(NSError *error) {
+            if (!error) {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        }];
+    }
 }
 
 - (NSIndexPath*)indexPathForCellChildView:(UIView*)childView {
@@ -260,4 +263,12 @@
     return controller;
 }
 
+- (BOOL)isAllFieldsValid {
+    NSError * validationError = nil;
+    if (![self.model isAllFieldsValidWithError:&validationError]) {
+        [self showErrorAlertWithMessage:validationError.localizedDescription];
+        return NO;
+    }
+    return YES;
+}
 @end

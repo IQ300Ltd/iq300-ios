@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		73060D561B41345D001AE08E /* UITextView+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 73060D551B41345D001AE08E /* UITextView+Validation.m */; };
+		73060D571B41345D001AE08E /* UITextView+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 73060D551B41345D001AE08E /* UITextView+Validation.m */; };
+		73060D5F1B417322001AE08E /* feedback_error_type.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D591B417322001AE08E /* feedback_error_type.png */; };
+		73060D601B417322001AE08E /* feedback_error_type.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D591B417322001AE08E /* feedback_error_type.png */; };
+		73060D611B417322001AE08E /* feedback_error_type@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5A1B417322001AE08E /* feedback_error_type@2x.png */; };
+		73060D621B417322001AE08E /* feedback_error_type@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5A1B417322001AE08E /* feedback_error_type@2x.png */; };
+		73060D631B417322001AE08E /* feedback_proposal_type.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5B1B417322001AE08E /* feedback_proposal_type.png */; };
+		73060D641B417322001AE08E /* feedback_proposal_type.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5B1B417322001AE08E /* feedback_proposal_type.png */; };
+		73060D651B417322001AE08E /* feedback_proposal_type@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5C1B417322001AE08E /* feedback_proposal_type@2x.png */; };
+		73060D661B417322001AE08E /* feedback_proposal_type@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5C1B417322001AE08E /* feedback_proposal_type@2x.png */; };
+		73060D671B417322001AE08E /* feedback_question_type.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5D1B417322001AE08E /* feedback_question_type.png */; };
+		73060D681B417322001AE08E /* feedback_question_type.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5D1B417322001AE08E /* feedback_question_type.png */; };
+		73060D691B417322001AE08E /* feedback_question_type@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5E1B417322001AE08E /* feedback_question_type@2x.png */; };
+		73060D6A1B417322001AE08E /* feedback_question_type@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5E1B417322001AE08E /* feedback_question_type@2x.png */; };
 		7306742B1B1C91E8003961B5 /* LeftSideTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730674291B1C8F16003961B5 /* LeftSideTabBarController.m */; };
 		73086B0C1A8E64D80013582E /* IQGroupCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73086B0B1A8E64D80013582E /* IQGroupCounter.m */; };
 		730BE3EF1B3D1EE900E26994 /* IQService+Feedback.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BE3EE1B3D1EE900E26994 /* IQService+Feedback.m */; };
@@ -739,6 +753,14 @@
 
 /* Begin PBXFileReference section */
 		3C453A1313F35DF8AD783316 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		73060D541B41345D001AE08E /* UITextView+Validation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+Validation.h"; sourceTree = "<group>"; };
+		73060D551B41345D001AE08E /* UITextView+Validation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+Validation.m"; sourceTree = "<group>"; };
+		73060D591B417322001AE08E /* feedback_error_type.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = feedback_error_type.png; sourceTree = "<group>"; };
+		73060D5A1B417322001AE08E /* feedback_error_type@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "feedback_error_type@2x.png"; sourceTree = "<group>"; };
+		73060D5B1B417322001AE08E /* feedback_proposal_type.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = feedback_proposal_type.png; sourceTree = "<group>"; };
+		73060D5C1B417322001AE08E /* feedback_proposal_type@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "feedback_proposal_type@2x.png"; sourceTree = "<group>"; };
+		73060D5D1B417322001AE08E /* feedback_question_type.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = feedback_question_type.png; sourceTree = "<group>"; };
+		73060D5E1B417322001AE08E /* feedback_question_type@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "feedback_question_type@2x.png"; sourceTree = "<group>"; };
 		730674271B1C8A03003961B5 /* IQTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTabBar.h; sourceTree = "<group>"; };
 		730674281B1C8F16003961B5 /* LeftSideTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftSideTabBarController.h; sourceTree = "<group>"; };
 		730674291B1C8F16003961B5 /* LeftSideTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeftSideTabBarController.m; sourceTree = "<group>"; };
@@ -1445,6 +1467,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		73060D581B417307001AE08E /* Feedback */ = {
+			isa = PBXGroup;
+			children = (
+				73060D591B417322001AE08E /* feedback_error_type.png */,
+				73060D5A1B417322001AE08E /* feedback_error_type@2x.png */,
+				73060D5B1B417322001AE08E /* feedback_proposal_type.png */,
+				73060D5C1B417322001AE08E /* feedback_proposal_type@2x.png */,
+				73060D5D1B417322001AE08E /* feedback_question_type.png */,
+				73060D5E1B417322001AE08E /* feedback_question_type@2x.png */,
+			);
+			path = Feedback;
+			sourceTree = "<group>";
+		};
 		730BE3F11B3D1F9000E26994 /* Feedback */ = {
 			isa = PBXGroup;
 			children = (
@@ -1732,6 +1767,7 @@
 				73BA98891A109E26005AEC00 /* Menu */,
 				73F2A5411A39AB3000E9D324 /* Messages */,
 				73A700451A95C0DC00A1C2AC /* Tasks */,
+				73060D581B417307001AE08E /* Feedback */,
 				737E7C591A0CC8A400E8BB81 /* top_header_bg.png */,
 				737E7C5A1A0CC8A400E8BB81 /* top_header_bg@2x.png */,
 				73C58C0E1A1F532500C83729 /* mark_tab_item.png */,
@@ -1854,6 +1890,8 @@
 				7373ED651A8A2EB500719FCD /* DeviceToken.m */,
 				731E5BCE1B3161F200DF56C7 /* IQValidationHelper.h */,
 				731E5BCF1B3161F200DF56C7 /* IQValidationHelper.m */,
+				73060D541B41345D001AE08E /* UITextView+Validation.h */,
+				73060D551B41345D001AE08E /* UITextView+Validation.m */,
 				734B91171B31C4340084CA8E /* IQValueValidator.h */,
 				73CB5B481B32D192005B688C /* IQStringValidator.h */,
 				73CB5B491B32D192005B688C /* IQStringValidator.m */,
@@ -2857,6 +2895,7 @@
 				73840ED41B1C75A500BCEAFC /* msg_viewed@2x.png in Resources */,
 				73840ED81B1C75A500BCEAFC /* bubble_gray@2x.png in Resources */,
 				73840ED91B1C75A500BCEAFC /* mark_tab_item@2x.png in Resources */,
+				73060D681B417322001AE08E /* feedback_question_type.png in Resources */,
 				73840EDA1B1C75A500BCEAFC /* attach_ico@2x.png in Resources */,
 				73840EDB1B1C75A500BCEAFC /* msg_viewed.png in Resources */,
 				73840EDD1B1C75A500BCEAFC /* message_blue_buble@2x.png in Resources */,
@@ -2867,6 +2906,7 @@
 				73865C361B20688A00118292 /* white_logo.png in Resources */,
 				73840EE11B1C75A500BCEAFC /* menu_collapseed@2x.png in Resources */,
 				73840EE21B1C75A500BCEAFC /* view_all_ico@2x.png in Resources */,
+				73060D661B417322001AE08E /* feedback_proposal_type@2x.png in Resources */,
 				73840EE31B1C75A500BCEAFC /* edit_gray_ico@2x.png in Resources */,
 				73840EE41B1C75A500BCEAFC /* community_ico@2x.png in Resources */,
 				73840EE61B1C75A500BCEAFC /* filterSelected.png in Resources */,
@@ -2884,6 +2924,8 @@
 				73840EF11B1C75A500BCEAFC /* right_gray_arrow@2x.png in Resources */,
 				73840EF21B1C75A500BCEAFC /* task_comments_tab.png in Resources */,
 				73865C241B20688A00118292 /* messgaes_tab_sel.png in Resources */,
+				73060D641B417322001AE08E /* feedback_proposal_type.png in Resources */,
+				73060D601B417322001AE08E /* feedback_error_type.png in Resources */,
 				73865C2D1B20688A00118292 /* tabbar_background@2x.png in Resources */,
 				73840EF31B1C75A500BCEAFC /* bubble_blue@2x.png in Resources */,
 				73840EF41B1C75A500BCEAFC /* backWhiteArrow@2x.png in Resources */,
@@ -2903,6 +2945,8 @@
 				73840F021B1C75A500BCEAFC /* filter_gray_collapseed.png in Resources */,
 				73840F031B1C75A500BCEAFC /* reset_filter.png in Resources */,
 				73840F041B1C75A500BCEAFC /* FiltersLocalization.strings in Resources */,
+				73060D6A1B417322001AE08E /* feedback_question_type@2x.png in Resources */,
+				73060D621B417322001AE08E /* feedback_error_type@2x.png in Resources */,
 				73840F051B1C75A500BCEAFC /* login_logo.png in Resources */,
 				73840F071B1C75A500BCEAFC /* search_icon@2x.png in Resources */,
 				73865C251B20688A00118292 /* messgaes_tab_sel@2x.png in Resources */,
@@ -2950,6 +2994,7 @@
 				73F2A5531A39AB3000E9D324 /* attachment_add_img@2x.png in Resources */,
 				73A700491A95C0DC00A1C2AC /* nex_header_button@2x.png in Resources */,
 				73C58C101A1F532500C83729 /* mark_tab_item.png in Resources */,
+				73060D5F1B417322001AE08E /* feedback_error_type.png in Resources */,
 				7395C5121A3192C500A6D5DA /* backArrow@2x.png in Resources */,
 				73B9EA1D1ADD2DA800159A66 /* calendar_accessory_image.png in Resources */,
 				73BA988E1A109F4D005AEC00 /* menu_collapseed.png in Resources */,
@@ -2999,7 +3044,9 @@
 				73884BFA1A6CEFED004C454B /* view_all_ico@2x.png in Resources */,
 				7311708F1AB80B0E008A4D09 /* edit_gray_ico@2x.png in Resources */,
 				73D0DDFE1A95F2AB008710FF /* community_ico@2x.png in Resources */,
+				73060D631B417322001AE08E /* feedback_proposal_type.png in Resources */,
 				73A7CA841A9F55ED0038DEF1 /* filterSelected.png in Resources */,
+				73060D691B417322001AE08E /* feedback_question_type@2x.png in Resources */,
 				731170831AB80AFF008A4D09 /* task_info_tab@2x.png in Resources */,
 				731170991AB80CD4008A4D09 /* task_tab_sel@2x.png in Resources */,
 				73D3DF2C1AF11542000DD34F /* clear_button_icon@2x.png in Resources */,
@@ -3016,6 +3063,8 @@
 				73A949901A3821AD008EC469 /* backWhiteArrow@2x.png in Resources */,
 				731170911AB80B0E008A4D09 /* edit_white_ico@2x.png in Resources */,
 				738FE7071A162B10009F26A2 /* notif_tab.png in Resources */,
+				73060D651B417322001AE08E /* feedback_proposal_type@2x.png in Resources */,
+				73060D611B417322001AE08E /* feedback_error_type@2x.png in Resources */,
 				738916BD1ABAFB800017EF86 /* gray_checked_checkbox.png in Resources */,
 				73A9498F1A3821AD008EC469 /* backWhiteArrow.png in Resources */,
 				73F2A55D1A39AB3000E9D324 /* msg_sent@2x.png in Resources */,
@@ -3023,6 +3072,7 @@
 				738FE7111A162B10009F26A2 /* tasks_tab.png in Resources */,
 				73F2A5561A39AB3000E9D324 /* createNewMessage.png in Resources */,
 				731170951AB80B0E008A4D09 /* task_status_ico@2x.png in Resources */,
+				73060D671B417322001AE08E /* feedback_question_type.png in Resources */,
 				73865C401B206C4800118292 /* tasks_tab_selected@2x.png in Resources */,
 				73F2A5551A39AB3000E9D324 /* attachment_img@2x.png in Resources */,
 				73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */,
@@ -3194,6 +3244,7 @@
 				73840DE71B1C75A500BCEAFC /* TChangesCounter.m in Sources */,
 				73840DE81B1C75A500BCEAFC /* IQTask.m in Sources */,
 				73840DE91B1C75A500BCEAFC /* IQManagedTodoItem.m in Sources */,
+				73060D571B41345D001AE08E /* UITextView+Validation.m in Sources */,
 				73840DEA1B1C75A500BCEAFC /* MessagesController.m in Sources */,
 				73840DEB1B1C75A500BCEAFC /* NGroupCell.m in Sources */,
 				73840DEC1B1C75A500BCEAFC /* TodoListModel.m in Sources */,
@@ -3398,6 +3449,7 @@
 				735D48F81AE4D85000F6A753 /* TaskExecutorsModel.m in Sources */,
 				730BE4291B3D8F8E00E26994 /* FeedbackCategoryCell.m in Sources */,
 				73E4260A1AAF04CF00CD2093 /* IQTextView.m in Sources */,
+				73060D561B41345D001AE08E /* UITextView+Validation.m in Sources */,
 				73D7F1BA1ADE932700023120 /* TMembersController.m in Sources */,
 				73C58C021A1F074900C83729 /* NotificationCell.m in Sources */,
 				73ADA8EC1A36FD680032C1FA /* ContactCell.m in Sources */,

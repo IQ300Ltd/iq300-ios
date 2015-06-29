@@ -141,7 +141,7 @@
 "Medium (%ld%%)" = "Medium (%ld%%)";
 "Large (%ld%%)" = "Large (%ld%%)";
 "Actual" = "Actual";
-"You can reduce the image size by scaling it to one of the following sizes" = "ou can reduce the image size by scaling it to one of the following sizes";
+"You can reduce the image size by scaling it to one of the following sizes" = "You can reduce the image size by scaling it to one of the following sizes";
 "Name" = "Имя";
 "Surname" = "Surname";
 "Organization name" = "Organization name";
@@ -157,3 +157,6 @@
 "New feedback" = "New feedback";
 "Feedback type" = "Feedback type";
 "Feedback category" = "Feedback category";
+"You should select feedback category" = "You should select feedback category";
+"You should select feedback type" = "You should select feedback type";
+"The feedback can not be empty" = "The feedback can not be empty";

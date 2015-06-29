@@ -15,6 +15,7 @@
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
+NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 
 @interface CreateFeedbackModel() {
     IQFeedback * _feedback;
@@ -171,6 +172,34 @@ static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
                                               completion(error);
                                           }
                                       }];
+}
+
+- (BOOL)isAllFieldsValidWithError:(NSError**)error {
+    NSError * validationError = nil;
+    if (!_feedback.feedbackType) {
+        NSString * errorDescription = NSLocalizedString(@"You should select feedback type", nil);
+        validationError = [NSError errorWithDomain:CreateFeedbackErrorDomain
+                                              code:0
+                                          userInfo:@{NSLocalizedDescriptionKey : errorDescription}];
+    }
+    else if (!_feedback.feedbackCategory) {
+        NSString * errorDescription = NSLocalizedString(@"You should select feedback category", nil);
+        validationError = [NSError errorWithDomain:CreateFeedbackErrorDomain
+                                              code:0
+                                          userInfo:@{NSLocalizedDescriptionKey : errorDescription}];
+    }
+    else if([_feedback.feedbackDescription length] == 0) {
+        NSString * errorDescription = NSLocalizedString(@"The feedback can not be empty", nil);
+        validationError = [NSError errorWithDomain:CreateFeedbackErrorDomain
+                                              code:0
+                                          userInfo:@{NSLocalizedDescriptionKey : errorDescription}];
+    }
+    
+    if (error && validationError) {
+        *error = validationError;
+    }
+    
+    return !(validationError);
 }
 
 @end
