@@ -18,7 +18,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 - (id)init {
     self = [super init];
     if (self) {
-        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"localizedTitle" ascending:YES];
+        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
         self.sortDescriptors = @[descriptor];
     }
     return self;
