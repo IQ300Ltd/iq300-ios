@@ -78,9 +78,11 @@
     return _messagesView.tableView;
 }
 
+#ifdef IPAD
 - (BOOL)isLeftMenuEnabled {
     return NO;
 }
+#endif
 
 - (void)viewDidLoad {
     [super viewDidLoad];
