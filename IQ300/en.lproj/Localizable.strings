@@ -160,3 +160,8 @@
 "You should select feedback category" = "You should select feedback category";
 "You should select feedback type" = "You should select feedback type";
 "The feedback can not be empty" = "The feedback can not be empty";
+
+//Feedback types
+"feedback_new" = "Accepted";
+"feedback_in_work" = "In work";
+"feedback_completed" = "Completed";

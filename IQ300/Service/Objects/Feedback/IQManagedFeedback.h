@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSString * feedbackDescription;
 @property (nonatomic, strong) NSNumber * discussionId;
 @property (nonatomic, strong) NSDate * createdDate;
+@property (nonatomic, strong) NSNumber * commentsCount;
 
 @property (nonatomic, strong) IQUser * author;
 @property (nonatomic, strong) IQFeedbackType * feedbackType;

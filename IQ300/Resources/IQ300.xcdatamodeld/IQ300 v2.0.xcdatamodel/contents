@@ -85,6 +85,7 @@
         <relationship name="feedbacks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQManagedFeedback" inverseName="feedbackType" inverseEntity="IQManagedFeedback" syncable="YES"/>
     </entity>
     <entity name="IQManagedFeedback" representedClassName="IQManagedFeedback" syncable="YES">
+        <attribute name="commentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="feedbackDescription" optional="YES" attributeType="String" syncable="YES"/>
@@ -225,7 +226,7 @@
         <element name="IQDiscussion" positionX="0" positionY="0" width="128" height="150"/>
         <element name="IQFeedbackCategory" positionX="0" positionY="0" width="128" height="90"/>
         <element name="IQFeedbackType" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="IQManagedFeedback" positionX="0" positionY="0" width="128" height="180"/>
+        <element name="IQManagedFeedback" positionX="0" positionY="0" width="128" height="195"/>
         <element name="IQManagedTodoItem" positionX="0" positionY="0" width="128" height="180"/>
         <element name="IQNotificable" positionX="0" positionY="0" width="128" height="105"/>
         <element name="IQNotification" positionX="0" positionY="0" width="128" height="300"/>

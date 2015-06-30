@@ -109,15 +109,20 @@
 - (void)setItem:(IQManagedFeedback *)item {
     _item = item;
 
+    BOOL showCommentsCount = ([_item.commentsCount integerValue] > 0);
+    _commentsCountLabel.hidden = !showCommentsCount;
+    _messagesImageView.hidden = !showCommentsCount;
+    _commentsCountLabel.text = [_item.commentsCount stringValue];
+
     NSString * typeImageName = [FeedbackCell imageNameForFeedbackType:_item.feedbackType.type];
     _typeImageView.image = [UIImage imageNamed:typeImageName];
     _dateLabel.text = [_item.createdDate dateToDayString];
     _titleLabel.text = [NSString stringWithFormat:@"%@, %@", _item.feedbackType.title, _item.category.title];
     _descriptionLabel.text = _item.feedbackDescription;
     _authorLabel.text = _item.author.displayName;
-    _commentsCountLabel.text = @"34";
     _attachImageView.hidden = ([_item.attachments count] == 0);
-    _statusLabel.text = _item.state;
+    NSString * statusKey = [NSString stringWithFormat:@"%@_%@", @"feedback", _item.state];
+    _statusLabel.text = NSLocalizedString(statusKey, nil);
 }
 
 - (void)layoutSubviews {
@@ -141,7 +146,7 @@
     
     CGFloat dateLabelWidth = MIN(dateLabelSize.width, dateMaxWidth);
     _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - dateLabelSize.width,
-                                  actualBounds.origin.y,
+                                  actualBounds.origin.y + (typeImageSize - LABELS_HEIGHT) / 2.0f,
                                   dateLabelWidth,
                                   LABELS_HEIGHT);
 
@@ -150,7 +155,7 @@
     _titleLabel.frame = CGRectMake(titleX,
                                    actualBounds.origin.x,
                                    _dateLabel.frame.origin.x - titleX - labelsOffset,
-                                   _dateLabel.frame.size.height);
+                                   LABELS_HEIGHT);
     
     CGSize attachmentSize = CGSizeMake(15, 13);
     _attachImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - attachmentSize.width,

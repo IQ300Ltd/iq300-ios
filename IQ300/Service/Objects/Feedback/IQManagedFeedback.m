@@ -21,6 +21,7 @@
 @dynamic feedbackDescription;
 @dynamic discussionId;
 @dynamic createdDate;
+@dynamic commentsCount;
 @dynamic author;
 @dynamic category;
 @dynamic attachments;
@@ -30,11 +31,12 @@
                                                     inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"feedbackId"]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"id"            : @"feedbackId",
-                                                  @"description"   : @"feedbackDescription",
-                                                  @"state"         : @"state",
-                                                  @"discussion_id" : @"discussionId",
-                                                  @"created_at"    : @"createdDate"
+                                                  @"id"             : @"feedbackId",
+                                                  @"description"    : @"feedbackDescription",
+                                                  @"state"          : @"state",
+                                                  @"discussion_id"  : @"discussionId",
+                                                  @"created_at"     : @"createdDate",
+                                                  @"comments_count" : @"commentsCount",
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"author"
