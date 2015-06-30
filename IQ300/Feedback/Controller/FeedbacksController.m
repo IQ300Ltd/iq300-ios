@@ -11,6 +11,7 @@
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQSession.h"
 #import "FeedbackCell.h"
+#import "FeedbackController.h"
 
 @interface FeedbacksController ()
 
@@ -128,6 +129,10 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    IQManagedFeedback * feedback = [self.model itemAtIndexPath:indexPath];
+    FeedbackController * controller = [[FeedbackController alloc] init];
+    controller.feedback = feedback;
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 #pragma mark - Private methods

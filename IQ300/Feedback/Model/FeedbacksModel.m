@@ -193,7 +193,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (NSDate*)feedbackLastChangedDate {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:self.entityName];
-    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"createdDate" ascending:NO]];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"updatedDate" ascending:NO]];
     fetchRequest.fetchLimit = 1;
     
     NSError *error = nil;

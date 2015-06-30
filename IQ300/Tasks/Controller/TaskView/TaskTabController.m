@@ -26,6 +26,7 @@
 #import "NSManagedObject+ActiveRecord.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate> {
+    CGFloat _tabbarWidth;
 }
 
 @end
@@ -95,7 +96,6 @@
     self.navigationItem.leftBarButtonItem = backBarButton;
     
     self.tabBar.backgroundImage = [UIImage imageNamed:@"tabbar_background.png"];
-    self.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"task_tab_sel.png"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -128,6 +128,17 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationWillEnterForegroundNotification
                                                   object:nil];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    if (_tabbarWidth != self.tabBar.frame.size.width) {
+        _tabbarWidth = self.tabBar.frame.size.width;
+        CGSize tabItemSize = CGSizeMake(_tabbarWidth / (float)[self.viewControllers count], self.tabBar.frame.size.height);
+        self.tabBar.selectionIndicatorImage = [UIImage imageWithColor:[UIColor colorWithHexInt:0x348dad]
+                                                                 size:tabItemSize];
+    }
 }
 
 - (BOOL)isLeftMenuEnabled {

@@ -537,6 +537,7 @@
             _mainView.tableView.hidden = NO;
             [self hideActivityIndicator];
             [self markVisibleItemsAsReaded];
+            [self updateNoDataLabelVisibility];
         });
     }];
 }

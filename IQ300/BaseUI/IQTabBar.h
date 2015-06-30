@@ -8,7 +8,6 @@
 
 @protocol IQTabBar;
 
-
 @protocol IQTabBarDelegate <NSObject>
 
 - (void)tabBar:(UIView<IQTabBar> *)tabBar didSelectItem:(UITabBarItem *)item;

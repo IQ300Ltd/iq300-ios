@@ -76,7 +76,7 @@
 
     BOOL hasAttachment = ([item.attachments count] > 0);
     if(hasAttachment) {
-        height += (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * item.attachments.count - ATTACHMENT_VIEW_Y_OFFSET;
+        height += (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [item.attachments count] - ATTACHMENT_VIEW_Y_OFFSET;
     }
     
     return height;
@@ -254,7 +254,7 @@
             attachmentY = CGRectBottom(_expandButton.frame) + ATTACHMENT_VIEW_Y_OFFSET;
         }
         
-        CGSize constrainedSize = CGSizeMake(actualBounds.size.width, 15.0f);
+        CGSize constrainedSize = CGSizeMake(actualBounds.size.width, ATTACHMENT_VIEW_HEIGHT);
         CGFloat attachmentX = _descriptionTextView.frame.origin.x + 5.0f;
         for (UIButton * attachButton in _attachButtons) {
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
