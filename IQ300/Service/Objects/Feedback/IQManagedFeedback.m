@@ -31,12 +31,12 @@
                                                     inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"feedbackId"]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"id"             : @"feedbackId",
-                                                  @"description"    : @"feedbackDescription",
-                                                  @"state"          : @"state",
-                                                  @"discussion_id"  : @"discussionId",
-                                                  @"created_at"     : @"createdDate",
-                                                  @"comments_count" : @"commentsCount",
+                                                  @"id"               : @"feedbackId",
+                                                  @"description"      : @"feedbackDescription",
+                                                  @"state"            : @"state",
+                                                  @"discussion_id"    : @"discussionId",
+                                                  @"updated_at_after" : @"createdDate",
+                                                  @"comments_count"   : @"commentsCount",
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"author"
