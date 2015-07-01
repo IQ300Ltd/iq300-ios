@@ -22,4 +22,6 @@
 
 - (BOOL)isAllFieldsValidWithError:(NSError**)error;
 
+- (BOOL)modelHasChanges;
+
 @end

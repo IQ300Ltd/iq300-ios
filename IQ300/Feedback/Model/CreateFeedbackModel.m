@@ -203,4 +203,9 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
     return !(validationError);
 }
 
+- (BOOL)modelHasChanges {
+    return (_feedback.feedbackCategory != nil || _feedback.feedbackType ||
+            [_feedback.feedbackDescription length] > 0);
+}
+
 @end

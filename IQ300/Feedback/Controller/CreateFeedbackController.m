@@ -204,7 +204,25 @@
 #pragma mark - Private methods
 
 - (void)backButtonAction:(UIButton*)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    if ([self.model modelHasChanges]) {
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:@"Здесь могло быть ваше сообщение!"//NSLocalizedString(@"Save changes?", nil)
+                 cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
+                 otherButtonTitles:@[NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil)]
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                              if (buttonIndex == 1 || buttonIndex == 2) {
+                                  if (buttonIndex == 1) {
+                                      [self sendButtonAction:_sendButton];
+                                  }
+                                  else {
+                                      [self.navigationController popViewControllerAnimated:YES];
+                                  }
+                              }
+                          }];
+    }
+    else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)sendButtonAction:(UIButton*)sender {
