@@ -155,6 +155,7 @@
 "Feedback" = "Feedback";
 "No feedbacks" = "No feedbacks";
 "New feedback" = "New feedback";
+"Category: %@" = "Category: %@";
 "Feedback type" = "Feedback type";
 "Feedback category" = "Feedback category";
 "You should select feedback category" = "You should select feedback category";

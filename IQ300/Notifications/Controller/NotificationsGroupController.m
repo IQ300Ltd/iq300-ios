@@ -27,6 +27,8 @@
 #import "IQDiscussion.h"
 #import "CommentsController.h"
 #import "TaskTabController.h"
+#import "IQService+Feedback.h"
+#import "FeedbackController.h"
 
 @interface NotificationsGroupController () <SWTableViewCellDelegate> {
     NotificationsView * _mainView;
@@ -184,6 +186,10 @@
         if ([notification.notificable.type isEqualToString:@"BaseTask"]) {
             [self openTaskControllerForNotification:notification
                                         atIndexPath:(hasOneUnread) ? indexPath : nil];
+        }
+        else if([notification.notificable.type isEqualToString:@"ErrorReport"]) {
+            [self openFeedbackControllerForNotification:notification
+                                            atIndexPath:(hasOneUnread) ? indexPath : nil];
         }
         else if(notification.discussionId) {
             [self openCommentsControllerForNotification:notification
@@ -378,6 +384,25 @@
                                                    [self proccessServiceError:error];
                                                }
                                            }];
+}
+
+- (void)openFeedbackControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    [[IQService sharedService] feedbackWithId:notification.notificable.notificableId
+                                      handler:^(BOOL success, IQManagedFeedback * feedback, NSData *responseData, NSError *error) {
+                                          if (success) {
+                                              FeedbackController * controller = [[FeedbackController alloc] init];
+                                              controller.feedback = feedback;
+                                              controller.hidesBottomBarWhenPushed = YES;
+                                              [self.navigationController pushViewController:controller animated:YES];
+                                              
+                                              if(indexPath) {
+                                                  [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
+                                              }
+                                          }
+                                          else {
+                                              [self proccessServiceError:error];
+                                          }
+                                      }];
 }
 
 - (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {

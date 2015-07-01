@@ -26,6 +26,8 @@
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQNotificationsGroup.h"
 #import "TaskTabController.h"
+#import "IQService+Feedback.h"
+#import "FeedbackController.h"
 
 @interface NotificationsController() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationGroupView * _mainView;
@@ -156,6 +158,10 @@
     IQNotification * notification = [self.model itemAtIndexPath:indexPath];
     if ([notification.notificable.type isEqualToString:@"BaseTask"]) {
         [self openTaskControllerForNotification:notification atIndexPath:indexPath];
+    }
+    else if([notification.notificable.type isEqualToString:@"ErrorReport"]) {
+        [self openFeedbackControllerForNotification:notification
+                                        atIndexPath:indexPath];
     }
     else if(notification.discussionId) {
         [self openCommentsControllerForNotification:notification atIndexPath:indexPath];
@@ -301,12 +307,29 @@
                                                    controller.hidesBottomBarWhenPushed = YES;
                                                    [self.navigationController pushViewController:controller animated:YES];
                                                    
-                                                   [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                                   [self.model markNotificationAsReadAtIndexPath:indexPath completion:nil];
                                                }
                                                else {
                                                    [self proccessServiceError:error];
                                                }
                                            }];
+}
+
+- (void)openFeedbackControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    [[IQService sharedService] feedbackWithId:notification.notificable.notificableId
+                                      handler:^(BOOL success, IQManagedFeedback * feedback, NSData *responseData, NSError *error) {
+                                          if (success) {
+                                              FeedbackController * controller = [[FeedbackController alloc] init];
+                                              controller.feedback = feedback;
+                                              controller.hidesBottomBarWhenPushed = YES;
+                                              [self.navigationController pushViewController:controller animated:YES];
+                                              
+                                              [self.model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                          }
+                                          else {
+                                              [self proccessServiceError:error];
+                                          }
+                                      }];
 }
 
 - (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
@@ -334,7 +357,7 @@
 
                                                 [self.navigationController pushViewController:controller animated:YES];
                                                 
-                                                [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                                [self.model markNotificationAsReadAtIndexPath:indexPath completion:nil];
                                             }
                                             else {
                                                 [self proccessServiceError:error];

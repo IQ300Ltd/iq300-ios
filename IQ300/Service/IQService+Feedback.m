@@ -44,6 +44,13 @@
                    handler:handler];
 }
 
+- (void)feedbackWithId:(NSNumber*)feedbackId handler:(ObjectRequestCompletionHandler)handler {
+    NSParameterAssert(feedbackId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/error_reports/%@", feedbackId]
+                parameters:nil
+                   handler:handler];
+}
+
 - (void)feedbackCategoriesWithHandler:(ObjectRequestCompletionHandler)handler {
     [self getObjectsAtPath:@"/api/v1/error_reports/categories"
                 parameters:nil

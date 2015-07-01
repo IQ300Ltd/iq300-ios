@@ -1027,6 +1027,14 @@ fileAttributeName:(NSString*)fileAttributeName
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedFeedback class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/error_reports/:id"
+                                                   fromKeyPath:@"error_report"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedFeedback class]
                                                         method:RKRequestMethodPOST

@@ -24,6 +24,8 @@
                    search:(NSString*)search
                   handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)feedbackWithId:(NSNumber*)feedbackId handler:(ObjectRequestCompletionHandler)handler;
+
 - (void)feedbackCategoriesWithHandler:(ObjectRequestCompletionHandler)handler;
 
 - (void)feedbackTypesWithHandler:(ObjectRequestCompletionHandler)handler;

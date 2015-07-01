@@ -164,6 +164,7 @@
 "Feedback" = "Обратная связь";
 "No feedbacks" = "Обращения отсутствуют";
 "New feedback" = "Новое обращение";
+"Category: %@" = "Категория: %@";
 "Feedback type" = "Тип обращения";
 "Feedback category" = "Категория обращения";
 "You should select feedback category" = "Необходимо выбрать категорию обращения";
