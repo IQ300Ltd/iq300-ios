@@ -83,6 +83,7 @@
     CGFloat width = self.view.bounds.size.width;
     CGFloat height = [FeedbackView heightForFeedback:_feedback
                                                width:self.view.bounds.size.width];
+    height = MAX(height, self.view.bounds.size.height);
     _feedbackView.frame = CGRectMake(0.0f, 0.0f, width, height);
     [((UIScrollView*)self.view) setContentSize:CGSizeMake(width, height)];
 }

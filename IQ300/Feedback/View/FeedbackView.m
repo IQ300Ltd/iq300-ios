@@ -44,11 +44,12 @@
 
 + (CGFloat)heightForFeedback:(IQManagedFeedback*)feedback width:(CGFloat)width {
     CGFloat viewWidth = width - VIEWS_INSET * 2.0f;
-    CGFloat height = VIEWS_INSET * 3 + (LABELS_HEIGHT + LABELS_OFFSET) * 3 + TYPE_HEIGHT + LABELS_OFFSET;
+    CGFloat height = VIEWS_INSET * 3 + (LABELS_HEIGHT + LABELS_OFFSET) * 3 + TYPE_HEIGHT + LABELS_OFFSET * 2;
     
     if([feedback.feedbackDescription length] > 0) {
         UITextView * descriptionTextView = [[UITextView alloc] init];
         [descriptionTextView setFont:LABELS_FONT];
+        descriptionTextView.textContainer.lineFragmentPadding = 0;
         descriptionTextView.textContainerInset = UIEdgeInsetsZero;
         descriptionTextView.text = feedback.feedbackDescription;
         
@@ -106,6 +107,7 @@
         _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
         _descriptionTextView.scrollEnabled = NO;
         _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+        _descriptionTextView.textContainer.lineFragmentPadding = 0;
         _descriptionTextView.linkTextAttributes = @{
                                                     NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
                                                     NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
@@ -113,6 +115,30 @@
         [self addSubview:_descriptionTextView];
     }
     return self;
+}
+
+- (void)drawRect:(CGRect)rect {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGFloat boardRectY = VIEWS_INSET + (LABELS_HEIGHT + LABELS_OFFSET) * 3 + TYPE_HEIGHT + LABELS_OFFSET;
+    CGRect boardRect = CGRectMake(rect.origin.x,
+                                  boardRectY,
+                                  rect.size.width,
+                                  rect.size.height - boardRectY);
+    
+    CGFloat lineHeight = 0.5f;
+    CGRect toLineRect = CGRectMake(boardRect.origin.x,
+                                   boardRect.origin.y,
+                                   boardRect.size.width,
+                                   lineHeight);
+    
+    CGContextSetFillColorWithColor(context, [UIColor colorWithHexInt:0xf6f6f6].CGColor);
+    CGContextFillRect(context, boardRect);
+
+    //Draw top line
+    CGContextSetStrokeColorWithColor(context, [[UIColor colorWithHexInt:0xc0c0c0] CGColor]);
+    CGContextSetLineWidth(context, lineHeight);
+    CGContextStrokeRect(context, toLineRect);
 }
 
 - (NSArray*)attachButtons {
@@ -205,18 +231,16 @@
                                     actualBounds.size.width,
                                     LABELS_HEIGHT);
     
-    BOOL hasAttachment = ([_attachButtons count] > 0);
-    CGFloat attachmentRectHeight = (hasAttachment) ? (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [_attachButtons count] - ATTACHMENT_VIEW_Y_OFFSET : 0.0f;
-    CGFloat descriptionY = CGRectBottom(_authorLabel.frame) + LABELS_OFFSET;
-    CGFloat descriptionHeight = actualBounds.size.height - descriptionY - attachmentRectHeight;
-
-    _descriptionTextView.frame = CGRectMake(actualBounds.origin.x,
-                                            descriptionY,
-                                            actualBounds.size.width,
-                                            descriptionHeight);
+    CGSize descriptionSize = [_descriptionTextView sizeThatFits:CGSizeMake(actualBounds.size.width, CGFLOAT_MAX)];
     
+    _descriptionTextView.frame = CGRectMake(actualBounds.origin.x,
+                                            CGRectBottom(_authorLabel.frame) + LABELS_OFFSET * 2,
+                                            actualBounds.size.width,
+                                            descriptionSize.height);
+    
+    BOOL hasAttachment = ([_attachButtons count] > 0);
     if(hasAttachment) {
-        CGFloat attachmentX = _descriptionTextView.frame.origin.x + LABELS_OFFSET;
+        CGFloat attachmentX = _descriptionTextView.frame.origin.x;
         CGFloat attachmentY = CGRectBottom(_descriptionTextView.frame) + 5.0f;
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width, ATTACHMENT_VIEW_HEIGHT);
         
