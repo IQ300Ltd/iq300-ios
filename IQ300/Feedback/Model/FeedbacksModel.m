@@ -15,7 +15,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 @interface FeedbacksModel() {
     NSInteger _portionLenght;
-    NSPredicate * _fetchPredicate;
 }
 
 @end
@@ -45,11 +44,17 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (NSPredicate*)fetchPredicate {
-    if (!_fetchPredicate && [IQSession defaultSession]) {
-        _fetchPredicate = [NSPredicate predicateWithFormat:@"author.userId == %@", [IQSession defaultSession].userId];
+    NSPredicate * fetchPredicate = nil;
+    if (!fetchPredicate && [IQSession defaultSession]) {
+        fetchPredicate = [NSPredicate predicateWithFormat:@"author.userId == %@", [IQSession defaultSession].userId];
     }
-    
-    return _fetchPredicate;
+
+    if(fetchPredicate && [_search length] > 0) {
+        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"(feedbackDescription CONTAINS[cd] %@)", _search];
+        fetchPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[fetchPredicate, filterPredicate]];
+    }
+
+    return fetchPredicate;
 }
 
 - (Class)cellClass {

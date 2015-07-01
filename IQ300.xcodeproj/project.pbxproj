@@ -722,6 +722,8 @@
 		73E4260D1AAF07D700CD2093 /* IQLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E4260C1AAF07D700CD2093 /* IQLayoutManager.m */; };
 		73EFAA021B43DD3B007FD5D7 /* IQEMultiLineTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EFAA011B43DD3B007FD5D7 /* IQEMultiLineTextCell.m */; };
 		73EFAA031B43DD3B007FD5D7 /* IQEMultiLineTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EFAA011B43DD3B007FD5D7 /* IQEMultiLineTextCell.m */; };
+		73EFAA061B440614007FD5D7 /* FeedbacksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EFAA051B440614007FD5D7 /* FeedbacksView.m */; };
+		73EFAA071B440614007FD5D7 /* FeedbacksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EFAA051B440614007FD5D7 /* FeedbacksView.m */; };
 		73F27D631AFCA94D00D72FF8 /* TCObjectSerializator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F27D621AFCA94D00D72FF8 /* TCObjectSerializator.m */; };
 		73F2A5401A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2A53F1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m */; };
 		73F2A5501A39AB3000E9D324 /* attach_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F2A5421A39AB3000E9D324 /* attach_ico.png */; };
@@ -1383,6 +1385,8 @@
 		73EE934D1B15CF5000B29381 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/GAIEvents.strings; sourceTree = "<group>"; };
 		73EFAA001B43DD3B007FD5D7 /* IQEMultiLineTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQEMultiLineTextCell.h; sourceTree = "<group>"; };
 		73EFAA011B43DD3B007FD5D7 /* IQEMultiLineTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQEMultiLineTextCell.m; sourceTree = "<group>"; };
+		73EFAA041B440614007FD5D7 /* FeedbacksView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbacksView.h; sourceTree = "<group>"; };
+		73EFAA051B440614007FD5D7 /* FeedbacksView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedbacksView.m; sourceTree = "<group>"; };
 		73F27D611AFCA94D00D72FF8 /* TCObjectSerializator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCObjectSerializator.h; sourceTree = "<group>"; };
 		73F27D621AFCA94D00D72FF8 /* TCObjectSerializator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCObjectSerializator.m; sourceTree = "<group>"; };
 		73F2A53E1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ScreenActivityIndicator.h"; sourceTree = "<group>"; };
@@ -2391,6 +2395,8 @@
 				730BE42D1B3D8FA400E26994 /* FeedbackTypeCell.m */,
 				73B5615A1B4286E200A883DC /* FeedbackView.h */,
 				73B5615B1B4286E200A883DC /* FeedbackView.m */,
+				73EFAA041B440614007FD5D7 /* FeedbacksView.h */,
+				73EFAA051B440614007FD5D7 /* FeedbacksView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -3341,6 +3347,7 @@
 				73840E311B1C75A500BCEAFC /* ExecutersGroupSection.m in Sources */,
 				73840E321B1C75A500BCEAFC /* RKMappingResult+Result.m in Sources */,
 				73840E331B1C75A500BCEAFC /* TaskPolicyInspector.m in Sources */,
+				73EFAA071B440614007FD5D7 /* FeedbacksView.m in Sources */,
 				73840E341B1C75A500BCEAFC /* IQNotification.m in Sources */,
 				730BE4061B3D541700E26994 /* FeedbackCategoriesModel.m in Sources */,
 				73840E351B1C75A500BCEAFC /* TasksMenuModel.m in Sources */,
@@ -3531,6 +3538,7 @@
 				738EA7AC1A1DD69F0065D39F /* NotificationsModel.m in Sources */,
 				737E7C5F1A0CD57E00E8BB81 /* AccountHeaderView.m in Sources */,
 				73A9499F1A3832D7008EC469 /* DownloadTaskDelegate.m in Sources */,
+				73EFAA061B440614007FD5D7 /* FeedbacksView.m in Sources */,
 				739073A51A486A560057BA18 /* ActionNotificationCell.m in Sources */,
 				73CB5B4D1B32D2D5005B688C /* IQPasswordValidator.m in Sources */,
 				739BC7A11A4A9F21007FC95C /* CommentInputView.m in Sources */,

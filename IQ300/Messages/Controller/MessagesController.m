@@ -230,12 +230,12 @@
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
 
+#pragma mark - TextField Delegate
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
 }
-
-#pragma mark - TextField Delegate
 
 - (void)textFieldDidChange:(UITextField *)textField {
     [self filterWithText:textField.text];

@@ -12,8 +12,15 @@
 #import "IQSession.h"
 #import "FeedbackCell.h"
 #import "FeedbackController.h"
+#import "FeedbacksView.h"
+#import "DispatchAfterExecution.h"
 
-@interface FeedbacksController ()
+#define DISPATCH_DELAY 0.7
+
+@interface FeedbacksController () {
+    FeedbacksView * _feedbacksView;
+    dispatch_after_block _cancelBlock;
+}
 
 @end
 
@@ -42,6 +49,15 @@
     return self;
 }
 
+- (void)loadView {
+    _feedbacksView = [[FeedbacksView alloc] init];
+    self.view = _feedbacksView;
+}
+
+- (UITableView*)tableView {
+    return _feedbacksView.tableView;
+}
+
 - (BOOL)isLeftMenuEnabled {
     return NO;
 }
@@ -49,6 +65,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [_feedbacksView.searchBar addTarget:self
+                                action:@selector(textFieldDidChange:)
+                      forControlEvents:UIControlEventEditingChanged];
+    
+    _feedbacksView.searchBar.delegate = (id<UITextFieldDelegate>)self;
+    
+    [_feedbacksView.clearTextFieldButton addTarget:self
+                                           action:@selector(clearSearch)
+                                 forControlEvents:UIControlEventTouchUpInside];
+
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [[UIView alloc] init];
 
@@ -93,6 +119,16 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onKeyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onKeyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+
     UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"createNewMessage.png"]
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
@@ -104,6 +140,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.model setSubscribedToNotifications:NO];
 }
 
@@ -135,7 +172,75 @@
     [self.navigationController pushViewController:controller animated:YES];
 }
 
+#pragma mark - TextField Delegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (void)textFieldDidChange:(UITextField *)textField {
+    [self filterWithText:textField.text];
+}
+
+#pragma mark - Keyboard Helpers
+
+- (void)onKeyboardWillShow:(NSNotification *)notification {
+    [self makeInputViewTransitionWithDownDirection:NO notification:notification];
+}
+
+- (void)onKeyboardWillHide:(NSNotification *)notification {
+    [self makeInputViewTransitionWithDownDirection:YES notification:notification];
+}
+
 #pragma mark - Private methods
+
+- (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    NSTimeInterval animationDuration;
+    UIViewAnimationCurve animationCurve;
+    
+    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
+    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
+    
+    CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:animationDuration];
+    [UIView setAnimationCurve:animationCurve];
+    
+    CGFloat inset = MIN(keyboardRect.size.height, keyboardRect.size.width);
+    if (!IS_IPAD) {
+        inset -= self.tabBarController.tabBar.frame.size.height;
+    }
+    [_feedbacksView setTableBottomMargin:down ? 0.0f : inset];
+    
+    [UIView commitAnimations];
+}
+
+- (void)filterWithText:(NSString *)text {
+    if(_cancelBlock) {
+        cancel_dispatch_after_block(_cancelBlock);
+    }
+    
+    void(^compleationBlock)(NSError * error) = ^(NSError * error) {
+        if(!error) {
+            [self.tableView reloadData];
+            [self updateNoDataLabelVisibility];
+        }
+    };
+    
+    [self.model setSearch:text];
+    
+    _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
+        [self.model reloadModelWithCompletion:compleationBlock];
+    });
+}
+
+- (void)clearSearch {
+    _feedbacksView.searchBar.text = nil;
+    [self filterWithText:nil];
+}
 
 #ifndef IPAD
 - (void)backButtonAction:(UIButton*)sender {
