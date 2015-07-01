@@ -12,6 +12,7 @@
 #import "IQFeedbackCategory.h"
 #import "IQFeedbackType.h"
 #import "IQService+Feedback.h"
+#import "IQEMultiLineTextCell.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
@@ -34,7 +35,7 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
         _cellsClasses = @{
                           @(0) : [IQDetailsTextCell class],
                           @(1) : [IQDetailsTextCell class],
-                          @(2) : [IQEditableTextCell class],
+                          @(2) : [IQEMultiLineTextCell class],
                           };
     });
     

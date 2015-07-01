@@ -642,14 +642,16 @@
 }
 
 - (void)markVisibleItemsAsReaded {
-    if(_cancelBlock) {
-        cancel_dispatch_after_block(_cancelBlock);
+    if (self.isViewLoaded) {
+        if(_cancelBlock) {
+            cancel_dispatch_after_block(_cancelBlock);
+        }
+        
+        NSArray * indexPaths = [[self.tableView indexPathsForVisibleRows] copy];
+        _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
+            [self.model markCommentsReadedAtIndexPaths:indexPaths];
+        });
     }
-    
-    NSArray * indexPaths = [[self.tableView indexPathsForVisibleRows] copy];
-    _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
-        [self.model markCommentsReadedAtIndexPaths:indexPaths];
-    });
 }
 
 #pragma mark - Scrolls

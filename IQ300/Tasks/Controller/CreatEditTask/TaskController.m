@@ -240,7 +240,8 @@
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if ([text isEqualToString:@"\n"]) {
+    //Disable line wrapping text for specific cells
+    if (textView.returnKeyType == UIReturnKeyDone && [text isEqualToString:@"\n"]) {
         [textView resignFirstResponder];
         return NO;
     }

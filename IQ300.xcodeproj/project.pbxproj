@@ -720,6 +720,8 @@
 		73E426031AAEE6CA00CD2093 /* UsersPickerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E426021AAEE6CA00CD2093 /* UsersPickerModel.m */; };
 		73E4260A1AAF04CF00CD2093 /* IQTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E426091AAF04CF00CD2093 /* IQTextView.m */; };
 		73E4260D1AAF07D700CD2093 /* IQLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E4260C1AAF07D700CD2093 /* IQLayoutManager.m */; };
+		73EFAA021B43DD3B007FD5D7 /* IQEMultiLineTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EFAA011B43DD3B007FD5D7 /* IQEMultiLineTextCell.m */; };
+		73EFAA031B43DD3B007FD5D7 /* IQEMultiLineTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EFAA011B43DD3B007FD5D7 /* IQEMultiLineTextCell.m */; };
 		73F27D631AFCA94D00D72FF8 /* TCObjectSerializator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F27D621AFCA94D00D72FF8 /* TCObjectSerializator.m */; };
 		73F2A5401A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2A53F1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m */; };
 		73F2A5501A39AB3000E9D324 /* attach_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F2A5421A39AB3000E9D324 /* attach_ico.png */; };
@@ -737,6 +739,8 @@
 		73F5089E1ACAD0C2009DBBD8 /* IQTodoItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F5089D1ACAD0C2009DBBD8 /* IQTodoItem.m */; };
 		73F63E881AA055FB000DA319 /* TaskFilterSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F63E871AA055FB000DA319 /* TaskFilterSection.m */; };
 		73F63E8C1AA08ED0000DA319 /* TaskFilterSortItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F63E8B1AA08ED0000DA319 /* TaskFilterSortItem.m */; };
+		73F872EA1B43D0B000960022 /* hide_keyboard_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F872E81B43D0B000960022 /* hide_keyboard_ico.png */; };
+		73F872EB1B43D0B000960022 /* hide_keyboard_ico@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73F872E91B43D0B000960022 /* hide_keyboard_ico@2x.png */; };
 		73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CE91A1B6B6D00225255 /* IQSession.m */; };
 		73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */; };
 		73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */; };
@@ -1377,6 +1381,8 @@
 		73E4260C1AAF07D700CD2093 /* IQLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQLayoutManager.m; sourceTree = "<group>"; };
 		73EE934B1B15CF4700B29381 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GAIEvents.strings; sourceTree = "<group>"; };
 		73EE934D1B15CF5000B29381 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/GAIEvents.strings; sourceTree = "<group>"; };
+		73EFAA001B43DD3B007FD5D7 /* IQEMultiLineTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQEMultiLineTextCell.h; sourceTree = "<group>"; };
+		73EFAA011B43DD3B007FD5D7 /* IQEMultiLineTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQEMultiLineTextCell.m; sourceTree = "<group>"; };
 		73F27D611AFCA94D00D72FF8 /* TCObjectSerializator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCObjectSerializator.h; sourceTree = "<group>"; };
 		73F27D621AFCA94D00D72FF8 /* TCObjectSerializator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCObjectSerializator.m; sourceTree = "<group>"; };
 		73F2A53E1A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ScreenActivityIndicator.h"; sourceTree = "<group>"; };
@@ -1401,6 +1407,8 @@
 		73F63E891AA08E67000DA319 /* TaskFilterItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskFilterItem.h; sourceTree = "<group>"; };
 		73F63E8A1AA08ED0000DA319 /* TaskFilterSortItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskFilterSortItem.h; sourceTree = "<group>"; };
 		73F63E8B1AA08ED0000DA319 /* TaskFilterSortItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskFilterSortItem.m; sourceTree = "<group>"; };
+		73F872E81B43D0B000960022 /* hide_keyboard_ico.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hide_keyboard_ico.png; sourceTree = "<group>"; };
+		73F872E91B43D0B000960022 /* hide_keyboard_ico@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hide_keyboard_ico@2x.png"; sourceTree = "<group>"; };
 		73F90CE81A1B6B6D00225255 /* IQSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSession.h; sourceTree = "<group>"; };
 		73F90CE91A1B6B6D00225255 /* IQSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSession.m; sourceTree = "<group>"; };
 		73F90CED1A1B8D3F00225255 /* IQServiceResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQServiceResponse.h; sourceTree = "<group>"; };
@@ -1555,6 +1563,8 @@
 				73176C981B3ADDD700E6AC60 /* IQDetailsTextCell.m */,
 				73176C991B3ADDD700E6AC60 /* IQEditableTextCell.h */,
 				73176C9A1B3ADDD700E6AC60 /* IQEditableTextCell.m */,
+				73EFAA001B43DD3B007FD5D7 /* IQEMultiLineTextCell.h */,
+				73EFAA011B43DD3B007FD5D7 /* IQEMultiLineTextCell.m */,
 				73176C9B1B3ADDD700E6AC60 /* IQSelectableTextCell.h */,
 				73176C9C1B3ADDD700E6AC60 /* IQSelectableTextCell.m */,
 			);
@@ -1784,6 +1794,8 @@
 				73A9498E1A3821AD008EC469 /* backWhiteArrow@2x.png */,
 				73D3DF291AF11542000DD34F /* clear_button_icon.png */,
 				73D3DF2A1AF11542000DD34F /* clear_button_icon@2x.png */,
+				73F872E81B43D0B000960022 /* hide_keyboard_ico.png */,
+				73F872E91B43D0B000960022 /* hide_keyboard_ico@2x.png */,
 				736B6BCF1A0B5C0800034D9B /* Images.xcassets */,
 				73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */,
 			);
@@ -3007,8 +3019,10 @@
 				738916BE1ABAFB800017EF86 /* gray_checked_checkbox@2x.png in Resources */,
 				731170801AB80AFF008A4D09 /* task_history_tab.png in Resources */,
 				73D3DF2B1AF11542000DD34F /* clear_button_icon.png in Resources */,
+				73F872EA1B43D0B000960022 /* hide_keyboard_ico.png in Resources */,
 				731170941AB80B0E008A4D09 /* task_status_ico.png in Resources */,
 				7311708E1AB80B0E008A4D09 /* edit_gray_ico.png in Resources */,
+				73F872EB1B43D0B000960022 /* hide_keyboard_ico@2x.png in Resources */,
 				73A798331A3585FF006F5721 /* CTAssetsPickerController.strings in Resources */,
 				7311707E1AB80AFF008A4D09 /* task_documents_tab.png in Resources */,
 				7399F9261ABC018D0013FA11 /* white_add_ico.png in Resources */,
@@ -3308,6 +3322,7 @@
 				73840E201B1C75A500BCEAFC /* ExpandableTableView.m in Sources */,
 				73840E211B1C75A500BCEAFC /* lcl.m in Sources */,
 				73840E221B1C75A500BCEAFC /* TaskExecutorsGroup.m in Sources */,
+				73EFAA031B43DD3B007FD5D7 /* IQEMultiLineTextCell.m in Sources */,
 				73840E231B1C75A500BCEAFC /* IQTableManagedModel.m in Sources */,
 				73840E241B1C75A500BCEAFC /* IQAttachment.m in Sources */,
 				73840E251B1C75A500BCEAFC /* MessagesModel.m in Sources */,
@@ -3538,6 +3553,7 @@
 				73A20C7A1A42F62C006433C5 /* IQBadgeView.m in Sources */,
 				73E426001AAEC6BF00CD2093 /* UserPickerController.m in Sources */,
 				73B9EA051ADCFA2800159A66 /* IQTableBaseController.m in Sources */,
+				73EFAA021B43DD3B007FD5D7 /* IQEMultiLineTextCell.m in Sources */,
 				739CFFA91B39896A00B4AED0 /* CreateFeedbackController.m in Sources */,
 				73F90CFA1A1B981C00225255 /* IQ300.xcdatamodeld in Sources */,
 				7386B3B91A25E1840061B921 /* NSManagedObjectContext+AsyncFetch.m in Sources */,

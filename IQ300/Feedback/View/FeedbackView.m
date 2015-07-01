@@ -44,19 +44,21 @@
 
 + (CGFloat)heightForFeedback:(IQManagedFeedback*)feedback width:(CGFloat)width {
     CGFloat viewWidth = width - VIEWS_INSET * 2.0f;
-    CGFloat height = (LABELS_HEIGHT + LABELS_OFFSET) * 3 + TYPE_HEIGHT + LABELS_OFFSET;
+    CGFloat height = VIEWS_INSET * 3 + (LABELS_HEIGHT + LABELS_OFFSET) * 3 + TYPE_HEIGHT + LABELS_OFFSET;
     
     if([feedback.feedbackDescription length] > 0) {
-        CGSize descriptionSize = [feedback.feedbackDescription sizeWithFont:LABELS_FONT
-                                                          constrainedToSize:CGSizeMake(viewWidth, CGFLOAT_MAX)
-                                                              lineBreakMode:NSLineBreakByWordWrapping];
+        UITextView * descriptionTextView = [[UITextView alloc] init];
+        [descriptionTextView setFont:LABELS_FONT];
+        descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        descriptionTextView.text = feedback.feedbackDescription;
         
+        CGSize descriptionSize = [descriptionTextView sizeThatFits:CGSizeMake(viewWidth, CGFLOAT_MAX)];
         height += descriptionSize.height;
     }
         
     BOOL hasAttachment = ([feedback.attachments count] > 0);
     if(hasAttachment) {
-        height += (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [feedback.attachments count] - ATTACHMENT_VIEW_Y_OFFSET;
+        height += (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [feedback.attachments count];
     }
     
     return height;
@@ -95,10 +97,20 @@
                                       localaizedKey:nil];
         [self addSubview:_authorLabel];
 
-        _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
-                                                    font:LABELS_FONT
-                                           localaizedKey:nil];
-        [self addSubview:_descriptionLabel];
+        _descriptionTextView = [[IQTextView alloc] init];
+        [_descriptionTextView setFont:LABELS_FONT];
+        [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x272727]];
+        _descriptionTextView.textAlignment = NSTextAlignmentLeft;
+        _descriptionTextView.backgroundColor = [UIColor clearColor];
+        _descriptionTextView.editable = NO;
+        _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
+        _descriptionTextView.scrollEnabled = NO;
+        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+        _descriptionTextView.linkTextAttributes = @{
+                                                    NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
+                                                    NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
+                                                    };
+        [self addSubview:_descriptionTextView];
     }
     return self;
 }
@@ -114,7 +126,7 @@
     _feedbackTypeLabel.text = feedback.feedbackType.title;
     _feedbackCategoryLabel.text = NSLocalizedStringWithFormat(@"Category: %@", feedback.category.title);
     _authorLabel.text = feedback.author.displayName;
-    _descriptionLabel.text = feedback.feedbackDescription;
+    _descriptionTextView.text = feedback.feedbackDescription;
     
     for (UIButton * attachButton in _attachButtons) {
         [attachButton removeTarget:nil
@@ -193,20 +205,19 @@
                                     actualBounds.size.width,
                                     LABELS_HEIGHT);
     
-    CGSize constrainedSize = CGSizeMake(actualBounds.size.width, CGFLOAT_MAX);
-    CGSize descriptioSize = [_descriptionLabel.text sizeWithFont:_descriptionLabel.font
-                                               constrainedToSize:constrainedSize
-                                                   lineBreakMode:NSLineBreakByWordWrapping];
-
-    _descriptionLabel.frame = CGRectMake(actualBounds.origin.x,
-                                         CGRectBottom(_authorLabel.frame) + LABELS_OFFSET,
-                                         actualBounds.size.width,
-                                         descriptioSize.height);
-    
     BOOL hasAttachment = ([_attachButtons count] > 0);
+    CGFloat attachmentRectHeight = (hasAttachment) ? (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [_attachButtons count] - ATTACHMENT_VIEW_Y_OFFSET : 0.0f;
+    CGFloat descriptionY = CGRectBottom(_authorLabel.frame) + LABELS_OFFSET;
+    CGFloat descriptionHeight = actualBounds.size.height - descriptionY - attachmentRectHeight;
+
+    _descriptionTextView.frame = CGRectMake(actualBounds.origin.x,
+                                            descriptionY,
+                                            actualBounds.size.width,
+                                            descriptionHeight);
+    
     if(hasAttachment) {
-        CGFloat attachmentX = _descriptionLabel.frame.origin.x + LABELS_OFFSET;
-        CGFloat attachmentY = CGRectBottom(_descriptionLabel.frame) + 5.0f;
+        CGFloat attachmentX = _descriptionTextView.frame.origin.x + LABELS_OFFSET;
+        CGFloat attachmentY = CGRectBottom(_descriptionTextView.frame) + 5.0f;
         CGSize constrainedSize = CGSizeMake(actualBounds.size.width, ATTACHMENT_VIEW_HEIGHT);
         
         for (UIButton * attachButton in _attachButtons) {

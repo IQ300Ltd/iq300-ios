@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "IQTextView.h"
 
 @class IQManagedFeedback;
 
@@ -17,7 +18,7 @@
 @property (nonatomic, readonly) UILabel * feedbackTypeLabel;
 @property (nonatomic, readonly) UILabel * feedbackCategoryLabel;
 @property (nonatomic, readonly) UILabel * authorLabel;
-@property (nonatomic, readonly) UILabel * descriptionLabel;
+@property (nonatomic, readonly) IQTextView * descriptionTextView;
 
 @property (nonatomic, readonly) NSArray * attachButtons;
 

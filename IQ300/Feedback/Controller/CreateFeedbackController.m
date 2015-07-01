@@ -166,11 +166,6 @@
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if ([text isEqualToString:@"\n"]) {
-        [textView resignFirstResponder];
-        return NO;
-    }
-    
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
     textView.text = newString;
     [self.model updateFieldAtIndexPath:_editableIndexPath withValue:newString];
