@@ -44,6 +44,10 @@
     }
 }
 
+- (NSIndexPath*)selectedIndexPathForSection:(NSInteger)section {
+    return [[_selectedIndexPaths filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"section == %d", section]] firstObject];
+}
+
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath *)indexPath {
     id item = [self itemAtIndexPath:indexPath];
     return [IQSelectableTextCell heightForItem:item detailTitle:nil width:self.cellWidth];

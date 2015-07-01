@@ -93,7 +93,22 @@
     if ([self.delegate respondsToSelector:@selector(selectionControllerController:didSelectItem:)]) {
         [self.delegate selectionControllerController:self didSelectItem:item];
     }
-    [self.navigationController popViewControllerAnimated:YES];
+    
+    NSIndexPath * selectedIndexPath = [self.model selectedIndexPathForSection:indexPath.section];
+    if (self.model.allowsMultipleSelection) {
+        BOOL isItemSelected = [self.model isItemSelectedAtIndexPath:indexPath];
+        [self.model makeItemAtIndexPath:indexPath selected:!isItemSelected];
+    }
+    else if((selectedIndexPath && [selectedIndexPath compare:indexPath] != NSOrderedSame) || !selectedIndexPath) {
+        [self.model makeItemAtIndexPath:selectedIndexPath selected:NO];
+        [self.model makeItemAtIndexPath:indexPath selected:YES];
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        if (selectedIndexPath) {
+            [self.tableView reloadRowsAtIndexPaths:@[selectedIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        [self.tableView endUpdates];
+    }
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {

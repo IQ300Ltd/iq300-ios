@@ -199,6 +199,7 @@
     NSIndexPath * editIndexPath = [NSIndexPath indexPathForItem:controller.view.tag inSection:0];
     [self.model updateFieldAtIndexPath:editIndexPath
                              withValue:item];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Private methods
