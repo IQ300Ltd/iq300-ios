@@ -170,6 +170,7 @@
 "You should select feedback category" = "Необходимо выбрать категорию обращения";
 "You should select feedback type" = "Необходимо выбрать тип обращения";
 "The feedback can not be empty" = "Текст обращения не может быть пустым";
+"Sent feedback?" = "Отправить обращение?";
 
 //Feedback types
 "feedback_new" = "Принято";

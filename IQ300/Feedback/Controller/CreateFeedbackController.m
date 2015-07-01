@@ -206,7 +206,7 @@
 - (void)backButtonAction:(UIButton*)sender {
     if ([self.model modelHasChanges]) {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                           message:@"Здесь могло быть ваше сообщение!"//NSLocalizedString(@"Save changes?", nil)
+                           message:NSLocalizedString(@"Sent feedback?", nil)
                  cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
                  otherButtonTitles:@[NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil)]
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
