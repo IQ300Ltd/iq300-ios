@@ -278,7 +278,7 @@
 
 - (void)proccessServiceError:(NSError*)error {
     if (error) {
-        if (error.code == kCFURLErrorNotConnectedToInternet || ![IQService sharedService].isServiceReachable) {
+        if (IsNetworUnreachableError(error) || ![IQService sharedService].isServiceReachable) {
             [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
         }
         else {

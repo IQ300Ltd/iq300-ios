@@ -225,7 +225,7 @@
                         attachmentType:[asset MIMEType]
                             completion:^(NSError *error) {
                                 if (error) {
-                                    if([IQService sharedService].serviceReachabilityStatus == TCServicekReachabilityStatusNotReachable) {
+                                    if(IsNetworUnreachableError(error) || ![IQService sharedService].isServiceReachable) {
                                         [weakSelf showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
                                     }
                                     else {

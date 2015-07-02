@@ -84,7 +84,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        NSNumber * feedbackId = [self lastFeedbackIdFromTop:NO];
+        NSNumber * feedbackId = [self lastFeedbackIdFromTop:YES];
         [[IQService sharedService] feedbacksBeforeId:feedbackId
                                                 page:@(1)
                                                  per:@(_portionLenght)

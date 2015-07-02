@@ -291,7 +291,7 @@
             NSMutableAttributedString * statusMessage = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"Thank you for registering!", nil)
                                                                                                attributes:attributes];
             NSString * errorDescription = nil;
-            if (error.code == kCFURLErrorNotConnectedToInternet || ![IQService sharedService].isServiceReachable) {
+            if (IsNetworUnreachableError(error) || ![IQService sharedService].isServiceReachable) {
                 errorDescription = NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil);
             }
             else {

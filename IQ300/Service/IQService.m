@@ -74,6 +74,11 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     return nil;
 }
 
+BOOL IsNetworUnreachableError(NSError * error) {
+    return error.code == kCFURLErrorNotConnectedToInternet ||
+           error.code == kCFURLErrorNetworkConnectionLost;
+}
+
 @interface IQService() {
     dispatch_queue_t _extendTokenQueue;
     dispatch_group_t _extendTokenGroup;

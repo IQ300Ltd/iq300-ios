@@ -223,7 +223,7 @@
 }
 
 - (void)markAllAsReaded:(id)sender {
-    if([IQService sharedService].serviceReachabilityStatus == TCServicekReachabilityStatusNotReachable) {
+    if(![IQService sharedService].isServiceReachable) {
         [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
     }
     else {

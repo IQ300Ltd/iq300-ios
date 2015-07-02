@@ -67,7 +67,7 @@
                                                     if(success) {
                                                         [self continueLoginProccess];
                                                     }
-                                                    else if([IQService sharedService].serviceReachabilityStatus == TCServicekReachabilityStatusNotReachable) {
+                                                    else if(IsNetworUnreachableError(error) || ![IQService sharedService].isServiceReachable) {
                                                         [self showErrorMessage:INTERNET_UNREACHABLE_MESSAGE];
                                                     }
                                                     else {
