@@ -12,6 +12,7 @@
 #import "FeedbackCategoriesModel.h"
 #import "FeedbackTypesModel.h"
 #import "IQSelectionController.h"
+#import "DispatchAfterExecution.h"
 
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
@@ -205,21 +206,28 @@
 #pragma mark - Private methods
 
 - (void)backButtonAction:(UIButton*)sender {
+    if (_editableIndexPath) {
+        IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
+        [cell.titleTextView resignFirstResponder];
+    }
+    
     if ([self.model modelHasChanges]) {
-        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                           message:NSLocalizedString(@"Sent feedback?", nil)
-                 cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
-                 otherButtonTitles:@[NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil)]
-                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              if (buttonIndex == 1 || buttonIndex == 2) {
-                                  if (buttonIndex == 1) {
-                                      [self sendButtonAction:_sendButton];
+        dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+            [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                               message:NSLocalizedString(@"Sent feedback?", nil)
+                     cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
+                     otherButtonTitles:@[NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil)]
+                              tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                  if (buttonIndex == 1 || buttonIndex == 2) {
+                                      if (buttonIndex == 1) {
+                                          [self sendButtonAction:_sendButton];
+                                      }
+                                      else {
+                                          [self.navigationController popViewControllerAnimated:YES];
+                                      }
                                   }
-                                  else {
-                                      [self.navigationController popViewControllerAnimated:YES];
-                                  }
-                              }
-                          }];
+                              }];
+        });
     }
     else {
         [self.navigationController popViewControllerAnimated:YES];
@@ -227,12 +235,19 @@
 }
 
 - (void)sendButtonAction:(UIButton*)sender {
+    if (_editableIndexPath) {
+        IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
+        [cell.titleTextView resignFirstResponder];
+    }
+
     if ([self isAllFieldsValid]) {
-        [self.model createFeedbackWithCompletion:^(NSError *error) {
-            if (!error) {
-                [self.navigationController popViewControllerAnimated:YES];
-            }
-        }];
+        dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+            [self.model createFeedbackWithCompletion:^(NSError *error) {
+                if (!error) {
+                    [self.navigationController popViewControllerAnimated:YES];
+                }
+            }];
+        });
     }
 }
 
