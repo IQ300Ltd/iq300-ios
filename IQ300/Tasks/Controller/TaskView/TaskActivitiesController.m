@@ -63,7 +63,6 @@
     
     [self.noDataLabel setText:NSLocalizedString(@"History is empty", nil)];
     
-    
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{

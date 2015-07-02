@@ -76,7 +76,6 @@
     [super viewDidLoad];
     
     [self.noDataLabel setText:NSLocalizedString(@"No comments", nil)];
-    self.noDataLabel.hidden = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {

@@ -71,6 +71,7 @@
         _noDataLabel.numberOfLines = 0;
         _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        _noDataLabel.hidden = YES;
         
         if (_tableView) {
             [self.view insertSubview:_noDataLabel belowSubview:_tableView];
@@ -250,7 +251,7 @@
 
 - (void)updateNoDataLabelVisibility {
     if (_noDataLabel) {
-        [_noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
+        _noDataLabel.hidden = ([self.model numberOfItemsInSection:0] > 0);
     }
 }
 
