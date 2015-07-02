@@ -50,7 +50,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     }
 
     if(fetchPredicate && [_search length] > 0) {
-        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"(feedbackDescription CONTAINS[cd] %@)", _search];
+        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"(feedbackDescription CONTAINS[cd] %@ OR \
+                                                                            author.displayName CONTAINS[cd] %@)", _search, _search];
         fetchPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[fetchPredicate, filterPredicate]];
     }
 
