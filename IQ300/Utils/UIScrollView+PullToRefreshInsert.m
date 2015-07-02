@@ -74,6 +74,41 @@ NSString const *UIScrollViewBottomPullToRefreshView = @"UIScrollViewBottomPullTo
     }
 }
 
+- (void)setPullToRefreshAtPosition:(SVPullToRefreshPosition)position shown:(BOOL)shown {
+    SVPullToRefreshView * pullToRefreshView = [self pullToRefreshForPosition:position];
+    pullToRefreshView.hidden = !shown;
+    
+    if(!shown) {
+        if (pullToRefreshView.isObserving) {
+            [self removeObserver:pullToRefreshView forKeyPath:@"contentOffset"];
+            [self removeObserver:pullToRefreshView forKeyPath:@"contentSize"];
+            [self removeObserver:pullToRefreshView forKeyPath:@"frame"];
+            [pullToRefreshView resetScrollViewContentInset];
+            pullToRefreshView.isObserving = NO;
+        }
+    }
+    else {
+        if (!pullToRefreshView.isObserving) {
+            [self addObserver:pullToRefreshView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+            [self addObserver:pullToRefreshView forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
+            [self addObserver:pullToRefreshView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+            pullToRefreshView.isObserving = YES;
+            
+            CGFloat yOrigin = 0;
+            switch (pullToRefreshView.position) {
+                case SVPullToRefreshPositionTop:
+                    yOrigin = -SVPullToRefreshViewHeight;
+                    break;
+                case SVPullToRefreshPositionBottom:
+                    yOrigin = self.contentSize.height;
+                    break;
+            }
+            
+            pullToRefreshView.frame = CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
+        }
+    }
+}
+
 - (void)setPullToRefreshView:(SVPullToRefreshView*)view shown:(BOOL)shown {
     if(!shown) {
         if (view.isObserving) {

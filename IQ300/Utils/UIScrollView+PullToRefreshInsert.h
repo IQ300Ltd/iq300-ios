@@ -13,5 +13,6 @@
 
 - (void)insertPullToRefreshWithActionHandler:(void (^)(void))actionHandler position:(SVPullToRefreshPosition)position;
 - (SVPullToRefreshView*)pullToRefreshForPosition:(SVPullToRefreshPosition)position;
+- (void)setPullToRefreshAtPosition:(SVPullToRefreshPosition)position shown:(BOOL)shown;
 
 @end
