@@ -376,12 +376,14 @@
 }
 
 - (void)openFeedbackControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
-    [[IQService sharedService] feedbackWithId:notification.notificable.notificableId
+    BOOL isDiscussionNotification = (notification.discussionId != nil);
+   [[IQService sharedService] feedbackWithId:notification.notificable.notificableId
                                       handler:^(BOOL success, IQManagedFeedback * feedback, NSData *responseData, NSError *error) {
                                           if (success) {
                                               FeedbackController * controller = [[FeedbackController alloc] init];
                                               controller.feedback = feedback;
                                               controller.hidesBottomBarWhenPushed = YES;
+                                              controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
                                               [self.navigationController pushViewController:controller animated:YES];
                                               
                                               if(indexPath) {
