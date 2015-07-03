@@ -33,7 +33,6 @@
         _scrollView = [[UIScrollView alloc] init];
         _scrollView.showsHorizontalScrollIndicator = NO;
         _scrollView.showsVerticalScrollIndicator = NO;
-        _scrollView.delaysContentTouches = NO;
         [self addSubview:_scrollView];
         
         _logoImageView = [[UIImageView alloc] init];
