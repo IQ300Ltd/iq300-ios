@@ -31,7 +31,6 @@
 #import "FeedbackController.h"
 
 @interface NotificationsGroupController () <SWTableViewCellDelegate> {
-    NotificationsView * _mainView;
     NotificationsMenuModel * _menuModel;
 }
 
@@ -77,17 +76,11 @@
     return self;
 }
 
-- (void)loadView {
-    _mainView = [[NotificationsView alloc] init];
-    self.view = _mainView;
-}
-
-- (UITableView*)tableView {
-    return _mainView.tableView;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.tableView.tableFooterView = [[UIView alloc] init];
+    self.view.backgroundColor = [UIColor whiteColor];
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
@@ -115,7 +108,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    _mainView.noDataLabel.text = NSLocalizedString((self.model.loadUnreadOnly) ? NoUnreadNotificationFound : NoNotificationFound, nil);
+    self.noDataLabel.text = NSLocalizedString((self.model.loadUnreadOnly) ? NoUnreadNotificationFound : NoNotificationFound, nil);
     
     [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:(self.model.loadUnreadOnly) ? 1 : 0
                                                          inSection:0]];
@@ -237,7 +230,7 @@
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
     self.model.loadUnreadOnly = (indexPath.row == 1);
-    _mainView.noDataLabel.text = NSLocalizedString((indexPath.row == 0) ? NoNotificationFound : NoUnreadNotificationFound, nil);
+    self.noDataLabel.text = NSLocalizedString((indexPath.row == 0) ? NoNotificationFound : NoUnreadNotificationFound, nil);
     [self reloadModel];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
@@ -334,10 +327,6 @@
     if(isTableScrolledToBottom || self.needFullReload) {
         [self scrollToTopAnimated:animated delay:delay];
     }
-}
-
-- (void)updateNoDataLabelVisibility {
-    [_mainView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
 }
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {

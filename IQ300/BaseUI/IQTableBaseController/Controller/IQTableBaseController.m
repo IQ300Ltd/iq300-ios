@@ -14,7 +14,10 @@
 @interface IQTableBaseController() {
     UITableView * _tableView;
     BOOL _isDealocProcessing;
+    UIEdgeInsets _tableInsets;
 }
+
+@property (nonatomic, strong) UIActivityIndicatorView * activityIndicator;
 
 @end
 
@@ -30,6 +33,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     if(!self.tableView.superview) {
         [self.view addSubview:self.tableView];
     }
@@ -286,6 +290,93 @@
             [self showErrorAlertWithMessage:error.localizedDescription];
         }
     }
+}
+
+- (BOOL)isActivityIndicatorShown {
+    return _activityIndicator && _activityIndicator.superview;
+}
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated {
+    if (self.activityIndicator.isHidden) {
+        [self.activityIndicator startAnimating];
+        
+        CGFloat indicatorHeight = self.activityIndicator.frame.size.height;
+        self.activityIndicator.frame = CGRectMake(self.tableView.frame.origin.x,
+                                                  self.tableView.frame.origin.y - indicatorHeight,
+                                                  self.activityIndicator.frame.size.width,
+                                                  self.activityIndicator.frame.size.height);
+        [self.tableView.superview addSubview:self.activityIndicator];
+        [self.tableView.superview bringSubviewToFront:self.activityIndicator];
+        
+        self.activityIndicator.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        _tableInsets = self.tableView.contentInset;
+        UIEdgeInsets contentInsets = self.tableView.contentInset;
+        contentInsets.top = indicatorHeight;
+
+        [UIView animateWithDuration:animated ? 0.3 : 0.0
+                              delay:0.0
+                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.activityIndicator.frame = CGRectMake(self.tableView.frame.origin.x,
+                                                                       self.tableView.frame.origin.y,
+                                                                       self.activityIndicator.frame.size.width,
+                                                                       self.activityIndicator.frame.size.height);
+
+                             self.tableView.contentInset = contentInsets;
+                         }
+                         completion:^(BOOL finished) {
+                             
+                         }];
+    }
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated {
+    if (_activityIndicator) {
+        CGFloat indicatorHeight = self.activityIndicator.frame.size.height;
+        self.activityIndicator.autoresizingMask = UIViewAutoresizingNone;
+        [self.activityIndicator stopAnimating];
+
+        void (^completion)(BOOL finished) = ^(BOOL finished)
+        {
+            self.tableView.contentInset = _tableInsets;
+            [self.activityIndicator removeFromSuperview];
+        };
+        
+       if (animated) {
+            [UIView animateWithDuration:0.3
+                                  delay:0.0
+                                options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut
+                             animations:^{
+                                 self.activityIndicator.frame = CGRectMake(self.tableView.frame.origin.x,
+                                                                           self.tableView.frame.origin.y - indicatorHeight,
+                                                                           self.activityIndicator.frame.size.width,
+                                                                           self.activityIndicator.frame.size.height);
+                                 
+                                 self.tableView.contentInset = _tableInsets;
+                             }
+                             completion:completion];
+        }
+        
+        else {
+            completion(YES);
+            [self.tableView.layer removeAllAnimations];
+            [self.tableView setContentOffset:self.tableView.contentOffset animated:NO];
+        }
+    }
+}
+
+#pragma mark - Private methods
+
+- (UIActivityIndicatorView*)activityIndicator {
+    if (!_activityIndicator) {
+        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        _activityIndicator.frame = CGRectMake(0.0f, -30, self.view.frame.size.width, 30);
+        _activityIndicator.hidesWhenStopped = YES;
+        _activityIndicator.hidden = YES;
+        _activityIndicator.backgroundColor = [UIColor whiteColor];
+    }
+    
+    return _activityIndicator;
 }
 
 - (void)dealloc {
