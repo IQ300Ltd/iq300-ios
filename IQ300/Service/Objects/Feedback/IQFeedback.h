@@ -12,6 +12,14 @@
 @class IQFeedbackType;
 @class IQFeedbackCategory;
 
+@interface IQPlatformInfo : NSObject
+
+@property (nonatomic, readonly) NSString * appVersion;
+@property (nonatomic, readonly) NSString * osVersion;
+@property (nonatomic, readonly) NSString * platformName;
+
+@end
+
 @interface IQFeedback : NSObject
 
 @property (nonatomic, strong) NSNumber * categoryId;
@@ -21,6 +29,7 @@
 
 @property (nonatomic, strong) IQFeedbackType * feedbackType;
 @property (nonatomic, strong) IQFeedbackCategory * feedbackCategory;
+@property (nonatomic, readonly) IQPlatformInfo * platformInfo;
 
 + (RKObjectMapping*)objectMapping;
 

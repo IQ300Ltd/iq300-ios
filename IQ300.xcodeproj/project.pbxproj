@@ -98,6 +98,8 @@
 		732952BA1A69441D0066B336 /* bubble_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 732952B81A69441D0066B336 /* bubble_blue@2x.png */; };
 		732953901A69208000F3704C /* IQLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329538F1A69208000F3704C /* IQLog.m */; };
 		733A80541A7A6C5C00460C87 /* NotificationGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 733A80531A7A6C5C00460C87 /* NotificationGroupView.m */; };
+		733ADD1C1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */; };
+		733ADD1D1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */; };
 		734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQAttachment.m */; };
 		734965D11AB1A60100263B57 /* CTaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 734965D01AB1A60100263B57 /* CTaskFilterCell.m */; };
 		734B91111B31BDF20084CA8E /* RegistrationStatusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 734B91101B31BDF20084CA8E /* RegistrationStatusController.m */; };
@@ -870,6 +872,8 @@
 		7329538F1A69208000F3704C /* IQLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQLog.m; sourceTree = "<group>"; };
 		733A80521A7A6C5C00460C87 /* NotificationGroupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationGroupView.h; sourceTree = "<group>"; };
 		733A80531A7A6C5C00460C87 /* NotificationGroupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationGroupView.m; sourceTree = "<group>"; };
+		733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice-Hardware.m"; sourceTree = "<group>"; };
+		733ADD1B1B46C03F00B3DBF4 /* UIDevice-Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice-Hardware.h"; sourceTree = "<group>"; };
 		734433631A2DEBF300102FC8 /* IQAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachment.h; sourceTree = "<group>"; };
 		734433641A2DEBF300102FC8 /* IQAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachment.m; sourceTree = "<group>"; };
 		734965CF1AB1A60100263B57 /* CTaskFilterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTaskFilterCell.h; sourceTree = "<group>"; };
@@ -1913,6 +1917,8 @@
 				73CB5B491B32D192005B688C /* IQStringValidator.m */,
 				73CB5B4B1B32D2D5005B688C /* IQPasswordValidator.h */,
 				73CB5B4C1B32D2D5005B688C /* IQPasswordValidator.m */,
+				733ADD1B1B46C03F00B3DBF4 /* UIDevice-Hardware.h */,
+				733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */,
 				73CB5B4E1B32D326005B688C /* IQEmailValidator.h */,
 				73CB5B4F1B32D326005B688C /* IQEmailValidator.m */,
 			);
@@ -3244,6 +3250,7 @@
 				73840DD91B1C75A500BCEAFC /* IQTaskDataHolder.m in Sources */,
 				73840DDA1B1C75A500BCEAFC /* IQComment.m in Sources */,
 				73840DDB1B1C75A500BCEAFC /* NSDate+IQFormater.m in Sources */,
+				733ADD1D1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */,
 				73840DDC1B1C75A500BCEAFC /* IQService+Notifications.m in Sources */,
 				73840DDD1B1C75A500BCEAFC /* UIViewController+LeftMenu.m in Sources */,
 				73840DDE1B1C75A500BCEAFC /* UITabBarItem+CustomBadgeView.m in Sources */,
@@ -3608,6 +3615,7 @@
 				7382CA951A4566BD00D5EE1F /* CSectionHeaderView.m in Sources */,
 				7373ED661A8A2EB500719FCD /* DeviceToken.m in Sources */,
 				730BE4051B3D541700E26994 /* FeedbackCategoriesModel.m in Sources */,
+				733ADD1C1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */,
 				739850D81A2DD32E00DB5B21 /* IQConversation.m in Sources */,
 				738EF8271A9CA88400894755 /* IQProject.m in Sources */,
 				73970E8F1AA5A7CC00AC2414 /* TaskFilterCounters.m in Sources */,

@@ -15,6 +15,7 @@
 #import "PhotoViewController.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "DownloadManager.h"
+#import "IQService+Feedback.h"
 
 @interface FeedbackInfoController() {
     FeedbackView * _feedbackView;
@@ -86,6 +87,24 @@
     height = MAX(height, self.view.bounds.size.height);
     _feedbackView.frame = CGRectMake(0.0f, 0.0f, width, height);
     [((UIScrollView*)self.view) setContentSize:CGSizeMake(width, height)];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+    [self updateFeedback];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
 }
 
 #pragma mark - UIDocumentInteractionController Delegate Methods
@@ -160,6 +179,22 @@
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
                           tapBlock:nil];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateFeedback];
+}
+
+- (void)updateFeedback {
+    if (self.feedback.feedbackId) {
+        [[IQService sharedService] feedbackWithId:self.feedback.feedbackId
+                                          handler:^(BOOL success, IQManagedFeedback * feedback, NSData *responseData, NSError *error) {
+                                              if (success && feedback) {
+                                                  self.feedback = feedback;
+                                                  [self.view setNeedsLayout];
+                                              }
+                                          }];
     }
 }
 
