@@ -32,6 +32,7 @@
     TasksMenuModel * _menuModel;
     UITapGestureRecognizer * _singleTapGesture;
     BOOL _highlightTasks;
+    BOOL _forceUpdateNeeded;
 }
 
 @end
@@ -67,6 +68,7 @@
         self.model = [[TasksModel alloc] init];
         _menuModel = [[TasksMenuModel alloc] init];
         _highlightTasks = YES;
+        _forceUpdateNeeded = YES;
     }
     return self;
 }
@@ -139,6 +141,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.model setSubscribedToNotifications:NO];
+    _forceUpdateNeeded = YES;
 }
 
 - (UITableView*)tableView {
@@ -232,6 +235,8 @@
         (!model.communityId && self.model.communityId) ||
         ![self.model.statusFilter isEqualToString:model.statusFilter]) {
      
+        _forceUpdateNeeded = NO;
+        
         self.model.sortField = model.sortField;
         self.model.statusFilter = model.statusFilter;
         self.model.ascending = model.ascending;
@@ -347,7 +352,9 @@
 }
 
 - (void)updateModel {
-    if([IQSession defaultSession]) {
+    if([IQSession defaultSession] && _forceUpdateNeeded) {
+        _forceUpdateNeeded = NO;
+        
         [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
         [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:NO];
         
@@ -361,10 +368,9 @@
             
             dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
                 if (self.isActivityIndicatorShown) {
-                    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
-                    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
-
                     [self hideActivityIndicatorAnimated:YES completion:^{
+                        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+                        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
                     }];
                 }
             });
