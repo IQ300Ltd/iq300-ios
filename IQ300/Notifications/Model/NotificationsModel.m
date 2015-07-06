@@ -157,7 +157,11 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadModelSourceControllerWithCompletion:completion];
+    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self modelDidChanged];
+        }
+    }];
 
     NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
 
@@ -176,48 +180,11 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                                }
                                                            }];
                                                        }
-                                                       else if(completion) {
+                                                       
+                                                       if(completion) {
                                                            completion(error);
                                                        }
                                                    }];
-}
-
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    BOOL hasObjects = ([_fetchController.fetchedObjects count] > 0);
-    if(!hasObjects) {
-        [self reloadModelSourceControllerWithCompletion:nil];
-    }
-    
-    [self updateCounters];
-    NSDate * lastUpdatedDate = [self getLastNotificationChangedDate];
-    if(!lastUpdatedDate) {
-        [[IQService sharedService] notificationsForGroupWithId:self.group.lastNotificationId
-                                                  updatedAfter:nil
-                                                        unread:@(NO)
-                                                          page:@(1)
-                                                           per:@(_portionLenght)
-                                                          sort:IQSortDirectionAscending
-                                                       handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
-                                                           if(completion) {
-                                                               completion(error);
-                                                           }
-                                                       }];
-        
-    }
-    else {
-        [self notificationsUpdatesWithCompletion:^(NSError *error) {
-            if(!error && [_fetchController.fetchedObjects count] < _portionLenght) {
-                [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
-                    if(completion) {
-                        completion(error);
-                    }
-                }];
-            }
-            else if(completion) {
-                completion(error);
-            }
-        }];
-    }
 }
 
 - (void)clearModelData {
@@ -549,7 +516,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
         NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
         if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
-            [weakSelf reloadFirstPartWithCompletion:nil];
+            [weakSelf updateModelWithCompletion:nil];
             [weakSelf initGlobalCounterUpdate];
         }
     };

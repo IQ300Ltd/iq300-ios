@@ -30,8 +30,8 @@
 
 - (void)proccessServiceError:(NSError*)error;
 
-- (void)showActivityIndicatorAnimated:(BOOL)animated;
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion;
 
-- (void)hideActivityIndicatorAnimated:(BOOL)animated;
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion;
 
 @end

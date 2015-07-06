@@ -125,7 +125,7 @@
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
     if([IQSession defaultSession]) {
-        [self reloadFirstPart];
+        [self updateModel];
     }
     
     [self.model setSubscribedToNotifications:YES];
@@ -305,16 +305,22 @@
 
 - (void)reloadModel {
     [self.model reloadModelWithCompletion:^(NSError *error) {
-        [self.tableView reloadData];
+        if (!error) {
+            [self.tableView reloadData];
+        }
+        
         [self scrollToTopAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;
     }];
 }
 
-- (void)reloadFirstPart {
-    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
-        [self.tableView reloadData];
+- (void)updateModel {
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self.tableView reloadData];
+        }
+        
         [self scrollToTopIfNeedAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;

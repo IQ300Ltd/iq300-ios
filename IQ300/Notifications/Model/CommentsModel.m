@@ -156,6 +156,24 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
     if([_fetchController.fetchedObjects count] == 0) {
+        [self reloadModelSourceControllerWithCompletion:nil];
+    }
+    
+    [self clearRemovedComments];
+    
+    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                      page:@(1)
+                                                       per:@(_portionLenght)
+                                                      sort:SORT_DIRECTION
+                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                       if(completion) {
+                                                           completion(error);
+                                                       }
+                                                   }];
+}
+
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion {
+    if([_fetchController.fetchedObjects count] == 0) {
         [self reloadModelWithCompletion:completion];
     }
     else {
@@ -175,24 +193,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self reloadModelSourceControllerWithCompletion:nil];
-    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                      page:@(1)
-                                                       per:@(_portionLenght)
-                                                      sort:SORT_DIRECTION
-                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                       if(completion) {
-                                                           completion(error);
-                                                       }
-                                                   }];
-}
-
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    if([_fetchController.fetchedObjects count] == 0) {
-        [self reloadModelSourceControllerWithCompletion:nil];
-    }
-    
-    [self clearRemovedComments];
-    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
@@ -520,7 +520,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)applicationWillEnterForeground {
-    [self reloadFirstPartWithCompletion:^(NSError *error) {
+    [self updateModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self modelDidChanged];
         }

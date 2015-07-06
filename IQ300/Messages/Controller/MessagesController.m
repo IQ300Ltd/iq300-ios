@@ -101,7 +101,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
-         [weakSelf.model reloadFirstPartWithCompletion:^(NSError *error) {
+         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
@@ -109,7 +109,7 @@
     
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
-         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
          }];
      }
@@ -136,7 +136,7 @@
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
     if([IQSession defaultSession]) {
-        [self reloadModel];
+        [self updateModel];
     }
     
     [self.model setSubscribedToNotifications:YES];
@@ -285,6 +285,17 @@
 
 - (void)reloadModel {
     [self.model reloadModelWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self.tableView reloadData];
+        }
+        [self updateNoDataLabelVisibility];
+        [self scrollToTopIfNeedAnimated:NO delay:0.0f];
+        self.needFullReload = NO;
+    }];
+}
+
+- (void)updateModel {
+    [self.model updateModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
         }

@@ -76,7 +76,6 @@ NSString const *UIScrollViewBottomPullToRefreshView = @"UIScrollViewBottomPullTo
 
 - (void)setPullToRefreshAtPosition:(SVPullToRefreshPosition)position shown:(BOOL)shown {
     SVPullToRefreshView * pullToRefreshView = [self pullToRefreshForPosition:position];
-    pullToRefreshView.hidden = !shown;
     
     if(!shown) {
         if (pullToRefreshView.isObserving) {
@@ -85,6 +84,7 @@ NSString const *UIScrollViewBottomPullToRefreshView = @"UIScrollViewBottomPullTo
             [self removeObserver:pullToRefreshView forKeyPath:@"frame"];
             [pullToRefreshView resetScrollViewContentInset];
             pullToRefreshView.isObserving = NO;
+            pullToRefreshView.hidden = YES;
         }
     }
     else {
@@ -105,6 +105,7 @@ NSString const *UIScrollViewBottomPullToRefreshView = @"UIScrollViewBottomPullTo
             }
             
             pullToRefreshView.frame = CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
+            pullToRefreshView.hidden = NO;
         }
     }
 }

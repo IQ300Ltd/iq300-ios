@@ -126,7 +126,11 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadModelSourceControllerWithCompletion:completion];
+    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self modelDidChanged];
+        }
+    }];
     
     NSDate * lastUpdatedDate = [self lastActivityChangedDate];
     

@@ -91,7 +91,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      addPullToRefreshWithActionHandler:^{
-         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
              [weakSelf.tableView.pullToRefreshView stopAnimating];
          }];
      }
@@ -143,7 +143,7 @@
         if(self.needFullReload) {
             [self showActivityIndicatorOnView:_mainView];
         }
-        [self reloadModel];
+        [self updateModel];
     }
 }
 
@@ -430,8 +430,8 @@
     }
 }
 
-- (void)reloadModel {
-    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
+- (void)updateModel {
+    [self.model updateModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
         }

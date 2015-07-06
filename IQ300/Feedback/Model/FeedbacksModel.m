@@ -99,7 +99,11 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadModelSourceControllerWithCompletion:completion];
+    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self modelDidChanged];
+        }
+    }];
     
     [[IQService sharedService] feedbacksUpdatedAfter:nil
                                                 page:@(1)
@@ -108,12 +112,14 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                              handler:^(BOOL success, IQFeedbacksHolder * holder, NSData *responseData, NSError *error) {
                                                  if(success && [_fetchController.fetchedObjects count] < _portionLenght) {
                                                      [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
-                                                         if(completion) {
-                                                             completion(error);
+                                                         if(error) {
+                                                             NSLog(@"Try load full partition error:%@", error);
                                                          }
                                                      }];
+                                                     
                                                  }
-                                                 else if(completion) {
+                                                 
+                                                 if(completion) {
                                                      completion(error);
                                                  }
                                              }];

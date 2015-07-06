@@ -138,7 +138,26 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     return nil;
 }
 
-- (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
+- (void)updateModelWithCompletion:(void (^)(NSError *))completion {
+    [[IQService sharedService] conversationsUnread:nil
+                                              page:@(1)
+                                               per:@(_portionLenght)
+                                            search:_filter
+                                              sort:SORT_DIRECTION
+                                           handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
+                                               if(success) {
+                                                   [self updateCounters];
+                                                   [_filteredIds addObjectsFromArray:[conversations valueForKey:@"conversationId"]];
+                                                   [self reloadModelSourceControllerWithCompletion:nil];
+                                               }
+                                               
+                                               if(completion) {
+                                                   completion(error);
+                                               }
+                                           }];
+}
+
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion {
     if([_fetchController.fetchedObjects count] == 0) {
         [self reloadModelWithCompletion:completion];
     }
@@ -156,6 +175,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                        [_filteredIds addObjectsFromArray:[conversations valueForKey:@"conversationId"]];
                                                        [self reloadModelSourceControllerWithCompletion:nil];
                                                    }
+                                                   
                                                    if(completion) {
                                                        completion(error);
                                                    }
@@ -173,25 +193,6 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                if(success) {
                                                    [self updateCounters];
                                                    _filteredIds = [[NSMutableSet alloc] initWithArray:[conversations valueForKey:@"conversationId"]];
-                                                   [self reloadModelSourceControllerWithCompletion:nil];
-                                               }
-
-                                               if(completion) {
-                                                   completion(error);
-                                               }
-                                           }];
-}
-
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] conversationsUnread:nil
-                                              page:@(1)
-                                               per:@(_portionLenght)
-                                            search:_filter
-                                              sort:SORT_DIRECTION
-                                           handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
-                                               if(success) {
-                                                   [self updateCounters];
-                                                   [_filteredIds addObjectsFromArray:[conversations valueForKey:@"conversationId"]];
                                                    [self reloadModelSourceControllerWithCompletion:nil];
                                                }
 
@@ -286,7 +287,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 #pragma mark - Private methods
 
 - (void)reloadFirstPart {
-    [self reloadFirstPartWithCompletion:^(NSError *error) {
+    [self updateModelWithCompletion:^(NSError *error) {
         [self modelDidChanged];
     }];
 }

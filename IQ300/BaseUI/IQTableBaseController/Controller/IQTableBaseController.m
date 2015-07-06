@@ -296,7 +296,7 @@
     return _activityIndicator && _activityIndicator.superview;
 }
 
-- (void)showActivityIndicatorAnimated:(BOOL)animated {
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
     if (self.activityIndicator.isHidden) {
         [self.activityIndicator startAnimating];
         
@@ -305,14 +305,15 @@
                                                   self.tableView.frame.origin.y - indicatorHeight,
                                                   self.activityIndicator.frame.size.width,
                                                   self.activityIndicator.frame.size.height);
-        [self.tableView.superview addSubview:self.activityIndicator];
-        [self.tableView.superview bringSubviewToFront:self.activityIndicator];
+        [self.tableView.superview insertSubview:self.activityIndicator aboveSubview:self.tableView];
         
         self.activityIndicator.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _tableInsets = self.tableView.contentInset;
+        CGPoint contentOffset = self.tableView.contentOffset;
         UIEdgeInsets contentInsets = self.tableView.contentInset;
         contentInsets.top = indicatorHeight;
-
+        contentOffset.y -= indicatorHeight;
+        
         [UIView animateWithDuration:animated ? 0.3 : 0.0
                               delay:0.0
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseIn
@@ -323,23 +324,28 @@
                                                                        self.activityIndicator.frame.size.height);
 
                              self.tableView.contentInset = contentInsets;
+                             [self.tableView setContentOffset:contentOffset animated:NO];
                          }
                          completion:^(BOOL finished) {
-                             
+                             if (finished && completion) {
+                                 completion();
+                             }
                          }];
     }
 }
 
-- (void)hideActivityIndicatorAnimated:(BOOL)animated {
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
     if (_activityIndicator) {
         CGFloat indicatorHeight = self.activityIndicator.frame.size.height;
-        self.activityIndicator.autoresizingMask = UIViewAutoresizingNone;
-        [self.activityIndicator stopAnimating];
 
-        void (^completion)(BOOL finished) = ^(BOOL finished)
+        void (^completionBlock)(BOOL finished) = ^(BOOL finished)
         {
             self.tableView.contentInset = _tableInsets;
+            [self.activityIndicator stopAnimating];
             [self.activityIndicator removeFromSuperview];
+            if (finished && completion) {
+                completion();
+            }
         };
         
        if (animated) {
@@ -354,11 +360,11 @@
                                  
                                  self.tableView.contentInset = _tableInsets;
                              }
-                             completion:completion];
+                             completion:completionBlock];
         }
         
         else {
-            completion(YES);
+            completionBlock(YES);
             [self.tableView.layer removeAllAnimations];
             [self.tableView setContentOffset:self.tableView.contentOffset animated:NO];
         }

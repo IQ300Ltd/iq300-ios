@@ -63,6 +63,7 @@
             [_tableView setLayoutMargins:UIEdgeInsetsZero];
         }
         [self addSubview:_tableView];
+        [self bringSubviewToFront:_searchBarContainer];
     }
     return self;
 }

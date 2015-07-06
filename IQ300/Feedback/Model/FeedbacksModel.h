@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "IQTableManagedModel.h"
+#import "IQTableManagedModel+Subclass.h"
 
 @interface FeedbacksModel : IQTableManagedModel
 

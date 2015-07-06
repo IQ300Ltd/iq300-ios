@@ -185,6 +185,29 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
+    BOOL hasObjects = ([_fetchController.fetchedObjects count] > 0);
+    if(!hasObjects) {
+        [self reloadModelWithCompletion:completion];
+    }
+    else {
+        [self clearRemovedComments];
+        
+        [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                          page:@(1)
+                                                           per:@(_portionLenght)
+                                                          sort:SORT_DIRECTION
+                                                       handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                           if(!error) {
+                                                               [self updateDefaultStatusesForComments:comments];
+                                                               if(completion) {
+                                                                   completion(error);
+                                                               }
+                                                           }
+                                                       }];
+    }
+}
+
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion {
     if([_fetchController.fetchedObjects count] == 0) {
         [self reloadModelWithCompletion:completion];
     }
@@ -223,29 +246,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                            completion(error);
                                                        }
                                                    }];
-}
-
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    BOOL hasObjects = ([_fetchController.fetchedObjects count] > 0);
-    if(!hasObjects) {
-        [self reloadModelWithCompletion:completion];
-    }
-    else {
-        [self clearRemovedComments];
-        
-        [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                          page:@(1)
-                                                           per:@(_portionLenght)
-                                                          sort:SORT_DIRECTION
-                                                       handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                           if(!error) {
-                                                               [self updateDefaultStatusesForComments:comments];
-                                                               if(completion) {
-                                                                   completion(error);
-                                                               }
-                                                           }
-                                                       }];
-    }
 }
 
 - (void)clearModelData {

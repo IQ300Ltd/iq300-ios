@@ -35,7 +35,6 @@
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
 
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;

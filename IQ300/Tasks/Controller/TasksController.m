@@ -126,18 +126,14 @@
     [self.leftMenuController setModel:_menuModel];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    if([IQSession defaultSession]) {
-        [self.model updateModelWithCompletion:^(NSError *error) {
-            if(!error) {
-                [self.tableView reloadData];
-            }
-            
-            [self updateNoDataLabelVisibility];
-        }];
-    }
-    
     [self.model setSubscribedToNotifications:YES];
     [self updateControllerTitle];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -348,6 +344,32 @@
     }
     
     self.navigationItem.title = title;
+}
+
+- (void)updateModel {
+    if([IQSession defaultSession]) {
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:NO];
+        
+        [self showActivityIndicatorAnimated:YES completion:nil];
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
+            [self updateNoDataLabelVisibility];
+            
+            dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+                if (self.isActivityIndicatorShown) {
+                    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+                    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
+
+                    [self hideActivityIndicatorAnimated:YES completion:^{
+                    }];
+                }
+            });
+        }];
+    }
 }
 
 @end
