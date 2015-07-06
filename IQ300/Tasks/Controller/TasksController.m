@@ -128,8 +128,12 @@
     [self.leftMenuController setModel:_menuModel];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    [self.model setSubscribedToNotifications:YES];
     [self updateControllerTitle];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -140,7 +144,10 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToNotifications:NO];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
     _forceUpdateNeeded = YES;
 }
 
@@ -264,6 +271,26 @@
     }
 }
 
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 #pragma mark -  Private methods
 
 - (void)updateSortFilterLabel {
@@ -355,9 +382,6 @@
     if([IQSession defaultSession] && _forceUpdateNeeded) {
         _forceUpdateNeeded = NO;
         
-        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
-        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:NO];
-        
         [self showActivityIndicatorAnimated:YES completion:nil];
         [self.model updateModelWithCompletion:^(NSError *error) {
             if(!error) {
@@ -368,14 +392,16 @@
             
             dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
                 if (self.isActivityIndicatorShown) {
-                    [self hideActivityIndicatorAnimated:YES completion:^{
-                        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
-                        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
-                    }];
+                    [self hideActivityIndicatorAnimated:YES completion:nil];
                 }
             });
         }];
     }
+}
+
+- (void)applicationWillEnterForeground {
+    _forceUpdateNeeded = YES;
+    [self updateModel];
 }
 
 @end
