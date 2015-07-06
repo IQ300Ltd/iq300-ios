@@ -103,16 +103,6 @@
      }
      position:SVPullToRefreshPositionBottom];
     
-    if([IQSession defaultSession]) {
-        [self.model updateModelWithCompletion:^(NSError *error) {
-            if(!error) {
-                [self.tableView reloadData];
-            }
-            
-            [self updateNoDataLabelVisibility];
-        }];
-    }
-    
     [self.noDataLabel setText:NSLocalizedString(@"No feedbacks", nil)];
 }
 
@@ -135,6 +125,16 @@
                                                                        action:@selector(createNewAction:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     [self.model setSubscribedToNotifications:YES];
+
+    if([IQSession defaultSession]) {
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
+            [self updateNoDataLabelVisibility];
+        }];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
