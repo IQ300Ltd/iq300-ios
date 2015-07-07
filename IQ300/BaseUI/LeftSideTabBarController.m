@@ -21,7 +21,9 @@ NSTimeInterval const LSAnimationDuration = 0.15f;
 @implementation LeftSideTabBarController
 
 - (void)viewDidLoad {
-    self.tabBar = [[LeftSideTabBar alloc] init];
+    LeftSideTabBar * tabBar = [[LeftSideTabBar alloc] init];
+    
+    self.tabBar = tabBar;
     self.tabBar.delegate = self;
     [self.view addSubview:self.tabBar];
     

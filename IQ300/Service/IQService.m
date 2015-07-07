@@ -74,6 +74,11 @@ NSString * IQSortDirectionToString(IQSortDirection direction) {
     return nil;
 }
 
+BOOL IsNetworUnreachableError(NSError * error) {
+    return error.code == kCFURLErrorNotConnectedToInternet ||
+           error.code == kCFURLErrorNetworkConnectionLost;
+}
+
 @interface IQService() {
     dispatch_queue_t _extendTokenQueue;
     dispatch_group_t _extendTokenGroup;
@@ -1017,6 +1022,53 @@ fileAttributeName:(NSString*)fileAttributeName
                                                          pathPattern:@"/api/v1/discussions/:id/comments/:id"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQFeedbacksHolder class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/error_reports"
+                                                   fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedFeedback class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/error_reports/:id"
+                                                   fromKeyPath:@"error_report"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedFeedback class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/error_reports"
+                                                   fromKeyPath:@"error_report"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:[IQFeedback requestObjectMapping]
+                                                              objectClass:[IQFeedback class]
+                                                              rootKeyPath:@"error_report"
+                                                                   method:RKRequestMethodPOST];
+    [self.objectManager addRequestDescriptor:requestDescriptor];
+
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQFeedbackCategory class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/error_reports/categories"
+                                                   fromKeyPath:@"error_report_categories"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQFeedbackType class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/error_reports/types"
+                                                   fromKeyPath:@"error_report_types"
+                                                         store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
 }

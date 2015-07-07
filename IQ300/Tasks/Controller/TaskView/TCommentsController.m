@@ -90,7 +90,6 @@
 
     self.resetReadFlagAutomatically = YES;
     [self resetReadFlag];
-    [self updateNoDataLabelVisibility];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -199,12 +198,12 @@
                                                             [self scrollToBottomAnimated:NO delay:0.0f];
                                                             [self.tableView setHidden:NO];
                                                             [self markVisibleItemsAsReaded];
+                                                            [self updateNoDataLabelVisibility];
                                                         }
                                                         
                                                         self.needFullReload = NO;
                                                     }];
                                                     [self.tableView reloadData];
-                                                    [self updateNoDataLabelVisibility];
                                                 }
                                                 else {
                                                     [self hideActivityIndicator];

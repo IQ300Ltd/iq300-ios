@@ -94,6 +94,12 @@
 - (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
     _policyInspector = policyInspector;
     [self updateInterfaceFoPolicies];
+    if (self.isViewLoaded) {
+        [self.tableView beginUpdates];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                      withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView endUpdates];
+    }
 }
 
 - (void)viewDidLoad {
@@ -101,7 +107,15 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
-    [self updateTask];
+    
+    if (self.taskId) {
+        [[IQService sharedService] taskWithId:self.taskId
+                                      handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                          if (success) {
+                                              self.task = task;
+                                          }
+                                      }];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -418,7 +432,7 @@
         if (error == nil) {
             [self updateInterfaceFoPolicies];
             
-            if ([self isVisible]) {
+            if (self.isVisible) {
                 [self.tableView beginUpdates];
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                               withRowAnimation:UITableViewRowAnimationNone];

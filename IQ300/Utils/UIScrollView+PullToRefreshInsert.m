@@ -43,7 +43,7 @@ NSString const *UIScrollViewBottomPullToRefreshView = @"UIScrollViewBottomPullTo
                 yOrigin = -SVPullToRefreshViewHeight;
                 break;
             case SVPullToRefreshPositionBottom:
-                yOrigin = self.contentSize.height;
+                yOrigin = MAX(self.contentSize.height, self.bounds.size.height);
                 break;
             default:
                 return;
@@ -71,6 +71,42 @@ NSString const *UIScrollViewBottomPullToRefreshView = @"UIScrollViewBottomPullTo
     else {
         const void * key = (position == SVPullToRefreshPositionTop) ? &UIScrollViewTopPullToRefreshView : &UIScrollViewBottomPullToRefreshView;
         return objc_getAssociatedObject(self, key);
+    }
+}
+
+- (void)setPullToRefreshAtPosition:(SVPullToRefreshPosition)position shown:(BOOL)shown {
+    SVPullToRefreshView * pullToRefreshView = [self pullToRefreshForPosition:position];
+    
+    if(!shown) {
+        if (pullToRefreshView.isObserving) {
+            [self removeObserver:pullToRefreshView forKeyPath:@"contentOffset"];
+            [self removeObserver:pullToRefreshView forKeyPath:@"contentSize"];
+            [self removeObserver:pullToRefreshView forKeyPath:@"frame"];
+            [pullToRefreshView resetScrollViewContentInset];
+            pullToRefreshView.isObserving = NO;
+            pullToRefreshView.hidden = YES;
+        }
+    }
+    else {
+        if (!pullToRefreshView.isObserving) {
+            [self addObserver:pullToRefreshView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+            [self addObserver:pullToRefreshView forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
+            [self addObserver:pullToRefreshView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+            pullToRefreshView.isObserving = YES;
+            
+            CGFloat yOrigin = 0;
+            switch (pullToRefreshView.position) {
+                case SVPullToRefreshPositionTop:
+                    yOrigin = -SVPullToRefreshViewHeight;
+                    break;
+                case SVPullToRefreshPositionBottom:
+                    yOrigin = MAX(self.contentSize.height, self.bounds.size.height);
+                    break;
+            }
+            
+            pullToRefreshView.frame = CGRectMake(0, yOrigin, self.bounds.size.width, SVPullToRefreshViewHeight);
+            pullToRefreshView.hidden = NO;
+        }
     }
 }
 

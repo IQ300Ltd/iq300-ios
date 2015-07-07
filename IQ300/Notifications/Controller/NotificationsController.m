@@ -26,6 +26,8 @@
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQNotificationsGroup.h"
 #import "TaskTabController.h"
+#import "IQService+Feedback.h"
+#import "FeedbackController.h"
 
 @interface NotificationsController() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationGroupView * _mainView;
@@ -116,17 +118,30 @@
     [self.leftMenuController setModel:_menuModel];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    if([IQSession defaultSession]) {
-        [self reloadFirstPart];
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
+    [self.model resubscribeToIQNotifications];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     
-    [self.model setSubscribedToNotifications:YES];
+    if([IQSession defaultSession]) {
+        [self updateModel];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
-    [self.model setSubscribedToNotifications:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
+
+    [self.model unsubscribeFromIQNotifications];
 }
 
 #pragma mark - UITableView DataSource
@@ -156,6 +171,10 @@
     IQNotification * notification = [self.model itemAtIndexPath:indexPath];
     if ([notification.notificable.type isEqualToString:@"BaseTask"]) {
         [self openTaskControllerForNotification:notification atIndexPath:indexPath];
+    }
+    else if([notification.notificable.type isEqualToString:@"ErrorReport"]) {
+        [self openFeedbackControllerForNotification:notification
+                                        atIndexPath:indexPath];
     }
     else if(notification.discussionId) {
         [self openCommentsControllerForNotification:notification atIndexPath:indexPath];
@@ -210,6 +229,26 @@
     }
 }
 
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 #pragma mark - Private methods
 
 - (void)backButtonAction:(UIButton*)sender {
@@ -217,23 +256,28 @@
 }
 
 - (void)markAllAsReaded:(id)sender {
-    if(self.model.unreadItemsCount > 0) {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_readed_question", nil)
-                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
-                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              if(buttonIndex == 1) {
-                                  [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
-                                      [self proccessServiceError:error];
-                                  }];
-                              }
-                          }];
+    if(![IQService sharedService].isServiceReachable) {
+        [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
     }
     else {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(NoUnreadNotificationFound, nil)
-                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                 otherButtonTitles:nil
-                          tapBlock:nil];
+        if(self.model.unreadItemsCount > 0) {
+            [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_readed_question", nil)
+                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                     otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                              tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                  if(buttonIndex == 1) {
+                                      [self.model markAllNotificationAsReadWithCompletion:^(NSError *error) {
+                                          [self proccessServiceError:error];
+                                      }];
+                                  }
+                              }];
+        }
+        else {
+            [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(NoUnreadNotificationFound, nil)
+                     cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                     otherButtonTitles:nil
+                              tapBlock:nil];
+        }
     }
 }
 
@@ -247,16 +291,28 @@
     }];
 }
 
-- (void)reloadFirstPart {
-    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
-        if(!error) {
+- (void)updateModel {
+    [self showActivityIndicatorAnimated:YES completion:nil];
+
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        if (!error) {
             [self.tableView reloadData];
         }
-
+        
         [self scrollToTopIfNeedAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;
+        
+        dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+            if (self.isActivityIndicatorShown) {
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            }
+        });
     }];
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateModel];
 }
 
 - (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
@@ -296,12 +352,29 @@
                                                    controller.hidesBottomBarWhenPushed = YES;
                                                    [self.navigationController pushViewController:controller animated:YES];
                                                    
-                                                   [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                                   [self.model markNotificationAsReadAtIndexPath:indexPath completion:nil];
                                                }
                                                else {
                                                    [self proccessServiceError:error];
                                                }
                                            }];
+}
+
+- (void)openFeedbackControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    [[IQService sharedService] feedbackWithId:notification.notificable.notificableId
+                                      handler:^(BOOL success, IQManagedFeedback * feedback, NSData *responseData, NSError *error) {
+                                          if (success) {
+                                              FeedbackController * controller = [[FeedbackController alloc] init];
+                                              controller.feedback = feedback;
+                                              controller.hidesBottomBarWhenPushed = YES;
+                                              [self.navigationController pushViewController:controller animated:YES];
+                                              
+                                              [self.model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                          }
+                                          else {
+                                              [self proccessServiceError:error];
+                                          }
+                                      }];
 }
 
 - (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
@@ -329,7 +402,7 @@
 
                                                 [self.navigationController pushViewController:controller animated:YES];
                                                 
-                                                [self .model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+                                                [self.model markNotificationAsReadAtIndexPath:indexPath completion:nil];
                                             }
                                             else {
                                                 [self proccessServiceError:error];
@@ -338,10 +411,8 @@
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:CountersDidChangedNotification
-                                                  object:nil];
-    [self.model setSubscribedToNotifications:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.model unsubscribeFromIQNotifications];
     [self.leftMenuController setMenuResponder:nil];
     [self.leftMenuController setModel:nil];
 }

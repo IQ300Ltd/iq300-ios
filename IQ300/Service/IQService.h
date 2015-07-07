@@ -27,6 +27,8 @@ extern NSDictionary * IQParametersExcludeEmpty(NSDictionary * parameters);
 
 extern NSString * IQSortDirectionToString(IQSortDirection direction);
 
+extern BOOL IsNetworUnreachableError(NSError * error);
+
 @interface IQService : TCService
 
 @property (nonatomic, strong) IQSession * session;

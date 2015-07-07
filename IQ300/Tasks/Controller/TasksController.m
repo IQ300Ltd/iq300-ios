@@ -30,9 +30,9 @@
 @interface TasksController () <TasksFilterControllerDelegate> {
     TasksView * _mainView;
     TasksMenuModel * _menuModel;
-    BOOL _isTaskOpenProcessing;
     UITapGestureRecognizer * _singleTapGesture;
     BOOL _highlightTasks;
+    BOOL _forceUpdateNeeded;
 }
 
 @end
@@ -68,6 +68,7 @@
         self.model = [[TasksModel alloc] init];
         _menuModel = [[TasksMenuModel alloc] init];
         _highlightTasks = YES;
+        _forceUpdateNeeded = YES;
     }
     return self;
 }
@@ -81,6 +82,23 @@
     [super viewDidLoad];
     
     [self setupInitState];
+    
+    __weak typeof(self) weakSelf = self;
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
+    
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionBottom];
     
     _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFilterController)];
     _singleTapGesture.numberOfTapsRequired = 1;
@@ -105,47 +123,32 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
  
-    _isTaskOpenProcessing = NO;
-
-    __weak typeof(self) weakSelf = self;
-    [self.tableView
-     insertPullToRefreshWithActionHandler:^{
-         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
-         }];
-     }
-     position:SVPullToRefreshPositionTop];
-    
-    [self.tableView
-     insertPullToRefreshWithActionHandler:^{
-         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
-             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
-         }];
-     }
-     position:SVPullToRefreshPositionBottom];
-
     [self.leftMenuController setMenuResponder:self];
     [self.leftMenuController setTableHaderHidden:YES];
     [self.leftMenuController setModel:_menuModel];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    if([IQSession defaultSession]) {
-        [self.model updateModelWithCompletion:^(NSError *error) {
-            if(!error) {
-                [self.tableView reloadData];
-            }
-            
-            [self updateNoDataLabelVisibility];
-        }];
-    }
-    
-    [self.model setSubscribedToNotifications:YES];
     [self updateControllerTitle];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToNotifications:NO];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
+    _forceUpdateNeeded = YES;
 }
 
 - (UITableView*)tableView {
@@ -216,23 +219,10 @@
     controller.policyInspector = policyInspector;
     controller.hidesBottomBarWhenPushed = YES;
     
-    _isTaskOpenProcessing = YES;
+    [GAIService sendEventForCategory:GAITasksListEventCategory
+                              action:GAIOpenTaskEventAction];
     
-    [policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
-        if (error) {
-            NSLog(@"Failed request policies for taskId %@ with error:%@", task.taskId, error);
-        }
-
-        [GAIService sendEventForCategory:GAITasksListEventCategory
-                                  action:GAIOpenTaskEventAction];
-
-        [self.navigationController pushViewController:controller animated:YES];
-        _isTaskOpenProcessing = NO;
-    }];
-}
-
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    return (!_isTaskOpenProcessing) ? indexPath : nil;
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 #pragma mark - IQTableModel Delegate
@@ -252,6 +242,8 @@
         (!model.communityId && self.model.communityId) ||
         ![self.model.statusFilter isEqualToString:model.statusFilter]) {
      
+        _forceUpdateNeeded = NO;
+        
         self.model.sortField = model.sortField;
         self.model.statusFilter = model.statusFilter;
         self.model.ascending = model.ascending;
@@ -277,6 +269,26 @@
             }
         }];
     }
+}
+
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 #pragma mark -  Private methods
@@ -330,21 +342,18 @@
 }
 
 - (void)createTaskAction:(UIButton*)sender {
-    if (!_isTaskOpenProcessing) {
-        _isTaskOpenProcessing = YES;
-        [[IQService sharedService] mostUsedCommunityWithHandler:^(BOOL success, id community, NSData *responseData, NSError *error) {
-            if (success) {
-                TaskModel * model = [[TaskModel alloc] init];
-                model.defaultCommunity = community;
-                
-                TaskController * controller = [[TaskController alloc] init];
-                controller.model = model;
-                controller.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:controller
-                                                     animated:YES];
-            }
-        }];
-    }
+    [[IQService sharedService] mostUsedCommunityWithHandler:^(BOOL success, id community, NSData *responseData, NSError *error) {
+        if (success) {
+            TaskModel * model = [[TaskModel alloc] init];
+            model.defaultCommunity = community;
+            
+            TaskController * controller = [[TaskController alloc] init];
+            controller.model = model;
+            controller.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:controller
+                                                 animated:YES];
+        }
+    }];
 }
 
 - (void)updateNoDataLabelVisibility {
@@ -367,6 +376,32 @@
     }
     
     self.navigationItem.title = title;
+}
+
+- (void)updateModel {
+    if([IQSession defaultSession] && _forceUpdateNeeded) {
+        _forceUpdateNeeded = NO;
+        
+        [self showActivityIndicatorAnimated:YES completion:nil];
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
+            [self updateNoDataLabelVisibility];
+            
+            dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+                if (self.isActivityIndicatorShown) {
+                    [self hideActivityIndicatorAnimated:YES completion:nil];
+                }
+            });
+        }];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    _forceUpdateNeeded = YES;
+    [self updateModel];
 }
 
 @end

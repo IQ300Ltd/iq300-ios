@@ -205,7 +205,11 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self updateCountersWithCompletion:nil];
 
-    [self reloadSourceControllerWithCompletion:completion];
+    [self reloadSourceControllerWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self modelDidChanged];
+        }
+    }];
     
     [[IQService sharedService] tasksUpdatedAfter:nil
                                           folder:self.folder
@@ -216,7 +220,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                           search:self.search
                                             sort:_sort
                                          handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
-                                             [self reloadSourceControllerWithCompletion:completion];
                                              
                                              //update archive folder because task may move from selected folder to archive
                                              [self archiveTasksUpdatesWithCompletion:^(NSError *error) {
@@ -225,12 +228,16 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                                  }
                                              }];
 
-                                             if(success && [_fetchController.fetchedObjects count] < _portionLenght) {
-                                                 [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
-                                                     if(completion) {
-                                                         completion(error);
-                                                     }
-                                                 }];
+                                             if(success) {
+                                                 [self reloadSourceControllerWithCompletion:completion];
+
+                                                 if ([_fetchController.fetchedObjects count] < _portionLenght) {
+                                                     [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
+                                                         if (error) {
+                                                             NSLog(@"Archive tasks updates error: %@", error);
+                                                         }
+                                                     }];
+                                                 }
                                              }
                                              else if(completion) {
                                                  completion(error);
@@ -248,20 +255,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
             completion(object, error);
         }
     }];
-}
-
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
 }
 
 - (void)clearModelData {
@@ -568,13 +561,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self unsubscribeFromIQNotifications];
         [self clearModelData];
         [self modelDidChanged];
-    }
-}
-
-- (void)applicationWillEnterForeground {
-    if ([IQSession defaultSession]) {
-        [self updateCountersWithCompletion:nil];
-        [self tasksUpdatesAfterDateWithCompletion:nil];
     }
 }
 

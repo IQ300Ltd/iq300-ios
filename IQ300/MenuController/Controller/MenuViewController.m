@@ -22,6 +22,12 @@
 #import "IQService.h"
 #import "IQUser.h"
 
+#ifndef IPAD
+#import <MMDrawerController/UIViewController+MMDrawerController.h>
+#import "FeedbacksController.h"
+#import "MTableFooterView.h"
+#endif
+
 #define SECTION_HEIGHT 39
 #define ACCOUNT_HEADER_HEIGHT 64.5
 #define TABLE_HEADER_HEIGHT 42.5
@@ -36,6 +42,9 @@ CGFloat IQStatusBarHeight()
     ExpandableTableView * _tableView;
     AccountHeaderView * _accountHeader;
     NSInteger _selectedSection;
+#ifndef IPAD
+    MTableFooterView * _footerView;
+#endif
 }
 
 @end
@@ -55,8 +64,8 @@ CGFloat IQStatusBarHeight()
     self.view.backgroundColor = MENU_BACKGROUND_COLOR;
     
     _accountHeader = [[AccountHeaderView alloc] init];
-    [_accountHeader.editButton addTarget:self
-                                  action:@selector(editButtonAction:)
+    [_accountHeader.logoutButton addTarget:self
+                                  action:@selector(logoutButtonAction:)
                         forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_accountHeader];
     
@@ -65,12 +74,30 @@ CGFloat IQStatusBarHeight()
     _tableView = [[ExpandableTableView alloc] init];
     _tableView.backgroundColor = self.view.backgroundColor;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.tableFooterView = [UIView new];
+    _tableView.tableFooterView = [[UIView alloc] init];
     _tableView.delegate = self;
     _tableView.dataSource = self;
+    _tableView.showsHorizontalScrollIndicator = NO;
+    _tableView.showsVerticalScrollIndicator = NO;
     
     [self.view addSubview:_tableView];
     
+#ifndef IPAD
+    __weak typeof(self) weakSelf = self;
+    _footerView = [[MTableFooterView alloc] init];
+    _footerView.title = NSLocalizedString(@"Feedback", nil);
+    [_footerView setActionBlock:^(MTableFooterView *footerView) {
+        [weakSelf.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
+        
+        FeedbacksController * controller = [[FeedbacksController alloc] init];
+        UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+        [weakSelf.mm_drawerController presentViewController:navigationController
+                                                   animated:YES
+                                                 completion:nil];
+    }];
+    [self.view addSubview:_footerView];
+#endif
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUserAccount)
                                                  name:AccountDidChangedNotification
@@ -89,10 +116,23 @@ CGFloat IQStatusBarHeight()
                                       ACCOUNT_HEADER_HEIGHT);
     
     CGFloat tableViewOffset = _accountHeader.frame.origin.y + _accountHeader.frame.size.height;
-    _tableView.frame = CGRectMake(0,
+#ifdef IPAD
+    _tableView.frame = CGRectMake(actualBounds.origin.x,
                                   tableViewOffset,
                                   MIN(MENU_WIDTH, actualBounds.size.width),
                                   actualBounds.size.height - tableViewOffset);
+#else
+    CGFloat footerViewY = actualBounds.origin.y + actualBounds.size.height - MENU_ITEM_HEIGHT;
+    _footerView.frame = CGRectMake(actualBounds.origin.x,
+                                   footerViewY,
+                                   actualBounds.size.width,
+                                   MENU_ITEM_HEIGHT);
+    
+    _tableView.frame = CGRectMake(actualBounds.origin.x,
+                                  tableViewOffset,
+                                  MIN(MENU_WIDTH, actualBounds.size.width),
+                                  actualBounds.size.height - tableViewOffset - MENU_ITEM_HEIGHT + 1.0f);
+#endif
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -274,7 +314,7 @@ CGFloat IQStatusBarHeight()
     return headerView;
 }
 
-- (void)editButtonAction:(UIButton*)sender {
+- (void)logoutButtonAction:(UIButton*)sender {
     [AppDelegate logout];
     [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
                                                         object:nil];

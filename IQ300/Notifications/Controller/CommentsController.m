@@ -104,7 +104,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      addPullToRefreshWithActionHandler:^{
-         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
              [weakSelf.tableView.pullToRefreshView stopAnimating];
          }];
      }
@@ -156,7 +156,7 @@
         if(self.needFullReload) {
             [self showActivityIndicatorOnView:_mainView];
         }
-        [self reloadModel];
+        [self updateModel];
     }
 }
 
@@ -524,8 +524,8 @@
     }
 }
 
-- (void)reloadModel {
-    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
+- (void)updateModel {
+    [self.model updateModelWithCompletion:^(NSError *error) {
         if(!error) {
             [self.tableView reloadData];
         }
@@ -537,6 +537,7 @@
             _mainView.tableView.hidden = NO;
             [self hideActivityIndicator];
             [self markVisibleItemsAsReaded];
+            [self updateNoDataLabelVisibility];
         });
     }];
 }
@@ -641,14 +642,16 @@
 }
 
 - (void)markVisibleItemsAsReaded {
-    if(_cancelBlock) {
-        cancel_dispatch_after_block(_cancelBlock);
+    if (self.isViewLoaded) {
+        if(_cancelBlock) {
+            cancel_dispatch_after_block(_cancelBlock);
+        }
+        
+        NSArray * indexPaths = [[self.tableView indexPathsForVisibleRows] copy];
+        _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
+            [self.model markCommentsReadedAtIndexPaths:indexPaths];
+        });
     }
-    
-    NSArray * indexPaths = [[self.tableView indexPathsForVisibleRows] copy];
-    _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
-        [self.model markCommentsReadedAtIndexPaths:indexPaths];
-    });
 }
 
 #pragma mark - Scrolls

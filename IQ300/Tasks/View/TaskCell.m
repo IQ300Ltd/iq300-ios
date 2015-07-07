@@ -29,7 +29,6 @@
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
 
 #ifdef IPAD
-
 #define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA size:17.0f]
 #define LABELS_FONT [UIFont fontWithName:IQ_HELVETICA size:12.0f]
 #define LABELS_HEIGHT 15.0f

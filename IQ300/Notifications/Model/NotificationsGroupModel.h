@@ -35,7 +35,6 @@
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
 
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
@@ -44,8 +43,6 @@
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion;
 
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
-
-- (void)setSubscribedToNotifications:(BOOL)subscribed;
 
 /**
  *  Accept last notification action and mark group as readed

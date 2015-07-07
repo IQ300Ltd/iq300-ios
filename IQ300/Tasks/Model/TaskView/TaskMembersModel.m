@@ -113,7 +113,11 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadModelSourceControllerWithCompletion:completion];
+    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self modelDidChanged];
+        }
+    }];
     
     [[IQService sharedService] membersByTaskId:self.taskId
                                        handler:^(BOOL success, id object, NSData *responseData, NSError *error) {

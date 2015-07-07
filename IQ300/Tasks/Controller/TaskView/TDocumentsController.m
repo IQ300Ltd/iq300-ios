@@ -20,6 +20,7 @@
 #import "TaskPolicyInspector.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQSession.h"
+#import "IQService.h"
 
 @interface TDocumentsController () {
     TaskAttachmentsModel * _attachmentsModel;
@@ -74,6 +75,11 @@
     }
 }
 
+- (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
+    _policyInspector = policyInspector;
+    [self updateInterfaceFoPolicies];
+}
+
 - (void)setBadgeValue:(NSNumber *)badgeValue {
     if(!self.model.resetReadFlagAutomatically) {
         self.tabBarItem.badgeValue = BadgTextFromInteger([badgeValue integerValue]);
@@ -98,6 +104,15 @@
                                              selector:@selector(taskPolicyDidChanged:)
                                                  name:IQTaskPolicyDidChangedNotification
                                                object:nil];
+    
+    __weak typeof(self) weakSelf = self;
+    [self.tableView
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf reloadDataWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         }];
+     }
+     position:SVPullToRefreshPositionTop];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -107,15 +122,6 @@
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
-
-    __weak typeof(self) weakSelf = self;
-    [self.tableView
-     insertPullToRefreshWithActionHandler:^{
-         [weakSelf reloadDataWithCompletion:^(NSError *error) {
-             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
-         }];
-     }
-     position:SVPullToRefreshPositionTop];
 
     [self updateInterfaceFoPolicies];
     [self reloadModel];
@@ -219,11 +225,12 @@
                         attachmentType:[asset MIMEType]
                             completion:^(NSError *error) {
                                 if (error) {
-                                    [UIAlertView showWithTitle:@"IQ300"
-                                                       message:NSLocalizedString(@"Failed add document to task", nil)
-                                             cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                             otherButtonTitles:nil
-                                                      tapBlock:nil];
+                                    if(IsNetworUnreachableError(error) || ![IQService sharedService].isServiceReachable) {
+                                        [weakSelf showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
+                                    }
+                                    else {
+                                        [weakSelf showErrorAlertWithMessage:NSLocalizedString(@"Failed add document to task", nil)];
+                                    }
                                 }
                                 [weakSelf hideActivityIndicator];
                             }];

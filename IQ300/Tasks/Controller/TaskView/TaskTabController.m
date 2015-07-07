@@ -26,6 +26,7 @@
 #import "NSManagedObject+ActiveRecord.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate> {
+    CGFloat _tabbarWidth;
 }
 
 @end
@@ -77,6 +78,11 @@
     [self updateControllerByTask:_task];
 }
 
+- (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
+    _policyInspector = policyInspector;
+    [self updateControllersInspector:_policyInspector];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -90,7 +96,6 @@
     self.navigationItem.leftBarButtonItem = backBarButton;
     
     self.tabBar.backgroundImage = [UIImage imageNamed:@"tabbar_background.png"];
-    self.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"task_tab_sel.png"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -107,6 +112,14 @@
                                                object:nil];
 
     [self updateCounters];
+    [_policyInspector requestUserPoliciesWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self updateControllersInspector:_policyInspector];
+        }
+        else {
+            NSLog(@"Failed request policies for taskId %@ with error:%@", _task.taskId, error);
+        }
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -115,6 +128,17 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationWillEnterForegroundNotification
                                                   object:nil];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    if (_tabbarWidth != self.tabBar.frame.size.width) {
+        _tabbarWidth = self.tabBar.frame.size.width;
+        CGSize tabItemSize = CGSizeMake(_tabbarWidth / (float)[self.viewControllers count], self.tabBar.frame.size.height);
+        self.tabBar.selectionIndicatorImage = [UIImage imageWithColor:[UIColor colorWithHexInt:0x348dad]
+                                                                 size:tabItemSize];
+    }
 }
 
 - (BOOL)isLeftMenuEnabled {
@@ -144,28 +168,38 @@
 #pragma mark - Private methods
 
 - (void)updateControllerByTask:(IQTask*)task {
-    if (task) {
-        TInfoController * infoController = self.viewControllers[0];
-        [infoController setTask:task];
-        [infoController setPolicyInspector:_policyInspector];
-        
-        TCommentsController * commentsController = self.viewControllers[1];
-        [commentsController setTaskId:task.taskId];
-        [commentsController setDiscussionId:task.discussionId];
-        [commentsController setPolicyInspector:_policyInspector];
-        
-        TMembersController * membersController = self.viewControllers[2];
-        [membersController setTaskId:task.taskId];
-        [membersController setPolicyInspector:_policyInspector];
-        
-        TDocumentsController * documentsController = self.viewControllers[3];
-        [documentsController setTaskId:task.taskId];
-        [documentsController setPolicyInspector:_policyInspector];
-        
-        TaskActivitiesController * activitiesController = self.viewControllers[4];
-        [activitiesController setTaskId:task.taskId];
-        [activitiesController setPolicyInspector:_policyInspector];
-    }
+    TInfoController * infoController = self.viewControllers[0];
+    [infoController setTask:task];
+    
+    TCommentsController * commentsController = self.viewControllers[1];
+    [commentsController setTaskId:task.taskId];
+    [commentsController setDiscussionId:task.discussionId];
+    
+    TMembersController * membersController = self.viewControllers[2];
+    [membersController setTaskId:task.taskId];
+    
+    TDocumentsController * documentsController = self.viewControllers[3];
+    [documentsController setTaskId:task.taskId];
+    
+    TaskActivitiesController * activitiesController = self.viewControllers[4];
+    [activitiesController setTaskId:task.taskId];
+}
+
+- (void)updateControllersInspector:(TaskPolicyInspector*)inspector {
+    TInfoController * infoController = self.viewControllers[0];
+    [infoController setPolicyInspector:inspector];
+    
+    TCommentsController * commentsController = self.viewControllers[1];
+    [commentsController setPolicyInspector:inspector];
+    
+    TMembersController * membersController = self.viewControllers[2];
+    [membersController setPolicyInspector:inspector];
+    
+    TDocumentsController * documentsController = self.viewControllers[3];
+    [documentsController setPolicyInspector:inspector];
+    
+    TaskActivitiesController * activitiesController = self.viewControllers[4];
+    [activitiesController setPolicyInspector:inspector];
 }
 
 - (void)updateCounters {

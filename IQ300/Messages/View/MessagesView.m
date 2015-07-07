@@ -73,6 +73,7 @@
         _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [_noDataLabel setText:NSLocalizedString(@"No messages", nil)];
         [self addSubview:_noDataLabel];
+        [self bringSubviewToFront:_searchBarContainer];
     }
     return self;
 }

@@ -19,6 +19,8 @@
 #import "IQDateDetailsCell.h"
 #import "TaskExecutersCell.h"
 #import "TaskCommunityCell.h"
+#import "IQEMultiLineTextCell.h"
+
 #ifdef IPAD
 #import "IQCommunityExecutorCell.h"
 #import "IQDoubleDateTextCell.h"
@@ -58,7 +60,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
         _cellsClasses = @{
                           @(0) : [IQEditableTextCell class],
 #ifdef IPAD
-                          @(1) : [IQEditableTextCell class],
+                          @(1) : [IQEMultiLineTextCell class],
                           @(2) : [IQCommunityExecutorCell class],
                           @(3) : [IQDoubleDateTextCell class],
 #else

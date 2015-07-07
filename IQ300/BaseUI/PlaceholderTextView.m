@@ -71,6 +71,11 @@
 
 #pragma mark - UIView
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    [self setNeedsDisplay];
+}
+
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
 	
@@ -79,7 +84,7 @@
         NSDictionary * attributes = @{ NSFontAttributeName : self.placeholderFont,
                                        NSForegroundColorAttributeName : self.placeholderColor};
         
-        CGRect placeholderRect = UIEdgeInsetsInsetRect(self.bounds, _placeholderInsets);
+        CGRect placeholderRect = UIEdgeInsetsInsetRect(rect, _placeholderInsets);
         [self.placeholder drawInRect:placeholderRect withAttributes:attributes];
 	}
 }

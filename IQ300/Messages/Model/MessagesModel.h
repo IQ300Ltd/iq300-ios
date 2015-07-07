@@ -21,12 +21,10 @@
 + (void)markConversationAsRead:(IQConversation*)conversation completion:(void (^)(NSError * error))completion;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
-- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion;
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
 
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
-- (void)setSubscribedToNotifications:(BOOL)subscribed;
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counter, NSError * error))completion;
 
 @end

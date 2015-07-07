@@ -27,9 +27,10 @@
 #import "IQDiscussion.h"
 #import "CommentsController.h"
 #import "TaskTabController.h"
+#import "IQService+Feedback.h"
+#import "FeedbackController.h"
 
 @interface NotificationsGroupController () <SWTableViewCellDelegate> {
-    NotificationsView * _mainView;
     NotificationsMenuModel * _menuModel;
 }
 
@@ -75,17 +76,11 @@
     return self;
 }
 
-- (void)loadView {
-    _mainView = [[NotificationsView alloc] init];
-    self.view = _mainView;
-}
-
-- (UITableView*)tableView {
-    return _mainView.tableView;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.tableView.tableFooterView = [[UIView alloc] init];
+    self.view.backgroundColor = [UIColor whiteColor];
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
@@ -113,7 +108,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    _mainView.noDataLabel.text = NSLocalizedString((self.model.loadUnreadOnly) ? NoUnreadNotificationFound : NoNotificationFound, nil);
+    self.noDataLabel.text = NSLocalizedString((self.model.loadUnreadOnly) ? NoUnreadNotificationFound : NoNotificationFound, nil);
     
     [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:(self.model.loadUnreadOnly) ? 1 : 0
                                                          inSection:0]];
@@ -129,16 +124,26 @@
     [self.leftMenuController setModel:_menuModel];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    if([IQSession defaultSession]) {
-        [self reloadFirstPart];
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     
-    [self.model setSubscribedToNotifications:YES];
+    if([IQSession defaultSession]) {
+        [self updateModel];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToNotifications:NO];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
 }
 
 - (void)updateGlobalCounter {
@@ -184,6 +189,10 @@
         if ([notification.notificable.type isEqualToString:@"BaseTask"]) {
             [self openTaskControllerForNotification:notification
                                         atIndexPath:(hasOneUnread) ? indexPath : nil];
+        }
+        else if([notification.notificable.type isEqualToString:@"ErrorReport"]) {
+            [self openFeedbackControllerForNotification:notification
+                                            atIndexPath:(hasOneUnread) ? indexPath : nil];
         }
         else if(notification.discussionId) {
             [self openCommentsControllerForNotification:notification
@@ -231,7 +240,7 @@
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
     self.model.loadUnreadOnly = (indexPath.row == 1);
-    _mainView.noDataLabel.text = NSLocalizedString((indexPath.row == 0) ? NoNotificationFound : NoUnreadNotificationFound, nil);
+    self.noDataLabel.text = NSLocalizedString((indexPath.row == 0) ? NoNotificationFound : NoUnreadNotificationFound, nil);
     [self reloadModel];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
@@ -247,9 +256,9 @@
                     [weakSelf updateNoDataLabelVisibility];
                 }];
             }
-            else {
-                [weakSelf proccessServiceError:error];
-            }
+        }
+        else {
+            [weakSelf proccessServiceError:error];
         }
     };
     
@@ -281,6 +290,26 @@
     }
 }
 
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 #pragma mark - Private methods
 
 - (void)markAllAsReaded:(id)sender {
@@ -306,20 +335,38 @@
 
 - (void)reloadModel {
     [self.model reloadModelWithCompletion:^(NSError *error) {
-        [self.tableView reloadData];
+        if (!error) {
+            [self.tableView reloadData];
+        }
+        
         [self scrollToTopAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;
     }];
 }
 
-- (void)reloadFirstPart {
-    [self.model reloadFirstPartWithCompletion:^(NSError *error) {
-        [self.tableView reloadData];
+- (void)updateModel {
+    [self showActivityIndicatorAnimated:YES completion:nil];
+
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self.tableView reloadData];
+        }
+        
         [self scrollToTopIfNeedAnimated:NO delay:0.5];
         [self updateNoDataLabelVisibility];
         self.needFullReload = NO;
+        
+        dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+            if (self.isActivityIndicatorShown) {
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            }
+        });
     }];
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateModel];
 }
 
 - (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
@@ -330,13 +377,11 @@
     }
 }
 
-- (void)updateNoDataLabelVisibility {
-    [_mainView.noDataLabel setHidden:([self.model numberOfItemsInSection:0] > 0)];
-}
-
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
     self.tabBarItem.badgeValue = BadgTextFromInteger(badgeValue);
 }
+
+#pragma mark - Counters notification
 
 - (void)countersDidChangedNotification:(NSNotification*)notification {
     NSString * counterName = [notification.userInfo[ChangedCounterNameUserInfoKey] lowercaseString];
@@ -344,6 +389,8 @@
         [self updateGlobalCounter];
     }
 }
+
+#pragma mark - Open details controllers
 
 - (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
     //Enable pop to root only for unread mode
@@ -378,6 +425,27 @@
                                                    [self proccessServiceError:error];
                                                }
                                            }];
+}
+
+- (void)openFeedbackControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
+    BOOL isDiscussionNotification = (notification.discussionId != nil);
+   [[IQService sharedService] feedbackWithId:notification.notificable.notificableId
+                                      handler:^(BOOL success, IQManagedFeedback * feedback, NSData *responseData, NSError *error) {
+                                          if (success) {
+                                              FeedbackController * controller = [[FeedbackController alloc] init];
+                                              controller.feedback = feedback;
+                                              controller.hidesBottomBarWhenPushed = YES;
+                                              controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
+                                              [self.navigationController pushViewController:controller animated:YES];
+                                              
+                                              if(indexPath) {
+                                                  [self.model markNotificationsAsReadAtIndexPath:indexPath completion:nil];
+                                              }
+                                          }
+                                          else {
+                                              [self proccessServiceError:error];
+                                          }
+                                      }];
 }
 
 - (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
@@ -415,9 +483,7 @@
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:CountersDidChangedNotification
-                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

@@ -141,7 +141,7 @@
 "Medium (%ld%%)" = "Medium (%ld%%)";
 "Large (%ld%%)" = "Large (%ld%%)";
 "Actual" = "Actual";
-"You can reduce the image size by scaling it to one of the following sizes" = "ou can reduce the image size by scaling it to one of the following sizes";
+"You can reduce the image size by scaling it to one of the following sizes" = "You can reduce the image size by scaling it to one of the following sizes";
 "Name" = "Имя";
 "Surname" = "Surname";
 "Organization name" = "Organization name";
@@ -152,3 +152,18 @@
 "Thank you for registering!" = "Thank you for registering!";
 "registration_status_message" = "Account created. In your e-mail letter with instructions on how to activate.";
 "Account activation" = "Account activation...";
+"Feedback" = "Feedback";
+"No feedbacks" = "No feedbacks";
+"New feedback" = "New feedback";
+"Category: %@" = "Category: %@";
+"Feedback type" = "Feedback type";
+"Feedback category" = "Feedback category";
+"You should select feedback category" = "You should select feedback category";
+"You should select feedback type" = "You should select feedback type";
+"The feedback can not be empty" = "The feedback can not be empty";
+"Sent feedback?" = "Отправить обращение?";
+
+//Feedback types
+"feedback_new" = "Accepted";
+"feedback_in_work" = "In work";
+"feedback_completed" = "Completed";

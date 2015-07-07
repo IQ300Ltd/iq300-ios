@@ -36,7 +36,7 @@
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
 
 - (void)setSubscribedToNotifications:(BOOL)subscribed;
 

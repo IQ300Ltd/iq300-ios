@@ -68,6 +68,7 @@ NSString * const NoTasksFound = @"There are no tasks";
         _noDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [_noDataLabel setText:NSLocalizedString(NoTasksFound, nil)];
         [self addSubview:_noDataLabel];
+        [self bringSubviewToFront:_headerView];
     }
     return self;
 }

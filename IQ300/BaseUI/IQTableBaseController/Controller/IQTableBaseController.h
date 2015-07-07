@@ -15,6 +15,7 @@
 @property (nonatomic, strong) UILabel * noDataLabel;
 @property (nonatomic, strong) id<IQTableModel> model;
 @property (nonatomic, assign) BOOL needFullReload;
+@property (nonatomic, readonly) BOOL isActivityIndicatorShown;
 
 - (void)reloadDataWithCompletion:(void (^)(NSError *error))completion;
 
@@ -28,5 +29,9 @@
 - (void)showErrorAlertWithMessage:(NSString*)message;
 
 - (void)proccessServiceError:(NSError*)error;
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion;
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion;
 
 @end

@@ -78,9 +78,11 @@
     return _messagesView.tableView;
 }
 
+#ifdef IPAD
 - (BOOL)isLeftMenuEnabled {
     return NO;
 }
+#endif
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -99,7 +101,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
-         [weakSelf.model reloadFirstPartWithCompletion:^(NSError *error) {
+         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
@@ -107,7 +109,7 @@
     
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
-         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
          }];
      }
@@ -133,12 +135,10 @@
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    if([IQSession defaultSession]) {
-        [self reloadModel];
-    }
-    
-    [self.model setSubscribedToNotifications:YES];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillShow:)
@@ -156,9 +156,20 @@
                                                object:nil];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if([IQSession defaultSession]) {
+        [self updateModel];
+    }
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToNotifications:NO];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillShowNotification
@@ -228,12 +239,12 @@
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
 
+#pragma mark - TextField Delegate
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
 }
-
-#pragma mark - TextField Delegate
 
 - (void)textFieldDidChange:(UITextField *)textField {
     [self filterWithText:textField.text];
@@ -247,6 +258,26 @@
 
 - (void)onKeyboardWillHide:(NSNotification *)notification {
     [self makeInputViewTransitionWithDownDirection:YES notification:notification];
+}
+
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 #pragma mark - Private methods
@@ -289,7 +320,30 @@
         [self updateNoDataLabelVisibility];
         [self scrollToTopIfNeedAnimated:NO delay:0.0f];
         self.needFullReload = NO;
+    }];
+}
+
+- (void)updateModel {
+    [self showActivityIndicatorAnimated:YES completion:nil];
+
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self.tableView reloadData];
+        }
+        [self updateNoDataLabelVisibility];
+        [self scrollToTopIfNeedAnimated:NO delay:0.0f];
+        self.needFullReload = NO;
+        
+        dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+            if (self.isActivityIndicatorShown) {
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            }
+        });
    }];
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateModel];
 }
 
 - (void)updateNoDataLabelVisibility {
@@ -338,15 +392,13 @@
     [_messagesView.searchBar resignFirstResponder];
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:CountersDidChangedNotification
-                                                  object:nil];
-}
-
 - (void)clearSearch {
     _messagesView.searchBar.text = nil;
     [self filterWithText:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

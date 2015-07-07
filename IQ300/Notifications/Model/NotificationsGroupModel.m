@@ -145,7 +145,11 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadModelSourceControllerWithCompletion:completion];
+    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self modelDidChanged];
+        }
+    }];
     
     NSDate * lastUpdatedDate = [self lastNotificationChangedDate];
     
@@ -157,12 +161,13 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                       handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
                                                           if(success && lastUpdatedDate && [_fetchController.fetchedObjects count] < _portionLenght) {
                                                               [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
-                                                                  if(completion) {
-                                                                      completion(error);
+                                                                  if(error) {
+                                                                      NSLog(@"Try load full partition error:%@", error);
                                                                   }
                                                               }];
                                                           }
-                                                          else if(completion) {
+                                                          
+                                                          if(completion) {
                                                               completion(error);
                                                           }
                                                           
@@ -170,46 +175,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                               [self syncNotificationsForReadedGroups];
                                                           }
                                                       }];
-}
-
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion {
-    BOOL hasObjects = ([_fetchController.fetchedObjects count] > 0);
-    if(!hasObjects) {
-        [self reloadModelSourceControllerWithCompletion:completion];
-    }
-    
-    [self updateCountersWithCompletion:nil];
-    
-    NSDate * lastUpdatedDate = [self lastNotificationChangedDate];
-    if(!lastUpdatedDate) {
-    [[IQService sharedService] notificationsGroupUpdatedAfter:nil
-                                                       unread:(_loadUnreadOnly) ? @(YES) : nil
-                                                         page:@(1)
-                                                          per:@(_portionLenght)
-                                                         sort:(lastUpdatedDate) ? IQSortDirectionAscending : IQSortDirectionDescending
-                                                      handler:^(BOOL success, IQNotificationGroupsHolder * holder, NSData *responseData, NSError *error) {
-                                                          if(completion) {
-                                                              completion(error);
-                                                          }
-                                                          if (success) {
-                                                              [self syncNotificationsForReadedGroups];
-                                                          }
-                                                      }];
-    }
-    else {
-        [self groupUpdatesWithCompletion:^(NSError *error) {
-            if(!error && [_fetchController.fetchedObjects count] < _portionLenght) {
-                [self tryLoadFullPartitionWithCompletion:^(NSError *error) {
-                    if(completion) {
-                        completion(error);
-                    }
-                }];
-            }
-            else if(completion) {
-                completion(error);
-            }
-        }];
-    }
 }
 
 - (void)clearModelData {
@@ -274,21 +239,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         }
     }];
 }
-
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
 
 - (void)acceptNotificationsGroupAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
     IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];

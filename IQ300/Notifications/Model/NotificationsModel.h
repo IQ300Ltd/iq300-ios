@@ -39,7 +39,6 @@
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
 
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
@@ -49,7 +48,9 @@
 
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed;
+- (void)resubscribeToIQNotifications;
+
+- (void)unsubscribeFromIQNotifications;
 
 - (void)acceptNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
 

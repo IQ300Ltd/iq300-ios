@@ -80,6 +80,7 @@
 
 - (void)setPolicyInspector:(TaskPolicyInspector *)policyInspector {
     _policyInspector = policyInspector;
+    [self updateInterfaceFoPolicies];
 }
 
 - (void)viewDidLoad {

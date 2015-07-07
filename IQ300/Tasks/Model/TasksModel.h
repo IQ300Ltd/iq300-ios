@@ -46,6 +46,4 @@
 
 - (void)updateCountersWithCompletion:(void (^)(TasksMenuCounters * counters, NSError * error))completion;
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed;
-
 @end
