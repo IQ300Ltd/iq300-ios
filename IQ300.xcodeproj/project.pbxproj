@@ -537,10 +537,10 @@
 		739850DC1A2DD35C00DB5B21 /* IQDiscussion.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850DB1A2DD35C00DB5B21 /* IQDiscussion.m */; };
 		739850DF1A2DD4D700DB5B21 /* IQComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850DE1A2DD4D700DB5B21 /* IQComment.m */; };
 		739850E61A2E023D00DB5B21 /* IQService+Messages.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850E51A2E023D00DB5B21 /* IQService+Messages.m */; };
-		7398F78E1B4D07B40009EAD1 /* conference_ioc.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F78C1B4D07B40009EAD1 /* conference_ioc.png */; };
-		7398F78F1B4D07B40009EAD1 /* conference_ioc.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F78C1B4D07B40009EAD1 /* conference_ioc.png */; };
-		7398F7901B4D07B40009EAD1 /* conference_ioc@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F78D1B4D07B40009EAD1 /* conference_ioc@2x.png */; };
-		7398F7911B4D07B40009EAD1 /* conference_ioc@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F78D1B4D07B40009EAD1 /* conference_ioc@2x.png */; };
+		7398F78E1B4D07B40009EAD1 /* conference_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F78C1B4D07B40009EAD1 /* conference_icon.png */; };
+		7398F78F1B4D07B40009EAD1 /* conference_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F78C1B4D07B40009EAD1 /* conference_icon.png */; };
+		7398F7901B4D07B40009EAD1 /* conference_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F78D1B4D07B40009EAD1 /* conference_icon@2x.png */; };
+		7398F7911B4D07B40009EAD1 /* conference_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F78D1B4D07B40009EAD1 /* conference_icon@2x.png */; };
 		7398F7941B4D0A190009EAD1 /* user_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F7921B4D0A190009EAD1 /* user_icon.png */; };
 		7398F7951B4D0A190009EAD1 /* user_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F7921B4D0A190009EAD1 /* user_icon.png */; };
 		7398F7961B4D0A190009EAD1 /* user_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7398F7931B4D0A190009EAD1 /* user_icon@2x.png */; };
@@ -1090,8 +1090,8 @@
 		739850DE1A2DD4D700DB5B21 /* IQComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQComment.m; sourceTree = "<group>"; };
 		739850E41A2E023D00DB5B21 /* IQService+Messages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IQService+Messages.h"; sourceTree = "<group>"; };
 		739850E51A2E023D00DB5B21 /* IQService+Messages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IQService+Messages.m"; sourceTree = "<group>"; };
-		7398F78C1B4D07B40009EAD1 /* conference_ioc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = conference_ioc.png; sourceTree = "<group>"; };
-		7398F78D1B4D07B40009EAD1 /* conference_ioc@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "conference_ioc@2x.png"; sourceTree = "<group>"; };
+		7398F78C1B4D07B40009EAD1 /* conference_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = conference_icon.png; sourceTree = "<group>"; };
+		7398F78D1B4D07B40009EAD1 /* conference_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "conference_icon@2x.png"; sourceTree = "<group>"; };
 		7398F7921B4D0A190009EAD1 /* user_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_icon.png; sourceTree = "<group>"; };
 		7398F7931B4D0A190009EAD1 /* user_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_icon@2x.png"; sourceTree = "<group>"; };
 		7399A4D61A499ED30098DA67 /* ArrayTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArrayTransformer.h; sourceTree = "<group>"; };
@@ -2721,8 +2721,8 @@
 				73F2A54F1A39AB3000E9D324 /* msg_sent@2x.png */,
 				73AF73E21A3B0C0D001B8E42 /* msg_viewed.png */,
 				73AF73E31A3B0C0D001B8E42 /* msg_viewed@2x.png */,
-				7398F78C1B4D07B40009EAD1 /* conference_ioc.png */,
-				7398F78D1B4D07B40009EAD1 /* conference_ioc@2x.png */,
+				7398F78C1B4D07B40009EAD1 /* conference_icon.png */,
+				7398F78D1B4D07B40009EAD1 /* conference_icon@2x.png */,
 				7398F7921B4D0A190009EAD1 /* user_icon.png */,
 				7398F7931B4D0A190009EAD1 /* user_icon@2x.png */,
 				73884BF71A6CEFED004C454B /* view_all_ico.png */,
@@ -2967,7 +2967,7 @@
 				73840EF21B1C75A500BCEAFC /* task_comments_tab.png in Resources */,
 				73060D641B417322001AE08E /* feedback_proposal_type.png in Resources */,
 				73060D601B417322001AE08E /* feedback_error_type.png in Resources */,
-				7398F78F1B4D07B40009EAD1 /* conference_ioc.png in Resources */,
+				7398F78F1B4D07B40009EAD1 /* conference_icon.png in Resources */,
 				73865C2D1B20688A00118292 /* tabbar_background@2x.png in Resources */,
 				73840EF31B1C75A500BCEAFC /* bubble_blue@2x.png in Resources */,
 				73840EF41B1C75A500BCEAFC /* backWhiteArrow@2x.png in Resources */,
@@ -2980,7 +2980,7 @@
 				73840EFA1B1C75A500BCEAFC /* msg_sent@2x.png in Resources */,
 				73840EFB1B1C75A500BCEAFC /* GAIEvents.strings in Resources */,
 				73840EFD1B1C75A500BCEAFC /* createNewMessage.png in Resources */,
-				7398F7911B4D07B40009EAD1 /* conference_ioc@2x.png in Resources */,
+				7398F7911B4D07B40009EAD1 /* conference_icon@2x.png in Resources */,
 				73840EFE1B1C75A500BCEAFC /* task_status_ico@2x.png in Resources */,
 				73840EFF1B1C75A500BCEAFC /* attachment_img@2x.png in Resources */,
 				73840F001B1C75A500BCEAFC /* default_avatar@2x.png in Resources */,
@@ -3049,7 +3049,7 @@
 				73B9EA1E1ADD2DA800159A66 /* calendar_accessory_image@2x.png in Resources */,
 				73F2A5501A39AB3000E9D324 /* attach_ico.png in Resources */,
 				738916BE1ABAFB800017EF86 /* gray_checked_checkbox@2x.png in Resources */,
-				7398F78E1B4D07B40009EAD1 /* conference_ioc.png in Resources */,
+				7398F78E1B4D07B40009EAD1 /* conference_icon.png in Resources */,
 				731170801AB80AFF008A4D09 /* task_history_tab.png in Resources */,
 				73D3DF2B1AF11542000DD34F /* clear_button_icon.png in Resources */,
 				73F872EA1B43D0B000960022 /* hide_keyboard_ico.png in Resources */,
@@ -3109,7 +3109,7 @@
 				731170911AB80B0E008A4D09 /* edit_white_ico@2x.png in Resources */,
 				738FE7071A162B10009F26A2 /* notif_tab.png in Resources */,
 				73060D651B417322001AE08E /* feedback_proposal_type@2x.png in Resources */,
-				7398F7901B4D07B40009EAD1 /* conference_ioc@2x.png in Resources */,
+				7398F7901B4D07B40009EAD1 /* conference_icon@2x.png in Resources */,
 				73060D611B417322001AE08E /* feedback_error_type@2x.png in Resources */,
 				738916BD1ABAFB800017EF86 /* gray_checked_checkbox.png in Resources */,
 				73A9498F1A3821AD008EC469 /* backWhiteArrow.png in Resources */,

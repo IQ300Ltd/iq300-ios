@@ -212,7 +212,7 @@
     _companion = companion;
     
     BOOL isConference = ([companions count] > 1);
-    UIImage * defaulImage = (isConference) ? [UIImage imageNamed:@"conference_ioc.png"] :
+    UIImage * defaulImage = (isConference) ? [UIImage imageNamed:@"conference_icon.png"] :
                                              [UIImage imageNamed:@"user_icon.png"];
     
     if(!isConference && [companion.thumbUrl length] > 0) {
