@@ -264,19 +264,25 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     }];
 }
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-        [self resubscribeToIQNotifications];
-    }
-    else {
+- (void)resubscribeToIQNotifications {
+    [self unsubscribeFromIQNotifications];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
+        if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
+            [weakSelf updateModelWithCompletion:nil];
+            [weakSelf initGlobalCounterUpdate];
+        }
+    };
+    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
+                                                                       queue:nil
+                                                                  usingBlock:block];
+}
+
+- (void)unsubscribeFromIQNotifications {
+    if(_notfObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
     }
 }
 
@@ -507,33 +513,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
                                                         object:nil
                                                       userInfo:userInfo];
-}
-
-- (void)resubscribeToIQNotifications {
-    [self unsubscribeFromIQNotifications];
-    
-    __weak typeof(self) weakSelf = self;
-    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSArray * changedIds = notf.userInfo[IQNotificationDataKey][@"object_ids"];
-        if([changedIds respondsToSelector:@selector(count)] && [changedIds count] > 0) {
-            [weakSelf updateModelWithCompletion:nil];
-            [weakSelf initGlobalCounterUpdate];
-        }
-    };
-    _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNotificationsDidChanged
-                                                                       queue:nil
-                                                                  usingBlock:block];
-}
-
-- (void)unsubscribeFromIQNotifications {
-    if(_notfObserver) {
-        [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
-    }
-}
-
-- (void)applicationWillEnterForeground {
-    [self updateCounters];
-    [self notificationsUpdatesWithCompletion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

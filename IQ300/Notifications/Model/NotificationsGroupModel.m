@@ -240,21 +240,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     }];
 }
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
-
 - (void)acceptNotificationsGroupAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
     IQNotificationsGroup * item = [self itemAtIndexPath:indexPath];
     IQNotification * notification = (self.loadUnreadOnly) ? item.lastUnreadNotification : item.lastNotification;
@@ -560,13 +545,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         [self unsubscribeFromIQNotifications];
         [self clearModelData];
         [self modelDidChanged];
-    }
-}
-
-- (void)applicationWillEnterForeground {
-    if ([IQSession defaultSession]) {
-        [self updateCounters];
-        [self groupUpdatesWithCompletion:nil];
     }
 }
 

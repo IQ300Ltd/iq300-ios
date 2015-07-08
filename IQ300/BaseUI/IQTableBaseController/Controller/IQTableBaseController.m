@@ -335,7 +335,7 @@
 }
 
 - (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
-    if (_activityIndicator) {
+    if (self.isActivityIndicatorShown) {
         CGFloat indicatorHeight = self.activityIndicator.frame.size.height;
 
         void (^completionBlock)(BOOL finished) = ^(BOOL finished)
@@ -362,7 +362,6 @@
                              }
                              completion:completionBlock];
         }
-        
         else {
             completionBlock(YES);
             [self.tableView.layer removeAllAnimations];

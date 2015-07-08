@@ -258,20 +258,6 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     return _unreadItemsCount;
 }
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(reloadFirstPart)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counter, NSError * error))completion {
     [[IQService sharedService] conversationsCountersWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
         if(counter) {
@@ -286,7 +272,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
 #pragma mark - Private methods
 
-- (void)reloadFirstPart {
+- (void)updateModel {
     [self updateModelWithCompletion:^(NSError *error) {
         [self modelDidChanged];
     }];
@@ -311,7 +297,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         
         if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId] &&
            [disscusionParentType isEqualToString:@"conversation"]) {
-            [weakSelf reloadFirstPart];
+            [weakSelf updateModel];
         }
     };
     
@@ -320,7 +306,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                                         usingBlock:block];
     
     void (^conversationsBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        [weakSelf reloadFirstPart];
+        [weakSelf updateModel];
     };
     
     _conversationsChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQConversationsDidChanged

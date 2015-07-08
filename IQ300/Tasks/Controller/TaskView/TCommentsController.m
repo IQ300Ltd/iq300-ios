@@ -9,7 +9,6 @@
 
 #import "TCommentsController.h"
 #import "IQService+Messages.h"
-#import "UIViewController+ScreenActivityIndicator.h"
 #import "IQTask.h"
 #import "IQBadgeIndicatorView.h"
 #import "UITabBarItem+CustomBadgeView.h"
@@ -82,11 +81,6 @@
     [super viewWillAppear:animated];
     
     self.parentViewController.navigationItem.rightBarButtonItem = nil;
- 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(applicationWillEnterForeground)
-                                                 name:UIApplicationWillEnterForegroundNotification
-                                               object:nil];
 
     self.resetReadFlagAutomatically = YES;
     [self resetReadFlag];
@@ -95,10 +89,6 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIApplicationWillEnterForegroundNotification
-                                                  object:nil];
-
     self.resetReadFlagAutomatically = NO;
 }
 
@@ -174,6 +164,8 @@
 }
 
 - (void)applicationWillEnterForeground {
+    [self updateModel];
+
     if (self.resetReadFlagAutomatically) {
         [self resetReadFlag];
     }
@@ -206,8 +198,6 @@
                                                     [self.tableView reloadData];
                                                 }
                                                 else {
-                                                    [self hideActivityIndicator];
-
                                                     if(error.code == kCFURLErrorNotConnectedToInternet) {
                                                         [self startReachabilityCheck];
                                                     }

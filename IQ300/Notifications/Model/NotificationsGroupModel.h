@@ -44,8 +44,6 @@
 
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed;
-
 /**
  *  Accept last notification action and mark group as readed
  *

@@ -233,7 +233,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     [_expandableCells removeAllObjects];
     [_expandedCells removeAllObjects];
     
-    [self reloadModelSourceControllerWithCompletion:nil];
+    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self modelDidChanged];
+        }
+    }];
+    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
@@ -260,18 +265,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
         [self resubscribeToIQNotifications];
     }
     else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
-        [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
+        [self unsubscribeFromIQNotification];
     }
 }
 
@@ -443,6 +440,21 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSLog(@"Save delete comment error: %@", saveError);
     }
 
+}
+
+- (void)markDiscussionAsReadedWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
+                                                    handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                        if(success) {
+                                                            NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"messages" };
+                                                            [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
+                                                                                                                object:nil
+                                                                                                              userInfo:userInfo];
+                                                        }
+                                                        if(completion) {
+                                                            completion(error);
+                                                        }
+                                                    }];
 }
 
 #pragma mark - Private methods
@@ -647,8 +659,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)resubscribeToIQNotifications {
-        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
-        [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
+    [self unsubscribeFromIQNotification];
     
     __weak typeof(self) weakSelf = self;
     void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
@@ -733,6 +744,16 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                            usingBlock:messageViewedBlock];
 }
 
+- (void)unsubscribeFromIQNotification {
+    if(_newMessageObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+    }
+    
+    if (_messageViewedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
+    }
+}
+
 - (NSDateFormatter *)dateFormater {
     if (!_dateFormatter) {
         _dateFormatter = [[NSDateFormatter alloc] init];
@@ -742,36 +763,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
     
     return _dateFormatter;
-}
-
-- (void)applicationWillEnterForeground {
-    
-    ObjectRequestCompletionHandler handler = ^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-        if(!error) {
-            [self updateDefaultStatusesForComments:comments];
-            [self modelDidChanged];
-            [self clearRemovedComments];
-            
-            [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
-                                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                                if(!success) {
-                                                                    NSLog(@"Mark discussion as read fail with error:%@", error);
-                                                                }
-                                                                else {
-                                                                    NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"messages" };
-                                                                    [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
-                                                                                                                        object:nil
-                                                                                                                      userInfo:userInfo];
-                                                                }
-                                                            }];
-        }
-    };
-    
-    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                      page:@(1)
-                                                       per:@(40)
-                                                      sort:SORT_DIRECTION
-                                                   handler:handler];
 }
 
 - (void)clearRemovedComments {

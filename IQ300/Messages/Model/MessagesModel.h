@@ -25,7 +25,6 @@
 
 - (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
-- (void)setSubscribedToNotifications:(BOOL)subscribed;
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counter, NSError * error))completion;
 
 @end

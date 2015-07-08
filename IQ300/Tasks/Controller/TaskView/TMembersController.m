@@ -23,6 +23,7 @@
 #import "TaskPolicyInspector.h"
 #import "TaskNotifications.h"
 #import "IQBadgeIndicatorView.h"
+#import "DispatchAfterExecution.h"
 
 @interface TMembersController () <ContactPickerControllerDelegate, SWTableViewCellDelegate>
 
@@ -73,7 +74,7 @@
         self.model.taskId = taskId;
         
         if(self.isViewLoaded) {
-            [self reloadModel];
+            [self updateModel];
         }
     }
 }
@@ -115,10 +116,15 @@
                                                object:nil];
 
     [self updateInterfaceFoPolicies];
-    [self reloadModel];
     
     self.model.resetReadFlagAutomatically = YES;
     [self.model resetReadFlagWithCompletion:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -229,6 +235,24 @@
     self.tabBarItem.badgeValue = BadgTextFromInteger([self.model.unreadCount integerValue]);
 }
 
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 #pragma mark - Private methods
 
 - (void)addButtonAction:(UIButton*)sender {
@@ -241,10 +265,19 @@
     [self.navigationController pushViewController:controller animated:YES];
 }
 
-- (void)reloadModel {
+- (void)updateModel {
     if([IQSession defaultSession]) {
-        [self reloadDataWithCompletion:^(NSError *error) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
+
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
             [self updateNoDataLabelVisibility];
+            dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
         }];
     }
 }
@@ -272,9 +305,20 @@
 }
 
 - (void)applicationWillEnterForeground {
-    [self.model updateModelWithCompletion:nil];
-    if (self.model.resetReadFlagAutomatically) {
-        [self.model resetReadFlagWithCompletion:nil];
+    if([IQSession defaultSession]) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
+        
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            [self updateNoDataLabelVisibility];
+            
+            dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
+        }];
+        
+        if (self.model.resetReadFlagAutomatically) {
+            [self.model resetReadFlagWithCompletion:nil];
+        }
     }
 }
 

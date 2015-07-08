@@ -48,7 +48,9 @@
 
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed;
+- (void)resubscribeToIQNotifications;
+
+- (void)unsubscribeFromIQNotifications;
 
 - (void)acceptNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
 

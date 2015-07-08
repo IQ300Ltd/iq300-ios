@@ -172,12 +172,7 @@
     
     [self updateSortFilterLabel];
     
-    [self.model reloadModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-            [self scrollToTopAnimated:NO delay:0.0f];
-        }
-    }];
+    [self reloadModel];
     
     _highlightTasks = !([self.model.folder isEqualToString:@"archive"] ||
                         [self.model.folder isEqualToString:@"templates"]);
@@ -262,12 +257,7 @@
 
         [self updateSortFilterLabel];
 
-        [self.model reloadModelWithCompletion:^(NSError *error) {
-            if(!error) {
-                [self.tableView reloadData];
-                [self scrollToTopAnimated:NO delay:0.0f];
-            }
-        }];
+        [self reloadModel];
     }
 }
 
@@ -378,6 +368,22 @@
     self.navigationItem.title = title;
 }
 
+- (void)reloadModel {
+    [self showActivityIndicatorAnimated:YES completion:nil];
+
+    [self.model reloadModelWithCompletion:^(NSError *error) {
+        if(!error) {
+            [self.tableView reloadData];
+        }
+        
+        [self scrollToTopAnimated:NO delay:0.0f];
+
+        dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+            [self hideActivityIndicatorAnimated:YES completion:nil];
+        });
+    }];
+}
+
 - (void)updateModel {
     if([IQSession defaultSession] && _forceUpdateNeeded) {
         _forceUpdateNeeded = NO;
@@ -391,9 +397,7 @@
             [self updateNoDataLabelVisibility];
             
             dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
-                if (self.isActivityIndicatorShown) {
-                    [self hideActivityIndicatorAnimated:YES completion:nil];
-                }
+                [self hideActivityIndicatorAnimated:YES completion:nil];
             });
         }];
     }

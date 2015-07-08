@@ -43,7 +43,7 @@ NSString const *UIScrollViewBottomPullToRefreshView = @"UIScrollViewBottomPullTo
                 yOrigin = -SVPullToRefreshViewHeight;
                 break;
             case SVPullToRefreshPositionBottom:
-                yOrigin = self.contentSize.height;
+                yOrigin = MAX(self.contentSize.height, self.bounds.size.height);
                 break;
             default:
                 return;
@@ -100,7 +100,7 @@ NSString const *UIScrollViewBottomPullToRefreshView = @"UIScrollViewBottomPullTo
                     yOrigin = -SVPullToRefreshViewHeight;
                     break;
                 case SVPullToRefreshPositionBottom:
-                    yOrigin = self.contentSize.height;
+                    yOrigin = MAX(self.contentSize.height, self.bounds.size.height);
                     break;
             }
             

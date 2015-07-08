@@ -5,7 +5,6 @@
 //  Created by Tayphoon on 04.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 #import <CTAssetsPickerController/CTAssetsPickerController.h>
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
@@ -27,6 +26,7 @@
 #import "IQDrawerController.h"
 #import "UIImage+Extensions.h"
 #import "UIActionSheet+Blocks.h"
+#import "UIScrollView+PullToRefreshInsert.h"
 
 #define SECTION_HEIGHT 12
 
@@ -90,9 +90,9 @@
 
     __weak typeof(self) weakSelf = self;
     [self.tableView
-     addPullToRefreshWithActionHandler:^{
+     insertPullToRefreshWithActionHandler:^{
          [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
-             [weakSelf.tableView.pullToRefreshView stopAnimating];
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
      position:SVPullToRefreshPositionTop];
@@ -139,18 +139,24 @@
                                                  name:IQDrawerDidShowNotification
                                                object:nil];
     
-    if([IQSession defaultSession]) {
-        if(self.needFullReload) {
-            [self showActivityIndicatorOnView:_mainView];
-        }
-        [self updateModel];
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [self hideActivityIndicator];
+    
+    [self.model setSubscribedToNotifications:NO];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -236,6 +242,8 @@
 }
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
+    [super modelDidChanged:model];
+    
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
@@ -262,6 +270,24 @@
     [self.tableView setContentOffset:self.tableView.contentOffset animated:YES];
     [self.tableView setScrollEnabled:NO];
     [_mainView.inputView.commentTextView resignFirstResponder];
+}
+
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 #pragma mark - Private methods
@@ -431,19 +457,30 @@
 }
 
 - (void)updateModel {
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
+    if([IQSession defaultSession] && self.model) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
         
-        [self scrollToBottomIfNeedAnimated:NO delay:0];
-        self.needFullReload = NO;
-        
-        dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
-            _mainView.tableView.hidden = NO;
-            [self hideActivityIndicator];
-        });
-    }];
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
+            [self scrollToBottomIfNeedAnimated:NO delay:0];
+            self.needFullReload = NO;
+            
+            [self updateNoDataLabelVisibility];
+            dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+                _mainView.tableView.hidden = NO;
+                
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
+        }];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self.model markDiscussionAsReadedWithCompletion:nil];
+    [self updateModel];
 }
 
 #pragma mark - Keyboard Helpers

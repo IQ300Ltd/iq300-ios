@@ -188,20 +188,6 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
                                             }];
 }
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
 - (void)clearModelData {
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
     if(_fetchController) {
@@ -256,10 +242,6 @@ static NSString * ReuseIdentifier = @"THReuseIdentifier";
     }
     
     return nil;
-}
-
-- (void)applicationWillEnterForeground {
-    [self updateModelWithCompletion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

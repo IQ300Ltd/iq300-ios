@@ -125,20 +125,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                              }];
 }
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
 #pragma mark - Private methods
 
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
@@ -216,12 +202,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         return feedback.createdDate;
     }
     return nil;
-}
-
-- (void)applicationWillEnterForeground {
-    if ([IQSession defaultSession]) {
-        [self feedbacksUpdatesAfterDateWithCompletion:nil];
-    }
 }
 
 @end

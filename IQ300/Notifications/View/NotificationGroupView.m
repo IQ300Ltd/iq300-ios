@@ -27,7 +27,7 @@
         _headerView = [[BottomLineView alloc] init];
         _headerView.bottomLineColor = SEPARATOR_COLOR;
         _headerView.bottomLineHeight = 0.5f;
-        [_headerView setBackgroundColor:[UIColor clearColor]];
+        [_headerView setBackgroundColor:[UIColor whiteColor]];
         
         _backButton = [[UIButton alloc] init];
         [_backButton setImage:[UIImage imageNamed:@"backArrow.png"] forState:UIControlStateNormal];

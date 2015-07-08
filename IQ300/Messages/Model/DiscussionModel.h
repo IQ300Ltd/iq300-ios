@@ -53,4 +53,6 @@
 
 - (void)deleteLocalComment:(IQComment*)comment;
 
+- (void)markDiscussionAsReadedWithCompletion:(void (^)(NSError * error))completion;
+
 @end

@@ -11,6 +11,7 @@
 #import "TActivityItemCell.h"
 #import "IQSession.h"
 #import "UIScrollView+PullToRefreshInsert.h"
+#import "DispatchAfterExecution.h"
 
 @interface TaskActivitiesController () {
 }
@@ -43,7 +44,7 @@
         self.model.taskId = taskId;
         
         if(self.isViewLoaded) {
-            [self reloadModel];
+            [self updateModel];
         }
     }
 }
@@ -85,14 +86,24 @@
     [super viewWillAppear:animated];
     self.parentViewController.navigationItem.rightBarButtonItem = nil;
 
-    [self reloadModel];
-    [self.model setSubscribedToNotifications:YES];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [self.model setSubscribedToNotifications:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
 }
 
 #pragma mark - UITableView DataSource
@@ -118,18 +129,47 @@
     return [self.model heightForItemAtIndexPath:indexPath];
 }
 
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 #pragma mark - Private methods
 
-- (void)reloadModel {
+- (void)updateModel {
     if([IQSession defaultSession]) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
+        
         [self.model updateModelWithCompletion:^(NSError *error) {
             if(!error) {
                 [self.tableView reloadData];
             }
             
             [self updateNoDataLabelVisibility];
+            dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
         }];
     }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateModel];
 }
 
 @end

@@ -156,20 +156,21 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
     if([_fetchController.fetchedObjects count] == 0) {
-        [self reloadModelSourceControllerWithCompletion:nil];
+        [self reloadModelWithCompletion:completion];
     }
-    
-    [self clearRemovedComments];
-    
-    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                      page:@(1)
-                                                       per:@(_portionLenght)
-                                                      sort:SORT_DIRECTION
-                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                       if(completion) {
-                                                           completion(error);
-                                                       }
-                                                   }];
+    else {
+        [self clearRemovedComments];
+        
+        [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                          page:@(1)
+                                                           per:@(_portionLenght)
+                                                          sort:SORT_DIRECTION
+                                                       handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                           if(completion) {
+                                                               completion(error);
+                                                           }
+                                                       }];
+    }
 }
 
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion {
@@ -192,7 +193,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadModelSourceControllerWithCompletion:nil];
+    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self modelDidChanged];
+        }
+    }];
+    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
@@ -216,11 +222,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
-        [self resubscribeToAppEnterForegroundNotification];
         [self resubscribeToNewMessageNotification];
     }
     else {
-        [self unsubscribeFromAppEnterForegroundNotification];
         [self unsubscribeFromNewMessageNotification];
     }
 }
@@ -507,7 +511,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     return nil;
 }
 
-
 - (NSDateFormatter *)dateFormater {
     if (!_dateFormatter) {
         _dateFormatter = [[NSDateFormatter alloc] init];
@@ -517,29 +520,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
     
     return _dateFormatter;
-}
-
-- (void)applicationWillEnterForeground {
-    [self updateModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self modelDidChanged];
-        }
-    }];
-}
-
-- (void)resubscribeToAppEnterForegroundNotification {
-    [self unsubscribeFromAppEnterForegroundNotification];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(applicationWillEnterForeground)
-                                                 name:UIApplicationWillEnterForegroundNotification
-                                               object:nil];
-}
-
-- (void)unsubscribeFromAppEnterForegroundNotification {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIApplicationWillEnterForegroundNotification
-                                                  object:nil];
 }
 
 - (void)resubscribeToNewMessageNotification {

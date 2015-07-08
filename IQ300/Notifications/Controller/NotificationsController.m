@@ -118,17 +118,28 @@
     [self.leftMenuController setModel:_menuModel];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
-    if([IQSession defaultSession]) {
-        [self updateModel];
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
+    [self.model resubscribeToIQNotifications];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     
-    [self.model setSubscribedToNotifications:YES];
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
-    [self.model setSubscribedToNotifications:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
+
+    [self.model unsubscribeFromIQNotifications];
 }
 
 #pragma mark - UITableView DataSource
@@ -216,6 +227,26 @@
     }
 }
 
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionBottom shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 #pragma mark - Private methods
 
 - (void)backButtonAction:(UIButton*)sender {
@@ -249,25 +280,46 @@
 }
 
 - (void)reloadModel {
-    [self.model reloadModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
-        [self scrollToTopAnimated:NO delay:0.5];
-        [self updateNoDataLabelVisibility];
-    }];
+    if([IQSession defaultSession]) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
+        
+        [self.model reloadModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
+            [self scrollToTopAnimated:NO delay:0.5];
+            [self updateNoDataLabelVisibility];
+            
+            dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
+        }];
+    }
 }
 
 - (void)updateModel {
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        if (!error) {
-            [self.tableView reloadData];
-        }
+    if([IQSession defaultSession]) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
         
-        [self scrollToTopIfNeedAnimated:NO delay:0.5];
-        [self updateNoDataLabelVisibility];
-        self.needFullReload = NO;
-    }];
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if (!error) {
+                [self.tableView reloadData];
+            }
+            
+            [self scrollToTopIfNeedAnimated:NO delay:0.5];
+            [self updateNoDataLabelVisibility];
+            self.needFullReload = NO;
+            
+            dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
+        }];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateModel];
 }
 
 - (void)scrollToTopIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
@@ -366,10 +418,8 @@
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:CountersDidChangedNotification
-                                                  object:nil];
-    [self.model setSubscribedToNotifications:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.model unsubscribeFromIQNotifications];
     [self.leftMenuController setMenuResponder:nil];
     [self.leftMenuController setModel:nil];
 }
