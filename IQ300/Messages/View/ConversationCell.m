@@ -211,9 +211,10 @@
     _userNameLabel.text = companion.displayName;
     _companion = companion;
     
-    UIImage * defaulImage = ([companions count] > 1) ? [UIImage imageNamed:@"conference_ioc.png"] :
-                                                       [UIImage imageNamed:@"user_icon.png"];
-    if([companion.thumbUrl length] > 0) {
+    BOOL isConference = ([companions count] > 1);
+    UIImage * defaulImage = (isConference) ? [UIImage imageNamed:@"conference_ioc.png"] :
+                                             [UIImage imageNamed:@"user_icon.png"];
+    if(!isConference && [companion.thumbUrl length] > 0) {
         [_userImageView sd_setImageWithURL:[NSURL URLWithString:companion.thumbUrl]];
     }
     else {
