@@ -205,18 +205,18 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQConversation * conver = [self.model itemAtIndexPath:indexPath];
-    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
+    IQConversation * conversation = [self.model itemAtIndexPath:indexPath];
+    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
 
     DiscussionController * controller = [[DiscussionController alloc] init];
     controller.hidesBottomBarWhenPushed = YES;
-    controller.title = conver.title;
+    controller.title = conversation.title;
     controller.model = model;
 
     [self.navigationController pushViewController:controller animated:YES];
     
     __weak typeof(self) weakSelf = self;
-    [MessagesModel markConversationAsRead:conver completion:^(NSError *error) {
+    [MessagesModel markConversationAsRead:conversation completion:^(NSError *error) {
         [weakSelf updateGlobalCounter];
     }];
 }
