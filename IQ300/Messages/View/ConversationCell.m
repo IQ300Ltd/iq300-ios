@@ -211,11 +211,13 @@
     _userNameLabel.text = companion.displayName;
     _companion = companion;
     
+    UIImage * defaulImage = ([companions count] > 1) ? [UIImage imageNamed:@"conference_ioc.png"] :
+                                                       [UIImage imageNamed:@"user_icon.png"];
     if([companion.thumbUrl length] > 0) {
         [_userImageView sd_setImageWithURL:[NSURL URLWithString:companion.thumbUrl]];
     }
     else {
-        _userImageView.image = nil;
+        _userImageView.image = defaulImage;
     }
     
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";

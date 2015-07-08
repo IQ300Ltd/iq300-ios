@@ -34,7 +34,7 @@ NSString * const NoTasksFound = @"There are no tasks";
         [_headerView setBackgroundColor:[UIColor colorWithHexInt:0xf6f6f6]];
         
         _filterButton = [[UIButton alloc] init];
-        [_filterButton setImage:[UIImage imageNamed:@"nex_header_button.png"] forState:UIControlStateNormal];
+        [_filterButton setImage:[UIImage imageNamed:@"next_header_button.png"] forState:UIControlStateNormal];
         [[_filterButton imageView] setContentMode:UIViewContentModeCenter];
         [_headerView addSubview:_filterButton];
         
