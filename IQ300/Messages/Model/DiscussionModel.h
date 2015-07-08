@@ -23,7 +23,6 @@
 @interface DiscussionModel : NSObject<IQTableModel>
 
 @property (nonatomic, strong) IQDiscussion * discussion;
-@property (nonatomic, strong) NSNumber * companionId;
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, weak) id<DiscussionModelDelegate> delegate;
 

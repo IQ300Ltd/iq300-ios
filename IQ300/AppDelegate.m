@@ -383,18 +383,12 @@
         if((isDiscussionOpen && ![conversationId isEqualToNumber:objectId]) || !isDiscussionOpen) {
             MessagesController * messagesController = navController.viewControllers[0];
             
-            ObjectRequestCompletionHandler handler = ^(BOOL success, IQConversation * conver, NSData *responseData, NSError *error) {
+            ObjectRequestCompletionHandler handler = ^(BOOL success, IQConversation * conversation, NSData *responseData, NSError *error) {
                 if(success) {
-                    NSPredicate * companionsPredicate = [NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId];
-                    NSArray * companions = [[conver.discussion.users filteredSetUsingPredicate:companionsPredicate] allObjects];
-                    IQUser * companion = [companions lastObject];
-                    
-                    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
-                    model.companionId = companion.userId;
-                    
+                    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
                     DiscussionController * controller = [[DiscussionController alloc] init];
                     controller.hidesBottomBarWhenPushed = YES;
-                    controller.title = companion.displayName;
+                    controller.title = conversation.title;
                     controller.model = model;
                     
                     if(!isDiscussionOpen) {
@@ -406,7 +400,7 @@
                         [navController setViewControllers:newStack animated:YES];
                     }
                     
-                    [MessagesModel markConversationAsRead:conver completion:^(NSError *error) {
+                    [MessagesModel markConversationAsRead:conversation completion:^(NSError *error) {
                         [messagesController updateGlobalCounter];
                     }];
                 }

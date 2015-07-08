@@ -57,6 +57,25 @@
              handler:handler];
 }
 
+- (void)createConversationWithRecipientIds:(NSArray*)recipientIds handler:(ObjectRequestCompletionHandler)handler {
+    NSParameterAssert(recipientIds);
+    [self postObject:nil
+                path:@"/api/v1/conversations/create_conference"
+          parameters:@{ @"participant_ids" : recipientIds }
+             handler:handler];
+}
+
+- (void)convertDialogToConferenceById:(NSNumber*)conversationid
+                            memberIds:(NSArray*)memberIds
+                              handler:(ObjectRequestCompletionHandler)handler {
+    NSParameterAssert(conversationid);
+    NSParameterAssert(memberIds);
+    [self postObject:nil
+                path:[NSString stringWithFormat:@"/api/v1/conversations/%@/dialog_to_conference", conversationid]
+          parameters:@{ @"participant_ids" : memberIds }
+             handler:handler];
+}
+
 #pragma mark - Discussion methods
 
 - (void)discussionWithId:(NSNumber*)discussionId handler:(ObjectRequestCompletionHandler)handler {

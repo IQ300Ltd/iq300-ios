@@ -74,16 +74,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     
     if(self) {
         _discussion = discussion;
+        [self updateLastViewedDate];
     }
     
     return self;
-}
-
-- (void)setCompanionId:(NSNumber *)companionId {
-    if(![_companionId isEqualToNumber:companionId]) {
-        _companionId = companionId;
-        [self updateLastViewedDate];
-    }
 }
 
 - (NSUInteger)numberOfSections {
@@ -460,10 +454,14 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 #pragma mark - Private methods
 
 - (void)updateLastViewedDate {
-    if(_companionId) {
-        NSPredicate * predicate = [NSPredicate predicateWithFormat:@"userId == %@", _companionId];
-        CViewInfo * viewInfo = [[[_discussion.userViews filteredSetUsingPredicate:predicate] allObjects] firstObject];
-        _lastViewDate = viewInfo.viewDate;
+    if([IQSession defaultSession].userId) {
+        NSPredicate * predicate = [NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId];
+        NSSortDescriptor * sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"viewDate" ascending:NO];
+        NSSet * filteredSet = [_discussion.userViews filteredSetUsingPredicate:predicate];
+        CViewInfo * viewInfo = [[filteredSet sortedArrayUsingDescriptors:@[sortDescriptor]] firstObject];
+        if (viewInfo) {
+            _lastViewDate = viewInfo.viewDate;
+        }
     }
 }
 
@@ -708,8 +706,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSNumber * discussionId = viewData[@"discussion_id"];
         NSString * viewedDateString = viewData[@"viewed_at"];
         NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
+        BOOL isViewDateNewer = (_lastViewDate) ? [_lastViewDate compare:viewedDate] == NSOrderedAscending :
+                                                 viewedDate != nil;
+        BOOL shouldProcessUserId = (userId) ? ![[IQSession defaultSession].userId isEqualToNumber:userId] : NO;
 
-        if(userId && [_companionId isEqualToNumber:userId] && viewedDate &&
+        if(isViewDateNewer && shouldProcessUserId &&
            discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
             _lastViewDate = viewedDate;
             

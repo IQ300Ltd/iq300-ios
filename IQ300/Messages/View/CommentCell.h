@@ -18,7 +18,8 @@
 }
 
 @property (nonatomic, strong) UILabel * timeLabel;
-@property (nonatomic, strong) UIView * contentBackgroundView;
+@property (nonatomic, strong) UIImageView * userImageView;
+@property (nonatomic, strong) UILabel * userNameLabel;
 @property (nonatomic, strong) UITextView * descriptionTextView;
 @property (nonatomic, strong) UIImageView * statusImageView;
 @property (nonatomic, strong) UIButton * expandButton;

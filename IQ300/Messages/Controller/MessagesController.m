@@ -205,14 +205,12 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    ConversationCell * cell = (ConversationCell*)[tableView cellForRowAtIndexPath:indexPath];
     IQConversation * conver = [self.model itemAtIndexPath:indexPath];
     DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
-    model.companionId = cell.companion.userId;
 
     DiscussionController * controller = [[DiscussionController alloc] init];
     controller.hidesBottomBarWhenPushed = YES;
-    controller.title = cell.companion.displayName;
+    controller.title = conver.title;
     controller.model = model;
 
     [self.navigationController pushViewController:controller animated:YES];

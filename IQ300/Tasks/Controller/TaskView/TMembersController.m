@@ -165,20 +165,18 @@
         return;
     }
     
-    NSString * companionName = member.user.displayName;
     NSNumber * userId = member.user.userId;
     [MessagesModel createConversationWithRecipientId:userId
-                                          completion:^(IQConversation * conv, NSError *error) {
+                                          completion:^(IQConversation * conversation, NSError *error) {
                                               if(!error) {
-                                                  DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conv.discussion];
-                                                  model.companionId = userId;
+                                                  DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
                                                   
                                                   DiscussionController * controller = [[DiscussionController alloc] init];
                                                   controller.hidesBottomBarWhenPushed = YES;
                                                   controller.model = model;
-                                                  controller.title = companionName;
+                                                  controller.title = conversation.title;
                                                   
-                                                  [MessagesModel markConversationAsRead:conv completion:nil];
+                                                  [MessagesModel markConversationAsRead:conversation completion:nil];
                                                   [self.navigationController pushViewController:controller animated:YES];
                                               }
                                               else {

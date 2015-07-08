@@ -25,6 +25,12 @@
 
 - (void)createConversationWithRecipientId:(NSNumber*)recipientId handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)createConversationWithRecipientIds:(NSArray*)recipientIds handler:(ObjectRequestCompletionHandler)handler;
+
+- (void)convertDialogToConferenceById:(NSNumber*)conversationid
+                            memberIds:(NSArray*)memberIds
+                              handler:(ObjectRequestCompletionHandler)handler;
+
 - (void)discussionWithId:(NSNumber*)discussionId handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)markDiscussionAsReadedWithId:(NSNumber*)discussionId handler:(RequestCompletionHandler)handler;

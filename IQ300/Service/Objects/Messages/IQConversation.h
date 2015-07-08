@@ -12,6 +12,7 @@
 @interface IQConversation : NSManagedObject
 
 @property (nonatomic, strong) NSNumber * conversationId;
+@property (nonatomic, strong) NSString * title;
 @property (nonatomic, strong) NSNumber * ownerId;
 @property (nonatomic, strong) NSDate * createDate;
 @property (nonatomic, strong) NSNumber * creatorId;

@@ -697,6 +697,22 @@ fileAttributeName:(NSString*)fileAttributeName
     
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/conversations/create_conference"
+                                                   fromKeyPath:@"conversation"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"/api/v1/conversations/:id/dialog_to_conference"
+                                                   fromKeyPath:@"conversation"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
                                                          pathPattern:@"/api/v1/discussions/:id"

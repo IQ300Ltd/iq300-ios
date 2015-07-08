@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 #import <QuartzCore/QuartzCore.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "CommentCell.h"
 #import "NSDate+IQFormater.h"
@@ -20,22 +21,23 @@
 #define DESCRIPTION_RIGHT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
 #define STATUS_IMAGE_SIZE 11
 #define TIME_LABEL_HEIGHT 7.0f
-#define CONTENT_Y_OFFSET 5.0f
-#define CELL_HEADER_HEIGHT TIME_LABEL_HEIGHT + CONTENT_Y_OFFSET
+#define CONTENT_OFFSET 5.0f
+#define CELL_HEADER_HEIGHT TIME_LABEL_HEIGHT + CONTENT_OFFSET
 
 #define BUBBLE_WIDTH_PERCENT 0.66f
 #define BUBBLE_BOTTOM_OFFSET 6.0f
+#define USER_ICON_SEZE 16.0f
 
 #ifdef IPAD
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:14]
 #define HEIGHT_DELTA 0.0f
 #define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 193.0f
-//#define BUBBLE_WIDTH 500
+#define USER_INFO_HEIGHT 27.5f
 #else
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define HEIGHT_DELTA 1.0f
 #define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 182.0f
-//#define BUBBLE_WIDTH 205
+#define USER_INFO_HEIGHT 25.5f
 #endif
 
 typedef NS_ENUM(NSInteger, CommentCellStyle) {
@@ -48,6 +50,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     UIImageView * _bubbleImageView;
     NSMutableArray * _attachButtons;
     UITapGestureRecognizer * _singleTapGesture;
+    UIView * _separatorView;
 }
 
 @end
@@ -96,13 +99,16 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat bubbleWidth = ceilf((cellWidth - CONTENT_INSET * 2.0f) * BUBBLE_WIDTH_PERCENT);
     CGFloat descriptionWidth = bubbleWidth - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
+  
+    CGFloat commentIsMine = ([item.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
     
     if([item.body length] > 0) {
         UITextView * descriptionTextView = [[UITextView alloc] init];
         [descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
         descriptionTextView.textContainerInset = UIEdgeInsetsZero;
         descriptionTextView.text = item.body;
-        
+        descriptionTextView.textContainer.lineFragmentPadding = 0;
+
         CGSize descriptionSize = [descriptionTextView sizeThatFits:CGSizeMake(descriptionWidth, COMMENT_CELL_MAX_HEIGHT)];
         height = MAX(ceilf(descriptionSize.height) + CELL_HEADER_HEIGHT + DESCRIPTION_PADDING * 2.0f + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA,
                      COMMENT_CELL_MIN_HEIGHT);
@@ -112,20 +118,24 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
             height = MIN(height, COLLAPSED_COMMENT_CELL_MAX_HEIGHT);
 
             if(canExpand) {
-                height += ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET * 2.0f;
+                height += ATTACHMENT_VIEW_HEIGHT + CONTENT_OFFSET * 2.0f;
             }
         }
         else {
-            height += ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET;
+            height += ATTACHMENT_VIEW_HEIGHT + CONTENT_OFFSET;
         }
     }
     else {
-        height = CELL_HEADER_HEIGHT + CONTENT_Y_OFFSET + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA;
+        height = CELL_HEADER_HEIGHT + CONTENT_OFFSET + BUBBLE_BOTTOM_OFFSET + HEIGHT_DELTA;
     }
     
+    if(!commentIsMine) {
+        height += USER_INFO_HEIGHT;
+    }
+
     BOOL hasAttachment = ([item.attachments count] > 0);
     if(hasAttachment) {
-        height += (ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET) * item.attachments.count;
+        height += (ATTACHMENT_VIEW_HEIGHT + CONTENT_OFFSET) * item.attachments.count;
     }
     
     return height;
@@ -171,6 +181,21 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _bubbleImageView = [UIImageView new];
         [contentView addSubview:_bubbleImageView];
         
+        _userImageView = [[UIImageView alloc] init];
+        _userImageView.layer.cornerRadius = USER_ICON_SEZE / 2.0f;
+        [_userImageView setImage:[UIImage imageNamed:@"user_icon.png"]];
+        [_userImageView setClipsToBounds:YES];
+        [contentView addSubview:_userImageView];
+        
+        _userNameLabel = [self makeLabelWithTextColor:DESCRIPTION_LEFT_TEXT_COLOR
+                                             font:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 14.0f : 13.0f]
+                                    localaizedKey:nil];
+        [contentView addSubview:_userNameLabel];
+        
+        _separatorView = [[UIView alloc] init];
+        _separatorView.backgroundColor = [UIColor whiteColor];
+        [contentView addSubview:_separatorView];
+        
         _statusImageView = [[UIImageView alloc] init];
         _statusImageView.contentMode = UIViewContentModeCenter;
         [_statusImageView setBackgroundColor:[UIColor clearColor]];
@@ -183,6 +208,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         [_descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
         [_descriptionTextView setTextColor:DESCRIPTION_RIGHT_TEXT_COLOR];
         _descriptionTextView.textAlignment = NSTextAlignmentLeft;
+        _descriptionTextView.textContainer.lineFragmentPadding = 0;
         _descriptionTextView.backgroundColor = [UIColor clearColor];
         _descriptionTextView.editable = NO;
         _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
@@ -256,10 +282,10 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                   actualBounds.size.width,
                                   TIME_LABEL_HEIGHT);
     
-    CGFloat bubdleImageY = CGRectBottom(_timeLabel.frame) + CONTENT_Y_OFFSET;
+    CGFloat bubdleImageY = CGRectBottom(_timeLabel.frame) + CONTENT_OFFSET;
 
     if(_commentIsMine) {
-        _statusImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - CONTENT_Y_OFFSET - bubbleWidth - STATUS_IMAGE_SIZE,
+        _statusImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - CONTENT_OFFSET - bubbleWidth - STATUS_IMAGE_SIZE,
                                             bubdleImageY + 10.0f,
                                             STATUS_IMAGE_SIZE,
                                             STATUS_IMAGE_SIZE);
@@ -276,8 +302,32 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
     
     CGRect contentRect = _bubbleImageView.frame;
-    CGFloat expandViewHeight = (hasExpandView) ? ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET : 0.0f;
-    CGFloat attachmentRectHeight = (hasAttachment) ? (ATTACHMENT_VIEW_HEIGHT + CONTENT_Y_OFFSET) * [_attachButtons count] : 0.0f;
+    
+    if (!_commentIsMine) {
+        CGSize userImageSize = CGSizeMake(USER_ICON_SEZE, USER_ICON_SEZE);
+        _userImageView.frame = CGRectMake(contentRect.origin.x + DESCRIPTION_PADDING,
+                                          contentRect.origin.y + (USER_INFO_HEIGHT - userImageSize.height - 2.0f) / 2.0f,
+                                          userImageSize.width,
+                                          userImageSize.height);
+        
+        CGFloat userNameX = CGRectRight(_userImageView.frame) + DESCRIPTION_PADDING;
+        _userNameLabel.frame = CGRectMake(CGRectRight(_userImageView.frame) + DESCRIPTION_PADDING,
+                                          _userImageView.frame.origin.y,
+                                          contentRect.size.width - userNameX - DESCRIPTION_PADDING,
+                                          _userImageView.frame.size.height);
+        
+        CGFloat separatorHeight = 2.0f;
+        _separatorView.frame = CGRectMake(contentRect.origin.x,
+                                          contentRect.origin.y + USER_INFO_HEIGHT - separatorHeight,
+                                          contentRect.size.width,
+                                          separatorHeight);
+        
+        contentRect.origin.y += USER_INFO_HEIGHT;
+        contentRect.size.height -= USER_INFO_HEIGHT;
+    }
+    
+    CGFloat expandViewHeight = (hasExpandView) ? ATTACHMENT_VIEW_HEIGHT + CONTENT_OFFSET : 0.0f;
+    CGFloat attachmentRectHeight = (hasAttachment) ? (ATTACHMENT_VIEW_HEIGHT + CONTENT_OFFSET) * [_attachButtons count] : 0.0f;
     CGFloat descriptioHeight =  (contentRect.size.height - DESCRIPTION_PADDING * 2) - attachmentRectHeight - expandViewHeight;
     
     _descriptionTextView.frame = CGRectMake(contentRect.origin.x + DESCRIPTION_PADDING,
@@ -286,22 +336,22 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                             (hasDescription) ? descriptioHeight : 0.0f);
     
     if(hasExpandView) {
-        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + CONTENT_Y_OFFSET,
-                                         CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET,
+        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + CONTENT_OFFSET,
+                                         CGRectBottom(_descriptionTextView.frame) + CONTENT_OFFSET,
                                          (IS_IPAD) ? 100.0f : 90.0f,
                                          ATTACHMENT_VIEW_HEIGHT);
     }
     
     if(hasAttachment) {
-        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + CONTENT_Y_OFFSET :
-                                                    _bubbleImageView.frame.origin.y + CONTENT_Y_OFFSET;
+        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + CONTENT_OFFSET :
+                                                    contentRect.origin.y + CONTENT_OFFSET;
         
         if(hasExpandView) {
-            attachButtonY = CGRectBottom(_expandButton.frame) + CONTENT_Y_OFFSET;
+            attachButtonY = CGRectBottom(_expandButton.frame) + CONTENT_OFFSET;
         }
         
-        CGSize constrainedSize = CGSizeMake(_bubbleImageView.frame.size.width, ATTACHMENT_VIEW_HEIGHT);
-        CGFloat attachmentX = _descriptionTextView.frame.origin.x + 5.0f;
+        CGSize constrainedSize = CGSizeMake(_descriptionTextView.frame.size.width, ATTACHMENT_VIEW_HEIGHT);
+        CGFloat attachmentX = _descriptionTextView.frame.origin.x;
         for (UIButton * attachButton in _attachButtons) {
             CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
             attachButton.frame = CGRectMake(attachmentX,
@@ -309,7 +359,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                             MIN(attachmentSize.width + 5.0f, _descriptionTextView.frame.size.width),
                                             attachmentSize.height);
             
-            attachButtonY = CGRectBottom(attachButton.frame) + CONTENT_Y_OFFSET;
+            attachButtonY = CGRectBottom(attachButton.frame) + CONTENT_OFFSET;
         }
     }
 }
@@ -348,6 +398,20 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
     _timeLabel.text = [_item.createDate dateToTimeString];
     _timeLabel.textAlignment = (_commentIsMine) ? NSTextAlignmentRight : NSTextAlignmentLeft;
+    
+    if (!_commentIsMine) {
+        _userImageView.hidden = NO;
+        _userNameLabel.hidden = NO;
+        _separatorView.hidden = NO;
+
+        _userNameLabel.text = _item.author.displayName;
+        if ([_item.author.thumbUrl length] > 0) {
+            [_userImageView sd_setImageWithURL:[NSURL URLWithString:_item.author.thumbUrl]];
+        }
+        else {
+            [_userImageView setImage:[UIImage imageNamed:@"user_icon.png"]];
+        }
+    }
     
     NSString * body = ([_item.body length] > 0) ? _item.body : @"";
     _descriptionTextView.text = body;
@@ -406,6 +470,10 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     _commentIsMine = NO;
     _expanded = NO;
     _expandable = NO;
+    
+    _userImageView.hidden = YES;
+    _userNameLabel.hidden = YES;
+    _separatorView.hidden = YES;
 
     _descriptionTextView.selectable = NO;
     _descriptionTextView.text = nil;

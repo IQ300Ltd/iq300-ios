@@ -124,20 +124,18 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQContact * contact = [self.model itemAtIndexPath:indexPath];
-    NSString * companionName = contact.user.displayName;
     NSNumber * userId = contact.user.userId;
     [MessagesModel createConversationWithRecipientId:userId
-                                          completion:^(IQConversation * conv, NSError *error) {
+                                          completion:^(IQConversation * conversation, NSError *error) {
                                               if(!error) {                                                  
-                                                  DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conv.discussion];
-                                                  model.companionId = userId;
+                                                  DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
                                                   
                                                   DiscussionController * controller = [[DiscussionController alloc] init];
                                                   controller.hidesBottomBarWhenPushed = YES;
                                                   controller.model = model;
-                                                  controller.title = companionName;
+                                                  controller.title = conversation.title;
 
-                                                  [MessagesModel markConversationAsRead:conv completion:nil];
+                                                  [MessagesModel markConversationAsRead:conversation completion:nil];
                                                   
                                                   id previousController = [self.navigationController.viewControllers firstObject];
                                                   if(previousController) {
