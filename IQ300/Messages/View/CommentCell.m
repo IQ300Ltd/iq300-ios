@@ -26,18 +26,19 @@
 
 #define BUBBLE_WIDTH_PERCENT 0.66f
 #define BUBBLE_BOTTOM_OFFSET 6.0f
-#define USER_ICON_SEZE 16.0f
 
 #ifdef IPAD
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:14]
 #define HEIGHT_DELTA 0.0f
 #define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 193.0f
 #define USER_INFO_HEIGHT 27.5f
+#define USER_ICON_SEZE 17.0f
 #else
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define HEIGHT_DELTA 1.0f
 #define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 182.0f
 #define USER_INFO_HEIGHT 25.5f
+#define USER_ICON_SEZE 16.0f
 #endif
 
 typedef NS_ENUM(NSInteger, CommentCellStyle) {
