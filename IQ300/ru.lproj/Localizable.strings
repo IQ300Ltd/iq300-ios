@@ -176,3 +176,5 @@
 "feedback_new" = "Принято";
 "feedback_in_work" = "В работе";
 "feedback_completed" = "Выполнено";
+
+"Create" = "Создать";

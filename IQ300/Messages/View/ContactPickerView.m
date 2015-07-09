@@ -10,10 +10,12 @@
 
 #define HEADER_HEIGHT 60.0f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xc0c0c0]
+#define BOTTOM_VIEW_HEIGHT 60
 
 @interface ContactPickerView() {
     BottomLineView * _userNamelContainer;
     UIEdgeInsets _userNameInset;
+    UIView * _bottomSeparatorView;
 }
 
 @end
@@ -55,6 +57,24 @@
         }
         [self addSubview:_tableView];
         
+        _bottomSeparatorView = [[UIView alloc] init];
+        [_bottomSeparatorView setBackgroundColor:SEPARATOR_COLOR];
+        [self addSubview:_bottomSeparatorView];
+        
+        _doneButton = [[ExtendedButton alloc] init];
+        _doneButton.layer.cornerRadius = 4.0f;
+        _doneButton.layer.borderWidth = 0.5f;
+        [_doneButton setTitle:NSLocalizedString(@"Create", nil) forState:UIControlStateNormal];
+        [_doneButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
+        [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
+        [_doneButton setBackgroundColor:IQ_CELADON_COLOR];
+        [_doneButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
+        [_doneButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
+        _doneButton.layer.borderColor = _doneButton.backgroundColor.CGColor;
+        [_doneButton setClipsToBounds:YES];
+        [self addSubview:_doneButton];
+
+        
         _noDataLabel = [[UILabel alloc] init];
         [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
         [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
@@ -68,6 +88,14 @@
     return self;
 }
 
+- (void)setDoneButtonHidden:(BOOL)doneButtonHidden {
+    _doneButtonHidden = doneButtonHidden;
+    _doneButton.hidden = doneButtonHidden;
+    _bottomSeparatorView.hidden = doneButtonHidden;
+    
+    [self setNeedsLayout];
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     
@@ -79,12 +107,7 @@
                                       29.0f);
     _userNamelContainer.frame = UIEdgeInsetsInsetRect(containerRect, _userNameInset);
     
-    CGFloat tableViewY = CGRectBottom(_userNamelContainer.frame);
-    _tableView.frame = CGRectMake(actualBounds.origin.x,
-                                  tableViewY,
-                                  actualBounds.size.width,
-                                  actualBounds.origin.y + actualBounds.size.height - tableViewY - _tableBottomMargin);
-    _noDataLabel.frame = _tableView.frame;
+    [self layoutTableView];
 }
 
 - (void)setTableBottomMargin:(CGFloat)tableBottomMargin {
@@ -94,11 +117,26 @@
 
 - (void)layoutTableView {
     CGRect actualBounds = UIEdgeInsetsInsetRect(self.bounds, _contentInsets);
+    
+    if (!self.doneButtonHidden) {
+        _bottomSeparatorView.frame = CGRectMake(actualBounds.origin.x,
+                                                actualBounds.origin.y + actualBounds.size.height - BOTTOM_VIEW_HEIGHT - _tableBottomMargin,
+                                                actualBounds.size.width,
+                                                0.5f);
+        
+        CGSize clearButtonSize = CGSizeMake(300, 40);
+        _doneButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - clearButtonSize.width) / 2.0f,
+                                       actualBounds.origin.y + actualBounds.size.height - clearButtonSize.height - 10.0f - _tableBottomMargin,
+                                       clearButtonSize.width,
+                                       clearButtonSize.height);
+    }
+
+    CGFloat bottomInset = (self.isDoneButtonHidden) ? 0.0f : BOTTOM_VIEW_HEIGHT;
     CGFloat tableViewY = CGRectBottom(_userNamelContainer.frame);
     _tableView.frame = CGRectMake(actualBounds.origin.x,
                                   tableViewY,
                                   actualBounds.size.width,
-                                  actualBounds.origin.y + actualBounds.size.height - tableViewY - _tableBottomMargin);
+                                  actualBounds.origin.y + actualBounds.size.height - tableViewY - _tableBottomMargin - bottomInset);
     _noDataLabel.frame = _tableView.frame;
 }
 

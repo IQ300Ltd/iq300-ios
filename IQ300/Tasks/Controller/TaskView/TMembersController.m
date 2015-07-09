@@ -24,8 +24,9 @@
 #import "TaskNotifications.h"
 #import "IQBadgeIndicatorView.h"
 #import "DispatchAfterExecution.h"
+#import "IQContact.h"
 
-@interface TMembersController () <ContactPickerControllerDelegate, SWTableViewCellDelegate>
+@interface TMembersController () <IQSelectionControllerDelegate, SWTableViewCellDelegate>
 
 @end
 
@@ -212,9 +213,9 @@
 
 #pragma mark - ContactPickerController Delegate
 
-- (void)contactPickerController:(ContactPickerController *)picker didPickUser:(IQUser *)user {
+- (void)selectionControllerController:(ContactPickerController *)controller didSelectItem:(IQContact*)item {
     __weak typeof (self) weakSelf = self;
-    [self.model addMemberWithUserId:user.userId completion:^(NSError *error) {
+    [self.model addMemberWithUserId:item.user.userId completion:^(NSError *error) {
         if (!error) {
             [GAIService sendEventForCategory:GAITaskEventCategory
                                       action:@"event_action_task_add_user"];
@@ -256,8 +257,12 @@
 - (void)addButtonAction:(UIButton*)sender {
     NSArray * users = [self.model.members valueForKey:@"user"];
     
+    ContactsModel * model = [[ContactsModel alloc] init];
+    model.allowsDeselection = NO;
+    model.allowsMultipleSelection = NO;
+    
     ContactPickerController * controller = [[ContactPickerController alloc] init];
-    controller.model = [[ContactsModel alloc] init];
+    controller.model = model;
     controller.model.excludeUserIds = [users valueForKey:@"userId"];
     controller.delegate = self;
     [self.navigationController pushViewController:controller animated:YES];

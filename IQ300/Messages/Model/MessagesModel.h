@@ -17,7 +17,8 @@
 @property (nonatomic, strong) NSString * filter;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
-+ (void)createConversationWithRecipientId:(NSNumber*)recipientId completion:(void (^)(IQConversation * conv, NSError * error))completion;
++ (void)createConversationWithRecipientId:(NSNumber*)recipientId completion:(void (^)(IQConversation * conversation, NSError * error))completion;
++ (void)createConferenceWithUserIds:(NSArray*)userIds completion:(void (^)(IQConversation * conversation, NSError * error))completion;
 + (void)markConversationAsRead:(IQConversation*)conversation completion:(void (^)(NSError * error))completion;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;

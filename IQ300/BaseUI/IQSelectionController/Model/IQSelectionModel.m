@@ -53,6 +53,20 @@
     return [IQSelectableTextCell heightForItem:item detailTitle:nil width:self.cellWidth];
 }
 
+- (NSArray*)selectedItems {
+    if ([_selectedIndexPaths count] > 0) {
+        NSMutableArray * items = [NSMutableArray array];
+        for (NSIndexPath * indexPath in _selectedIndexPaths) {
+            id item = [self itemAtIndexPath:indexPath];
+            if (item) {
+                [items addObject:item];
+            }
+        }
+        return [items copy];
+    }
+    return nil;
+}
+
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [[NSNotificationCenter defaultCenter] addObserver:self

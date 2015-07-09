@@ -89,15 +89,17 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    id item = [self.model itemAtIndexPath:indexPath];
-    if ([self.delegate respondsToSelector:@selector(selectionControllerController:didSelectItem:)]) {
-        [self.delegate selectionControllerController:self didSelectItem:item];
-    }
-    
     NSIndexPath * selectedIndexPath = [self.model selectedIndexPathForSection:indexPath.section];
     if (self.model.allowsMultipleSelection) {
         BOOL isItemSelected = [self.model isItemSelectedAtIndexPath:indexPath];
         [self.model makeItemAtIndexPath:indexPath selected:!isItemSelected];
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+        
+        if ([self.delegate respondsToSelector:@selector(selectionControllerController:didSelectItems:)]) {
+            [self.delegate selectionControllerController:self didSelectItems:[self.model selectedItems]];
+        }
     }
     else if((selectedIndexPath && [selectedIndexPath compare:indexPath] != NSOrderedSame) || !selectedIndexPath) {
         [self.model makeItemAtIndexPath:selectedIndexPath selected:NO];
@@ -108,6 +110,11 @@
             [self.tableView reloadRowsAtIndexPaths:@[selectedIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
         [self.tableView endUpdates];
+        
+        id item = [self.model itemAtIndexPath:indexPath];
+        if ([self.delegate respondsToSelector:@selector(selectionControllerController:didSelectItem:)]) {
+            [self.delegate selectionControllerController:self didSelectItem:item];
+        }
     }
 }
 

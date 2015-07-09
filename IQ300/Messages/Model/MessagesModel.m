@@ -35,18 +35,33 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
 @implementation MessagesModel
 
-+ (void)createConversationWithRecipientId:(NSNumber*)recipientId completion:(void (^)(IQConversation * conv, NSError * error))completion {
++ (void)createConversationWithRecipientId:(NSNumber*)recipientId completion:(void (^)(IQConversation * conversation, NSError * error))completion {
     [[IQService sharedService] createConversationWithRecipientId:recipientId
-                                                         handler:^(BOOL success, IQConversation * conv, NSData *responseData, NSError *error) {
+                                                         handler:^(BOOL success, IQConversation * conversation, NSData *responseData, NSError *error) {
                                                              if (success) {
                                                                  [GAIService sendEventForCategory:GAIMessagesEventCategory
                                                                                            action:@"event_action_message_conversation_create"];
                                                              }
                                                              
                                                              if(completion) {
-                                                                 completion(conv, error);
+                                                                 completion(conversation, error);
                                                              }
                                                          }];
+}
+
++ (void)createConferenceWithUserIds:(NSArray*)userIds completion:(void (^)(IQConversation * conversation, NSError * error))completion {
+    [[IQService sharedService] createConversationWithRecipientIds:userIds
+                                                          handler:^(BOOL success, IQConversation * conversation, NSData *responseData, NSError *error) {
+                                                              if (success) {
+                                                                  [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                                            action:@"event_action_message_conversation_create"];
+                                                              }
+                                                              
+                                                              if(completion) {
+                                                                  completion(conversation, error);
+                                                              }
+                                                          }];
+
 }
 
 + (void)markConversationAsRead:(IQConversation *)conversation completion:(void (^)(NSError *))completion {

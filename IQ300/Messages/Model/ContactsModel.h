@@ -6,29 +6,24 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
-#import "IQTableModel.h"
+#import "IQSelectionManagedModel.h"
 
-@interface ContactsModel : NSObject<IQTableModel>
+@interface ContactsModel : IQSelectionManagedModel
 
-@property (nonatomic, readonly) NSArray * users;
+@property (nonatomic, readonly) NSArray * contacts;
 @property (nonatomic, readonly) NSUInteger portionOffset;
 @property (nonatomic, readonly) NSUInteger portionSize;
 
-@property (nonatomic, strong) NSString * sectionNameKeyPath;
 @property (nonatomic, strong) NSString * filter;
 @property (nonatomic, strong) NSArray * excludeUserIds;
 @property (nonatomic, strong) NSPredicate * predicate;
-@property (nonatomic, strong) NSArray  * sortDescriptors;
-@property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 + (instancetype)modelWithPortionSize:(NSUInteger)portionSize;
 
 - (id)initWithPortionSize:(NSUInteger)portionSize;
 
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
+
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
-
-- (void)reloadFirstPartWithCompletion:(void (^)(NSError * error))completion;
-
-- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion;
 
 @end

@@ -21,12 +21,13 @@
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQBadgeView.h"
 #import "IQCounters.h"
+#import "IQContact.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQDrawerController.h"
 
 #define DISPATCH_DELAY 0.7
 
-@interface MessagesController() <ContactPickerControllerDelegate> {
+@interface MessagesController() <IQSelectionControllerDelegate> {
     MessagesView * _messagesView;
     dispatch_after_block _cancelBlock;
 }
@@ -278,8 +279,21 @@
 
 #pragma mark - ContactPickerController delegate
 
-- (void)contactPickerController:(ContactPickerController *)picker didPickUser:(IQUser *)user {
-    NSNumber * userId = user.userId;
+- (void)contactPickerController:(ContactPickerController*)picker didPickContacts:(NSArray*)contacts {
+    if ([contacts count] == 1) {
+        IQContact * contact = [contacts firstObject];
+        [self createDiscussionWithUserId:contact.user.userId];
+    }
+    else if ([contacts count] > 1) {
+        NSArray * users = [contacts valueForKey:@"user"];
+        NSArray * userIds = [users valueForKey:@"userId"];
+        [self createConferenceWithUserIds:userIds];
+    }
+}
+
+#pragma mark - Private methods
+
+- (void)createDiscussionWithUserId:(NSNumber*)userId {
     [MessagesModel createConversationWithRecipientId:userId
                                           completion:^(IQConversation * conversation, NSError *error) {
                                               if(!error) {
@@ -301,7 +315,27 @@
                                           }];
 }
 
-#pragma mark - Private methods
+- (void)createConferenceWithUserIds:(NSArray*)userIds {
+    [MessagesModel createConferenceWithUserIds:userIds
+                                    completion:^(IQConversation * conversation, NSError *error) {
+                                        if(!error) {
+                                            DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
+                                            
+                                            DiscussionController * controller = [[DiscussionController alloc] init];
+                                            controller.hidesBottomBarWhenPushed = YES;
+                                            controller.model = model;
+                                            controller.title = conversation.title;
+                                            
+                                            [MessagesModel markConversationAsRead:conversation completion:nil];
+                                            
+                                            NSArray * newStack = @[self, controller];
+                                            [self.navigationController setViewControllers:newStack animated:YES];
+                                        }
+                                        else {
+                                            [self proccessServiceError:error];
+                                        }
+                                    }];
+}
 
 - (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];

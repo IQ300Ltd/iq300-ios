@@ -6,22 +6,20 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
-#import "IQTableBaseController.h"
+#import "IQSelectionController.h"
 #import "ContactsModel.h"
 
 @class ContactPickerController;
-@class IQUser;
 
-@protocol ContactPickerControllerDelegate <NSObject>
+@protocol ContactPickerControllerDelegate <IQSelectionControllerDelegate>
 
 @optional
-- (void)contactPickerController:(ContactPickerController*)picker didPickUser:(IQUser*)user;
+- (void)contactPickerController:(ContactPickerController*)picker didPickContacts:(NSArray*)contacts;
 
 @end
 
-@interface ContactPickerController : IQTableBaseController
+@interface ContactPickerController : IQSelectionController
 
 @property (nonatomic, strong) ContactsModel * model;
-@property (nonatomic, weak) id<ContactPickerControllerDelegate> delegate;
 
 @end

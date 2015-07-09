@@ -6,12 +6,12 @@
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "IQSelectableTextCell.h"
 
-@class IQUser;
+@class IQContact;
 
-@interface ContactCell : UITableViewCell
+@interface ContactCell : IQSelectableTextCell
 
-@property (nonatomic, strong) IQUser * item;
+@property (nonatomic, strong) IQContact * item;
 
 @end

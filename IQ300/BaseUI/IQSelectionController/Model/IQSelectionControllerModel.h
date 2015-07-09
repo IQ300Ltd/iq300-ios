@@ -18,5 +18,6 @@
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)selected;
 - (void)setSubscribedToNotifications:(BOOL)subscribed;
 - (NSIndexPath*)selectedIndexPathForSection:(NSInteger)section;
+- (NSArray*)selectedItems;
 
 @end

@@ -43,7 +43,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      addPullToRefreshWithActionHandler:^{
-         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
              [weakSelf.tableView.pullToRefreshView stopAnimating];
          }];
      }
@@ -57,6 +57,8 @@
     [_mainView.clearTextFieldButton addTarget:self
                                        action:@selector(clearFilter)
                              forControlEvents:UIControlEventTouchUpInside];
+    
+    _mainView.doneButtonHidden = !self.model.allowsMultipleSelection;
 }
 
 - (UITableView*)tableView {
@@ -77,6 +79,10 @@
     self.navigationItem.leftBarButtonItem = backBarButton;
     
     [self setTitle:NSLocalizedString(@"Сontacts", nil)];
+    
+    [_mainView.doneButton addTarget:self
+                             action:@selector(doneButtonAction:)
+                   forControlEvents:UIControlEventTouchUpInside];
 
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -93,41 +99,12 @@
                                              selector:@selector(drawerDidShowNotification:)
                                                  name:IQDrawerDidShowNotification
                                                object:nil];
-    
-    if([IQSession defaultSession]) {
-        [self reloadModel];
-    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-#pragma mark - UITableView DataSource
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ContactCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
-    
-    if (!cell) {
-        cell = [self.model createCellForIndexPath:indexPath];
-    }
-    
-    IQContact * contact = [self.model itemAtIndexPath:indexPath];
-    cell.item = contact.user;
-    
-    return cell;
-}
-
-#pragma mark - UITableView Delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQContact * contact = [self.model itemAtIndexPath:indexPath];
-    
-    if([self.delegate respondsToSelector:@selector(contactPickerController:didPickUser:)]) {
-        [self.delegate contactPickerController:self didPickUser:contact.user];
-    }
 }
 
 #pragma mark - TextField Delegate
@@ -173,17 +150,16 @@
     [UIView commitAnimations];
 }
 
-- (void)backButtonAction:(UIButton*)sender {
+- (void)backButtonAction:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)reloadModel {
-    [self.model reloadModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-            [self updateNoDataLabelVisibility];
-        }
-    }];
+- (void)doneButtonAction:(id)sender {
+    NSArray * selectedContacts = [self.model selectedItems];
+    if ([selectedContacts count] > 0 &&
+        [self.delegate respondsToSelector:@selector(contactPickerController:didPickContacts:)]) {
+        [self.delegate contactPickerController:self didPickContacts:selectedContacts];
+    }
 }
 
 - (void)updateNoDataLabelVisibility {
@@ -206,7 +182,7 @@
     [self.model reloadModelSourceControllerWithCompletion:compleationBlock];
     
     _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
-        [self.model reloadFirstPartWithCompletion:compleationBlock];
+        [self.model updateModelWithCompletion:compleationBlock];
     });
 }
 
