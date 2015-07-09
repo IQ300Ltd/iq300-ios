@@ -194,6 +194,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         
         _separatorView = [[UIView alloc] init];
         _separatorView.backgroundColor = [UIColor whiteColor];
+        _separatorView.clipsToBounds = YES;
         [contentView addSubview:_separatorView];
         
         _statusImageView = [[UIImageView alloc] init];
@@ -320,7 +321,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _separatorView.frame = CGRectMake(contentRect.origin.x,
                                           contentRect.origin.y + USER_INFO_HEIGHT - separatorHeight,
                                           contentRect.size.width,
-                                          separatorHeight);
+                                          separatorHeight / [UIScreen mainScreen].scale);
         
         contentRect.origin.y += USER_INFO_HEIGHT;
         contentRect.size.height -= USER_INFO_HEIGHT;
