@@ -16,7 +16,7 @@
 #import "IQConversation.h"
 
 #import "DiscussionController.h"
-#import "CreateConversationController.h"
+#import "ContactPickerController.h"
 #import "DispatchAfterExecution.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQBadgeView.h"
@@ -26,7 +26,7 @@
 
 #define DISPATCH_DELAY 0.7
 
-@interface MessagesController() {
+@interface MessagesController() <ContactPickerControllerDelegate> {
     MessagesView * _messagesView;
     dispatch_after_block _cancelBlock;
 }
@@ -276,6 +276,31 @@
     }];
 }
 
+#pragma mark - ContactPickerController delegate
+
+- (void)contactPickerController:(ContactPickerController *)picker didPickUser:(IQUser *)user {
+    NSNumber * userId = user.userId;
+    [MessagesModel createConversationWithRecipientId:userId
+                                          completion:^(IQConversation * conversation, NSError *error) {
+                                              if(!error) {
+                                                  DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
+                                                  
+                                                  DiscussionController * controller = [[DiscussionController alloc] init];
+                                                  controller.hidesBottomBarWhenPushed = YES;
+                                                  controller.model = model;
+                                                  controller.title = conversation.title;
+                                                  
+                                                  [MessagesModel markConversationAsRead:conversation completion:nil];
+                                                  
+                                                  NSArray * newStack = @[self, controller];
+                                                  [self.navigationController setViewControllers:newStack animated:YES];
+                                              }
+                                              else {
+                                                  [self proccessServiceError:error];
+                                              }
+                                          }];
+}
+
 #pragma mark - Private methods
 
 - (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
@@ -302,9 +327,10 @@
 }
 
 - (void)createNewAction:(id)sender {
-    CreateConversationController * controller = [[CreateConversationController alloc] init];
+    ContactPickerController * controller = [[ContactPickerController alloc] init];
     controller.hidesBottomBarWhenPushed = YES;
-    controller.model = [[UsersModel alloc] init];
+    controller.model = [[ContactsModel alloc] init];
+    controller.delegate = self;
     [self.navigationController pushViewController:controller animated:YES];
 }
 

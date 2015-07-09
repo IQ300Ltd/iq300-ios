@@ -114,6 +114,15 @@
                                                                       action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
+    UIImage * rightButtonImage = ([self.model isDescussionConference]) ? [UIImage imageNamed:@"edit_conference_icon.png"] :
+                                                                         [UIImage imageNamed:@"add_user_icon.png"];
+    UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:rightButtonImage
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(rightBarButtonAction:)];
+    self.navigationItem.rightBarButtonItem = rightBarButton;
+
+    
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
@@ -305,8 +314,12 @@
     [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
 }
 
-- (void)backButtonAction:(UIButton*)sender {
+- (void)backButtonAction:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)rightBarButtonAction:(id)sender {
+    
 }
 
 - (void)sendButtonAction:(UIButton*)sender {

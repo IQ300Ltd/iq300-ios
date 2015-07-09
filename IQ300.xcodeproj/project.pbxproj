@@ -211,7 +211,7 @@
 		73840DF31B1C75A500BCEAFC /* TaskDescriptionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A50D101ADFAA4400251CB7 /* TaskDescriptionController.m */; };
 		73840DF41B1C75A500BCEAFC /* TasksFilterModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A7CA691A9F11080038DEF1 /* TasksFilterModel.m */; };
 		73840DF51B1C75A500BCEAFC /* TaskHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 73841B6C1AB9A78A00B079BA /* TaskHelper.m */; };
-		73840DF61B1C75A500BCEAFC /* UsersModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8E11A36E4CB0032C1FA /* UsersModel.m */; };
+		73840DF61B1C75A500BCEAFC /* ContactsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8E11A36E4CB0032C1FA /* ContactsModel.m */; };
 		73840DF71B1C75A500BCEAFC /* PlaceholderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C3B6C1A3098550032C057 /* PlaceholderTextView.m */; };
 		73840DF81B1C75A500BCEAFC /* TasksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A700431A95BC4100A1C2AC /* TasksView.m */; };
 		73840DF91B1C75A500BCEAFC /* IQLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E4260C1AAF07D700CD2093 /* IQLayoutManager.m */; };
@@ -233,7 +233,7 @@
 		73840E091B1C75A500BCEAFC /* ActionNotificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 739073A41A486A560057BA18 /* ActionNotificationCell.m */; };
 		73840E0A1B1C75A500BCEAFC /* CommentInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC7A01A4A9F21007FC95C /* CommentInputView.m */; };
 		73840E0B1B1C75A500BCEAFC /* IQObjectsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7373ED5A1A89EF2000719FCD /* IQObjectsHolder.m */; };
-		73840E0C1B1C75A500BCEAFC /* CreateConversationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8DB1A36DBEF0032C1FA /* CreateConversationView.m */; };
+		73840E0C1B1C75A500BCEAFC /* ContactPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8DB1A36DBEF0032C1FA /* ContactPickerView.m */; };
 		73840E0D1B1C75A500BCEAFC /* SubMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D3DF271AF0FB14000DD34F /* SubMenuCell.m */; };
 		73840E0E1B1C75A500BCEAFC /* TInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1AF1ADE932700023120 /* TInfoController.m */; };
 		73840E101B1C75A500BCEAFC /* IQDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737DD2091A149C6900CC4443 /* IQDrawerController.m */; };
@@ -297,7 +297,6 @@
 		73840E4C1B1C75A500BCEAFC /* TodoListItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1E11ADE94B400023120 /* TodoListItemCell.m */; };
 		73840E4D1B1C75A500BCEAFC /* IQNotificationsGroupIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C286AC1A94AFD70011FD51 /* IQNotificationsGroupIds.m */; };
 		73840E4E1B1C75A500BCEAFC /* CCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC7A31A4AA516007FC95C /* CCommentCell.m */; };
-		73840E4F1B1C75A500BCEAFC /* ContactPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A31ADE932700023120 /* ContactPickerController.m */; };
 		73840E501B1C75A500BCEAFC /* TaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49031AE51FA400F6A753 /* TaskExecutor.m */; };
 		73840E511B1C75A500BCEAFC /* IQTableModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B9EA071ADCFBA400159A66 /* IQTableModel.m */; };
 		73840E521B1C75A500BCEAFC /* TDocumentsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1AD1ADE932700023120 /* TDocumentsController.m */; };
@@ -317,7 +316,7 @@
 		73840E611B1C75A500BCEAFC /* ExtendedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C611A0D027700E8BB81 /* ExtendedButton.m */; };
 		73840E621B1C75A500BCEAFC /* TAttachmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1D91ADE94B400023120 /* TAttachmentCell.m */; };
 		73840E631B1C75A500BCEAFC /* CommentsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC79A1A4A9E63007FC95C /* CommentsModel.m */; };
-		73840E641B1C75A500BCEAFC /* CreateConversationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8D81A36DB8D0032C1FA /* CreateConversationController.m */; };
+		73840E641B1C75A500BCEAFC /* ContactPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8D81A36DB8D0032C1FA /* ContactPickerController.m */; };
 		73840E651B1C75A500BCEAFC /* TInfoLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1DD1ADE94B400023120 /* TInfoLineView.m */; };
 		73840E661B1C75A500BCEAFC /* TaskFilterSortItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F63E8B1AA08ED0000DA319 /* TaskFilterSortItem.m */; };
 		73840E671B1C75A500BCEAFC /* IQServiceResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CEE1A1B8D3F00225255 /* IQServiceResponse.m */; };
@@ -620,9 +619,9 @@
 		73ACA0421A31E1D4005C0259 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73ACA0411A31E1D4005C0259 /* AssetsLibrary.framework */; };
 		73ACA0441A31E1E2005C0259 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73ACA0431A31E1E2005C0259 /* MediaPlayer.framework */; };
 		73ACB0BD1A7A1882004F5D99 /* NotificationsGroupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ACB0BC1A7A1882004F5D99 /* NotificationsGroupModel.m */; };
-		73ADA8D91A36DB8D0032C1FA /* CreateConversationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8D81A36DB8D0032C1FA /* CreateConversationController.m */; };
-		73ADA8DC1A36DBEF0032C1FA /* CreateConversationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8DB1A36DBEF0032C1FA /* CreateConversationView.m */; };
-		73ADA8E21A36E4CB0032C1FA /* UsersModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8E11A36E4CB0032C1FA /* UsersModel.m */; };
+		73ADA8D91A36DB8D0032C1FA /* ContactPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8D81A36DB8D0032C1FA /* ContactPickerController.m */; };
+		73ADA8DC1A36DBEF0032C1FA /* ContactPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8DB1A36DBEF0032C1FA /* ContactPickerView.m */; };
+		73ADA8E21A36E4CB0032C1FA /* ContactsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8E11A36E4CB0032C1FA /* ContactsModel.m */; };
 		73ADA8E71A36EE180032C1FA /* IQContact.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8E61A36EE180032C1FA /* IQContact.m */; };
 		73ADA8EC1A36FD680032C1FA /* ContactCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8EB1A36FD680032C1FA /* ContactCell.m */; };
 		73AF25A31A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF25A21A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m */; };
@@ -685,6 +684,14 @@
 		73CB5B581B32D7EC005B688C /* IQValidatorLocalization.strings in Resources */ = {isa = PBXBuildFile; fileRef = 73CB5B5A1B32D7EC005B688C /* IQValidatorLocalization.strings */; };
 		73CCB6A31B4E739D000BF728 /* BottomLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CCB6A21B4E739D000BF728 /* BottomLineView.m */; };
 		73CCB6A41B4E739D000BF728 /* BottomLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CCB6A21B4E739D000BF728 /* BottomLineView.m */; };
+		73CCB6A71B4E87AE000BF728 /* add_user_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73CCB6A51B4E87AE000BF728 /* add_user_icon.png */; };
+		73CCB6A81B4E87AE000BF728 /* add_user_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73CCB6A51B4E87AE000BF728 /* add_user_icon.png */; };
+		73CCB6A91B4E87AE000BF728 /* add_user_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73CCB6A61B4E87AE000BF728 /* add_user_icon@2x.png */; };
+		73CCB6AA1B4E87AE000BF728 /* add_user_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73CCB6A61B4E87AE000BF728 /* add_user_icon@2x.png */; };
+		73CCB6AD1B4E8B13000BF728 /* edit_conference_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73CCB6AB1B4E8B13000BF728 /* edit_conference_icon.png */; };
+		73CCB6AE1B4E8B13000BF728 /* edit_conference_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73CCB6AB1B4E8B13000BF728 /* edit_conference_icon.png */; };
+		73CCB6AF1B4E8B13000BF728 /* edit_conference_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73CCB6AC1B4E8B13000BF728 /* edit_conference_icon@2x.png */; };
+		73CCB6B01B4E8B13000BF728 /* edit_conference_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73CCB6AC1B4E8B13000BF728 /* edit_conference_icon@2x.png */; };
 		73D0DDF31A95D24C008710FF /* tasks_menu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 73D0DDF11A95D24C008710FF /* tasks_menu.plist */; };
 		73D0DDFB1A95F2AB008710FF /* bell_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D0DDF51A95F2AB008710FF /* bell_ico.png */; };
 		73D0DDFC1A95F2AB008710FF /* bell_ico@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D0DDF61A95F2AB008710FF /* bell_ico@2x.png */; };
@@ -700,7 +707,6 @@
 		73D7858C1AE7FDB400A952DF /* bell_red_ico.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D7858A1AE7FDB400A952DF /* bell_red_ico.png */; };
 		73D7858D1AE7FDB400A952DF /* bell_red_ico@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D7858B1AE7FDB400A952DF /* bell_red_ico@2x.png */; };
 		73D7F1A11ADE92BC00023120 /* TaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A01ADE92BC00023120 /* TaskController.m */; };
-		73D7F1B41ADE932700023120 /* ContactPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A31ADE932700023120 /* ContactPickerController.m */; };
 		73D7F1B51ADE932700023120 /* TaskActivitiesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A51ADE932700023120 /* TaskActivitiesController.m */; };
 		73D7F1B61ADE932700023120 /* TaskTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A81ADE932700023120 /* TaskTabController.m */; };
 		73D7F1B71ADE932700023120 /* TCommentsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1AB1ADE932700023120 /* TCommentsController.m */; };
@@ -1217,12 +1223,12 @@
 		73ACA0431A31E1E2005C0259 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		73ACB0BB1A7A1882004F5D99 /* NotificationsGroupModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsGroupModel.h; sourceTree = "<group>"; };
 		73ACB0BC1A7A1882004F5D99 /* NotificationsGroupModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsGroupModel.m; sourceTree = "<group>"; };
-		73ADA8D71A36DB8D0032C1FA /* CreateConversationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateConversationController.h; sourceTree = "<group>"; };
-		73ADA8D81A36DB8D0032C1FA /* CreateConversationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateConversationController.m; sourceTree = "<group>"; };
-		73ADA8DA1A36DBEF0032C1FA /* CreateConversationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateConversationView.h; sourceTree = "<group>"; };
-		73ADA8DB1A36DBEF0032C1FA /* CreateConversationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateConversationView.m; sourceTree = "<group>"; };
-		73ADA8E01A36E4CB0032C1FA /* UsersModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UsersModel.h; sourceTree = "<group>"; };
-		73ADA8E11A36E4CB0032C1FA /* UsersModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UsersModel.m; sourceTree = "<group>"; };
+		73ADA8D71A36DB8D0032C1FA /* ContactPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactPickerController.h; sourceTree = "<group>"; };
+		73ADA8D81A36DB8D0032C1FA /* ContactPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactPickerController.m; sourceTree = "<group>"; };
+		73ADA8DA1A36DBEF0032C1FA /* ContactPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactPickerView.h; sourceTree = "<group>"; };
+		73ADA8DB1A36DBEF0032C1FA /* ContactPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactPickerView.m; sourceTree = "<group>"; };
+		73ADA8E01A36E4CB0032C1FA /* ContactsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsModel.h; sourceTree = "<group>"; };
+		73ADA8E11A36E4CB0032C1FA /* ContactsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsModel.m; sourceTree = "<group>"; };
 		73ADA8E51A36EE180032C1FA /* IQContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQContact.h; sourceTree = "<group>"; };
 		73ADA8E61A36EE180032C1FA /* IQContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQContact.m; sourceTree = "<group>"; };
 		73ADA8EA1A36FD680032C1FA /* ContactCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactCell.h; sourceTree = "<group>"; };
@@ -1315,6 +1321,10 @@
 		73CB5B5B1B32D7EF005B688C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/IQValidatorLocalization.strings; sourceTree = "<group>"; };
 		73CCB6A11B4E739D000BF728 /* BottomLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottomLineView.h; sourceTree = "<group>"; };
 		73CCB6A21B4E739D000BF728 /* BottomLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottomLineView.m; sourceTree = "<group>"; };
+		73CCB6A51B4E87AE000BF728 /* add_user_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_user_icon.png; sourceTree = "<group>"; };
+		73CCB6A61B4E87AE000BF728 /* add_user_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add_user_icon@2x.png"; sourceTree = "<group>"; };
+		73CCB6AB1B4E8B13000BF728 /* edit_conference_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_conference_icon.png; sourceTree = "<group>"; };
+		73CCB6AC1B4E8B13000BF728 /* edit_conference_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_conference_icon@2x.png"; sourceTree = "<group>"; };
 		73D0DDF21A95D24C008710FF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/tasks_menu.plist; sourceTree = "<group>"; };
 		73D0DDF41A95D255008710FF /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ru; path = ru.lproj/tasks_menu.plist; sourceTree = "<group>"; };
 		73D0DDF51A95F2AB008710FF /* bell_ico.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bell_ico.png; sourceTree = "<group>"; };
@@ -1335,8 +1345,6 @@
 		73D7858B1AE7FDB400A952DF /* bell_red_ico@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bell_red_ico@2x.png"; sourceTree = "<group>"; };
 		73D7F19F1ADE92BC00023120 /* TaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskController.h; sourceTree = "<group>"; };
 		73D7F1A01ADE92BC00023120 /* TaskController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskController.m; sourceTree = "<group>"; };
-		73D7F1A21ADE932700023120 /* ContactPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactPickerController.h; sourceTree = "<group>"; };
-		73D7F1A31ADE932700023120 /* ContactPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactPickerController.m; sourceTree = "<group>"; };
 		73D7F1A41ADE932700023120 /* TaskActivitiesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskActivitiesController.h; sourceTree = "<group>"; };
 		73D7F1A51ADE932700023120 /* TaskActivitiesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskActivitiesController.m; sourceTree = "<group>"; };
 		73D7F1A61ADE932700023120 /* TaskNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskNotifications.h; sourceTree = "<group>"; };
@@ -2267,8 +2275,8 @@
 				739850BB1A2DADF000DB5B21 /* MessagesController.m */,
 				739C3B5A1A3075B00032C057 /* DiscussionController.h */,
 				739C3B5B1A3075B00032C057 /* DiscussionController.m */,
-				73ADA8D71A36DB8D0032C1FA /* CreateConversationController.h */,
-				73ADA8D81A36DB8D0032C1FA /* CreateConversationController.m */,
+				73ADA8D71A36DB8D0032C1FA /* ContactPickerController.h */,
+				73ADA8D81A36DB8D0032C1FA /* ContactPickerController.m */,
 				73E425FE1AAEC6BF00CD2093 /* UserPickerController.h */,
 				73E425FF1AAEC6BF00CD2093 /* UserPickerController.m */,
 			);
@@ -2282,8 +2290,8 @@
 				731DEEC71A2F11A1002F5FEB /* MessagesModel.m */,
 				739C3B5D1A3075D90032C057 /* DiscussionModel.h */,
 				739C3B5E1A3075D90032C057 /* DiscussionModel.m */,
-				73ADA8E01A36E4CB0032C1FA /* UsersModel.h */,
-				73ADA8E11A36E4CB0032C1FA /* UsersModel.m */,
+				73ADA8E01A36E4CB0032C1FA /* ContactsModel.h */,
+				73ADA8E11A36E4CB0032C1FA /* ContactsModel.m */,
 				73E426011AAEE6CA00CD2093 /* UsersPickerModel.h */,
 				73E426021AAEE6CA00CD2093 /* UsersPickerModel.m */,
 			);
@@ -2305,8 +2313,8 @@
 				739C3B611A3076D60032C057 /* CommentCell.m */,
 				73ADA8EA1A36FD680032C1FA /* ContactCell.h */,
 				73ADA8EB1A36FD680032C1FA /* ContactCell.m */,
-				73ADA8DA1A36DBEF0032C1FA /* CreateConversationView.h */,
-				73ADA8DB1A36DBEF0032C1FA /* CreateConversationView.m */,
+				73ADA8DA1A36DBEF0032C1FA /* ContactPickerView.h */,
+				73ADA8DB1A36DBEF0032C1FA /* ContactPickerView.m */,
 				739BC79F1A4A9F21007FC95C /* CommentInputView.h */,
 				739BC7A01A4A9F21007FC95C /* CommentInputView.m */,
 			);
@@ -2602,8 +2610,6 @@
 		73D7F19E1ADE927B00023120 /* TaskView */ = {
 			isa = PBXGroup;
 			children = (
-				73D7F1A21ADE932700023120 /* ContactPickerController.h */,
-				73D7F1A31ADE932700023120 /* ContactPickerController.m */,
 				73D7F1A61ADE932700023120 /* TaskNotifications.h */,
 				73D7F1A71ADE932700023120 /* TaskTabController.h */,
 				73D7F1A81ADE932700023120 /* TaskTabController.m */,
@@ -2703,6 +2709,8 @@
 		73F2A5411A39AB3000E9D324 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
+				73CCB6A51B4E87AE000BF728 /* add_user_icon.png */,
+				73CCB6A61B4E87AE000BF728 /* add_user_icon@2x.png */,
 				73F2A5421A39AB3000E9D324 /* attach_ico.png */,
 				73F2A5431A39AB3000E9D324 /* attach_ico@2x.png */,
 				73F2A5441A39AB3000E9D324 /* attachment_add_img.png */,
@@ -2723,6 +2731,8 @@
 				73AF73E31A3B0C0D001B8E42 /* msg_viewed@2x.png */,
 				7398F78C1B4D07B40009EAD1 /* conference_icon.png */,
 				7398F78D1B4D07B40009EAD1 /* conference_icon@2x.png */,
+				73CCB6AB1B4E8B13000BF728 /* edit_conference_icon.png */,
+				73CCB6AC1B4E8B13000BF728 /* edit_conference_icon@2x.png */,
 				7398F7921B4D0A190009EAD1 /* user_icon.png */,
 				7398F7931B4D0A190009EAD1 /* user_icon@2x.png */,
 				73884BF71A6CEFED004C454B /* view_all_ico.png */,
@@ -2860,6 +2870,7 @@
 				73865C2E1B20688A00118292 /* tabbar_selected_image.png in Resources */,
 				73840E891B1C75A500BCEAFC /* task_member_tab.png in Resources */,
 				73865C341B20688A00118292 /* tasks_tab.png in Resources */,
+				73CCB6AE1B4E8B13000BF728 /* edit_conference_icon.png in Resources */,
 				73840E8A1B1C75A500BCEAFC /* bubble_blue.png in Resources */,
 				73840E8B1B1C75A500BCEAFC /* login_logo@2x.png in Resources */,
 				73840E8C1B1C75A500BCEAFC /* check_mark_medium.png in Resources */,
@@ -2882,8 +2893,10 @@
 				73840E9A1B1C75A500BCEAFC /* project_ico.png in Resources */,
 				73840E9B1B1C75A500BCEAFC /* task_comments_tab@2x.png in Resources */,
 				73FC83B31B3BF1E700ADFBC2 /* feedback_ico@2x.png in Resources */,
+				73CCB6B01B4E8B13000BF728 /* edit_conference_icon@2x.png in Resources */,
 				73840E9C1B1C75A500BCEAFC /* filter_expanded.png in Resources */,
 				73840E9E1B1C75A500BCEAFC /* search_icon.png in Resources */,
+				73CCB6AA1B4E87AE000BF728 /* add_user_icon@2x.png in Resources */,
 				73840EA01B1C75A500BCEAFC /* reset_filter@2x.png in Resources */,
 				73840EA11B1C75A500BCEAFC /* message_blue_buble.png in Resources */,
 				73840EA31B1C75A500BCEAFC /* desc_sort_ico.png in Resources */,
@@ -2937,6 +2950,7 @@
 				73840ED31B1C75A500BCEAFC /* msg_error@2x.png in Resources */,
 				73865C201B20688A00118292 /* messages_tab_selected.png in Resources */,
 				73840ED41B1C75A500BCEAFC /* msg_viewed@2x.png in Resources */,
+				73CCB6A81B4E87AE000BF728 /* add_user_icon.png in Resources */,
 				73840ED81B1C75A500BCEAFC /* bubble_gray@2x.png in Resources */,
 				73840ED91B1C75A500BCEAFC /* mark_tab_item@2x.png in Resources */,
 				73060D681B417322001AE08E /* feedback_question_type.png in Resources */,
@@ -3018,6 +3032,7 @@
 				73D0DDFB1A95F2AB008710FF /* bell_ico.png in Resources */,
 				73882D911A24B62500B8BE90 /* check_mark_medium@2x.png in Resources */,
 				731170851AB80AFF008A4D09 /* task_member_tab@2x.png in Resources */,
+				73CCB6AF1B4E8B13000BF728 /* edit_conference_icon@2x.png in Resources */,
 				73865C411B206C4A00118292 /* tasks_tab_selected.png in Resources */,
 				73A113FD1A1CAA5900293EC5 /* default_avatar.png in Resources */,
 				731170921AB80B0E008A4D09 /* project_ico.png in Resources */,
@@ -3039,6 +3054,7 @@
 				73060D5F1B417322001AE08E /* feedback_error_type.png in Resources */,
 				7395C5121A3192C500A6D5DA /* backArrow@2x.png in Resources */,
 				73B9EA1D1ADD2DA800159A66 /* calendar_accessory_image.png in Resources */,
+				73CCB6A71B4E87AE000BF728 /* add_user_icon.png in Resources */,
 				73BA988E1A109F4D005AEC00 /* menu_collapseed.png in Resources */,
 				736B6BD01A0B5C0800034D9B /* Images.xcassets in Resources */,
 				73B9EA1F1ADD2DA800159A66 /* right_gray_arrow.png in Resources */,
@@ -3098,6 +3114,8 @@
 				738FE7081A162B10009F26A2 /* notif_tab@2x.png in Resources */,
 				731170821AB80AFF008A4D09 /* task_info_tab.png in Resources */,
 				73F2A5521A39AB3000E9D324 /* attachment_add_img.png in Resources */,
+				73CCB6AD1B4E8B13000BF728 /* edit_conference_icon.png in Resources */,
+				73CCB6A91B4E87AE000BF728 /* add_user_icon@2x.png in Resources */,
 				73884BF91A6CEFED004C454B /* view_all_ico.png in Resources */,
 				739D67D51AC2C5C100859274 /* delete_ico.png in Resources */,
 				73A700481A95C0DC00A1C2AC /* next_header_button.png in Resources */,
@@ -3307,7 +3325,7 @@
 				73840DF31B1C75A500BCEAFC /* TaskDescriptionController.m in Sources */,
 				73840DF41B1C75A500BCEAFC /* TasksFilterModel.m in Sources */,
 				73840DF51B1C75A500BCEAFC /* TaskHelper.m in Sources */,
-				73840DF61B1C75A500BCEAFC /* UsersModel.m in Sources */,
+				73840DF61B1C75A500BCEAFC /* ContactsModel.m in Sources */,
 				73840DF71B1C75A500BCEAFC /* PlaceholderTextView.m in Sources */,
 				73840DF81B1C75A500BCEAFC /* TasksView.m in Sources */,
 				73840DF91B1C75A500BCEAFC /* IQLayoutManager.m in Sources */,
@@ -3333,7 +3351,7 @@
 				73840E0A1B1C75A500BCEAFC /* CommentInputView.m in Sources */,
 				73176CA01B3ADDD700E6AC60 /* IQDetailsTextCell.m in Sources */,
 				73840E0B1B1C75A500BCEAFC /* IQObjectsHolder.m in Sources */,
-				73840E0C1B1C75A500BCEAFC /* CreateConversationView.m in Sources */,
+				73840E0C1B1C75A500BCEAFC /* ContactPickerView.m in Sources */,
 				73176C931B3ADD4D00E6AC60 /* IQSelectionController.m in Sources */,
 				730BE3F91B3D219E00E26994 /* IQFeedbackCategory.m in Sources */,
 				73840E0D1B1C75A500BCEAFC /* SubMenuCell.m in Sources */,
@@ -3418,7 +3436,6 @@
 				73840E4C1B1C75A500BCEAFC /* TodoListItemCell.m in Sources */,
 				73840E4D1B1C75A500BCEAFC /* IQNotificationsGroupIds.m in Sources */,
 				73840E4E1B1C75A500BCEAFC /* CCommentCell.m in Sources */,
-				73840E4F1B1C75A500BCEAFC /* ContactPickerController.m in Sources */,
 				73840E501B1C75A500BCEAFC /* TaskExecutor.m in Sources */,
 				73840E511B1C75A500BCEAFC /* IQTableModel.m in Sources */,
 				73840E521B1C75A500BCEAFC /* TDocumentsController.m in Sources */,
@@ -3443,7 +3460,7 @@
 				73840E621B1C75A500BCEAFC /* TAttachmentCell.m in Sources */,
 				73840E631B1C75A500BCEAFC /* CommentsModel.m in Sources */,
 				73CB5B511B32D326005B688C /* IQEmailValidator.m in Sources */,
-				73840E641B1C75A500BCEAFC /* CreateConversationController.m in Sources */,
+				73840E641B1C75A500BCEAFC /* ContactPickerController.m in Sources */,
 				73840E651B1C75A500BCEAFC /* TInfoLineView.m in Sources */,
 				73840E661B1C75A500BCEAFC /* TaskFilterSortItem.m in Sources */,
 				73840E671B1C75A500BCEAFC /* IQServiceResponse.m in Sources */,
@@ -3546,7 +3563,7 @@
 				73A50D111ADFAA4400251CB7 /* TaskDescriptionController.m in Sources */,
 				73A7CA6A1A9F11080038DEF1 /* TasksFilterModel.m in Sources */,
 				73841B6D1AB9A78A00B079BA /* TaskHelper.m in Sources */,
-				73ADA8E21A36E4CB0032C1FA /* UsersModel.m in Sources */,
+				73ADA8E21A36E4CB0032C1FA /* ContactsModel.m in Sources */,
 				739C3B6D1A3098550032C057 /* PlaceholderTextView.m in Sources */,
 				73A700441A95BC4100A1C2AC /* TasksView.m in Sources */,
 				73E4260D1AAF07D700CD2093 /* IQLayoutManager.m in Sources */,
@@ -3574,7 +3591,7 @@
 				73CB5B4D1B32D2D5005B688C /* IQPasswordValidator.m in Sources */,
 				739BC7A11A4A9F21007FC95C /* CommentInputView.m in Sources */,
 				7373ED5B1A89EF2000719FCD /* IQObjectsHolder.m in Sources */,
-				73ADA8DC1A36DBEF0032C1FA /* CreateConversationView.m in Sources */,
+				73ADA8DC1A36DBEF0032C1FA /* ContactPickerView.m in Sources */,
 				73B5615C1B4286E200A883DC /* FeedbackView.m in Sources */,
 				73D3DF281AF0FB14000DD34F /* SubMenuCell.m in Sources */,
 				731E5BC11B31548E00DF56C7 /* IQTextContainer.m in Sources */,
@@ -3654,7 +3671,6 @@
 				73D7F1E91ADE94B400023120 /* TodoListItemCell.m in Sources */,
 				73C286AD1A94AFD70011FD51 /* IQNotificationsGroupIds.m in Sources */,
 				739BC7A41A4AA516007FC95C /* CCommentCell.m in Sources */,
-				73D7F1B41ADE932700023120 /* ContactPickerController.m in Sources */,
 				735D49041AE51FA400F6A753 /* TaskExecutor.m in Sources */,
 				73B9EA081ADCFBA400159A66 /* IQTableModel.m in Sources */,
 				73D7F1B81ADE932700023120 /* TDocumentsController.m in Sources */,
@@ -3677,7 +3693,7 @@
 				737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */,
 				73D7F1E51ADE94B400023120 /* TAttachmentCell.m in Sources */,
 				739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */,
-				73ADA8D91A36DB8D0032C1FA /* CreateConversationController.m in Sources */,
+				73ADA8D91A36DB8D0032C1FA /* ContactPickerController.m in Sources */,
 				73D7F1E71ADE94B400023120 /* TInfoLineView.m in Sources */,
 				73F63E8C1AA08ED0000DA319 /* TaskFilterSortItem.m in Sources */,
 				73176C9F1B3ADDD700E6AC60 /* IQDetailsTextCell.m in Sources */,

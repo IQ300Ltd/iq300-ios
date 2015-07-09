@@ -54,4 +54,6 @@
 
 - (void)markDiscussionAsReadedWithCompletion:(void (^)(NSError * error))completion;
 
+- (BOOL)isDescussionConference;
+
 @end

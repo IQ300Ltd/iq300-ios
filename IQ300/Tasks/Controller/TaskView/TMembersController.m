@@ -257,7 +257,7 @@
     NSArray * users = [self.model.members valueForKey:@"user"];
     
     ContactPickerController * controller = [[ContactPickerController alloc] init];
-    controller.model = [[UsersModel alloc] init];
+    controller.model = [[ContactsModel alloc] init];
     controller.model.excludeUserIds = [users valueForKey:@"userId"];
     controller.delegate = self;
     [self.navigationController pushViewController:controller animated:YES];

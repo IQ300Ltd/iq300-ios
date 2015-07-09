@@ -451,6 +451,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                     }];
 }
 
+- (BOOL)isDescussionConference {
+    return ([_discussion.users count] > 2);
+}
+
 #pragma mark - Private methods
 
 - (void)updateLastViewedDate {
