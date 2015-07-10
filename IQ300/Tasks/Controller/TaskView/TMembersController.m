@@ -260,10 +260,10 @@
     ContactsModel * model = [[ContactsModel alloc] init];
     model.allowsDeselection = NO;
     model.allowsMultipleSelection = NO;
-    
+    model.excludeUserIds = [users valueForKey:@"userId"];
+
     ContactPickerController * controller = [[ContactPickerController alloc] init];
     controller.model = model;
-    controller.model.excludeUserIds = [users valueForKey:@"userId"];
     controller.delegate = self;
     [self.navigationController pushViewController:controller animated:YES];
 }

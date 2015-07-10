@@ -47,6 +47,18 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 @implementation DiscussionModel
 
++ (void)conferenceFromConversationWithId:(NSNumber*)conversationId
+                                 userIds:(NSArray*)userIds
+                              completion:(void (^)(IQConversation * conversation, NSError *error))completion {
+    [[IQService sharedService] conferenceFromConversationWithId:conversationId
+                                                        userIds:userIds
+                                                        handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                            if (completion) {
+                                                                completion(object, error);
+                                                            }
+                                                        }];
+}
+
 + (NSDate*)lastRequestDate {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     return [defaults objectForKey:LAST_REQUEST_DATE_KEY];
@@ -451,7 +463,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                     }];
 }
 
-- (BOOL)isDescussionConference {
+- (BOOL)isDiscussionConference {
     return ([_discussion.users count] > 2);
 }
 

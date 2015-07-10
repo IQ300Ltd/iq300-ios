@@ -27,6 +27,7 @@
 #import "UIImage+Extensions.h"
 #import "UIActionSheet+Blocks.h"
 #import "UIScrollView+PullToRefreshInsert.h"
+#import "ContactPickerController.h"
 
 #define SECTION_HEIGHT 12
 
@@ -51,9 +52,12 @@
 }
 
 - (void)setModel:(id<IQTableModel>)model {
-    self.model.delegate = nil;
-    [self.model setSubscribedToNotifications:NO];
-    [self.model clearModelData];
+    if (self.model) {
+        self.model.delegate = nil;
+        [self.model setSubscribedToNotifications:NO];
+        [self.model clearModelData];
+    }
+    
     [super setModel:model];
 }
 
@@ -114,7 +118,7 @@
                                                                       action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
-    UIImage * rightButtonImage = ([self.model isDescussionConference]) ? [UIImage imageNamed:@"edit_conference_icon.png"] :
+    UIImage * rightButtonImage = ([self.model isDiscussionConference]) ? [UIImage imageNamed:@"edit_conference_icon.png"] :
                                                                          [UIImage imageNamed:@"add_user_icon.png"];
     UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:rightButtonImage
                                                                         style:UIBarButtonItemStylePlain
@@ -319,7 +323,19 @@
 }
 
 - (void)rightBarButtonAction:(id)sender {
-    
+    if ([self.model isDiscussionConference]) {
+        
+    }
+    else {
+        ContactsModel * model = [[ContactsModel alloc] init];
+        model.excludeUserIds = [self.model.discussion.users valueForKey:@"userId"];
+
+        ContactPickerController * controller = [[ContactPickerController alloc] init];
+        controller.hidesBottomBarWhenPushed = YES;
+        controller.model = model;
+        controller.delegate = self;
+        [self.navigationController pushViewController:controller animated:YES];
+    }
 }
 
 - (void)sendButtonAction:(UIButton*)sender {
@@ -691,6 +707,28 @@
 
 - (void)drawerDidShowNotification:(NSNotification*)notification {
     [_mainView.inputView.commentTextView resignFirstResponder];
+}
+
+#pragma mark - ContactPickerController delegate
+
+- (void)contactPickerController:(ContactPickerController*)picker didPickContacts:(NSArray*)contacts {
+    if ([contacts count] > 0) {
+        NSArray * users = [contacts valueForKey:@"user"];
+        NSArray * userIds = [users valueForKey:@"userId"];
+        
+        [DiscussionModel conferenceFromConversationWithId:self.model.discussion.conversation.conversationId
+                                                  userIds:userIds
+                                               completion:^(IQConversation * conversation, NSError *error) {
+                                                   if (conversation) {
+                                                       DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
+                                                       self.model = model;
+                                                       
+                                                       self.title = conversation.title;
+                                                       [self.tableView reloadData];
+                                                       [self.navigationController popViewControllerAnimated:YES];
+                                                   }
+                                               }];
+    }
 }
 
 - (void)dealloc {

@@ -11,6 +11,7 @@
 @class DiscussionModel;
 @class IQDiscussion;
 @class IQComment;
+@class IQConversation;
 @class ALAsset;
 
 @protocol DiscussionModelDelegate <IQTableModelDelegate>
@@ -25,6 +26,10 @@
 @property (nonatomic, strong) IQDiscussion * discussion;
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, weak) id<DiscussionModelDelegate> delegate;
+
++ (void)conferenceFromConversationWithId:(NSNumber*)conversationId
+                                 userIds:(NSArray*)userIds
+                              completion:(void (^)(IQConversation * conversation, NSError *error))completion;
 
 - (id)initWithDiscussion:(IQDiscussion*)discussion;
 
@@ -54,6 +59,6 @@
 
 - (void)markDiscussionAsReadedWithCompletion:(void (^)(NSError * error))completion;
 
-- (BOOL)isDescussionConference;
+- (BOOL)isDiscussionConference;
 
 @end

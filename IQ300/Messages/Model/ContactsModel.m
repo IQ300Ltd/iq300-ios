@@ -106,6 +106,9 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
     return [_contacts containsObject:item];
 }
 
+- (NSArray*)selectedItems {
+    return self.contacts;
+}
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
     if([_fetchController.fetchedObjects count] == 0) {

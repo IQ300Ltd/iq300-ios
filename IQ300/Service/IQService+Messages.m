@@ -65,14 +65,14 @@
              handler:handler];
 }
 
-- (void)convertDialogToConferenceById:(NSNumber*)conversationid
-                            memberIds:(NSArray*)memberIds
-                              handler:(ObjectRequestCompletionHandler)handler {
+- (void)conferenceFromConversationWithId:(NSNumber*)conversationid
+                                 userIds:(NSArray*)userIds
+                                 handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(conversationid);
-    NSParameterAssert(memberIds);
+    NSParameterAssert(userIds);
     [self postObject:nil
                 path:[NSString stringWithFormat:@"/api/v1/conversations/%@/dialog_to_conference", conversationid]
-          parameters:@{ @"participant_ids" : memberIds }
+          parameters:@{ @"participant_ids" : userIds }
              handler:handler];
 }
 
