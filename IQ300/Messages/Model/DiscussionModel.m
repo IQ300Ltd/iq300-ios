@@ -53,6 +53,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     [[IQService sharedService] conferenceFromConversationWithId:conversationId
                                                         userIds:userIds
                                                         handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                            if (success) {
+                                                                [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                                          action:@"event_action_message_conversation_create"];
+                                                            }
+                                                            
                                                             if (completion) {
                                                                 completion(object, error);
                                                             }
