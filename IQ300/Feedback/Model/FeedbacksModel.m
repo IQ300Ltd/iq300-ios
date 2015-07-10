@@ -46,7 +46,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 - (NSPredicate*)fetchPredicate {
     NSPredicate * fetchPredicate = nil;
     if (!fetchPredicate && [IQSession defaultSession]) {
-        fetchPredicate = [NSPredicate predicateWithFormat:@"author.userId == %@", [IQSession defaultSession].userId];
+        fetchPredicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
     }
 
     if(fetchPredicate && [_search length] > 0) {

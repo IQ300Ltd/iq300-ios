@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSDate * createdDate;
 @property (nonatomic, strong) NSDate * updatedDate;
 @property (nonatomic, strong) NSNumber * commentsCount;
+@property (nonatomic, strong) NSNumber * ownerId;
 
 @property (nonatomic, strong) IQUser * author;
 @property (nonatomic, strong) IQFeedbackType * feedbackType;

@@ -5,6 +5,7 @@
 //  Created by Tayphoon on 09.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #import "ContactCell.h"
 #import "IQUser.h"
@@ -38,6 +39,10 @@
         self.detailTextLabel.font = [UIFont fontWithName:IQ_HELVETICA size:12];
         self.detailTextLabel.textColor = DETAIL_TEXT_COLOR;
         self.detailTextLabel.highlightedTextColor = [UIColor whiteColor];
+        
+        CALayer *cellImageLayer = self.imageView.layer;
+        [cellImageLayer setCornerRadius:17.5];
+        [cellImageLayer setMasksToBounds:YES];
     }
     
     return self;
@@ -60,6 +65,14 @@
     
     self.textLabel.text = item.user.displayName;
     self.detailTextLabel.text = item.user.email;
+    
+    if([item.user.thumbUrl length] > 0) {
+        [self.imageView sd_setImageWithURL:[NSURL URLWithString:item.user.thumbUrl]
+                          placeholderImage:[UIImage imageNamed:@"default_avatar.png"]
+                                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                     [self setNeedsDisplay];
+                                 }];
+    }
 }
 
 @end

@@ -210,8 +210,7 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    TaskExecutor * item = [self.model itemAtIndexPath:indexPath];
-    cell.titleTextView.text = item.executorName;
+    cell.item = [self.model itemAtIndexPath:indexPath];
     
     BOOL isCellSelected = [self.model isItemSelectedAtIndexPath:indexPath];
     [cell setAccessoryType:(isCellSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];

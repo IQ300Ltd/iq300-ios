@@ -8,6 +8,10 @@
 
 #import "IQSelectableTextCell.h"
 
+@class TaskExecutor;
+
 @interface TaskExecutorCell : IQSelectableTextCell
+
+@property (nonatomic, strong) TaskExecutor * item;
 
 @end

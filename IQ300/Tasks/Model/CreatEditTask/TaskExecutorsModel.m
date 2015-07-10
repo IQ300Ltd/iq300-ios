@@ -11,6 +11,7 @@
 #import "TaskExecutorsGroup.h"
 #import "TaskExecutor.h"
 #import "IQService+Tasks.h"
+#import "TaskExecutorCell.h"
 
 @interface TaskExecutorsModel() {
     NSArray * _itemsInternal;
@@ -30,6 +31,10 @@
     }
     
     return self;
+}
+
+- (Class)cellClass {
+    return [TaskExecutorCell class];
 }
 
 - (void)setSelectAll:(BOOL)selectAll {
@@ -65,10 +70,6 @@
     }
 }
 
-- (Class)cellClass {
-    return [IQSelectableTextCell class];
-}
-
 - (void)setExecutors:(NSArray *)executors {
     _executors = executors;
     
@@ -97,9 +98,9 @@
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath *)indexPath {
     TaskExecutor * item = [self itemAtIndexPath:indexPath];
-    return [IQSelectableTextCell heightForItem:item.executorName
-                                   detailTitle:nil
-                                         width:self.cellWidth];
+    return [TaskExecutorCell heightForItem:item.executorName
+                               detailTitle:nil
+                                     width:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
