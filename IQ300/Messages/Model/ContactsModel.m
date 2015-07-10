@@ -14,6 +14,12 @@
 
 static NSString * UReuseIdentifier = @"UReuseIdentifier";
 
+@interface ContactsModel() {
+    NSMutableArray * _contacts;
+}
+
+@end
+
 @implementation ContactsModel
 
 + (instancetype)modelWithPortionSize:(NSUInteger)portionSize {
@@ -23,6 +29,7 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 - (id)initWithPortionSize:(NSUInteger)portionSize {
     self = [super init];
     if(self) {
+        _contacts = [NSMutableArray array];
         _portionSize = portionSize;
         self.allowsMultipleSelection = YES;
         self.allowsDeselection = YES;
@@ -33,6 +40,10 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 
 - (id)init {
     return [self initWithPortionSize:20];
+}
+
+- (NSArray*)contacts {
+    return [_contacts copy];
 }
 
 - (NSString*)cacheFileName {
@@ -81,9 +92,18 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 }
 
 - (void)makeItemAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)selected {
-    [super makeItemAtIndexPath:indexPath selected:selected];
-    
-    _contacts = [self selectedItems];
+    id item = [self itemAtIndexPath:indexPath];
+    if (selected && ![_contacts containsObject:item]) {
+        [_contacts addObject:item];
+    }
+    else if(!selected && [_contacts containsObject:item]) {
+        [_contacts removeObject:item];
+    }
+}
+
+- (BOOL)isItemSelectedAtIndexPath:(NSIndexPath *)indexPath {
+    id item = [self itemAtIndexPath:indexPath];
+    return [_contacts containsObject:item];
 }
 
 
@@ -139,31 +159,6 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
                                                 completion(error);
                                             }
                                         }];
-}
-
-- (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError *))completion {
-    [super reloadModelSourceControllerWithCompletion:^(NSError *error) {
-        if (!error) {
-            [self updateSelectedIndexesByItems];
-        }
-        
-        if (completion) {
-            completion(error);
-        }
-    }];
-}
-
-#pragma mark - Private methods
-
-- (void)updateSelectedIndexesByItems {
-    [_selectedIndexPaths removeAllObjects];
-    
-    for (id contact in _contacts) {
-        NSIndexPath * indexPath = [self indexPathOfObject:contact];
-        if (indexPath) {
-            [_selectedIndexPaths addObject:indexPath];
-        }
-    }
 }
 
 - (void)dealloc {
