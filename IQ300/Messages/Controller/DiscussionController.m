@@ -28,10 +28,11 @@
 #import "UIActionSheet+Blocks.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "ContactPickerController.h"
+#import "TaskTabController.h"
 
 #define SECTION_HEIGHT 12
 
-@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
+@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate> {
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachmentAsset;
@@ -203,7 +204,8 @@
 
     cell.expandable = [self.model isCellExpandableAtIndexPath:indexPath];
     cell.expanded = [self.model isItemExpandedAtIndexPath:indexPath];
-    
+    cell.descriptionTextView.delegate = self;
+
     if(cell.expandable) {
         [cell.expandButton addTarget:self
                               action:@selector(expandButtonAction:)
@@ -290,10 +292,20 @@
 - (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
     [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
     
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+    if (isTableScrolledToBottom) {
+        _tableContentOffset = self.tableView.contentOffset;
+    }
+    
     [super showActivityIndicatorAnimated:YES completion:nil];
 }
 
 - (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    if (!CGPointEqualToPoint(_tableContentOffset, CGPointZero)) {
+        [self.tableView setContentOffset:_tableContentOffset animated:YES];
+    }
+
     [super hideActivityIndicatorAnimated:YES completion:^{
         [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
         
@@ -303,7 +315,43 @@
     }];
 }
 
+#pragma mark - UITextViewDelegate Methods
+
+- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
+    if ([URL.scheme isEqualToString:APP_URL_SCHEME] &&
+        [URL.host isEqualToString:@"tasks"]) {
+        NSInteger taskId = [URL.lastPathComponent integerValue];
+        if (taskId > 0 && taskId) {
+            [self openTaskControllerForTaskId:@(taskId)];
+        }
+    }
+    else {
+        NSString * unescapedString = [[URL absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        unescapedString = [unescapedString stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+        NSString * encodeURL = [unescapedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:encodeURL]];
+    }
+    
+    return NO;
+}
+
 #pragma mark - Private methods
+
+- (void)openTaskControllerForTaskId:(NSNumber*)taskId {
+    [TaskTabController taskTabControllerForTaskWithId:taskId
+                                           completion:^(TaskTabController * controller, NSError *error) {
+                                               if (controller) {
+                                                   [GAIService sendEventForCategory:GAITasksListEventCategory
+                                                                             action:GAIOpenTaskEventAction];
+                                                   
+                                                   controller.hidesBottomBarWhenPushed = YES;
+                                                   [self.navigationController pushViewController:controller animated:YES];
+                                               }
+                                               else {
+                                                   [self proccessServiceError:error];
+                                               }
+                                           }];
+}
 
 - (BOOL)isTextValid:(NSString *)text {
     if (text == nil || [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {

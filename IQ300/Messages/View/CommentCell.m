@@ -415,10 +415,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         }
     }
     
-    NSString * body = ([_item.body length] > 0) ? _item.body : @"";
-    _descriptionTextView.text = body;
-    _descriptionTextView.textColor = (_commentIsMine) ? DESCRIPTION_LEFT_TEXT_COLOR :
-                                                        DESCRIPTION_RIGHT_TEXT_COLOR;
+    _descriptionTextView.attributedText = [self formatedTextFromText:_item.body];
     
     BOOL hasAttachment = ([_item.attachments count] > 0);
     if(hasAttachment) {
@@ -477,6 +474,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     _userNameLabel.hidden = YES;
     _separatorView.hidden = YES;
 
+    _descriptionTextView.delegate = nil;
     _descriptionTextView.selectable = NO;
     _descriptionTextView.text = nil;
     _descriptionTextView.selectable = YES;
@@ -556,6 +554,41 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                                                       attributes:underlineAttribute]
                              forState:UIControlStateHighlighted];
     
+}
+
+- (NSAttributedString*)formatedTextFromText:(NSString*)text {
+    if([text length] > 0) {
+        UIColor * textColor = (_commentIsMine) ? DESCRIPTION_LEFT_TEXT_COLOR :
+                                                 DESCRIPTION_RIGHT_TEXT_COLOR;
+        NSDictionary * attributes = @{
+                                      NSForegroundColorAttributeName : textColor,
+                                      NSFontAttributeName            : DESCRIPTION_LABEL_FONT
+                                      };
+        
+        NSMutableAttributedString * aText = [[NSMutableAttributedString alloc] initWithString:text
+                                                                                   attributes:attributes];
+                
+        //add links to pattern task#taskId
+        NSError * error = nil;
+        NSString * pattern = [NSString stringWithFormat:@"%@#\\d+$", NSLocalizedString(@"Task", nil)];
+        NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:&error];
+        NSArray * matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
+        for (NSTextCheckingResult *match in matches) {
+            NSRange wordRange = [match range];
+            NSString * taskLink = [text substringWithRange:wordRange];
+            NSString * taskId = [[taskLink componentsSeparatedByString:@"#"] lastObject];
+            
+            if ([taskId length] > 0) {
+                [aText addAttribute:NSLinkAttributeName
+                              value:[NSString stringWithFormat:@"%@://tasks/%@", APP_URL_SCHEME, taskId]
+                              range:wordRange];
+            }
+        }
+        
+        return aText;
+    }
+    
+    return nil;
 }
 
 @end

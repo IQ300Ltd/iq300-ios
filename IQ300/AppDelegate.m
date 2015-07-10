@@ -303,7 +303,7 @@
             [attributes setValue:[UIColor colorWithHexInt:0xca301e]
                           forKey:NSForegroundColorAttributeName];
 
-            [statusMessage appendAttributedString:[[NSAttributedString alloc] initWithString:errorDescription
+            [statusMessage appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", errorDescription]
                                                                                   attributes:attributes]];
             controller.statusMessage = statusMessage;
         }

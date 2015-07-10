@@ -114,6 +114,7 @@
                                                }
                                            }];
 }
+
 - (void)createModelIfNeed {
     if (!self.model) {
         [[IQService sharedService] discussionWithId:self.discussionId
