@@ -160,6 +160,15 @@
         [self.delegate respondsToSelector:@selector(contactPickerController:didPickContacts:)]) {
         [self.delegate contactPickerController:self didPickContacts:selectedContacts];
     }
+    else {
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Attention", nil)
+                                                             message:NSLocalizedString(@"You should select at least one contact", nil)
+                                                            delegate:nil
+                                                   cancelButtonTitle:@"OK"
+                                                   otherButtonTitles:nil];
+        
+        [alertView show];
+    }
 }
 
 - (void)updateNoDataLabelVisibility {
