@@ -77,9 +77,9 @@
         _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         _noDataLabel.hidden = YES;
         
-        if (_tableView) {
-            [self.view insertSubview:_noDataLabel belowSubview:_tableView];
-            _noDataLabel.frame = _tableView.frame;
+        if (self.tableView) {
+            [self.view insertSubview:_noDataLabel belowSubview:self.tableView];
+            _noDataLabel.frame = self.tableView.frame;
         }
         else {
             [self.view addSubview:_noDataLabel];
