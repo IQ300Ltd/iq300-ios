@@ -5,7 +5,6 @@
 //  Created by Tayphoon on 09.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
 #import "ContactPickerController.h"
@@ -18,6 +17,7 @@
 #import "DiscussionController.h"
 #import "DispatchAfterExecution.h"
 #import "IQDrawerController.h"
+#import "UIScrollView+PullToRefreshInsert.h"
 
 #define DISPATCH_DELAY 0.7
 
@@ -42,7 +42,7 @@
 
     __weak typeof(self) weakSelf = self;
     [self.tableView
-     addPullToRefreshWithActionHandler:^{
+     insertPullToRefreshWithActionHandler:^{
          [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
              [weakSelf.tableView.pullToRefreshView stopAnimating];
          }];
@@ -126,6 +126,24 @@
 
 - (void)onKeyboardWillHide:(NSNotification *)notification {
     [self makeInputViewTransitionWithDownDirection:YES notification:notification];
+}
+
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 #pragma mark - Private methods
