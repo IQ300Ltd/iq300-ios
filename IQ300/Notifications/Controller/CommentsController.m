@@ -614,7 +614,7 @@
     [UIView commitAnimations];
 }
 
-#pragma mark - PlaceholderTextViewDelegate Methods
+#pragma mark - UITextViewDelegate Methods
 
 - (void)textViewDidChange:(UITextView *)textView {
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
@@ -648,12 +648,11 @@
 }
 
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
-    //This is not me, this is fucking strange url
     if (textView != _mainView.inputView.commentTextView) {
+        //This is not me, this is fucking strange url
         NSString * unescapedString = [[URL absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         unescapedString = [unescapedString stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
         NSString * encodeURL = [unescapedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:encodeURL]];
         
         return NO;
@@ -838,7 +837,7 @@
                                                                                    attributes:attributes];
         
         NSError *error = nil;
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
+        NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
         NSArray * matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
         for (NSTextCheckingResult *match in matches) {
             NSRange wordRange = [match rangeAtIndex:1];
@@ -862,6 +861,22 @@
                                             NSForegroundColorAttributeName: [UIColor whiteColor] }
                                    range:wordRange];
                 }
+            }
+        }
+        
+        //add links to pattern task#taskId
+        NSString * pattern = [NSString stringWithFormat:@"%@#\\d+$", NSLocalizedString(@"Task", nil)];
+        regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:&error];
+        matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
+        for (NSTextCheckingResult *match in matches) {
+            NSRange wordRange = [match range];
+            NSString * taskLink = [text substringWithRange:wordRange];
+            NSString * taskId = [[taskLink componentsSeparatedByString:@"#"] lastObject];
+            
+            if ([taskId length] > 0) {
+                [aText addAttribute:NSLinkAttributeName
+                              value:[NSString stringWithFormat:@"%@://tasks/%@", APP_URL_SCHEME, taskId]
+                              range:wordRange];
             }
         }
         

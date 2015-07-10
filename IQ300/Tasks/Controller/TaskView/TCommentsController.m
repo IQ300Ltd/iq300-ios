@@ -18,6 +18,7 @@
 #import "IQNotificationCenter.h"
 #import "NSManagedObject+ActiveRecord.h"
 #import "IQDiscussion.h"
+#import "TaskTabController.h"
 
 @interface TCommentsController () {
     __weak id _notfObserver;
@@ -115,7 +116,43 @@
     }
 }
 
+#pragma mark - UITextViewDelegate Methods
+
+- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
+    if ([URL.scheme isEqualToString:APP_URL_SCHEME] &&
+        [URL.host isEqualToString:@"tasks"]) {
+        NSInteger taskId = [URL.lastPathComponent integerValue];
+        if (taskId > 0 && taskId != [self.taskId integerValue]) {
+            [self openTaskControllerForTaskId:@(taskId)];
+        }
+    }
+    else {
+        NSString * unescapedString = [[URL absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        unescapedString = [unescapedString stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+        NSString * encodeURL = [unescapedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:encodeURL]];
+    }
+    
+    return NO;
+}
+
 #pragma mark - Private methods
+
+- (void)openTaskControllerForTaskId:(NSNumber*)taskId {
+    [TaskTabController taskTabControllerForTaskWithId:taskId
+                                           completion:^(TaskTabController * controller, NSError *error) {
+                                               if (controller) {
+                                                   [GAIService sendEventForCategory:GAITasksListEventCategory
+                                                                             action:GAIOpenTaskEventAction];
+                                                   
+                                                   controller.hidesBottomBarWhenPushed = YES;
+                                                   [self.navigationController pushViewController:controller animated:YES];
+                                               }
+                                               else {
+                                                   [self proccessServiceError:error];
+                                               }
+                                           }];
+}
 
 - (void)resubscribeToIQNotifications {
     [self unsubscribeFromIQNotifications];
