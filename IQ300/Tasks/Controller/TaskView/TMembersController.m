@@ -214,13 +214,13 @@
 #pragma mark - ContactPickerController Delegate
 
 - (void)selectionControllerController:(ContactPickerController *)controller didSelectItem:(IQContact*)item {
+    [self.navigationController popViewControllerAnimated:YES];
+    
     __weak typeof (self) weakSelf = self;
     [self.model addMemberWithUserId:item.user.userId completion:^(NSError *error) {
         if (!error) {
             [GAIService sendEventForCategory:GAITaskEventCategory
                                       action:@"event_action_task_add_user"];
-            
-            [weakSelf.navigationController popViewControllerAnimated:YES];
         }
         else {
             [weakSelf proccessServiceError:error];

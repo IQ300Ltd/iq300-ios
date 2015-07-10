@@ -67,26 +67,4 @@
     return nil;
 }
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
-#pragma mark - Private methods
-
-- (void)applicationWillEnterForeground {
-    [self updateModelWithCompletion:^(NSError *error) {
-        [self modelDidChanged];
-    }];
-}
-
 @end

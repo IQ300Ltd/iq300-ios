@@ -159,23 +159,20 @@
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
 
-    if([IQSession defaultSession]) {
-        [self.model updateModelWithCompletion:^(NSError *error) {
-            if(!error) {
-                _headerView.selected = self.model.selectAll;
-                [self.tableView reloadData];
-            }
-        }];
-    }
-    [self.model setSubscribedToNotifications:YES];
     _headerView.hidden = (self.task.taskId != nil);
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+    
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self.model setSubscribedToNotifications:NO];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -380,6 +377,23 @@
 - (void)clearFilter {
     _userNameTextField.text = nil;
     [self.model setFilter:nil];
+}
+
+- (void)updateModel {
+    if([IQSession defaultSession]) {
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                _headerView.selected = self.model.selectAll;
+                [self.tableView reloadData];
+            }
+            
+            [self updateNoDataLabelVisibility];
+        }];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateModel];
 }
 
 @end

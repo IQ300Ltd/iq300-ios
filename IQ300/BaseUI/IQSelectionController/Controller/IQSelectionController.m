@@ -38,7 +38,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
-         [weakSelf reloadDataWithCompletion:^(NSError *error) {
+         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
@@ -55,13 +55,20 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self reloadModel];
-    [self.model setSubscribedToNotifications:YES];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+    
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.model setSubscribedToNotifications:NO];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationWillEnterForegroundNotification
+                                                  object:nil];
 }
 
 #pragma mark - UITableView DataSource
@@ -129,12 +136,20 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)reloadModel {
+- (void)updateModel {
     if([IQSession defaultSession]) {
-        [self reloadDataWithCompletion:^(NSError *error) {
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+
             [self updateNoDataLabelVisibility];
         }];
     }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateModel];
 }
 
 @end
