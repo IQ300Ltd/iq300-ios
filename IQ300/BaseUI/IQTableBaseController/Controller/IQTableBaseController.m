@@ -303,7 +303,7 @@
         CGFloat indicatorHeight = self.activityIndicator.frame.size.height;
         self.activityIndicator.frame = CGRectMake(self.tableView.frame.origin.x,
                                                   self.tableView.frame.origin.y - indicatorHeight,
-                                                  self.activityIndicator.frame.size.width,
+                                                  self.tableView.frame.size.width,
                                                   self.activityIndicator.frame.size.height);
         [self.tableView.superview insertSubview:self.activityIndicator aboveSubview:self.tableView];
         
@@ -320,7 +320,7 @@
                          animations:^{
                              self.activityIndicator.frame = CGRectMake(self.tableView.frame.origin.x,
                                                                        self.tableView.frame.origin.y,
-                                                                       self.activityIndicator.frame.size.width,
+                                                                       self.tableView.frame.size.width,
                                                                        self.activityIndicator.frame.size.height);
 
                              self.tableView.contentInset = contentInsets;
@@ -355,7 +355,7 @@
                              animations:^{
                                  self.activityIndicator.frame = CGRectMake(self.tableView.frame.origin.x,
                                                                            self.tableView.frame.origin.y - indicatorHeight,
-                                                                           self.activityIndicator.frame.size.width,
+                                                                           self.tableView.frame.size.width,
                                                                            self.activityIndicator.frame.size.height);
                                  
                                  self.tableView.contentInset = _tableInsets;
