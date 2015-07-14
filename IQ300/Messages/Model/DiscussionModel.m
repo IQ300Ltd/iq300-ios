@@ -57,6 +57,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                             if (success) {
                                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
                                                                                           action:@"event_action_message_conversation_create"];
+                                                                
+                                                                [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                                          action:GAIAddConversationMemberEventAction
+                                                                                           label:[userIds componentsJoinedByString:@", "]];
                                                             }
                                                             
                                                             if (completion) {

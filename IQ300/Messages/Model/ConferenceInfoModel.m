@@ -166,6 +166,10 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
                                          handler:^(BOOL success, NSData *responseData, NSError *error) {
                                              if (success) {
                                                  [self wrapUsersToMemebers:users];
+                                                 
+                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                           action:GAIAddConversationMemberEventAction
+                                                                            label:[userIds componentsJoinedByString:@", "]];
                                              }
                                              
                                              if (completion) {
@@ -200,6 +204,11 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 - (void)leaveConversationWithCompletion:(void (^)(NSError *))completion {
     [[IQService sharedService] leaveConversationWithId:self.conversationId
                                                handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                   if (success) {
+                                                       [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                                 action:@"event_action_conversation_leave"
+                                                                                  label:[self.conversationId stringValue]];
+                                                   }
                                                    if(completion) {
                                                        completion(error);
                                                    }
