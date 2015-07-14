@@ -7,6 +7,7 @@
 //
 
 #import "PlaceholderTextView.h"
+#import "IQTableCell.h"
 
 #define TEXT_COLOR [UIColor colorWithHexInt:0x272727]
 #define CONTENT_VERTICAL_INSETS 12
@@ -19,7 +20,7 @@
 #define TEXT_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #endif
 
-@interface IQEditableTextCell : UITableViewCell {
+@interface IQEditableTextCell : UITableViewCell<IQTableCell> {
     UIEdgeInsets _contentInsets;
 }
 

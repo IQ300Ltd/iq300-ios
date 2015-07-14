@@ -27,9 +27,25 @@
 
 - (void)createConversationWithRecipientIds:(NSArray*)recipientIds handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)conferenceFromConversationWithId:(NSNumber*)conversationid
+- (void)conferenceFromConversationWithId:(NSNumber*)conversationId
                                  userIds:(NSArray*)userIds
                                  handler:(ObjectRequestCompletionHandler)handler;
+
+- (void)updateConversationTitle:(NSString*)title
+                 conversationId:(NSNumber*)conversationId
+                        handler:(RequestCompletionHandler)handler;
+
+- (void)membersForConversation:(NSNumber*)conversationId handler:(ObjectRequestCompletionHandler)handler;
+
+- (void)addMembersWithIds:(NSArray*)memberIds
+           toConversation:(NSNumber*)conversationId
+                  handler:(RequestCompletionHandler)handler;
+
+- (void)removeMemberWithId:(NSNumber*)memberId
+          fromConversation:(NSNumber*)conversationId
+                   handler:(RequestCompletionHandler)handler;
+
+- (void)leaveConversationWithId:(NSNumber*)conversationId handler:(RequestCompletionHandler)handler;
 
 - (void)discussionWithId:(NSNumber*)discussionId handler:(ObjectRequestCompletionHandler)handler;
 
@@ -41,7 +57,9 @@
                                sort:(IQSortDirection)sort
                             handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)markCommentsAsReadedWithIds:(NSArray*)commentIds discussionId:(NSNumber*)discussionId handler:(RequestCompletionHandler)handler;
+- (void)markCommentsAsReadedWithIds:(NSArray*)commentIds
+                       discussionId:(NSNumber*)discussionId
+                            handler:(RequestCompletionHandler)handler;
 
 - (void)createComment:(NSString*)comment
          discussionId:(NSNumber*)discussionId

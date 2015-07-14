@@ -22,7 +22,6 @@
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
 #define BOTTOM_VIEW_HEIGHT 60
 #define HEADER_HEIGHT 50.0f
-#define DISPATCH_DELAY 0.0
 
 @interface TaskExecutersController () {
     UIView * _bottomSeparatorView;
@@ -146,7 +145,8 @@
     
     UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
                                                                        style:UIBarButtonItemStylePlain
-                                                                      target:self action:@selector(backButtonAction:)];
+                                                                      target:self
+                                                                      action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -199,7 +199,6 @@
     
     [self layoutTableView];
 }
-
 
 #pragma mark - UITableView DataSource
 

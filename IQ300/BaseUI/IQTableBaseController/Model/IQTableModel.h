@@ -61,8 +61,9 @@
 @property (nonatomic, assign) NSInteger section;
 @property (nonatomic, readonly) NSArray * items;
 @property (nonatomic, strong) NSArray * sortDescriptors;
-@property (nonatomic, strong) Class cellClass;
 
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+
+- (Class)cellClassForIndexPath:(NSIndexPath*)indexPath;
 
 @end

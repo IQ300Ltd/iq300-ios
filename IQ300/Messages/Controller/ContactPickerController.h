@@ -22,4 +22,6 @@
 
 @property (nonatomic, strong) ContactsModel * model;
 
+- (void)setDoneButtonTitle:(NSString*)title;
+
 @end

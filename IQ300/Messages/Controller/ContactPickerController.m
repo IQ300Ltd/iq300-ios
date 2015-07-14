@@ -24,6 +24,7 @@
 @interface ContactPickerController() {
     ContactPickerView * _mainView;
     dispatch_after_block _cancelBlock;
+    NSString * _doneButtonTitle;
 }
 
 @end
@@ -31,6 +32,16 @@
 @implementation ContactPickerController
 
 @dynamic model;
+
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        _doneButtonTitle = NSLocalizedString(@"Create", nil);
+    }
+    return self;
+}
+
 
 - (void)loadView {
     _mainView = [[ContactPickerView alloc] init];
@@ -59,6 +70,7 @@
                              forControlEvents:UIControlEventTouchUpInside];
     
     _mainView.doneButtonHidden = !self.model.allowsMultipleSelection;
+    [_mainView.doneButton setTitle:_doneButtonTitle forState:UIControlStateNormal];
 }
 
 - (UITableView*)tableView {
@@ -67,6 +79,13 @@
 
 - (BOOL)isLeftMenuEnabled {
     return NO;
+}
+
+- (void)setDoneButtonTitle:(NSString*)title {
+    _doneButtonTitle = title;
+    if (self.isViewLoaded) {
+        [_mainView.doneButton setTitle:_doneButtonTitle forState:UIControlStateNormal];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {

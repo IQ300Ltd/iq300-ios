@@ -58,7 +58,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return fetchPredicate;
 }
 
-- (Class)cellClass {
+- (Class)cellClassForIndexPath:(NSIndexPath *)indexPath {
     return [FeedbackCell class];
 }
 

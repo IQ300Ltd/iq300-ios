@@ -27,7 +27,7 @@
     return self;
 }
 
-- (Class)cellClass {
+- (Class)cellClassForIndexPath:(NSIndexPath *)indexPath {
     return [IQSelectableTextCell class];
 }
 

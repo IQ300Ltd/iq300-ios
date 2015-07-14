@@ -33,7 +33,7 @@
     return self;
 }
 
-- (Class)cellClass {
+- (Class)cellClassForIndexPath:(NSIndexPath *)indexPath {
     return [TaskExecutorCell class];
 }
 

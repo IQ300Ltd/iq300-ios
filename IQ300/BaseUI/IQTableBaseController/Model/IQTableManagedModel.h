@@ -20,12 +20,13 @@
 
 @property (nonatomic, assign) NSInteger section;
 @property (nonatomic, strong) NSArray * sortDescriptors;
-@property (nonatomic, strong) Class cellClass;
 
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 - (NSPredicate*)fetchPredicate;
 
 - (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion;
+
+- (Class)cellClassForIndexPath:(NSIndexPath*)indexPath;
 
 @end

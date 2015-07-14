@@ -24,6 +24,7 @@
 #import "NSDate+CupertinoYankee.h"
 #import "DispatchAfterExecution.h"
 #import "DeletedObjects.h"
+#import "IQConversation.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -469,7 +470,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (BOOL)isDiscussionConference {
-    return ([_discussion.users count] > 2);
+    return ([[_discussion.conversation.type lowercaseString] isEqualToString:@"conference"]);
 }
 
 #pragma mark - Private methods

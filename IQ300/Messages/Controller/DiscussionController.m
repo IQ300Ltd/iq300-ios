@@ -29,6 +29,7 @@
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "ContactPickerController.h"
 #import "TaskTabController.h"
+#import "ConferenceInfoController.h"
 
 #define SECTION_HEIGHT 12
 
@@ -372,7 +373,11 @@
 
 - (void)rightBarButtonAction:(id)sender {
     if ([self.model isDiscussionConference]) {
-        
+        ConferenceInfoController * controller = [[ConferenceInfoController alloc] init];
+        controller.conversationId = self.model.discussion.conversation.conversationId;
+        controller.conversationTitle = self.model.discussion.conversation.title;
+        controller.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:controller animated:YES];
     }
     else {
         ContactsModel * model = [[ContactsModel alloc] init];

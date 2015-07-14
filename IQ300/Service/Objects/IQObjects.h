@@ -41,5 +41,6 @@
 #import "IQFeedbackCategory.h"
 #import "IQFeedbackType.h"
 #import "IQFeedback.h"
+#import "IQConversationMember.h"
 
 #endif

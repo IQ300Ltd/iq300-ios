@@ -121,6 +121,16 @@
 		736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BDA1A0B5F1D00034D9B /* MenuCell.m */; };
 		736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BE51A0B83D600034D9B /* ExpandableTableView.m */; };
 		736B6BEA1A0BC09300034D9B /* UIColor+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BE91A0BC09300034D9B /* UIColor+Extensions.m */; };
+		737136281B5387E20043B87B /* ConferenceInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737136271B5387E20043B87B /* ConferenceInfoController.m */; };
+		737136291B5387E20043B87B /* ConferenceInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737136271B5387E20043B87B /* ConferenceInfoController.m */; };
+		7371362C1B538DF00043B87B /* ConferenceInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7371362B1B538DF00043B87B /* ConferenceInfoModel.m */; };
+		7371362D1B538DF00043B87B /* ConferenceInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7371362B1B538DF00043B87B /* ConferenceInfoModel.m */; };
+		737136301B539BBF0043B87B /* ContactsSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7371362F1B539BBF0043B87B /* ContactsSectionView.m */; };
+		737136311B539BBF0043B87B /* ContactsSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7371362F1B539BBF0043B87B /* ContactsSectionView.m */; };
+		737136341B53A4F60043B87B /* ContactInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 737136331B53A4F60043B87B /* ContactInfoCell.m */; };
+		737136351B53A4F60043B87B /* ContactInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 737136331B53A4F60043B87B /* ContactInfoCell.m */; };
+		737136391B53C1430043B87B /* IQConversationMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 737136381B53C1430043B87B /* IQConversationMember.m */; };
+		7371363A1B53C1430043B87B /* IQConversationMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 737136381B53C1430043B87B /* IQConversationMember.m */; };
 		7373ED5B1A89EF2000719FCD /* IQObjectsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7373ED5A1A89EF2000719FCD /* IQObjectsHolder.m */; };
 		7373ED5E1A89FB2100719FCD /* IQNotificationGroupsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7373ED5D1A89FB2100719FCD /* IQNotificationGroupsHolder.m */; };
 		7373ED661A8A2EB500719FCD /* DeviceToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 7373ED651A8A2EB500719FCD /* DeviceToken.m */; };
@@ -926,6 +936,17 @@
 		736B6BE51A0B83D600034D9B /* ExpandableTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExpandableTableView.m; sourceTree = "<group>"; };
 		736B6BE81A0BC09300034D9B /* UIColor+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extensions.h"; sourceTree = "<group>"; };
 		736B6BE91A0BC09300034D9B /* UIColor+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Extensions.m"; sourceTree = "<group>"; };
+		737136261B5387E20043B87B /* ConferenceInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConferenceInfoController.h; sourceTree = "<group>"; };
+		737136271B5387E20043B87B /* ConferenceInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConferenceInfoController.m; sourceTree = "<group>"; };
+		7371362A1B538DF00043B87B /* ConferenceInfoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConferenceInfoModel.h; sourceTree = "<group>"; };
+		7371362B1B538DF00043B87B /* ConferenceInfoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConferenceInfoModel.m; sourceTree = "<group>"; };
+		7371362E1B539BBF0043B87B /* ContactsSectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsSectionView.h; sourceTree = "<group>"; };
+		7371362F1B539BBF0043B87B /* ContactsSectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsSectionView.m; sourceTree = "<group>"; };
+		737136321B53A4F60043B87B /* ContactInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactInfoCell.h; sourceTree = "<group>"; };
+		737136331B53A4F60043B87B /* ContactInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactInfoCell.m; sourceTree = "<group>"; };
+		737136361B53A52D0043B87B /* IQTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTableCell.h; sourceTree = "<group>"; };
+		737136371B53C1430043B87B /* IQConversationMember.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQConversationMember.h; sourceTree = "<group>"; };
+		737136381B53C1430043B87B /* IQConversationMember.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQConversationMember.m; sourceTree = "<group>"; };
 		7373ED591A89EF2000719FCD /* IQObjectsHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQObjectsHolder.h; sourceTree = "<group>"; };
 		7373ED5A1A89EF2000719FCD /* IQObjectsHolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQObjectsHolder.m; sourceTree = "<group>"; };
 		7373ED5C1A89FB2100719FCD /* IQNotificationGroupsHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationGroupsHolder.h; sourceTree = "<group>"; };
@@ -1595,6 +1616,7 @@
 				73EFAA011B43DD3B007FD5D7 /* IQEMultiLineTextCell.m */,
 				73176C9B1B3ADDD700E6AC60 /* IQSelectableTextCell.h */,
 				73176C9C1B3ADDD700E6AC60 /* IQSelectableTextCell.m */,
+				737136361B53A52D0043B87B /* IQTableCell.h */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -2275,6 +2297,8 @@
 				739850BB1A2DADF000DB5B21 /* MessagesController.m */,
 				739C3B5A1A3075B00032C057 /* DiscussionController.h */,
 				739C3B5B1A3075B00032C057 /* DiscussionController.m */,
+				737136261B5387E20043B87B /* ConferenceInfoController.h */,
+				737136271B5387E20043B87B /* ConferenceInfoController.m */,
 				73ADA8D71A36DB8D0032C1FA /* ContactPickerController.h */,
 				73ADA8D81A36DB8D0032C1FA /* ContactPickerController.m */,
 				73E425FE1AAEC6BF00CD2093 /* UserPickerController.h */,
@@ -2290,6 +2314,8 @@
 				731DEEC71A2F11A1002F5FEB /* MessagesModel.m */,
 				739C3B5D1A3075D90032C057 /* DiscussionModel.h */,
 				739C3B5E1A3075D90032C057 /* DiscussionModel.m */,
+				7371362A1B538DF00043B87B /* ConferenceInfoModel.h */,
+				7371362B1B538DF00043B87B /* ConferenceInfoModel.m */,
 				73ADA8E01A36E4CB0032C1FA /* ContactsModel.h */,
 				73ADA8E11A36E4CB0032C1FA /* ContactsModel.m */,
 				73E426011AAEE6CA00CD2093 /* UsersPickerModel.h */,
@@ -2309,6 +2335,10 @@
 				73A949A81A38632C008EC469 /* ConversationCell.m */,
 				7382CA931A4566BD00D5EE1F /* CSectionHeaderView.h */,
 				7382CA941A4566BD00D5EE1F /* CSectionHeaderView.m */,
+				7371362E1B539BBF0043B87B /* ContactsSectionView.h */,
+				7371362F1B539BBF0043B87B /* ContactsSectionView.m */,
+				737136321B53A4F60043B87B /* ContactInfoCell.h */,
+				737136331B53A4F60043B87B /* ContactInfoCell.m */,
 				739C3B601A3076D60032C057 /* CommentCell.h */,
 				739C3B611A3076D60032C057 /* CommentCell.m */,
 				73ADA8EA1A36FD680032C1FA /* ContactCell.h */,
@@ -2334,6 +2364,8 @@
 				734433641A2DEBF300102FC8 /* IQAttachment.m */,
 				73AF73DF1A3AFEBA001B8E42 /* CViewInfo.h */,
 				73AF73E01A3AFEBA001B8E42 /* CViewInfo.m */,
+				737136371B53C1430043B87B /* IQConversationMember.h */,
+				737136381B53C1430043B87B /* IQConversationMember.m */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -3253,6 +3285,7 @@
 				73840DB81B1C75A500BCEAFC /* UIScrollView+PullToRefreshInsert.m in Sources */,
 				73840DB91B1C75A500BCEAFC /* IQNotificationGroupsHolder.m in Sources */,
 				73840DBA1B1C75A500BCEAFC /* TaskExecutersCell.m in Sources */,
+				7371362D1B538DF00043B87B /* ConferenceInfoModel.m in Sources */,
 				73840DBB1B1C75A500BCEAFC /* NotificationsMenuModel.m in Sources */,
 				73840DBC1B1C75A500BCEAFC /* TaskStatusFilterItem.m in Sources */,
 				739CFFAE1B39898B00B4AED0 /* CreateFeedbackModel.m in Sources */,
@@ -3265,6 +3298,7 @@
 				73840DC11B1C75A500BCEAFC /* ArrayTransformer.m in Sources */,
 				73840DC21B1C75A500BCEAFC /* IQTaskActivityItem.m in Sources */,
 				73840DC31B1C75A500BCEAFC /* UIView+RoundedCorners.m in Sources */,
+				7371363A1B53C1430043B87B /* IQConversationMember.m in Sources */,
 				73840DC41B1C75A500BCEAFC /* TInfoHeaderView.m in Sources */,
 				73840DC51B1C75A500BCEAFC /* IQDiscussion.m in Sources */,
 				730BE3F01B3D1EE900E26994 /* IQService+Feedback.m in Sources */,
@@ -3361,6 +3395,7 @@
 				73840E111B1C75A500BCEAFC /* NSDate+CupertinoYankee.m in Sources */,
 				73840E121B1C75A500BCEAFC /* NSError+Extension.m in Sources */,
 				73840E131B1C75A500BCEAFC /* TasksController.m in Sources */,
+				737136351B53A4F60043B87B /* ContactInfoCell.m in Sources */,
 				73840E141B1C75A500BCEAFC /* TaskController.m in Sources */,
 				73840E151B1C75A500BCEAFC /* TasksModel.m in Sources */,
 				73840E161B1C75A500BCEAFC /* TTodoItemsController.m in Sources */,
@@ -3412,6 +3447,7 @@
 				73840E391B1C75A500BCEAFC /* IQBadgeStyle.m in Sources */,
 				73840E3A1B1C75A500BCEAFC /* IQService.m in Sources */,
 				73840E3B1B1C75A500BCEAFC /* RMenuCell.m in Sources */,
+				737136311B539BBF0043B87B /* ContactsSectionView.m in Sources */,
 				73840E3C1B1C75A500BCEAFC /* TaskPolicies.m in Sources */,
 				73840E3D1B1C75A500BCEAFC /* IQLog.m in Sources */,
 				731E5BD11B3161F200DF56C7 /* IQValidationHelper.m in Sources */,
@@ -3438,6 +3474,7 @@
 				73840E4E1B1C75A500BCEAFC /* CCommentCell.m in Sources */,
 				73840E501B1C75A500BCEAFC /* TaskExecutor.m in Sources */,
 				73840E511B1C75A500BCEAFC /* IQTableModel.m in Sources */,
+				737136291B5387E20043B87B /* ConferenceInfoController.m in Sources */,
 				73840E521B1C75A500BCEAFC /* TDocumentsController.m in Sources */,
 				731462841B3443B500E9CC60 /* IQCommunityExecutorCell.m in Sources */,
 				73840E541B1C75A500BCEAFC /* LoginController.m in Sources */,
@@ -3526,6 +3563,7 @@
 				73C58C021A1F074900C83729 /* NotificationCell.m in Sources */,
 				73ADA8EC1A36FD680032C1FA /* ContactCell.m in Sources */,
 				73A7CA881A9F5CB90038DEF1 /* TaskFilterCell.m in Sources */,
+				737136391B53C1430043B87B /* IQConversationMember.m in Sources */,
 				7393C4141A1A300F00E9E944 /* LoginView.m in Sources */,
 				73A50D141ADFBDAC00251CB7 /* IQTaskDataHolder.m in Sources */,
 				739850DF1A2DD4D700DB5B21 /* IQComment.m in Sources */,
@@ -3561,6 +3599,7 @@
 				73D7F1D41ADE940300023120 /* TaskModel.m in Sources */,
 				73176C881B3AA38C00E6AC60 /* MTableFooterView.m in Sources */,
 				73A50D111ADFAA4400251CB7 /* TaskDescriptionController.m in Sources */,
+				737136341B53A4F60043B87B /* ContactInfoCell.m in Sources */,
 				73A7CA6A1A9F11080038DEF1 /* TasksFilterModel.m in Sources */,
 				73841B6D1AB9A78A00B079BA /* TaskHelper.m in Sources */,
 				73ADA8E21A36E4CB0032C1FA /* ContactsModel.m in Sources */,
@@ -3570,6 +3609,7 @@
 				731E5BCC1B315DB500DF56C7 /* RegistrationController.m in Sources */,
 				731E5BC81B315DA000DF56C7 /* RegistrationView.m in Sources */,
 				73F5089E1ACAD0C2009DBBD8 /* IQTodoItem.m in Sources */,
+				7371362C1B538DF00043B87B /* ConferenceInfoModel.m in Sources */,
 				739C3B5C1A3075B00032C057 /* DiscussionController.m in Sources */,
 				73C286B01A94B5E30011FD51 /* IQNotificationsHolder.m in Sources */,
 				73A7CA671A9F10DE0038DEF1 /* TasksFilterController.m in Sources */,
@@ -3609,6 +3649,7 @@
 				73A949A91A38632C008EC469 /* ConversationCell.m in Sources */,
 				73A20C7A1A42F62C006433C5 /* IQBadgeView.m in Sources */,
 				73E426001AAEC6BF00CD2093 /* UserPickerController.m in Sources */,
+				737136281B5387E20043B87B /* ConferenceInfoController.m in Sources */,
 				73B9EA051ADCFA2800159A66 /* IQTableBaseController.m in Sources */,
 				73EFAA021B43DD3B007FD5D7 /* IQEMultiLineTextCell.m in Sources */,
 				739CFFA91B39896A00B4AED0 /* CreateFeedbackController.m in Sources */,
@@ -3641,6 +3682,7 @@
 				73D7F1CF1ADE93D600023120 /* TaskPolicyInspector.m in Sources */,
 				739850D31A2DD30E00DB5B21 /* IQNotification.m in Sources */,
 				73A700551A95D0E600A1C2AC /* TasksMenuModel.m in Sources */,
+				737136301B539BBF0043B87B /* ContactsSectionView.m in Sources */,
 				7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */,
 				739073BC1A4877860057BA18 /* IQUtilityButtonView.m in Sources */,
 				738C7F681A792D3200A25C70 /* NotificationsGroupController.m in Sources */,

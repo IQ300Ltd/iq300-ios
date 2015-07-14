@@ -19,7 +19,8 @@
 }
 
 - (NSString*)titleForSection:(NSInteger)section {
-    return nil;
+    id<NSFetchedResultsSectionInfo> sectionInfo = [_fetchController.sections objectAtIndex:section];
+    return sectionInfo.name;
 }
 
 - (NSUInteger)numberOfItemsInSection:(NSInteger)section {
@@ -27,12 +28,16 @@
     return [sectionInfo numberOfObjects];
 }
 
+- (Class)cellClassForIndexPath:(NSIndexPath*)indexPath {
+    return nil;
+}
+
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
     return nil;
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = self.cellClass;
+    Class cellClass = [self cellClassForIndexPath:indexPath];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
                             reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }

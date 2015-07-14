@@ -182,7 +182,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        NSInteger count = [self numberOfItemsInSection:0];
+        NSInteger count = [self numberOfItems];
         NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
         [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                                   page:@(page)
@@ -291,6 +291,18 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 #pragma mark - Private methods
+
+- (NSUInteger)numberOfItems {
+    NSManagedObjectContext * context = [IQService sharedService].context;
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQConversation"];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError * error;
+    NSUInteger numberOfItems = [context countForFetchRequest:fetchRequest error:&error];
+    
+    return (numberOfItems != NSNotFound) ? numberOfItems : 0;
+}
 
 - (void)updateModel {
     [self updateModelWithCompletion:^(NSError *error) {

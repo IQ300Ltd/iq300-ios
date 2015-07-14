@@ -179,3 +179,9 @@
 
 "Create" = "Создать";
 "You should select at least one contact" = "Необходимо выбрать хотя бы один контакт";
+"Group info" = "Информация о группе";
+"Leave group" = "Покинуть группу";
+"Group administrator:" = "Администратор группы:";
+"Group members:" = "Участники группы:";
+"Group name" = "Название группы";
+"Add" = "Добавить";

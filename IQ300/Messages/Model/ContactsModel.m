@@ -58,13 +58,14 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
     return [IQService sharedService].context;
 }
 
-- (Class)cellClass {
+- (Class)cellClassForIndexPath:(NSIndexPath *)indexPath {
     return [ContactCell class];
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    return [[self.cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                 reuseIdentifier:UReuseIdentifier];
+    Class cellClass = [self cellClassForIndexPath:indexPath];
+    return [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
+                            reuseIdentifier:UReuseIdentifier];
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {

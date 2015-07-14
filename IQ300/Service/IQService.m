@@ -712,6 +712,42 @@ fileAttributeName:(NSString*)fileAttributeName
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversationMember class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/conversations/:id/participants"
+                                                   fromKeyPath:@"participants"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPOST
+                                                         pathPattern:@"/api/v1/conversations/:id/participants"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodDELETE
+                                                         pathPattern:@"/api/v1/conversations/:id/participants/:id"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/conversations/:id/participants/leave"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
+
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"/api/v1/conversations/:id/update_title"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT

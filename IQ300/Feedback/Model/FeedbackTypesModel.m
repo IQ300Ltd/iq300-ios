@@ -36,7 +36,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return [IQService sharedService].context;
 }
 
-- (Class)cellClass {
+- (Class)cellClassForIndexPath:(NSIndexPath *)indexPath {
     return [FeedbackTypeCell class];
 }
 

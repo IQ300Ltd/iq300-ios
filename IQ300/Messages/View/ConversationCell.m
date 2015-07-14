@@ -211,7 +211,7 @@
     _titleLabel.text = _item.title;
     _companion = companion;
     
-    BOOL isConference = ([companions count] > 1);
+    BOOL isConference = ([[_item.type lowercaseString] isEqualToString:@"conference"]);
     UIImage * defaulImage = (isConference) ? [UIImage imageNamed:@"conference_icon.png"] :
                                              [UIImage imageNamed:@"user_icon.png"];
     
