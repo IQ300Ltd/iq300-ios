@@ -46,6 +46,10 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
     return [_members copy];
 }
 
+- (BOOL)isAdministrator {
+    return _isAdministrator;
+}
+
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
     return (indexPath.section == 0 && indexPath.row == 0) ? EditReuseIdentifier : UserReuseIdentifier;
 }

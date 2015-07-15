@@ -103,8 +103,8 @@
                   handler:(RequestCompletionHandler)handler {
     NSParameterAssert(conversationId);
     [self postObject:nil
-                path:[NSString stringWithFormat:@"/api/v1/conversations/%@/update_title", conversationId]
-          parameters:@{ @"participants" : NSObjectNullForNil(memberIds) }
+                path:[NSString stringWithFormat:@"/api/v1/conversations/%@/participants", conversationId]
+          parameters:@{ @"user_ids" : NSObjectNullForNil(memberIds) }
              handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                  if(handler) {
                      handler(success, responseData, error);

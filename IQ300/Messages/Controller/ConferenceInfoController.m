@@ -84,12 +84,6 @@
                                                                       action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
-    UIBarButtonItem * addUserBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_user_icon.png"]
-                                                                          style:UIBarButtonItemStylePlain
-                                                                         target:self
-                                                                         action:@selector(addUserBarButtonAction:)];
-    self.navigationItem.rightBarButtonItem = addUserBarButton;
-
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
@@ -236,6 +230,7 @@
             else {
                 [weakSelf proccessServiceError:error];
             }
+            [weakSelf.navigationController popViewControllerAnimated:YES];
         }];
     }
 }
@@ -369,10 +364,24 @@
         [self.model updateModelWithCompletion:^(NSError *error) {
             if(!error) {                
                 [self.tableView reloadData];
+                [self updateRightBarButtonItem];
             }
             
             [self updateNoDataLabelVisibility];
         }];
+    }
+}
+
+- (void)updateRightBarButtonItem {
+    if (self.model.isAdministrator) {
+        UIBarButtonItem * addUserBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_user_icon.png"]
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(addUserBarButtonAction:)];
+        self.navigationItem.rightBarButtonItem = addUserBarButton;
+    }
+    else {
+        self.navigationItem.rightBarButtonItem = nil;
     }
 }
 

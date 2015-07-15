@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSString * conversationTitle;
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, readonly) NSArray * users;
+@property (nonatomic, readonly) BOOL isAdministrator;
 
 - (NSString*)placeholderForItemAtIndexPath:(NSIndexPath*)indexPath;
 - (BOOL)isDeleteEnableForForItemAtIndexPath:(NSIndexPath*)indexPath;
