@@ -6,6 +6,9 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
+#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+#import <RestKit/RestKit.h>
+
 #import "ConferenceInfoModel.h"
 #import "IQConversationMember.h"
 #import "IQEditableTextCell.h"
@@ -13,6 +16,10 @@
 #import "IQConversationMember.h"
 #import "IQService+Messages.h"
 #import "IQUser.h"
+
+#import "IQConversation.h"
+#import "IQDiscussion.h"
+#import "NSManagedObject+ActiveRecord.h"
 
 @interface NSObject(UserModelCells)
 
@@ -236,6 +243,24 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
     }
     
     [_members sortUsingDescriptors:self.sortDescriptors];
+}
+
+#pragma mark - Remove conversation
+
+- (void)removeConversation {
+    NSManagedObjectContext *context = [IQService sharedService].context;
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", self.conversationId];
+    IQConversation *conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
+    IQDiscussion *discassion = conversation.discussion;
+    
+    [context deleteObject:conversation];
+    [context deleteObject:discassion];
+    
+    NSError *saveError = nil;
+    if(![context saveToPersistentStore:&saveError]) {
+        NSLog(@"Save delete comment error: %@", saveError);
+    }
 }
 
 @end

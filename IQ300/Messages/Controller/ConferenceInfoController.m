@@ -310,15 +310,23 @@
 }
 
 - (void)leaveButtonAction:(UIButton*)sender {
-    [sender setEnabled:NO];
-    [self.model leaveConversationWithCompletion:^(NSError * error) {
-        if (!error) {
-            [self.navigationController popToRootViewControllerAnimated:YES];
-        }
-        else {
-            [self proccessServiceError:error];
-        }
-    }];
+    [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                       message:NSLocalizedString(@"Are you sure you want to leave the chat?", nil)
+             cancelButtonTitle:NSLocalizedString(@"No", nil)
+             otherButtonTitles:@[NSLocalizedString(@"Yes", nil)]
+                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                          if (buttonIndex == 1) {
+                              [self.model leaveConversationWithCompletion:^(NSError * error) {
+                                  if (!error) {
+                                      [self.model removeConversation];
+                                      [self.navigationController popToRootViewControllerAnimated:YES];
+                                  }
+                                  else {
+                                      [self proccessServiceError:error];
+                                  }
+                              }];
+                          }
+                      }];
 }
 
 - (UIView *)viewForHeaderInSection:(NSInteger)section {

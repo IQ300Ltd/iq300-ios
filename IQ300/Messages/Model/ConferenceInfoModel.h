@@ -27,4 +27,6 @@
 - (void)removeMember:(IQConversationMember*)member completion:(void (^)(NSError *))completion;
 - (void)leaveConversationWithCompletion:(void (^)(NSError *))completion;
 
+- (void)removeConversation;
+
 @end
