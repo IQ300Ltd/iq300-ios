@@ -50,6 +50,14 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
     return _isAdministrator;
 }
 
+- (Class)cellClassForIndexPath:(NSIndexPath*)indexPath {
+    if (indexPath.section == 0 && indexPath.row == 0) {
+        return [IQEditableTextCell class];
+    }
+    
+    return [ContactInfoCell class];
+}
+
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
     return (indexPath.section == 0 && indexPath.row == 0) ? EditReuseIdentifier : UserReuseIdentifier;
 }
@@ -85,7 +93,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
     if (cellClass) {
         return [cellClass heightForItem:item detailTitle:detaiTitle width:self.cellWidth];
     }
-    return 68.0f;
+    return 50.0f;
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {

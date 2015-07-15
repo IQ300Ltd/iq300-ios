@@ -55,7 +55,7 @@
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
          [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
-             [weakSelf.tableView.pullToRefreshView stopAnimating];
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
          }];
      }
      position:SVPullToRefreshPositionBottom];
