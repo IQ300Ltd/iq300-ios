@@ -56,7 +56,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                                   [GAIService sendEventForCategory:GAIMessagesEventCategory
                                                                                             action:@"event_action_message_conversation_create"];
                                                                   
-                                                                  NSArray * userIds = [conversation.users valueForKey:@"userId"];
+                                                                  NSArray * userIds = [[conversation.users allObjects] valueForKey:@"userId"];
                                                                   [GAIService sendEventForCategory:GAIMessagesEventCategory
                                                                                             action:GAIAddConversationMemberEventAction
                                                                                              label:[userIds componentsJoinedByString:@", "]];
