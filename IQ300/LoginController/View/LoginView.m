@@ -66,12 +66,6 @@
         [_enterButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
         [self addSubview:_enterButton];
         
-        _restorePassButton = [[UIButton alloc] init];
-        [_restorePassButton setTitle:NSLocalizedString(@"Forgot your password?", nil) forState:UIControlStateNormal];
-        [_restorePassButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 13.0f : 12.0f]];
-        [_restorePassButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
-        [self addSubview:_restorePassButton];
-        
         _registryButton = [[UIButton alloc] init];
         [_registryButton setTitle:NSLocalizedString(@"Sign up", nil) forState:UIControlStateNormal];
         [_registryButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 13.0f : 12.0f]];
@@ -131,13 +125,8 @@
                                     40);
     
     CGFloat labelsSize = (IS_IPAD) ? 15 : 14;
-    _restorePassButton.frame = CGRectMake(bounds.origin.x,
-                                          _enterButton.frame.origin.y + _enterButton.frame.size.height + 34,
-                                          bounds.size.width,
-                                          labelsSize);
-    
     _registryButton.frame = CGRectMake(bounds.origin.x,
-                                       _restorePassButton.frame.origin.y + _restorePassButton.frame.size.height + 30,
+                                       _enterButton.frame.origin.y + _enterButton.frame.size.height + 34,
                                        bounds.size.width,
                                        labelsSize);
 }

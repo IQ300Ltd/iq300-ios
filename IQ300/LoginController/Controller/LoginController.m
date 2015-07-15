@@ -47,9 +47,6 @@
     [_loginView.registryButton addTarget:self
                                   action:@selector(registryButtonAction:)
                         forControlEvents:UIControlEventTouchUpInside];
-    [_loginView.restorePassButton addTarget:self
-                                     action:@selector(restorePassButtonAction:)
-                           forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)enterButtonAction:(UIButton*)sender {
@@ -83,10 +80,6 @@
     
     [GAIService sendEventForCategory:GAICommonEventCategory
                               action:@"event_action_common_registration"];
-}
-
-- (void)restorePassButtonAction:(UIButton*)sender {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:SERVICE_RESET_PASSWORD_URL]];
 }
 
 - (void)showErrorMessage:(NSString*)errorMessage {
