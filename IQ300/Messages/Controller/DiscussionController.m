@@ -33,7 +33,7 @@
 
 #define SECTION_HEIGHT 12
 
-@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate> {
+@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate> {
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachmentAsset;
@@ -41,6 +41,7 @@
     UIDocumentInteractionController * _documentController;
     UISwipeGestureRecognizer * _tableGesture;
     CGPoint _tableContentOffset;
+    BOOL _blockUpdation;
 }
 
 @end
@@ -97,9 +98,15 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
-         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
+         void (^completiation)(NSError * error) = ^(NSError * error) {
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
-         }];
+         };
+         
+         if (_blockUpdation) {
+             completiation(nil);
+         } else {
+             [weakSelf.model loadNextPartWithCompletion:completiation];
+         }
      }
      position:SVPullToRefreshPositionTop];
     
@@ -127,7 +134,7 @@
                                                                        target:self
                                                                        action:@selector(rightBarButtonAction:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
-
+    self.navigationItem.rightBarButtonItem.enabled = !_blockUpdation;
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
@@ -158,6 +165,7 @@
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
+    [self updateTitle];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -249,7 +257,7 @@
 
 #pragma mark - DiscussionModelDelegate Delegate
 
-- (void)model:(DiscussionModel*)model newComment:(IQComment*)comment {
+- (void)model:(DiscussionModel *)model newComment:(IQComment*)comment {
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     if(isTableScrolledToBottom) {
@@ -265,6 +273,23 @@
     
     if(isTableScrolledToBottom) {
         [self scrollToBottomIfNeedAnimated:YES delay:1.0f];
+    }
+}
+
+- (void)model:(DiscussionModel *)model conversationRemovedWithId:(NSNumber *)conversationId {
+    if ([model.discussion.conversation.conversationId isEqualToNumber:conversationId]) {
+        [UIAlertView showWithTitle:@""
+                           message:NSLocalizedString(@"Administrator deleted You from this chat", nil)
+                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                 otherButtonTitles:nil
+                          tapBlock:nil];
+
+        _blockUpdation = YES;
+        
+        _mainView.inputView.sendButton.enabled = NO;
+        _mainView.inputView.attachButton.enabled = NO;
+        _mainView.inputView.commentTextView.editable = NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
     }
 }
 
@@ -368,6 +393,10 @@
 }
 
 - (void)backButtonAction:(id)sender {
+    if (_blockUpdation) {
+        [self.model removeComments];
+    }
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -377,6 +406,16 @@
         controller.conversationId = self.model.discussion.conversation.conversationId;
         controller.conversationTitle = self.model.discussion.conversation.title;
         controller.hidesBottomBarWhenPushed = YES;
+        
+        __weak typeof(self) weakSelf = self;
+        [controller subscribeToIQNotificationBlock:^(IQCNotification *notf) {
+            NSDictionary *notificationData = notf.userInfo[IQNotificationDataKey][@"data"];
+            NSNumber *conversationId = notificationData[@"conversation_id"];
+            
+            [weakSelf.navigationController popViewControllerAnimated:YES];
+            [weakSelf model:weakSelf.model conversationRemovedWithId:conversationId];
+        }];
+        
         [self.navigationController pushViewController:controller animated:YES];
     }
     else {
@@ -522,7 +561,8 @@
     _documentController = [UIDocumentInteractionController interactionControllerWithURL:documentURL];
     [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
     if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
+        [UIAlertView showWithTitle:@"IQ300"
+                           message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
                           tapBlock:nil];
@@ -539,7 +579,7 @@
 }
 
 - (void)updateModel {
-    if([IQSession defaultSession] && self.model) {
+    if([IQSession defaultSession] && self.model && !_blockUpdation) {
         [self showActivityIndicatorAnimated:YES completion:nil];
         
         [self.model updateModelWithCompletion:^(NSError *error) {
@@ -763,6 +803,11 @@
 }
 
 #pragma mark - ContactPickerController delegate
+
+- (void)updateTitle {
+    [self.model updateConversation];
+    self.title = self.model.discussion.conversation.title;
+}
 
 - (void)contactPickerController:(ContactPickerController*)picker didPickContacts:(NSArray*)contacts {
     if ([contacts count] > 0) {

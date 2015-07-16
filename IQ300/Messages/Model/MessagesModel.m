@@ -14,9 +14,14 @@
 #import "IQUser.h"
 #import "IQCounters.h"
 #import "IQNotificationCenter.h"
+#import "ConversationDeletedObjects.h"
+
+#import "NSManagedObject+ActiveRecord.h"
+#import "NSManagedObjectContext+AsyncFetch.h"
 
 #define CACHE_FILE_NAME @"ConversationModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
+#define LAST_REQUEST_DATE_KEY @"conversation_ids_request_date"
 
 static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
@@ -90,6 +95,16 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     }
 }
 
++ (NSDate*)lastRequestDate {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:LAST_REQUEST_DATE_KEY];
+}
+
++ (void)setLastRequestDate:(NSDate*)date {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:date forKey:LAST_REQUEST_DATE_KEY];
+}
+
 - (id)init {
     self = [super init];
     if(self) {
@@ -112,6 +127,14 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 - (void)setFilter:(NSString *)filter {
     _filter = filter;
     _filteredIds = nil;
+    
+    [[IQService sharedService] conversationsIdsDeletedAfter:nil handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+        
+        if (success) {
+            
+        }
+        
+    }];
 }
 
 - (NSUInteger)numberOfSections {
@@ -163,6 +186,8 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
+        [self clearRemovedConversations];
+        
         [[IQService sharedService] conversationsUnread:nil
                                                   page:@(1)
                                                    per:@(_portionLenght)
@@ -370,6 +395,26 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         [self unsubscribeFromIQNotification];
         [self clearModelData];
         [self modelDidChanged];
+    }
+}
+
+#pragma mark - Clear removed conversations
+
+- (void)clearRemovedConversations {
+    NSDate *lastRequestDate = [MessagesModel lastRequestDate];
+    
+    [[IQService sharedService] conversationsIdsDeletedAfter:lastRequestDate
+                                                    handler:^(BOOL success, ConversationDeletedObjects *object, NSData *responseData, NSError *error) {
+                                                        if (success) {
+                                                            [MessagesModel setLastRequestDate:object.serverDate];
+                                                            [self removeLocalConversationsWithIds:object.objectIds];
+                                                        }
+                                                    }];
+}
+
+- (void)removeLocalConversationsWithIds:(NSArray*)conversationIds {
+    for (NSNumber *conversationId in conversationIds) {
+        [IQConversation removeLocalConversationWithId:conversationId];
     }
 }
 

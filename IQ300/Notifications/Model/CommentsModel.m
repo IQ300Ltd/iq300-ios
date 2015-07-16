@@ -20,7 +20,7 @@
 #import "TCObjectSerializator.h"
 #import "MessagesModel.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
-#import "DeletedObjects.h"
+#import "CommentDeletedObjects.h"
 #import "NotificationsModel.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
@@ -571,7 +571,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     
     [[IQService sharedService] commentIdsDeletedAfter:lastRequestDate
                                          discussionId:self.discussion.discussionId
-                                              handler:^(BOOL success, DeletedObjects * object, NSData *responseData, NSError *error) {
+                                              handler:^(BOOL success, CommentDeletedObjects * object, NSData *responseData, NSError *error) {
                                                   if (success) {
                                                       [CommentsModel setLastRequestDate:object.serverDate];
                                                       [self removeLocalCommentsWithIds:object.objectIds];

@@ -9,6 +9,10 @@
 
 #import "IQConversation.h"
 
+#import "IQService.h"
+#import "NSManagedObject+ActiveRecord.h"
+#import "NSManagedObjectContext+AsyncFetch.h"
+
 @implementation IQConversation
 
 @dynamic conversationId;
@@ -53,6 +57,21 @@
     [mapping addPropertyMapping:relation];
 
     return mapping;
+}
+
++ (void)removeLocalConversationWithId:(NSNumber *)conversationId {
+    NSManagedObjectContext *context = [IQService sharedService].context;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", conversationId];
+    
+    IQConversation *conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
+    if (!conversation) {
+        return;
+    }
+    
+    IQDiscussion *discassion = conversation.discussion;
+    
+    [context deleteObject:conversation];
+    [context deleteObject:discassion];
 }
 
 @end

@@ -169,3 +169,5 @@
 "feedback_completed" = "Completed";
 
 "Are you sure you want to leave the chat?" = "Are you sure you want to leave the chat?";
+"Administrator deleted You from this chat" = "Administrator deleted You from this chat";
+"Group name must not be empty" = "Group name must not be empty";

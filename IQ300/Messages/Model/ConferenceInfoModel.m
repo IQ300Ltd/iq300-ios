@@ -19,6 +19,7 @@
 
 #import "IQConversation.h"
 #import "IQDiscussion.h"
+#import "IQComment.h"
 #import "NSManagedObject+ActiveRecord.h"
 
 @interface NSObject(UserModelCells)
@@ -170,12 +171,30 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
                                                                     forChangeType:NSFetchedResultsChangeUpdate
                                                                      newIndexPath:nil];
                                                        [self modelDidChangeContent];
+                                                       
+                                                       [self updateConversationWithTitle:self.conversationTitle];
                                                    }
                                                    
                                                    if (completion) {
                                                        completion(error);
                                                    }
                                                }];
+}
+
+- (void)updateConversationWithTitle:(NSString *)title {
+    NSManagedObjectContext *context = [IQService sharedService].context;
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", self.conversationId];
+    IQConversation *conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
+    
+    if (conversation) {
+        conversation.title = title;
+        
+        NSError * saveError = nil;
+        if(![context saveToPersistentStore:&saveError] ) {
+            NSLog(@"Failed save to presistent store conversation with new title");
+        }
+    }
 }
 
 - (void)addMembersFromUsers:(NSArray*)users completion:(void (^)(NSError *))completion {
@@ -245,22 +264,10 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
     [_members sortUsingDescriptors:self.sortDescriptors];
 }
 
-#pragma mark - Remove conversation
+
 
 - (void)removeConversation {
-    NSManagedObjectContext *context = [IQService sharedService].context;
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", self.conversationId];
-    IQConversation *conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
-    IQDiscussion *discassion = conversation.discussion;
-    
-    [context deleteObject:conversation];
-    [context deleteObject:discassion];
-    
-    NSError *saveError = nil;
-    if(![context saveToPersistentStore:&saveError]) {
-        NSLog(@"Save delete comment error: %@", saveError);
-    }
+    [IQConversation removeLocalConversationWithId:self.conversationId];
 }
 
 @end

@@ -257,4 +257,11 @@
                    handler:handler];
 }
 
+- (void)conversationsIdsDeletedAfter:(NSDate*)deletedAfter
+                             handler:(ObjectRequestCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/conversations/deleted_ids"
+                parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
+                   handler:handler];
+}
+
 @end

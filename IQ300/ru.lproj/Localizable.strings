@@ -184,5 +184,7 @@
 "Group administrator:" = "Администратор группы:";
 "Group members:" = "Участники группы:";
 "Group name" = "Название группы";
+"Group name must not be empty" = "Название группы не должно быть пустым";
 "Add" = "Добавить";
 "Are you sure you want to leave the chat?" = "Вы действительно хотите выйти из чата?";
+"Administrator deleted You from this chat" = "Администратор удалил Вас из этого чата";

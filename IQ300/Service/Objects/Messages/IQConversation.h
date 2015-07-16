@@ -25,4 +25,6 @@
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 
++ (void)removeLocalConversationWithId:(NSNumber *)conversationId;
+
 @end

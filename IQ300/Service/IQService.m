@@ -721,6 +721,14 @@ fileAttributeName:(NSString*)fileAttributeName
     
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[ConversationDeletedObjects class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/conversations/deleted_ids"
+                                                   fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPOST
                                                          pathPattern:@"/api/v1/conversations/:id/participants"
@@ -1061,7 +1069,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[DeletedObjects class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[CommentDeletedObjects class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/discussions/:id/comments/deleted_ids"
                                                    fromKeyPath:nil

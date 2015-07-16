@@ -84,4 +84,7 @@
                   discussionId:(NSNumber*)discussionId
                        handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)conversationsIdsDeletedAfter:(NSDate*)deletedAfter
+                             handler:(ObjectRequestCompletionHandler)handler;
+
 @end

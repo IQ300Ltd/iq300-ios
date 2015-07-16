@@ -1,21 +1,22 @@
 //
-//  DeletedObjects.m
+//  ConversationDeletedObjects.m
 //  IQ300
 //
-//  Created by Tayphoon on 24.04.15.
+//  Created by Viktor Shabanov on 7/16/15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
+
 #import <RestKit/RestKit.h>
 
-#import "DeletedObjects.h"
+#import "ConversationDeletedObjects.h"
 
-@implementation DeletedObjects
+@implementation ConversationDeletedObjects
 
 + (RKObjectMapping*)objectMapping {
     RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"deleted_comment_ids" : @"objectIds",
-                                                  @"current_date"        : @"serverDate"
+                                                  @"deleted_conversation_ids" : @"objectIds",
+                                                  @"current_date"             : @"serverDate"
                                                   }];
     return mapping;
 }

@@ -13,6 +13,7 @@
 #import "IQEditableTextCell.h"
 #import "ContactPickerController.h"
 #import "ContactInfoCell.h"
+#import "IQNotificationCenter.h"
 
 #define BOTTOM_VIEW_HEIGHT 60
 
@@ -20,6 +21,7 @@
     ExtendedButton * _leaveButton;
     CGFloat _tableViewBottomMarging;
     NSIndexPath * _editableIndexPath;
+    __weak id _conversationDidRemovedObserver;
 }
 
 @end
@@ -104,6 +106,7 @@
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self unsubscribeFromIQNotification];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -125,9 +128,10 @@
         IQEditableTextCell * editCell = (IQEditableTextCell*)cell;
         editCell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
         editCell.titleTextView.delegate = (id<UITextViewDelegate>)self;
+        editCell.titleTextView.editable = [self.model isAdministrator];
     }
     else {
-        ContactInfoCell * contactCell = (ContactInfoCell*)cell;
+        ContactInfoCell * contactCell = (ContactInfoCell *)cell;
         contactCell.delegate = self;
         [contactCell setDeleteEnabled:[self.model isDeleteEnableForForItemAtIndexPath:indexPath]];
     }
@@ -283,6 +287,15 @@
 }
 
 - (void)backButtonAction:(UIButton*)sender {
+    if ([self.model.conversationTitle isEqualToString:@""]) {
+        [UIAlertView showWithTitle:@""
+                           message:NSLocalizedString(@"Group name must not be empty", nil)
+                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                 otherButtonTitles:nil
+                          tapBlock:nil];
+        return;
+    }
+    
     if (![self isString:self.model.conversationTitle equalToString:self.conversationTitle]) {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"Save changes?", nil)
@@ -400,6 +413,20 @@
 - (BOOL)isString:(NSString*)firstString equalToString:(NSString*)secondString {
     BOOL stringsIsEmpty = (firstString == nil && secondString == nil);
     return stringsIsEmpty || (!stringsIsEmpty && [firstString isEqualToString:secondString]);
+}
+
+#pragma mark - Notifications
+
+- (void)subscribeToIQNotificationBlock:(void (^)(IQCNotification *))block {
+    _conversationDidRemovedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQConversationDidRemovedNotification
+                                                                                         queue:nil
+                                                                                    usingBlock:block];
+}
+
+- (void)unsubscribeFromIQNotification {
+    if (_conversationDidRemovedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_conversationDidRemovedObserver];
+    }
 }
 
 @end

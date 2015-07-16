@@ -106,7 +106,6 @@
 		734B91121B31BDF20084CA8E /* RegistrationStatusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 734B91101B31BDF20084CA8E /* RegistrationStatusController.m */; };
 		734B91151B31BE500084CA8E /* RegistrationStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 734B91141B31BE500084CA8E /* RegistrationStatusView.m */; };
 		734B91161B31BE500084CA8E /* RegistrationStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 734B91141B31BE500084CA8E /* RegistrationStatusView.m */; };
-		734FEABF1AEA27EC0050EF44 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 734FEABE1AEA27EC0050EF44 /* DeletedObjects.m */; };
 		73506ED61A137D070071B4CB /* TasksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BC61A0B5B7500034D9B /* TasksController.m */; };
 		7356C5D11B12070000BF0CB4 /* GAIEvents.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7356C5D31B12070000BF0CB4 /* GAIEvents.strings */; };
 		735D48F51AE4D6DB00F6A753 /* TaskExecutersController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */; };
@@ -179,7 +178,6 @@
 		73840DC91B1C75A500BCEAFC /* MessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850BE1A2DB05400DB5B21 /* MessagesView.m */; };
 		73840DCA1B1C75A500BCEAFC /* ALAssetInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A7983B1A35B96F006F5721 /* ALAssetInputStream.m */; };
 		73840DCB1B1C75A500BCEAFC /* NSObject+SafelyRemoveObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 7383562F1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m */; };
-		73840DCC1B1C75A500BCEAFC /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 734FEABE1AEA27EC0050EF44 /* DeletedObjects.m */; };
 		73840DCD1B1C75A500BCEAFC /* NActionGropCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A87EF51AA4591100C4A7C3 /* NActionGropCell.m */; };
 		73840DCE1B1C75A500BCEAFC /* IQCommunity.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EF8231A9CA76700894755 /* IQCommunity.m */; };
 		73840DCF1B1C75A500BCEAFC /* TaskTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A81ADE932700023120 /* TaskTabController.m */; };
@@ -781,6 +779,12 @@
 		73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A371AC0294A007176A1 /* TChangesCounter.m */; };
 		73FE0A3B1AC03121007176A1 /* IQTaskMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A3A1AC03121007176A1 /* IQTaskMember.m */; };
 		C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D006E3B70304215613C192 /* libPods.a */; };
+		FBC7CB491B57973C004E8382 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB481B57973C004E8382 /* DeletedObjects.m */; };
+		FBC7CB4C1B57979A004E8382 /* CommentDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4B1B57979A004E8382 /* CommentDeletedObjects.m */; };
+		FBC7CB4F1B579812004E8382 /* ConversationDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4E1B579812004E8382 /* ConversationDeletedObjects.m */; };
+		FBC7CB501B579CB6004E8382 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB481B57973C004E8382 /* DeletedObjects.m */; };
+		FBC7CB511B579CBA004E8382 /* CommentDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4B1B57979A004E8382 /* CommentDeletedObjects.m */; };
+		FBC7CB521B579CBD004E8382 /* ConversationDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4E1B579812004E8382 /* ConversationDeletedObjects.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -907,8 +911,6 @@
 		734B91131B31BE500084CA8E /* RegistrationStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegistrationStatusView.h; sourceTree = "<group>"; };
 		734B91141B31BE500084CA8E /* RegistrationStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegistrationStatusView.m; sourceTree = "<group>"; };
 		734B91171B31C4340084CA8E /* IQValueValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQValueValidator.h; sourceTree = "<group>"; };
-		734FEABD1AEA27EC0050EF44 /* DeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedObjects.h; sourceTree = "<group>"; };
-		734FEABE1AEA27EC0050EF44 /* DeletedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedObjects.m; sourceTree = "<group>"; };
 		735D48F31AE4D6DB00F6A753 /* TaskExecutersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutersController.h; sourceTree = "<group>"; };
 		735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutersController.m; sourceTree = "<group>"; };
 		735D48F61AE4D85000F6A753 /* TaskExecutorsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutorsModel.h; sourceTree = "<group>"; };
@@ -1478,6 +1480,12 @@
 		755F5FB022B113814C52815E /* Pods.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.production.xcconfig; path = "Pods/Target Support Files/Pods/Pods.production.xcconfig"; sourceTree = "<group>"; };
 		93D006E3B70304215613C192 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9B2A8B58D9801BD961060BB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		FBC7CB471B57973C004E8382 /* DeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedObjects.h; sourceTree = "<group>"; };
+		FBC7CB481B57973C004E8382 /* DeletedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedObjects.m; sourceTree = "<group>"; };
+		FBC7CB4A1B57979A004E8382 /* CommentDeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentDeletedObjects.h; sourceTree = "<group>"; };
+		FBC7CB4B1B57979A004E8382 /* CommentDeletedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentDeletedObjects.m; sourceTree = "<group>"; };
+		FBC7CB4D1B579812004E8382 /* ConversationDeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationDeletedObjects.h; sourceTree = "<group>"; };
+		FBC7CB4E1B579812004E8382 /* ConversationDeletedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationDeletedObjects.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2189,6 +2197,7 @@
 		738EA79D1A1DC5B40065D39F /* Objects */ = {
 			isa = PBXGroup;
 			children = (
+				FBC7CB461B57973C004E8382 /* DeletedObjects */,
 				739850CB1A2DD30E00DB5B21 /* Messages */,
 				739850CC1A2DD30E00DB5B21 /* Notifications */,
 				73C384C61A97256B00B66D0F /* Tasks */,
@@ -2199,8 +2208,6 @@
 				73ADA8E61A36EE180032C1FA /* IQContact.m */,
 				731DEEC91A2F27AE002F5FEB /* IQCounters.h */,
 				731DEECA1A2F27AE002F5FEB /* IQCounters.m */,
-				734FEABD1AEA27EC0050EF44 /* DeletedObjects.h */,
-				734FEABE1AEA27EC0050EF44 /* DeletedObjects.m */,
 				7373ED591A89EF2000719FCD /* IQObjectsHolder.h */,
 				7373ED5A1A89EF2000719FCD /* IQObjectsHolder.m */,
 				738EA7A41A1DD0570065D39F /* IQObjects.h */,
@@ -2802,6 +2809,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FBC7CB461B57973C004E8382 /* DeletedObjects */ = {
+			isa = PBXGroup;
+			children = (
+				FBC7CB471B57973C004E8382 /* DeletedObjects.h */,
+				FBC7CB481B57973C004E8382 /* DeletedObjects.m */,
+				FBC7CB4A1B57979A004E8382 /* CommentDeletedObjects.h */,
+				FBC7CB4B1B57979A004E8382 /* CommentDeletedObjects.m */,
+				FBC7CB4D1B579812004E8382 /* ConversationDeletedObjects.h */,
+				FBC7CB4E1B579812004E8382 /* ConversationDeletedObjects.m */,
+			);
+			path = DeletedObjects;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3310,7 +3330,6 @@
 				73840DCA1B1C75A500BCEAFC /* ALAssetInputStream.m in Sources */,
 				730BE4021B3D298900E26994 /* IQFeedbacksHolder.m in Sources */,
 				73840DCB1B1C75A500BCEAFC /* NSObject+SafelyRemoveObserver.m in Sources */,
-				73840DCC1B1C75A500BCEAFC /* DeletedObjects.m in Sources */,
 				73840DCD1B1C75A500BCEAFC /* NActionGropCell.m in Sources */,
 				73840DCE1B1C75A500BCEAFC /* IQCommunity.m in Sources */,
 				73840DCF1B1C75A500BCEAFC /* TaskTabController.m in Sources */,
@@ -3320,6 +3339,7 @@
 				73840DD31B1C75A500BCEAFC /* IQTextView.m in Sources */,
 				73840DD41B1C75A500BCEAFC /* TMembersController.m in Sources */,
 				73840DD51B1C75A500BCEAFC /* NotificationCell.m in Sources */,
+				FBC7CB521B579CBD004E8382 /* ConversationDeletedObjects.m in Sources */,
 				73840DD61B1C75A500BCEAFC /* ContactCell.m in Sources */,
 				73840DD71B1C75A500BCEAFC /* TaskFilterCell.m in Sources */,
 				73840DD81B1C75A500BCEAFC /* LoginView.m in Sources */,
@@ -3330,6 +3350,7 @@
 				73840DDC1B1C75A500BCEAFC /* IQService+Notifications.m in Sources */,
 				73840DDD1B1C75A500BCEAFC /* UIViewController+LeftMenu.m in Sources */,
 				73840DDE1B1C75A500BCEAFC /* UITabBarItem+CustomBadgeView.m in Sources */,
+				FBC7CB501B579CB6004E8382 /* DeletedObjects.m in Sources */,
 				73840DDF1B1C75A500BCEAFC /* TActivityItemCell.m in Sources */,
 				73840DE01B1C75A500BCEAFC /* TInfoExpandableLineView.m in Sources */,
 				73840DE11B1C75A500BCEAFC /* PhotoViewController.m in Sources */,
@@ -3352,6 +3373,7 @@
 				73840DED1B1C75A500BCEAFC /* IQMenuItem.m in Sources */,
 				73840DEE1B1C75A500BCEAFC /* IQMenuSection.m in Sources */,
 				73840DEF1B1C75A500BCEAFC /* IQContact.m in Sources */,
+				FBC7CB511B579CBA004E8382 /* CommentDeletedObjects.m in Sources */,
 				73840DF01B1C75A500BCEAFC /* TMemberCell.m in Sources */,
 				73840DF11B1C75A500BCEAFC /* DownloadManager.m in Sources */,
 				73840DF21B1C75A500BCEAFC /* TaskModel.m in Sources */,
@@ -3548,7 +3570,6 @@
 				739850BF1A2DB05400DB5B21 /* MessagesView.m in Sources */,
 				73A7983C1A35B96F006F5721 /* ALAssetInputStream.m in Sources */,
 				738356301A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m in Sources */,
-				734FEABF1AEA27EC0050EF44 /* DeletedObjects.m in Sources */,
 				73A87EF61AA4591100C4A7C3 /* NActionGropCell.m in Sources */,
 				738EF8241A9CA76700894755 /* IQCommunity.m in Sources */,
 				73D7F1B61ADE932700023120 /* TaskTabController.m in Sources */,
@@ -3682,8 +3703,10 @@
 				73D7F1CF1ADE93D600023120 /* TaskPolicyInspector.m in Sources */,
 				739850D31A2DD30E00DB5B21 /* IQNotification.m in Sources */,
 				73A700551A95D0E600A1C2AC /* TasksMenuModel.m in Sources */,
+				FBC7CB491B57973C004E8382 /* DeletedObjects.m in Sources */,
 				737136301B539BBF0043B87B /* ContactsSectionView.m in Sources */,
 				7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */,
+				FBC7CB4F1B579812004E8382 /* ConversationDeletedObjects.m in Sources */,
 				739073BC1A4877860057BA18 /* IQUtilityButtonView.m in Sources */,
 				738C7F681A792D3200A25C70 /* NotificationsGroupController.m in Sources */,
 				7381137C1A4C2A260061280F /* IQBadgeStyle.m in Sources */,
@@ -3700,6 +3723,7 @@
 				7373ED661A8A2EB500719FCD /* DeviceToken.m in Sources */,
 				730BE4051B3D541700E26994 /* FeedbackCategoriesModel.m in Sources */,
 				733ADD1C1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */,
+				FBC7CB4C1B57979A004E8382 /* CommentDeletedObjects.m in Sources */,
 				739850D81A2DD32E00DB5B21 /* IQConversation.m in Sources */,
 				738EF8271A9CA88400894755 /* IQProject.m in Sources */,
 				73970E8F1AA5A7CC00AC2414 /* TaskFilterCounters.m in Sources */,
