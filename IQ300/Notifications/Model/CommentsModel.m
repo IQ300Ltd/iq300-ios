@@ -18,7 +18,6 @@
 #import "NSString+UUID.h"
 #import "IQNotificationCenter.h"
 #import "TCObjectSerializator.h"
-#import "MessagesModel.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "CommentDeletedObjects.h"
 #import "NotificationsModel.h"

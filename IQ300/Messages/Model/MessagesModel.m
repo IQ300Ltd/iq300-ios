@@ -183,6 +183,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
 - (void)updateModelWithCompletion:(void (^)(NSError *))completion {
     if([_fetchController.fetchedObjects count] == 0) {
+        [self clearRemovedConversations];
         [self reloadModelWithCompletion:completion];
     }
     else {

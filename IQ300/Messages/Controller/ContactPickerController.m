@@ -12,7 +12,6 @@
 #import "IQSession.h"
 #import "ContactCell.h"
 #import "IQContact.h"
-#import "MessagesModel.h"
 #import "IQConversation.h"
 #import "DiscussionController.h"
 #import "DispatchAfterExecution.h"
