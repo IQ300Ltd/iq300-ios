@@ -195,7 +195,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
     }
 }
 
-- (void)addMembersFromUsers:(NSArray*)users completion:(void (^)(NSError *))completion {
+- (void)addMembersFromUsers:(NSArray *)users completion:(void (^)(NSError *))completion {
     NSArray * userIds = [users valueForKey:@"userId"];
     [[IQService sharedService] addMembersWithIds:userIds
                                   toConversation:self.conversation.conversationId
@@ -230,6 +230,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
                                                                     newIndexPath:nil];
                                                       [self modelDidChangeContent];
                                                   }
+                                                  
                                                   if (completion) {
                                                       completion(error);
                                                   }

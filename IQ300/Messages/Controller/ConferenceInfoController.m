@@ -159,11 +159,25 @@
 #pragma mark - SWTableViewCell Delegate
 
 - (void)swipeableTableViewCell:(ContactInfoCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
-    [self.model removeMember:cell.item completion:^(NSError * error) {
-        if (error) {
-            [self proccessServiceError:error];
-        }
-    }];
+    [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                       message:NSLocalizedString(@"You agree to remove the user from the chat?", nil)
+             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+             otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                      tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                          if (buttonIndex == 1) {
+                              [cell hideUtilityButtonsAnimated:NO];
+                              NSArray *buttons = cell.rightUtilityButtons;
+                              cell.rightUtilityButtons = nil;
+                              
+                              __weak typeof(cell) weakCell = cell;
+                              [self.model removeMember:cell.item completion:^(NSError * error) {
+                                  if (error) {
+                                      [self proccessServiceError:error];
+                                      weakCell.rightUtilityButtons = buttons;
+                                  }
+                              }];
+                          }
+                      }];
 }
 
 #pragma mark - UITextViewDelegate Methods
