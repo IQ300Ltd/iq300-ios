@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14E46" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14B25" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CViewInfo" representedClassName="CViewInfo" syncable="YES">
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -57,6 +57,7 @@
         <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="creatorId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="removed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalCommentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
@@ -225,7 +226,7 @@
         <element name="IQComment" positionX="0" positionY="0" width="128" height="210"/>
         <element name="IQCommunity" positionX="0" positionY="0" width="128" height="165"/>
         <element name="IQContact" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="IQConversation" positionX="0" positionY="0" width="128" height="210"/>
+        <element name="IQConversation" positionX="0" positionY="0" width="128" height="225"/>
         <element name="IQDiscussion" positionX="0" positionY="0" width="128" height="150"/>
         <element name="IQFeedbackCategory" positionX="0" positionY="0" width="128" height="90"/>
         <element name="IQFeedbackType" positionX="0" positionY="0" width="128" height="105"/>

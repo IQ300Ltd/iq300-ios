@@ -21,7 +21,6 @@
     ExtendedButton * _leaveButton;
     CGFloat _tableViewBottomMarging;
     NSIndexPath * _editableIndexPath;
-    __weak id _conversationDidRemovedObserver;
 }
 
 @end
@@ -42,16 +41,6 @@
 
 - (BOOL)isLeftMenuEnabled {
     return NO;
-}
-
-- (void)setConversationId:(NSNumber *)conversationId {
-    _conversationId = conversationId;
-    self.model.conversationId = conversationId;
-}
-
-- (void)setConversationTitle:(NSString *)conversationTitle {
-    _conversationTitle = conversationTitle;
-    self.model.conversationTitle = conversationTitle;
 }
 
 - (void)viewDidLoad {
@@ -106,7 +95,6 @@
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self unsubscribeFromIQNotification];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -296,7 +284,7 @@
         return;
     }
     
-    if (![self isString:self.model.conversationTitle equalToString:self.conversationTitle]) {
+    if (![self isString:self.model.conversationTitle equalToString:self.model.conversation.title]) {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"Save changes?", nil)
                  cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
@@ -413,20 +401,6 @@
 - (BOOL)isString:(NSString*)firstString equalToString:(NSString*)secondString {
     BOOL stringsIsEmpty = (firstString == nil && secondString == nil);
     return stringsIsEmpty || (!stringsIsEmpty && [firstString isEqualToString:secondString]);
-}
-
-#pragma mark - Notifications
-
-- (void)subscribeToIQNotificationBlock:(void (^)(IQCNotification *))block {
-    _conversationDidRemovedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQConversationDidRemovedNotification
-                                                                                         queue:nil
-                                                                                    usingBlock:block];
-}
-
-- (void)unsubscribeFromIQNotification {
-    if (_conversationDidRemovedObserver) {
-        [[IQNotificationCenter defaultCenter] removeObserver:_conversationDidRemovedObserver];
-    }
 }
 
 @end

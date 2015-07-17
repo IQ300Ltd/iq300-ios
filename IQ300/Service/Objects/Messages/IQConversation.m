@@ -26,6 +26,7 @@
 @dynamic discussion;
 @dynamic lastComment;
 @dynamic users;
+@dynamic removed;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
@@ -57,6 +58,40 @@
     [mapping addPropertyMapping:relation];
 
     return mapping;
+}
+
++ (void)clearRemovedConversations {
+    NSManagedObjectContext *context = [IQService sharedService].context;
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQConversation"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"removed == %@", @(YES)]];
+    
+    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+        for (IQConversation *object in objects) {
+            [object removeLocalConversation];
+        }
+    }];
+}
+
+- (void)removeLocalConversation {
+    NSManagedObjectContext *context = self.managedObjectContext;
+    
+    [context deleteObject:self];
+    [context deleteObject:self.discussion];
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQComment"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"discussionId == %@", self.discussion.discussionId]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+        if ([objects count] > 0) {
+            for (NSManagedObject * object in objects) {
+                [context deleteObject:object];
+            }
+            
+            NSError * saveError = nil;
+            if(![context saveToPersistentStore:&saveError] ) {
+                NSLog(@"Failed save to presistent store after comments removed");
+            }
+        }
+    }];
 }
 
 + (void)removeLocalConversationWithId:(NSNumber *)conversationId {

@@ -38,7 +38,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     NSFetchedResultsController * _fetchController;
     __weak id _newMessageObserver;
     __weak id _messageViewedObserver;
-    __weak id _conversationDidRemovedObserver;
     NSDate * _lastViewDate;
     NSDateFormatter * _dateFormatter;
     NSMutableDictionary * _expandedCells;
@@ -202,8 +201,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
-    
-    
     BOOL hasObjects = ([_fetchController.fetchedObjects count] > 0);
     if(!hasObjects) {
         [self reloadModelWithCompletion:completion];
@@ -772,17 +769,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     _messageViewedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQMessageViewedByUserNotification
                                                                                 queue:nil
                                                                            usingBlock:messageViewedBlock];
-    
-    void (^conversationDidRemovedBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSDictionary *notificationData = notf.userInfo[IQNotificationDataKey][@"data"];
-        NSNumber *conversationId = notificationData[@"conversation_id"];
-        
-        [weakSelf conversationRemovedWithId:conversationId];
-    };
-    
-    _conversationDidRemovedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQConversationDidRemovedNotification
-                                                                                         queue:nil
-                                                                                    usingBlock:conversationDidRemovedBlock];
 }
 
 - (void)unsubscribeFromIQNotification {
@@ -792,10 +778,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     
     if (_messageViewedObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
-    }
-    
-    if (_conversationDidRemovedObserver) {
-        [[IQNotificationCenter defaultCenter] removeObserver:_conversationDidRemovedObserver];
     }
 }
 
@@ -842,33 +824,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
             }
         }];
     }
-}
-
-- (void)removeComments {
-    NSManagedObjectContext *context = [IQService sharedService].context;
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQComment"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"discussionId == %@", self.discussion.discussionId]];
-    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
-        if ([objects count] > 0) {
-            for (NSManagedObject * object in objects) {
-                [context deleteObject:object];
-            }
-            
-            NSError * saveError = nil;
-            if(![context saveToPersistentStore:&saveError] ) {
-                NSLog(@"Failed save to presistent store after comments removed");
-            }
-        }
-    }];
-}
-
-- (void)updateConversation {
-    NSManagedObjectContext *context = [IQService sharedService].context;
-    
-    NSNumber *convId = self.discussion.conversation.conversationId;
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", convId];
-    self.discussion.conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -941,12 +896,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)modelCountersDidChanged {
     if([self.delegate respondsToSelector:@selector(modelCountersDidChanged:)]) {
         [self.delegate modelCountersDidChanged:self];
-    }
-}
-
-- (void)conversationRemovedWithId:(NSNumber *)conversationId {
-    if ([self.delegate respondsToSelector:@selector(model:conversationRemovedWithId:)]) {
-        [self.delegate model:self conversationRemovedWithId:conversationId];
     }
 }
 

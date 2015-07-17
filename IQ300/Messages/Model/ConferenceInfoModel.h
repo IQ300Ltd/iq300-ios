@@ -7,12 +7,13 @@
 //
 
 #import "IQTableModel+Subclass.h"
+#import "IQConversation.h"
 
 @class IQConversationMember;
 
 @interface ConferenceInfoModel : IQTableModel
 
-@property (nonatomic, strong) NSNumber * conversationId;
+@property (nonatomic, strong) IQConversation *conversation;
 @property (nonatomic, strong) NSString * conversationTitle;
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, readonly) NSArray * users;

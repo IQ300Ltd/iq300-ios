@@ -42,6 +42,8 @@
     UISwipeGestureRecognizer * _tableGesture;
     CGPoint _tableContentOffset;
     BOOL _blockUpdation;
+    
+    __weak id _conversationDidRemovedObserver;
 }
 
 @end
@@ -101,12 +103,7 @@
          void (^completiation)(NSError * error) = ^(NSError * error) {
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          };
-         
-         if (_blockUpdation) {
-             completiation(nil);
-         } else {
-             [weakSelf.model loadNextPartWithCompletion:completiation];
-         }
+         [weakSelf.model loadNextPartWithCompletion:completiation];
      }
      position:SVPullToRefreshPositionTop];
     
@@ -127,14 +124,17 @@
                                                                       action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
-    UIImage * rightButtonImage = ([self.model isDiscussionConference]) ? [UIImage imageNamed:@"edit_conference_icon.png"] :
-                                                                         [UIImage imageNamed:@"add_user_icon.png"];
-    UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:rightButtonImage
-                                                                        style:UIBarButtonItemStylePlain
-                                                                       target:self
-                                                                       action:@selector(rightBarButtonAction:)];
-    self.navigationItem.rightBarButtonItem = rightBarButton;
-    self.navigationItem.rightBarButtonItem.enabled = !_blockUpdation;
+    if (!_blockUpdation) {
+        UIImage * rightButtonImage = ([self.model isDiscussionConference]) ? [UIImage imageNamed:@"edit_conference_icon.png"] :
+        [UIImage imageNamed:@"add_user_icon.png"];
+        UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:rightButtonImage
+                                                                            style:UIBarButtonItemStylePlain
+                                                                           target:self
+                                                                           action:@selector(rightBarButtonAction:)];
+        self.navigationItem.rightBarButtonItem = rightBarButton;
+    } else {
+        self.navigationItem.rightBarButtonItem.enabled = nil;
+    }
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
@@ -165,13 +165,15 @@
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
-    [self updateTitle];
+    
+    [self subscribeToConversationIQNotification];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     [self updateModel];
+    [self updateTitle];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -276,23 +278,6 @@
     }
 }
 
-- (void)model:(DiscussionModel *)model conversationRemovedWithId:(NSNumber *)conversationId {
-    if ([model.discussion.conversation.conversationId isEqualToNumber:conversationId]) {
-        [UIAlertView showWithTitle:@""
-                           message:NSLocalizedString(@"Administrator deleted You from this chat", nil)
-                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                 otherButtonTitles:nil
-                          tapBlock:nil];
-
-        _blockUpdation = YES;
-        
-        _mainView.inputView.sendButton.enabled = NO;
-        _mainView.inputView.attachButton.enabled = NO;
-        _mainView.inputView.commentTextView.editable = NO;
-        self.navigationItem.rightBarButtonItem.enabled = NO;
-    }
-}
-
 #pragma mark - Scroll Gesture Delegate
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -393,29 +378,15 @@
 }
 
 - (void)backButtonAction:(id)sender {
-    if (_blockUpdation) {
-        [self.model removeComments];
-    }
-    
+    [IQConversation clearRemovedConversations];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)rightBarButtonAction:(id)sender {
     if ([self.model isDiscussionConference]) {
-        ConferenceInfoController * controller = [[ConferenceInfoController alloc] init];
-        controller.conversationId = self.model.discussion.conversation.conversationId;
-        controller.conversationTitle = self.model.discussion.conversation.title;
+        ConferenceInfoController *controller = [[ConferenceInfoController alloc] init];
+        controller.model.conversation = self.model.discussion.conversation;
         controller.hidesBottomBarWhenPushed = YES;
-        
-        __weak typeof(self) weakSelf = self;
-        [controller subscribeToIQNotificationBlock:^(IQCNotification *notf) {
-            NSDictionary *notificationData = notf.userInfo[IQNotificationDataKey][@"data"];
-            NSNumber *conversationId = notificationData[@"conversation_id"];
-            
-            [weakSelf.navigationController popViewControllerAnimated:YES];
-            [weakSelf model:weakSelf.model conversationRemovedWithId:conversationId];
-        }];
-        
         [self.navigationController pushViewController:controller animated:YES];
     }
     else {
@@ -802,10 +773,61 @@
     [_mainView.inputView.commentTextView resignFirstResponder];
 }
 
+#pragma mark - Conversation Notification
+
+- (void)subscribeToConversationIQNotification {
+    [self unsubscribeFromConversationIQNotification];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^conversationDidRemovedBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSDictionary *notificationData = notf.userInfo[IQNotificationDataKey][@"data"];
+        NSNumber *conversationId = notificationData[@"conversation_id"];
+        
+        [weakSelf conversationRemovedWithId:conversationId];
+    };
+    
+    _conversationDidRemovedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQConversationDidRemovedNotification
+                                                                                         queue:nil
+                                                                                    usingBlock:conversationDidRemovedBlock];
+}
+
+- (void)unsubscribeFromConversationIQNotification {
+    if (_conversationDidRemovedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_conversationDidRemovedObserver];
+    }
+}
+
+- (void)conversationRemovedWithId:(NSNumber *)conversationId {
+    if ([self.model.discussion.conversation.conversationId isEqualToNumber:conversationId]) {
+        [self.navigationController popToViewController:self animated:YES];
+        
+        [UIAlertView showWithTitle:@""
+                           message:NSLocalizedString(@"Administrator deleted You from this chat", nil)
+                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                 otherButtonTitles:nil
+                          tapBlock:nil];
+        
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+        
+        self.model.discussion.conversation.removed = @(YES);
+        NSError *__autoreleasing saveError = nil;
+        if(![self.model.discussion.conversation.managedObjectContext saveToPersistentStore:&saveError]) {
+            NSLog(@"Failed save to presistent store conversation with removed mark");
+        }
+        
+        _blockUpdation = YES;
+        
+        _mainView.inputView.sendButton.enabled = NO;
+        _mainView.inputView.attachButton.enabled = NO;
+        _mainView.inputView.commentTextView.editable = NO;
+        
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+}
+
 #pragma mark - ContactPickerController delegate
 
 - (void)updateTitle {
-    [self.model updateConversation];
     self.title = self.model.discussion.conversation.title;
 }
 
@@ -830,6 +852,8 @@
 }
 
 - (void)dealloc {
+    [self unsubscribeFromConversationIQNotification];
+    
     [self.model setSubscribedToNotifications:NO];
     [self.model setDelegate:nil];
 }

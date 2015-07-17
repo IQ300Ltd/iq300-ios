@@ -50,6 +50,11 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
     return self;
 }
 
+- (void)setConversation:(IQConversation *)conversation {
+    _conversation = conversation;
+    _conversationTitle = conversation.title;
+}
+
 - (NSArray*)users {
     return [_members copy];
 }
@@ -129,7 +134,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError *))completion {
-    [[IQService sharedService] membersForConversation:self.conversationId
+    [[IQService sharedService] membersForConversation:self.conversation.conversationId
                                               handler:^(BOOL success, NSArray * members, NSData *responseData, NSError *error) {
                                                   if (success) {
                                                       _members = [[members sortedArrayUsingDescriptors:self.sortDescriptors] mutableCopy];
@@ -162,17 +167,17 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 
 - (void)saveConversationTitleWithCompletion:(void (^)(NSError *))completion {
     [[IQService sharedService] updateConversationTitle:self.conversationTitle
-                                        conversationId:self.conversationId
+                                        conversationId:self.conversation.conversationId
                                                handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                    if (success) {
+                                                       [self updateConversationWithTitle:self.conversationTitle];
+                                                       
                                                        [self modelWillChangeContent];
                                                        [self modelDidChangeObject:nil
                                                                       atIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                                                                     forChangeType:NSFetchedResultsChangeUpdate
                                                                      newIndexPath:nil];
                                                        [self modelDidChangeContent];
-                                                       
-                                                       [self updateConversationWithTitle:self.conversationTitle];
                                                    }
                                                    
                                                    if (completion) {
@@ -182,25 +187,18 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 }
 
 - (void)updateConversationWithTitle:(NSString *)title {
-    NSManagedObjectContext *context = [IQService sharedService].context;
+    self.conversation.title = title;
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", self.conversationId];
-    IQConversation *conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
-    
-    if (conversation) {
-        conversation.title = title;
-        
-        NSError * saveError = nil;
-        if(![context saveToPersistentStore:&saveError] ) {
-            NSLog(@"Failed save to presistent store conversation with new title");
-        }
+    NSError *__autoreleasing saveError = nil;
+    if(![self.conversation.managedObjectContext saveToPersistentStore:&saveError]) {
+        NSLog(@"Failed save to presistent store conversation with new title");
     }
 }
 
 - (void)addMembersFromUsers:(NSArray*)users completion:(void (^)(NSError *))completion {
     NSArray * userIds = [users valueForKey:@"userId"];
     [[IQService sharedService] addMembersWithIds:userIds
-                                  toConversation:self.conversationId
+                                  toConversation:self.conversation.conversationId
                                          handler:^(BOOL success, NSData *responseData, NSError *error) {
                                              if (success) {
                                                  [self wrapUsersToMemebers:users];
@@ -219,7 +217,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 - (void)removeMember:(IQConversationMember*)member completion:(void (^)(NSError *))completion {
     if ([_members containsObject:member]) {
         [[IQService sharedService] removeMemberWithId:member.userId
-                                     fromConversation:self.conversationId
+                                     fromConversation:self.conversation.conversationId
                                               handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                   if (success) {
                                                       NSUInteger index = [_members indexOfObject:member];
@@ -240,12 +238,12 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 }
 
 - (void)leaveConversationWithCompletion:(void (^)(NSError *))completion {
-    [[IQService sharedService] leaveConversationWithId:self.conversationId
+    [[IQService sharedService] leaveConversationWithId:self.conversation.conversationId
                                                handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                    if (success) {
                                                        [GAIService sendEventForCategory:GAIMessagesEventCategory
                                                                                  action:@"event_action_conversation_leave"
-                                                                                  label:[self.conversationId stringValue]];
+                                                                                  label:[self.conversation.conversationId stringValue]];
                                                    }
                                                    if(completion) {
                                                        completion(error);
@@ -267,7 +265,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 
 
 - (void)removeConversation {
-    [IQConversation removeLocalConversationWithId:self.conversationId];
+    [self.conversation removeLocalConversation];
 }
 
 @end

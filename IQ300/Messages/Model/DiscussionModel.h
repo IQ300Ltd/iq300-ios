@@ -18,7 +18,6 @@
 
 @optional
 - (void)model:(DiscussionModel*)model newComment:(IQComment*)comment;
-- (void)model:(DiscussionModel*)model conversationRemovedWithId:(NSNumber *)conversationId;
 
 @end
 
@@ -61,9 +60,5 @@
 - (void)markDiscussionAsReadedWithCompletion:(void (^)(NSError * error))completion;
 
 - (BOOL)isDiscussionConference;
-
-- (void)removeComments;
-
-- (void)updateConversation;
 
 @end
