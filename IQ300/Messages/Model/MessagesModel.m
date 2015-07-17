@@ -407,47 +407,39 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                     handler:^(BOOL success, ConversationDeletedObjects *object, NSData *responseData, NSError *error) {
                                                         if (success) {
                                                             [MessagesModel setLastRequestDate:object.serverDate];
-                                                            [self markAsRemovedLocalConversationsWithIds:object.objectIds];
+                                                            [self removeLocalConversationsWithIds:object.objectIds];
                                                         }
                                                     }];
 }
 
-- (void)markAsRemovedLocalConversationsWithIds:(NSArray*)conversationIds {
+- (void)markAsRemovedLocalConversationWithId:(NSNumber *)conversationId {
     NSManagedObjectContext *context = [IQService sharedService].context;
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQConversation"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"conversationId IN %@", conversationIds]];
     
-    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
-        if ([objects count] > 0) {
-            for (IQConversation *object in objects) {
-                object.removed = @(YES);
-            }
-            
-            NSError * saveError = nil;
-            if(![context saveToPersistentStore:&saveError] ) {
-                NSLog(@"Failed save to presistent store after comments removed");
-            }
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", conversationId];
+    IQConversation *conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
+    if (![conversation.removed boolValue]) {
+        conversation.removed = @(YES);
+        
+        NSError *__autoreleasing saveError = nil;
+        if(![context saveToPersistentStore:&saveError]) {
+            NSLog(@"Failed save to presistent store conversation with removed mark");
         }
-    }];
+    }
 }
 
-#warning
-
-//- (void)clearRemovedConversations {
-//    [IQConversation clearRemovedConversations];
-//    
-//    NSManagedObjectContext *context = [IQService sharedService].context;
-//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQConversation"];
-//    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"removed == %@", @(YES)]];
-//    
-//    
-//}
-//
-//- (void)removeLocalConversationsWithIds:(NSArray*)conversationIds {
-//    for (NSNumber *conversationId in conversationIds) {
-//        [IQConversation removeLocalConversationWithId:conversationId];
-//    }
-//}
+- (void)removeLocalConversationsWithIds:(NSArray *)conversationIds {
+    NSMutableArray *ids = [[NSMutableArray alloc] initWithArray:conversationIds];
+    if (self.activeConversationId != nil) {
+        if ([conversationIds containsObject:self.activeConversationId]) {
+            [ids removeObject:self.activeConversationId];
+            [self markAsRemovedLocalConversationWithId:self.activeConversationId];
+        }
+    }
+    
+    for (NSNumber *conversationId in conversationIds) {
+        [IQConversation removeLocalConversationWithId:conversationId context:[IQService sharedService].context];
+    }
+}
 
 #pragma mark - NSFetchedResultsControllerDelegate
 

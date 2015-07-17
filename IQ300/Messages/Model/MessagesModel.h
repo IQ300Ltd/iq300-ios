@@ -16,6 +16,7 @@
 @property (nonatomic, assign) BOOL loadUnreadOnly;
 @property (nonatomic, strong) NSString * filter;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
+@property (nonatomic, strong) NSNumber *activeConversationId;
 
 + (void)createConversationWithRecipientId:(NSNumber*)recipientId completion:(void (^)(IQConversation * conversation, NSError * error))completion;
 + (void)createConferenceWithUserIds:(NSArray*)userIds completion:(void (^)(IQConversation * conversation, NSError * error))completion;

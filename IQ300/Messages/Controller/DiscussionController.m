@@ -30,6 +30,7 @@
 #import "ContactPickerController.h"
 #import "TaskTabController.h"
 #import "ConferenceInfoController.h"
+#import "IQService.h"
 
 #define SECTION_HEIGHT 12
 
@@ -109,6 +110,19 @@
     
     [_mainView.inputView.commentTextView setDelegate:(id<UITextViewDelegate>)self];
     _mainView.tableView.hidden = YES;
+    
+    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(backButtonAction:)];
+    self.navigationItem.leftBarButtonItem = backBarButton;
+    
+    NSString *imageName = [self.model isDiscussionConference] ? @"edit_conference_icon.png" : @"add_user_icon.png";
+    UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName]
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(rightBarButtonAction:)];
+    self.navigationItem.rightBarButtonItem = rightBarButton;
 }
 
 - (BOOL)isLeftMenuEnabled {
@@ -117,24 +131,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(backButtonAction:)];
-    self.navigationItem.leftBarButtonItem = backBarButton;
-    
-    if (!_blockUpdation) {
-        UIImage * rightButtonImage = ([self.model isDiscussionConference]) ? [UIImage imageNamed:@"edit_conference_icon.png"] :
-        [UIImage imageNamed:@"add_user_icon.png"];
-        UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:rightButtonImage
-                                                                            style:UIBarButtonItemStylePlain
-                                                                           target:self
-                                                                           action:@selector(rightBarButtonAction:)];
-        self.navigationItem.rightBarButtonItem = rightBarButton;
-    } else {
-        self.navigationItem.rightBarButtonItem.enabled = nil;
-    }
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
@@ -378,7 +374,7 @@
 }
 
 - (void)backButtonAction:(id)sender {
-    [IQConversation clearRemovedConversations];
+    [IQConversation clearRemovedConversationsInContext:[IQService sharedService].context];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

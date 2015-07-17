@@ -26,7 +26,10 @@
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 
-+ (void)clearRemovedConversations;
-- (void)removeLocalConversation;
++ (void)clearRemovedConversationsInContext:(NSManagedObjectContext *)context;
++ (void)removeLocalConversationWithId:(NSNumber *)conversationId
+                              context:(NSManagedObjectContext *)context;
+
+- (void)removeLocalConversationInContext:(NSManagedObjectContext *)context;
 
 @end

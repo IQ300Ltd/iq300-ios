@@ -265,7 +265,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 
 
 - (void)removeConversation {
-    [self.conversation removeLocalConversation];
+    [self.conversation removeLocalConversationInContext:[IQService sharedService].context];
 }
 
 @end

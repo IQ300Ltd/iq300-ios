@@ -60,21 +60,25 @@
     return mapping;
 }
 
-+ (void)clearRemovedConversations {
-    NSManagedObjectContext *context = [IQService sharedService].context;
++ (void)clearRemovedConversationsInContext:(NSManagedObjectContext *)context {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQConversation"];
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"removed == %@", @(YES)]];
     
     [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
         for (IQConversation *object in objects) {
-            [object removeLocalConversation];
+            [object removeLocalConversationInContext:context];
         }
     }];
 }
 
-- (void)removeLocalConversation {
-    NSManagedObjectContext *context = self.managedObjectContext;
++ (void)removeLocalConversationWithId:(NSNumber *)conversationId context:(NSManagedObjectContext *)context {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", conversationId];
     
+    IQConversation *conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
+    [conversation removeLocalConversationInContext:context];
+}
+
+- (void)removeLocalConversationInContext:(NSManagedObjectContext *)context {
     [context deleteObject:self];
     [context deleteObject:self.discussion];
     
@@ -92,21 +96,6 @@
             }
         }
     }];
-}
-
-+ (void)removeLocalConversationWithId:(NSNumber *)conversationId {
-    NSManagedObjectContext *context = [IQService sharedService].context;
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", conversationId];
-    
-    IQConversation *conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
-    if (!conversation) {
-        return;
-    }
-    
-    IQDiscussion *discassion = conversation.discussion;
-    
-    [context deleteObject:conversation];
-    [context deleteObject:discassion];
 }
 
 @end

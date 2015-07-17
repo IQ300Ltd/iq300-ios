@@ -121,17 +121,18 @@
                                              selector:@selector(countersDidChangedNotification:)
                                                  name:CountersDidChangedNotification
                                                object:nil];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
     
     UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"createNewMessage.png"]
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
                                                                        action:@selector(createNewAction:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    self.model.activeConversationId = nil;
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
@@ -214,6 +215,8 @@
     controller.title = conversation.title;
     controller.model = model;
 
+    self.model.activeConversationId = conversation.conversationId;
+    
     [self.navigationController pushViewController:controller animated:YES];
     
     __weak typeof(self) weakSelf = self;
