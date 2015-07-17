@@ -300,7 +300,7 @@
     
     if (![self isString:self.model.conversationTitle equalToString:self.model.conversation.title]) {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                           message:NSLocalizedString(@"Save changes?", nil)
+                           message:NSLocalizedString(@"Save the name of the group?", nil)
                  cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
                  otherButtonTitles:@[NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil)]
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
