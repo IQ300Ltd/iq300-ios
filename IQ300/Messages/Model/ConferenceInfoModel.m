@@ -263,10 +263,4 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
     [_members sortUsingDescriptors:self.sortDescriptors];
 }
 
-
-
-- (void)removeConversation {
-    [self.conversation removeLocalConversationInContext:[IQService sharedService].context];
-}
-
 @end
