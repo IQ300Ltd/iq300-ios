@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSNumber * ownerId;
 @property (nonatomic, strong) NSDate * createDate;
 @property (nonatomic, strong) NSNumber * creatorId;
+@property (nonatomic, strong) NSNumber * adminId;
 @property (nonatomic, strong) NSString * type;
 @property (nonatomic, strong) NSNumber * unreadCommentsCount;
 @property (nonatomic, strong) NSNumber * totalCommentsCount;

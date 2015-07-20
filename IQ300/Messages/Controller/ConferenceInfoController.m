@@ -89,6 +89,7 @@
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
+    [self updateRightBarButtonItem];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -359,23 +360,29 @@
     controller.delegate = self;
     [controller setDoneButtonTitle:NSLocalizedString(@"Add", nil)];
     [self.navigationController pushViewController:controller animated:YES];
-
 }
 
 - (void)layoutTableView {
     CGRect actualBounds = self.view.bounds;
     
-    CGSize leaveButtonSize = CGSizeMake(300, 40);
-    _leaveButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - leaveButtonSize.width) / 2.0f,
-                                    actualBounds.origin.y + actualBounds.size.height - leaveButtonSize.height - 10.0f - _tableViewBottomMarging,
-                                    leaveButtonSize.width,
-                                    leaveButtonSize.height);
     
+    CGFloat tableOffset = (!self.model.isAdministrator) ? BOTTOM_VIEW_HEIGHT : 0.0f;
+    
+    if (!self.model.isAdministrator) {
+        CGSize leaveButtonSize = CGSizeMake(300, 40);
+        _leaveButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - leaveButtonSize.width) / 2.0f,
+                                        actualBounds.origin.y + actualBounds.size.height - leaveButtonSize.height - 10.0f - _tableViewBottomMarging,
+                                        leaveButtonSize.width,
+                                        leaveButtonSize.height);
+    }
+    else {
+        _leaveButton.frame = CGRectZero;
+    }
     
     self.tableView.frame = CGRectMake(actualBounds.origin.x,
                                       actualBounds.origin.y,
                                       actualBounds.size.width,
-                                      actualBounds.size.height - BOTTOM_VIEW_HEIGHT - _tableViewBottomMarging);
+                                      actualBounds.size.height - _tableViewBottomMarging - tableOffset);
     
     self.noDataLabel.frame = self.tableView.frame;
 }
@@ -385,7 +392,6 @@
         [self.model updateModelWithCompletion:^(NSError *error) {
             if(!error) {                
                 [self.tableView reloadData];
-                [self updateRightBarButtonItem];
             }
             
             [self updateNoDataLabelVisibility];

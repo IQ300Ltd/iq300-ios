@@ -53,6 +53,12 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 - (void)setConversation:(IQConversation *)conversation {
     _conversation = conversation;
     _conversationTitle = conversation.title;
+    if ([IQSession defaultSession].userId) {
+        _isAdministrator = [self.conversation.adminId isEqualToNumber:[IQSession defaultSession].userId];
+    }
+    else {
+        _isAdministrator = NO;
+    }
 }
 
 - (NSArray*)users {
@@ -60,7 +66,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 }
 
 - (BOOL)isAdministrator {
-    return _isAdministrator;
+   return _isAdministrator;
 }
 
 - (Class)cellClassForIndexPath:(NSIndexPath*)indexPath {
@@ -130,7 +136,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 }
 
 - (BOOL)isDeleteEnableForForItemAtIndexPath:(NSIndexPath*)indexPath {
-    return (_isAdministrator && indexPath.section != 1);
+    return (self.isAdministrator && indexPath.section != 1);
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError *))completion {
@@ -144,14 +150,6 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
                                                       
                                                       if ([admins count] > 0) {
                                                           [_members removeObjectsInArray:admins];
-                                                          
-                                                          IQConversationMember * admin = [_admins firstObject];
-                                                          if ([IQSession defaultSession].userId) {
-                                                              _isAdministrator = [admin.userId isEqualToNumber:[IQSession defaultSession].userId];
-                                                          }
-                                                          else {
-                                                              _isAdministrator = NO;
-                                                          }
                                                       }
                                                   }
                                                   

@@ -20,6 +20,7 @@
 @dynamic ownerId;
 @dynamic createDate;
 @dynamic creatorId;
+@dynamic adminId;
 @dynamic type;
 @dynamic unreadCommentsCount;
 @dynamic totalCommentsCount;
@@ -37,6 +38,7 @@
                                                   @"recipient_id"           : @"ownerId",
                                                   @"created_at"             : @"createDate",
                                                   @"creator_id"             : @"creatorId",
+                                                  @"admin_id"               : @"adminId",
                                                   @"kind"                   : @"type",
                                                   @"newest_comments_count"  : @"unreadCommentsCount",
                                                   @"comments_count"         : @"totalCommentsCount"
