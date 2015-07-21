@@ -11,7 +11,7 @@
 
 #import "ConferenceInfoModel.h"
 #import "IQConversationMember.h"
-#import "IQEditableTextCell.h"
+#import "IQCEditableTextCell.h"
 #import "ContactInfoCell.h"
 #import "IQConversationMember.h"
 #import "IQService+Messages.h"
@@ -71,7 +71,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 
 - (Class)cellClassForIndexPath:(NSIndexPath*)indexPath {
     if (indexPath.section == 0 && indexPath.row == 0) {
-        return [IQEditableTextCell class];
+        return [IQCEditableTextCell class];
     }
     
     return [ContactInfoCell class];
@@ -98,8 +98,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    BOOL isEditCellPath = (indexPath.section == 0 && indexPath.row == 0);
-    Class cellClass = (isEditCellPath) ? [IQEditableTextCell class] : [ContactInfoCell class];
+    Class cellClass = [self cellClassForIndexPath:indexPath];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
                             reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }

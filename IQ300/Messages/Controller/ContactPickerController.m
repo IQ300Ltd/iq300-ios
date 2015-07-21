@@ -127,8 +127,13 @@
 
 #pragma mark - TextField Delegate
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    _mainView.clearTextFieldButton.hidden = (textField.text.length == 0);
+}
+
 - (void)textFieldDidChange:(UITextField *)textField {
     [self filterWithText:textField.text];
+    _mainView.clearTextFieldButton.hidden = (textField.text.length == 0);
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -236,6 +241,7 @@
 }
 
 - (void)clearFilter {
+    _mainView.clearTextFieldButton.hidden = YES;
     _mainView.userTextField.text = nil;
     [self filterWithText:nil];
 }

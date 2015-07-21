@@ -241,6 +241,10 @@
 
 #pragma mark - TextField Delegate
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    _messagesView.clearTextFieldButton.hidden = (textField.text.length == 0);
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
@@ -248,6 +252,7 @@
 
 - (void)textFieldDidChange:(UITextField *)textField {
     [self filterWithText:textField.text];
+    _messagesView.clearTextFieldButton.hidden = (textField.text.length == 0);
 }
 
 #pragma mark - Keyboard Helpers
@@ -460,6 +465,7 @@
 }
 
 - (void)clearSearch {
+    _messagesView.clearTextFieldButton.hidden = YES;
     _messagesView.searchBar.text = nil;
     [self filterWithText:nil];
 }

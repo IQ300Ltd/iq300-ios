@@ -739,6 +739,8 @@
 		73D7F1F41ADE957F00023120 /* CommunitiesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1F31ADE957F00023120 /* CommunitiesController.m */; };
 		73D7F1F71ADE95A900023120 /* CommunitiesModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1F61ADE95A900023120 /* CommunitiesModel.m */; };
 		73DA02EE1B1D9A5B00CA24E5 /* LeftSideTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DA02EC1B1D8E8800CA24E5 /* LeftSideTabBar.m */; };
+		73DBC6AA1B5E34C300D02AD5 /* IQCEditableTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DBC6A91B5E34C300D02AD5 /* IQCEditableTextCell.m */; };
+		73DBC6AB1B5E34C300D02AD5 /* IQCEditableTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DBC6A91B5E34C300D02AD5 /* IQCEditableTextCell.m */; };
 		73DD80091A68E83800A6ADA5 /* IQNotificationIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DD80081A68E83800A6ADA5 /* IQNotificationIds.m */; };
 		73E426001AAEC6BF00CD2093 /* UserPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E425FF1AAEC6BF00CD2093 /* UserPickerController.m */; };
 		73E426031AAEE6CA00CD2093 /* UsersPickerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E426021AAEE6CA00CD2093 /* UsersPickerModel.m */; };
@@ -1418,6 +1420,8 @@
 		73D7F1F61ADE95A900023120 /* CommunitiesModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommunitiesModel.m; sourceTree = "<group>"; };
 		73DA02EB1B1D8E8800CA24E5 /* LeftSideTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftSideTabBar.h; sourceTree = "<group>"; };
 		73DA02EC1B1D8E8800CA24E5 /* LeftSideTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeftSideTabBar.m; sourceTree = "<group>"; };
+		73DBC6A81B5E34C300D02AD5 /* IQCEditableTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQCEditableTextCell.h; sourceTree = "<group>"; };
+		73DBC6A91B5E34C300D02AD5 /* IQCEditableTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQCEditableTextCell.m; sourceTree = "<group>"; };
 		73DD80071A68E83800A6ADA5 /* IQNotificationIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationIds.h; sourceTree = "<group>"; };
 		73DD80081A68E83800A6ADA5 /* IQNotificationIds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationIds.m; sourceTree = "<group>"; };
 		73E425FE1AAEC6BF00CD2093 /* UserPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPickerController.h; sourceTree = "<group>"; };
@@ -1620,6 +1624,8 @@
 				73176C981B3ADDD700E6AC60 /* IQDetailsTextCell.m */,
 				73176C991B3ADDD700E6AC60 /* IQEditableTextCell.h */,
 				73176C9A1B3ADDD700E6AC60 /* IQEditableTextCell.m */,
+				73DBC6A81B5E34C300D02AD5 /* IQCEditableTextCell.h */,
+				73DBC6A91B5E34C300D02AD5 /* IQCEditableTextCell.m */,
 				73EFAA001B43DD3B007FD5D7 /* IQEMultiLineTextCell.h */,
 				73EFAA011B43DD3B007FD5D7 /* IQEMultiLineTextCell.m */,
 				73176C9B1B3ADDD700E6AC60 /* IQSelectableTextCell.h */,
@@ -3326,6 +3332,7 @@
 				73840DC71B1C75A500BCEAFC /* AppDelegate.m in Sources */,
 				73840DC81B1C75A500BCEAFC /* ManagedTodoListModel.m in Sources */,
 				730BE3FD1B3D235400E26994 /* IQFeedbackType.m in Sources */,
+				73DBC6AB1B5E34C300D02AD5 /* IQCEditableTextCell.m in Sources */,
 				73840DC91B1C75A500BCEAFC /* MessagesView.m in Sources */,
 				73840DCA1B1C75A500BCEAFC /* ALAssetInputStream.m in Sources */,
 				730BE4021B3D298900E26994 /* IQFeedbacksHolder.m in Sources */,
@@ -3640,6 +3647,7 @@
 				73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */,
 				738EF82D1A9CB8D300894755 /* IQService+Tasks.m in Sources */,
 				737E7C551A0CA88E00E8BB81 /* MenuSectionHeader.m in Sources */,
+				73DBC6AA1B5E34C300D02AD5 /* IQCEditableTextCell.m in Sources */,
 				73D7F1CC1ADE93D600023120 /* TaskActivitiesModel.m in Sources */,
 				73C4A6821A3EFB4E003E1242 /* NSString+UUID.m in Sources */,
 				732952B51A692EE90066B336 /* LCLLogFile.m in Sources */,

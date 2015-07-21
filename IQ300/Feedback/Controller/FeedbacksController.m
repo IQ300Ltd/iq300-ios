@@ -173,6 +173,10 @@
 
 #pragma mark - TextField Delegate
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    _feedbacksView.clearTextFieldButton.hidden = (textField.text.length == 0);
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
@@ -180,6 +184,7 @@
 
 - (void)textFieldDidChange:(UITextField *)textField {
     [self filterWithText:textField.text];
+    _feedbacksView.clearTextFieldButton.hidden = (textField.text.length == 0);
 }
 
 #pragma mark - Keyboard Helpers
@@ -257,6 +262,7 @@
 }
 
 - (void)clearSearch {
+    _feedbacksView.clearTextFieldButton.hidden = YES;
     _feedbacksView.searchBar.text = nil;
     [self filterWithText:nil];
 }

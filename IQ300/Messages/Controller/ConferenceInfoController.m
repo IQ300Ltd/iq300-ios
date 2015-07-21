@@ -10,7 +10,7 @@
 #import "ExtendedButton.h"
 #import "ContactsSectionView.h"
 #import "IQSession.h"
-#import "IQEditableTextCell.h"
+#import "IQCEditableTextCell.h"
 #import "ContactPickerController.h"
 #import "ContactInfoCell.h"
 #import "IQNotificationCenter.h"
@@ -113,11 +113,15 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    if ([cell isKindOfClass:[IQEditableTextCell class]]) {
-        IQEditableTextCell * editCell = (IQEditableTextCell*)cell;
+    if ([cell isKindOfClass:[IQCEditableTextCell class]]) {
+        IQCEditableTextCell * editCell = (IQCEditableTextCell*)cell;
         editCell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
         editCell.titleTextView.delegate = (id<UITextViewDelegate>)self;
         editCell.titleTextView.editable = [self.model isAdministrator];
+        editCell.clearButtonEnabled = YES;
+        [editCell.clearTextViewButton addTarget:self
+                                          action:@selector(clearButtonAction:)
+                                forControlEvents:UIControlEventTouchUpInside];
     }
     else {
         ContactInfoCell * contactCell = (ContactInfoCell *)cell;
@@ -133,7 +137,7 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQEditableTextCell * cell = (IQEditableTextCell*)[tableView cellForRowAtIndexPath:_editableIndexPath];
+    IQCEditableTextCell * cell = (IQCEditableTextCell*)[tableView cellForRowAtIndexPath:_editableIndexPath];
     if (cell.titleTextView.isFirstResponder && ![indexPath isEqual:_editableIndexPath]) {
         //hide keyboard
         [cell.titleTextView resignFirstResponder];
@@ -199,7 +203,7 @@
     if (([newString length] <= 255)) {
         textView.text = newString;
         [self.model updateTitle:newString];
-        [self updateCellFrameIfNeed];
+        [self updateEditCellIfNeed];
     }
     
     return NO;
@@ -253,11 +257,23 @@
     return [self indexPathForCellChildView:childView.superview];
 }
 
-- (void)updateCellFrameIfNeed {
-    IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
-    CGFloat cellHeight = [IQEditableTextCell heightForItem:cell.titleTextView.text
-                                               detailTitle:cell.detailTitle
-                                                     width:self.model.cellWidth];
+- (void)clearButtonAction:(UIButton*)sender {
+    IQCEditableTextCell * cell = [self editCellForView:sender];
+    if (cell) {
+        cell.clearTextViewButton.hidden = YES;
+        cell.titleTextView.text = nil;
+        [self.model updateTitle:nil];
+        [self updateEditCellIfNeed];
+    }
+}
+
+- (void)updateEditCellIfNeed {
+    IQCEditableTextCell * cell = (IQCEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
+    CGFloat cellHeight = [IQCEditableTextCell heightForItem:cell.titleTextView.text
+                                                detailTitle:cell.detailTitle
+                                                      width:self.model.cellWidth];
+    
+    cell.clearTextViewButton.hidden = (cell.titleTextView.text.length == 0);
     
     if (cell.frame.size.height != cellHeight) {
         [self.tableView beginUpdates];
@@ -419,6 +435,14 @@
 - (BOOL)isString:(NSString*)firstString equalToString:(NSString*)secondString {
     BOOL stringsIsEmpty = (firstString == nil && secondString == nil);
     return stringsIsEmpty || (!stringsIsEmpty && [firstString isEqualToString:secondString]);
+}
+
+- (IQCEditableTextCell*)editCellForView:(UIView*)view {
+    if ([view.superview isKindOfClass:[IQCEditableTextCell class]] || !view.superview) {
+        return (IQCEditableTextCell*)view.superview;
+    }
+    
+    return [self editCellForView:view.superview];
 }
 
 @end
