@@ -127,14 +127,6 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 - (void)setFilter:(NSString *)filter {
     _filter = filter;
     _filteredIds = nil;
-    
-    [[IQService sharedService] conversationsIdsDeletedAfter:nil handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-        
-        if (success) {
-            
-        }
-        
-    }];
 }
 
 - (NSUInteger)numberOfSections {
@@ -182,12 +174,12 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError *))completion {
-    [self updateRemovedConversations];
-    
     if([_fetchController.fetchedObjects count] == 0) {
         [self reloadModelWithCompletion:completion];
     }
     else {
+        [self updateRemovedConversations];
+
         [[IQService sharedService] conversationsUnread:nil
                                                   page:@(1)
                                                    per:@(_portionLenght)
@@ -197,9 +189,10 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                    if(success) {
                                                        [self updateCounters];
                                                        [_filteredIds addObjectsFromArray:[conversations valueForKey:@"conversationId"]];
-                                                       [self reloadModelSourceControllerWithCompletion:nil];
                                                    }
                                                    
+                                                   [self reloadModelSourceControllerWithCompletion:nil];
+
                                                    if(completion) {
                                                        completion(error);
                                                    }
@@ -223,9 +216,10 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                    if(success) {
                                                        [self updateCounters];
                                                        [_filteredIds addObjectsFromArray:[conversations valueForKey:@"conversationId"]];
-                                                       [self reloadModelSourceControllerWithCompletion:nil];
                                                    }
                                                    
+                                                   [self reloadModelSourceControllerWithCompletion:nil];
+
                                                    if(completion) {
                                                        completion(error);
                                                    }
@@ -234,6 +228,8 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
+    [self updateRemovedConversations];
+
     [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                               page:@(1)
                                                per:@(_portionLenght)
@@ -243,8 +239,9 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                if(success) {
                                                    [self updateCounters];
                                                    _filteredIds = [[NSMutableSet alloc] initWithArray:[conversations valueForKey:@"conversationId"]];
-                                                   [self reloadModelSourceControllerWithCompletion:nil];
                                                }
+                                               
+                                               [self reloadModelSourceControllerWithCompletion:nil];
 
                                                if(completion) {
                                                    completion(error);
@@ -267,7 +264,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                                           cacheName:CACHE_FILE_NAME];
     }
     
-    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@ AND (lastComment != NULL)", [IQSession defaultSession].userId];
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
     if(_loadUnreadOnly) {
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"readed == NO"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];

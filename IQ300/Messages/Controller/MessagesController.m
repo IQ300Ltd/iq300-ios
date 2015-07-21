@@ -400,9 +400,7 @@
         [self showActivityIndicatorAnimated:YES completion:nil];
         
         [self.model updateModelWithCompletion:^(NSError *error) {
-            if(!error) {
-                [self.tableView reloadData];
-            }
+            [self.tableView reloadData];
             [self updateNoDataLabelVisibility];
             [self scrollToTopIfNeedAnimated:NO delay:0.0f];
             self.needFullReload = NO;
@@ -436,10 +434,8 @@
     }
     
     void(^compleationBlock)(NSError * error) = ^(NSError * error) {
-        if(!error) {
-            [self.tableView reloadData];
-            [self updateNoDataLabelVisibility];
-        }
+        [self.tableView reloadData];
+        [self updateNoDataLabelVisibility];
     };
     
     [self.model setFilter:text];
