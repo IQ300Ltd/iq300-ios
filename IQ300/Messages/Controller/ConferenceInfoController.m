@@ -118,10 +118,11 @@
         editCell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
         editCell.titleTextView.delegate = (id<UITextViewDelegate>)self;
         editCell.titleTextView.editable = [self.model isAdministrator];
-        editCell.clearButtonEnabled = YES;
+        editCell.clearButtonEnabled = [self.model isAdministrator];
+        editCell.clearTextViewButton.hidden = ![self.model isAdministrator];
         [editCell.clearTextViewButton addTarget:self
-                                          action:@selector(clearButtonAction:)
-                                forControlEvents:UIControlEventTouchUpInside];
+                                         action:@selector(clearButtonAction:)
+                               forControlEvents:UIControlEventTouchUpInside];
     }
     else {
         ContactInfoCell * contactCell = (ContactInfoCell *)cell;

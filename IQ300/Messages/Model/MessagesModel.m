@@ -433,7 +433,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         }
     }
     
-    for (NSNumber *conversationId in conversationIds) {
+    for (NSNumber *conversationId in ids) {
         [IQConversation removeLocalConversationWithId:conversationId context:[IQService sharedService].context];
     }
 }

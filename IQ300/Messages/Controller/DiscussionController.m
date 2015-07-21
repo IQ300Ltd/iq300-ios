@@ -31,6 +31,7 @@
 #import "TaskTabController.h"
 #import "ConferenceInfoController.h"
 #import "IQService.h"
+#import "IQService+Messages.h"
 
 #define SECTION_HEIGHT 12
 
@@ -567,9 +568,21 @@
     }
 }
 
+#warning -
+
 - (void)applicationWillEnterForeground {
     [self.model markDiscussionAsReadedWithCompletion:nil];
-    [self updateModel];
+    [self checkConversationAvailable];
+}
+
+- (void)checkConversationAvailable {
+    [[IQService sharedService] conversationWithId:self.model.discussion.conversation.conversationId handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+        if (!success) {
+            [self conversationRemovedWithId:self.model.discussion.conversation.conversationId];
+        } else {
+            [self updateModel];
+        }
+    }];
 }
 
 #pragma mark - Keyboard Helpers
