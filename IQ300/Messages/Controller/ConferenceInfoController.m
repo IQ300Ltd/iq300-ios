@@ -166,7 +166,7 @@
 - (void)swipeableTableViewCell:(ContactInfoCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index {
     [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                        message:NSLocalizedString(@"You agree to remove the user from the chat?", nil)
-             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+             cancelButtonTitle:NSLocalizedString(@"No", nil)
              otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
                       tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                           if (buttonIndex == 1) {
