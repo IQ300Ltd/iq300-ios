@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSString * title;
 @property (nonatomic, strong) NSNumber * ownerId;
 @property (nonatomic, strong) NSDate * createDate;
+@property (nonatomic, strong) NSDate * updateDate;
 @property (nonatomic, strong) NSNumber * creatorId;
 @property (nonatomic, strong) NSNumber * adminId;
 @property (nonatomic, strong) NSString * type;

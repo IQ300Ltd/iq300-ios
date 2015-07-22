@@ -206,7 +206,7 @@
     NSArray * companions = [[_item.discussion.users filteredSetUsingPredicate:companionsPredicate] allObjects];
     IQUser * companion = [companions lastObject];
     
-    _dateLabel.text = [_item.lastComment.createDate dateToDayTimeString];
+    _dateLabel.text = [_item.updateDate dateToDayTimeString];
     _titleLabel.hidden = ([_item.title length] == 0);
     _titleLabel.text = _item.title;
     _companion = companion;
