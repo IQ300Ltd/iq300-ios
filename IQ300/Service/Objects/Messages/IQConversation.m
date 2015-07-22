@@ -19,7 +19,6 @@
 @dynamic title;
 @dynamic ownerId;
 @dynamic createDate;
-@dynamic updateDate;
 @dynamic creatorId;
 @dynamic adminId;
 @dynamic type;

@@ -568,8 +568,6 @@
     }
 }
 
-#warning -
-
 - (void)applicationWillEnterForeground {
     [self.model markDiscussionAsReadedWithCompletion:nil];
     [self checkConversationAvailable];
