@@ -235,32 +235,51 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
     [self updateRemovedConversations];
-
-    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
-        if (!error) {
-            [self modelDidChanged];
-        }
-    }];
     
     BOOL isFilterEnabled = ([_filter length] > 0);
-    [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
-                                              page:@(1)
-                                               per:@(_portionLenght)
-                                            search:_filter
-                                              sort:SORT_DIRECTION
-                                           handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
-                                               if(success) {
-                                                   [self updateCounters];
-                                                   if (isFilterEnabled) {
-                                                       [self updateFilteredIdsWithArray:[conversations valueForKey:@"conversationId"]];
-                                                       [self reloadModelSourceControllerWithCompletion:nil];
-                                                  }
-                                               }
-                                               
-                                               if(completion) {
-                                                   completion(error);
-                                               }
-                                           }];
+    void(^conversationsRequestBlock)(NSError * error) = ^(NSError * error){
+        [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
+                                                  page:@(1)
+                                                   per:@(_portionLenght)
+                                                search:_filter
+                                                  sort:SORT_DIRECTION
+                                               handler:^(BOOL success, NSArray * conversations, NSData *responseData, NSError *error) {
+                                                   if(success) {
+                                                       [self updateCounters];
+                                                       if (isFilterEnabled) {
+                                                           [self updateFilteredIdsWithArray:[conversations valueForKey:@"conversationId"]];
+                                                           [self reloadModelSourceControllerWithCompletion:nil];
+                                                       }
+                                                   }
+                                                   
+                                                   if(completion) {
+                                                       completion(error);
+                                                   }
+                                               }];
+    };
+    
+    if (isFilterEnabled) {
+        [self filteredConversationIdsWithCompletion:^(NSArray *objects, NSError *error) {
+            if (!error) {
+                [self updateFilteredIdsWithArray:objects];
+                [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+                    if (!error) {
+                        [self modelDidChanged];
+                    }
+                }];
+                conversationsRequestBlock(nil);
+            }
+        }];
+    }
+    else {
+        [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+            if (!error) {
+                [self modelDidChanged];
+            }
+        }];
+        
+        conversationsRequestBlock(nil);
+    }
 }
 
 - (void)reloadModelSourceControllerWithCompletion:(void (^)(NSError * error))completion {
@@ -286,7 +305,8 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     
     if([_filteredIds count] > 0 || [_filter length] > 0) {
         NSArray * filteredIds = ([_filteredIds count] > 0) ? [_filteredIds allObjects] : [NSArray array];
-        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"conversationId IN %@", filteredIds];
+        NSString * filterformat = @"(SUBQUERY(users, $user, $user.displayName CONTAINS[cd] %@).@count > 0) OR (conversationId IN %@)";
+        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:filterformat, _filter, filteredIds];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, filterPredicate]];
     }
     
@@ -333,6 +353,12 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 #pragma mark - Private methods
+
+/*
+ Count conversations in context
+ 
+ @return Total number of objects in context
+*/
 
 - (NSUInteger)numberOfItems {
     NSManagedObjectContext * context = [IQService sharedService].context;
@@ -416,6 +442,34 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         [self clearModelData];
         [self modelDidChanged];
     }
+}
+
+- (void)filteredConversationIdsWithCompletion:(void (^)(NSArray *objects, NSError *error))completion {
+    NSManagedObjectContext * context = [IQService sharedService].context;
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"body CONTAINS[cd] %@", _filter];
+    NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"IQComment"];
+    [request setResultType:NSDictionaryResultType];
+    [request setPropertiesToFetch:@[@"discussionId"]];
+    [request setPredicate:predicate];
+    
+    [context executeFetchRequest:request completion:^(NSArray *objects, NSError *error) {
+        if([objects count] > 0) {
+            NSError * fetchError = nil;
+            NSArray * discussionIds = [objects valueForKey:@"discussionId"];
+            NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQConversation"];
+            [fetchRequest setResultType:NSDictionaryResultType];
+            [fetchRequest setPropertiesToFetch:@[@"conversationId"]];
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"discussion.discussionId IN %@", discussionIds]];
+            NSArray * conversationIds = [context executeFetchRequest:fetchRequest error:&fetchError];
+            
+            if (completion) {
+                completion([conversationIds valueForKey:@"conversationId"], fetchError);
+            }
+        }
+        else if(completion) {
+            completion(nil, error);
+        }
+    }];
 }
 
 #pragma mark - Clear removed conversations
