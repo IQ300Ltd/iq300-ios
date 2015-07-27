@@ -307,7 +307,7 @@
 }
 
 - (void)backButtonAction:(UIButton*)sender {
-    if ([self.model.conversationTitle isEqualToString:@""]) {
+    if (![self.model.conversationTitle length]) {
         [UIAlertView showWithTitle:@""
                            message:NSLocalizedString(@"Group name must not be empty", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
