@@ -201,7 +201,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CommentCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    UITableViewCell<IQCommentCell> * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
@@ -479,7 +479,7 @@
 }
 
 - (void)attachViewButtonAction:(UIButton*)sender {
-    CommentCell * cell = [self cellForView:sender];
+    UITableViewCell<IQCommentCell> * cell = [self cellForView:sender];
     
     if(!cell) {
         return;
@@ -538,7 +538,7 @@
 }
 
 - (void)expandButtonAction:(UIButton*)sender {
-    CommentCell * cell = [self cellForView:sender];
+    UITableViewCell<IQCommentCell> * cell = [self cellForView:sender];
     if(cell) {
         NSIndexPath * cellIndexPath = [self.tableView indexPathForCell:cell];
         BOOL isExpanded = [self.model isItemExpandedAtIndexPath:cellIndexPath];
@@ -769,9 +769,11 @@
     _documentController = nil;
 }
 
-- (CommentCell*)cellForView:(UIView*)view {
-    if ([view.superview isKindOfClass:[CommentCell class]] || !view.superview) {
-        return (CommentCell*)view.superview;
+- (UITableViewCell<IQCommentCell>*)cellForView:(UIView*)view {
+    BOOL superIsCommentCell = [view.superview isKindOfClass:[UITableViewCell class]] &&
+                              [view.superview conformsToProtocol:@protocol(IQCommentCell)];
+    if (superIsCommentCell || !view.superview) {
+        return (UITableViewCell<IQCommentCell>*)view.superview;
     }
     
     return [self cellForView:view.superview];

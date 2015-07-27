@@ -14,6 +14,7 @@
 
 @dynamic commentId;
 @dynamic localId;
+@dynamic type;
 @dynamic discussionId;
 @dynamic createDate;
 @dynamic createShortDate;
@@ -28,6 +29,7 @@
     [mapping setIdentificationAttributes:@[@"commentId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"            : @"commentId",
+                                                  @"kind"          : @"type",
                                                   @"discussion_id" : @"discussionId",
                                                   @"created_at"    : @"createDate",
                                                   @"body"          : @"body",

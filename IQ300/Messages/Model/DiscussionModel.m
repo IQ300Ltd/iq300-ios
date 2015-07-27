@@ -25,12 +25,14 @@
 #import "CommentDeletedObjects.h"
 #import "IQConversation.h"
 #import "NSManagedObject+ActiveRecord.h"
+#import "SystemCommentCell.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
 #define LAST_REQUEST_DATE_KEY @"dcomment_ids_request_date"
 
-static NSString * CReuseIdentifier = @"CReuseIdentifier";
+static NSString * CommentReuseIdentifier = @"CommentReuseIdentifier";
+static NSString * SystemReuseIdentifier = @"SystemReuseIdentifier";
 
 @interface DiscussionModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;
@@ -133,29 +135,38 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
-    return CReuseIdentifier;
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    BOOL isSystemComment = ([[comment.type lowercaseString] isEqualToString:@"system"]);
+    return (isSystemComment) ? SystemReuseIdentifier : CommentReuseIdentifier;
+}
+
+- (Class)cellClassForIndexPath:(NSIndexPath*)indexPath {
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    BOOL isSystemComment = ([[comment.type lowercaseString] isEqualToString:@"system"]);
+    return (isSystemComment) ? [SystemCommentCell class] : [CommentCell class];
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = [CommentCell class];
+    Class cellClass = [self cellClassForIndexPath:indexPath];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
-                            reuseIdentifier:CReuseIdentifier];
+                            reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
     IQComment * comment = [self itemAtIndexPath:indexPath];
+    Class<IQCommentCell> cellClass = [self cellClassForIndexPath:indexPath];
     
     if(comment && ![_expandableCells objectForKey:comment.commentId] && self.cellWidth > 0) {
-        BOOL expandable = [CommentCell cellNeedToBeExpandableForItem:comment
-                                                           сellWidth:self.cellWidth];
+        BOOL expandable = [cellClass cellNeedToBeExpandableForItem:comment
+                           сellWidth:self.cellWidth];
         
         [_expandableCells setObject:@(expandable) forKey:comment.commentId];
     }
     
     BOOL isExpanded = [self isItemExpandedAtIndexPath:indexPath];
-    return [CommentCell heightForItem:comment
-                             expanded:isExpanded
-                            сellWidth:self.cellWidth];
+    return [cellClass heightForItem:comment
+                           expanded:isExpanded
+                          сellWidth:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {

@@ -31,6 +31,7 @@
         <attribute name="createShortDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="unread" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="IQAttachment" inverseName="comments" inverseEntity="IQAttachment" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="comments" inverseEntity="IQUser" syncable="YES"/>
@@ -224,7 +225,7 @@
     <elements>
         <element name="CViewInfo" positionX="0" positionY="0" width="128" height="105"/>
         <element name="IQAttachment" positionX="0" positionY="0" width="128" height="270"/>
-        <element name="IQComment" positionX="0" positionY="0" width="128" height="210"/>
+        <element name="IQComment" positionX="0" positionY="0" width="128" height="225"/>
         <element name="IQCommunity" positionX="0" positionY="0" width="128" height="165"/>
         <element name="IQContact" positionX="0" positionY="0" width="128" height="105"/>
         <element name="IQConversation" positionX="0" positionY="0" width="128" height="240"/>

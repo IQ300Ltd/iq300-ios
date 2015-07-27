@@ -707,6 +707,8 @@
 		73D0DDFE1A95F2AB008710FF /* community_ico@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D0DDF81A95F2AB008710FF /* community_ico@2x.png */; };
 		73D0DDFF1A95F2AB008710FF /* message_blue_buble.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D0DDF91A95F2AB008710FF /* message_blue_buble.png */; };
 		73D0DE001A95F2AB008710FF /* message_blue_buble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73D0DDFA1A95F2AB008710FF /* message_blue_buble@2x.png */; };
+		73D256EE1B6603AC00EBE118 /* SystemCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D256ED1B6603AC00EBE118 /* SystemCommentCell.m */; };
+		73D256EF1B6603AC00EBE118 /* SystemCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D256ED1B6603AC00EBE118 /* SystemCommentCell.m */; };
 		73D260CE1AE0ED460009CC38 /* TaskExecutersCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260CD1AE0ED460009CC38 /* TaskExecutersCell.m */; };
 		73D260D31AE0FA070009CC38 /* TaskCommunityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260D21AE0FA070009CC38 /* TaskCommunityCell.m */; };
 		73D3DF281AF0FB14000DD34F /* SubMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D3DF271AF0FB14000DD34F /* SubMenuCell.m */; };
@@ -1358,6 +1360,9 @@
 		73D0DDF81A95F2AB008710FF /* community_ico@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "community_ico@2x.png"; sourceTree = "<group>"; };
 		73D0DDF91A95F2AB008710FF /* message_blue_buble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = message_blue_buble.png; sourceTree = "<group>"; };
 		73D0DDFA1A95F2AB008710FF /* message_blue_buble@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "message_blue_buble@2x.png"; sourceTree = "<group>"; };
+		73D256EC1B6603AC00EBE118 /* SystemCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemCommentCell.h; sourceTree = "<group>"; };
+		73D256ED1B6603AC00EBE118 /* SystemCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SystemCommentCell.m; sourceTree = "<group>"; };
+		73D256F01B66040D00EBE118 /* IQCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQCommentCell.h; sourceTree = "<group>"; };
 		73D260CC1AE0ED460009CC38 /* TaskExecutersCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskExecutersCell.h; sourceTree = "<group>"; };
 		73D260CD1AE0ED460009CC38 /* TaskExecutersCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskExecutersCell.m; sourceTree = "<group>"; };
 		73D260D11AE0FA070009CC38 /* TaskCommunityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskCommunityCell.h; sourceTree = "<group>"; };
@@ -2352,8 +2357,11 @@
 				7371362F1B539BBF0043B87B /* ContactsSectionView.m */,
 				737136321B53A4F60043B87B /* ContactInfoCell.h */,
 				737136331B53A4F60043B87B /* ContactInfoCell.m */,
+				73D256F01B66040D00EBE118 /* IQCommentCell.h */,
 				739C3B601A3076D60032C057 /* CommentCell.h */,
 				739C3B611A3076D60032C057 /* CommentCell.m */,
+				73D256EC1B6603AC00EBE118 /* SystemCommentCell.h */,
+				73D256ED1B6603AC00EBE118 /* SystemCommentCell.m */,
 				73ADA8EA1A36FD680032C1FA /* ContactCell.h */,
 				73ADA8EB1A36FD680032C1FA /* ContactCell.m */,
 				73ADA8DA1A36DBEF0032C1FA /* ContactPickerView.h */,
@@ -3328,6 +3336,7 @@
 				73840DC41B1C75A500BCEAFC /* TInfoHeaderView.m in Sources */,
 				73840DC51B1C75A500BCEAFC /* IQDiscussion.m in Sources */,
 				730BE3F01B3D1EE900E26994 /* IQService+Feedback.m in Sources */,
+				73D256EF1B6603AC00EBE118 /* SystemCommentCell.m in Sources */,
 				73840DC61B1C75A500BCEAFC /* IQUser.m in Sources */,
 				73840DC71B1C75A500BCEAFC /* AppDelegate.m in Sources */,
 				73840DC81B1C75A500BCEAFC /* ManagedTodoListModel.m in Sources */,
@@ -3592,6 +3601,7 @@
 				73ADA8EC1A36FD680032C1FA /* ContactCell.m in Sources */,
 				73A7CA881A9F5CB90038DEF1 /* TaskFilterCell.m in Sources */,
 				737136391B53C1430043B87B /* IQConversationMember.m in Sources */,
+				73D256EE1B6603AC00EBE118 /* SystemCommentCell.m in Sources */,
 				7393C4141A1A300F00E9E944 /* LoginView.m in Sources */,
 				73A50D141ADFBDAC00251CB7 /* IQTaskDataHolder.m in Sources */,
 				739850DF1A2DD4D700DB5B21 /* IQComment.m in Sources */,

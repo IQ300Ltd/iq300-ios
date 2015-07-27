@@ -1,25 +1,21 @@
 //
-//  CommentCell.h
+//  SystemCommentCell.h
 //  IQ300
 //
-//  Created by Tayphoon on 04.12.14.
-//  Copyright (c) 2014 Tayphoon. All rights reserved.
+//  Created by Tayphoon on 27.07.15.
+//  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
 #import "IQCommentCell.h"
 
-#define COMMENT_CELL_MAX_HEIGHT CGFLOAT_MAX
-#define COMMENT_CELL_MIN_HEIGHT 47.0f
+@class IQComment;
 
-@interface CommentCell : UITableViewCell<IQCommentCell> {
+@interface SystemCommentCell : UITableViewCell<IQCommentCell> {
     UIEdgeInsets _contentInsets;
 }
 
 @property (nonatomic, readonly) UILabel * timeLabel;
-@property (nonatomic, readonly) UIImageView * userImageView;
-@property (nonatomic, readonly) UILabel * userNameLabel;
 @property (nonatomic, readonly) UITextView * descriptionTextView;
-@property (nonatomic, readonly) UIImageView * statusImageView;
 @property (nonatomic, readonly) UIButton * expandButton;
 @property (nonatomic, readonly) NSArray * attachButtons;
 
