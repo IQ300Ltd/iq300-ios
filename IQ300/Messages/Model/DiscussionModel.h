@@ -34,6 +34,8 @@
                                  userIds:(NSArray*)userIds
                               completion:(void (^)(IQConversation * conversation, NSError *error))completion;
 
++ (void)removeConversationWithId:(NSNumber*)conversationId inContext:(NSManagedObjectContext*)context;
+
 - (id)initWithDiscussion:(IQDiscussion*)discussion;
 
 - (BOOL)isItemExpandedAtIndexPath:(NSIndexPath*)indexPath;
@@ -63,5 +65,9 @@
 - (void)markDiscussionAsReadedWithCompletion:(void (^)(NSError * error))completion;
 
 - (BOOL)isDiscussionConference;
+
+- (void)lockConversation;
+
+- (void)unlockConversation;
 
 @end

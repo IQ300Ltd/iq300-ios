@@ -132,8 +132,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.model.activeConversationId = nil;
-    
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
     
@@ -214,8 +212,6 @@
     controller.hidesBottomBarWhenPushed = YES;
     controller.title = conversation.title;
     controller.model = model;
-
-    self.model.activeConversationId = conversation.conversationId;
     
     [self.navigationController pushViewController:controller animated:YES];
     

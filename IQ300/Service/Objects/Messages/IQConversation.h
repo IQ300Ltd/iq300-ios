@@ -21,16 +21,10 @@
 @property (nonatomic, strong) NSNumber * unreadCommentsCount;
 @property (nonatomic, strong) NSNumber * totalCommentsCount;
 @property (nonatomic, strong) NSSet * users;
-@property (nonatomic, strong) NSNumber * removed;
+@property (nonatomic, strong) NSNumber * locked;
 @property (nonatomic, strong) IQDiscussion * discussion;
 @property (nonatomic, strong) IQComment * lastComment;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
-
-+ (void)clearRemovedConversationsInContext:(NSManagedObjectContext *)context;
-+ (void)removeLocalConversationWithId:(NSNumber *)conversationId
-                              context:(NSManagedObjectContext *)context;
-
-- (void)removeLocalConversationInContext:(NSManagedObjectContext *)context;
 
 @end

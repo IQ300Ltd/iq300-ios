@@ -481,38 +481,43 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                     handler:^(BOOL success, ConversationDeletedObjects *object, NSData *responseData, NSError *error) {
                                                         if (success) {
                                                             [MessagesModel setLastRequestDate:object.serverDate];
-                                                            [self removeLocalConversationsWithIds:object.objectIds];
+                                                            
+                                                            if ([object.objectIds count] > 0) {
+                                                                NSManagedObjectContext * context = [IQService sharedService].context;
+                                                                [self removeLocalConversationsWithIds:object.objectIds
+                                                                                            inContext:context];
+                                                            }
                                                         }
                                                     }];
 }
 
-- (void)markAsRemovedLocalConversationWithId:(NSNumber *)conversationId {
-    NSManagedObjectContext *context = [IQService sharedService].context;
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", conversationId];
-    IQConversation *conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
-    if (![conversation.removed boolValue]) {
-        conversation.removed = @(YES);
-        
-        NSError *__autoreleasing saveError = nil;
-        if(![context saveToPersistentStore:&saveError]) {
-            NSLog(@"Failed save to presistent store conversation with removed mark");
+- (void)removeLocalConversationsWithIds:(NSArray *)conversationIds inContext:(NSManagedObjectContext*)context {
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQConversation"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"conversationId IN %@", conversationIds]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
+        if ([objects count] > 0) {
+            for (IQConversation * conversation in objects) {
+                if (![conversation.locked boolValue]) {
+                    [self removeLocalCommentsByDiscussionId:conversation.discussion.discussionId
+                                                  inContext:context];
+                    [context deleteObject:conversation];
+                }
+            }
+            
+            NSError * saveError = nil;
+            [context saveToPersistentStore:&saveError];
         }
-    }
+    }];
 }
 
-- (void)removeLocalConversationsWithIds:(NSArray *)conversationIds {
-    NSMutableArray *ids = [[NSMutableArray alloc] initWithArray:conversationIds];
-    if (self.activeConversationId != nil) {
-        if ([conversationIds containsObject:self.activeConversationId]) {
-            [ids removeObject:self.activeConversationId];
-            [self markAsRemovedLocalConversationWithId:self.activeConversationId];
+- (void)removeLocalCommentsByDiscussionId:(NSNumber*)discussionId inContext:(NSManagedObjectContext*)context {
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQComment"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"discussionId == %@", discussionId]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
+        for (NSManagedObject * comment in objects) {
+            [context deleteObject:comment];
         }
-    }
-    
-    for (NSNumber *conversationId in ids) {
-        [IQConversation removeLocalConversationWithId:conversationId context:[IQService sharedService].context];
-    }
+    }];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

@@ -101,9 +101,14 @@
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
          void (^completiation)(NSError * error) = ^(NSError * error) {
-             NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
-             if (httpStatusCode == 403) {
-                 [weakSelf proccessUserRemovedFromConversation];
+             if (error) {
+                 NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
+                 if (httpStatusCode == 403) {
+                     [weakSelf proccessUserRemovedFromConversation];
+                 }
+             }
+             else {
+                 [self proccessUserAddToConversation];
              }
              
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
@@ -281,25 +286,8 @@
 }
 
 - (void)model:(DiscussionModel *)model didAddMemberWith:(NSNumber*)userId {
-    if ([IQSession defaultSession].userId && [[IQSession defaultSession].userId isEqualToNumber:userId] && _blockUpdation) {
-        self.model.discussion.conversation.removed = @(YES);
-        NSError * saveError = nil;
-        if(![self.model.discussion.conversation.managedObjectContext saveToPersistentStore:&saveError]) {
-            NSLog(@"Failed save to presistent store conversation with removed mark");
-        }
-        
-        _blockUpdation = NO;
-        
-        _mainView.inputView.sendButton.enabled = YES;
-        _mainView.inputView.attachButton.enabled = YES;
-        _mainView.inputView.commentTextView.editable = YES;
-        
-        NSString *imageName = [self.model isDiscussionConference] ? @"edit_conference_icon.png" : @"add_user_icon.png";
-        UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName]
-                                                                            style:UIBarButtonItemStylePlain
-                                                                           target:self
-                                                                           action:@selector(rightBarButtonAction:)];
-        self.navigationItem.rightBarButtonItem = rightBarButton;
+    if ([IQSession defaultSession].userId && [[IQSession defaultSession].userId isEqualToNumber:userId]) {
+        [self proccessUserAddToConversation];
     }
 }
 
@@ -409,7 +397,9 @@
 }
 
 - (void)backButtonAction:(id)sender {
-    [IQConversation clearRemovedConversationsInContext:[IQService sharedService].context];
+    [self.model unlockConversation];
+    [DiscussionModel removeConversationWithId:self.model.discussion.conversation.conversationId
+                                    inContext:[IQService sharedService].context];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -598,7 +588,14 @@
         
         [self.model updateModelWithCompletion:^(NSError *error) {
             if(!error) {
+                [self proccessUserAddToConversation];
                 [self.tableView reloadData];
+            }
+            else {
+                NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
+                if (httpStatusCode == 403) {
+                    [self proccessUserRemovedFromConversation];
+                }
             }
             
             [self scrollToBottomIfNeedAnimated:NO delay:0];
@@ -610,11 +607,6 @@
                 
                 [self hideActivityIndicatorAnimated:YES completion:nil];
             });
-            
-            NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
-            if (httpStatusCode == 403) {
-                [self proccessUserRemovedFromConversation];
-            }
         }];
     }
 }
@@ -632,6 +624,7 @@
                                                   [self proccessUserRemovedFromConversation];
                                               }
                                               else {
+                                                  [self proccessUserAddToConversation];
                                                   [self updateModel];
                                               }
                                           }];
@@ -840,6 +833,8 @@
 
 - (void)proccessUserRemovedFromConversation {
     if(!_blockUpdation) {
+        _blockUpdation = YES;
+
         [self.navigationController popToViewController:self animated:YES];
         
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
@@ -850,19 +845,31 @@
         
         [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
         
-        self.model.discussion.conversation.removed = @(YES);
-        NSError * saveError = nil;
-        if(![self.model.discussion.conversation.managedObjectContext saveToPersistentStore:&saveError]) {
-            NSLog(@"Failed save to presistent store conversation with removed mark");
-        }
-        
-        _blockUpdation = YES;
+        [self.model lockConversation];
         
         _mainView.inputView.sendButton.enabled = NO;
         _mainView.inputView.attachButton.enabled = NO;
         _mainView.inputView.commentTextView.editable = NO;
         
         self.navigationItem.rightBarButtonItem = nil;
+    }
+}
+
+- (void)proccessUserAddToConversation {
+    if (_blockUpdation) {
+        [self.model unlockConversation];
+        
+        _mainView.inputView.sendButton.enabled = YES;
+        _mainView.inputView.attachButton.enabled = YES;
+        _mainView.inputView.commentTextView.editable = YES;
+        
+        NSString *imageName = [self.model isDiscussionConference] ? @"edit_conference_icon.png" : @"add_user_icon.png";
+        UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName]
+                                                                            style:UIBarButtonItemStylePlain
+                                                                           target:self
+                                                                           action:@selector(rightBarButtonAction:)];
+        self.navigationItem.rightBarButtonItem = rightBarButton;
+        _blockUpdation = NO;
     }
 }
 

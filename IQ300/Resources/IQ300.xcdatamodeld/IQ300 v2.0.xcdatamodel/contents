@@ -58,13 +58,13 @@
         <attribute name="conversationId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="creatorId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="locked" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="removed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalCommentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="unreadCommentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="discussion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="conversation" inverseEntity="IQDiscussion" syncable="YES"/>
+        <relationship name="discussion" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="IQDiscussion" inverseName="conversation" inverseEntity="IQDiscussion" syncable="YES"/>
         <relationship name="lastComment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQComment" inverseName="conversation" inverseEntity="IQComment" syncable="YES"/>
         <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQUser" inverseName="onversations" inverseEntity="IQUser" syncable="YES"/>
     </entity>

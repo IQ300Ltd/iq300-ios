@@ -75,6 +75,35 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                         }];
 }
 
++ (void)removeConversationWithId:(NSNumber*)conversationId inContext:(NSManagedObjectContext*)context {
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQConversation"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"conversationId == %@", conversationId]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
+        if ([objects count] > 0) {
+            for (IQConversation * conversation in objects) {
+                if (![conversation.locked boolValue]) {
+                    [self removeLocalCommentsByDiscussionId:conversation.discussion.discussionId
+                                                  inContext:context];
+                    [context deleteObject:conversation];
+                }
+            }
+            
+            NSError * saveError = nil;
+            [context saveToPersistentStore:&saveError];
+        }
+    }];
+}
+
++ (void)removeLocalCommentsByDiscussionId:(NSNumber*)discussionId inContext:(NSManagedObjectContext*)context {
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQComment"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"discussionId == %@", discussionId]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
+        for (NSManagedObject * comment in objects) {
+            [context deleteObject:comment];
+        }
+    }];
+}
+
 + (NSDate*)lastRequestDate {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     return [defaults objectForKey:LAST_REQUEST_DATE_KEY];
@@ -490,6 +519,22 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 
 - (BOOL)isDiscussionConference {
     return ([[_discussion.conversation.type lowercaseString] isEqualToString:@"conference"]);
+}
+
+- (void)lockConversation {
+    self.discussion.conversation.locked = @(YES);
+    NSError * saveError = nil;
+    if(![self.discussion.conversation.managedObjectContext saveToPersistentStore:&saveError]) {
+        NSLog(@"Failed save to presistent store conversation with removed mark");
+    }
+}
+
+- (void)unlockConversation {
+    self.discussion.conversation.locked = @(NO);
+    NSError * saveError = nil;
+    if(![self.discussion.conversation.managedObjectContext saveToPersistentStore:&saveError]) {
+        NSLog(@"Failed save to presistent store conversation with removed mark");
+    }
 }
 
 #pragma mark - Private methods

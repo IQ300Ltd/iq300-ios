@@ -27,7 +27,7 @@
 @dynamic discussion;
 @dynamic lastComment;
 @dynamic users;
-@dynamic removed;
+@dynamic locked;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
@@ -60,44 +60,6 @@
     [mapping addPropertyMapping:relation];
 
     return mapping;
-}
-
-+ (void)clearRemovedConversationsInContext:(NSManagedObjectContext *)context {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQConversation"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"removed == %@", @(YES)]];
-    
-    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
-        for (IQConversation *object in objects) {
-            [object removeLocalConversationInContext:context];
-        }
-    }];
-}
-
-+ (void)removeLocalConversationWithId:(NSNumber *)conversationId context:(NSManagedObjectContext *)context {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"conversationId == %@", conversationId];
-    
-    IQConversation *conversation = [IQConversation findFirstWithPredicate:predicate inContext:context];
-    [conversation removeLocalConversationInContext:context];
-}
-
-- (void)removeLocalConversationInContext:(NSManagedObjectContext *)context {
-    [context deleteObject:self];
-    [context deleteObject:self.discussion];
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQComment"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"discussionId == %@", self.discussion.discussionId]];
-    [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
-        if ([objects count] > 0) {
-            for (NSManagedObject * object in objects) {
-                [context deleteObject:object];
-            }
-            
-            NSError * saveError = nil;
-            if(![context saveToPersistentStore:&saveError] ) {
-                NSLog(@"Failed save to presistent store after comments removed");
-            }
-        }
-    }];
 }
 
 @end
