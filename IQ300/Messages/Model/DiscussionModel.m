@@ -742,6 +742,9 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                 if ([eventName isEqualToString:IQConferencesTitleDidChangedEvent]) {
                     [self modelConversationTitleDidChanged:data[@"new_title"]];
                 }
+                else if([eventName isEqualToString:IQConferencesMemberDidAddEvent]) {
+                    [self modelMemberDidAddWithId:data[@"user_id"]];
+                }
                 else if([eventName isEqualToString:IQConferencesMemberDidRemovedEvent]) {
                     [self modelMemberDidRemovedWithId:data[@"user_id"]];
                 }
@@ -911,6 +914,12 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 - (void)modelConversationTitleDidChanged:(NSString*)newTitle {
     if ([self.delegate respondsToSelector:@selector(model:conversationTitleDidChanged:)]) {
         [self.delegate model:self conversationTitleDidChanged:newTitle];
+    }
+}
+
+- (void)modelMemberDidAddWithId:(NSNumber*)userId {
+    if ([self.delegate respondsToSelector:@selector(model:didAddMemberWith:)]) {
+        [self.delegate model:self didAddMemberWith:userId];
     }
 }
 

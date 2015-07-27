@@ -44,8 +44,6 @@
     UISwipeGestureRecognizer * _tableGesture;
     CGPoint _tableContentOffset;
     BOOL _blockUpdation;
-    
-    __weak id _conversationDidRemovedObserver;
 }
 
 @end
@@ -103,6 +101,11 @@
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
          void (^completiation)(NSError * error) = ^(NSError * error) {
+             NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
+             if (httpStatusCode == 403) {
+                 [weakSelf proccessUserRemovedFromConversation];
+             }
+             
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          };
          [weakSelf.model loadNextPartWithCompletion:completiation];
@@ -162,8 +165,6 @@
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
-    
-    [self subscribeToConversationIQNotification];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -246,7 +247,7 @@
                                           [self.model deleteLocalComment:comment];
                                       }
                                       else {
-                                          NSLog(@"Resend local comment error");
+                                          [self proccessServiceError:error];
                                       }
                                   }];
                               }
@@ -279,9 +280,32 @@
     self.title = newTitle;
 }
 
+- (void)model:(DiscussionModel *)model didAddMemberWith:(NSNumber*)userId {
+    if ([IQSession defaultSession].userId && [[IQSession defaultSession].userId isEqualToNumber:userId] && _blockUpdation) {
+        self.model.discussion.conversation.removed = @(YES);
+        NSError * saveError = nil;
+        if(![self.model.discussion.conversation.managedObjectContext saveToPersistentStore:&saveError]) {
+            NSLog(@"Failed save to presistent store conversation with removed mark");
+        }
+        
+        _blockUpdation = NO;
+        
+        _mainView.inputView.sendButton.enabled = YES;
+        _mainView.inputView.attachButton.enabled = YES;
+        _mainView.inputView.commentTextView.editable = YES;
+        
+        NSString *imageName = [self.model isDiscussionConference] ? @"edit_conference_icon.png" : @"add_user_icon.png";
+        UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName]
+                                                                            style:UIBarButtonItemStylePlain
+                                                                           target:self
+                                                                           action:@selector(rightBarButtonAction:)];
+        self.navigationItem.rightBarButtonItem = rightBarButton;
+    }
+}
+
 - (void)model:(DiscussionModel *)model memberDidRemovedWithId:(NSNumber *)userId {
     if ([IQSession defaultSession].userId && [[IQSession defaultSession].userId isEqualToNumber:userId]) {
-        [self conversationRemovedWithId:self.model.discussion.conversation.conversationId];
+        [self proccessUserRemovedFromConversation];
     }
 }
 
@@ -436,6 +460,10 @@
                          _attachmentImage = nil;
                          [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                      }
+                     else {
+                         [self proccessServiceError:error];
+                     }
+                     
                      [_mainView.inputView.commentTextView setEditable:YES];
                      [_mainView.inputView.attachButton setEnabled:YES];
                      if(isTableScrolledToBottom) {
@@ -528,6 +556,14 @@
                                                          [self showOpenInForURL:destinationURL fromRect:rectForAppearing];
                                                      }
                                                      failure:^(NSOperation *operation, NSError *error) {
+                                                         NSString * message = IsNetworUnreachableError(error) ? NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil) :
+                                                                                                                NSLocalizedString(@"File download failed", nil);
+                                                         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                                                                            message:message
+                                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                  otherButtonTitles:nil
+                                                                           tapBlock:nil];
+
                                                          [self hideActivityIndicator];
                                                      }];
     }
@@ -574,6 +610,11 @@
                 
                 [self hideActivityIndicatorAnimated:YES completion:nil];
             });
+            
+            NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
+            if (httpStatusCode == 403) {
+                [self proccessUserRemovedFromConversation];
+            }
         }];
     }
 }
@@ -586,9 +627,11 @@
 - (void)checkConversationAvailable {
     [[IQService sharedService] conversationWithId:self.model.discussion.conversation.conversationId
                                           handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                              if (!success) {
-                                                  [self conversationRemovedWithId:self.model.discussion.conversation.conversationId];
-                                              } else {
+                                              NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
+                                              if (!success && httpStatusCode == 403) {
+                                                  [self proccessUserRemovedFromConversation];
+                                              }
+                                              else {
                                                   [self updateModel];
                                               }
                                           }];
@@ -795,30 +838,8 @@
 
 #pragma mark - Conversation Notification
 
-- (void)subscribeToConversationIQNotification {
-    [self unsubscribeFromConversationIQNotification];
-    
-    __weak typeof(self) weakSelf = self;
-    void (^conversationDidRemovedBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSDictionary *notificationData = notf.userInfo[IQNotificationDataKey][@"data"];
-        NSNumber *conversationId = notificationData[@"conversation_id"];
-        
-        [weakSelf conversationRemovedWithId:conversationId];
-    };
-    
-    _conversationDidRemovedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQConversationDidRemovedNotification
-                                                                                         queue:nil
-                                                                                    usingBlock:conversationDidRemovedBlock];
-}
-
-- (void)unsubscribeFromConversationIQNotification {
-    if (_conversationDidRemovedObserver) {
-        [[IQNotificationCenter defaultCenter] removeObserver:_conversationDidRemovedObserver];
-    }
-}
-
-- (void)conversationRemovedWithId:(NSNumber *)conversationId {
-    if ([self.model.discussion.conversation.conversationId isEqualToNumber:conversationId]) {
+- (void)proccessUserRemovedFromConversation {
+    if(!_blockUpdation) {
         [self.navigationController popToViewController:self animated:YES];
         
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
@@ -830,7 +851,7 @@
         [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
         
         self.model.discussion.conversation.removed = @(YES);
-        NSError *__autoreleasing saveError = nil;
+        NSError * saveError = nil;
         if(![self.model.discussion.conversation.managedObjectContext saveToPersistentStore:&saveError]) {
             NSLog(@"Failed save to presistent store conversation with removed mark");
         }
@@ -872,8 +893,6 @@
 }
 
 - (void)dealloc {
-    [self unsubscribeFromConversationIQNotification];
-    
     [self.model setSubscribedToNotifications:NO];
     [self.model setDelegate:nil];
 }

@@ -24,6 +24,7 @@ typedef void (^TCServiceReachabilityStatusBlock)(TCServiceReachabilityStatus sta
 #endif
 
 extern NSString * const TCServiceErrorDomain;
+extern NSString * const TCHttpStatusCodeKey;
 
 typedef void(^RequestCompletionHandler)(BOOL success, NSData * responseData, NSError * error);
 typedef void(^ObjectRequestCompletionHandler)(BOOL success, id object, NSData * responseData, NSError * error);
