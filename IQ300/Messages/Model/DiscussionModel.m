@@ -703,7 +703,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     __weak typeof(self) weakSelf = self;
     void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notification) {
         NSDictionary * commentData = notification.userInfo[IQNotificationDataKey][@"comment"];
-        NSDictionary * eventData = commentData[@"additional_data"][@"event"];
+        NSDictionary * eventData = ((NSNull*)commentData[@"additional_data"] != [NSNull null]) ? commentData[@"additional_data"][@"event"] : nil;
         NSNumber * commentId = commentData[@"id"];
         NSNumber * discussionId = commentData[@"discussion_id"];
 
