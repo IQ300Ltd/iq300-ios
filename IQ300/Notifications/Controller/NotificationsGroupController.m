@@ -269,7 +269,8 @@
         };
         
         if([cell.item.unreadCount integerValue] > 1) {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_group_readed_question", nil)
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:NSLocalizedString(@"mark_all_group_readed_question", nil)
                  cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                  otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
                           tapBlock:alertBlock];
@@ -312,7 +313,8 @@
 
 - (void)markAllAsReaded:(id)sender {
     if(self.model.unreadItemsCount > 0) {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_readed_question", nil)
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:NSLocalizedString(@"mark_all_readed_question", nil)
                  cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                  otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -324,7 +326,8 @@
                           }];
     }
     else {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(NoUnreadNotificationFound, nil)
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:NSLocalizedString(NoUnreadNotificationFound, nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
                           tapBlock:nil];

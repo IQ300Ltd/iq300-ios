@@ -235,7 +235,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     if([comment.commentStatus integerValue] == IQCommentStatusSendError) {
-        [UIAlertView showWithTitle:@"IQ300"
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"Message has not been sent. Send again?", nil)
                  cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                  otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
@@ -468,7 +468,7 @@
                 [self presentViewController:imagePicker animated:YES completion:nil];
             }
             else {
-                [UIAlertView showWithTitle:@"IQ300"
+                [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                                    message:NSLocalizedString(@"The camera is not available", nil)
                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
                          otherButtonTitles:nil
@@ -539,7 +539,7 @@
     _documentController = [UIDocumentInteractionController interactionControllerWithURL:documentURL];
     [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
     if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
-        [UIAlertView showWithTitle:@"IQ300"
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
@@ -821,7 +821,7 @@
     if ([self.model.discussion.conversation.conversationId isEqualToNumber:conversationId]) {
         [self.navigationController popToViewController:self animated:YES];
         
-        [UIAlertView showWithTitle:@""
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"Administrator deleted You from this chat", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
