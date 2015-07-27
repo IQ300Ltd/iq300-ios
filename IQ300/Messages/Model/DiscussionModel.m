@@ -34,6 +34,10 @@
 static NSString * CommentReuseIdentifier = @"CommentReuseIdentifier";
 static NSString * SystemReuseIdentifier = @"SystemReuseIdentifier";
 
+NSString * const IQConferencesTitleDidChangedEvent = @"conferences:title_changed";
+NSString * const IQConferencesMemberDidAddEvent = @"conferences:member_added";
+NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_removed";
+
 @interface DiscussionModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;
     NSArray * _sortDescriptors;
@@ -697,8 +701,9 @@ static NSString * SystemReuseIdentifier = @"SystemReuseIdentifier";
     [self unsubscribeFromIQNotification];
     
     __weak typeof(self) weakSelf = self;
-    void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
+    void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notification) {
+        NSDictionary * commentData = notification.userInfo[IQNotificationDataKey][@"comment"];
+        NSDictionary * eventData = commentData[@"additional_data"][@"event"];
         NSNumber * commentId = commentData[@"id"];
         NSNumber * discussionId = commentData[@"discussion_id"];
 
@@ -728,6 +733,17 @@ static NSString * SystemReuseIdentifier = @"SystemReuseIdentifier";
                                                                             NSLog(@"Mark discussion as read fail with error:%@", error);
                                                                         }
                                                                     }];
+                }
+            }
+            
+            NSString * eventName = [eventData[@"name"] lowercaseString];
+            if (eventData) {
+                NSDictionary * data = eventData[@"data"];
+                if ([eventName isEqualToString:IQConferencesTitleDidChangedEvent]) {
+                    [self modelConversationTitleDidChanged:data[@"new_title"]];
+                }
+                else if([eventName isEqualToString:IQConferencesMemberDidRemovedEvent]) {
+                    [self modelMemberDidRemovedWithId:data[@"user_id"]];
                 }
             }
         }
@@ -889,6 +905,18 @@ static NSString * SystemReuseIdentifier = @"SystemReuseIdentifier";
 - (void)modelNewComment:(IQComment*)comment {
     if ([self.delegate respondsToSelector:@selector(model:newComment:)]) {
         [self.delegate model:self newComment:comment];
+    }
+}
+
+- (void)modelConversationTitleDidChanged:(NSString*)newTitle {
+    if ([self.delegate respondsToSelector:@selector(model:conversationTitleDidChanged:)]) {
+        [self.delegate model:self conversationTitleDidChanged:newTitle];
+    }
+}
+
+- (void)modelMemberDidRemovedWithId:(NSNumber*)userId {
+    if ([self.delegate respondsToSelector:@selector(model:memberDidRemovedWithId:)]) {
+        [self.delegate model:self memberDidRemovedWithId:userId];
     }
 }
 

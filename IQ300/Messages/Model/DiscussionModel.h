@@ -18,6 +18,8 @@
 
 @optional
 - (void)model:(DiscussionModel*)model newComment:(IQComment*)comment;
+- (void)model:(DiscussionModel *)model conversationTitleDidChanged:(NSString*)newTitle;
+- (void)model:(DiscussionModel *)model memberDidRemovedWithId:(NSNumber*)userId;
 
 @end
 

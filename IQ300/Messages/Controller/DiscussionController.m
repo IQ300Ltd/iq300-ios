@@ -275,6 +275,16 @@
     }
 }
 
+- (void)model:(DiscussionModel *)model conversationTitleDidChanged:(NSString *)newTitle {
+    self.title = newTitle;
+}
+
+- (void)model:(DiscussionModel *)model memberDidRemovedWithId:(NSNumber *)userId {
+    if ([IQSession defaultSession].userId && [[IQSession defaultSession].userId isEqualToNumber:userId]) {
+        [self conversationRemovedWithId:self.model.discussion.conversation.conversationId];
+    }
+}
+
 #pragma mark - Scroll Gesture Delegate
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
