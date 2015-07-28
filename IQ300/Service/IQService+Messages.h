@@ -76,6 +76,8 @@
                   search:(NSString*)search
                  handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)contactIdsDeletedAfter:(NSDate*)deletedAfter handler:(ObjectRequestCompletionHandler)handler;
+
 - (void)deleteCommentWithId:(NSNumber*)commentId
                discussionId:(NSNumber*)discussionId
                     handler:(RequestCompletionHandler)handler;

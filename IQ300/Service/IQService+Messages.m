@@ -234,6 +234,13 @@
 
 }
 
+- (void)contactIdsDeletedAfter:(NSDate*)deletedAfter
+                       handler:(ObjectRequestCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/contacts/deleted_ids"
+                parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
+                   handler:handler];
+}
+
 - (void)deleteCommentWithId:(NSNumber*)commentId
                discussionId:(NSNumber*)discussionId
                     handler:(RequestCompletionHandler)handler {

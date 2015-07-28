@@ -636,6 +636,8 @@
 		73AF73E11A3AFEBA001B8E42 /* CViewInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF73E01A3AFEBA001B8E42 /* CViewInfo.m */; };
 		73AF73E41A3B0C0D001B8E42 /* msg_viewed.png in Resources */ = {isa = PBXBuildFile; fileRef = 73AF73E21A3B0C0D001B8E42 /* msg_viewed.png */; };
 		73AF73E51A3B0C0D001B8E42 /* msg_viewed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73AF73E31A3B0C0D001B8E42 /* msg_viewed@2x.png */; };
+		73B1EF291B67B96D00960D7F /* IQContactsDeletedIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B1EF281B67B96D00960D7F /* IQContactsDeletedIds.m */; };
+		73B1EF2A1B67B96D00960D7F /* IQContactsDeletedIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B1EF281B67B96D00960D7F /* IQContactsDeletedIds.m */; };
 		73B3C1A81A7B5D0F005F972D /* IQNotificationsGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B3C1A71A7B5D0F005F972D /* IQNotificationsGroup.m */; };
 		73B3C1AB1A7B73B9005F972D /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B3C1AA1A7B73B9005F972D /* NSString+MD5.m */; };
 		73B561581B42828B00A883DC /* FeedbackInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B561571B42828B00A883DC /* FeedbackInfoController.m */; };
@@ -1266,6 +1268,8 @@
 		73AF73E01A3AFEBA001B8E42 /* CViewInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CViewInfo.m; sourceTree = "<group>"; };
 		73AF73E21A3B0C0D001B8E42 /* msg_viewed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = msg_viewed.png; sourceTree = "<group>"; };
 		73AF73E31A3B0C0D001B8E42 /* msg_viewed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "msg_viewed@2x.png"; sourceTree = "<group>"; };
+		73B1EF271B67B96D00960D7F /* IQContactsDeletedIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQContactsDeletedIds.h; sourceTree = "<group>"; };
+		73B1EF281B67B96D00960D7F /* IQContactsDeletedIds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQContactsDeletedIds.m; sourceTree = "<group>"; };
 		73B3C1A61A7B5D0F005F972D /* IQNotificationsGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationsGroup.h; sourceTree = "<group>"; };
 		73B3C1A71A7B5D0F005F972D /* IQNotificationsGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationsGroup.m; sourceTree = "<group>"; };
 		73B3C1A91A7B73B9005F972D /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
@@ -2217,6 +2221,8 @@
 				738EA7A21A1DC91C0065D39F /* IQUser.m */,
 				73ADA8E51A36EE180032C1FA /* IQContact.h */,
 				73ADA8E61A36EE180032C1FA /* IQContact.m */,
+				73B1EF271B67B96D00960D7F /* IQContactsDeletedIds.h */,
+				73B1EF281B67B96D00960D7F /* IQContactsDeletedIds.m */,
 				731DEEC91A2F27AE002F5FEB /* IQCounters.h */,
 				731DEECA1A2F27AE002F5FEB /* IQCounters.m */,
 				7373ED591A89EF2000719FCD /* IQObjectsHolder.h */,
@@ -3323,6 +3329,7 @@
 				73840DBB1B1C75A500BCEAFC /* NotificationsMenuModel.m in Sources */,
 				73840DBC1B1C75A500BCEAFC /* TaskStatusFilterItem.m in Sources */,
 				739CFFAE1B39898B00B4AED0 /* CreateFeedbackModel.m in Sources */,
+				73B1EF2A1B67B96D00960D7F /* IQContactsDeletedIds.m in Sources */,
 				73840DBD1B1C75A500BCEAFC /* CViewInfo.m in Sources */,
 				730BE4121B3D621400E26994 /* FeedbackCell.m in Sources */,
 				73B561611B428F4200A883DC /* FeedbackComments.m in Sources */,
@@ -3677,6 +3684,7 @@
 				73D7F1B91ADE932700023120 /* TInfoController.m in Sources */,
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,
 				73C58C071A1F145200C83729 /* NSDate+CupertinoYankee.m in Sources */,
+				73B1EF291B67B96D00960D7F /* IQContactsDeletedIds.m in Sources */,
 				730BE4011B3D298900E26994 /* IQFeedbacksHolder.m in Sources */,
 				73A949A21A3833C4008EC469 /* NSError+Extension.m in Sources */,
 				730BE42E1B3D8FA400E26994 /* FeedbackTypeCell.m in Sources */,

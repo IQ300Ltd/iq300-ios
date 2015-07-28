@@ -5,12 +5,17 @@
 //  Created by Tayphoon on 09.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
+#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
 #import "ContactsModel.h"
 #import "IQService+Messages.h"
 #import "ContactCell.h"
+#import "IQContactsDeletedIds.h"
+#import "NSManagedObjectContext+AsyncFetch.h"
+#import "IQContact.h"
 
 #define SORT_DIRECTION IQSortDirectionAscending
+#define LAST_REQUEST_DATE_KEY @"contacts_ids_request_date"
 
 static NSString * UReuseIdentifier = @"UReuseIdentifier";
 
@@ -21,6 +26,16 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 @end
 
 @implementation ContactsModel
+
++ (NSDate*)lastRequestDate {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:LAST_REQUEST_DATE_KEY];
+}
+
++ (void)setLastRequestDate:(NSDate*)date {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:date forKey:LAST_REQUEST_DATE_KEY];
+}
 
 + (instancetype)modelWithPortionSize:(NSUInteger)portionSize {
     return [[self alloc] initWithPortionSize:portionSize];
@@ -116,6 +131,8 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
+        [self clearRemovedConversations];
+        
         [[IQService sharedService] contactsWithPage:@(1)
                                                 per:@(_portionSize)
                                                sort:SORT_DIRECTION
@@ -153,7 +170,9 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
             [self modelDidChanged];
         }
     }];
-    
+
+    [self clearRemovedConversations];
+
     [[IQService sharedService] contactsWithPage:@(1)
                                             per:@(_portionSize)
                                            sort:SORT_DIRECTION
@@ -163,6 +182,42 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
                                                 completion(error);
                                             }
                                         }];
+}
+
+#pragma mark - Private methods
+
+#pragma mark - Clear removed conversations
+
+- (void)clearRemovedConversations {
+    NSDate *lastRequestDate = [ContactsModel lastRequestDate];
+    
+    [[IQService sharedService] contactIdsDeletedAfter:lastRequestDate
+                                              handler:^(BOOL success, IQContactsDeletedIds *object, NSData *responseData, NSError *error) {
+                                                  if (success) {
+                                                      [ContactsModel setLastRequestDate:object.serverDate];
+                                                      
+                                                      if ([object.objectIds count] > 0) {
+                                                          NSManagedObjectContext * context = [IQService sharedService].context;
+                                                          [self removeLocalContactsWithIds:object.objectIds
+                                                                                               inContext:context];
+                                                      }
+                                                  }
+                                              }];
+}
+
+- (void)removeLocalContactsWithIds:(NSArray*)contactIds inContext:(NSManagedObjectContext*)context {
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQContact"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"contactId IN %@", contactIds]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
+        if ([objects count] > 0) {
+            for (IQContact * contact in objects) {
+                [context deleteObject:contact];
+            }
+            
+            NSError * saveError = nil;
+            [context saveToPersistentStore:&saveError];
+        }
+    }];
 }
 
 - (void)dealloc {

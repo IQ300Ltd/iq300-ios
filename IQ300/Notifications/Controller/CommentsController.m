@@ -26,7 +26,6 @@
 #import "DispatchAfterExecution.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 
-#import "IQContact.h"
 #import "UserPickerController.h"
 #import "IQService.h"
 #import "UIImage+Extensions.h"
