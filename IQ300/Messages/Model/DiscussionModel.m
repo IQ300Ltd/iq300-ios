@@ -75,35 +75,6 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                         }];
 }
 
-+ (void)removeConversationWithId:(NSNumber*)conversationId inContext:(NSManagedObjectContext*)context {
-    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQConversation"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"conversationId == %@", conversationId]];
-    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
-        if ([objects count] > 0) {
-            for (IQConversation * conversation in objects) {
-                if (![conversation.locked boolValue]) {
-                    [self removeLocalCommentsByDiscussionId:conversation.discussion.discussionId
-                                                  inContext:context];
-                    [context deleteObject:conversation];
-                }
-            }
-            
-            NSError * saveError = nil;
-            [context saveToPersistentStore:&saveError];
-        }
-    }];
-}
-
-+ (void)removeLocalCommentsByDiscussionId:(NSNumber*)discussionId inContext:(NSManagedObjectContext*)context {
-    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQComment"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"discussionId == %@", discussionId]];
-    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
-        for (NSManagedObject * comment in objects) {
-            [context deleteObject:comment];
-        }
-    }];
-}
-
 + (NSDate*)lastRequestDate {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     return [defaults objectForKey:LAST_REQUEST_DATE_KEY];

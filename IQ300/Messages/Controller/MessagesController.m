@@ -159,6 +159,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    self.model.modelUpdateRequired = YES;
     [self updateModel];
 }
 
@@ -178,6 +179,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:IQDrawerDidShowNotification
                                                   object:nil];
+    self.model.modelUpdateRequired = NO;
 }
 
 - (void)updateGlobalCounter {

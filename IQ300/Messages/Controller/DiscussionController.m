@@ -398,8 +398,6 @@
 
 - (void)backButtonAction:(id)sender {
     [self.model unlockConversation];
-    [DiscussionModel removeConversationWithId:self.model.discussion.conversation.conversationId
-                                    inContext:[IQService sharedService].context];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

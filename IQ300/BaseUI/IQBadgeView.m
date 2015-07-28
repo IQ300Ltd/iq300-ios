@@ -227,8 +227,8 @@
         UIFont *textFont =  [self fontForBadgeWithSize:sizeOfFont];
         NSDictionary *fontAttr = @{ NSFontAttributeName : textFont, NSForegroundColorAttributeName : self.badgeStyle.badgeTextColor };
         CGSize textSize = [self.badgeValue sizeWithAttributes:fontAttr];
-        CGPoint textPoint = CGPointMake((rect.size.width / 2.0f - textSize.width / 2.0f) + 0.5f,
-                                        (rect.size.height / 2.0f - textSize.height / 2.0f) - 0.5f);
+        CGPoint textPoint = CGPointMake((rect.size.width / 2.0f - textSize.width / 2.0f) + 0.2f,
+                                        (rect.size.height / 2.0f - textSize.height / 2.0f) - 0.2f);
         [self.badgeValue drawAtPoint:textPoint withAttributes:fontAttr];
     }
 }

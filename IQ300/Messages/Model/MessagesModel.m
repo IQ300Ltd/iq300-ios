@@ -95,6 +95,37 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     }
 }
 
+#pragma mark - Static private methods
+
++ (void)removeLocalConversationsWithIds:(NSArray *)conversationIds inContext:(NSManagedObjectContext*)context {
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQConversation"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"conversationId IN %@", conversationIds]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
+        if ([objects count] > 0) {
+            for (IQConversation * conversation in objects) {
+                if (![conversation.locked boolValue]) {
+                    [self removeLocalCommentsByDiscussionId:conversation.discussion.discussionId
+                                                  inContext:context];
+                    [context deleteObject:conversation];
+                }
+            }
+            
+            NSError * saveError = nil;
+            [context saveToPersistentStore:&saveError];
+        }
+    }];
+}
+
++ (void)removeLocalCommentsByDiscussionId:(NSNumber*)discussionId inContext:(NSManagedObjectContext*)context {
+    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQComment"];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"discussionId == %@", discussionId]];
+    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
+        for (NSManagedObject * comment in objects) {
+            [context deleteObject:comment];
+        }
+    }];
+}
+
 + (NSDate*)lastRequestDate {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     return [defaults objectForKey:LAST_REQUEST_DATE_KEY];
@@ -105,15 +136,18 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     [defaults setObject:date forKey:LAST_REQUEST_DATE_KEY];
 }
 
+#pragma mark - MessagesModel
+
 - (id)init {
     self = [super init];
     if(self) {
-        _portionLenght = 20;
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"discussion.updateDate" ascending:SORT_DIRECTION == IQSortDirectionAscending];
         _sortDescriptors = @[descriptor];
+        _portionLenght = 20;
         _totalItemsCount = 0;
         _unreadItemsCount = 0;
-
+        self.modelUpdateRequired = YES;
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(accountDidChanged)
                                                      name:AccountDidChangedNotification
@@ -178,7 +212,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        [self updateRemovedConversations];
+        [self clearRemovedConversations];
 
         BOOL isFilterEnabled = ([_filter length] > 0);
         [[IQService sharedService] conversationsUnread:nil
@@ -234,7 +268,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self updateRemovedConversations];
+    [self clearRemovedConversations];
     
     BOOL isFilterEnabled = ([_filter length] > 0);
     void(^conversationsRequestBlock)(NSError * error) = ^(NSError * error){
@@ -405,7 +439,12 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         
         if(authorId && ![authorId isEqualToNumber:[IQSession defaultSession].userId] &&
            [disscusionParentType isEqualToString:@"conversation"]) {
-            [weakSelf updateModel];
+            if (weakSelf.isModelUpdateRequired) {
+                [weakSelf updateModel];
+            }
+            else {
+                [weakSelf updateCounters];
+            }
         }
     };
     
@@ -414,7 +453,12 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                                         usingBlock:block];
     
     void (^conversationsBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        [weakSelf updateModel];
+        if (weakSelf.isModelUpdateRequired) {
+            [weakSelf updateModel];
+        }
+        else {
+            [weakSelf updateCounters];
+        }
     };
     
     _conversationsChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQConversationsDidChanged
@@ -474,7 +518,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 
 #pragma mark - Clear removed conversations
 
-- (void)updateRemovedConversations {
+- (void)clearRemovedConversations {
     NSDate *lastRequestDate = [MessagesModel lastRequestDate];
     
     [[IQService sharedService] conversationsIdsDeletedAfter:lastRequestDate
@@ -484,40 +528,11 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                             
                                                             if ([object.objectIds count] > 0) {
                                                                 NSManagedObjectContext * context = [IQService sharedService].context;
-                                                                [self removeLocalConversationsWithIds:object.objectIds
-                                                                                            inContext:context];
+                                                                [MessagesModel removeLocalConversationsWithIds:object.objectIds
+                                                                                                     inContext:context];
                                                             }
                                                         }
                                                     }];
-}
-
-- (void)removeLocalConversationsWithIds:(NSArray *)conversationIds inContext:(NSManagedObjectContext*)context {
-    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQConversation"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"conversationId IN %@", conversationIds]];
-    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
-        if ([objects count] > 0) {
-            for (IQConversation * conversation in objects) {
-                if (![conversation.locked boolValue]) {
-                    [self removeLocalCommentsByDiscussionId:conversation.discussion.discussionId
-                                                  inContext:context];
-                    [context deleteObject:conversation];
-                }
-            }
-            
-            NSError * saveError = nil;
-            [context saveToPersistentStore:&saveError];
-        }
-    }];
-}
-
-- (void)removeLocalCommentsByDiscussionId:(NSNumber*)discussionId inContext:(NSManagedObjectContext*)context {
-    NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQComment"];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"discussionId == %@", discussionId]];
-    [context executeFetchRequest:fetchRequest completion:^(NSArray * objects, NSError * error) {
-        for (NSManagedObject * comment in objects) {
-            [context deleteObject:comment];
-        }
-    }];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

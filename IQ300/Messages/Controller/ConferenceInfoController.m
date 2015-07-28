@@ -89,7 +89,6 @@
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
-    [self updateRightBarButtonItem];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -409,6 +408,7 @@
         [self.model updateModelWithCompletion:^(NSError *error) {
             if(!error) {                
                 [self.tableView reloadData];
+                [self updateRightBarButtonItem];
             }
             
             [self updateNoDataLabelVisibility];
@@ -417,7 +417,7 @@
 }
 
 - (void)updateRightBarButtonItem {
-    if (self.model.isAdministrator) {
+    if (self.model.isAdministrator && self.navigationItem.rightBarButtonItem == nil) {
         UIBarButtonItem * addUserBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_user_icon.png"]
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
