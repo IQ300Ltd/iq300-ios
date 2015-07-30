@@ -332,7 +332,6 @@
                                           }
                                       }];
                                   }
-                                  [self.navigationController popViewControllerAnimated:YES];
                               }
                           }];
     }
