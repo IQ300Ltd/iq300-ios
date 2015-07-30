@@ -424,7 +424,7 @@
                                                                              action:@selector(addUserBarButtonAction:)];
         self.navigationItem.rightBarButtonItem = addUserBarButton;
     }
-    else {
+    else if (!self.model.isAdministrator) {
         self.navigationItem.rightBarButtonItem = nil;
     }
 }
