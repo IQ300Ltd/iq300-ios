@@ -15,9 +15,9 @@
 #define TIME_LABEL_HEIGHT 7.0f
 
 #ifdef IPAD
-#define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:14]
+#define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA_BOLD size:14]
 #else
-#define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
+#define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA_BOLD size:13]
 #endif
 
 @implementation SystemCommentCell
