@@ -109,21 +109,21 @@
         [_enterButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
         [_scrollView addSubview:_enterButton];
 
-        _helpTextView = [[IQTextView alloc] init];
-        [_helpTextView setFont:[UIFont fontWithName:IQ_HELVETICA
-                                            size:(IS_IPAD) ? 16.0f : 15.0f]];
-        [_helpTextView setTextColor:[UIColor colorWithHexInt:0x272727]];
-        _helpTextView.textAlignment = NSTextAlignmentCenter;
-        _helpTextView.backgroundColor = [UIColor clearColor];
-        _helpTextView.editable = NO;
-        _helpTextView.textContainerInset = UIEdgeInsetsZero;
-        _helpTextView.scrollEnabled = NO;
-        _helpTextView.dataDetectorTypes = UIDataDetectorTypeLink;
-        _helpTextView.linkTextAttributes = @{
-                                          NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
-                                          NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
-                                          };
-        _helpTextView.text = NSLocalizedString(@"registration_help_message", nil);
+//        _helpTextView = [[IQTextView alloc] init];
+//        [_helpTextView setFont:[UIFont fontWithName:IQ_HELVETICA
+//                                            size:(IS_IPAD) ? 16.0f : 15.0f]];
+//        [_helpTextView setTextColor:[UIColor colorWithHexInt:0x272727]];
+//        _helpTextView.textAlignment = NSTextAlignmentCenter;
+//        _helpTextView.backgroundColor = [UIColor clearColor];
+//        _helpTextView.editable = NO;
+//        _helpTextView.textContainerInset = UIEdgeInsetsZero;
+//        _helpTextView.scrollEnabled = NO;
+//        _helpTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+//        _helpTextView.linkTextAttributes = @{
+//                                          NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
+//                                          NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
+//                                          };
+//        _helpTextView.text = NSLocalizedString(@"registration_help_message", nil);
         [_scrollView addSubview:_helpTextView];
     }
     return self;

@@ -46,6 +46,24 @@
 
 @implementation AppDelegate
 
++ (void)continueLoginProccessWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] userInfoWithHandler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
+        if(success) {
+            [IQSession setDefaultSession:[IQService sharedService].session];
+            [AppDelegate setupNotificationCenter];
+            [AppDelegate registerForRemoteNotifications];
+            [GAIService sendEventForCategory:GAICommonEventCategory
+                                      action:@"event_action_common_login"];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
+                                                                object:nil];
+            if (completion) {
+                completion(nil);
+            }
+        }
+    }];
+}
+
 + (void)logout {
     AppDelegate * delegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];

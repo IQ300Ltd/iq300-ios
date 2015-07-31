@@ -15,6 +15,7 @@
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) MMDrawerController *drawerController;
 
++ (void)continueLoginProccessWithCompletion:(void (^)(NSError * error))completion;
 + (void)logout;
 + (void)setupNotificationCenter;
 + (void)registerForRemoteNotifications;

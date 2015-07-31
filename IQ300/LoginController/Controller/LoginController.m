@@ -62,7 +62,12 @@
                                                password:_loginView.passwordTextField.text
                                                 handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                     if(success) {
-                                                        [self continueLoginProccess];
+                                                        [AppDelegate continueLoginProccessWithCompletion:^(NSError *error) {
+                                                            if (!error) {
+                                                                [self dismissViewControllerAnimated:YES completion:nil];
+                                                                [[UIApplication sharedApplication] setStatusBarHidden:NO];
+                                                            }
+                                                        }];
                                                     }
                                                     else if(IsNetworUnreachableError(error) || ![IQService sharedService].isServiceReachable) {
                                                         [self showErrorMessage:INTERNET_UNREACHABLE_MESSAGE];
@@ -84,24 +89,6 @@
 
 - (void)showErrorMessage:(NSString*)errorMessage {
     _loginView.errorLabel.text = NSLocalizedString(errorMessage, nil);
-}
-
-- (void)continueLoginProccess {
-    [[IQService sharedService] userInfoWithHandler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
-        if(success) {
-            [IQSession setDefaultSession:[IQService sharedService].session];
-            [AppDelegate setupNotificationCenter];
-            [AppDelegate registerForRemoteNotifications];
-            [GAIService sendEventForCategory:GAICommonEventCategory
-                                      action:@"event_action_common_login"];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:AccountDidChangedNotification
-                                                                object:nil];
-            
-            [self dismissViewControllerAnimated:YES completion:nil];
-            [[UIApplication sharedApplication] setStatusBarHidden:NO];
-        }
-    }];
 }
 
 #pragma mark - TextField Delegate

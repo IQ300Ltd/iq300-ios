@@ -141,16 +141,24 @@ BOOL IsNetworUnreachableError(NSError * error) {
              communityTitle:(NSString*)communityTitle
                       email:(NSString*)email
                    password:(NSString*)password
+                deviceToken:(NSString*)deviceToken
                     handler:(RequestCompletionHandler)handler {
     NSDictionary * parameters = @{ @"first_name"      : NSStringNullForNil(firstName),
                                    @"last_name"       : NSStringNullForNil(lastName),
                                    @"community_title" : NSStringNullForNil(communityTitle),
                                    @"email"           : NSStringNullForNil(email),
-                                   @"password"        : NSStringNullForNil(password) };
+                                   @"password"        : NSStringNullForNil(password),
+                                   @"device_token"    : NSStringNullForNil(deviceToken)
+                                   };
     [self postObject:nil
                 path:@"/api/v1/registrations"
           parameters:parameters
-             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+             handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
+                 if (success && token) {
+                     self.session = [IQSession sessionWithEmail:nil andPassword:nil token:token.token];
+                     self.session.userId = token.userId;
+                 }
+
                  if(handler) {
                      handler(success, responseData, error);
                  }
@@ -556,11 +564,12 @@ fileAttributeName:(NSString*)fileAttributeName
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
-                                                              method:RKRequestMethodPOST
-                                                         pathPattern:@"/api/v1/registrations"
-                                                             keyPath:nil
-                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQToken class]
+                                                                               method:RKRequestMethodPOST
+                                                                          pathPattern:@"/api/v1/registrations"
+                                                                          fromKeyPath:nil
+                                                                                store:self.objectManager.managedObjectStore];
+    
     [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQToken class]
