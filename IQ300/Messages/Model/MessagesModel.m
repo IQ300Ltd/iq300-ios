@@ -337,10 +337,21 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
     }
     
-    if([_filteredIds count] > 0 || [_filter length] > 0) {
+    NSPredicate * filterPredicate = nil;
+    if([_filteredIds count] > 0) {
         NSArray * filteredIds = ([_filteredIds count] > 0) ? [_filteredIds allObjects] : [NSArray array];
-        NSString * filterformat = @"(SUBQUERY(users, $user, $user.displayName CONTAINS[cd] %@).@count > 0) OR (conversationId IN %@)";
-        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:filterformat, _filter, filteredIds];
+        filterPredicate = [NSPredicate predicateWithFormat:@"conversationId IN %@", filteredIds];
+    }
+    
+    if([_filter length] > 0) {
+        NSString * filterformat = @"SUBQUERY(users, $user, $user.displayName CONTAINS[cd] %@).@count > 0";
+        NSPredicate * filterTextPredicate = [NSPredicate predicateWithFormat:filterformat, _filter];
+        
+        filterPredicate = (filterPredicate) ? [NSCompoundPredicate orPredicateWithSubpredicates:@[filterPredicate, filterTextPredicate]] :
+                                               filterTextPredicate;
+    }
+    
+    if (filterPredicate) {
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, filterPredicate]];
     }
     
