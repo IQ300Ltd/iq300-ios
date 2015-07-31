@@ -191,7 +191,9 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
     
     NSIndexPath * sortIndexPath = [self selectedIndexPathForSection:SORT_SECTION];
     [_selectedItems removeAllObjects];
-    [_selectedItems addObject:sortIndexPath];
+    if (sortIndexPath) {
+        [_selectedItems addObject:sortIndexPath];
+    }
 }
 
 - (void)clearModelData {
