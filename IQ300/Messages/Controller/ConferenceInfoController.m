@@ -321,7 +321,7 @@
                  cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
                  otherButtonTitles:@[NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil)]
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                              if (buttonIndex == 1 || buttonIndex == 2) {
+                              if (buttonIndex >= 1) {
                                   if (buttonIndex == 1) {
                                       [self.model saveConversationTitleWithCompletion:^(NSError * error) {
                                           if (!error) {
@@ -331,6 +331,9 @@
                                               [self proccessServiceError:error];
                                           }
                                       }];
+                                  }
+                                  else {
+                                      [self.navigationController popViewControllerAnimated:YES];
                                   }
                               }
                           }];
