@@ -29,7 +29,7 @@
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
-#define LAST_REQUEST_DATE_KEY @"dcomment_ids_request_date"
+#define LAST_REQUEST_DATE_KEY @"comment_ids_request_date"
 
 static NSString * CommentReuseIdentifier = @"CommentReuseIdentifier";
 static NSString * SystemReuseIdentifier = @"SystemReuseIdentifier";
@@ -267,6 +267,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
         if (!error) {
             [self modelDidChanged];
+            [self clearRemovedComments];
         }
     }];
     

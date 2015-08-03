@@ -342,4 +342,11 @@
             handler:handler];
 }
 
+- (void)taskIdsDeletedAfter:(NSDate*)deletedAfter
+                    handler:(ObjectRequestCompletionHandler)handler {
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/deleted_ids"]
+                parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
+                   handler:handler];
+}
+
 @end

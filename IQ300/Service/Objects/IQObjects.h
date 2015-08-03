@@ -44,5 +44,6 @@
 #import "IQFeedbackType.h"
 #import "IQFeedback.h"
 #import "IQConversationMember.h"
+#import "IQTaskDeletedIds.h"
 
 #endif

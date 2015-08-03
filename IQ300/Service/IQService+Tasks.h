@@ -95,4 +95,7 @@
 
 - (void)saveTask:(IQTaskDataHolder*)task handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)taskIdsDeletedAfter:(NSDate*)deletedAfter
+                    handler:(ObjectRequestCompletionHandler)handler;
+
 @end

@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
+#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+
 #import "TasksModel.h"
 #import "TaskCell.h"
 #import "IQTask.h"
@@ -13,11 +15,16 @@
 #import "IQCounters.h"
 #import "IQTasksHolder.h"
 #import "IQNotificationCenter.h"
+#import "NSManagedObjectContext+AsyncFetch.h"
+#import "IQTaskDeletedIds.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 #define CACHE_FILE_NAME @"TasksModelcache"
+
 #define SORT_DIRECTION IQSortDirectionDescending
+
+#define LAST_REQUEST_DATE_KEY @"task_ids_request_date"
 
 #define ACTUAL_FORMAT @"type LIKE[c] 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
                         (status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\"} OR \
@@ -89,6 +96,16 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     }
     
     return nil;
+}
+
++ (NSDate*)lastRequestDate {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:LAST_REQUEST_DATE_KEY];
+}
+
++ (void)setLastRequestDate:(NSDate*)date {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:date forKey:LAST_REQUEST_DATE_KEY];
 }
 
 - (id)init {
@@ -172,6 +189,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
+        [self clearRemovedTasks];
         [self updateCountersWithCompletion:nil];
         [self tasksUpdatesAfterDateWithCompletion:completion];
     }
@@ -208,6 +226,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     [self reloadSourceControllerWithCompletion:^(NSError *error) {
         if (!error) {
             [self modelDidChanged];
+            [self clearRemovedTasks];
         }
     }];
     
@@ -268,6 +287,39 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 #pragma mark - Private methods
+
+- (void)clearRemovedTasks {
+    NSDate * lastRequestDate = [TasksModel lastRequestDate];
+    
+    [[IQService sharedService] taskIdsDeletedAfter:lastRequestDate
+                                           handler:^(BOOL success, IQTaskDeletedIds * object, NSData *responseData, NSError *error) {
+                                               if (success) {
+                                                   [TasksModel setLastRequestDate:object.serverDate];
+                                                   [self removeLocalTasksWithIds:object.objectIds];
+                                               }
+                                           }];
+}
+
+- (void)removeLocalTasksWithIds:(NSArray*)taskIds {
+    if ([taskIds count] > 0) {
+        NSManagedObjectContext * context = [IQService sharedService].context;
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"taskId IN %@", taskIds]];
+        
+        [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+            if ([objects count] > 0) {
+                for (NSManagedObject * object in objects) {
+                    [context deleteObject:object];
+                }
+                
+                NSError * saveError = nil;
+                if(![context saveToPersistentStore:&saveError] ) {
+                    NSLog(@"Failed save to presistent store after tasks removed");
+                }
+            }
+        }];
+    }
+}
 
 - (void)tasksUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] tasksUpdatedAfter:lastUpdatedDate
@@ -569,6 +621,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     
     __weak typeof(self) weakSelf = self;
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        [weakSelf clearRemovedTasks];
         [weakSelf updateCountersWithCompletion:nil];
         [weakSelf tasksUpdatesAfterDateWithCompletion:nil];
     };

@@ -1086,6 +1086,14 @@ fileAttributeName:(NSString*)fileAttributeName
     
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskDeletedIds class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"/api/v1/tasks/deleted_ids"
+                                                   fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
     descriptor = [IQServiceResponse responseDescriptorForClass:[CommentDeletedObjects class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/discussions/:id/comments/deleted_ids"
