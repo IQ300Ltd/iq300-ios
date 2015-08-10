@@ -20,7 +20,7 @@
 @property (nonatomic, readonly) IQTextContainer * passwordContainer;
 @property (nonatomic, readonly) UILabel * errorLabel;
 @property (nonatomic, readonly) ExtendedButton * signupButton;
-@property (nonatomic, readonly) UIButton * enterButton;
+@property (nonatomic, readonly) ExtendedButton * enterButton;
 @property (nonatomic, readonly) IQTextView * helpTextView;
 
 - (void)setScrollViewOffset:(CGFloat)offset;

@@ -103,11 +103,16 @@
         [_signupButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
         [_scrollView addSubview:_signupButton];
         
-        _enterButton = [[UIButton alloc] init];
+        _enterButton = [[ExtendedButton alloc] init];
+        [_enterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
+        [_enterButton setBackgroundColor:IQ_CELADON_COLOR];
+        [_enterButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
+        [_enterButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
+        [_enterButton.layer setCornerRadius:2.0f];
         [_enterButton setTitle:NSLocalizedString(@"Enter", nil) forState:UIControlStateNormal];
-        [_enterButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 13.0f : 12.0f]];
-        [_enterButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
+        [_enterButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
         [_scrollView addSubview:_enterButton];
+
 
 //        _helpTextView = [[IQTextView alloc] init];
 //        [_helpTextView setFont:[UIFont fontWithName:IQ_HELVETICA
@@ -191,15 +196,14 @@
     
     CGFloat horizontalOffset = 10.0f;
     _signupButton.frame = CGRectMake(bounds.origin.x + horizontalOffset,
-                                       CGRectBottom(_errorLabel.frame) + 20.0f,
-                                       bounds.size.width - horizontalOffset * 2.0f,
-                                       40);
+                                     CGRectBottom(_errorLabel.frame) + 20.0f,
+                                     bounds.size.width - horizontalOffset * 2.0f,
+                                     40);
     
-    CGFloat labelsSize = (IS_IPAD) ? 15 : 14;
-    _enterButton.frame = CGRectMake(bounds.origin.x,
-                                    CGRectBottom(_signupButton.frame) + 34,
-                                    bounds.size.width,
-                                    labelsSize);
+    _enterButton.frame = CGRectMake(bounds.origin.x + horizontalOffset,
+                                    CGRectBottom(_signupButton.frame) + 20,
+                                    bounds.size.width - horizontalOffset * 2.0f,
+                                    40);
     
     _helpTextView.frame = CGRectMake(bounds.origin.x,
                                   CGRectBottom(_enterButton.frame) + 30,

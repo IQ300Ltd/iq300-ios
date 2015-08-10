@@ -66,10 +66,14 @@
         [_enterButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
         [self addSubview:_enterButton];
         
-        _registryButton = [[UIButton alloc] init];
+        _registryButton = [[ExtendedButton alloc] init];
+        [_registryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
+        [_registryButton setBackgroundColor:IQ_CELADON_COLOR];
+        [_registryButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
+        [_enterButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
+        [_registryButton.layer setCornerRadius:2.0f];
         [_registryButton setTitle:NSLocalizedString(@"Sign up", nil) forState:UIControlStateNormal];
-        [_registryButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 13.0f : 12.0f]];
-        [_registryButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
+        [_registryButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
         [self addSubview:_registryButton];
     }
     return self;
@@ -104,31 +108,30 @@
     CGRect fieldsRect = UIEdgeInsetsInsetRect(bounds, _fieldsInsets);
     
     _emailContainer.frame = CGRectMake(fieldsRect.origin.x,
-                                       _logoImageView.frame.origin.y + _logoImageView.frame.size.height + 44,
+                                      CGRectBottom(_logoImageView.frame) + 44,
                                        fieldsRect.size.width,
                                        LABEL_HEIGHT);
     
     _passwordContainer.frame = CGRectMake(fieldsRect.origin.x,
-                                          _emailContainer.frame.origin.y + _emailContainer.frame.size.height + 18,
+                                          CGRectBottom(_emailContainer.frame) + 18,
                                           fieldsRect.size.width,
                                           LABEL_HEIGHT);
     
     _errorLabel.frame = CGRectMake(fieldsRect.origin.x,
-                                   _passwordContainer.frame.origin.y + _passwordContainer.frame.size.height + 8,
+                                   CGRectBottom(_passwordContainer.frame) + 8,
                                    fieldsRect.size.width,
                                    LABEL_HEIGHT);
     
     CGFloat horizontalOffset = 10.0f;
     _enterButton.frame = CGRectMake(bounds.origin.x + horizontalOffset,
-                                    _passwordContainer.frame.origin.y + _passwordContainer.frame.size.height + 42,
+                                    CGRectBottom(_passwordContainer.frame) + 42,
                                     bounds.size.width - horizontalOffset * 2.0f,
                                     40);
     
-    CGFloat labelsSize = (IS_IPAD) ? 15 : 14;
-    _registryButton.frame = CGRectMake(bounds.origin.x,
-                                       _enterButton.frame.origin.y + _enterButton.frame.size.height + 34,
-                                       bounds.size.width,
-                                       labelsSize);
+    _registryButton.frame = CGRectMake(bounds.origin.x + horizontalOffset,
+                                       CGRectBottom(_enterButton.frame) + 20,
+                                       bounds.size.width - horizontalOffset * 2.0f,
+                                       40);
 }
 
 @end

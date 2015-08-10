@@ -17,6 +17,6 @@
 @property (nonatomic, readonly) ExTextField * passwordTextField;
 @property (nonatomic, readonly) UILabel * errorLabel;
 @property (nonatomic, readonly) ExtendedButton * enterButton;
-@property (nonatomic, readonly) UIButton * registryButton;
+@property (nonatomic, readonly) ExtendedButton * registryButton;
 
 @end
