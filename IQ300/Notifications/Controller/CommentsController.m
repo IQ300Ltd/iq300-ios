@@ -236,6 +236,8 @@
 }
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
+    [super modelDidChanged:model];
+
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     

@@ -65,16 +65,16 @@
         [_enterButton setTitle:NSLocalizedString(@"Enter", nil) forState:UIControlStateNormal];
         [_enterButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
         [self addSubview:_enterButton];
-        
-        _registryButton = [[ExtendedButton alloc] init];
-        [_registryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
-        [_registryButton setBackgroundColor:IQ_CELADON_COLOR];
-        [_registryButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
-        [_enterButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
-        [_registryButton.layer setCornerRadius:2.0f];
-        [_registryButton setTitle:NSLocalizedString(@"Sign up", nil) forState:UIControlStateNormal];
-        [_registryButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
-        [self addSubview:_registryButton];
+//        
+//        _registryButton = [[ExtendedButton alloc] init];
+//        [_registryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
+//        [_registryButton setBackgroundColor:IQ_CELADON_COLOR];
+//        [_registryButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
+//        [_enterButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
+//        [_registryButton.layer setCornerRadius:2.0f];
+//        [_registryButton setTitle:NSLocalizedString(@"Sign up", nil) forState:UIControlStateNormal];
+//        [_registryButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
+//        [self addSubview:_registryButton];
     }
     return self;
 }
