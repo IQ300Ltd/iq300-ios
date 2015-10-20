@@ -100,6 +100,8 @@
 		733A80541A7A6C5C00460C87 /* NotificationGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 733A80531A7A6C5C00460C87 /* NotificationGroupView.m */; };
 		733ADD1C1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */; };
 		733ADD1D1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */; };
+		73415D031BCE332C0042DD09 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73415D021BCE332C0042DD09 /* Launch Screen.storyboard */; settings = {ASSET_TAGS = (); }; };
+		73415D041BCE332C0042DD09 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73415D021BCE332C0042DD09 /* Launch Screen.storyboard */; settings = {ASSET_TAGS = (); }; };
 		734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQAttachment.m */; };
 		73486E3B1B6F98EE00DEBD66 /* IQTaskDeletedIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73486E3A1B6F98EE00DEBD66 /* IQTaskDeletedIds.m */; };
 		73486E3C1B6F98EE00DEBD66 /* IQTaskDeletedIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73486E3A1B6F98EE00DEBD66 /* IQTaskDeletedIds.m */; };
@@ -910,6 +912,7 @@
 		733A80531A7A6C5C00460C87 /* NotificationGroupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationGroupView.m; sourceTree = "<group>"; };
 		733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice-Hardware.m"; sourceTree = "<group>"; };
 		733ADD1B1B46C03F00B3DBF4 /* UIDevice-Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice-Hardware.h"; sourceTree = "<group>"; };
+		73415D021BCE332C0042DD09 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		734433631A2DEBF300102FC8 /* IQAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachment.h; sourceTree = "<group>"; };
 		734433641A2DEBF300102FC8 /* IQAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachment.m; sourceTree = "<group>"; };
 		73486E391B6F98EE00DEBD66 /* IQTaskDeletedIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskDeletedIds.h; sourceTree = "<group>"; };
@@ -2209,6 +2212,7 @@
 				7393C41A1A1A379400E9E944 /* IQFonts.h */,
 				73F9D1B41AA7369E0030DE90 /* FiltersLocalization.strings */,
 				73A87EF31AA4495700C4A7C3 /* IQColors.h */,
+				73415D021BCE332C0042DD09 /* Launch Screen.storyboard */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -3025,6 +3029,7 @@
 				73840ECF1B1C75A500BCEAFC /* notifications_menu.plist in Resources */,
 				73840ED01B1C75A500BCEAFC /* delete_ico@2x.png in Resources */,
 				73840ED21B1C75A500BCEAFC /* top_header_bg.png in Resources */,
+				73415D041BCE332C0042DD09 /* Launch Screen.storyboard in Resources */,
 				73840ED31B1C75A500BCEAFC /* msg_error@2x.png in Resources */,
 				73865C201B20688A00118292 /* messages_tab_selected.png in Resources */,
 				73840ED41B1C75A500BCEAFC /* msg_viewed@2x.png in Resources */,
@@ -3120,6 +3125,7 @@
 				739850C21A2DB1C100DB5B21 /* search_icon.png in Resources */,
 				7399F9381ABC3C390013FA11 /* reset_filter@2x.png in Resources */,
 				73D0DDFF1A95F2AB008710FF /* message_blue_buble.png in Resources */,
+				73415D031BCE332C0042DD09 /* Launch Screen.storyboard in Resources */,
 				738FE7011A162B10009F26A2 /* messages_tab.png in Resources */,
 				73A7CA7E1A9F55ED0038DEF1 /* desc_sort_ico.png in Resources */,
 				73A7CA7F1A9F55ED0038DEF1 /* desc_sort_ico@2x.png in Resources */,
@@ -3928,7 +3934,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
-				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
+				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -4154,7 +4160,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Shamil Hamadeev (DDMRH6LAJY)";
-				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
+				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4184,7 +4190,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
-				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
+				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

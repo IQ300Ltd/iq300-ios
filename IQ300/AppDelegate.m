@@ -112,6 +112,7 @@
 }
 
 + (void)registerForRemoteNotifications {
+#if !(TARGET_IPHONE_SIMULATOR)
     if([IQSession defaultSession]) {
         if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
             UIUserNotificationType types = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
@@ -127,6 +128,7 @@
                                                                                    UIRemoteNotificationTypeAlert)];
         }
     }
+#endif
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
