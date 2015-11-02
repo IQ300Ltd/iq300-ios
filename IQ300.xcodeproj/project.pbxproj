@@ -100,8 +100,8 @@
 		733A80541A7A6C5C00460C87 /* NotificationGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 733A80531A7A6C5C00460C87 /* NotificationGroupView.m */; };
 		733ADD1C1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */; };
 		733ADD1D1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */; };
-		73415D031BCE332C0042DD09 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73415D021BCE332C0042DD09 /* Launch Screen.storyboard */; settings = {ASSET_TAGS = (); }; };
-		73415D041BCE332C0042DD09 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73415D021BCE332C0042DD09 /* Launch Screen.storyboard */; settings = {ASSET_TAGS = (); }; };
+		73415D031BCE332C0042DD09 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73415D021BCE332C0042DD09 /* Launch Screen.storyboard */; };
+		73415D041BCE332C0042DD09 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73415D021BCE332C0042DD09 /* Launch Screen.storyboard */; };
 		734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQAttachment.m */; };
 		73486E3B1B6F98EE00DEBD66 /* IQTaskDeletedIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73486E3A1B6F98EE00DEBD66 /* IQTaskDeletedIds.m */; };
 		73486E3C1B6F98EE00DEBD66 /* IQTaskDeletedIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73486E3A1B6F98EE00DEBD66 /* IQTaskDeletedIds.m */; };
