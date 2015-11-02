@@ -1,7 +1,7 @@
 platform :ios, '7.0'
 source 'https://github.com/CocoaPods/Specs.git'
 
-pod 'RestKit'
+pod 'RestKit', '~> 0.25.0'
 pod 'MMDrawerController'
 pod 'SDWebImage'
 pod 'SVPullToRefresh', :head

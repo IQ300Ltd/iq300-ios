@@ -38,8 +38,12 @@
     return nil;
 }
 
+- (Class)cellClassForIndexPath:(NSIndexPath*)indexPath {
+    return nil;
+}
+
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = self.cellClass;
+    Class cellClass = [self cellClassForIndexPath:indexPath];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
                             reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }

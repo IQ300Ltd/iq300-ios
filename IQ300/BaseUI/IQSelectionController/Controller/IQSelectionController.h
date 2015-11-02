@@ -15,6 +15,7 @@
 @optional
 
 - (void)selectionControllerController:(IQSelectionController*)controller didSelectItem:(id)item;
+- (void)selectionControllerController:(IQSelectionController*)controller didSelectItems:(NSArray*)items;
 
 @end
 

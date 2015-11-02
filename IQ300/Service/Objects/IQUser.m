@@ -22,7 +22,11 @@
 @dynamic normalUrl;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
-    RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class])
+    return [self objectMappingForEntityName:NSStringFromClass([self class]) store:store];
+}
+
++ (RKObjectMapping*)objectMappingForEntityName:(NSString*)entityName store:(RKManagedObjectStore*)store {
+    RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:entityName
                                                     inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"userId"]];
     [mapping addAttributeMappingsFromDictionary:@{

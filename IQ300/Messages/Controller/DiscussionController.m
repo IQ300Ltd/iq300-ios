@@ -5,7 +5,6 @@
 //  Created by Tayphoon on 04.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 #import <CTAssetsPickerController/CTAssetsPickerController.h>
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
@@ -27,10 +26,16 @@
 #import "IQDrawerController.h"
 #import "UIImage+Extensions.h"
 #import "UIActionSheet+Blocks.h"
+#import "UIScrollView+PullToRefreshInsert.h"
+#import "ContactPickerController.h"
+#import "TaskTabController.h"
+#import "ConferenceInfoController.h"
+#import "IQService.h"
+#import "IQService+Messages.h"
 
 #define SECTION_HEIGHT 12
 
-@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
+@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate> {
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachmentAsset;
@@ -38,6 +43,7 @@
     UIDocumentInteractionController * _documentController;
     UISwipeGestureRecognizer * _tableGesture;
     CGPoint _tableContentOffset;
+    BOOL _blockUpdation;
 }
 
 @end
@@ -51,9 +57,12 @@
 }
 
 - (void)setModel:(id<IQTableModel>)model {
-    self.model.delegate = nil;
-    [self.model setSubscribedToNotifications:NO];
-    [self.model clearModelData];
+    if (self.model) {
+        self.model.delegate = nil;
+        [self.model setSubscribedToNotifications:NO];
+        [self.model clearModelData];
+    }
+    
     [super setModel:model];
 }
 
@@ -90,15 +99,39 @@
 
     __weak typeof(self) weakSelf = self;
     [self.tableView
-     addPullToRefreshWithActionHandler:^{
-         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
-             [weakSelf.tableView.pullToRefreshView stopAnimating];
-         }];
+     insertPullToRefreshWithActionHandler:^{
+         void (^completiation)(NSError * error) = ^(NSError * error) {
+             if (error) {
+                 NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
+                 if (httpStatusCode == 403) {
+                     [weakSelf proccessUserRemovedFromConversation];
+                 }
+             }
+             else {
+                 [self proccessUserAddToConversation];
+             }
+             
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+         };
+         [weakSelf.model loadNextPartWithCompletion:completiation];
      }
      position:SVPullToRefreshPositionTop];
     
     [_mainView.inputView.commentTextView setDelegate:(id<UITextViewDelegate>)self];
     _mainView.tableView.hidden = YES;
+    
+    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(backButtonAction:)];
+    self.navigationItem.leftBarButtonItem = backBarButton;
+    
+    NSString *imageName = [self.model isDiscussionConference] ? @"edit_conference_icon.png" : @"add_user_icon.png";
+    UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName]
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(rightBarButtonAction:)];
+    self.navigationItem.rightBarButtonItem = rightBarButton;
 }
 
 - (BOOL)isLeftMenuEnabled {
@@ -107,12 +140,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(backButtonAction:)];
-    self.navigationItem.leftBarButtonItem = backBarButton;
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
@@ -139,18 +166,25 @@
                                                  name:IQDrawerDidShowNotification
                                                object:nil];
     
-    if([IQSession defaultSession]) {
-        if(self.needFullReload) {
-            [self showActivityIndicatorOnView:_mainView];
-        }
-        [self updateModel];
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self updateModel];
+    [self updateTitle];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [self hideActivityIndicator];
+    
+    [self.model setSubscribedToNotifications:NO];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -173,7 +207,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CommentCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    UITableViewCell<IQCommentCell> * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
@@ -184,7 +218,8 @@
 
     cell.expandable = [self.model isCellExpandableAtIndexPath:indexPath];
     cell.expanded = [self.model isItemExpandedAtIndexPath:indexPath];
-    
+    cell.descriptionTextView.delegate = self;
+
     if(cell.expandable) {
         [cell.expandButton addTarget:self
                               action:@selector(expandButtonAction:)
@@ -206,7 +241,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
     if([comment.commentStatus integerValue] == IQCommentStatusSendError) {
-        [UIAlertView showWithTitle:@"IQ300"
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"Message has not been sent. Send again?", nil)
                  cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                  otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
@@ -217,7 +252,7 @@
                                           [self.model deleteLocalComment:comment];
                                       }
                                       else {
-                                          NSLog(@"Resend local comment error");
+                                          [self proccessServiceError:error];
                                       }
                                   }];
                               }
@@ -227,7 +262,7 @@
 
 #pragma mark - DiscussionModelDelegate Delegate
 
-- (void)model:(DiscussionModel*)model newComment:(IQComment*)comment {
+- (void)model:(DiscussionModel *)model newComment:(IQComment*)comment {
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     if(isTableScrolledToBottom) {
@@ -236,11 +271,29 @@
 }
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
+    [super modelDidChanged:model];
+    
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
     if(isTableScrolledToBottom) {
         [self scrollToBottomIfNeedAnimated:YES delay:1.0f];
+    }
+}
+
+- (void)model:(DiscussionModel *)model conversationTitleDidChanged:(NSString *)newTitle {
+    self.title = newTitle;
+}
+
+- (void)model:(DiscussionModel *)model didAddMemberWith:(NSNumber*)userId {
+    if ([IQSession defaultSession].userId && [[IQSession defaultSession].userId isEqualToNumber:userId]) {
+        [self proccessUserAddToConversation];
+    }
+}
+
+- (void)model:(DiscussionModel *)model memberDidRemovedWithId:(NSNumber *)userId {
+    if ([IQSession defaultSession].userId && [[IQSession defaultSession].userId isEqualToNumber:userId]) {
+        [self proccessUserRemovedFromConversation];
     }
 }
 
@@ -264,7 +317,71 @@
     [_mainView.inputView.commentTextView resignFirstResponder];
 }
 
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    
+    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
+    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
+    if (isTableScrolledToBottom) {
+        _tableContentOffset = self.tableView.contentOffset;
+    }
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    if (!CGPointEqualToPoint(_tableContentOffset, CGPointZero)) {
+        [self.tableView setContentOffset:_tableContentOffset animated:YES];
+    }
+
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
+#pragma mark - UITextViewDelegate Methods
+
+- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
+    if ([URL.scheme isEqualToString:APP_URL_SCHEME] &&
+        [URL.host isEqualToString:@"tasks"]) {
+        NSInteger taskId = [URL.lastPathComponent integerValue];
+        if (taskId > 0 && taskId) {
+            [self openTaskControllerForTaskId:@(taskId)];
+        }
+    }
+    else {
+        NSString * unescapedString = [[URL absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        unescapedString = [unescapedString stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+        NSString * encodeURL = [unescapedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:encodeURL]];
+    }
+    
+    return NO;
+}
+
 #pragma mark - Private methods
+
+- (void)openTaskControllerForTaskId:(NSNumber*)taskId {
+    [TaskTabController taskTabControllerForTaskWithId:taskId
+                                           completion:^(TaskTabController * controller, NSError *error) {
+                                               if (controller) {
+                                                   [GAIService sendEventForCategory:GAITasksListEventCategory
+                                                                             action:GAIOpenTaskEventAction];
+                                                   
+                                                   controller.hidesBottomBarWhenPushed = YES;
+                                                   [self.navigationController pushViewController:controller animated:YES];
+                                               }
+                                               else {
+                                                   [self proccessServiceError:error];
+                                               }
+                                           }];
+}
 
 - (BOOL)isTextValid:(NSString *)text {
     if (text == nil || [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
@@ -279,8 +396,28 @@
     [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
 }
 
-- (void)backButtonAction:(UIButton*)sender {
+- (void)backButtonAction:(id)sender {
+    [self.model unlockConversation];
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)rightBarButtonAction:(id)sender {
+    if ([self.model isDiscussionConference]) {
+        ConferenceInfoController *controller = [[ConferenceInfoController alloc] init];
+        controller.model.conversation = self.model.discussion.conversation;
+        controller.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:controller animated:YES];
+    }
+    else {
+        ContactsModel * model = [[ContactsModel alloc] init];
+        model.excludeUserIds = [self.model.discussion.users valueForKey:@"userId"];
+
+        ContactPickerController * controller = [[ContactPickerController alloc] init];
+        controller.hidesBottomBarWhenPushed = YES;
+        controller.model = model;
+        controller.delegate = self;
+        [self.navigationController pushViewController:controller animated:YES];
+    }
 }
 
 - (void)sendButtonAction:(UIButton*)sender {
@@ -311,6 +448,10 @@
                          _attachmentImage = nil;
                          [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                      }
+                     else {
+                         [self proccessServiceError:error];
+                     }
+                     
                      [_mainView.inputView.commentTextView setEditable:YES];
                      [_mainView.inputView.attachButton setEnabled:YES];
                      if(isTableScrolledToBottom) {
@@ -343,7 +484,7 @@
                 [self presentViewController:imagePicker animated:YES completion:nil];
             }
             else {
-                [UIAlertView showWithTitle:@"IQ300"
+                [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                                    message:NSLocalizedString(@"The camera is not available", nil)
                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
                          otherButtonTitles:nil
@@ -364,7 +505,7 @@
 }
 
 - (void)attachViewButtonAction:(UIButton*)sender {
-    CommentCell * cell = [self cellForView:sender];
+    UITableViewCell<IQCommentCell> * cell = [self cellForView:sender];
     
     if(!cell) {
         return;
@@ -403,6 +544,14 @@
                                                          [self showOpenInForURL:destinationURL fromRect:rectForAppearing];
                                                      }
                                                      failure:^(NSOperation *operation, NSError *error) {
+                                                         NSString * message = IsNetworUnreachableError(error) ? NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil) :
+                                                                                                                NSLocalizedString(@"File download failed", nil);
+                                                         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                                                                            message:message
+                                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                                  otherButtonTitles:nil
+                                                                           tapBlock:nil];
+
                                                          [self hideActivityIndicator];
                                                      }];
     }
@@ -414,7 +563,8 @@
     _documentController = [UIDocumentInteractionController interactionControllerWithURL:documentURL];
     [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
     if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
-        [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
                           tapBlock:nil];
@@ -422,7 +572,7 @@
 }
 
 - (void)expandButtonAction:(UIButton*)sender {
-    CommentCell * cell = [self cellForView:sender];
+    UITableViewCell<IQCommentCell> * cell = [self cellForView:sender];
     if(cell) {
         NSIndexPath * cellIndexPath = [self.tableView indexPathForCell:cell];
         BOOL isExpanded = [self.model isItemExpandedAtIndexPath:cellIndexPath];
@@ -431,19 +581,51 @@
 }
 
 - (void)updateModel {
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
+    if([IQSession defaultSession] && self.model && !_blockUpdation) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
         
-        [self scrollToBottomIfNeedAnimated:NO delay:0];
-        self.needFullReload = NO;
-        
-        dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
-            _mainView.tableView.hidden = NO;
-            [self hideActivityIndicator];
-        });
-    }];
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self proccessUserAddToConversation];
+                [self.tableView reloadData];
+            }
+            else {
+                NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
+                if (httpStatusCode == 403) {
+                    [self proccessUserRemovedFromConversation];
+                }
+            }
+            
+            [self scrollToBottomIfNeedAnimated:NO delay:0];
+            self.needFullReload = NO;
+            
+            [self updateNoDataLabelVisibility];
+            dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+                _mainView.tableView.hidden = NO;
+                
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
+        }];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self.model markDiscussionAsReadedWithCompletion:nil];
+    [self checkConversationAvailable];
+}
+
+- (void)checkConversationAvailable {
+    [[IQService sharedService] conversationWithId:self.model.discussion.conversation.conversationId
+                                          handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                              NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
+                                              if (!success && httpStatusCode == 403) {
+                                                  [self proccessUserRemovedFromConversation];
+                                              }
+                                              else {
+                                                  [self proccessUserAddToConversation];
+                                                  [self updateModel];
+                                              }
+                                          }];
 }
 
 #pragma mark - Keyboard Helpers
@@ -631,9 +813,11 @@
     _documentController = nil;
 }
 
-- (CommentCell*)cellForView:(UIView*)view {
-    if ([view.superview isKindOfClass:[CommentCell class]] || !view.superview) {
-        return (CommentCell*)view.superview;
+- (UITableViewCell<IQCommentCell>*)cellForView:(UIView*)view {
+    BOOL superIsCommentCell = [view.superview isKindOfClass:[UITableViewCell class]] &&
+                              [view.superview conformsToProtocol:@protocol(IQCommentCell)];
+    if (superIsCommentCell || !view.superview) {
+        return (UITableViewCell<IQCommentCell>*)view.superview;
     }
     
     return [self cellForView:view.superview];
@@ -641,6 +825,76 @@
 
 - (void)drawerDidShowNotification:(NSNotification*)notification {
     [_mainView.inputView.commentTextView resignFirstResponder];
+}
+
+#pragma mark - Conversation Notification
+
+- (void)proccessUserRemovedFromConversation {
+    if(!_blockUpdation) {
+        _blockUpdation = YES;
+
+        [self.navigationController popToViewController:self animated:YES];
+        
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:NSLocalizedString(@"Administrator deleted You from this chat", nil)
+                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                 otherButtonTitles:nil
+                          tapBlock:nil];
+        
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+        
+        [self.model lockConversation];
+        
+        _mainView.inputView.sendButton.enabled = NO;
+        _mainView.inputView.attachButton.enabled = NO;
+        _mainView.inputView.commentTextView.editable = NO;
+        
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+}
+
+- (void)proccessUserAddToConversation {
+    if (_blockUpdation) {
+        [self.model unlockConversation];
+        
+        _mainView.inputView.sendButton.enabled = YES;
+        _mainView.inputView.attachButton.enabled = YES;
+        _mainView.inputView.commentTextView.editable = YES;
+        
+        NSString *imageName = [self.model isDiscussionConference] ? @"edit_conference_icon.png" : @"add_user_icon.png";
+        UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName]
+                                                                            style:UIBarButtonItemStylePlain
+                                                                           target:self
+                                                                           action:@selector(rightBarButtonAction:)];
+        self.navigationItem.rightBarButtonItem = rightBarButton;
+        _blockUpdation = NO;
+    }
+}
+
+#pragma mark - ContactPickerController delegate
+
+- (void)updateTitle {
+    self.title = self.model.discussion.conversation.title;
+}
+
+- (void)contactPickerController:(ContactPickerController*)picker didPickContacts:(NSArray*)contacts {
+    if ([contacts count] > 0) {
+        NSArray * users = [contacts valueForKey:@"user"];
+        NSArray * userIds = [users valueForKey:@"userId"];
+        
+        [DiscussionModel conferenceFromConversationWithId:self.model.discussion.conversation.conversationId
+                                                  userIds:userIds
+                                               completion:^(IQConversation * conversation, NSError *error) {
+                                                   if (conversation) {
+                                                       DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
+                                                       self.model = model;
+                                                       
+                                                       self.title = conversation.title;
+                                                       [self.tableView reloadData];
+                                                       [self.navigationController popViewControllerAnimated:YES];
+                                                   }
+                                               }];
+    }
 }
 
 - (void)dealloc {

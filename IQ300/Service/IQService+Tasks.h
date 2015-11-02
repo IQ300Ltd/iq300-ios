@@ -22,6 +22,14 @@
                      sort:(NSString*)sort
                   handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)tasksUpdatedAfter:(NSDate*)date
+                   excludeFolder:(NSString*)folder
+                     page:(NSNumber*)page
+                      per:(NSNumber*)per
+                   search:(NSString*)search
+                     sort:(NSString*)sort
+                  handler:(ObjectRequestCompletionHandler)handler;
+
 - (void)tasksBeforeId:(NSNumber*)taskId
                folder:(NSString*)folder
                status:(NSString*)status
@@ -94,5 +102,8 @@
 - (void)createTask:(IQTaskDataHolder*)task handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)saveTask:(IQTaskDataHolder*)task handler:(ObjectRequestCompletionHandler)handler;
+
+- (void)taskIdsDeletedAfter:(NSDate*)deletedAfter
+                    handler:(ObjectRequestCompletionHandler)handler;
 
 @end

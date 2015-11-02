@@ -548,13 +548,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     }
 }
 
-- (void)applicationWillEnterForeground {
-    if ([IQSession defaultSession]) {
-        [self updateCounters];
-        [self groupUpdatesWithCompletion:nil];
-    }
-}
-
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController*)controller {

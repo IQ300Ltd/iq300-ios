@@ -77,9 +77,9 @@
         _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         _noDataLabel.hidden = YES;
         
-        if (_tableView) {
-            [self.view insertSubview:_noDataLabel belowSubview:_tableView];
-            _noDataLabel.frame = _tableView.frame;
+        if (self.tableView) {
+            [self.view insertSubview:_noDataLabel belowSubview:self.tableView];
+            _noDataLabel.frame = self.tableView.frame;
         }
         else {
             [self.view addSubview:_noDataLabel];
@@ -303,7 +303,7 @@
         CGFloat indicatorHeight = self.activityIndicator.frame.size.height;
         self.activityIndicator.frame = CGRectMake(self.tableView.frame.origin.x,
                                                   self.tableView.frame.origin.y - indicatorHeight,
-                                                  self.activityIndicator.frame.size.width,
+                                                  self.tableView.frame.size.width,
                                                   self.activityIndicator.frame.size.height);
         [self.tableView.superview insertSubview:self.activityIndicator aboveSubview:self.tableView];
         
@@ -320,7 +320,7 @@
                          animations:^{
                              self.activityIndicator.frame = CGRectMake(self.tableView.frame.origin.x,
                                                                        self.tableView.frame.origin.y,
-                                                                       self.activityIndicator.frame.size.width,
+                                                                       self.tableView.frame.size.width,
                                                                        self.activityIndicator.frame.size.height);
 
                              self.tableView.contentInset = contentInsets;
@@ -335,7 +335,7 @@
 }
 
 - (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
-    if (_activityIndicator) {
+    if (self.isActivityIndicatorShown) {
         CGFloat indicatorHeight = self.activityIndicator.frame.size.height;
 
         void (^completionBlock)(BOOL finished) = ^(BOOL finished)
@@ -355,14 +355,13 @@
                              animations:^{
                                  self.activityIndicator.frame = CGRectMake(self.tableView.frame.origin.x,
                                                                            self.tableView.frame.origin.y - indicatorHeight,
-                                                                           self.activityIndicator.frame.size.width,
+                                                                           self.tableView.frame.size.width,
                                                                            self.activityIndicator.frame.size.height);
                                  
                                  self.tableView.contentInset = _tableInsets;
                              }
                              completion:completionBlock];
         }
-        
         else {
             completionBlock(YES);
             [self.tableView.layer removeAllAnimations];

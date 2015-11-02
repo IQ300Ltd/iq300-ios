@@ -37,6 +37,27 @@
                    handler:handler];
 }
 
+- (void)tasksUpdatedAfter:(NSDate*)date
+            excludeFolder:(NSString*)folder
+                     page:(NSNumber*)page
+                      per:(NSNumber*)per
+                   search:(NSString*)search
+                     sort:(NSString*)sort
+                  handler:(ObjectRequestCompletionHandler)handler {
+    NSDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                           @"updated_at_after" : NSObjectNullForNil(date),
+                                                           @"exclude_folder"   : NSStringNullForNil(folder),
+                                                           @"page"             : NSObjectNullForNil(page),
+                                                           @"per"              : NSObjectNullForNil(per),
+                                                           @"sort"             : NSStringNullForNil(sort),
+                                                           @"search"           : NSStringNullForNil(search)
+                                                           });
+    
+    [self getObjectsAtPath:@"/api/v1/tasks"
+                parameters:parameters
+                   handler:handler];
+}
+
 - (void)tasksBeforeId:(NSNumber*)taskId
                folder:(NSString*)folder
                status:(NSString*)status
@@ -340,6 +361,13 @@
                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/", task.taskId]
          parameters:nil
             handler:handler];
+}
+
+- (void)taskIdsDeletedAfter:(NSDate*)deletedAfter
+                    handler:(ObjectRequestCompletionHandler)handler {
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/deleted_ids"]
+                parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
+                   handler:handler];
 }
 
 @end

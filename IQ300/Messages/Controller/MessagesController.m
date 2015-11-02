@@ -16,17 +16,18 @@
 #import "IQConversation.h"
 
 #import "DiscussionController.h"
-#import "CreateConversationController.h"
+#import "ContactPickerController.h"
 #import "DispatchAfterExecution.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQBadgeView.h"
 #import "IQCounters.h"
+#import "IQContact.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQDrawerController.h"
 
 #define DISPATCH_DELAY 0.7
 
-@interface MessagesController() {
+@interface MessagesController() <IQSelectionControllerDelegate> {
     MessagesView * _messagesView;
     dispatch_after_block _cancelBlock;
 }
@@ -120,17 +121,16 @@
                                              selector:@selector(countersDidChangedNotification:)
                                                  name:CountersDidChangedNotification
                                                object:nil];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
     
     UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"createNewMessage.png"]
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
                                                                        action:@selector(createNewAction:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
     [self.leftMenuController setModel:nil];
     [self.leftMenuController reloadMenuWithCompletion:nil];
@@ -159,9 +159,8 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if([IQSession defaultSession]) {
-        [self updateModel];
-    }
+    self.model.modelUpdateRequired = YES;
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -180,6 +179,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:IQDrawerDidShowNotification
                                                   object:nil];
+    self.model.modelUpdateRequired = NO;
 }
 
 - (void)updateGlobalCounter {
@@ -207,20 +207,18 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    ConversationCell * cell = (ConversationCell*)[tableView cellForRowAtIndexPath:indexPath];
-    IQConversation * conver = [self.model itemAtIndexPath:indexPath];
-    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conver.discussion];
-    model.companionId = cell.companion.userId;
+    IQConversation * conversation = [self.model itemAtIndexPath:indexPath];
+    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
 
     DiscussionController * controller = [[DiscussionController alloc] init];
     controller.hidesBottomBarWhenPushed = YES;
-    controller.title = cell.companion.displayName;
+    controller.title = conversation.title;
     controller.model = model;
-
+    
     [self.navigationController pushViewController:controller animated:YES];
     
     __weak typeof(self) weakSelf = self;
-    [MessagesModel markConversationAsRead:conver completion:^(NSError *error) {
+    [MessagesModel markConversationAsRead:conversation completion:^(NSError *error) {
         [weakSelf updateGlobalCounter];
     }];
 }
@@ -241,6 +239,10 @@
 
 #pragma mark - TextField Delegate
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    _messagesView.clearTextFieldButton.hidden = (textField.text.length == 0);
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
@@ -248,6 +250,7 @@
 
 - (void)textFieldDidChange:(UITextField *)textField {
     [self filterWithText:textField.text];
+    _messagesView.clearTextFieldButton.hidden = (textField.text.length == 0);
 }
 
 #pragma mark - Keyboard Helpers
@@ -280,7 +283,65 @@
     }];
 }
 
+#pragma mark - ContactPickerController delegate
+
+- (void)contactPickerController:(ContactPickerController*)picker didPickContacts:(NSArray*)contacts {
+    if ([contacts count] == 1) {
+        IQContact * contact = [contacts firstObject];
+        [self createDiscussionWithUserId:contact.user.userId];
+    }
+    else if ([contacts count] > 1) {
+        NSArray * users = [contacts valueForKey:@"user"];
+        NSArray * userIds = [users valueForKey:@"userId"];
+        [self createConferenceWithUserIds:userIds];
+    }
+}
+
 #pragma mark - Private methods
+
+- (void)createDiscussionWithUserId:(NSNumber*)userId {
+    [MessagesModel createConversationWithRecipientId:userId
+                                          completion:^(IQConversation * conversation, NSError *error) {
+                                              if(!error) {
+                                                  DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
+                                                  
+                                                  DiscussionController * controller = [[DiscussionController alloc] init];
+                                                  controller.hidesBottomBarWhenPushed = YES;
+                                                  controller.model = model;
+                                                  controller.title = conversation.title;
+                                                  
+                                                  [MessagesModel markConversationAsRead:conversation completion:nil];
+                                                  
+                                                  NSArray * newStack = @[self, controller];
+                                                  [self.navigationController setViewControllers:newStack animated:YES];
+                                              }
+                                              else {
+                                                  [self proccessServiceError:error];
+                                              }
+                                          }];
+}
+
+- (void)createConferenceWithUserIds:(NSArray*)userIds {
+    [MessagesModel createConferenceWithUserIds:userIds
+                                    completion:^(IQConversation * conversation, NSError *error) {
+                                        if(!error) {
+                                            DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
+                                            
+                                            DiscussionController * controller = [[DiscussionController alloc] init];
+                                            controller.hidesBottomBarWhenPushed = YES;
+                                            controller.model = model;
+                                            controller.title = conversation.title;
+                                            
+                                            [MessagesModel markConversationAsRead:conversation completion:nil];
+                                            
+                                            NSArray * newStack = @[self, controller];
+                                            [self.navigationController setViewControllers:newStack animated:YES];
+                                        }
+                                        else {
+                                            [self proccessServiceError:error];
+                                        }
+                                    }];
+}
 
 - (void)makeInputViewTransitionWithDownDirection:(BOOL)down notification:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
@@ -306,40 +367,47 @@
 }
 
 - (void)createNewAction:(id)sender {
-    CreateConversationController * controller = [[CreateConversationController alloc] init];
+    ContactPickerController * controller = [[ContactPickerController alloc] init];
     controller.hidesBottomBarWhenPushed = YES;
-    controller.model = [[UsersModel alloc] init];
+    controller.model = [[ContactsModel alloc] init];
+    controller.delegate = self;
     [self.navigationController pushViewController:controller animated:YES];
 }
 
 - (void)reloadModel {
-    [self.model reloadModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
-        [self updateNoDataLabelVisibility];
-        [self scrollToTopIfNeedAnimated:NO delay:0.0f];
-        self.needFullReload = NO;
-    }];
+    if([IQSession defaultSession]) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
+
+        [self.model reloadModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            [self updateNoDataLabelVisibility];
+            [self scrollToTopIfNeedAnimated:NO delay:0.0f];
+            self.needFullReload = NO;
+            
+            dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
+        }];
+    }
 }
 
 - (void)updateModel {
-    [self showActivityIndicatorAnimated:YES completion:nil];
-
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
-        [self updateNoDataLabelVisibility];
-        [self scrollToTopIfNeedAnimated:NO delay:0.0f];
-        self.needFullReload = NO;
+    if([IQSession defaultSession]) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
         
-        dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
-            if (self.isActivityIndicatorShown) {
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            [self.tableView reloadData];
+            [self updateNoDataLabelVisibility];
+            [self scrollToTopIfNeedAnimated:NO delay:0.0f];
+            self.needFullReload = NO;
+            
+            dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
                 [self hideActivityIndicatorAnimated:YES completion:nil];
-            }
-        });
-   }];
+            });
+        }];
+    }
 }
 
 - (void)applicationWillEnterForeground {
@@ -364,10 +432,8 @@
     }
     
     void(^compleationBlock)(NSError * error) = ^(NSError * error) {
-        if(!error) {
-            [self.tableView reloadData];
-            [self updateNoDataLabelVisibility];
-        }
+        [self.tableView reloadData];
+        [self updateNoDataLabelVisibility];
     };
     
     [self.model setFilter:text];
@@ -393,6 +459,7 @@
 }
 
 - (void)clearSearch {
+    _messagesView.clearTextFieldButton.hidden = YES;
     _messagesView.searchBar.text = nil;
     [self filterWithText:nil];
 }

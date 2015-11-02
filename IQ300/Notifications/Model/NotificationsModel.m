@@ -515,11 +515,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                       userInfo:userInfo];
 }
 
-- (void)applicationWillEnterForeground {
-    [self updateCounters];
-    [self notificationsUpdatesWithCompletion:nil];
-}
-
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController*)controller {

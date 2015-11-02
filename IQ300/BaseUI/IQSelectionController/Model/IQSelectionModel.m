@@ -19,7 +19,7 @@
     return self;
 }
 
-- (Class)cellClass {
+- (Class)cellClassForIndexPath:(NSIndexPath *)indexPath {
     return [IQSelectableTextCell class];
 }
 
@@ -53,26 +53,18 @@
     return [IQSelectableTextCell heightForItem:item detailTitle:nil width:self.cellWidth];
 }
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
+- (NSArray*)selectedItems {
+    if ([_selectedIndexPaths count] > 0) {
+        NSMutableArray * items = [NSMutableArray array];
+        for (NSIndexPath * indexPath in _selectedIndexPaths) {
+            id item = [self itemAtIndexPath:indexPath];
+            if (item) {
+                [items addObject:item];
+            }
+        }
+        return [items copy];
     }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
-#pragma mark - Private methods
-
-- (void)applicationWillEnterForeground {
-    [self updateModelWithCompletion:^(NSError *error) {
-        [self modelDidChanged];
-    }];
+    return nil;
 }
 
 @end

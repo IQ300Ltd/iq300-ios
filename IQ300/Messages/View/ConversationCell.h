@@ -23,7 +23,7 @@
 @property (nonatomic, strong) UIView * contentBackgroundView;
 @property (nonatomic, strong) UIImageView * userImageView;
 @property (nonatomic, strong) UILabel * dateLabel;
-@property (nonatomic, strong) UILabel * userNameLabel;
+@property (nonatomic, strong) UILabel * titleLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;
 @property (nonatomic, strong) UIButton * attachButton;
 @property (nonatomic, readonly) IQBadgeView * badgeView;

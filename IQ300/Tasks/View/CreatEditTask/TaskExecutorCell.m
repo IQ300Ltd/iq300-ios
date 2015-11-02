@@ -7,7 +7,16 @@
 //
 
 #import "TaskExecutorCell.h"
+#import "TaskExecutor.h"
 
 @implementation TaskExecutorCell
+
+@dynamic item;
+
+- (void)setItem:(TaskExecutor *)item {
+    [super setItem:item];
+    
+    self.titleTextView.text = item.executorName;
+}
 
 @end

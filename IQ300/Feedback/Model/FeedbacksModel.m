@@ -46,7 +46,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 - (NSPredicate*)fetchPredicate {
     NSPredicate * fetchPredicate = nil;
     if (!fetchPredicate && [IQSession defaultSession]) {
-        fetchPredicate = [NSPredicate predicateWithFormat:@"author.userId == %@", [IQSession defaultSession].userId];
+        fetchPredicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
     }
 
     if(fetchPredicate && [_search length] > 0) {
@@ -58,7 +58,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return fetchPredicate;
 }
 
-- (Class)cellClass {
+- (Class)cellClassForIndexPath:(NSIndexPath *)indexPath {
     return [FeedbackCell class];
 }
 
@@ -123,20 +123,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                                      completion(error);
                                                  }
                                              }];
-}
-
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
 }
 
 #pragma mark - Private methods
@@ -216,12 +202,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         return feedback.createdDate;
     }
     return nil;
-}
-
-- (void)applicationWillEnterForeground {
-    if ([IQSession defaultSession]) {
-        [self feedbacksUpdatesAfterDateWithCompletion:nil];
-    }
 }
 
 @end

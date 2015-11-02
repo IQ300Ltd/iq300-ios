@@ -11,6 +11,7 @@
 #import "TaskExecutorsGroup.h"
 #import "TaskExecutor.h"
 #import "IQService+Tasks.h"
+#import "TaskExecutorCell.h"
 
 @interface TaskExecutorsModel() {
     NSArray * _itemsInternal;
@@ -30,6 +31,10 @@
     }
     
     return self;
+}
+
+- (Class)cellClassForIndexPath:(NSIndexPath *)indexPath {
+    return [TaskExecutorCell class];
 }
 
 - (void)setSelectAll:(BOOL)selectAll {
@@ -65,10 +70,6 @@
     }
 }
 
-- (Class)cellClass {
-    return [IQSelectableTextCell class];
-}
-
 - (void)setExecutors:(NSArray *)executors {
     _executors = executors;
     
@@ -97,9 +98,9 @@
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath *)indexPath {
     TaskExecutor * item = [self itemAtIndexPath:indexPath];
-    return [IQSelectableTextCell heightForItem:item.executorName
-                                   detailTitle:nil
-                                         width:self.cellWidth];
+    return [TaskExecutorCell heightForItem:item.executorName
+                               detailTitle:nil
+                                     width:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
@@ -214,27 +215,7 @@
     }
 }
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
 #pragma mark - Private methods
-
-- (void)applicationWillEnterForeground {
-    [self updateModelWithCompletion:^(NSError *error) {
-        [self modelDidChanged];
-    }];
-}
 
 - (void)updateSelectedIndexs {
     [_selectedSections removeAllIndexes];

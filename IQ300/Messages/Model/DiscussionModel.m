@@ -18,18 +18,25 @@
 #import "NSString+UUID.h"
 #import "IQNotificationCenter.h"
 #import "TCObjectSerializator.h"
-#import "MessagesModel.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "NSDate+IQFormater.h"
 #import "NSDate+CupertinoYankee.h"
 #import "DispatchAfterExecution.h"
-#import "DeletedObjects.h"
+#import "CommentDeletedObjects.h"
+#import "IQConversation.h"
+#import "NSManagedObject+ActiveRecord.h"
+#import "SystemCommentCell.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
-#define LAST_REQUEST_DATE_KEY @"dcomment_ids_request_date"
+#define LAST_REQUEST_DATE_KEY @"comment_ids_request_date"
 
-static NSString * CReuseIdentifier = @"CReuseIdentifier";
+static NSString * CommentReuseIdentifier = @"CommentReuseIdentifier";
+static NSString * SystemReuseIdentifier = @"SystemReuseIdentifier";
+
+NSString * const IQConferencesTitleDidChangedEvent = @"conferences:title_changed";
+NSString * const IQConferencesMemberDidAddEvent = @"conferences:member_added";
+NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_removed";
 
 @interface DiscussionModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;
@@ -46,6 +53,27 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 @end
 
 @implementation DiscussionModel
+
++ (void)conferenceFromConversationWithId:(NSNumber*)conversationId
+                                 userIds:(NSArray*)userIds
+                              completion:(void (^)(IQConversation * conversation, NSError *error))completion {
+    [[IQService sharedService] conferenceFromConversationWithId:conversationId
+                                                        userIds:userIds
+                                                        handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                            if (success) {
+                                                                [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                                          action:@"event_action_message_conversation_create"];
+                                                                
+                                                                [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                                          action:GAIAddConversationMemberEventAction
+                                                                                           label:[userIds componentsJoinedByString:@", "]];
+                                                            }
+                                                            
+                                                            if (completion) {
+                                                                completion(object, error);
+                                                            }
+                                                        }];
+}
 
 + (NSDate*)lastRequestDate {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -74,16 +102,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     
     if(self) {
         _discussion = discussion;
+        [self updateLastViewedDate];
     }
     
     return self;
-}
-
-- (void)setCompanionId:(NSNumber *)companionId {
-    if(![_companionId isEqualToNumber:companionId]) {
-        _companionId = companionId;
-        [self updateLastViewedDate];
-    }
 }
 
 - (NSUInteger)numberOfSections {
@@ -117,29 +139,38 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (NSString*)reuseIdentifierForIndexPath:(NSIndexPath*)indexPath {
-    return CReuseIdentifier;
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    BOOL isSystemComment = ([[comment.type lowercaseString] isEqualToString:@"system"]);
+    return (isSystemComment) ? SystemReuseIdentifier : CommentReuseIdentifier;
+}
+
+- (Class)cellClassForIndexPath:(NSIndexPath*)indexPath {
+    IQComment * comment = [self itemAtIndexPath:indexPath];
+    BOOL isSystemComment = ([[comment.type lowercaseString] isEqualToString:@"system"]);
+    return (isSystemComment) ? [SystemCommentCell class] : [CommentCell class];
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
-    Class cellClass = [CommentCell class];
+    Class cellClass = [self cellClassForIndexPath:indexPath];
     return [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault
-                            reuseIdentifier:CReuseIdentifier];
+                            reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath*)indexPath {
     IQComment * comment = [self itemAtIndexPath:indexPath];
+    Class<IQCommentCell> cellClass = [self cellClassForIndexPath:indexPath];
     
     if(comment && ![_expandableCells objectForKey:comment.commentId] && self.cellWidth > 0) {
-        BOOL expandable = [CommentCell cellNeedToBeExpandableForItem:comment
-                                                           сellWidth:self.cellWidth];
+        BOOL expandable = [cellClass cellNeedToBeExpandableForItem:comment
+                           сellWidth:self.cellWidth];
         
         [_expandableCells setObject:@(expandable) forKey:comment.commentId];
     }
     
     BOOL isExpanded = [self isItemExpandedAtIndexPath:indexPath];
-    return [CommentCell heightForItem:comment
-                             expanded:isExpanded
-                            сellWidth:self.cellWidth];
+    return [cellClass heightForItem:comment
+                           expanded:isExpanded
+                          сellWidth:self.cellWidth];
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
@@ -233,7 +264,13 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     [_expandableCells removeAllObjects];
     [_expandedCells removeAllObjects];
     
-    [self reloadModelSourceControllerWithCompletion:nil];
+    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self modelDidChanged];
+            [self clearRemovedComments];
+        }
+    }];
+    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
@@ -260,18 +297,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
         [self resubscribeToIQNotifications];
     }
     else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
-        [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
+        [self unsubscribeFromIQNotification];
     }
 }
 
@@ -445,13 +474,52 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 }
 
+- (void)markDiscussionAsReadedWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
+                                                    handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                        if(success) {
+                                                            NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"messages" };
+                                                            [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
+                                                                                                                object:nil
+                                                                                                              userInfo:userInfo];
+                                                        }
+                                                        if(completion) {
+                                                            completion(error);
+                                                        }
+                                                    }];
+}
+
+- (BOOL)isDiscussionConference {
+    return ([[_discussion.conversation.type lowercaseString] isEqualToString:@"conference"]);
+}
+
+- (void)lockConversation {
+    self.discussion.conversation.locked = @(YES);
+    NSError * saveError = nil;
+    if(![self.discussion.conversation.managedObjectContext saveToPersistentStore:&saveError]) {
+        NSLog(@"Failed save to presistent store conversation with removed mark");
+    }
+}
+
+- (void)unlockConversation {
+    self.discussion.conversation.locked = @(NO);
+    NSError * saveError = nil;
+    if(![self.discussion.conversation.managedObjectContext saveToPersistentStore:&saveError]) {
+        NSLog(@"Failed save to presistent store conversation with removed mark");
+    }
+}
+
 #pragma mark - Private methods
 
 - (void)updateLastViewedDate {
-    if(_companionId) {
-        NSPredicate * predicate = [NSPredicate predicateWithFormat:@"userId == %@", _companionId];
-        CViewInfo * viewInfo = [[[_discussion.userViews filteredSetUsingPredicate:predicate] allObjects] firstObject];
-        _lastViewDate = viewInfo.viewDate;
+    if([IQSession defaultSession].userId) {
+        NSPredicate * predicate = [NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId];
+        NSSortDescriptor * sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"viewDate" ascending:NO];
+        NSSet * filteredSet = [_discussion.userViews filteredSetUsingPredicate:predicate];
+        CViewInfo * viewInfo = [[filteredSet sortedArrayUsingDescriptors:@[sortDescriptor]] firstObject];
+        if (viewInfo) {
+            _lastViewDate = viewInfo.viewDate;
+        }
     }
 }
 
@@ -647,12 +715,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)resubscribeToIQNotifications {
-        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
-        [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
+    [self unsubscribeFromIQNotification];
     
     __weak typeof(self) weakSelf = self;
-    void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
+    void (^newMessageBlock)(IQCNotification * notf) = ^(IQCNotification * notification) {
+        NSDictionary * commentData = notification.userInfo[IQNotificationDataKey][@"comment"];
+        NSDictionary * eventData = ((NSNull*)commentData[@"additional_data"] != [NSNull null]) ? commentData[@"additional_data"][@"event"] : nil;
         NSNumber * commentId = commentData[@"id"];
         NSNumber * discussionId = commentData[@"discussion_id"];
 
@@ -684,6 +752,20 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                     }];
                 }
             }
+            
+            NSString * eventName = [eventData[@"name"] lowercaseString];
+            if (eventData) {
+                NSDictionary * data = eventData[@"data"];
+                if ([eventName isEqualToString:IQConferencesTitleDidChangedEvent]) {
+                    [self modelConversationTitleDidChanged:data[@"new_title"]];
+                }
+                else if([eventName isEqualToString:IQConferencesMemberDidAddEvent]) {
+                    [self modelMemberDidAddWithId:data[@"user_id"]];
+                }
+                else if([eventName isEqualToString:IQConferencesMemberDidRemovedEvent]) {
+                    [self modelMemberDidRemovedWithId:data[@"user_id"]];
+                }
+            }
         }
     };
     
@@ -697,8 +779,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         NSNumber * discussionId = viewData[@"discussion_id"];
         NSString * viewedDateString = viewData[@"viewed_at"];
         NSDate * viewedDate = [[weakSelf dateFormater] dateFromString:viewedDateString];
+        BOOL isViewDateNewer = (_lastViewDate) ? [_lastViewDate compare:viewedDate] == NSOrderedAscending :
+                                                 viewedDate != nil;
+        BOOL shouldProcessUserId = (userId) ? ![[IQSession defaultSession].userId isEqualToNumber:userId] : NO;
 
-        if(userId && [_companionId isEqualToNumber:userId] && viewedDate &&
+        if(isViewDateNewer && shouldProcessUserId &&
            discussionId && [_discussion.discussionId isEqualToNumber:discussionId]) {
             _lastViewDate = viewedDate;
             
@@ -733,6 +818,16 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                            usingBlock:messageViewedBlock];
 }
 
+- (void)unsubscribeFromIQNotification {
+    if(_newMessageObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+    }
+    
+    if (_messageViewedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
+    }
+}
+
 - (NSDateFormatter *)dateFormater {
     if (!_dateFormatter) {
         _dateFormatter = [[NSDateFormatter alloc] init];
@@ -744,42 +839,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     return _dateFormatter;
 }
 
-- (void)applicationWillEnterForeground {
-    
-    ObjectRequestCompletionHandler handler = ^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-        if(!error) {
-            [self updateDefaultStatusesForComments:comments];
-            [self modelDidChanged];
-            [self clearRemovedComments];
-            
-            [[IQService sharedService] markDiscussionAsReadedWithId:_discussion.discussionId
-                                                            handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                                if(!success) {
-                                                                    NSLog(@"Mark discussion as read fail with error:%@", error);
-                                                                }
-                                                                else {
-                                                                    NSDictionary * userInfo = @{ ChangedCounterNameUserInfoKey : @"messages" };
-                                                                    [[NSNotificationCenter defaultCenter] postNotificationName:CountersDidChangedNotification
-                                                                                                                        object:nil
-                                                                                                                      userInfo:userInfo];
-                                                                }
-                                                            }];
-        }
-    };
-    
-    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                      page:@(1)
-                                                       per:@(40)
-                                                      sort:SORT_DIRECTION
-                                                   handler:handler];
-}
-
 - (void)clearRemovedComments {
     NSDate * lastRequestDate = [DiscussionModel lastRequestDate];
     
     [[IQService sharedService] commentIdsDeletedAfter:lastRequestDate
                                          discussionId:_discussion.discussionId
-                                              handler:^(BOOL success, DeletedObjects * object, NSData *responseData, NSError *error) {
+                                              handler:^(BOOL success, CommentDeletedObjects * object, NSData *responseData, NSError *error) {
                                                   if (success) {
                                                       [DiscussionModel setLastRequestDate:object.serverDate];
                                                       [self removeLocalCommentsWithIds:object.objectIds];
@@ -860,6 +925,24 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)modelNewComment:(IQComment*)comment {
     if ([self.delegate respondsToSelector:@selector(model:newComment:)]) {
         [self.delegate model:self newComment:comment];
+    }
+}
+
+- (void)modelConversationTitleDidChanged:(NSString*)newTitle {
+    if ([self.delegate respondsToSelector:@selector(model:conversationTitleDidChanged:)]) {
+        [self.delegate model:self conversationTitleDidChanged:newTitle];
+    }
+}
+
+- (void)modelMemberDidAddWithId:(NSNumber*)userId {
+    if ([self.delegate respondsToSelector:@selector(model:didAddMemberWith:)]) {
+        [self.delegate model:self didAddMemberWith:userId];
+    }
+}
+
+- (void)modelMemberDidRemovedWithId:(NSNumber*)userId {
+    if ([self.delegate respondsToSelector:@selector(model:memberDidRemovedWithId:)]) {
+        [self.delegate model:self memberDidRemovedWithId:userId];
     }
 }
 

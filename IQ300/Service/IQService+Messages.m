@@ -57,6 +57,88 @@
              handler:handler];
 }
 
+- (void)createConversationWithRecipientIds:(NSArray*)recipientIds handler:(ObjectRequestCompletionHandler)handler {
+    NSParameterAssert(recipientIds);
+    [self postObject:nil
+                path:@"/api/v1/conversations/create_conference"
+          parameters:@{ @"participant_ids" : recipientIds }
+             handler:handler];
+}
+
+- (void)conferenceFromConversationWithId:(NSNumber*)conversationId
+                                 userIds:(NSArray*)userIds
+                                 handler:(ObjectRequestCompletionHandler)handler {
+    NSParameterAssert(conversationId);
+    NSParameterAssert(userIds);
+    [self postObject:nil
+                path:[NSString stringWithFormat:@"/api/v1/conversations/%@/dialog_to_conference", conversationId]
+          parameters:@{ @"participant_ids" : userIds }
+             handler:handler];
+}
+
+- (void)updateConversationTitle:(NSString*)title
+                 conversationId:(NSNumber*)conversationId
+                        handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(conversationId);
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/conversations/%@/update_title", conversationId]
+         parameters:@{ @"title" : NSStringNullForNil(title) }
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if (handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
+- (void)membersForConversation:(NSNumber *)conversationId handler:(ObjectRequestCompletionHandler)handler {
+    NSParameterAssert(conversationId);
+    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/conversations/%@/participants", conversationId]
+                parameters:nil
+                   handler:handler];
+}
+
+
+- (void)addMembersWithIds:(NSArray*)memberIds
+           toConversation:(NSNumber*)conversationId
+                  handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(conversationId);
+    [self postObject:nil
+                path:[NSString stringWithFormat:@"/api/v1/conversations/%@/participants", conversationId]
+          parameters:@{ @"user_ids" : NSObjectNullForNil(memberIds) }
+             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                 if(handler) {
+                     handler(success, responseData, error);
+                 }
+             }];
+}
+
+- (void)removeMemberWithId:(NSNumber*)memberId
+          fromConversation:(NSNumber*)conversationId
+                   handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(memberId);
+    NSParameterAssert(conversationId);
+    [self deleteObject:nil
+                  path:[NSString stringWithFormat:@"/api/v1/conversations/%@/participants/%@", conversationId, memberId]
+            parameters:nil
+               handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                   if(handler) {
+                       handler(success, responseData, error);
+                   }
+               }];
+}
+
+- (void)leaveConversationWithId:(NSNumber*)conversationId handler:(RequestCompletionHandler)handler {
+    NSParameterAssert(conversationId);
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v1/conversations/%@/participants/leave", conversationId]
+         parameters:nil
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if(handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
 #pragma mark - Discussion methods
 
 - (void)discussionWithId:(NSNumber*)discussionId handler:(ObjectRequestCompletionHandler)handler {
@@ -96,7 +178,9 @@
                    handler:handler];
 }
 
-- (void)markCommentsAsReadedWithIds:(NSArray*)commentIds discussionId:(NSNumber*)discussionId handler:(RequestCompletionHandler)handler {
+- (void)markCommentsAsReadedWithIds:(NSArray*)commentIds
+                       discussionId:(NSNumber*)discussionId
+                            handler:(RequestCompletionHandler)handler {
     [self putObject:nil
                path:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/read", discussionId]
          parameters:@{ @"comment_ids" : commentIds }
@@ -150,6 +234,13 @@
 
 }
 
+- (void)contactIdsDeletedAfter:(NSDate*)deletedAfter
+                       handler:(ObjectRequestCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/contacts/deleted_ids"
+                parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
+                   handler:handler];
+}
+
 - (void)deleteCommentWithId:(NSNumber*)commentId
                discussionId:(NSNumber*)discussionId
                     handler:(RequestCompletionHandler)handler {
@@ -169,6 +260,13 @@
     NSParameterAssert(discussionId);
     
     [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/deleted_ids", discussionId]
+                parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
+                   handler:handler];
+}
+
+- (void)conversationsIdsDeletedAfter:(NSDate*)deletedAfter
+                             handler:(ObjectRequestCompletionHandler)handler {
+    [self getObjectsAtPath:@"/api/v1/conversations/deleted_ids"
                 parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
                    handler:handler];
 }

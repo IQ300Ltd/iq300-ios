@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
+#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+
 #import "TasksModel.h"
 #import "TaskCell.h"
 #import "IQTask.h"
@@ -13,11 +15,16 @@
 #import "IQCounters.h"
 #import "IQTasksHolder.h"
 #import "IQNotificationCenter.h"
+#import "NSManagedObjectContext+AsyncFetch.h"
+#import "IQTaskDeletedIds.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 #define CACHE_FILE_NAME @"TasksModelcache"
+
 #define SORT_DIRECTION IQSortDirectionDescending
+
+#define LAST_REQUEST_DATE_KEY @"task_ids_request_date"
 
 #define ACTUAL_FORMAT @"type LIKE[c] 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
                         (status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\"} OR \
@@ -89,6 +96,16 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     }
     
     return nil;
+}
+
++ (NSDate*)lastRequestDate {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:LAST_REQUEST_DATE_KEY];
+}
+
++ (void)setLastRequestDate:(NSDate*)date {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:date forKey:LAST_REQUEST_DATE_KEY];
 }
 
 - (id)init {
@@ -172,6 +189,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
+        [self clearRemovedTasks];
         [self updateCountersWithCompletion:nil];
         [self tasksUpdatesAfterDateWithCompletion:completion];
     }
@@ -208,6 +226,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     [self reloadSourceControllerWithCompletion:^(NSError *error) {
         if (!error) {
             [self modelDidChanged];
+            [self clearRemovedTasks];
         }
     }];
     
@@ -221,8 +240,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                             sort:_sort
                                          handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
                                              
-                                             //update archive folder because task may move from selected folder to archive
-                                             [self archiveTasksUpdatesWithCompletion:^(NSError *error) {
+                                             //update other folder because task may move from selected folder to another
+                                             [self otherFoldersUpdatesWithCompletion:^(NSError *error) {
                                                  if (error) {
                                                      NSLog(@"Archive tasks updates error: %@", error);
                                                  }
@@ -269,6 +288,39 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 #pragma mark - Private methods
 
+- (void)clearRemovedTasks {
+    NSDate * lastRequestDate = [TasksModel lastRequestDate];
+    
+    [[IQService sharedService] taskIdsDeletedAfter:lastRequestDate
+                                           handler:^(BOOL success, IQTaskDeletedIds * object, NSData *responseData, NSError *error) {
+                                               if (success) {
+                                                   [TasksModel setLastRequestDate:object.serverDate];
+                                                   [self removeLocalTasksWithIds:object.objectIds];
+                                               }
+                                           }];
+}
+
+- (void)removeLocalTasksWithIds:(NSArray*)taskIds {
+    if ([taskIds count] > 0) {
+        NSManagedObjectContext * context = [IQService sharedService].context;
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"taskId IN %@", taskIds]];
+        
+        [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
+            if ([objects count] > 0) {
+                for (NSManagedObject * object in objects) {
+                    [context deleteObject:object];
+                }
+                
+                NSError * saveError = nil;
+                if(![context saveToPersistentStore:&saveError] ) {
+                    NSLog(@"Failed save to presistent store after tasks removed");
+                }
+            }
+        }];
+    }
+}
+
 - (void)tasksUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] tasksUpdatedAfter:lastUpdatedDate
                                           folder:self.folder
@@ -291,33 +343,31 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)tasksUpdatesAfterDateWithCompletion:(void (^)(NSError * error))completion {
-    NSDate * lastUpdatedDate = [self taskLastChangedDate];
+    NSDate * lastUpdatedDate = [self taskLastChangedDateForFolder];
     [self tasksUpdatesAfterDate:lastUpdatedDate
                            page:@(1)
                      completion:completion];
     
-    //update archive folder because task may move from selected folder to archive
-    [self archiveTasksUpdatesWithCompletion:^(NSError *error) {
+    //update other folder because task may move from selected folder to another
+    [self otherFoldersUpdatesWithCompletion:^(NSError *error) {
         if (error) {
             NSLog(@"Archive tasks updates error: %@", error);
         }
     }];
 }
 
-- (void)archiveTasksUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
+- (void)otherFoldersUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] tasksUpdatedAfter:lastUpdatedDate
-                                          folder:@"archive"
-                                          status:self.statusFilter
-                                     communityId:self.communityId
-                                            page:page
+                                   excludeFolder:self.folder
+                                            page:@(1)
                                              per:@(_portionLenght)
                                           search:self.search
                                             sort:_sort
                                          handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
                                              if(success && holder.currentPage < holder.totalPages) {
-                                                 [self archiveTasksUpdatesAfterDate:lastUpdatedDate
-                                                                        page:@([page integerValue] + 1)
-                                                                  completion:completion];
+                                                 [self otherFoldersUpdatesAfterDate:lastUpdatedDate
+                                                                               page:@([page integerValue] + 1)
+                                                                         completion:completion];
                                              }
                                              else if(completion) {
                                                  completion(error);
@@ -325,31 +375,16 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                          }];
 }
 
-- (void)archiveTasksUpdatesWithCompletion:(void (^)(NSError * error))completion {
-    if (![self.folder isEqualToString:@"archive"] && ![self.folder isEqualToString:@"watchable"] &&
-        ![self.folder isEqualToString:@"templates"]) {
-        NSDate * archiveTaskUpdatedDate = [self archiveFolderLastChangedDate];
-        if (archiveTaskUpdatedDate) {
-            [self archiveTasksUpdatesAfterDate:archiveTaskUpdatedDate
-                                          page:@(1)
-                                    completion:completion];
-        }
-        else {
-            [[IQService sharedService] tasksUpdatedAfter:nil
-                                                  folder:@"archive"
-                                                  status:self.statusFilter
-                                             communityId:self.communityId
-                                                    page:@(1)
-                                                     per:@(_portionLenght)
-                                                  search:self.search
-                                                    sort:_sort
-                                                 handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
-                                                     if (completion) {
-                                                        completion(error);
-                                                     }
-                                                 }];
-        }
-    }
+- (void)otherFoldersUpdatesWithCompletion:(void (^)(NSError * error))completion {
+    NSDate * lastUpdatedDate = [self taskLastChangedDate];
+
+    [self otherFoldersUpdatesAfterDate:lastUpdatedDate
+                                  page:@(1)
+                            completion:^(NSError *error) {
+                                if(completion) {
+                                    completion(error);
+                                }
+                            }];
 }
 
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
@@ -454,7 +489,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return nil;
 }
 
-- (NSDate*)taskLastChangedDate {
+- (NSDate*)taskLastChangedDateForFolder {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
     [fetchRequest setPredicate:[self makeFilterPredicate]];
     fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"updatedDate" ascending:NO]];
@@ -470,14 +505,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return nil;
 }
 
-- (NSDate*)archiveFolderLastChangedDate {
-    NSPredicate * predicate = [self makeFilterPredicateForFolder:@"archive"
-                                                     communityId:self.communityId
-                                                    statusFilter:self.statusFilter
-                                                          search:self.search];
-
+- (NSDate*)taskLastChangedDate {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
-    fetchRequest.predicate = predicate;
     fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"updatedDate" ascending:NO]];
     fetchRequest.fetchLimit = 1;
     
@@ -490,7 +519,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     }
     return nil;
 }
-
 
 - (NSPredicate*)makeFilterPredicate {
     return [self makeFilterPredicateForFolder:self.folder
@@ -569,6 +597,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     
     __weak typeof(self) weakSelf = self;
     void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        [weakSelf clearRemovedTasks];
         [weakSelf updateCountersWithCompletion:nil];
         [weakSelf tasksUpdatesAfterDateWithCompletion:nil];
     };

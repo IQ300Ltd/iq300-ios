@@ -15,6 +15,7 @@
 #import "TCObjectSerializator.h"
 
 NSString * const TCServiceErrorDomain = @"com.tayphoon.TCService.ErrorDomain";
+NSString * const TCHttpStatusCodeKey = @"TCHttpStatusCodeKey";
 
 static id _sharedService = nil;
 
@@ -441,12 +442,6 @@ fileAttributeName:(NSString*)fileAttributeName
 
 #pragma mark - Override Methods
 
-- (void)processErrorResponse:(id<TCResponse>)response handler:(ObjectRequestCompletionHandler)handler {
-    if(handler) {
-        handler(NO, nil, nil, [self makeErrorWithDescription:response.errorMessage code:[response.statusCode integerValue]]);
-    }
-}
-
 - (void)processError:(NSError*)error
             response:(id<TCResponse>)response
         forOperation:(RKObjectRequestOperation*)operation
@@ -471,10 +466,12 @@ fileAttributeName:(NSString*)fileAttributeName
     
 }
 
-- (NSError*)makeErrorWithDescription:(NSString*)errorDescription code:(NSInteger)code {
+- (NSError*)makeErrorWithCode:(NSInteger)code httpStatusCode:(NSInteger)httpStatusCode description:(NSString*)errorDescription {
+    NSDictionary * userInfo = @{ @"NSLocalizedDescription" : (errorDescription) ? errorDescription : @"",
+                                 TCHttpStatusCodeKey : @(httpStatusCode) };
     NSError * error = [NSError errorWithDomain:TCServiceErrorDomain
                                           code:code
-                                      userInfo:@{ @"NSLocalizedDescription" : (errorDescription) ? errorDescription : @"" }];
+                                      userInfo:userInfo];
     return error;
 }
 
@@ -484,12 +481,20 @@ fileAttributeName:(NSString*)fileAttributeName
             BOOL conformsToProtocol = [[mappingResult firstObject] conformsToProtocol:@protocol(TCResponse)];
             id<TCResponse> response = (conformsToProtocol) ? (id<TCResponse>)[mappingResult firstObject] : nil;
             if (conformsToProtocol && [response.statusCode integerValue] != 0) {
-                [self processErrorResponse:response handler:handler];
-                return;
+                NSInteger httpStatusCode = operation.HTTPRequestOperation.response.statusCode;
+                NSError * error = [self makeErrorWithCode:[response.statusCode integerValue]
+                                           httpStatusCode:httpStatusCode
+                                              description:response.errorMessage];
+
+                [self processError:error
+                          response:response
+                      forOperation:operation
+                           handler:handler];
             }
-            
-            id returnedValue = (conformsToProtocol) ? response.returnedValue : [mappingResult result];
-            handler(YES, returnedValue, operation.HTTPRequestOperation.responseData, nil);
+            else {
+                id returnedValue = (conformsToProtocol) ? response.returnedValue : [mappingResult result];
+                handler(YES, returnedValue, operation.HTTPRequestOperation.responseData, nil);
+            }
         }
     };
     return success;
@@ -516,7 +521,8 @@ fileAttributeName:(NSString*)fileAttributeName
         if ([response.errorMessage length] > 0) {
             NSInteger serviceCode = [response.statusCode integerValue];
             NSInteger code = (serviceCode != 0) ? serviceCode : error.code;
-            NSError * serviceError = [self makeErrorWithDescription:response.errorMessage code:code];
+            NSInteger httpStatusCode = operation.HTTPRequestOperation.response.statusCode;
+            NSError * serviceError = [self makeErrorWithCode:code httpStatusCode:httpStatusCode description:response.errorMessage];
             error = [serviceError errorWithUnderlyingError:error];
         }
         

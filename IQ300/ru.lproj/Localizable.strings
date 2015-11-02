@@ -129,6 +129,7 @@
 "Yes" = "Да";
 "No" = "Нет";
 "Save changes?" = "Сохранить изменения?";
+"Save the name of the group?" = "Сохранить название группы?";
 "Set task" = "Поставить задачу";
 "Сancellation" = "Отмена";
 "Select all" = "Выбрать всех";
@@ -176,3 +177,17 @@
 "feedback_new" = "Принято";
 "feedback_in_work" = "В работе";
 "feedback_completed" = "Выполнено";
+
+"Create" = "Создать";
+"You should select at least one contact" = "Необходимо выбрать хотя бы один контакт";
+"Group info" = "Информация о группе";
+"Leave group" = "Покинуть группу";
+"Group administrator:" = "Администратор группы:";
+"Group members:" = "Участники группы:";
+"Group name" = "Название группы";
+"Group name must not be empty" = "Название группы не должно быть пустым";
+"Add" = "Добавить";
+"Are you sure you want to leave the chat?" = "Вы действительно хотите выйти из чата?";
+"Administrator deleted You from this chat" = "Администратор удалил Вас из этого чата";
+"You agree to remove the user from the chat?" = "Вы действительно хотите удалить участника из чата?";
+"File download failed" = "Ошибка загрузки файла";

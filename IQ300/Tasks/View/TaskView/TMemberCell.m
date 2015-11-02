@@ -5,6 +5,9 @@
 //  Created by Tayphoon on 25.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
+
+#import <SDWebImage/UIImageView+WebCache.h>
+
 #import "TMemberCell.h"
 #import "IQTaskMember.h"
 #import "IQUser.h"
@@ -43,6 +46,10 @@
         self.detailTextLabel.textColor = DETAIL_TEXT_COLOR;
         self.detailTextLabel.backgroundColor = [UIColor whiteColor];
         self.detailTextLabel.highlightedTextColor = [UIColor whiteColor];
+        
+        CALayer *cellImageLayer = self.imageView.layer;
+        [cellImageLayer setCornerRadius:17.5];
+        [cellImageLayer setMasksToBounds:YES];
     }
     
     return self;
@@ -63,6 +70,14 @@
 - (void)setItem:(IQTaskMember *)item {
     _item = item;
     
+    if([_item.user.thumbUrl length] > 0) {
+        [self.imageView sd_setImageWithURL:[NSURL URLWithString:_item.user.thumbUrl]
+                          placeholderImage:[UIImage imageNamed:@"default_avatar.png"]
+                                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                     [self setNeedsDisplay];
+                                 }];
+    }
+
     self.textLabel.text = _item.user.displayName;
     self.detailTextLabel.numberOfLines = 0;
     

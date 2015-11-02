@@ -25,3 +25,5 @@
 "event_action_common_registration" = "Регистрация";
 "event_action_common_login" = "Логин";
 "event_action_common_push_transition" = "Переход с пуш уведомления";
+"event_action_conversation_add_members" = "Добавление участника в групповой чат";
+"event_action_conversation_leave" = "Выход из группового чата";

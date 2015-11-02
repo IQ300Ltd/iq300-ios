@@ -41,7 +41,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     return [IQService sharedService].context;
 }
 
-- (Class)cellClass {
+- (Class)cellClassForIndexPath:(NSIndexPath *)indexPath {
     return [FeedbackCategoryCell class];
 }
 
@@ -63,28 +63,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         if (completion) {
             completion(error);
         }
-    }];
-}
-
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
-#pragma mark - Private methods
-
-- (void)applicationWillEnterForeground {
-    [self updateModelWithCompletion:^(NSError *error) {
-        [self modelDidChanged];
     }];
 }
 

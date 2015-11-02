@@ -9,27 +9,36 @@
 
 #import "IQConversation.h"
 
+#import "IQService.h"
+#import "NSManagedObject+ActiveRecord.h"
+#import "NSManagedObjectContext+AsyncFetch.h"
+
 @implementation IQConversation
 
 @dynamic conversationId;
+@dynamic title;
 @dynamic ownerId;
 @dynamic createDate;
 @dynamic creatorId;
+@dynamic adminId;
 @dynamic type;
 @dynamic unreadCommentsCount;
 @dynamic totalCommentsCount;
 @dynamic discussion;
 @dynamic lastComment;
 @dynamic users;
+@dynamic locked;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"conversationId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"                     : @"conversationId",
+                                                  @"title"                  : @"title",
                                                   @"recipient_id"           : @"ownerId",
                                                   @"created_at"             : @"createDate",
                                                   @"creator_id"             : @"creatorId",
+                                                  @"admin_id"               : @"adminId",
                                                   @"kind"                   : @"type",
                                                   @"newest_comments_count"  : @"unreadCommentsCount",
                                                   @"comments_count"         : @"totalCommentsCount"

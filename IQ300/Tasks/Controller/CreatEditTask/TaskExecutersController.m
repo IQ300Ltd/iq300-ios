@@ -22,7 +22,6 @@
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
 #define BOTTOM_VIEW_HEIGHT 60
 #define HEADER_HEIGHT 50.0f
-#define DISPATCH_DELAY 0.0
 
 @interface TaskExecutersController () {
     UIView * _bottomSeparatorView;
@@ -146,7 +145,8 @@
     
     UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
                                                                        style:UIBarButtonItemStylePlain
-                                                                      target:self action:@selector(backButtonAction:)];
+                                                                      target:self
+                                                                      action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -159,23 +159,20 @@
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
 
-    if([IQSession defaultSession]) {
-        [self.model updateModelWithCompletion:^(NSError *error) {
-            if(!error) {
-                _headerView.selected = self.model.selectAll;
-                [self.tableView reloadData];
-            }
-        }];
-    }
-    [self.model setSubscribedToNotifications:YES];
     _headerView.hidden = (self.task.taskId != nil);
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+    
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self.model setSubscribedToNotifications:NO];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -203,7 +200,6 @@
     [self layoutTableView];
 }
 
-
 #pragma mark - UITableView DataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -213,8 +209,7 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    TaskExecutor * item = [self.model itemAtIndexPath:indexPath];
-    cell.titleTextView.text = item.executorName;
+    cell.item = [self.model itemAtIndexPath:indexPath];
     
     BOOL isCellSelected = [self.model isItemSelectedAtIndexPath:indexPath];
     [cell setAccessoryType:(isCellSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
@@ -380,6 +375,23 @@
 - (void)clearFilter {
     _userNameTextField.text = nil;
     [self.model setFilter:nil];
+}
+
+- (void)updateModel {
+    if([IQSession defaultSession]) {
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                _headerView.selected = self.model.selectAll;
+                [self.tableView reloadData];
+            }
+            
+            [self updateNoDataLabelVisibility];
+        }];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateModel];
 }
 
 @end

@@ -5,35 +5,44 @@
 //  Created by Tayphoon on 09.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
-#import "CreateConversationController.h"
-#import "CreateConversationView.h"
+#import "ContactPickerController.h"
+#import "ContactPickerView.h"
 #import "IQSession.h"
 #import "ContactCell.h"
-#import "IQContact.h"
-#import "MessagesModel.h"
 #import "IQConversation.h"
 #import "DiscussionController.h"
 #import "DispatchAfterExecution.h"
 #import "IQDrawerController.h"
+#import "UIScrollView+PullToRefreshInsert.h"
 
 #define DISPATCH_DELAY 0.7
 
-@interface CreateConversationController() {
-    CreateConversationView * _mainView;
+@interface ContactPickerController() {
+    ContactPickerView * _mainView;
     dispatch_after_block _cancelBlock;
+    NSString * _doneButtonTitle;
 }
 
 @end
 
-@implementation CreateConversationController
+@implementation ContactPickerController
 
 @dynamic model;
 
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        _doneButtonTitle = NSLocalizedString(@"Create", nil);
+    }
+    return self;
+}
+
+
 - (void)loadView {
-    _mainView = [[CreateConversationView alloc] init];
+    _mainView = [[ContactPickerView alloc] init];
     self.view = _mainView;
 }
 
@@ -42,9 +51,9 @@
 
     __weak typeof(self) weakSelf = self;
     [self.tableView
-     addPullToRefreshWithActionHandler:^{
-         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-             [weakSelf.tableView.pullToRefreshView stopAnimating];
+     insertPullToRefreshWithActionHandler:^{
+         [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
          }];
      }
      position:SVPullToRefreshPositionBottom];
@@ -57,6 +66,9 @@
     [_mainView.clearTextFieldButton addTarget:self
                                        action:@selector(clearFilter)
                              forControlEvents:UIControlEventTouchUpInside];
+    
+    _mainView.doneButtonHidden = !self.model.allowsMultipleSelection;
+    [_mainView.doneButton setTitle:_doneButtonTitle forState:UIControlStateNormal];
 }
 
 - (UITableView*)tableView {
@@ -65,6 +77,13 @@
 
 - (BOOL)isLeftMenuEnabled {
     return NO;
+}
+
+- (void)setDoneButtonTitle:(NSString*)title {
+    _doneButtonTitle = title;
+    if (self.isViewLoaded) {
+        [_mainView.doneButton setTitle:_doneButtonTitle forState:UIControlStateNormal];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -77,6 +96,10 @@
     self.navigationItem.leftBarButtonItem = backBarButton;
     
     [self setTitle:NSLocalizedString(@"Сontacts", nil)];
+    
+    [_mainView.doneButton addTarget:self
+                             action:@selector(doneButtonAction:)
+                   forControlEvents:UIControlEventTouchUpInside];
 
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -93,10 +116,6 @@
                                              selector:@selector(drawerDidShowNotification:)
                                                  name:IQDrawerDidShowNotification
                                                object:nil];
-    
-    if([IQSession defaultSession]) {
-        [self reloadModel];
-    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -105,56 +124,15 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - UITableView DataSource
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ContactCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
-    
-    if (!cell) {
-        cell = [self.model createCellForIndexPath:indexPath];
-    }
-    
-    IQContact * contact = [self.model itemAtIndexPath:indexPath];
-    cell.item = contact.user;
-    
-    return cell;
-}
-
-#pragma mark - UITableView Delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQContact * contact = [self.model itemAtIndexPath:indexPath];
-    NSString * companionName = contact.user.displayName;
-    NSNumber * userId = contact.user.userId;
-    [MessagesModel createConversationWithRecipientId:userId
-                                          completion:^(IQConversation * conv, NSError *error) {
-                                              if(!error) {                                                  
-                                                  DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conv.discussion];
-                                                  model.companionId = userId;
-                                                  
-                                                  DiscussionController * controller = [[DiscussionController alloc] init];
-                                                  controller.hidesBottomBarWhenPushed = YES;
-                                                  controller.model = model;
-                                                  controller.title = companionName;
-
-                                                  [MessagesModel markConversationAsRead:conv completion:nil];
-                                                  
-                                                  id previousController = [self.navigationController.viewControllers firstObject];
-                                                  if(previousController) {
-                                                      NSArray * newStack = @[previousController, controller];
-                                                      [self.navigationController setViewControllers:newStack animated:YES];
-                                                  }
-                                              }
-                                              else {
-                                                  [self proccessServiceError:error];
-                                              }
-                                          }];
-}
-
 #pragma mark - TextField Delegate
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    _mainView.clearTextFieldButton.hidden = (textField.text.length == 0);
+}
 
 - (void)textFieldDidChange:(UITextField *)textField {
     [self filterWithText:textField.text];
+    _mainView.clearTextFieldButton.hidden = (textField.text.length == 0);
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -170,6 +148,24 @@
 
 - (void)onKeyboardWillHide:(NSNotification *)notification {
     [self makeInputViewTransitionWithDownDirection:YES notification:notification];
+}
+
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 #pragma mark - Private methods
@@ -194,17 +190,25 @@
     [UIView commitAnimations];
 }
 
-- (void)backButtonAction:(UIButton*)sender {
+- (void)backButtonAction:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)reloadModel {
-    [self.model reloadModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-            [self updateNoDataLabelVisibility];
-        }
-    }];
+- (void)doneButtonAction:(id)sender {
+    NSArray * selectedContacts = [self.model selectedItems];
+    if ([selectedContacts count] > 0 &&
+        [self.delegate respondsToSelector:@selector(contactPickerController:didPickContacts:)]) {
+        [self.delegate contactPickerController:self didPickContacts:selectedContacts];
+    }
+    else {
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Attention", nil)
+                                                             message:NSLocalizedString(@"You should select at least one contact", nil)
+                                                            delegate:nil
+                                                   cancelButtonTitle:@"OK"
+                                                   otherButtonTitles:nil];
+        
+        [alertView show];
+    }
 }
 
 - (void)updateNoDataLabelVisibility {
@@ -227,7 +231,7 @@
     [self.model reloadModelSourceControllerWithCompletion:compleationBlock];
     
     _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
-        [self.model reloadFirstPartWithCompletion:compleationBlock];
+        [self.model updateModelWithCompletion:compleationBlock];
     });
 }
 
@@ -236,6 +240,7 @@
 }
 
 - (void)clearFilter {
+    _mainView.clearTextFieldButton.hidden = YES;
     _mainView.userTextField.text = nil;
     [self filterWithText:nil];
 }

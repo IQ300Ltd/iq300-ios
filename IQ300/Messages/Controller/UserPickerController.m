@@ -68,10 +68,6 @@
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
-        
-        CALayer *cellImageLayer = cell.imageView.layer;
-        [cellImageLayer setCornerRadius:17.5];
-        [cellImageLayer setMasksToBounds:YES];
     }
     
     IQUser * user = [self.model itemAtIndexPath:indexPath];

@@ -90,12 +90,12 @@
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
-        _userNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x358bae]
+        _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x358bae]
                                                  font:LABELS_FONT
                                         localaizedKey:nil];
-        _userNameLabel.backgroundColor = [UIColor clearColor];
-        _userNameLabel.textAlignment = NSTextAlignmentLeft;
-        [contentView addSubview:_userNameLabel];
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.textAlignment = NSTextAlignmentLeft;
+        [contentView addSubview:_titleLabel];
                 
         _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x8b8b8b]
                                                     font:LABELS_FONT
@@ -157,7 +157,7 @@
                                   CELL_HEADER_MIN_HEIGHT);
     
     CGFloat userNameX = CGRectRight(_userImageView.frame) + nameOffset;
-    _userNameLabel.frame = CGRectMake(userNameX,
+    _titleLabel.frame = CGRectMake(userNameX,
                                       actualBounds.origin.y,
                                       _dateLabel.frame.origin.x - userNameX - 4.0f,
                                       CELL_HEADER_MIN_HEIGHT);
@@ -166,7 +166,7 @@
     BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);
     
     CGFloat descriptionInset = (hasAttachment) ? ATTACHMENT_VIEW_HEIGHT : 0.0f;
-    CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
+    CGFloat descriptionY = CGRectBottom(_titleLabel.frame) + DESCRIPTION_Y_OFFSET;
     CGFloat descriptionHeight = (hasDescription) ? actualBounds.size.height - descriptionY - descriptionInset : 0.0f;
     
     if(hasAttachment && !hasDescription) {
@@ -206,16 +206,20 @@
     NSArray * companions = [[_item.discussion.users filteredSetUsingPredicate:companionsPredicate] allObjects];
     IQUser * companion = [companions lastObject];
     
-    _dateLabel.text = [_item.lastComment.createDate dateToDayTimeString];
-    _userNameLabel.hidden = ([companion.displayName length] == 0);
-    _userNameLabel.text = companion.displayName;
+    _dateLabel.text = [_item.discussion.updateDate dateToDayTimeString];
+    _titleLabel.hidden = ([_item.title length] == 0);
+    _titleLabel.text = _item.title;
     _companion = companion;
     
-    if([companion.thumbUrl length] > 0) {
+    BOOL isConference = ([[_item.type lowercaseString] isEqualToString:@"conference"]);
+    UIImage * defaulImage = (isConference) ? [UIImage imageNamed:@"conference_icon.png"] :
+                                             [UIImage imageNamed:@"user_icon.png"];
+    
+    if(!isConference && [companion.thumbUrl length] > 0) {
         [_userImageView sd_setImageWithURL:[NSURL URLWithString:companion.thumbUrl]];
     }
     else {
-        _userImageView.image = nil;
+        _userImageView.image = defaulImage;
     }
     
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";

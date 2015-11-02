@@ -42,6 +42,7 @@ extern BOOL IsNetworUnreachableError(NSError * error);
              communityTitle:(NSString*)communityTitle
                       email:(NSString*)email
                    password:(NSString*)password
+                deviceToken:(NSString*)deviceToken
                     handler:(RequestCompletionHandler)handler;
 
 - (void)confirmRegistrationWithToken:(NSString*)token deviceToken:(NSString*)deviceToken handler:(RequestCompletionHandler)handler;

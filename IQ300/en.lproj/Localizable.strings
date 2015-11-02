@@ -88,7 +88,7 @@
 "Decline" = "Decline";
 "Send to execute" = "Send to execute";
 "Take as done" = "Take as done";
-"Return to work" = "Вернуть в работу";
+"Return to work" = "Return to work";
 "TodoList" = "TodoList";
 "Done" = "Done";
 "Failed add document to task" = "Failed add document to task";
@@ -101,7 +101,7 @@
 "Item name can not be empty" = "Item name can not be empty";
 "History is empty" = "History is empty";
 "No comments" = "No comments";
-"Todo list for task is empty" = "Чек-лист задачи пуст";
+"Todo list for task is empty" = "Todo list for task is empty";
 "Attention" = "Attention";
 "You agree to remove the selected item?" = "You agree to remove the selected item?";
 "← Return to work" = "Return to work";
@@ -113,13 +113,14 @@
 "Begins" = "Begins";
 "Ends" = "Ends";
 "Performers" = "Executors";
-"Executor" = "Исполнитель";
+"Executor" = "Executor";
 "Executors" = "Executors";
 "Perform to" = "Perform to";
 "Save" = "Save";
 "Yes" = "Yes";
 "No" = "No";
 "Save changes?" = "Save changes?";
+"Save the name of the group?" = "Save the name of the group?";
 "Set task" = "Set task";
 "Сancellation" = "Cancel";
 "Select all" = "Select all";
@@ -148,7 +149,7 @@
 "Replay password" = "Replay password";
 "Sign up" = "Sign up";
 "registration_help_message" = "If you have a problem, please contact us support@iq300.ru";
-"Return to main screen" = "Вернуться на стартовый экран";
+"Return to main screen" = "Return to main screen";
 "Thank you for registering!" = "Thank you for registering!";
 "registration_status_message" = "Account created. In your e-mail letter with instructions on how to activate.";
 "Account activation" = "Account activation...";
@@ -161,9 +162,14 @@
 "You should select feedback category" = "You should select feedback category";
 "You should select feedback type" = "You should select feedback type";
 "The feedback can not be empty" = "The feedback can not be empty";
-"Sent feedback?" = "Отправить обращение?";
+"Sent feedback?" = "Sent feedback?";
 
 //Feedback types
 "feedback_new" = "Accepted";
 "feedback_in_work" = "In work";
 "feedback_completed" = "Completed";
+
+"Are you sure you want to leave the chat?" = "Are you sure you want to leave the chat?";
+"Administrator deleted You from this chat" = "Administrator deleted You from this chat";
+"Group name must not be empty" = "Group name must not be empty";
+"You agree to remove the user from the chat?" = "You agree to remove the user from the chat?";

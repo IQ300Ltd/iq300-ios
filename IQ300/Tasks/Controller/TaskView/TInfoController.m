@@ -129,14 +129,9 @@
     [self markTaskAsReadedIfNeed];
     [self updateInterfaceFoPolicies];
 
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        if (error == nil) {
-            [self.tableView reloadData];
-        }
-    }];
-
     self.resetReadFlagAutomatically = YES;
     [self resetReadFlag];
+    [self updateTodoModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -341,6 +336,16 @@
     }
 }
 
+- (void)updateTodoModel {
+    if ([IQSession defaultSession]) {
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if (!error) {
+                [self.tableView reloadData];
+            }
+        }];
+    }
+}
+
 - (void)markTaskAsReadedIfNeed {
     if (self.task && [self.task.status isEqualToString:@"new"] &&
         [self.task.executor.userId isEqualToNumber:[IQSession defaultSession].userId]) {
@@ -360,7 +365,9 @@
     if (self.resetReadFlagAutomatically) {
         [self resetReadFlag];
     }
+    
     [self updateTask];
+    [self updateTodoModel];
 }
 
 - (void)resubscribeToIQNotifications {

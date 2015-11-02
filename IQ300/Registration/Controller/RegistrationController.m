@@ -10,6 +10,8 @@
 #import "RegistrationStatusController.h"
 #import "RegistrationView.h"
 #import "IQService.h"
+#import "DeviceToken.h"
+#import "AppDelegate.h"
 
 @interface RegistrationController() {
     RegistrationView * _registrationView;
@@ -132,27 +134,12 @@
     if ([self isAllFieldsValid]) {
         RequestCompletionHandler handler = ^(BOOL success, NSData *responseData, NSError *error) {
             if (success) {
-                NSMutableParagraphStyle * paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-                [paragraphStyle setAlignment:NSTextAlignmentCenter];
-                
-                NSMutableDictionary * attributes = @{
-                                                     NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x272727],
-                                                     NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:18],
-                                                     NSParagraphStyleAttributeName  : paragraphStyle
-                                                     }.mutableCopy;
-                NSString * title = [NSString stringWithFormat:@"%@\n\n", NSLocalizedString(@"Thank you for registering!", nil)];
-                NSMutableAttributedString * statusMessage = [[NSMutableAttributedString alloc] initWithString:title
-                                                                                                   attributes:attributes];
-                
-                [attributes setValue:[UIFont fontWithName:IQ_HELVETICA size:15]
-                              forKey:NSFontAttributeName];
-                [attributes removeObjectForKey:NSParagraphStyleAttributeName];
-                
-                [statusMessage appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"registration_status_message", nil)
-                                                                                      attributes:attributes]];
-                RegistrationStatusController * controller = [[RegistrationStatusController alloc] init];
-                controller.statusMessage = statusMessage;
-                [self.navigationController pushViewController:controller animated:YES];
+                [AppDelegate continueLoginProccessWithCompletion:^(NSError *error) {
+                    if (!error) {
+                        [self dismissViewControllerAnimated:YES completion:nil];
+                        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+                    }
+                }];
             }
             else if(IsNetworUnreachableError(error) || ![IQService sharedService].isServiceReachable) {
                 [self showErrorMessage:INTERNET_UNREACHABLE_MESSAGE];
@@ -167,6 +154,7 @@
                                         communityTitle:_registrationView.organizationContainer.textField.text
                                                  email:_registrationView.emailContainer.textField.text
                                               password:_registrationView.passwordContainer.textField.text
+                                           deviceToken:[DeviceToken uniqueIdentifier]
                                                handler:handler];
     }
 }

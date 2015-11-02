@@ -129,9 +129,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if([IQSession defaultSession]) {
-        [self updateModel];
-    }
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -261,7 +259,8 @@
     }
     else {
         if(self.model.unreadItemsCount > 0) {
-            [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(@"mark_all_readed_question", nil)
+            [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                               message:NSLocalizedString(@"mark_all_readed_question", nil)
                      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
                      otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
                               tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -273,7 +272,8 @@
                               }];
         }
         else {
-            [UIAlertView showWithTitle:@"IQ300" message:NSLocalizedString(NoUnreadNotificationFound, nil)
+            [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                               message:NSLocalizedString(NoUnreadNotificationFound, nil)
                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
                      otherButtonTitles:nil
                               tapBlock:nil];
@@ -282,33 +282,42 @@
 }
 
 - (void)reloadModel {
-    [self.model reloadModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
-        [self scrollToTopAnimated:NO delay:0.5];
-        [self updateNoDataLabelVisibility];
-    }];
+    if([IQSession defaultSession]) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
+        
+        [self.model reloadModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
+            [self scrollToTopAnimated:NO delay:0.5];
+            [self updateNoDataLabelVisibility];
+            
+            dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
+        }];
+    }
 }
 
 - (void)updateModel {
-    [self showActivityIndicatorAnimated:YES completion:nil];
-
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        if (!error) {
-            [self.tableView reloadData];
-        }
+    if([IQSession defaultSession]) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
         
-        [self scrollToTopIfNeedAnimated:NO delay:0.5];
-        [self updateNoDataLabelVisibility];
-        self.needFullReload = NO;
-        
-        dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
-            if (self.isActivityIndicatorShown) {
-                [self hideActivityIndicatorAnimated:YES completion:nil];
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if (!error) {
+                [self.tableView reloadData];
             }
-        });
-    }];
+            
+            [self scrollToTopIfNeedAnimated:NO delay:0.5];
+            [self updateNoDataLabelVisibility];
+            self.needFullReload = NO;
+            
+            dispatch_after_delay(0.5, dispatch_get_main_queue(), ^{
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
+        }];
+    }
 }
 
 - (void)applicationWillEnterForeground {

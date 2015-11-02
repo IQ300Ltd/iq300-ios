@@ -88,9 +88,6 @@ fileAttributeName:(NSString*)fileAttributeName
 
 - (void)processAuthorizationForOperation:(RKObjectRequestOperation*)operation;
 
-- (void)processErrorResponse:(id<TCResponse>)response
-                     handler:(ObjectRequestCompletionHandler)handler;
-
 - (void)processError:(NSError*)error
             response:(id<TCResponse>)response
         forOperation:(RKObjectRequestOperation*)operation

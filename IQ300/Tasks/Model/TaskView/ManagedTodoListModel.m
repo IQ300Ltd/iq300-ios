@@ -139,20 +139,6 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
                                               }];
 }
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed {
-    if(subscribed) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForeground)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                        name:UIApplicationWillEnterForegroundNotification
-                                                      object:nil];
-    }
-}
-
 - (void)clearModelData {
     [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
     if(_fetchController) {
@@ -194,7 +180,11 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadModelSourceControllerWithCompletion:completion];
+    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self modelDidChanged];
+        }
+    }];
     
     [[IQService sharedService] todoListByTaskId:self.taskId
                                         handler:^(BOOL success, NSArray * todoItems, NSData *responseData, NSError *error) {
@@ -202,10 +192,6 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
                                                 completion(error);
                                             }
                                         }];
-}
-
-- (void)applicationWillEnterForeground {
-    [self updateModelWithCompletion:nil];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

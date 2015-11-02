@@ -16,6 +16,7 @@ extern NSString * const GAICommonEventCategory;
 
 extern NSString * const GAIFileUploadEventAction;
 extern NSString * const GAICreateMessageEventAction;
+extern NSString * const GAIAddConversationMemberEventAction;
 extern NSString * const GAIOpenTaskEventAction;
 extern NSString * const GAIOpenNotificationEventAction;
 extern NSString * const GAIOpenReadedNotificationEventAction;

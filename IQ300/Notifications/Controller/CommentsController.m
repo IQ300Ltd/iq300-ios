@@ -5,7 +5,6 @@
 //  Created by Tayphoon on 24.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <SVPullToRefresh/UIScrollView+SVPullToRefresh.h>
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 #import <CTAssetsPickerController/CTAssetsPickerController.h>
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
@@ -25,8 +24,8 @@
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "IQDrawerController.h"
 #import "DispatchAfterExecution.h"
+#import "UIScrollView+PullToRefreshInsert.h"
 
-#import "IQContact.h"
 #import "UserPickerController.h"
 #import "IQService.h"
 #import "UIImage+Extensions.h"
@@ -103,9 +102,9 @@
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
-     addPullToRefreshWithActionHandler:^{
+     insertPullToRefreshWithActionHandler:^{
          [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
-             [weakSelf.tableView.pullToRefreshView stopAnimating];
+             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
      position:SVPullToRefreshPositionTop];
@@ -152,12 +151,16 @@
                                                  name:IQDrawerDidShowNotification
                                                object:nil];
 
-    if([IQSession defaultSession] && self.model) {
-        if(self.needFullReload) {
-            [self showActivityIndicatorOnView:_mainView];
-        }
-        [self updateModel];
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -233,6 +236,8 @@
 }
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
+    [super modelDidChanged:model];
+
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
@@ -331,6 +336,24 @@
             }];
             
             [actionSheet showInView:self.view];
+        }
+    }];
+}
+
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        
+        if (completion) {
+            completion();
         }
     }];
 }
@@ -435,7 +458,7 @@
                 [self presentViewController:imagePicker animated:YES completion:nil];
             }
             else {
-                [UIAlertView showWithTitle:@"IQ300"
+                [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                                    message:NSLocalizedString(@"The camera is not available", nil)
                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
                          otherButtonTitles:nil
@@ -507,7 +530,7 @@
     _documentController = [UIDocumentInteractionController interactionControllerWithURL:documentURL];
     [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
     if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
-        [UIAlertView showWithTitle:@"IQ300"
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
@@ -525,21 +548,30 @@
 }
 
 - (void)updateModel {
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        if(!error) {
-            [self.tableView reloadData];
-        }
+    if([IQSession defaultSession] && self.model) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
         
-        [self scrollToBottomIfNeedAnimated:NO delay:0];
-        self.needFullReload = NO;
-        
-        dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
-            _mainView.tableView.hidden = NO;
-            [self hideActivityIndicator];
-            [self markVisibleItemsAsReaded];
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
+            [self scrollToBottomIfNeedAnimated:NO delay:0];
+            self.needFullReload = NO;
+            
             [self updateNoDataLabelVisibility];
-        });
-    }];
+            dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+                _mainView.tableView.hidden = NO;
+                [self markVisibleItemsAsReaded];
+                
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
+        }];
+    }
+}
+
+- (void)applicationWillEnterForeground {
+    [self updateModel];
 }
 
 #pragma mark - Keyboard Helpers
@@ -583,7 +615,7 @@
     [UIView commitAnimations];
 }
 
-#pragma mark - PlaceholderTextViewDelegate Methods
+#pragma mark - UITextViewDelegate Methods
 
 - (void)textViewDidChange:(UITextView *)textView {
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
@@ -617,12 +649,11 @@
 }
 
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
-    //This is not me, this is fucking strange url
     if (textView != _mainView.inputView.commentTextView) {
+        //This is not me, this is fucking strange url
         NSString * unescapedString = [[URL absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         unescapedString = [unescapedString stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
         NSString * encodeURL = [unescapedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:encodeURL]];
         
         return NO;
@@ -807,7 +838,7 @@
                                                                                    attributes:attributes];
         
         NSError *error = nil;
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
+        NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
         NSArray * matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
         for (NSTextCheckingResult *match in matches) {
             NSRange wordRange = [match rangeAtIndex:1];
@@ -831,6 +862,22 @@
                                             NSForegroundColorAttributeName: [UIColor whiteColor] }
                                    range:wordRange];
                 }
+            }
+        }
+        
+        //add links to pattern task#taskId
+        NSString * pattern = [NSString stringWithFormat:@"%@#\\d+$", NSLocalizedString(@"Task", nil)];
+        regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:&error];
+        matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
+        for (NSTextCheckingResult *match in matches) {
+            NSRange wordRange = [match range];
+            NSString * taskLink = [text substringWithRange:wordRange];
+            NSString * taskId = [[taskLink componentsSeparatedByString:@"#"] lastObject];
+            
+            if ([taskId length] > 0) {
+                [aText addAttribute:NSLinkAttributeName
+                              value:[NSString stringWithFormat:@"%@://tasks/%@", APP_URL_SCHEME, taskId]
+                              range:wordRange];
             }
         }
         

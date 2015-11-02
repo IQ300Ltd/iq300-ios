@@ -23,6 +23,7 @@
 @dynamic createdDate;
 @dynamic updatedDate;
 @dynamic commentsCount;
+@dynamic ownerId;
 @dynamic author;
 @dynamic category;
 @dynamic attachments;
@@ -39,6 +40,7 @@
                                                   @"created_at"     : @"createdDate",
                                                   @"updated_at"     : @"updatedDate",
                                                   @"comments_count" : @"commentsCount",
+                                                  @"recipient_id"   : @"ownerId"
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"author"

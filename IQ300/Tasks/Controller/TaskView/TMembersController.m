@@ -23,8 +23,10 @@
 #import "TaskPolicyInspector.h"
 #import "TaskNotifications.h"
 #import "IQBadgeIndicatorView.h"
+#import "DispatchAfterExecution.h"
+#import "IQContact.h"
 
-@interface TMembersController () <ContactPickerControllerDelegate, SWTableViewCellDelegate>
+@interface TMembersController () <IQSelectionControllerDelegate, SWTableViewCellDelegate>
 
 @end
 
@@ -73,7 +75,7 @@
         self.model.taskId = taskId;
         
         if(self.isViewLoaded) {
-            [self reloadModel];
+            [self updateModel];
         }
     }
 }
@@ -115,10 +117,15 @@
                                                object:nil];
 
     [self updateInterfaceFoPolicies];
-    [self reloadModel];
     
     self.model.resetReadFlagAutomatically = YES;
     [self.model resetReadFlagWithCompletion:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self updateModel];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -159,20 +166,18 @@
         return;
     }
     
-    NSString * companionName = member.user.displayName;
     NSNumber * userId = member.user.userId;
     [MessagesModel createConversationWithRecipientId:userId
-                                          completion:^(IQConversation * conv, NSError *error) {
+                                          completion:^(IQConversation * conversation, NSError *error) {
                                               if(!error) {
-                                                  DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conv.discussion];
-                                                  model.companionId = userId;
+                                                  DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
                                                   
                                                   DiscussionController * controller = [[DiscussionController alloc] init];
                                                   controller.hidesBottomBarWhenPushed = YES;
                                                   controller.model = model;
-                                                  controller.title = companionName;
+                                                  controller.title = conversation.title;
                                                   
-                                                  [MessagesModel markConversationAsRead:conv completion:nil];
+                                                  [MessagesModel markConversationAsRead:conversation completion:nil];
                                                   [self.navigationController pushViewController:controller animated:YES];
                                               }
                                               else {
@@ -208,14 +213,14 @@
 
 #pragma mark - ContactPickerController Delegate
 
-- (void)contactPickerController:(ContactPickerController *)picker didPickUser:(IQUser *)user {
+- (void)selectionControllerController:(ContactPickerController *)controller didSelectItem:(IQContact*)item {
+    [self.navigationController popViewControllerAnimated:YES];
+    
     __weak typeof (self) weakSelf = self;
-    [self.model addMemberWithUserId:user.userId completion:^(NSError *error) {
+    [self.model addMemberWithUserId:item.user.userId completion:^(NSError *error) {
         if (!error) {
             [GAIService sendEventForCategory:GAITaskEventCategory
                                       action:@"event_action_task_add_user"];
-            
-            [weakSelf.navigationController popViewControllerAnimated:YES];
         }
         else {
             [weakSelf proccessServiceError:error];
@@ -229,22 +234,53 @@
     self.tabBarItem.badgeValue = BadgTextFromInteger([self.model.unreadCount integerValue]);
 }
 
+#pragma mark - Activity indicator overrides
+
+- (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    
+    [super showActivityIndicatorAnimated:YES completion:nil];
+}
+
+- (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [super hideActivityIndicatorAnimated:YES completion:^{
+        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 #pragma mark - Private methods
 
 - (void)addButtonAction:(UIButton*)sender {
     NSArray * users = [self.model.members valueForKey:@"user"];
     
+    ContactsModel * model = [[ContactsModel alloc] init];
+    model.allowsDeselection = NO;
+    model.allowsMultipleSelection = NO;
+    model.excludeUserIds = [users valueForKey:@"userId"];
+
     ContactPickerController * controller = [[ContactPickerController alloc] init];
-    controller.model = [[UsersModel alloc] init];
-    controller.model.excludeUserIds = [users valueForKey:@"userId"];
+    controller.model = model;
     controller.delegate = self;
     [self.navigationController pushViewController:controller animated:YES];
 }
 
-- (void)reloadModel {
+- (void)updateModel {
     if([IQSession defaultSession]) {
-        [self reloadDataWithCompletion:^(NSError *error) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
+
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if(!error) {
+                [self.tableView reloadData];
+            }
+            
             [self updateNoDataLabelVisibility];
+            dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
         }];
     }
 }
@@ -272,9 +308,20 @@
 }
 
 - (void)applicationWillEnterForeground {
-    [self.model updateModelWithCompletion:nil];
-    if (self.model.resetReadFlagAutomatically) {
-        [self.model resetReadFlagWithCompletion:nil];
+    if([IQSession defaultSession]) {
+        [self showActivityIndicatorAnimated:YES completion:nil];
+        
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            [self updateNoDataLabelVisibility];
+            
+            dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
+                [self hideActivityIndicatorAnimated:YES completion:nil];
+            });
+        }];
+        
+        if (self.model.resetReadFlagAutomatically) {
+            [self.model resetReadFlagWithCompletion:nil];
+        }
     }
 }
 

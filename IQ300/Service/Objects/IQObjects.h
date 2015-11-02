@@ -16,6 +16,7 @@
 #import "IQComment.h"
 #import "IQAttachment.h"
 #import "IQContact.h"
+#import "IQContactsDeletedIds.h"
 #import "IQNotification.h"
 #import "IQNotificationsHolder.h"
 #import "IQNotificationIds.h"
@@ -36,10 +37,13 @@
 #import "IQTaskActivityItem.h"
 #import "TaskExecutorsGroup.h"
 #import "IQTaskDataHolder.h"
-#import "DeletedObjects.h"
+#import "CommentDeletedObjects.h"
+#import "ConversationDeletedObjects.h"
 #import "IQFeedbacksHolder.h"
 #import "IQFeedbackCategory.h"
 #import "IQFeedbackType.h"
 #import "IQFeedback.h"
+#import "IQConversationMember.h"
+#import "IQTaskDeletedIds.h"
 
 #endif

@@ -16,6 +16,4 @@
 
 - (BOOL)isItemSelectedAtIndexPath:(NSIndexPath*)indexPath;
 
-- (void)setSubscribedToNotifications:(BOOL)subscribed;
-
 @end
