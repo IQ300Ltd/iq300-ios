@@ -587,7 +587,6 @@
         [self.model updateModelWithCompletion:^(NSError *error) {
             if(!error) {
                 [self proccessUserAddToConversation];
-                [self.tableView reloadData];
             }
             else {
                 NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];

@@ -264,13 +264,6 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     [_expandableCells removeAllObjects];
     [_expandedCells removeAllObjects];
     
-    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
-        if (!error) {
-            [self modelDidChanged];
-            [self clearRemovedComments];
-        }
-    }];
-    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
@@ -278,6 +271,12 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                    handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
                                                        if(!error) {
                                                            [self updateDefaultStatusesForComments:comments];
+                                                           [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+                                                               if (!error) {
+                                                                   [self modelDidChanged];
+                                                                   [self clearRemovedComments];
+                                                               }
+                                                           }];
                                                        }
                                                        if(completion) {
                                                            completion(error);
