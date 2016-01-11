@@ -22,7 +22,7 @@
 #import "CommentDeletedObjects.h"
 #import "NotificationsModel.h"
 
-#define CACHE_FILE_NAME @"DiscussionModelcache"
+#define CACHE_FILE_NAME @"CommentsModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
 #define LAST_REQUEST_DATE_KEY @"comment_ids_request_date"
 
