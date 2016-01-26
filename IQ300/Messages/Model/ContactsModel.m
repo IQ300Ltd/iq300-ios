@@ -14,7 +14,7 @@
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "IQContact.h"
 
-#define SORT_DIRECTION IQSortDirectionAscending
+#define SORT_DIRECTION IQSortDirectionDescending
 #define LAST_REQUEST_DATE_KEY @"contacts_ids_request_date"
 
 static NSString * UReuseIdentifier = @"UReuseIdentifier";
@@ -48,7 +48,7 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
         _portionSize = portionSize;
         self.allowsMultipleSelection = YES;
         self.allowsDeselection = YES;
-        self.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"user.displayName" ascending:SORT_DIRECTION == IQSortDirectionAscending]];
+        self.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"createDate" ascending:SORT_DIRECTION == IQSortDirectionAscending]];
     }
     return self;
 }
