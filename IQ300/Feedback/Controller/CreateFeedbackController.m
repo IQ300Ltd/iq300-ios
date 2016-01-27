@@ -139,7 +139,6 @@
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
     [self.model updateFieldAtIndexPath:_editableIndexPath withValue:newString];
-    [self updateCellFrameIfNeed];
     return YES;
 }
 
@@ -147,6 +146,7 @@
     UITextRange *range = textView.selectedTextRange;
     textView.text = textView.text;
     textView.selectedTextRange = range;
+    [self updateCellFrameIfNeed];
 }
 
 #pragma mark - Keyboard Notifications

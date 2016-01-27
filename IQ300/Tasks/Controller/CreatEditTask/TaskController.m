@@ -220,13 +220,20 @@
 
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
     if (([newString length] <= [self.model maxNumberOfCharactersForPath:_editableIndexPath])) {
-        textView.text = newString;
         [self.model updateFieldAtIndexPath:_editableIndexPath withValue:newString];
-        [self updateCellFrameIfNeed];
+        return YES;
     }
     
     return NO;
 }
+    
+- (void)textViewDidChange:(UITextView *)textView {
+    UITextRange *range = textView.selectedTextRange;
+    textView.text = textView.text;
+    textView.selectedTextRange = range;
+    [self updateCellFrameIfNeed];
+}
+
 
 #pragma mark - Keyboard Notifications
 
