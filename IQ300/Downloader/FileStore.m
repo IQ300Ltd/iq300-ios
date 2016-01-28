@@ -168,29 +168,20 @@ static FileStore * _sharedStore = nil;
                 [_fileManager createDirectoryAtPath:_diskCachePath withIntermediateDirectories:YES attributes:nil error:&error];
             }
             
-            if(error) {
-                if(doneBlock) {
-                    doneBlock(nil, error);
-                }
-                return;
-            }
-            
-            if (![_fileManager createFileAtPath:[self.diskCachePath stringByAppendingPathComponent:fileName]
+            if (!error && ![_fileManager createFileAtPath:[self.diskCachePath stringByAppendingPathComponent:fileName]
                                       contents:data
-                                    attributes:nil])                            {
+                                    attributes:nil]) {
                 
-                if(doneBlock) {
-                    NSString * errorDescription = [NSString stringWithFormat:@"%s", strerror(errno)];
-                    error = [NSError errorWithDomain:FileStoreErrorDomain
-                                                code:errno
-                                            userInfo:@{NSLocalizedDescriptionKey : errorDescription}];
-                    
-                    doneBlock(nil, error);
-                }
+                NSString * errorDescription = [NSString stringWithFormat:@"%s", strerror(errno)];
+                error = [NSError errorWithDomain:FileStoreErrorDomain
+                                            code:errno
+                                        userInfo:@{NSLocalizedDescriptionKey : errorDescription}];
             }
             
             if(doneBlock) {
-                doneBlock(fileName, nil);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    doneBlock((!error) ? fileName : nil, error);
+                });
             }
         });
     }
