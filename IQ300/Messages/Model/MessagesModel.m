@@ -245,7 +245,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     else {
         BOOL isFilterEnabled = ([_filter length] > 0);
         NSInteger count = [self numberOfItems];
-        NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
+        NSInteger page = (count > 0) ? count / _portionLenght + 1 : 1;
         [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                                   page:@(page)
                                                    per:@(_portionLenght)

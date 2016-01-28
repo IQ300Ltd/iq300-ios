@@ -151,8 +151,8 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
     }
     else {
         NSInteger count = [self numberOfItemsInSection:0];
-        _portionOffset = (count > 0) ? count / _portionSize + 1 : 0;
-        [[IQService sharedService] contactsWithPage:@(_portionOffset)
+        NSInteger page = (count > 0) ? count / _portionSize + 1 : 1;
+        [[IQService sharedService] contactsWithPage:@(page)
                                                 per:@(_portionSize)
                                                sort:SORT_DIRECTION
                                              search:_filter

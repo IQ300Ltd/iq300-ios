@@ -11,7 +11,6 @@
 @interface ContactsModel : IQSelectionManagedModel
 
 @property (nonatomic, readonly) NSArray * contacts;
-@property (nonatomic, readonly) NSUInteger portionOffset;
 @property (nonatomic, readonly) NSUInteger portionSize;
 
 @property (nonatomic, strong) NSString * filter;

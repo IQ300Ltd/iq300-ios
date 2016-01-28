@@ -178,7 +178,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
     else {
         NSInteger count = [self numberOfItemsInSection:0];
-        NSInteger page = (count > 0) ? count / _portionLenght + 1 : 0;
+        NSInteger page = (count > 0) ? count / _portionLenght + 1 : 1;
         [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                           page:@(page)
                                                            per:@(_portionLenght)
