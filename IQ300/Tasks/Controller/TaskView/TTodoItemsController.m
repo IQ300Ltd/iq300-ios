@@ -189,13 +189,19 @@
     if (([newString length] <= MAX_NUMBER_OF_CHARACTERS)) {
         id<TodoItem> item = [self.model itemAtIndexPath:_editableIndexPath];
         item.title = newString;
-        textView.text = newString;
-        
-        [self updateCellFrameIfNeed];
+        return YES;
     }
     
     return NO;
 }
+
+- (void)textViewDidChange:(UITextView *)textView {
+    UITextRange *range = textView.selectedTextRange;
+    textView.text = textView.text;
+    textView.selectedTextRange = range;
+    [self updateCellFrameIfNeed];
+}
+
 
 #pragma mark - SWTableViewCell Delegate
 

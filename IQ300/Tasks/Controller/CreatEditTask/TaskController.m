@@ -25,13 +25,11 @@
 
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
-#define BOTTOM_VIEW_HEIGHT 65
+#define BOTTOM_VIEW_HEIGHT 0
 
 @interface TaskController() {
     CGFloat _tableBottomMarging;
     NSIndexPath * _editableIndexPath;
-    UIView * _bottomSeparatorView;
-    ExtendedButton * _doneButton;
 }
 
 @end
@@ -67,25 +65,12 @@
                                                                       action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
-    _bottomSeparatorView = [[UIView alloc] init];
-    [_bottomSeparatorView setBackgroundColor:SEPARATOR_COLOR];
-    [self.view addSubview:_bottomSeparatorView];
     
-    _doneButton = [[ExtendedButton alloc] init];
-    _doneButton.layer.cornerRadius = 4.0f;
-    _doneButton.layer.borderWidth = 0.5f;
-    [_doneButton setTitle:(self.model.task.taskId == nil) ? NSLocalizedString(@"Set task", nil) :
-                                                            NSLocalizedString(@"Save", nil)
-                 forState:UIControlStateNormal];
-    [_doneButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
-    [_doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
-    [_doneButton setBackgroundColor:IQ_CELADON_COLOR];
-    [_doneButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
-    [_doneButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
-    _doneButton.layer.borderColor = _doneButton.backgroundColor.CGColor;
-    [_doneButton setClipsToBounds:YES];
-    [_doneButton addTarget:self action:@selector(doneButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_doneButton];
+    UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mark_tab_item.png"]
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(doneButtonAction:)];
+    self.navigationItem.rightBarButtonItem = rightBarButton;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -112,19 +97,6 @@
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-    
-    CGRect actualBounds = self.view.bounds;
-
-    _bottomSeparatorView.frame = CGRectMake(actualBounds.origin.x,
-                                            actualBounds.origin.y + actualBounds.size.height - BOTTOM_VIEW_HEIGHT,
-                                            actualBounds.size.width,
-                                            SEPARATOR_HEIGHT);
-    
-    CGSize doneButtonSize = CGSizeMake(300, 40);
-    _doneButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - doneButtonSize.width) / 2.0f,
-                                   actualBounds.origin.y + actualBounds.size.height - doneButtonSize.height - 10.0f,
-                                   doneButtonSize.width,
-                                   doneButtonSize.height);
     [self layoutTabelView];
 }
 
@@ -248,13 +220,20 @@
 
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
     if (([newString length] <= [self.model maxNumberOfCharactersForPath:_editableIndexPath])) {
-        textView.text = newString;
         [self.model updateFieldAtIndexPath:_editableIndexPath withValue:newString];
-        [self updateCellFrameIfNeed];
+        return YES;
     }
     
     return NO;
 }
+    
+- (void)textViewDidChange:(UITextView *)textView {
+    UITextRange *range = textView.selectedTextRange;
+    textView.text = textView.text;
+    textView.selectedTextRange = range;
+    [self updateCellFrameIfNeed];
+}
+
 
 #pragma mark - Keyboard Notifications
 
@@ -335,7 +314,7 @@
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if (buttonIndex == 1 || buttonIndex == 2) {
                                   if (buttonIndex == 1) {
-                                      [self doneButtonAction:_doneButton];
+                                      [self doneButtonAction:self.navigationItem.rightBarButtonItem];
                                   }
                                   else {
                                       [self.navigationController popViewControllerAnimated:YES];
@@ -348,15 +327,15 @@
     }
 }
 
-- (void)doneButtonAction:(UIButton*)sender {
-    [_doneButton setEnabled:NO];
+- (void)doneButtonAction:(UIBarButtonItem*)sender {
+    [self.navigationItem.rightBarButtonItem setEnabled:NO];
     if ([self.model.task.title length] == 0) {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"Name can not be empty", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
                  otherButtonTitles:nil
                           tapBlock:nil];
-        [_doneButton setEnabled:YES];
+        [self.navigationItem.rightBarButtonItem setEnabled:YES];
    }
     else {
         if (self.model.task.taskId == nil) {
@@ -371,7 +350,7 @@
                                               else {
                                                   [self proccessServiceError:error];
                                               }
-                                              [_doneButton setEnabled:YES];
+                                              [self.navigationItem.rightBarButtonItem setEnabled:YES];
                                          }];
         }
         else {
@@ -385,7 +364,7 @@
                                             }
                                             else {
                                                 [self proccessServiceError:error];
-                                                [_doneButton setEnabled:YES];
+                                                [self.navigationItem.rightBarButtonItem setEnabled:YES];
                                             }
                                         }];
         }
