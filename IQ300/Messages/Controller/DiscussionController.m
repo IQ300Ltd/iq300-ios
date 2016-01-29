@@ -897,6 +897,9 @@
 }
 
 - (void)dealloc {
+    [self.tableView removeGestureRecognizer:_tableGesture];
+    _tableGesture.delegate = nil;
+
     [self.model setSubscribedToNotifications:NO];
     [self.model setDelegate:nil];
 }
