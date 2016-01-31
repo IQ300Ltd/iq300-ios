@@ -789,6 +789,10 @@
 		73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A371AC0294A007176A1 /* TChangesCounter.m */; };
 		73FE0A3B1AC03121007176A1 /* IQTaskMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A3A1AC03121007176A1 /* IQTaskMember.m */; };
 		C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D006E3B70304215613C192 /* libPods.a */; };
+		CBFDD1B51C5A37C2005AE0C9 /* IQActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFDD1B41C5A37C2005AE0C9 /* IQActivityViewController.m */; };
+		CBFDD1B61C5A37C2005AE0C9 /* IQActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFDD1B41C5A37C2005AE0C9 /* IQActivityViewController.m */; };
+		CBFDD1B91C5A38AF005AE0C9 /* IQOpenInActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFDD1B81C5A38AF005AE0C9 /* IQOpenInActivity.m */; };
+		CBFDD1BA1C5A38AF005AE0C9 /* IQOpenInActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFDD1B81C5A38AF005AE0C9 /* IQOpenInActivity.m */; };
 		FBC7CB491B57973C004E8382 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB481B57973C004E8382 /* DeletedObjects.m */; };
 		FBC7CB4C1B57979A004E8382 /* CommentDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4B1B57979A004E8382 /* CommentDeletedObjects.m */; };
 		FBC7CB4F1B579812004E8382 /* ConversationDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4E1B579812004E8382 /* ConversationDeletedObjects.m */; };
@@ -1500,6 +1504,10 @@
 		755F5FB022B113814C52815E /* Pods.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.production.xcconfig; path = "Pods/Target Support Files/Pods/Pods.production.xcconfig"; sourceTree = "<group>"; };
 		93D006E3B70304215613C192 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9B2A8B58D9801BD961060BB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		CBFDD1B31C5A37C2005AE0C9 /* IQActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQActivityViewController.h; sourceTree = "<group>"; };
+		CBFDD1B41C5A37C2005AE0C9 /* IQActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQActivityViewController.m; sourceTree = "<group>"; };
+		CBFDD1B71C5A38AF005AE0C9 /* IQOpenInActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQOpenInActivity.h; sourceTree = "<group>"; };
+		CBFDD1B81C5A38AF005AE0C9 /* IQOpenInActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQOpenInActivity.m; sourceTree = "<group>"; };
 		FBC7CB471B57973C004E8382 /* DeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedObjects.h; sourceTree = "<group>"; };
 		FBC7CB481B57973C004E8382 /* DeletedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedObjects.m; sourceTree = "<group>"; };
 		FBC7CB4A1B57979A004E8382 /* CommentDeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentDeletedObjects.h; sourceTree = "<group>"; };
@@ -2189,6 +2197,7 @@
 				736B6BCE1A0B5BCB00034D9B /* Resources */,
 				73840F101B1C75A500BCEAFC /* Resources-HD */,
 				737DD2111A14DEF100CC4443 /* Service */,
+				CBFDD1B21C5A37A7005AE0C9 /* Sharing */,
 				738CE1E31A0B3F4E0096B374 /* Supporting Files */,
 				736B6BC31A0B5B2800034D9B /* Tasks */,
 				736B6BE71A0BC08100034D9B /* Utils */,
@@ -2839,6 +2848,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		CBFDD1B21C5A37A7005AE0C9 /* Sharing */ = {
+			isa = PBXGroup;
+			children = (
+				CBFDD1B31C5A37C2005AE0C9 /* IQActivityViewController.h */,
+				CBFDD1B41C5A37C2005AE0C9 /* IQActivityViewController.m */,
+				CBFDD1B71C5A38AF005AE0C9 /* IQOpenInActivity.h */,
+				CBFDD1B81C5A38AF005AE0C9 /* IQOpenInActivity.m */,
+			);
+			path = Sharing;
+			sourceTree = "<group>";
+		};
 		FBC7CB461B57973C004E8382 /* DeletedObjects */ = {
 			isa = PBXGroup;
 			children = (
@@ -3433,6 +3453,7 @@
 				73840E021B1C75A500BCEAFC /* MenuSectionHeader.m in Sources */,
 				73840E031B1C75A500BCEAFC /* TaskActivitiesModel.m in Sources */,
 				73840E041B1C75A500BCEAFC /* NSString+UUID.m in Sources */,
+				CBFDD1BA1C5A38AF005AE0C9 /* IQOpenInActivity.m in Sources */,
 				73840E051B1C75A500BCEAFC /* LCLLogFile.m in Sources */,
 				734B91121B31BDF20084CA8E /* RegistrationStatusController.m in Sources */,
 				73840E061B1C75A500BCEAFC /* NotificationsModel.m in Sources */,
@@ -3505,6 +3526,7 @@
 				73840E391B1C75A500BCEAFC /* IQBadgeStyle.m in Sources */,
 				73840E3A1B1C75A500BCEAFC /* IQService.m in Sources */,
 				73840E3B1B1C75A500BCEAFC /* RMenuCell.m in Sources */,
+				CBFDD1B61C5A37C2005AE0C9 /* IQActivityViewController.m in Sources */,
 				737136311B539BBF0043B87B /* ContactsSectionView.m in Sources */,
 				73840E3C1B1C75A500BCEAFC /* TaskPolicies.m in Sources */,
 				73840E3D1B1C75A500BCEAFC /* IQLog.m in Sources */,
@@ -3607,6 +3629,7 @@
 				73A7983C1A35B96F006F5721 /* ALAssetInputStream.m in Sources */,
 				738356301A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m in Sources */,
 				73A87EF61AA4591100C4A7C3 /* NActionGropCell.m in Sources */,
+				CBFDD1B51C5A37C2005AE0C9 /* IQActivityViewController.m in Sources */,
 				738EF8241A9CA76700894755 /* IQCommunity.m in Sources */,
 				73D7F1B61ADE932700023120 /* TaskTabController.m in Sources */,
 				7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */,
@@ -3670,6 +3693,7 @@
 				7371362C1B538DF00043B87B /* ConferenceInfoModel.m in Sources */,
 				739C3B5C1A3075B00032C057 /* DiscussionController.m in Sources */,
 				73C286B01A94B5E30011FD51 /* IQNotificationsHolder.m in Sources */,
+				CBFDD1B91C5A38AF005AE0C9 /* IQOpenInActivity.m in Sources */,
 				73A7CA671A9F10DE0038DEF1 /* TasksFilterController.m in Sources */,
 				736110651B0A1827005ACEB5 /* GAIService.m in Sources */,
 				73176C9D1B3ADDD700E6AC60 /* IQDateDetailsCell.m in Sources */,
@@ -4176,7 +4200,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "5ac735ed-0468-4418-9f6d-f8fce1698994";
+				PROVISIONING_PROFILE = "fcd9dc01-3647-43c2-92a0-60e5db7677e0";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

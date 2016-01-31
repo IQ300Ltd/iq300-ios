@@ -32,10 +32,11 @@
 #import "ConferenceInfoController.h"
 #import "IQService.h"
 #import "IQService+Messages.h"
+#import "IQActivityViewController.h"
 
 #define SECTION_HEIGHT 12
 
-@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate> {
+@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate, IQActivityViewControllerDelegate> {
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachmentAsset;
@@ -523,7 +524,7 @@
         [self.navigationController pushViewController:controller animated:YES];
     }
     else if ([attachment.localURL length] > 0) {
-        [self showOpenInForURL:attachment.localURL fromRect:rectForAppearing];
+        [self showActivityViewControllerForURL:attachment.localURL fromRect:rectForAppearing];
     }
     else {
         [self showActivityIndicator];
@@ -541,7 +542,7 @@
                                                          if(![attachment.managedObjectContext saveToPersistentStore:&saveError] ) {
                                                              NSLog(@"Save attachment error: %@", saveError);
                                                          }
-                                                         [self showOpenInForURL:destinationURL fromRect:rectForAppearing];
+                                                         [self showActivityViewControllerForURL:destinationURL fromRect:rectForAppearing];
                                                      }
                                                      failure:^(NSOperation *operation, NSError *error) {
                                                          NSString * message = IsNetworUnreachableError(error) ? NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil) :
@@ -557,18 +558,12 @@
     }
 }
 
-- (void)showOpenInForURL:(NSString*)localURL fromRect:(CGRect)rect {
+- (void)showActivityViewControllerForURL:(NSString *)localURL fromRect:(CGRect)rect {
     [self hideActivityIndicator];
     NSURL * documentURL = [NSURL fileURLWithPath:localURL isDirectory:NO];
-    _documentController = [UIDocumentInteractionController interactionControllerWithURL:documentURL];
-    [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
-    if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
-        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                           message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
-                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                 otherButtonTitles:nil
-                          tapBlock:nil];
-    }
+    IQActivityViewController *controller = [[IQActivityViewController alloc] initWithActivityItems:@[] applicationActivities:nil];
+    controller.delegate = self;
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 - (void)expandButtonAction:(UIButton*)sender {
@@ -899,6 +894,23 @@
 - (void)dealloc {
     [self.model setSubscribedToNotifications:NO];
     [self.model setDelegate:nil];
+}
+
+#pragma mark - IQActivityViewControllerDelegate
+
+- (BOOL)willShowDocumentInteractionController {
+    return YES;
+}
+- (void)shouldShowDocumentInteractionController:(UIDocumentInteractionController * _Nonnull)controller fromRect:(CGRect)rect{
+    _documentController = controller;
+    [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
+    if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
+                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                 otherButtonTitles:nil
+                          tapBlock:nil];
+    }
 }
 
 @end
