@@ -789,10 +789,18 @@
 		73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A371AC0294A007176A1 /* TChangesCounter.m */; };
 		73FE0A3B1AC03121007176A1 /* IQTaskMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A3A1AC03121007176A1 /* IQTaskMember.m */; };
 		C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D006E3B70304215613C192 /* libPods.a */; };
+		CBEB62F71C5F3475005A11C2 /* SharingMessagesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB62CB1C5F3475005A11C2 /* SharingMessagesController.m */; };
+		CBEB62F81C5F3475005A11C2 /* SharingMessagesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB62CB1C5F3475005A11C2 /* SharingMessagesController.m */; };
+		CBEB63221C5F3A44005A11C2 /* IQOpenInActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63211C5F3A44005A11C2 /* IQOpenInActivity.m */; };
+		CBEB63231C5F3A44005A11C2 /* IQOpenInActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63211C5F3A44005A11C2 /* IQOpenInActivity.m */; };
+		CBEB63261C5F3A70005A11C2 /* SharingNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63251C5F3A70005A11C2 /* SharingNavigationController.m */; };
+		CBEB63271C5F3A70005A11C2 /* SharingNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63251C5F3A70005A11C2 /* SharingNavigationController.m */; };
+		CBEB632B1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */; };
+		CBEB632C1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */; };
+		CBEB63331C5F8591005A11C2 /* IQShareToMessageActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63321C5F8591005A11C2 /* IQShareToMessageActivity.m */; };
+		CBEB63341C5F8591005A11C2 /* IQShareToMessageActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63321C5F8591005A11C2 /* IQShareToMessageActivity.m */; };
 		CBFDD1B51C5A37C2005AE0C9 /* IQActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFDD1B41C5A37C2005AE0C9 /* IQActivityViewController.m */; };
 		CBFDD1B61C5A37C2005AE0C9 /* IQActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFDD1B41C5A37C2005AE0C9 /* IQActivityViewController.m */; };
-		CBFDD1B91C5A38AF005AE0C9 /* IQOpenInActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFDD1B81C5A38AF005AE0C9 /* IQOpenInActivity.m */; };
-		CBFDD1BA1C5A38AF005AE0C9 /* IQOpenInActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFDD1B81C5A38AF005AE0C9 /* IQOpenInActivity.m */; };
 		FBC7CB491B57973C004E8382 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB481B57973C004E8382 /* DeletedObjects.m */; };
 		FBC7CB4C1B57979A004E8382 /* CommentDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4B1B57979A004E8382 /* CommentDeletedObjects.m */; };
 		FBC7CB4F1B579812004E8382 /* ConversationDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4E1B579812004E8382 /* ConversationDeletedObjects.m */; };
@@ -1504,10 +1512,19 @@
 		755F5FB022B113814C52815E /* Pods.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.production.xcconfig; path = "Pods/Target Support Files/Pods/Pods.production.xcconfig"; sourceTree = "<group>"; };
 		93D006E3B70304215613C192 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9B2A8B58D9801BD961060BB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		CBEB62CA1C5F3475005A11C2 /* SharingMessagesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingMessagesController.h; sourceTree = "<group>"; };
+		CBEB62CB1C5F3475005A11C2 /* SharingMessagesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingMessagesController.m; sourceTree = "<group>"; };
+		CBEB63201C5F3A44005A11C2 /* IQOpenInActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQOpenInActivity.h; sourceTree = "<group>"; };
+		CBEB63211C5F3A44005A11C2 /* IQOpenInActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQOpenInActivity.m; sourceTree = "<group>"; };
+		CBEB63241C5F3A70005A11C2 /* SharingNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingNavigationController.h; sourceTree = "<group>"; };
+		CBEB63251C5F3A70005A11C2 /* SharingNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingNavigationController.m; sourceTree = "<group>"; };
+		CBEB63281C5F3D77005A11C2 /* SharingViewControllerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingViewControllerProtocol.h; sourceTree = "<group>"; };
+		CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingDiscussionController.m; sourceTree = "<group>"; };
+		CBEB632A1C5F417D005A11C2 /* SharingDiscussionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingDiscussionController.h; sourceTree = "<group>"; };
+		CBEB63311C5F8591005A11C2 /* IQShareToMessageActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQShareToMessageActivity.h; sourceTree = "<group>"; };
+		CBEB63321C5F8591005A11C2 /* IQShareToMessageActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQShareToMessageActivity.m; sourceTree = "<group>"; };
 		CBFDD1B31C5A37C2005AE0C9 /* IQActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQActivityViewController.h; sourceTree = "<group>"; };
 		CBFDD1B41C5A37C2005AE0C9 /* IQActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQActivityViewController.m; sourceTree = "<group>"; };
-		CBFDD1B71C5A38AF005AE0C9 /* IQOpenInActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQOpenInActivity.h; sourceTree = "<group>"; };
-		CBFDD1B81C5A38AF005AE0C9 /* IQOpenInActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQOpenInActivity.m; sourceTree = "<group>"; };
 		FBC7CB471B57973C004E8382 /* DeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedObjects.h; sourceTree = "<group>"; };
 		FBC7CB481B57973C004E8382 /* DeletedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedObjects.m; sourceTree = "<group>"; };
 		FBC7CB4A1B57979A004E8382 /* CommentDeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentDeletedObjects.h; sourceTree = "<group>"; };
@@ -2848,13 +2865,46 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		CBEB62C21C5F3475005A11C2 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				CBEB62C31C5F3475005A11C2 /* Controller */,
+			);
+			path = Messages;
+			sourceTree = "<group>";
+		};
+		CBEB62C31C5F3475005A11C2 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				CBEB62CA1C5F3475005A11C2 /* SharingMessagesController.h */,
+				CBEB62CB1C5F3475005A11C2 /* SharingMessagesController.m */,
+				CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */,
+				CBEB632A1C5F417D005A11C2 /* SharingDiscussionController.h */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		CBEB631F1C5F3A44005A11C2 /* Activities */ = {
+			isa = PBXGroup;
+			children = (
+				CBEB63201C5F3A44005A11C2 /* IQOpenInActivity.h */,
+				CBEB63211C5F3A44005A11C2 /* IQOpenInActivity.m */,
+				CBEB63311C5F8591005A11C2 /* IQShareToMessageActivity.h */,
+				CBEB63321C5F8591005A11C2 /* IQShareToMessageActivity.m */,
+			);
+			path = Activities;
+			sourceTree = "<group>";
+		};
 		CBFDD1B21C5A37A7005AE0C9 /* Sharing */ = {
 			isa = PBXGroup;
 			children = (
+				CBEB63281C5F3D77005A11C2 /* SharingViewControllerProtocol.h */,
+				CBEB631F1C5F3A44005A11C2 /* Activities */,
+				CBEB62C21C5F3475005A11C2 /* Messages */,
 				CBFDD1B31C5A37C2005AE0C9 /* IQActivityViewController.h */,
 				CBFDD1B41C5A37C2005AE0C9 /* IQActivityViewController.m */,
-				CBFDD1B71C5A38AF005AE0C9 /* IQOpenInActivity.h */,
-				CBFDD1B81C5A38AF005AE0C9 /* IQOpenInActivity.m */,
+				CBEB63241C5F3A70005A11C2 /* SharingNavigationController.h */,
+				CBEB63251C5F3A70005A11C2 /* SharingNavigationController.m */,
 			);
 			path = Sharing;
 			sourceTree = "<group>";
@@ -3397,11 +3447,13 @@
 				FBC7CB521B579CBD004E8382 /* ConversationDeletedObjects.m in Sources */,
 				73840DD61B1C75A500BCEAFC /* ContactCell.m in Sources */,
 				73840DD71B1C75A500BCEAFC /* TaskFilterCell.m in Sources */,
+				CBEB62F81C5F3475005A11C2 /* SharingMessagesController.m in Sources */,
 				73840DD81B1C75A500BCEAFC /* LoginView.m in Sources */,
 				73840DD91B1C75A500BCEAFC /* IQTaskDataHolder.m in Sources */,
 				73840DDA1B1C75A500BCEAFC /* IQComment.m in Sources */,
 				73840DDB1B1C75A500BCEAFC /* NSDate+IQFormater.m in Sources */,
 				733ADD1D1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */,
+				CBEB63271C5F3A70005A11C2 /* SharingNavigationController.m in Sources */,
 				73840DDC1B1C75A500BCEAFC /* IQService+Notifications.m in Sources */,
 				73840DDD1B1C75A500BCEAFC /* UIViewController+LeftMenu.m in Sources */,
 				73840DDE1B1C75A500BCEAFC /* UITabBarItem+CustomBadgeView.m in Sources */,
@@ -3453,17 +3505,18 @@
 				73840E021B1C75A500BCEAFC /* MenuSectionHeader.m in Sources */,
 				73840E031B1C75A500BCEAFC /* TaskActivitiesModel.m in Sources */,
 				73840E041B1C75A500BCEAFC /* NSString+UUID.m in Sources */,
-				CBFDD1BA1C5A38AF005AE0C9 /* IQOpenInActivity.m in Sources */,
 				73840E051B1C75A500BCEAFC /* LCLLogFile.m in Sources */,
 				734B91121B31BDF20084CA8E /* RegistrationStatusController.m in Sources */,
 				73840E061B1C75A500BCEAFC /* NotificationsModel.m in Sources */,
 				73840E071B1C75A500BCEAFC /* AccountHeaderView.m in Sources */,
 				73840E081B1C75A500BCEAFC /* DownloadTaskDelegate.m in Sources */,
+				CBEB63231C5F3A44005A11C2 /* IQOpenInActivity.m in Sources */,
 				73840E091B1C75A500BCEAFC /* ActionNotificationCell.m in Sources */,
 				73840E0A1B1C75A500BCEAFC /* CommentInputView.m in Sources */,
 				73176CA01B3ADDD700E6AC60 /* IQDetailsTextCell.m in Sources */,
 				73840E0B1B1C75A500BCEAFC /* IQObjectsHolder.m in Sources */,
 				73840E0C1B1C75A500BCEAFC /* ContactPickerView.m in Sources */,
+				CBEB63341C5F8591005A11C2 /* IQShareToMessageActivity.m in Sources */,
 				73176C931B3ADD4D00E6AC60 /* IQSelectionController.m in Sources */,
 				730BE3F91B3D219E00E26994 /* IQFeedbackCategory.m in Sources */,
 				73840E0D1B1C75A500BCEAFC /* SubMenuCell.m in Sources */,
@@ -3544,6 +3597,7 @@
 				73840E471B1C75A500BCEAFC /* IQTasksHolder.m in Sources */,
 				739CFFA61B397FDF00B4AED0 /* FeedbacksModel.m in Sources */,
 				73CB5B531B32D32D005B688C /* IQPasswordValidator.m in Sources */,
+				CBEB632C1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */,
 				73840E481B1C75A500BCEAFC /* IQBadgeIndicatorView.m in Sources */,
 				73840E491B1C75A500BCEAFC /* MenuViewController.m in Sources */,
 				73840E4A1B1C75A500BCEAFC /* UIActionSheet+Blocks.m in Sources */,
@@ -3690,10 +3744,10 @@
 				731E5BCC1B315DB500DF56C7 /* RegistrationController.m in Sources */,
 				731E5BC81B315DA000DF56C7 /* RegistrationView.m in Sources */,
 				73F5089E1ACAD0C2009DBBD8 /* IQTodoItem.m in Sources */,
+				CBEB62F71C5F3475005A11C2 /* SharingMessagesController.m in Sources */,
 				7371362C1B538DF00043B87B /* ConferenceInfoModel.m in Sources */,
 				739C3B5C1A3075B00032C057 /* DiscussionController.m in Sources */,
 				73C286B01A94B5E30011FD51 /* IQNotificationsHolder.m in Sources */,
-				CBFDD1B91C5A38AF005AE0C9 /* IQOpenInActivity.m in Sources */,
 				73A7CA671A9F10DE0038DEF1 /* TasksFilterController.m in Sources */,
 				736110651B0A1827005ACEB5 /* GAIService.m in Sources */,
 				73176C9D1B3ADDD700E6AC60 /* IQDateDetailsCell.m in Sources */,
@@ -3715,6 +3769,7 @@
 				739BC7A11A4A9F21007FC95C /* CommentInputView.m in Sources */,
 				7373ED5B1A89EF2000719FCD /* IQObjectsHolder.m in Sources */,
 				73ADA8DC1A36DBEF0032C1FA /* ContactPickerView.m in Sources */,
+				CBEB63331C5F8591005A11C2 /* IQShareToMessageActivity.m in Sources */,
 				73B5615C1B4286E200A883DC /* FeedbackView.m in Sources */,
 				73D3DF281AF0FB14000DD34F /* SubMenuCell.m in Sources */,
 				731E5BC11B31548E00DF56C7 /* IQTextContainer.m in Sources */,
@@ -3742,6 +3797,7 @@
 				73C16C811AEFBA6B00155BB1 /* OrderedArrayTransformer.m in Sources */,
 				730BE41C1B3D889A00E26994 /* FeedbackTypesModel.m in Sources */,
 				739BC7981A4A9DC7007FC95C /* CommentsController.m in Sources */,
+				CBEB63261C5F3A70005A11C2 /* SharingNavigationController.m in Sources */,
 				736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */,
 				732952B31A692EE90066B336 /* lcl.m in Sources */,
 				730BE4181B3D864600E26994 /* IQFeedback.m in Sources */,
@@ -3777,6 +3833,7 @@
 				73176CA71B3ADE2200E6AC60 /* IQSelectionModel.m in Sources */,
 				73A113FA1A1C8D1B00293EC5 /* RMenuCell.m in Sources */,
 				739D67D21AC29F8200859274 /* TaskPolicies.m in Sources */,
+				CBEB63221C5F3A44005A11C2 /* IQOpenInActivity.m in Sources */,
 				732953901A69208000F3704C /* IQLog.m in Sources */,
 				73176CA31B3ADDD700E6AC60 /* IQSelectableTextCell.m in Sources */,
 				731E5BD01B3161F200DF56C7 /* IQValidationHelper.m in Sources */,
@@ -3811,6 +3868,7 @@
 				73D7F1F71ADE95A900023120 /* CommunitiesModel.m in Sources */,
 				739C3B681A3086BA0032C057 /* DiscussionView.m in Sources */,
 				737DD22D1A14EFE900CC4443 /* TCService.m in Sources */,
+				CBEB632B1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */,
 				739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */,
 				736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */,
 				73FE0A3B1AC03121007176A1 /* IQTaskMember.m in Sources */,

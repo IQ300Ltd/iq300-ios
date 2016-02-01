@@ -12,6 +12,7 @@
 @class IQDiscussion;
 @class IQComment;
 @class IQConversation;
+@class IQAttachment;
 @class ALAsset;
 
 @protocol DiscussionModelDelegate <IQTableModelDelegate>
@@ -47,6 +48,10 @@
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
 
 - (void)setSubscribedToNotifications:(BOOL)subscribed;
+
+- (void)sendComment:(NSString*)comment
+         attachment:(IQAttachment*)attachment
+     withCompletion:(void (^)(NSError * error))completion;
 
 - (void)sendComment:(NSString*)comment
          attachment:(id)attachment

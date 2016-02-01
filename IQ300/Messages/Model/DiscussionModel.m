@@ -303,6 +303,66 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     }
 }
 
+- (void)sendComment:(NSString *)comment
+         attachment:(IQAttachment *)attachment
+     withCompletion:(void (^)(NSError *))completion {
+    
+    void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachments) {
+        NSArray * attachmentIds = [attachments valueForKey:@"attachmentId"];
+        [[IQService sharedService] createComment:comment
+                                    discussionId:_discussion.discussionId
+                                   attachmentIds:attachmentIds
+                                         handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
+                                             NSError * saveError = nil;
+                                             if (!success) {
+                                                 [self createLocalComment:comment attachments:attachments error:&saveError];
+                                                 if(saveError) {
+                                                     NSLog(@"Create comment error: %@", saveError);
+                                                 }
+                                                 if (completion) {
+                                                     completion(saveError);
+                                                 }
+                                             }
+                                             else {
+                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                           action:GAICreateMessageEventAction];
+                                                 
+                                                 item.commentStatus = @(IQCommentStatusSent);
+                                                 [item.managedObjectContext saveToPersistentStore:&saveError];
+                                                 if(saveError) {
+                                                     NSLog(@"Create comment status error: %@", saveError);
+                                                 }
+                                                 if (completion) {
+                                                     completion(error);
+                                                 }
+                                             }
+                                         }];
+    };
+    
+    [[IQService sharedService] createAttachmentWithFileAtPath:attachment.localURL
+                                                     fileName:attachment.displayName
+                                                     mimeType:attachment.contentType
+                                                      handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
+                                                          if(success) {
+                                                              sendCommentBlock(@[attachmentObject]);
+                                                              [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                        action:GAIFileUploadEventAction];
+                                                          }
+                                                          else {
+                                                              NSError *error;
+                                                              
+                                                              IQAttachment *localAttachment = [self createLocalAttachmentWithFilePath:attachment.localURL fileName:attachment.displayName contentType:attachment.contentType error:&error];
+                                                              if (localAttachment) {
+                                                                  sendCommentBlock(@[attachmentObject]);
+                                                              }
+                                                              else if (completion) {
+                                                                  completion(error);
+                                                              }
+                                                          }
+                                                      }];
+
+}
+
 - (void)sendComment:(NSString*)comment
          attachment:(id)attachment
            fileName:(NSString*)fileName

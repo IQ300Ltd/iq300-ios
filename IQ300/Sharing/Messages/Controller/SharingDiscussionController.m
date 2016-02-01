@@ -12,7 +12,7 @@
 #import "UIViewController+LeftMenu.h"
 #import "IQSession.h"
 
-#import "DiscussionController.h"
+#import "SharingDiscussionController.h"
 #import "DiscussionView.h"
 #import "CommentCell.h"
 #import "IQComment.h"
@@ -33,25 +33,34 @@
 #import "IQService.h"
 #import "IQService+Messages.h"
 #import "IQActivityViewController.h"
+#import "IQAttachment.h"
 
 #define SECTION_HEIGHT 12
 
-@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate, IQActivityViewControllerDelegate> {
+@interface SharingDiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate, IQActivityViewControllerDelegate> {
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
-    ALAsset * _attachmentAsset;
-    UIImage * _attachmentImage;
     UIDocumentInteractionController * _documentController;
     UISwipeGestureRecognizer * _tableGesture;
     CGPoint _tableContentOffset;
     BOOL _blockUpdation;
+    
+    IQAttachment *_attachment;
 }
 
 @end
 
-@implementation DiscussionController
+@implementation SharingDiscussionController
 
 @dynamic model;
+
+- (instancetype)initWithAttachment:(IQAttachment *)attachment {
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        _attachment = attachment;
+    }
+    return self;
+}
 
 - (UITableView*)tableView {
     return _mainView.tableView;
@@ -94,10 +103,6 @@
                                        action:@selector(sendButtonAction:)
                              forControlEvents:UIControlEventTouchUpInside];
 
-    [_mainView.inputView.attachButton addTarget:self
-                                       action:@selector(attachButtonAction:)
-                             forControlEvents:UIControlEventTouchUpInside];
-
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
@@ -135,15 +140,8 @@
     self.navigationItem.rightBarButtonItem = rightBarButton;
 }
 
-- (BOOL)isLeftMenuEnabled {
-    return NO;
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [self.leftMenuController setModel:nil];
-    [self.leftMenuController reloadMenuWithCompletion:nil];
     
     [self.model setSubscribedToNotifications:YES];
     
@@ -160,11 +158,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onKeyboardDidHide:)
                                                  name:UIKeyboardDidHideNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(drawerDidShowNotification:)
-                                                 name:IQDrawerDidShowNotification
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -227,15 +220,6 @@
                     forControlEvents:UIControlEventTouchUpInside];
     }
     
-    NSInteger buttonIndex = 0;
-    for (UIButton * attachButton in cell.attachButtons) {
-        [attachButton addTarget:self
-                         action:@selector(attachViewButtonAction:)
-               forControlEvents:UIControlEventTouchUpInside];
-        [attachButton setTag:buttonIndex];
-        buttonIndex ++;
-    }
-
     return cell;
 }
 
@@ -346,56 +330,7 @@
     }];
 }
 
-#pragma mark - UITextViewDelegate Methods
-
-- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
-    if ([URL.scheme isEqualToString:APP_URL_SCHEME] &&
-        [URL.host isEqualToString:@"tasks"]) {
-        NSInteger taskId = [URL.lastPathComponent integerValue];
-        if (taskId > 0 && taskId) {
-            [self openTaskControllerForTaskId:@(taskId)];
-        }
-    }
-    else {
-        NSString * unescapedString = [[URL absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        unescapedString = [unescapedString stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
-        NSString * encodeURL = [unescapedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:encodeURL]];
-    }
-    
-    return NO;
-}
-
 #pragma mark - Private methods
-
-- (void)openTaskControllerForTaskId:(NSNumber*)taskId {
-    [TaskTabController taskTabControllerForTaskWithId:taskId
-                                           completion:^(TaskTabController * controller, NSError *error) {
-                                               if (controller) {
-                                                   [GAIService sendEventForCategory:GAITasksListEventCategory
-                                                                             action:GAIOpenTaskEventAction];
-                                                   
-                                                   controller.hidesBottomBarWhenPushed = YES;
-                                                   [self.navigationController pushViewController:controller animated:YES];
-                                               }
-                                               else {
-                                                   [self proccessServiceError:error];
-                                               }
-                                           }];
-}
-
-- (BOOL)isTextValid:(NSString *)text {
-    if (text == nil || [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
-        return NO;
-    }
-    
-    return YES;
-}
-
-- (void)updateUserInteraction:(NSString *)text {
-    BOOL isSendButtonEnabled = [self isTextValid:text];
-    [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
-}
 
 - (void)backButtonAction:(id)sender {
     [self.model unlockConversation];
@@ -422,147 +357,20 @@
 }
 
 - (void)sendButtonAction:(UIButton*)sender {
-    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
-    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
     
-    BOOL isTextValid = [self isTextValid:_mainView.inputView.commentTextView.text];
-    if(isTextValid || (_attachmentAsset || _attachmentImage)) {
-        [_mainView.inputView.sendButton setEnabled:NO];
-        [_mainView.inputView.attachButton setEnabled:NO];
-        [_mainView.inputView.commentTextView setEditable:NO];
-        [_mainView.inputView.commentTextView resignFirstResponder];
-        
-        NSString * fileName = (_attachmentAsset != nil) ? [_attachmentAsset fileName] : @"IMG.png";
-        NSString * mimeType = (_attachmentAsset != nil) ? [_attachmentAsset MIMEType] : @"image/png";
-        id attachment = (_attachmentAsset != nil) ? _attachmentAsset : _attachmentImage;
-
-        [self.model sendComment:_mainView.inputView.commentTextView.text
-                     attachment:attachment
-                       fileName:fileName
-                       mimeType:mimeType
-                 withCompletion:^(NSError *error) {
-                     if(!error) {
-                         _mainView.inputView.commentTextView.text = nil;
-                         [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_IMG]
-                                                           forState:UIControlStateNormal];
-                         _attachmentAsset = nil;
-                         _attachmentImage = nil;
-                         [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
-                     }
-                     else {
-                         [self proccessServiceError:error];
-                     }
-                     
-                     [_mainView.inputView.commentTextView setEditable:YES];
-                     [_mainView.inputView.attachButton setEnabled:YES];
-                     if(isTableScrolledToBottom) {
-                         [self scrollToBottomAnimated:YES delay:0.5f];
-                     }
-                 }];
-    }
-}
-
-- (void)attachButtonAction:(UIButton*)sender {
-    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                              delegate:nil
-                                                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                destructiveButtonTitle:nil
-                                                     otherButtonTitles:NSLocalizedString(@"Take a picture", nil),
-                                                                       NSLocalizedString(@"Photos", nil), nil];
+    [_mainView.inputView.sendButton setEnabled:NO];
+    [_mainView.inputView.attachButton setEnabled:NO];
+    [_mainView.inputView.commentTextView setEditable:NO];
+    [_mainView.inputView.commentTextView resignFirstResponder];
     
-    [actionSheet setDidDismissBlock:^(UIActionSheet * __nonnull actionSheet, NSInteger buttonIndex) {
-        if (buttonIndex == 0) {
-            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-                _tableContentOffset = self.tableView.contentOffset;
-                
-                UIImagePickerController * imagePicker = [[UIImagePickerController alloc] init];
-                [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
-                [imagePicker setCameraDevice:UIImagePickerControllerCameraDeviceRear];
-                [imagePicker setAllowsEditing:NO];
-                [imagePicker setShowsCameraControls:YES];
-                [imagePicker setDelegate:self];
-                imagePicker.hidesBottomBarWhenPushed = YES;
-                [self presentViewController:imagePicker animated:YES completion:nil];
-            }
-            else {
-                [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                                   message:NSLocalizedString(@"The camera is not available", nil)
-                         cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                         otherButtonTitles:nil
-                                  tapBlock:nil];
-            }
+    [self.model sendComment:_mainView.inputView.commentTextView.text attachment:_attachment withCompletion:^(NSError *error) {
+        if (!error) {
+            //close this controller
         }
-        else if (buttonIndex == 1) {
-            CTAssetsPickerController *picker = [[CTAssetsPickerController alloc] init];
-            picker.assetsFilter = [ALAssetsFilter allAssets];
-            picker.showsCancelButton = YES;
-            picker.delegate = (id<CTAssetsPickerControllerDelegate>)self;
-            picker.showsNumberOfAssets = NO;
-            [self presentViewController:picker animated:YES completion:nil];
+        else {
+            [self proccessServiceError:error];
         }
     }];
-    
-    [actionSheet showInView:self.view];
-}
-
-- (void)attachViewButtonAction:(UIButton*)sender {
-    UITableViewCell<IQCommentCell> * cell = [self cellForView:sender];
-    
-    if(!cell) {
-        return;
-    }
-    
-    IQComment * comment = cell.item;
-    IQAttachment * attachment = [[comment.attachments allObjects] objectAtIndex:sender.tag];
-    
-    CGRect rectForAppearing = [sender.superview convertRect:sender.frame toView:self.view];
-    if([attachment.contentType rangeOfString:@"image"].location != NSNotFound &&
-       [attachment.originalURL length] > 0) {
-        PhotoViewController * controller = [[PhotoViewController alloc] init];
-        controller.imageURL = [NSURL URLWithString:attachment.originalURL];
-        controller.fileName = attachment.displayName;
-        [self.navigationController pushViewController:controller animated:YES];
-    }
-    else if ([attachment.localURL length] > 0) {
-        [self showActivityViewControllerAttachment:attachment fromRect:rectForAppearing];
-    }
-    else {
-        [self showActivityIndicator];
-        NSArray * urlComponents = [attachment.originalURL componentsSeparatedByString:@"?"];
-        NSString * fileExtension = [[urlComponents firstObject] pathExtension];
-        [[DownloadManager sharedManager] downloadDataFromURL:attachment.originalURL
-                                                     success:^(NSOperation *operation, NSString * storedURL, NSData *responseData) {
-                                                         NSString * destinationURL = [storedURL stringByAppendingPathExtension:fileExtension];
-                                                         [[NSFileManager defaultManager] moveItemAtURL:[NSURL fileURLWithPath:storedURL]
-                                                                                                 toURL:[NSURL fileURLWithPath:destinationURL]
-                                                                                                 error:nil];
-                                                         attachment.localURL = destinationURL;
-                                                         
-                                                         NSError *saveError = nil;
-                                                         if(![attachment.managedObjectContext saveToPersistentStore:&saveError] ) {
-                                                             NSLog(@"Save attachment error: %@", saveError);
-                                                         }
-                                                         [self showActivityViewControllerAttachment:attachment fromRect:rectForAppearing];
-                                                     }
-                                                     failure:^(NSOperation *operation, NSError *error) {
-                                                         NSString * message = IsNetworUnreachableError(error) ? NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil) :
-                                                                                                                NSLocalizedString(@"File download failed", nil);
-                                                         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                                                                            message:message
-                                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                                  otherButtonTitles:nil
-                                                                           tapBlock:nil];
-
-                                                         [self hideActivityIndicator];
-                                                     }];
-    }
-}
-
-- (void)showActivityViewControllerAttachment:(IQAttachment *)attachment fromRect:(CGRect)rect {
-    [self hideActivityIndicator];
-    IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:attachment];
-    controller.delegate = self;
-    [self presentViewController:controller animated:YES completion:nil];
 }
 
 - (void)expandButtonAction:(UIButton*)sender {
@@ -621,6 +429,17 @@
                                           }];
 }
 
+- (UITableViewCell<IQCommentCell>*)cellForView:(UIView*)view {
+    BOOL superIsCommentCell = [view.superview isKindOfClass:[UITableViewCell class]] &&
+    [view.superview conformsToProtocol:@protocol(IQCommentCell)];
+    if (superIsCommentCell || !view.superview) {
+        return (UITableViewCell<IQCommentCell>*)view.superview;
+    }
+    
+    return [self cellForView:view.superview];
+}
+
+
 #pragma mark - Keyboard Helpers
 
 - (void)onKeyboardWillShow:(NSNotification *)notification {
@@ -668,7 +487,6 @@
     CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
     BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
 
-    [self updateUserInteraction:textView.text];
     [textView scrollRangeToVisible:textView.selectedRange];
     
     CGSize contentSize = [textView sizeThatFits:CGSizeMake(textView.frame.size.width, FLT_MAX)];
@@ -691,133 +509,6 @@
     if(isTableScrolledToBottom || self.needFullReload) {
         [self scrollToBottomAnimated:animated delay:delay];
     }
-}
-
-#pragma mark - UIImagePickerController delegate
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    
-    //Fix offset changed by image picker
-    if (!CGPointEqualToPoint(_tableContentOffset, self.tableView.contentOffset)) {
-        self.tableView.contentOffset = _tableContentOffset;
-    }
-    _tableContentOffset = CGPointZero;
-}
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImage * image = info[UIImagePickerControllerOriginalImage];
-    
-    [picker dismissViewControllerAnimated:YES completion:^{
-        //Fix offset changed by image picker
-        if (!CGPointEqualToPoint(_tableContentOffset, self.tableView.contentOffset)) {
-            self.tableView.contentOffset = _tableContentOffset;
-        }
-        _tableContentOffset = CGPointZero;
-        
-        if (image) {
-            NSString * title = @"You can reduce the image size by scaling it to one of the following sizes";
-            UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(title, nil)
-                                                                      delegate:nil
-                                                             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                        destructiveButtonTitle:nil
-                                                             otherButtonTitles:NSLocalizedStringWithFormat(@"Small (%ld%%)", 30, nil),
-                                                                               NSLocalizedStringWithFormat(@"Medium (%ld%%)", 50, nil),
-                                                                               NSLocalizedStringWithFormat(@"Large (%ld%%)", 80, nil),
-                                                                               NSLocalizedString(@"Actual", nil), nil];
-            
-            [actionSheet setDidDismissBlock:^(UIActionSheet * __nonnull actionSheet, NSInteger buttonIndex) {
-                if (buttonIndex <= 2) {
-                    CGFloat scale = 1.0f;
-                    switch (buttonIndex) {
-                        case 0:
-                            scale = 0.3f;
-                            break;
-                            
-                        case 1:
-                            scale = 0.5f;
-                            break;
-                            
-                        case 2:
-                            scale = 0.8f;
-                            break;
-                            
-                        default:
-                            break;
-                    }
-                    CGSize scaledSize = CGSizeMake(image.size.width * scale,
-                                                   image.size.height * scale);
-                    UIImage * scaledImage = [image imageWithFixedOrientation];
-                    _attachmentImage = [UIImage scaleImage:scaledImage size:scaledSize];
-                }
-                else if(buttonIndex != actionSheet.cancelButtonIndex) {
-                    _attachmentImage = [image imageWithFixedOrientation];
-                }
-                
-                if (_attachmentImage != nil) {
-                    _attachmentAsset = nil;
-                    [_mainView.inputView.sendButton setEnabled:YES];
-                    [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
-                                                      forState:UIControlStateNormal];
-                }
-            }];
-            
-            [actionSheet showInView:self.view];
-        }
-    }];
-}
-
-#pragma mark - Assets Picker Delegate
-
-- (BOOL)assetsPickerController:(CTAssetsPickerController *)picker isDefaultAssetsGroup:(ALAssetsGroup *)group {
-    return ([[group valueForProperty:ALAssetsGroupPropertyType] integerValue] == ALAssetsGroupAll);
-}
-
-- (BOOL)assetsPickerController:(CTAssetsPickerController *)picker shouldEnableAsset:(ALAsset *)asset {
-    if ([[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo]) {
-        NSTimeInterval duration = [[asset valueForProperty:ALAssetPropertyDuration] doubleValue];
-        return lround(duration) >= 5;
-    }
-    return YES;
-}
-
-- (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
-    _attachmentAsset = asset;
-    if (_attachmentAsset != nil) {
-        _attachmentImage = nil;
-        [_mainView.inputView.sendButton setEnabled:YES];
-        [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
-                                          forState:UIControlStateNormal];
-    }
-    [picker dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - UIDocumentInteractionController Delegate Methods
-
-- (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
-    return  self;
-}
-
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(NSString *)application {
-
-}
-
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
-    _documentController = nil;
-}
-
-- (UITableViewCell<IQCommentCell>*)cellForView:(UIView*)view {
-    BOOL superIsCommentCell = [view.superview isKindOfClass:[UITableViewCell class]] &&
-                              [view.superview conformsToProtocol:@protocol(IQCommentCell)];
-    if (superIsCommentCell || !view.superview) {
-        return (UITableViewCell<IQCommentCell>*)view.superview;
-    }
-    
-    return [self cellForView:view.superview];
-}
-
-- (void)drawerDidShowNotification:(NSNotification*)notification {
-    [_mainView.inputView.commentTextView resignFirstResponder];
 }
 
 #pragma mark - Conversation Notification
@@ -893,23 +584,6 @@
 - (void)dealloc {
     [self.model setSubscribedToNotifications:NO];
     [self.model setDelegate:nil];
-}
-
-#pragma mark - IQActivityViewControllerDelegate
-
-- (BOOL)willShowDocumentInteractionController {
-    return YES;
-}
-- (void)shouldShowDocumentInteractionController:(UIDocumentInteractionController * _Nonnull)controller fromRect:(CGRect)rect{
-    _documentController = controller;
-    [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
-    if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
-        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                           message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
-                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                 otherButtonTitles:nil
-                          tapBlock:nil];
-    }
 }
 
 @end

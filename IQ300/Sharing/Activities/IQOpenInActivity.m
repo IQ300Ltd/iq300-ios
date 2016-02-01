@@ -7,6 +7,7 @@
 //
 
 #import "IQOpenInActivity.h"
+#import "IQAttachment.h"
 
 @interface IQOpenInActivity ()
 
@@ -36,7 +37,15 @@
     __block BOOL canPerform = false;
         
     [activityItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        *stop = canPerform = [obj isKindOfClass:[NSURL class]] && [((NSURL *)obj) isFileURL];
+        *stop = canPerform = [obj isKindOfClass:[IQAttachment class]] && ((IQAttachment *)obj).localURL;
+        if (canPerform) {
+            IQAttachment *attachment = ((IQAttachment *)obj);
+            NSURL *fileURL = [NSURL fileURLWithPath:attachment.localURL];
+            *stop = canPerform = [fileURL isFileURL];
+        }
+        else {
+            *stop = canPerform = [obj isKindOfClass:[NSURL class]] && [((NSURL *)obj) isFileURL];
+        }
     }];
         
     return canPerform;
@@ -46,9 +55,16 @@
     __block NSURL *fileURL = nil;
     
     [activityItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:[NSURL class]] && [((NSURL *)obj) isFileURL]) {
-            fileURL = obj;
-            *stop = YES;
+        *stop = [obj isKindOfClass:[IQAttachment class]] && ((IQAttachment *)obj).localURL;
+        if (*stop) {
+            IQAttachment *attachment = ((IQAttachment *)obj);
+            fileURL = [NSURL fileURLWithPath:attachment.localURL];
+        }
+        else {
+            *stop = [obj isKindOfClass:[NSURL class]] && [((NSURL *)obj) isFileURL];
+            if (*stop) {
+                fileURL = obj;
+            }
         }
     }];
     _documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:fileURL];

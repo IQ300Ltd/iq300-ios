@@ -10,14 +10,16 @@
 
 @protocol IQActivityViewControllerDelegate;
 
+@class IQAttachment;
+
 @interface IQActivityViewController : UIActivityViewController
 
 @property (nonatomic, weak) id<IQActivityViewControllerDelegate> delegate;
 @property (nonatomic, assign) CGRect documentInteractionControllerRect;
 
-- (instancetype _Nonnull)initWithActivityItems:(NSArray * _Nonnull)activityItems applicationActivities:(nullable NSArray<__kindof UIActivity *> *)applicationActivities NS_UNAVAILABLE;
+- (instancetype _Nonnull)initWithActivityItems:(nonnull NSArray *)activityItems applicationActivities:(nullable NSArray<__kindof UIActivity *> *)applicationActivities NS_UNAVAILABLE;
 
-- (instancetype _Nullable)initWithActivityItem:(nonnull id)activityItem applicationActivities:(nullable NSArray<__kindof UIActivity *> *)applicationActivities;
+- (instancetype _Nullable)initWithAttachment:(nonnull IQAttachment *)attachment NS_DESIGNATED_INITIALIZER;
 
 @end
 
