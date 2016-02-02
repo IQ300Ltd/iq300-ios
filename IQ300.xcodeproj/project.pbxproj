@@ -22,7 +22,6 @@
 		73060D691B417322001AE08E /* feedback_question_type@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5E1B417322001AE08E /* feedback_question_type@2x.png */; };
 		73060D6A1B417322001AE08E /* feedback_question_type@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D5E1B417322001AE08E /* feedback_question_type@2x.png */; };
 		7306742B1B1C91E8003961B5 /* LeftSideTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 730674291B1C8F16003961B5 /* LeftSideTabBarController.m */; };
-		73086B0C1A8E64D80013582E /* IQGroupCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73086B0B1A8E64D80013582E /* IQGroupCounter.m */; };
 		730BE3EF1B3D1EE900E26994 /* IQService+Feedback.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BE3EE1B3D1EE900E26994 /* IQService+Feedback.m */; };
 		730BE3F01B3D1EE900E26994 /* IQService+Feedback.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BE3EE1B3D1EE900E26994 /* IQService+Feedback.m */; };
 		730BE3F41B3D1FBC00E26994 /* IQManagedFeedback.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BE3F31B3D1FBC00E26994 /* IQManagedFeedback.m */; };
@@ -97,7 +96,6 @@
 		732952B91A69441D0066B336 /* bubble_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 732952B71A69441D0066B336 /* bubble_blue.png */; };
 		732952BA1A69441D0066B336 /* bubble_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 732952B81A69441D0066B336 /* bubble_blue@2x.png */; };
 		732953901A69208000F3704C /* IQLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329538F1A69208000F3704C /* IQLog.m */; };
-		733A80541A7A6C5C00460C87 /* NotificationGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 733A80531A7A6C5C00460C87 /* NotificationGroupView.m */; };
 		733ADD1C1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */; };
 		733ADD1D1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */; };
 		73415D031BCE332C0042DD09 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73415D021BCE332C0042DD09 /* Launch Screen.storyboard */; };
@@ -135,7 +133,6 @@
 		737136391B53C1430043B87B /* IQConversationMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 737136381B53C1430043B87B /* IQConversationMember.m */; };
 		7371363A1B53C1430043B87B /* IQConversationMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 737136381B53C1430043B87B /* IQConversationMember.m */; };
 		7373ED5B1A89EF2000719FCD /* IQObjectsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7373ED5A1A89EF2000719FCD /* IQObjectsHolder.m */; };
-		7373ED5E1A89FB2100719FCD /* IQNotificationGroupsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7373ED5D1A89FB2100719FCD /* IQNotificationGroupsHolder.m */; };
 		7373ED661A8A2EB500719FCD /* DeviceToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 7373ED651A8A2EB500719FCD /* DeviceToken.m */; };
 		7379EEB31A11E26200D69BBD /* IQNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7379EEB21A11E26200D69BBD /* IQNavigationController.m */; };
 		7379EEBA1A11E47700D69BBD /* NotificationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7379EEB91A11E47700D69BBD /* NotificationsController.m */; };
@@ -160,10 +157,8 @@
 		7382CA951A4566BD00D5EE1F /* CSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7382CA941A4566BD00D5EE1F /* CSectionHeaderView.m */; };
 		738356301A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 7383562F1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m */; };
 		73840DB51B1C75A500BCEAFC /* TaskFilterSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F63E871AA055FB000DA319 /* TaskFilterSection.m */; };
-		73840DB61B1C75A500BCEAFC /* IQGroupCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73086B0B1A8E64D80013582E /* IQGroupCounter.m */; };
 		73840DB71B1C75A500BCEAFC /* CTaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 734965D01AB1A60100263B57 /* CTaskFilterCell.m */; };
 		73840DB81B1C75A500BCEAFC /* UIScrollView+PullToRefreshInsert.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF25A21A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m */; };
-		73840DB91B1C75A500BCEAFC /* IQNotificationGroupsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7373ED5D1A89FB2100719FCD /* IQNotificationGroupsHolder.m */; };
 		73840DBA1B1C75A500BCEAFC /* TaskExecutersCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260CD1AE0ED460009CC38 /* TaskExecutersCell.m */; };
 		73840DBB1B1C75A500BCEAFC /* NotificationsMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A700511A95D0AF00A1C2AC /* NotificationsMenuModel.m */; };
 		73840DBC1B1C75A500BCEAFC /* TaskStatusFilterItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F9D1AE1AA6F9620030DE90 /* TaskStatusFilterItem.m */; };
@@ -182,7 +177,6 @@
 		73840DC91B1C75A500BCEAFC /* MessagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850BE1A2DB05400DB5B21 /* MessagesView.m */; };
 		73840DCA1B1C75A500BCEAFC /* ALAssetInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A7983B1A35B96F006F5721 /* ALAssetInputStream.m */; };
 		73840DCB1B1C75A500BCEAFC /* NSObject+SafelyRemoveObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 7383562F1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m */; };
-		73840DCD1B1C75A500BCEAFC /* NActionGropCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A87EF51AA4591100C4A7C3 /* NActionGropCell.m */; };
 		73840DCE1B1C75A500BCEAFC /* IQCommunity.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EF8231A9CA76700894755 /* IQCommunity.m */; };
 		73840DCF1B1C75A500BCEAFC /* TaskTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A81ADE932700023120 /* TaskTabController.m */; };
 		73840DD01B1C75A500BCEAFC /* IQNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4AC1A288ED2000B94BD /* IQNotificationCenter.m */; };
@@ -211,7 +205,6 @@
 		73840DE81B1C75A500BCEAFC /* IQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C384C81A9725DA00B66D0F /* IQTask.m */; };
 		73840DE91B1C75A500BCEAFC /* IQManagedTodoItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EF8291A9CA95600894755 /* IQManagedTodoItem.m */; };
 		73840DEA1B1C75A500BCEAFC /* MessagesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850BB1A2DADF000DB5B21 /* MessagesController.m */; };
-		73840DEB1B1C75A500BCEAFC /* NGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 738C7F6D1A792D7500A25C70 /* NGroupCell.m */; };
 		73840DEC1B1C75A500BCEAFC /* TodoListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1CA1ADE93D600023120 /* TodoListModel.m */; };
 		73840DED1B1C75A500BCEAFC /* IQMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA98841A109A49005AEC00 /* IQMenuItem.m */; };
 		73840DEE1B1C75A500BCEAFC /* IQMenuSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA98991A10A1AB005AEC00 /* IQMenuSection.m */; };
@@ -231,7 +224,6 @@
 		73840DFC1B1C75A500BCEAFC /* IQNotificationsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C286AF1A94B5E30011FD51 /* IQNotificationsHolder.m */; };
 		73840DFD1B1C75A500BCEAFC /* TasksFilterController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A7CA661A9F10DE0038DEF1 /* TasksFilterController.m */; };
 		73840DFE1B1C75A500BCEAFC /* GAIService.m in Sources */ = {isa = PBXBuildFile; fileRef = 736110641B0A1827005ACEB5 /* GAIService.m */; };
-		73840DFF1B1C75A500BCEAFC /* NotificationGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 733A80531A7A6C5C00460C87 /* NotificationGroupView.m */; };
 		73840E001B1C75A500BCEAFC /* IQSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F90CE91A1B6B6D00225255 /* IQSession.m */; };
 		73840E011B1C75A500BCEAFC /* IQService+Tasks.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EF82C1A9CB8D300894755 /* IQService+Tasks.m */; };
 		73840E021B1C75A500BCEAFC /* MenuSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C541A0CA88E00E8BB81 /* MenuSectionHeader.m */; };
@@ -273,7 +265,6 @@
 		73840E291B1C75A500BCEAFC /* IQMenuSerializator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA989C1A10A29C005AEC00 /* IQMenuSerializator.m */; };
 		73840E2A1B1C75A500BCEAFC /* MTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BA98761A1092DF005AEC00 /* MTableHeaderView.m */; };
 		73840E2B1B1C75A500BCEAFC /* TCommentsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1AB1ADE932700023120 /* TCommentsController.m */; };
-		73840E2C1B1C75A500BCEAFC /* IQNotificationsGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B3C1A71A7B5D0F005F972D /* IQNotificationsGroup.m */; };
 		73840E2D1B1C75A500BCEAFC /* FileStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A949971A3832D7008EC469 /* FileStore.m */; };
 		73840E2E1B1C75A500BCEAFC /* NotificationsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7181A163C16009F26A2 /* NotificationsView.m */; };
 		73840E2F1B1C75A500BCEAFC /* IQCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 731DEECA1A2F27AE002F5FEB /* IQCounters.m */; };
@@ -305,7 +296,6 @@
 		73840E4A1B1C75A500BCEAFC /* UIActionSheet+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A26C561B1443B5000F4763 /* UIActionSheet+Blocks.m */; };
 		73840E4B1B1C75A500BCEAFC /* TaskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A7004E1A95CF8C00A1C2AC /* TaskCell.m */; };
 		73840E4C1B1C75A500BCEAFC /* TodoListItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1E11ADE94B400023120 /* TodoListItemCell.m */; };
-		73840E4D1B1C75A500BCEAFC /* IQNotificationsGroupIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C286AC1A94AFD70011FD51 /* IQNotificationsGroupIds.m */; };
 		73840E4E1B1C75A500BCEAFC /* CCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 739BC7A31A4AA516007FC95C /* CCommentCell.m */; };
 		73840E501B1C75A500BCEAFC /* TaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49031AE51FA400F6A753 /* TaskExecutor.m */; };
 		73840E511B1C75A500BCEAFC /* IQTableModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B9EA071ADCFBA400159A66 /* IQTableModel.m */; };
@@ -497,7 +487,6 @@
 		738916BD1ABAFB800017EF86 /* gray_checked_checkbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 738916B91ABAFB800017EF86 /* gray_checked_checkbox.png */; };
 		738916BE1ABAFB800017EF86 /* gray_checked_checkbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 738916BA1ABAFB800017EF86 /* gray_checked_checkbox@2x.png */; };
 		73891FF51A2C97ED008D8885 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */; };
-		738C7F6E1A792D7500A25C70 /* NGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 738C7F6D1A792D7500A25C70 /* NGroupCell.m */; };
 		738CE1E61A0B3F4E0096B374 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1E51A0B3F4E0096B374 /* main.m */; };
 		738CE1E91A0B3F4E0096B374 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1E81A0B3F4E0096B374 /* AppDelegate.m */; };
 		738EA7A31A1DC91C0065D39F /* IQUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 738EA7A21A1DC91C0065D39F /* IQUser.m */; };
@@ -615,7 +604,6 @@
 		73A7CA881A9F5CB90038DEF1 /* TaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A7CA871A9F5CB90038DEF1 /* TaskFilterCell.m */; };
 		73A7D67E1AD2796D002B7AFF /* TCRequestItemsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A7D67D1AD2796D002B7AFF /* TCRequestItemsHolder.m */; };
 		73A81F1E1ACD237700882FB0 /* IQTaskActivityItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A81F1D1ACD237700882FB0 /* IQTaskActivityItem.m */; };
-		73A87EF61AA4591100C4A7C3 /* NActionGropCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A87EF51AA4591100C4A7C3 /* NActionGropCell.m */; };
 		73A87EF91AA4597800C4A7C3 /* NotificationsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A87EF81AA4597800C4A7C3 /* NotificationsHelper.m */; };
 		73A9498F1A3821AD008EC469 /* backWhiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A9498D1A3821AD008EC469 /* backWhiteArrow.png */; };
 		73A949901A3821AD008EC469 /* backWhiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A9498E1A3821AD008EC469 /* backWhiteArrow@2x.png */; };
@@ -638,7 +626,6 @@
 		73AF73E51A3B0C0D001B8E42 /* msg_viewed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73AF73E31A3B0C0D001B8E42 /* msg_viewed@2x.png */; };
 		73B1EF291B67B96D00960D7F /* IQContactsDeletedIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B1EF281B67B96D00960D7F /* IQContactsDeletedIds.m */; };
 		73B1EF2A1B67B96D00960D7F /* IQContactsDeletedIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B1EF281B67B96D00960D7F /* IQContactsDeletedIds.m */; };
-		73B3C1A81A7B5D0F005F972D /* IQNotificationsGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B3C1A71A7B5D0F005F972D /* IQNotificationsGroup.m */; };
 		73B3C1AB1A7B73B9005F972D /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B3C1AA1A7B73B9005F972D /* NSString+MD5.m */; };
 		73B561581B42828B00A883DC /* FeedbackInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B561571B42828B00A883DC /* FeedbackInfoController.m */; };
 		73B561591B42828B00A883DC /* FeedbackInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B561571B42828B00A883DC /* FeedbackInfoController.m */; };
@@ -673,7 +660,6 @@
 		73C16C7D1AEFB09F00155BB1 /* filter_gray_collapseed.png in Resources */ = {isa = PBXBuildFile; fileRef = 73C16C7B1AEFB09F00155BB1 /* filter_gray_collapseed.png */; };
 		73C16C7E1AEFB09F00155BB1 /* filter_gray_collapseed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73C16C7C1AEFB09F00155BB1 /* filter_gray_collapseed@2x.png */; };
 		73C16C811AEFBA6B00155BB1 /* OrderedArrayTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C16C801AEFBA6B00155BB1 /* OrderedArrayTransformer.m */; };
-		73C286AD1A94AFD70011FD51 /* IQNotificationsGroupIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C286AC1A94AFD70011FD51 /* IQNotificationsGroupIds.m */; };
 		73C286B01A94B5E30011FD51 /* IQNotificationsHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C286AF1A94B5E30011FD51 /* IQNotificationsHolder.m */; };
 		73C384C91A9725DA00B66D0F /* IQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C384C81A9725DA00B66D0F /* IQTask.m */; };
 		73C3FE7D1A4591E50042DAA6 /* bubble_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 73C3FE7B1A4591E50042DAA6 /* bubble_gray.png */; };
@@ -806,8 +792,6 @@
 		730674271B1C8A03003961B5 /* IQTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTabBar.h; sourceTree = "<group>"; };
 		730674281B1C8F16003961B5 /* LeftSideTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftSideTabBarController.h; sourceTree = "<group>"; };
 		730674291B1C8F16003961B5 /* LeftSideTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeftSideTabBarController.m; sourceTree = "<group>"; };
-		73086B0A1A8E64D80013582E /* IQGroupCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQGroupCounter.h; sourceTree = "<group>"; };
-		73086B0B1A8E64D80013582E /* IQGroupCounter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQGroupCounter.m; sourceTree = "<group>"; };
 		730BE3ED1B3D1EE900E26994 /* IQService+Feedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IQService+Feedback.h"; sourceTree = "<group>"; };
 		730BE3EE1B3D1EE900E26994 /* IQService+Feedback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IQService+Feedback.m"; sourceTree = "<group>"; };
 		730BE3F21B3D1FBC00E26994 /* IQManagedFeedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQManagedFeedback.h; sourceTree = "<group>"; };
@@ -904,8 +888,6 @@
 		7329538D1A69208000F3704C /* LCLLogFileConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCLLogFileConfig.h; sourceTree = "<group>"; };
 		7329538E1A69208000F3704C /* IQLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQLog.h; sourceTree = "<group>"; };
 		7329538F1A69208000F3704C /* IQLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQLog.m; sourceTree = "<group>"; };
-		733A80521A7A6C5C00460C87 /* NotificationGroupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationGroupView.h; sourceTree = "<group>"; };
-		733A80531A7A6C5C00460C87 /* NotificationGroupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationGroupView.m; sourceTree = "<group>"; };
 		733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice-Hardware.m"; sourceTree = "<group>"; };
 		733ADD1B1B46C03F00B3DBF4 /* UIDevice-Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice-Hardware.h"; sourceTree = "<group>"; };
 		73415D021BCE332C0042DD09 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
@@ -960,8 +942,6 @@
 		737136381B53C1430043B87B /* IQConversationMember.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQConversationMember.m; sourceTree = "<group>"; };
 		7373ED591A89EF2000719FCD /* IQObjectsHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQObjectsHolder.h; sourceTree = "<group>"; };
 		7373ED5A1A89EF2000719FCD /* IQObjectsHolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQObjectsHolder.m; sourceTree = "<group>"; };
-		7373ED5C1A89FB2100719FCD /* IQNotificationGroupsHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationGroupsHolder.h; sourceTree = "<group>"; };
-		7373ED5D1A89FB2100719FCD /* IQNotificationGroupsHolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationGroupsHolder.m; sourceTree = "<group>"; };
 		7373ED641A8A2EB500719FCD /* DeviceToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceToken.h; sourceTree = "<group>"; };
 		7373ED651A8A2EB500719FCD /* DeviceToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceToken.m; sourceTree = "<group>"; };
 		7379EEB11A11E26200D69BBD /* IQNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNavigationController.h; sourceTree = "<group>"; };
@@ -1046,8 +1026,6 @@
 		73891FF11A2C4F40008D8885 /* DispatchAfterExecution.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DispatchAfterExecution.h; sourceTree = "<group>"; };
 		73891FF31A2C97ED008D8885 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
 		73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
-		738C7F6C1A792D7500A25C70 /* NGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGroupCell.h; sourceTree = "<group>"; };
-		738C7F6D1A792D7500A25C70 /* NGroupCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NGroupCell.m; sourceTree = "<group>"; };
 		738CE1E01A0B3F4E0096B374 /* IQ 300.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IQ 300.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		738CE1E41A0B3F4E0096B374 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		738CE1E51A0B3F4E0096B374 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -1231,8 +1209,6 @@
 		73A81F1C1ACD237700882FB0 /* IQTaskActivityItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskActivityItem.h; sourceTree = "<group>"; };
 		73A81F1D1ACD237700882FB0 /* IQTaskActivityItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTaskActivityItem.m; sourceTree = "<group>"; };
 		73A87EF31AA4495700C4A7C3 /* IQColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQColors.h; sourceTree = "<group>"; };
-		73A87EF41AA4591100C4A7C3 /* NActionGropCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NActionGropCell.h; sourceTree = "<group>"; };
-		73A87EF51AA4591100C4A7C3 /* NActionGropCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NActionGropCell.m; sourceTree = "<group>"; };
 		73A87EF71AA4597800C4A7C3 /* NotificationsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsHelper.h; sourceTree = "<group>"; };
 		73A87EF81AA4597800C4A7C3 /* NotificationsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsHelper.m; sourceTree = "<group>"; };
 		73A9498D1A3821AD008EC469 /* backWhiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backWhiteArrow.png; sourceTree = "<group>"; };
@@ -1269,8 +1245,6 @@
 		73AF73E31A3B0C0D001B8E42 /* msg_viewed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "msg_viewed@2x.png"; sourceTree = "<group>"; };
 		73B1EF271B67B96D00960D7F /* IQContactsDeletedIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQContactsDeletedIds.h; sourceTree = "<group>"; };
 		73B1EF281B67B96D00960D7F /* IQContactsDeletedIds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQContactsDeletedIds.m; sourceTree = "<group>"; };
-		73B3C1A61A7B5D0F005F972D /* IQNotificationsGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationsGroup.h; sourceTree = "<group>"; };
-		73B3C1A71A7B5D0F005F972D /* IQNotificationsGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationsGroup.m; sourceTree = "<group>"; };
 		73B3C1A91A7B73B9005F972D /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
 		73B3C1AA1A7B73B9005F972D /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
 		73B561561B42828B00A883DC /* FeedbackInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackInfoController.h; sourceTree = "<group>"; };
@@ -1322,8 +1296,6 @@
 		73C16C7C1AEFB09F00155BB1 /* filter_gray_collapseed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filter_gray_collapseed@2x.png"; sourceTree = "<group>"; };
 		73C16C7F1AEFBA6B00155BB1 /* OrderedArrayTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderedArrayTransformer.h; sourceTree = "<group>"; };
 		73C16C801AEFBA6B00155BB1 /* OrderedArrayTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderedArrayTransformer.m; sourceTree = "<group>"; };
-		73C286AB1A94AFD70011FD51 /* IQNotificationsGroupIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationsGroupIds.h; sourceTree = "<group>"; };
-		73C286AC1A94AFD70011FD51 /* IQNotificationsGroupIds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationsGroupIds.m; sourceTree = "<group>"; };
 		73C286AE1A94B5E30011FD51 /* IQNotificationsHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationsHolder.h; sourceTree = "<group>"; };
 		73C286AF1A94B5E30011FD51 /* IQNotificationsHolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationsHolder.m; sourceTree = "<group>"; };
 		73C384C71A9725DA00B66D0F /* IQTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTask.h; sourceTree = "<group>"; };
@@ -2036,12 +2008,6 @@
 				739BC79D1A4A9E86007FC95C /* CommentsView.m */,
 				739BC7A21A4AA516007FC95C /* CCommentCell.h */,
 				739BC7A31A4AA516007FC95C /* CCommentCell.m */,
-				733A80521A7A6C5C00460C87 /* NotificationGroupView.h */,
-				733A80531A7A6C5C00460C87 /* NotificationGroupView.m */,
-				738C7F6C1A792D7500A25C70 /* NGroupCell.h */,
-				738C7F6D1A792D7500A25C70 /* NGroupCell.m */,
-				73A87EF41AA4591100C4A7C3 /* NActionGropCell.h */,
-				73A87EF51AA4591100C4A7C3 /* NActionGropCell.m */,
 				73A87EF71AA4597800C4A7C3 /* NotificationsHelper.h */,
 				73A87EF81AA4597800C4A7C3 /* NotificationsHelper.m */,
 			);
@@ -2400,16 +2366,8 @@
 				739850CE1A2DD30E00DB5B21 /* IQNotification.m */,
 				73C286AE1A94B5E30011FD51 /* IQNotificationsHolder.h */,
 				73C286AF1A94B5E30011FD51 /* IQNotificationsHolder.m */,
-				73B3C1A61A7B5D0F005F972D /* IQNotificationsGroup.h */,
-				73B3C1A71A7B5D0F005F972D /* IQNotificationsGroup.m */,
 				73DD80071A68E83800A6ADA5 /* IQNotificationIds.h */,
 				73DD80081A68E83800A6ADA5 /* IQNotificationIds.m */,
-				73C286AB1A94AFD70011FD51 /* IQNotificationsGroupIds.h */,
-				73C286AC1A94AFD70011FD51 /* IQNotificationsGroupIds.m */,
-				7373ED5C1A89FB2100719FCD /* IQNotificationGroupsHolder.h */,
-				7373ED5D1A89FB2100719FCD /* IQNotificationGroupsHolder.m */,
-				73086B0A1A8E64D80013582E /* IQGroupCounter.h */,
-				73086B0B1A8E64D80013582E /* IQGroupCounter.m */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -3320,10 +3278,8 @@
 			files = (
 				73840DB51B1C75A500BCEAFC /* TaskFilterSection.m in Sources */,
 				730BE3F51B3D1FBC00E26994 /* IQManagedFeedback.m in Sources */,
-				73840DB61B1C75A500BCEAFC /* IQGroupCounter.m in Sources */,
 				73840DB71B1C75A500BCEAFC /* CTaskFilterCell.m in Sources */,
 				73840DB81B1C75A500BCEAFC /* UIScrollView+PullToRefreshInsert.m in Sources */,
-				73840DB91B1C75A500BCEAFC /* IQNotificationGroupsHolder.m in Sources */,
 				73840DBA1B1C75A500BCEAFC /* TaskExecutersCell.m in Sources */,
 				7371362D1B538DF00043B87B /* ConferenceInfoModel.m in Sources */,
 				73840DBB1B1C75A500BCEAFC /* NotificationsMenuModel.m in Sources */,
@@ -3353,7 +3309,6 @@
 				73840DCA1B1C75A500BCEAFC /* ALAssetInputStream.m in Sources */,
 				730BE4021B3D298900E26994 /* IQFeedbacksHolder.m in Sources */,
 				73840DCB1B1C75A500BCEAFC /* NSObject+SafelyRemoveObserver.m in Sources */,
-				73840DCD1B1C75A500BCEAFC /* NActionGropCell.m in Sources */,
 				73840DCE1B1C75A500BCEAFC /* IQCommunity.m in Sources */,
 				73840DCF1B1C75A500BCEAFC /* TaskTabController.m in Sources */,
 				73840DD01B1C75A500BCEAFC /* IQNotificationCenter.m in Sources */,
@@ -3390,7 +3345,6 @@
 				73840DE91B1C75A500BCEAFC /* IQManagedTodoItem.m in Sources */,
 				73060D571B41345D001AE08E /* UITextView+Validation.m in Sources */,
 				73840DEA1B1C75A500BCEAFC /* MessagesController.m in Sources */,
-				73840DEB1B1C75A500BCEAFC /* NGroupCell.m in Sources */,
 				73840DEC1B1C75A500BCEAFC /* TodoListModel.m in Sources */,
 				73840DED1B1C75A500BCEAFC /* IQMenuItem.m in Sources */,
 				73840DEE1B1C75A500BCEAFC /* IQMenuSection.m in Sources */,
@@ -3414,7 +3368,6 @@
 				73840DFC1B1C75A500BCEAFC /* IQNotificationsHolder.m in Sources */,
 				73840DFD1B1C75A500BCEAFC /* TasksFilterController.m in Sources */,
 				73840DFE1B1C75A500BCEAFC /* GAIService.m in Sources */,
-				73840DFF1B1C75A500BCEAFC /* NotificationGroupView.m in Sources */,
 				73840E001B1C75A500BCEAFC /* IQSession.m in Sources */,
 				73840E011B1C75A500BCEAFC /* IQService+Tasks.m in Sources */,
 				73840E021B1C75A500BCEAFC /* MenuSectionHeader.m in Sources */,
@@ -3467,7 +3420,6 @@
 				73840E2A1B1C75A500BCEAFC /* MTableHeaderView.m in Sources */,
 				73840E2B1B1C75A500BCEAFC /* TCommentsController.m in Sources */,
 				7314627C1B341D2300E9CC60 /* IQDoubleDetailsTextCell.m in Sources */,
-				73840E2C1B1C75A500BCEAFC /* IQNotificationsGroup.m in Sources */,
 				731462801B34249600E9CC60 /* IQDoubleDateTextCell.m in Sources */,
 				73840E2D1B1C75A500BCEAFC /* FileStore.m in Sources */,
 				73840E2E1B1C75A500BCEAFC /* NotificationsView.m in Sources */,
@@ -3514,7 +3466,6 @@
 				73176CA81B3ADE2200E6AC60 /* IQSelectionModel.m in Sources */,
 				73840E4B1B1C75A500BCEAFC /* TaskCell.m in Sources */,
 				73840E4C1B1C75A500BCEAFC /* TodoListItemCell.m in Sources */,
-				73840E4D1B1C75A500BCEAFC /* IQNotificationsGroupIds.m in Sources */,
 				73840E4E1B1C75A500BCEAFC /* CCommentCell.m in Sources */,
 				73840E501B1C75A500BCEAFC /* TaskExecutor.m in Sources */,
 				73840E511B1C75A500BCEAFC /* IQTableModel.m in Sources */,
@@ -3567,10 +3518,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				73F63E881AA055FB000DA319 /* TaskFilterSection.m in Sources */,
-				73086B0C1A8E64D80013582E /* IQGroupCounter.m in Sources */,
 				734965D11AB1A60100263B57 /* CTaskFilterCell.m in Sources */,
 				73AF25A31A63E80100F12CCD /* UIScrollView+PullToRefreshInsert.m in Sources */,
-				7373ED5E1A89FB2100719FCD /* IQNotificationGroupsHolder.m in Sources */,
 				73D260CE1AE0ED460009CC38 /* TaskExecutersCell.m in Sources */,
 				73A700521A95D0AF00A1C2AC /* NotificationsMenuModel.m in Sources */,
 				73F9D1AF1AA6F9620030DE90 /* TaskStatusFilterItem.m in Sources */,
@@ -3592,7 +3541,6 @@
 				739850BF1A2DB05400DB5B21 /* MessagesView.m in Sources */,
 				73A7983C1A35B96F006F5721 /* ALAssetInputStream.m in Sources */,
 				738356301A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m in Sources */,
-				73A87EF61AA4591100C4A7C3 /* NActionGropCell.m in Sources */,
 				738EF8241A9CA76700894755 /* IQCommunity.m in Sources */,
 				73D7F1B61ADE932700023120 /* TaskTabController.m in Sources */,
 				7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */,
@@ -3631,7 +3579,6 @@
 				73176CA11B3ADDD700E6AC60 /* IQEditableTextCell.m in Sources */,
 				738EF82A1A9CA95600894755 /* IQManagedTodoItem.m in Sources */,
 				739850BC1A2DADF000DB5B21 /* MessagesController.m in Sources */,
-				738C7F6E1A792D7500A25C70 /* NGroupCell.m in Sources */,
 				73CB5B4A1B32D192005B688C /* IQStringValidator.m in Sources */,
 				73D7F1D01ADE93D600023120 /* TodoListModel.m in Sources */,
 				73BA98851A109A49005AEC00 /* IQMenuItem.m in Sources */,
@@ -3658,7 +3605,6 @@
 				73A7CA671A9F10DE0038DEF1 /* TasksFilterController.m in Sources */,
 				736110651B0A1827005ACEB5 /* GAIService.m in Sources */,
 				73176C9D1B3ADDD700E6AC60 /* IQDateDetailsCell.m in Sources */,
-				733A80541A7A6C5C00460C87 /* NotificationGroupView.m in Sources */,
 				73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */,
 				738EF82D1A9CB8D300894755 /* IQService+Tasks.m in Sources */,
 				737E7C551A0CA88E00E8BB81 /* MenuSectionHeader.m in Sources */,
@@ -3717,7 +3663,6 @@
 				73BA98771A1092DF005AEC00 /* MTableHeaderView.m in Sources */,
 				739CFFAD1B39898B00B4AED0 /* CreateFeedbackModel.m in Sources */,
 				73D7F1B71ADE932700023120 /* TCommentsController.m in Sources */,
-				73B3C1A81A7B5D0F005F972D /* IQNotificationsGroup.m in Sources */,
 				73A9499D1A3832D7008EC469 /* FileStore.m in Sources */,
 				738FE7191A163C16009F26A2 /* NotificationsView.m in Sources */,
 				731DEECB1A2F27AE002F5FEB /* IQCounters.m in Sources */,
@@ -3758,7 +3703,6 @@
 				73A26C571B1443B5000F4763 /* UIActionSheet+Blocks.m in Sources */,
 				73A7004F1A95CF8C00A1C2AC /* TaskCell.m in Sources */,
 				73D7F1E91ADE94B400023120 /* TodoListItemCell.m in Sources */,
-				73C286AD1A94AFD70011FD51 /* IQNotificationsGroupIds.m in Sources */,
 				739BC7A41A4AA516007FC95C /* CCommentCell.m in Sources */,
 				735D49041AE51FA400F6A753 /* TaskExecutor.m in Sources */,
 				73B9EA081ADCFBA400159A66 /* IQTableModel.m in Sources */,

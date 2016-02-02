@@ -11,7 +11,7 @@
 #import "IQSession.h"
 
 #import "NotificationsController.h"
-#import "NotificationGroupView.h"
+#import "NotificationsView.h"
 #import "NotificationsMenuModel.h"
 #import "NotificationsModel.h"
 #import "IQNotification.h"
@@ -24,13 +24,12 @@
 #import "CommentsController.h"
 #import "DispatchAfterExecution.h"
 #import "UIScrollView+PullToRefreshInsert.h"
-#import "IQNotificationsGroup.h"
 #import "TaskTabController.h"
 #import "IQService+Feedback.h"
 #import "FeedbackController.h"
 
 @interface NotificationsController() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
-    NotificationGroupView * _mainView;
+    NotificationsView * _mainView;
     NotificationsMenuModel * _menuModel;
 }
 
@@ -74,7 +73,7 @@
 }
 
 - (void)loadView {
-    _mainView = [[NotificationGroupView alloc] init];
+    _mainView = [[NotificationsView alloc] init];
     self.view = _mainView;
 }
 
@@ -90,10 +89,6 @@
     _menuModel = [[NotificationsMenuModel alloc] init];
     [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:(self.model.loadUnreadOnly) ? 1 : 0
                                                          inSection:0]];
-    
-    [_mainView.backButton addTarget:self
-                             action:@selector(backButtonAction:)
-                   forControlEvents:UIControlEventTouchUpInside];
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
@@ -111,8 +106,6 @@
          }];
      }
      position:SVPullToRefreshPositionBottom];
-    
-    [_mainView setHeaderViewHidden:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

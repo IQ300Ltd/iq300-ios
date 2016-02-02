@@ -582,23 +582,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsHolder class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/notifications"
-                                                   fromKeyPath:nil
-                                                         store:self.objectManager.managedObjectStore];
-    
-    [self.objectManager addResponseDescriptor:descriptor];
-    
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsHolder class]
-                                                        method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/notifications/:id/children"
-                                                   fromKeyPath:nil
-                                                         store:self.objectManager.managedObjectStore];
-    
-    [self.objectManager addResponseDescriptor:descriptor];
-
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationGroupsHolder class]
-                                                        method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/notifications/groups"
+                                                   pathPattern:@"/api/v2/notifications"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -606,15 +590,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationIds class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/notifications/unread_ids"
-                                                   fromKeyPath:nil
-                                                         store:self.objectManager.managedObjectStore];
-    
-    [self.objectManager addResponseDescriptor:descriptor];
-    
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsGroupIds class]
-                                                        method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/notifications/unread_group_sids"
+                                                   pathPattern:@"/api/v2/notifications/unread_ids"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -630,54 +606,22 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/notifications/:id"
+                                                         pathPattern:@"/api/v2/notifications/read"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/notifications/read_all"
+                                                         pathPattern:@"/api/v2/notifications/read_all"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsGroup class]
-                                                        method:RKRequestMethodPUT
-                                                   pathPattern:@"/api/v1/notifications/:id/read_group"
-                                                   fromKeyPath:@"notification_group"
-                                                         store:self.objectManager.managedObjectStore];
-    
-    [self.objectManager addResponseDescriptor:descriptor];
-    
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQGroupCounter class]
-                                                        method:RKRequestMethodPUT
-                                                   pathPattern:@"/api/v1/notifications/read_all_groups"
-                                                   fromKeyPath:@"unread_groups"
-                                                         store:self.objectManager.managedObjectStore];
-    
-    [self.objectManager addResponseDescriptor:descriptor];
-    
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/notifications/counters"
+                                                   pathPattern:@"/api/v2/notifications/counters"
                                                    fromKeyPath:@"notification_counters"
-                                                         store:self.objectManager.managedObjectStore];
-    
-    [self.objectManager addResponseDescriptor:descriptor];
-    
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
-                                                        method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/notifications/group_counters"
-                                                   fromKeyPath:@"notification_group_counters"
-                                                         store:self.objectManager.managedObjectStore];
-    
-    [self.objectManager addResponseDescriptor:descriptor];
-    
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
-                                                        method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/notifications/:id/group_counter"
-                                                   fromKeyPath:@"notification_group_counter"
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
@@ -853,14 +797,14 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/notifications/:id/accept"
+                                                         pathPattern:@"/api/v2/notifications/:id/accept"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/notifications/:id/decline"
+                                                         pathPattern:@"/api/v2/notifications/:id/decline"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
