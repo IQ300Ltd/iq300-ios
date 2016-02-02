@@ -8,22 +8,26 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "PhotoViewController.h"
+#import "IQActivityViewController.h"
 
 #define HEADER_HEIGHT 52.0f
 
-@interface PhotoViewController() <UIScrollViewDelegate> {
+@interface PhotoViewController() <UIScrollViewDelegate, IQActivityViewControllerDelegate, UIDocumentInteractionControllerDelegate> {
     UIImageView * _imageView;
     UIScrollView * _scrollView;
     UIActivityIndicatorView * _activityIndicator;
+    UIDocumentInteractionController *_documentController;
 }
 
 @end
 
-@implementation PhotoViewController
+@implementation PhotoViewController 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor blackColor]];
+    
+    self.title = self.fileName;
     
     _scrollView = [[UIScrollView alloc] init];
     _scrollView.minimumZoomScale = 0.5;
@@ -40,6 +44,16 @@
     _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     [_activityIndicator setHidesWhenStopped:YES];
     [self.view addSubview:_activityIndicator];
+    
+    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(backButtonAction:)];
+    self.navigationItem.leftBarButtonItem = backBarButton;
+    
+    UIBarButtonItem *shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareAction:)];
+    self.navigationItem.rightBarButtonItem = shareButton;
+
 }
 
 - (BOOL)isLeftMenuEnabled {
@@ -49,19 +63,13 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(backButtonAction:)];
-    self.navigationItem.leftBarButtonItem = backBarButton;
-    
-    self.title = self.fileName;
-    
-    [_activityIndicator startAnimating];
-    if(self.imageURL) {
+    if(self.imageURL && !_imageView.image) {
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+
+        [_activityIndicator startAnimating];
         [_imageView sd_setImageWithURL:self.imageURL
                       placeholderImage:nil
-                               options:SDWebImageCacheMemoryOnly
+                               options:0
                              completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                  if (_imageView.image.size.height <= _imageView.frame.size.height &&
                                      _imageView.image.size.width <= _imageView.frame.size.width) {
@@ -74,17 +82,13 @@
                                      [self updateView];
                                  }
                                  [_activityIndicator stopAnimating];
+                                 self.navigationItem.rightBarButtonItem.enabled = YES;
                              }];
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    _imageView.image = nil;
     [_imageView sd_cancelCurrentImageLoad];
 }
 
@@ -154,9 +158,48 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)shareAction:(id)sender {
+    SDWebImageManager *manager = [SDWebImageManager sharedManager];
+    NSString *key = [manager cacheKeyForURL:_imageView.sd_imageURL];
+
+    SharingAttachment *attachment = [[SharingAttachment alloc] initWithPath:[manager.imageCache defaultCachePathForKey:key]
+                                                                displayName:_fileName
+                                                                contentType:_contentType];
+    
+    IQActivityViewController *activityViewContoller = [[IQActivityViewController alloc] initWithAttachment:attachment];
+    activityViewContoller.delegate = self;
+    [self presentViewController:activityViewContoller animated:YES completion:nil];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     _imageView.image = nil;
 }
+
+#pragma mark - IQActivityViewControllerDelegate
+
+- (BOOL)willShowDocumentInteractionController {
+    return YES;
+}
+
+- (void)shouldShowDocumentInteractionController:(UIDocumentInteractionController *)controller fromRect:(CGRect)rect {
+    _documentController = controller;
+    [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
+    if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
+                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                 otherButtonTitles:nil
+                          tapBlock:nil];
+    }
+}
+
+#pragma mark - UIDocumentInteractionControllerDelegate
+
+- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
+    _documentController = nil;
+}
+
+
 
 @end

@@ -13,43 +13,31 @@
 + (DownloadManager *)sharedManager;
 
 /**
- The operation queue which manages operations enqueued by the download manager.
- */
-@property (nonatomic, strong) NSOperationQueue *operationQueue;
-
-- (AFHTTPRequestOperation*)downloadOperationWithRequest:(NSURLRequest *)request
-                                                success:(void (^)(AFHTTPRequestOperation *operation, NSData * responseData))success
-                                                failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
-
-- (AFHTTPRequestOperation*)downloadOperationWithRequest:(NSURLRequest *)request
-                                                success:(void (^)(AFHTTPRequestOperation *operation, NSData * responseData))success
-                                                failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-                                            andProgress:(void(^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress;
-/**
  * Download data from url and store it. See FileStore.
  * @param url The file url address
  * @param success The success file download block
  * @param failure The failure file download block
  */
 - (void)downloadDataFromURL:(NSString*)url
-                    success:(void (^)(NSOperation *operation, NSString * storedURL, NSData * responseData))success
+                    success:(void (^)(NSOperation *operation, NSURL * storedURL, NSData * responseData))success
+                    failure:(void (^)(NSOperation *operation, NSError *error))failure;
+
+- (void)downloadDataFromURL:(NSString *)url
+                   MIMEType:(NSString *)MIMEType
+                    success:(void (^)(NSOperation *operation, NSURL *storedURL, NSData *responseData))success
                     failure:(void (^)(NSOperation *operation, NSError *error))failure;
 
 - (void)downloadDataFromURL:(NSString*)url
-                    success:(void (^)(NSOperation *operation, NSString * storedURL, NSData * responseData))success
+                    success:(void (^)(NSOperation *operation, NSURL * storedURL, NSData * responseData))success
                     failure:(void (^)(NSOperation *operation, NSError *error))failure
                 andProgress:(void(^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress;
 
-- (void)authorizedDownloadDataFromURL:(NSString*)url
-                              headers:(NSDictionary*)headers
-                              success:(void (^)(NSOperation *operation, NSData * responseData))success
-                              failure:(void (^)(NSOperation *operation, NSError *error))failure;
+- (void)downloadDataFromURL:(NSString*)url
+                   MIMEType:(NSString *)MIMEType
+                    success:(void (^)(NSOperation *operation, NSURL * storedURL, NSData * responseData))success
+                    failure:(void (^)(NSOperation *operation, NSError *error))failure
+                andProgress:(void(^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress;
 
-- (void)authorizedDownloadDataFromURL:(NSString*)url
-                              headers:(NSDictionary*)headers
-                              success:(void (^)(NSOperation *operation, NSData * responseData))success
-                              failure:(void (^)(NSOperation *operation, NSError *error))failure
-                          andProgress:(void(^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress;
 
 - (BOOL)isDataDownloadedFromURL:(NSString*)url;
 

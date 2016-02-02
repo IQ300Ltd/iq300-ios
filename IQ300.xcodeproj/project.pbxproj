@@ -7,6 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2DAF335B1C6085C200554211 /* SharingViewControllerFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF335A1C6085C200554211 /* SharingViewControllerFactory.m */; };
+		2DAF335C1C6085C200554211 /* SharingViewControllerFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF335A1C6085C200554211 /* SharingViewControllerFactory.m */; };
+		2DAF33651C6087C600554211 /* IQOpenInActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF33601C6087C600554211 /* IQOpenInActivity.m */; };
+		2DAF33661C6087C600554211 /* IQOpenInActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF33601C6087C600554211 /* IQOpenInActivity.m */; };
+		2DAF33671C6087C600554211 /* IQShareToMessageActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF33621C6087C600554211 /* IQShareToMessageActivity.m */; };
+		2DAF33681C6087C600554211 /* IQShareToMessageActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF33621C6087C600554211 /* IQShareToMessageActivity.m */; };
+		2DAF33691C6087C600554211 /* IQActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF33641C6087C600554211 /* IQActivityViewController.m */; };
+		2DAF336A1C6087C600554211 /* IQActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF33641C6087C600554211 /* IQActivityViewController.m */; };
+		2DAF33771C609AC500554211 /* SharingAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF33761C609AC500554211 /* SharingAttachment.m */; };
+		2DAF33781C609AC500554211 /* SharingAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF33761C609AC500554211 /* SharingAttachment.m */; };
+		2DAF33841C60AD2600554211 /* open_in_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33811C60AD2600554211 /* open_in_icon.png */; };
+		2DAF33851C60AD2600554211 /* open_in_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33821C60AD2600554211 /* open_in_icon@2x.png */; };
+		2DAF33861C60AD2600554211 /* open_in_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33831C60AD2600554211 /* open_in_icon@3x.png */; };
+		2DAF33991C60C9F000554211 /* copy_to_message_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33931C60C9F000554211 /* copy_to_message_icon.png */; };
+		2DAF339A1C60C9F000554211 /* copy_to_message_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33941C60C9F000554211 /* copy_to_message_icon@2x.png */; };
+		2DAF339B1C60C9F000554211 /* copy_to_message_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33951C60C9F000554211 /* copy_to_message_icon@3x.png */; };
+		2DAF339C1C60C9F000554211 /* open_in_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33961C60C9F000554211 /* open_in_icon.png */; };
+		2DAF339D1C60C9F000554211 /* open_in_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33971C60C9F000554211 /* open_in_icon@2x.png */; };
+		2DAF339E1C60C9F000554211 /* open_in_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33981C60C9F000554211 /* open_in_icon@3x.png */; };
+		2DAF33A21C60CA6F00554211 /* copy_to_message_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF339F1C60CA6F00554211 /* copy_to_message_icon@3x.png */; };
+		2DAF33A31C60CA6F00554211 /* copy_to_message_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33A01C60CA6F00554211 /* copy_to_message_icon@2x.png */; };
+		2DAF33A41C60CA6F00554211 /* copy_to_message_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33A11C60CA6F00554211 /* copy_to_message_icon.png */; };
 		73060D561B41345D001AE08E /* UITextView+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 73060D551B41345D001AE08E /* UITextView+Validation.m */; };
 		73060D571B41345D001AE08E /* UITextView+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 73060D551B41345D001AE08E /* UITextView+Validation.m */; };
 		73060D5F1B417322001AE08E /* feedback_error_type.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D591B417322001AE08E /* feedback_error_type.png */; };
@@ -322,7 +344,6 @@
 		73840E5B1B1C75A500BCEAFC /* MenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BDA1A0B5F1D00034D9B /* MenuCell.m */; };
 		73840E5C1B1C75A500BCEAFC /* IQTaskMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A3A1AC03121007176A1 /* IQTaskMember.m */; };
 		73840E5D1B1C75A500BCEAFC /* NotificationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7379EEB91A11E47700D69BBD /* NotificationsController.m */; };
-		73840E5E1B1C75A500BCEAFC /* BackgroundDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A949991A3832D7008EC469 /* BackgroundDownloadManager.m */; };
 		73840E5F1B1C75A500BCEAFC /* TasksMenuCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 73970E911AA5C45300AC2414 /* TasksMenuCounters.m */; };
 		73840E601B1C75A500BCEAFC /* TaskCommunityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D260D21AE0FA070009CC38 /* TaskCommunityCell.m */; };
 		73840E611B1C75A500BCEAFC /* ExtendedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E7C611A0D027700E8BB81 /* ExtendedButton.m */; };
@@ -624,7 +645,6 @@
 		73A949901A3821AD008EC469 /* backWhiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73A9498E1A3821AD008EC469 /* backWhiteArrow@2x.png */; };
 		73A9499C1A3832D7008EC469 /* DownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A949951A3832D7008EC469 /* DownloadManager.m */; };
 		73A9499D1A3832D7008EC469 /* FileStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A949971A3832D7008EC469 /* FileStore.m */; };
-		73A9499E1A3832D7008EC469 /* BackgroundDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A949991A3832D7008EC469 /* BackgroundDownloadManager.m */; };
 		73A9499F1A3832D7008EC469 /* DownloadTaskDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A9499B1A3832D7008EC469 /* DownloadTaskDelegate.m */; };
 		73A949A21A3833C4008EC469 /* NSError+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A949A11A3833C4008EC469 /* NSError+Extension.m */; };
 		73A949A91A38632C008EC469 /* ConversationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A949A81A38632C008EC469 /* ConversationCell.m */; };
@@ -789,6 +809,12 @@
 		73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A371AC0294A007176A1 /* TChangesCounter.m */; };
 		73FE0A3B1AC03121007176A1 /* IQTaskMember.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A3A1AC03121007176A1 /* IQTaskMember.m */; };
 		C1B2C0F717D6450500F75216 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D006E3B70304215613C192 /* libPods.a */; };
+		CBEB62F71C5F3475005A11C2 /* SharingMessagesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB62CB1C5F3475005A11C2 /* SharingMessagesController.m */; };
+		CBEB62F81C5F3475005A11C2 /* SharingMessagesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB62CB1C5F3475005A11C2 /* SharingMessagesController.m */; };
+		CBEB63261C5F3A70005A11C2 /* SharingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63251C5F3A70005A11C2 /* SharingViewController.m */; };
+		CBEB63271C5F3A70005A11C2 /* SharingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63251C5F3A70005A11C2 /* SharingViewController.m */; };
+		CBEB632B1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */; };
+		CBEB632C1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */; };
 		FBC7CB491B57973C004E8382 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB481B57973C004E8382 /* DeletedObjects.m */; };
 		FBC7CB4C1B57979A004E8382 /* CommentDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4B1B57979A004E8382 /* CommentDeletedObjects.m */; };
 		FBC7CB4F1B579812004E8382 /* ConversationDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4E1B579812004E8382 /* ConversationDeletedObjects.m */; };
@@ -798,6 +824,29 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2DAF33581C6071EE00554211 /* SharingConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingConstants.h; sourceTree = "<group>"; };
+		2DAF33591C6085C200554211 /* SharingViewControllerFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingViewControllerFactory.h; sourceTree = "<group>"; };
+		2DAF335A1C6085C200554211 /* SharingViewControllerFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingViewControllerFactory.m; sourceTree = "<group>"; };
+		2DAF335F1C6087C600554211 /* IQOpenInActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQOpenInActivity.h; sourceTree = "<group>"; };
+		2DAF33601C6087C600554211 /* IQOpenInActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQOpenInActivity.m; sourceTree = "<group>"; };
+		2DAF33611C6087C600554211 /* IQShareToMessageActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQShareToMessageActivity.h; sourceTree = "<group>"; };
+		2DAF33621C6087C600554211 /* IQShareToMessageActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQShareToMessageActivity.m; sourceTree = "<group>"; };
+		2DAF33631C6087C600554211 /* IQActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQActivityViewController.h; sourceTree = "<group>"; };
+		2DAF33641C6087C600554211 /* IQActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQActivityViewController.m; sourceTree = "<group>"; };
+		2DAF33751C609AC500554211 /* SharingAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingAttachment.h; sourceTree = "<group>"; };
+		2DAF33761C609AC500554211 /* SharingAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingAttachment.m; sourceTree = "<group>"; };
+		2DAF33811C60AD2600554211 /* open_in_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = open_in_icon.png; sourceTree = "<group>"; };
+		2DAF33821C60AD2600554211 /* open_in_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "open_in_icon@2x.png"; sourceTree = "<group>"; };
+		2DAF33831C60AD2600554211 /* open_in_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "open_in_icon@3x.png"; sourceTree = "<group>"; };
+		2DAF33931C60C9F000554211 /* copy_to_message_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = copy_to_message_icon.png; sourceTree = "<group>"; };
+		2DAF33941C60C9F000554211 /* copy_to_message_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "copy_to_message_icon@2x.png"; sourceTree = "<group>"; };
+		2DAF33951C60C9F000554211 /* copy_to_message_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "copy_to_message_icon@3x.png"; sourceTree = "<group>"; };
+		2DAF33961C60C9F000554211 /* open_in_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = open_in_icon.png; sourceTree = "<group>"; };
+		2DAF33971C60C9F000554211 /* open_in_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "open_in_icon@2x.png"; sourceTree = "<group>"; };
+		2DAF33981C60C9F000554211 /* open_in_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "open_in_icon@3x.png"; sourceTree = "<group>"; };
+		2DAF339F1C60CA6F00554211 /* copy_to_message_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "copy_to_message_icon@3x.png"; sourceTree = "<group>"; };
+		2DAF33A01C60CA6F00554211 /* copy_to_message_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "copy_to_message_icon@2x.png"; sourceTree = "<group>"; };
+		2DAF33A11C60CA6F00554211 /* copy_to_message_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = copy_to_message_icon.png; sourceTree = "<group>"; };
 		3C453A1313F35DF8AD783316 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		73060D541B41345D001AE08E /* UITextView+Validation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+Validation.h"; sourceTree = "<group>"; };
 		73060D551B41345D001AE08E /* UITextView+Validation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+Validation.m"; sourceTree = "<group>"; };
@@ -1247,8 +1296,6 @@
 		73A949951A3832D7008EC469 /* DownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadManager.m; sourceTree = "<group>"; };
 		73A949961A3832D7008EC469 /* FileStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileStore.h; sourceTree = "<group>"; };
 		73A949971A3832D7008EC469 /* FileStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileStore.m; sourceTree = "<group>"; };
-		73A949981A3832D7008EC469 /* BackgroundDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundDownloadManager.h; sourceTree = "<group>"; };
-		73A949991A3832D7008EC469 /* BackgroundDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundDownloadManager.m; sourceTree = "<group>"; };
 		73A9499A1A3832D7008EC469 /* DownloadTaskDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadTaskDelegate.h; sourceTree = "<group>"; };
 		73A9499B1A3832D7008EC469 /* DownloadTaskDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadTaskDelegate.m; sourceTree = "<group>"; };
 		73A949A01A3833C4008EC469 /* NSError+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+Extension.h"; sourceTree = "<group>"; };
@@ -1500,6 +1547,13 @@
 		755F5FB022B113814C52815E /* Pods.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.production.xcconfig; path = "Pods/Target Support Files/Pods/Pods.production.xcconfig"; sourceTree = "<group>"; };
 		93D006E3B70304215613C192 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9B2A8B58D9801BD961060BB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		CBEB62CA1C5F3475005A11C2 /* SharingMessagesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingMessagesController.h; sourceTree = "<group>"; };
+		CBEB62CB1C5F3475005A11C2 /* SharingMessagesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingMessagesController.m; sourceTree = "<group>"; };
+		CBEB63241C5F3A70005A11C2 /* SharingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingViewController.h; sourceTree = "<group>"; };
+		CBEB63251C5F3A70005A11C2 /* SharingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingViewController.m; sourceTree = "<group>"; };
+		CBEB63281C5F3D77005A11C2 /* SharingViewControllerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingViewControllerProtocol.h; sourceTree = "<group>"; };
+		CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingDiscussionController.m; sourceTree = "<group>"; };
+		CBEB632A1C5F417D005A11C2 /* SharingDiscussionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingDiscussionController.h; sourceTree = "<group>"; };
 		FBC7CB471B57973C004E8382 /* DeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedObjects.h; sourceTree = "<group>"; };
 		FBC7CB481B57973C004E8382 /* DeletedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedObjects.m; sourceTree = "<group>"; };
 		FBC7CB4A1B57979A004E8382 /* CommentDeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentDeletedObjects.h; sourceTree = "<group>"; };
@@ -1554,6 +1608,62 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2DAF335D1C6087C600554211 /* Activity */ = {
+			isa = PBXGroup;
+			children = (
+				2DAF335E1C6087C600554211 /* Activities */,
+				2DAF33631C6087C600554211 /* IQActivityViewController.h */,
+				2DAF33641C6087C600554211 /* IQActivityViewController.m */,
+			);
+			path = Activity;
+			sourceTree = "<group>";
+		};
+		2DAF335E1C6087C600554211 /* Activities */ = {
+			isa = PBXGroup;
+			children = (
+				2DAF335F1C6087C600554211 /* IQOpenInActivity.h */,
+				2DAF33601C6087C600554211 /* IQOpenInActivity.m */,
+				2DAF33611C6087C600554211 /* IQShareToMessageActivity.h */,
+				2DAF33621C6087C600554211 /* IQShareToMessageActivity.m */,
+			);
+			path = Activities;
+			sourceTree = "<group>";
+		};
+		2DAF33741C609AB000554211 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				2DAF33751C609AC500554211 /* SharingAttachment.h */,
+				2DAF33761C609AC500554211 /* SharingAttachment.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		2DAF33791C60AD1500554211 /* Sharing */ = {
+			isa = PBXGroup;
+			children = (
+				2DAF33931C60C9F000554211 /* copy_to_message_icon.png */,
+				2DAF33941C60C9F000554211 /* copy_to_message_icon@2x.png */,
+				2DAF33951C60C9F000554211 /* copy_to_message_icon@3x.png */,
+				2DAF33961C60C9F000554211 /* open_in_icon.png */,
+				2DAF33971C60C9F000554211 /* open_in_icon@2x.png */,
+				2DAF33981C60C9F000554211 /* open_in_icon@3x.png */,
+			);
+			path = Sharing;
+			sourceTree = "<group>";
+		};
+		2DAF33801C60AD2600554211 /* Sharing */ = {
+			isa = PBXGroup;
+			children = (
+				2DAF339F1C60CA6F00554211 /* copy_to_message_icon@3x.png */,
+				2DAF33A01C60CA6F00554211 /* copy_to_message_icon@2x.png */,
+				2DAF33A11C60CA6F00554211 /* copy_to_message_icon.png */,
+				2DAF33811C60AD2600554211 /* open_in_icon.png */,
+				2DAF33821C60AD2600554211 /* open_in_icon@2x.png */,
+				2DAF33831C60AD2600554211 /* open_in_icon@3x.png */,
+			);
+			path = Sharing;
+			sourceTree = "<group>";
+		};
 		73060D581B417307001AE08E /* Feedback */ = {
 			isa = PBXGroup;
 			children = (
@@ -1853,6 +1963,7 @@
 		736B6BCE1A0B5BCB00034D9B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2DAF33791C60AD1500554211 /* Sharing */,
 				738FE6E21A162B10009F26A2 /* TabBar */,
 				73BA98891A109E26005AEC00 /* Menu */,
 				73F2A5411A39AB3000E9D324 /* Messages */,
@@ -2107,6 +2218,7 @@
 		73840F101B1C75A500BCEAFC /* Resources-HD */ = {
 			isa = PBXGroup;
 			children = (
+				2DAF33801C60AD2600554211 /* Sharing */,
 				73865BFB1B20636F00118292 /* TabBar */,
 			);
 			path = "Resources-HD";
@@ -2189,6 +2301,7 @@
 				736B6BCE1A0B5BCB00034D9B /* Resources */,
 				73840F101B1C75A500BCEAFC /* Resources-HD */,
 				737DD2111A14DEF100CC4443 /* Service */,
+				CBFDD1B21C5A37A7005AE0C9 /* Sharing */,
 				738CE1E31A0B3F4E0096B374 /* Supporting Files */,
 				736B6BC31A0B5B2800034D9B /* Tasks */,
 				736B6BE71A0BC08100034D9B /* Utils */,
@@ -2555,8 +2668,6 @@
 				73A949951A3832D7008EC469 /* DownloadManager.m */,
 				73A949961A3832D7008EC469 /* FileStore.h */,
 				73A949971A3832D7008EC469 /* FileStore.m */,
-				73A949981A3832D7008EC469 /* BackgroundDownloadManager.h */,
-				73A949991A3832D7008EC469 /* BackgroundDownloadManager.m */,
 				73A9499A1A3832D7008EC469 /* DownloadTaskDelegate.h */,
 				73A9499B1A3832D7008EC469 /* DownloadTaskDelegate.m */,
 			);
@@ -2839,6 +2950,41 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		CBEB62C21C5F3475005A11C2 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				CBEB62C31C5F3475005A11C2 /* Controller */,
+			);
+			path = Messages;
+			sourceTree = "<group>";
+		};
+		CBEB62C31C5F3475005A11C2 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				CBEB62CA1C5F3475005A11C2 /* SharingMessagesController.h */,
+				CBEB62CB1C5F3475005A11C2 /* SharingMessagesController.m */,
+				CBEB632A1C5F417D005A11C2 /* SharingDiscussionController.h */,
+				CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		CBFDD1B21C5A37A7005AE0C9 /* Sharing */ = {
+			isa = PBXGroup;
+			children = (
+				2DAF33741C609AB000554211 /* Model */,
+				2DAF335D1C6087C600554211 /* Activity */,
+				CBEB62C21C5F3475005A11C2 /* Messages */,
+				2DAF33581C6071EE00554211 /* SharingConstants.h */,
+				CBEB63281C5F3D77005A11C2 /* SharingViewControllerProtocol.h */,
+				2DAF33591C6085C200554211 /* SharingViewControllerFactory.h */,
+				2DAF335A1C6085C200554211 /* SharingViewControllerFactory.m */,
+				CBEB63241C5F3A70005A11C2 /* SharingViewController.h */,
+				CBEB63251C5F3A70005A11C2 /* SharingViewController.m */,
+			);
+			path = Sharing;
+			sourceTree = "<group>";
+		};
 		FBC7CB461B57973C004E8382 /* DeletedObjects */ = {
 			isa = PBXGroup;
 			children = (
@@ -3001,6 +3147,7 @@
 				73840EB11B1C75A500BCEAFC /* asc_sort_ico.png in Resources */,
 				73865C3D1B206B4700118292 /* messgaes_tab_selected@2x.png in Resources */,
 				73840EB31B1C75A500BCEAFC /* edit_white_ico.png in Resources */,
+				2DAF33841C60AD2600554211 /* open_in_icon.png in Resources */,
 				73840EB41B1C75A500BCEAFC /* tasks_menu.plist in Resources */,
 				73840EB51B1C75A500BCEAFC /* gray_checkbox@2x.png in Resources */,
 				73840EB61B1C75A500BCEAFC /* calendar_accessory_image@2x.png in Resources */,
@@ -3022,6 +3169,7 @@
 				73840EC61B1C75A500BCEAFC /* gray_checkbox.png in Resources */,
 				73840EC71B1C75A500BCEAFC /* menu_expanded.png in Resources */,
 				73840EC91B1C75A500BCEAFC /* white_add_ico@2x.png in Resources */,
+				2DAF33A31C60CA6F00554211 /* copy_to_message_icon@2x.png in Resources */,
 				73840ECA1B1C75A500BCEAFC /* msg_sent.png in Resources */,
 				73840ECB1B1C75A500BCEAFC /* project_ico@2x.png in Resources */,
 				73865C321B20688A00118292 /* tasks_tab_selected.png in Resources */,
@@ -3030,6 +3178,7 @@
 				73840ED01B1C75A500BCEAFC /* delete_ico@2x.png in Resources */,
 				73840ED21B1C75A500BCEAFC /* top_header_bg.png in Resources */,
 				73415D041BCE332C0042DD09 /* Launch Screen.storyboard in Resources */,
+				2DAF33861C60AD2600554211 /* open_in_icon@3x.png in Resources */,
 				73840ED31B1C75A500BCEAFC /* msg_error@2x.png in Resources */,
 				73865C201B20688A00118292 /* messages_tab_selected.png in Resources */,
 				73840ED41B1C75A500BCEAFC /* msg_viewed@2x.png in Resources */,
@@ -3062,6 +3211,7 @@
 				73840EF01B1C75A500BCEAFC /* next_header_button.png in Resources */,
 				73840EF11B1C75A500BCEAFC /* right_gray_arrow@2x.png in Resources */,
 				73840EF21B1C75A500BCEAFC /* task_comments_tab.png in Resources */,
+				2DAF33851C60AD2600554211 /* open_in_icon@2x.png in Resources */,
 				73060D641B417322001AE08E /* feedback_proposal_type.png in Resources */,
 				73060D601B417322001AE08E /* feedback_error_type.png in Resources */,
 				7398F78F1B4D07B40009EAD1 /* conference_icon.png in Resources */,
@@ -3072,6 +3222,7 @@
 				73865C2B1B20688A00118292 /* notif_tab@2x.png in Resources */,
 				73840EF61B1C75A500BCEAFC /* edit_white_ico@2x.png in Resources */,
 				73865C2F1B20688A00118292 /* tabbar_selected_image@2x.png in Resources */,
+				2DAF33A41C60CA6F00554211 /* copy_to_message_icon.png in Resources */,
 				73840EF81B1C75A500BCEAFC /* gray_checked_checkbox.png in Resources */,
 				73840EF91B1C75A500BCEAFC /* backWhiteArrow.png in Resources */,
 				73840EFA1B1C75A500BCEAFC /* msg_sent@2x.png in Resources */,
@@ -3081,6 +3232,7 @@
 				73840EFE1B1C75A500BCEAFC /* task_status_ico@2x.png in Resources */,
 				73840EFF1B1C75A500BCEAFC /* attachment_img@2x.png in Resources */,
 				73840F001B1C75A500BCEAFC /* default_avatar@2x.png in Resources */,
+				2DAF33A21C60CA6F00554211 /* copy_to_message_icon@3x.png in Resources */,
 				73840F011B1C75A500BCEAFC /* createNewMessage@2x.png in Resources */,
 				73840F021B1C75A500BCEAFC /* filter_gray_collapseed.png in Resources */,
 				73840F031B1C75A500BCEAFC /* reset_filter.png in Resources */,
@@ -3194,11 +3346,14 @@
 				73A7CA841A9F55ED0038DEF1 /* filterSelected.png in Resources */,
 				73060D691B417322001AE08E /* feedback_question_type@2x.png in Resources */,
 				731170831AB80AFF008A4D09 /* task_info_tab@2x.png in Resources */,
+				2DAF339D1C60C9F000554211 /* open_in_icon@2x.png in Resources */,
 				73D3DF2C1AF11542000DD34F /* clear_button_icon@2x.png in Resources */,
 				738FE7081A162B10009F26A2 /* notif_tab@2x.png in Resources */,
 				731170821AB80AFF008A4D09 /* task_info_tab.png in Resources */,
 				73F2A5521A39AB3000E9D324 /* attachment_add_img.png in Resources */,
 				73CCB6AD1B4E8B13000BF728 /* edit_conference_icon.png in Resources */,
+				2DAF339E1C60C9F000554211 /* open_in_icon@3x.png in Resources */,
+				2DAF339B1C60C9F000554211 /* copy_to_message_icon@3x.png in Resources */,
 				73CCB6A91B4E87AE000BF728 /* add_user_icon@2x.png in Resources */,
 				73884BF91A6CEFED004C454B /* view_all_ico.png in Resources */,
 				739D67D51AC2C5C100859274 /* delete_ico.png in Resources */,
@@ -3222,6 +3377,7 @@
 				731170951AB80B0E008A4D09 /* task_status_ico@2x.png in Resources */,
 				73060D671B417322001AE08E /* feedback_question_type.png in Resources */,
 				73865C401B206C4800118292 /* tasks_tab_selected@2x.png in Resources */,
+				2DAF339A1C60C9F000554211 /* copy_to_message_icon@2x.png in Resources */,
 				73F2A5551A39AB3000E9D324 /* attachment_img@2x.png in Resources */,
 				73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */,
 				73F2A5571A39AB3000E9D324 /* createNewMessage@2x.png in Resources */,
@@ -3231,6 +3387,8 @@
 				7393C40D1A1A2FCF00E9E944 /* login_logo.png in Resources */,
 				739850C31A2DB1C100DB5B21 /* search_icon@2x.png in Resources */,
 				73A7CA831A9F55ED0038DEF1 /* filter_expanded@2x.png in Resources */,
+				2DAF33991C60C9F000554211 /* copy_to_message_icon.png in Resources */,
+				2DAF339C1C60C9F000554211 /* open_in_icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3377,11 +3535,13 @@
 				FBC7CB521B579CBD004E8382 /* ConversationDeletedObjects.m in Sources */,
 				73840DD61B1C75A500BCEAFC /* ContactCell.m in Sources */,
 				73840DD71B1C75A500BCEAFC /* TaskFilterCell.m in Sources */,
+				CBEB62F81C5F3475005A11C2 /* SharingMessagesController.m in Sources */,
 				73840DD81B1C75A500BCEAFC /* LoginView.m in Sources */,
 				73840DD91B1C75A500BCEAFC /* IQTaskDataHolder.m in Sources */,
 				73840DDA1B1C75A500BCEAFC /* IQComment.m in Sources */,
 				73840DDB1B1C75A500BCEAFC /* NSDate+IQFormater.m in Sources */,
 				733ADD1D1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */,
+				CBEB63271C5F3A70005A11C2 /* SharingViewController.m in Sources */,
 				73840DDC1B1C75A500BCEAFC /* IQService+Notifications.m in Sources */,
 				73840DDD1B1C75A500BCEAFC /* UIViewController+LeftMenu.m in Sources */,
 				73840DDE1B1C75A500BCEAFC /* UITabBarItem+CustomBadgeView.m in Sources */,
@@ -3431,6 +3591,7 @@
 				73840E001B1C75A500BCEAFC /* IQSession.m in Sources */,
 				73840E011B1C75A500BCEAFC /* IQService+Tasks.m in Sources */,
 				73840E021B1C75A500BCEAFC /* MenuSectionHeader.m in Sources */,
+				2DAF335C1C6085C200554211 /* SharingViewControllerFactory.m in Sources */,
 				73840E031B1C75A500BCEAFC /* TaskActivitiesModel.m in Sources */,
 				73840E041B1C75A500BCEAFC /* NSString+UUID.m in Sources */,
 				73840E051B1C75A500BCEAFC /* LCLLogFile.m in Sources */,
@@ -3452,22 +3613,26 @@
 				73840E111B1C75A500BCEAFC /* NSDate+CupertinoYankee.m in Sources */,
 				73840E121B1C75A500BCEAFC /* NSError+Extension.m in Sources */,
 				73840E131B1C75A500BCEAFC /* TasksController.m in Sources */,
+				2DAF336A1C6087C600554211 /* IQActivityViewController.m in Sources */,
 				737136351B53A4F60043B87B /* ContactInfoCell.m in Sources */,
 				73840E141B1C75A500BCEAFC /* TaskController.m in Sources */,
 				73486E3C1B6F98EE00DEBD66 /* IQTaskDeletedIds.m in Sources */,
 				73840E151B1C75A500BCEAFC /* TasksModel.m in Sources */,
 				73840E161B1C75A500BCEAFC /* TTodoItemsController.m in Sources */,
+				2DAF33781C609AC500554211 /* SharingAttachment.m in Sources */,
 				730BE42F1B3D8FA400E26994 /* FeedbackTypeCell.m in Sources */,
 				73840E171B1C75A500BCEAFC /* ConversationCell.m in Sources */,
 				73176C9E1B3ADDD700E6AC60 /* IQDateDetailsCell.m in Sources */,
 				73840E191B1C75A500BCEAFC /* IQBadgeView.m in Sources */,
 				73840E1A1B1C75A500BCEAFC /* UserPickerController.m in Sources */,
 				73840E1B1B1C75A500BCEAFC /* IQTableBaseController.m in Sources */,
+				2DAF33661C6087C600554211 /* IQOpenInActivity.m in Sources */,
 				73840E1C1B1C75A500BCEAFC /* IQ300.xcdatamodeld in Sources */,
 				73840E1D1B1C75A500BCEAFC /* NSManagedObjectContext+AsyncFetch.m in Sources */,
 				73840E1E1B1C75A500BCEAFC /* OrderedArrayTransformer.m in Sources */,
 				73840E1F1B1C75A500BCEAFC /* CommentsController.m in Sources */,
 				73840E201B1C75A500BCEAFC /* ExpandableTableView.m in Sources */,
+				2DAF33681C6087C600554211 /* IQShareToMessageActivity.m in Sources */,
 				73840E211B1C75A500BCEAFC /* lcl.m in Sources */,
 				73840E221B1C75A500BCEAFC /* TaskExecutorsGroup.m in Sources */,
 				73EFAA031B43DD3B007FD5D7 /* IQEMultiLineTextCell.m in Sources */,
@@ -3522,6 +3687,7 @@
 				73840E471B1C75A500BCEAFC /* IQTasksHolder.m in Sources */,
 				739CFFA61B397FDF00B4AED0 /* FeedbacksModel.m in Sources */,
 				73CB5B531B32D32D005B688C /* IQPasswordValidator.m in Sources */,
+				CBEB632C1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */,
 				73840E481B1C75A500BCEAFC /* IQBadgeIndicatorView.m in Sources */,
 				73840E491B1C75A500BCEAFC /* MenuViewController.m in Sources */,
 				73840E4A1B1C75A500BCEAFC /* UIActionSheet+Blocks.m in Sources */,
@@ -3547,7 +3713,6 @@
 				73840E5B1B1C75A500BCEAFC /* MenuCell.m in Sources */,
 				73840E5C1B1C75A500BCEAFC /* IQTaskMember.m in Sources */,
 				73840E5D1B1C75A500BCEAFC /* NotificationsController.m in Sources */,
-				73840E5E1B1C75A500BCEAFC /* BackgroundDownloadManager.m in Sources */,
 				73B561651B42B02B00A883DC /* FeedbackController.m in Sources */,
 				73840E5F1B1C75A500BCEAFC /* TasksMenuCounters.m in Sources */,
 				73840E601B1C75A500BCEAFC /* TaskCommunityCell.m in Sources */,
@@ -3638,10 +3803,12 @@
 				730BE4111B3D621400E26994 /* FeedbackCell.m in Sources */,
 				734B91151B31BE500084CA8E /* RegistrationStatusView.m in Sources */,
 				73D7F1CD1ADE93D600023120 /* TaskAttachmentsModel.m in Sources */,
+				2DAF33691C6087C600554211 /* IQActivityViewController.m in Sources */,
 				73ACB0BD1A7A1882004F5D99 /* NotificationsGroupModel.m in Sources */,
 				7311709C1AB81505008A4D09 /* IQTabBarController.m in Sources */,
 				739C3B5F1A3075D90032C057 /* DiscussionModel.m in Sources */,
 				73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */,
+				2DAF33771C609AC500554211 /* SharingAttachment.m in Sources */,
 				73C384C91A9725DA00B66D0F /* IQTask.m in Sources */,
 				73176CA11B3ADDD700E6AC60 /* IQEditableTextCell.m in Sources */,
 				738EF82A1A9CA95600894755 /* IQManagedTodoItem.m in Sources */,
@@ -3656,6 +3823,7 @@
 				73A9499C1A3832D7008EC469 /* DownloadManager.m in Sources */,
 				73D7F1D41ADE940300023120 /* TaskModel.m in Sources */,
 				73176C881B3AA38C00E6AC60 /* MTableFooterView.m in Sources */,
+				2DAF335B1C6085C200554211 /* SharingViewControllerFactory.m in Sources */,
 				73A50D111ADFAA4400251CB7 /* TaskDescriptionController.m in Sources */,
 				737136341B53A4F60043B87B /* ContactInfoCell.m in Sources */,
 				73A7CA6A1A9F11080038DEF1 /* TasksFilterModel.m in Sources */,
@@ -3667,6 +3835,7 @@
 				731E5BCC1B315DB500DF56C7 /* RegistrationController.m in Sources */,
 				731E5BC81B315DA000DF56C7 /* RegistrationView.m in Sources */,
 				73F5089E1ACAD0C2009DBBD8 /* IQTodoItem.m in Sources */,
+				CBEB62F71C5F3475005A11C2 /* SharingMessagesController.m in Sources */,
 				7371362C1B538DF00043B87B /* ConferenceInfoModel.m in Sources */,
 				739C3B5C1A3075B00032C057 /* DiscussionController.m in Sources */,
 				73C286B01A94B5E30011FD51 /* IQNotificationsHolder.m in Sources */,
@@ -3680,6 +3849,7 @@
 				73DBC6AA1B5E34C300D02AD5 /* IQCEditableTextCell.m in Sources */,
 				73D7F1CC1ADE93D600023120 /* TaskActivitiesModel.m in Sources */,
 				73C4A6821A3EFB4E003E1242 /* NSString+UUID.m in Sources */,
+				2DAF33651C6087C600554211 /* IQOpenInActivity.m in Sources */,
 				732952B51A692EE90066B336 /* LCLLogFile.m in Sources */,
 				734B91111B31BDF20084CA8E /* RegistrationStatusController.m in Sources */,
 				738EA7AC1A1DD69F0065D39F /* NotificationsModel.m in Sources */,
@@ -3718,6 +3888,7 @@
 				73C16C811AEFBA6B00155BB1 /* OrderedArrayTransformer.m in Sources */,
 				730BE41C1B3D889A00E26994 /* FeedbackTypesModel.m in Sources */,
 				739BC7981A4A9DC7007FC95C /* CommentsController.m in Sources */,
+				CBEB63261C5F3A70005A11C2 /* SharingViewController.m in Sources */,
 				736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */,
 				732952B31A692EE90066B336 /* lcl.m in Sources */,
 				730BE4181B3D864600E26994 /* IQFeedback.m in Sources */,
@@ -3742,6 +3913,7 @@
 				73D7F1CF1ADE93D600023120 /* TaskPolicyInspector.m in Sources */,
 				739850D31A2DD30E00DB5B21 /* IQNotification.m in Sources */,
 				73A700551A95D0E600A1C2AC /* TasksMenuModel.m in Sources */,
+				2DAF33671C6087C600554211 /* IQShareToMessageActivity.m in Sources */,
 				FBC7CB491B57973C004E8382 /* DeletedObjects.m in Sources */,
 				737136301B539BBF0043B87B /* ContactsSectionView.m in Sources */,
 				7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */,
@@ -3787,11 +3959,11 @@
 				73D7F1F71ADE95A900023120 /* CommunitiesModel.m in Sources */,
 				739C3B681A3086BA0032C057 /* DiscussionView.m in Sources */,
 				737DD22D1A14EFE900CC4443 /* TCService.m in Sources */,
+				CBEB632B1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */,
 				739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */,
 				736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */,
 				73FE0A3B1AC03121007176A1 /* IQTaskMember.m in Sources */,
 				7379EEBA1A11E47700D69BBD /* NotificationsController.m in Sources */,
-				73A9499E1A3832D7008EC469 /* BackgroundDownloadManager.m in Sources */,
 				73970E921AA5C45300AC2414 /* TasksMenuCounters.m in Sources */,
 				73B561601B428F4200A883DC /* FeedbackComments.m in Sources */,
 				73D260D31AE0FA070009CC38 /* TaskCommunityCell.m in Sources */,

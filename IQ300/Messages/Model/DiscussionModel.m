@@ -26,6 +26,7 @@
 #import "IQConversation.h"
 #import "NSManagedObject+ActiveRecord.h"
 #import "SystemCommentCell.h"
+#import "SharingAttachment.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -301,6 +302,66 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     else {
         [self unsubscribeFromIQNotification];
     }
+}
+
+- (void)sendComment:(NSString *)comment
+         attachment:(SharingAttachment *)attachment
+     withCompletion:(void (^)(NSError *))completion {
+    
+    void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachments) {
+        NSArray * attachmentIds = [attachments valueForKey:@"attachmentId"];
+        [[IQService sharedService] createComment:comment
+                                    discussionId:_discussion.discussionId
+                                   attachmentIds:attachmentIds
+                                         handler:^(BOOL success, IQComment * item, NSData *responseData, NSError *error) {
+                                             NSError * saveError = nil;
+                                             if (!success) {
+                                                 [self createLocalComment:comment attachments:attachments error:&saveError];
+                                                 if(saveError) {
+                                                     NSLog(@"Create comment error: %@", saveError);
+                                                 }
+                                                 if (completion) {
+                                                     completion(saveError);
+                                                 }
+                                             }
+                                             else {
+                                                 [GAIService sendEventForCategory:GAIMessagesEventCategory
+                                                                           action:GAICreateMessageEventAction];
+                                                 
+                                                 item.commentStatus = @(IQCommentStatusSent);
+                                                 [item.managedObjectContext saveToPersistentStore:&saveError];
+                                                 if(saveError) {
+                                                     NSLog(@"Create comment status error: %@", saveError);
+                                                 }
+                                                 if (completion) {
+                                                     completion(error);
+                                                 }
+                                             }
+                                         }];
+    };
+    
+    [[IQService sharedService] createAttachmentWithFileAtPath:attachment.localURL
+                                                     fileName:attachment.displayName
+                                                     mimeType:attachment.contentType
+                                                      handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
+                                                          if(success) {
+                                                              sendCommentBlock(@[attachmentObject]);
+                                                              [GAIService sendEventForCategory:GAICommonEventCategory
+                                                                                        action:GAIFileUploadEventAction];
+                                                          }
+                                                          else {
+                                                              NSError *localError;
+                                                              
+                                                              IQAttachment *localAttachment = [self createLocalAttachmentWithFilePath:attachment.localURL fileName:attachment.displayName contentType:attachment.contentType error:&localError];
+                                                              if (localAttachment) {
+                                                                  sendCommentBlock(@[localAttachment]);
+                                                              }
+                                                              else if (completion) {
+                                                                  completion(localError ? localError : error);
+                                                              }
+                                                          }
+                                                      }];
+
 }
 
 - (void)sendComment:(NSString*)comment
@@ -586,7 +647,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
             if([asset writeToFile:filePath error:&exportAssetError]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSError * createEntityError = nil;
-                    IQAttachment * attachment =[self createLocalAttachmentWithFilePath:[filePath absoluteString]
+                    IQAttachment * attachment =[self createLocalAttachmentWithFilePath:[filePath path]
                                                                               fileName:fileName
                                                                            contentType:mimeType
                                                                                  error:&createEntityError];
@@ -622,7 +683,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                           options:NSDataWritingAtomic error:&saveDataError];
             if (!saveDataError) {
                 NSError * createEntityError = nil;
-                IQAttachment * attachment = [self createLocalAttachmentWithFilePath:[filePath absoluteString]
+                IQAttachment * attachment = [self createLocalAttachmentWithFilePath:[filePath path]
                                                                            fileName:fileName
                                                                         contentType:mimeType
                                                                               error:&createEntityError];

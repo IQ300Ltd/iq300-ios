@@ -191,3 +191,8 @@
 "Administrator deleted You from this chat" = "Администратор удалил Вас из этого чата";
 "You agree to remove the user from the chat?" = "Вы действительно хотите удалить участника из чата?";
 "File download failed" = "Ошибка загрузки файла";
+
+
+//Sharing
+"Open in ..." = "Открыть в ...";
+"Share to messages" = "Копировать в сообщения";
