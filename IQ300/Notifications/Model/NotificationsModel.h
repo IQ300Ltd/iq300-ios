@@ -14,7 +14,6 @@
 
 @interface NotificationsModel : NSObject<IQTableModel>
 
-@property (nonatomic, strong) IQNotificationsGroup * group;
 @property (nonatomic, assign) BOOL loadUnreadOnly;
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;

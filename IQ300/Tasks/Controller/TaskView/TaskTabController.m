@@ -21,7 +21,6 @@
 #import "TaskTabItemController.h"
 #import "TaskPolicyInspector.h"
 #import "TaskNotifications.h"
-#import "NotificationsGroupModel.h"
 #import "IQTask.h"
 #import "NSManagedObject+ActiveRecord.h"
 
@@ -146,17 +145,7 @@
 }
 
 - (void)backButtonAction:(UIButton*)sender {
-    if ([self.notificationsGroupSid length] > 0) {
-        if ([NotificationsGroupModel isGroupHasUnreadNotificationsWithId:self.notificationsGroupSid]) {
-            [self.navigationController popViewControllerAnimated:YES];
-        }
-        else {
-            [self.navigationController popToRootViewControllerAnimated:YES];
-        }
-    }
-    else {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - IQTabBarController Delegate

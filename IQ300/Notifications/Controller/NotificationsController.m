@@ -11,7 +11,7 @@
 #import "IQSession.h"
 
 #import "NotificationsController.h"
-#import "NotificationGroupView.h"
+#import "NotificationsView.h"
 #import "NotificationsMenuModel.h"
 #import "NotificationsModel.h"
 #import "IQNotification.h"
@@ -24,13 +24,12 @@
 #import "CommentsController.h"
 #import "DispatchAfterExecution.h"
 #import "UIScrollView+PullToRefreshInsert.h"
-#import "IQNotificationsGroup.h"
 #import "TaskTabController.h"
 #import "IQService+Feedback.h"
 #import "FeedbackController.h"
 
 @interface NotificationsController() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
-    NotificationGroupView * _mainView;
+    NotificationsView * _mainView;
     NotificationsMenuModel * _menuModel;
 }
 
@@ -45,15 +44,36 @@
     
     if (self) {
         self.needFullReload = YES;
+        self.model = [[NotificationsModel alloc] init];
 
         self.title = NSLocalizedString(@"Notifications", nil);
+        UIImage * barImage = [[UIImage imageNamed:@"notif_tab.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        UIImage * barImageSel = [[UIImage imageNamed:@"notif_tab_selected.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        
+        self.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:barImage selectedImage:barImageSel];
+        float imageOffset = 6;
+        self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
+        
+        IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
+        style.badgeTextColor = [UIColor whiteColor];
+        style.badgeFrameColor = [UIColor whiteColor];
+        style.badgeInsetColor = [UIColor colorWithHexInt:0xe74545];
+        style.badgeFrame = YES;
+        
+        IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
+        badgeView.badgeMinSize = 20;
+        badgeView.frameLineHeight = 1.0f;
+        badgeView.badgeTextFont = [UIFont fontWithName:IQ_HELVETICA size:10];
+        
+        self.tabBarItem.customBadgeView = badgeView;
+        self.tabBarItem.badgeOrigin = CGPointMake(5.5f, 5.5f);
     }
     
     return self;
 }
 
 - (void)loadView {
-    _mainView = [[NotificationGroupView alloc] init];
+    _mainView = [[NotificationsView alloc] init];
     self.view = _mainView;
 }
 
@@ -69,10 +89,6 @@
     _menuModel = [[NotificationsMenuModel alloc] init];
     [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:(self.model.loadUnreadOnly) ? 1 : 0
                                                          inSection:0]];
-    
-    [_mainView.backButton addTarget:self
-                             action:@selector(backButtonAction:)
-                   forControlEvents:UIControlEventTouchUpInside];
     
     __weak typeof(self) weakSelf = self;
     [self.tableView
@@ -90,18 +106,6 @@
          }];
      }
      position:SVPullToRefreshPositionBottom];
-    
-    IQNotification * notification = self.model.group.lastNotification;
-    if([notification.notificable.title length] > 0) {
-        _mainView.titleLabel.text = self.model.group.lastNotification.notificable.title;
-    }
-    else {
-#ifdef IPAD
-        [_mainView setHeaderViewHidden:YES];
-#else
-        _mainView.titleLabel.text = NSLocalizedString(notification.notificable.type, nil);
-#endif
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -140,6 +144,13 @@
                                                   object:nil];
 
     [self.model unsubscribeFromIQNotifications];
+}
+
+- (void)updateGlobalCounter {
+    __weak typeof(self) weakSelf = self;
+    [self.model updateCountersWithCompletion:^(IQCounters *counter, NSError *error) {
+        [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue]];
+    }];
 }
 
 #pragma mark - UITableView DataSource
@@ -338,7 +349,6 @@
 
 - (void)openTaskControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
     //Enable pop to root only for unread mode
-    NSString * groupSid = self.model.loadUnreadOnly ? notification.groupSid : nil;
     BOOL isDiscussionNotification = (notification.discussionId != nil);
     
     [TaskTabController taskTabControllerForTaskWithId:notification.notificable.notificableId
@@ -357,7 +367,6 @@
                                                    }
 
                                                    controller.selectedIndex = (isDiscussionNotification) ? 1 : 0;
-                                                   controller.notificationsGroupSid = groupSid;
                                                    controller.hidesBottomBarWhenPushed = YES;
                                                    [self.navigationController pushViewController:controller animated:YES];
                                                    
@@ -417,6 +426,10 @@
                                                 [self proccessServiceError:error];
                                             }
                                         }];
+}
+
+- (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
+    self.tabBarItem.badgeValue = BadgTextFromInteger(badgeValue);
 }
 
 - (void)dealloc {

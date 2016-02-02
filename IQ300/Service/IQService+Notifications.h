@@ -37,109 +37,22 @@
                          sort:(IQSortDirection)sort
                       handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)notificationsWithIds:(NSArray*)ids handler:(ObjectRequestCompletionHandler)handler;
-
-- (void)unreadNotificationIdsWithHandler:(ObjectRequestCompletionHandler)handler;
-
-- (void)unreadNotificationsGroupIdsWithHandler:(ObjectRequestCompletionHandler)handler;
-
-- (void)notificationsGroupAfterId:(NSNumber*)notificationId
+- (void)notificationsUpdatedAfter:(NSDate*)date
                            unread:(NSNumber*)unread
                              page:(NSNumber*)page
                               per:(NSNumber*)per
                              sort:(IQSortDirection)sort
                           handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)notificationsGroupBeforeId:(NSNumber*)notificationId
-                            unread:(NSNumber*)unread
-                              page:(NSNumber*)page
-                               per:(NSNumber*)per
-                              sort:(IQSortDirection)sort
-                           handler:(ObjectRequestCompletionHandler)handler;
+- (void)notificationsWithIds:(NSArray*)ids handler:(ObjectRequestCompletionHandler)handler;
 
-- (void)notificationsGroupUpdatedAfter:(NSDate*)date
-                                unread:(NSNumber*)unread
-                                  page:(NSNumber*)page
-                                   per:(NSNumber*)per
-                                  sort:(IQSortDirection)sort
-                               handler:(ObjectRequestCompletionHandler)handler;
-
-/**
- *  Get notifications for group
- *
- *  @param anyNotificationId  Id of any notification in group (group secondary identifire)
- *  @param notificationId     Id of notification using in filter as after parameter
- *  @param unread             Return only unread notifications if true
- *  @param page               Page offset
- *  @param per                Count of notifications at page
- *  @param sort               Sort direction
- *  @param handler            Action handler
- */
-- (void)notificationsForGroupWithId:(NSNumber*)anyNotificationId
-                            afterId:(NSNumber*)notificationId
-                             unread:(NSNumber*)unread
-                               page:(NSNumber*)page
-                                per:(NSNumber*)per
-                               sort:(IQSortDirection)sort
-                            handler:(ObjectRequestCompletionHandler)handler;
-
-/**
- *  Get notifications for group
- *
- *  @param anyNotificationId  Id of any notification in group (group secondary identifire)
- *  @param notificationId     Id of notification using in filter as before parameter
- *  @param unread             Return only unread notifications if true
- *  @param page               Page offset
- *  @param per                Count of notifications at page
- *  @param sort               Sort direction
- *  @param handler            Action handler
- */
-- (void)notificationsForGroupWithId:(NSNumber*)anyNotificationId
-                           beforeId:(NSNumber*)notificationId
-                             unread:(NSNumber*)unread
-                               page:(NSNumber*)page
-                                per:(NSNumber*)per
-                               sort:(IQSortDirection)sort
-                            handler:(ObjectRequestCompletionHandler)handler;
-
-/**
- *  Get notifications for group
- *
- *  @param anyNotificationId  Id of any notification in group (group secondary identifire)
- *  @param updatedAfter       Date of notification update using in filter as after parameter
- *  @param unread             Return only unread notifications if true
- *  @param page               Page offset
- *  @param per                Count of notifications at page
- *  @param sort               Sort direction
- *  @param handler            Action handler
- */
-- (void)notificationsForGroupWithId:(NSNumber*)anyNotificationId
-                       updatedAfter:(NSDate*)updatedAfter
-                             unread:(NSNumber*)unread
-                               page:(NSNumber*)page
-                                per:(NSNumber*)per
-                               sort:(IQSortDirection)sort
-                            handler:(ObjectRequestCompletionHandler)handler;
+- (void)unreadNotificationIdsWithHandler:(ObjectRequestCompletionHandler)handler;
 
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
 - (void)markAllNotificationsAsReadWithHandler:(RequestCompletionHandler)handler;
 
-/**
- *  Marl all notifications in group as read
- *
- *  @param notificationId Id of any notification in group (group secondary identifire)
- *  @param handler        Action handler
- */
-- (void)markNotificationsGroupAsReadWithId:(NSNumber*)notificationId handler:(ObjectRequestCompletionHandler)handler;
-
-- (void)markAllNotificationGroupsAsReadWithHandler:(ObjectRequestCompletionHandler)handler;
-
 - (void)notificationsCountWithHandler:(ObjectRequestCompletionHandler)handler;
-
-- (void)notificationsGroupCountWithHandler:(ObjectRequestCompletionHandler)handler;
-
-- (void)notificationsCountForGroupWithId:(NSNumber*)anyNotificationId handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)acceptNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 

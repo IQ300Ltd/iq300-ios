@@ -15,7 +15,7 @@
 #import "MessagesController.h"
 #import "MenuViewController.h"
 #import "IQNavigationController.h"
-#import "NotificationsGroupController.h"
+#import "NotificationsController.h"
 #import "IQDrawerController.h"
 #import "IQService+Messages.h"
 #import "IQSession.h"
@@ -35,8 +35,6 @@
 #import "LeftSideTabBarController.h"
 #import "FeedbacksController.h"
 #endif
-
-#define IPHONE_OS_VERSION_8 (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0") ? 0.0f : 7.0f)
 
 @interface AppDelegate () {
     UIBackgroundTaskIdentifier _backgroundIdentifier;
@@ -147,7 +145,7 @@
     MenuViewController * leftDrawer = [[MenuViewController alloc] init];
 
     Class navigationControllerClass = [IQNavigationController class];
-    NotificationsGroupController * notifications = [[NotificationsGroupController alloc] init];
+    NotificationsController * notifications = [[NotificationsController alloc] init];
     UINavigationController * notificationsNav = [[navigationControllerClass alloc] initWithRootViewController:notifications];
     
     TasksController * tasks = [[TasksController alloc] init];
