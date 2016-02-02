@@ -15,7 +15,7 @@
 #import "ConversationCell.h"
 #import "IQConversation.h"
 
-#import "DiscussionController.h"
+#import "SharingDiscussionController.h"
 #import "ContactPickerController.h"
 #import "DispatchAfterExecution.h"
 #import "UITabBarItem+CustomBadgeView.h"
@@ -25,12 +25,14 @@
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQDrawerController.h"
 
+#import "SharingViewController.h"
+
 #define DISPATCH_DELAY 0.7
 
 @interface SharingMessagesController() <IQSelectionControllerDelegate> {
     MessagesView * _messagesView;
     dispatch_after_block _cancelBlock;
-    IQAttachment *_attachement;
+    SharingAttachment *_attachement;
 }
 
 @end
@@ -39,12 +41,13 @@
 
 @dynamic model;
 
-- (instancetype)initWithAttachment:(IQAttachment *)attachment {
+- (instancetype)initWithAttachment:(SharingAttachment *)attachment {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.model = [[MessagesModel alloc] init];
         self.title = NSLocalizedString(@"Messages", nil);
         self.needFullReload = YES;
+        _attachement = attachment;
     }
     return self;
 }
@@ -162,10 +165,10 @@
     IQConversation * conversation = [self.model itemAtIndexPath:indexPath];
     DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
 
-    DiscussionController * controller = [[DiscussionController alloc] init];
-    controller.hidesBottomBarWhenPushed = YES;
+    SharingDiscussionController * controller = [[SharingDiscussionController alloc] initWithAttachment:_attachement];
     controller.title = conversation.title;
     controller.model = model;
+    controller.sharingController = self.sharingController;
     
     [self.navigationController pushViewController:controller animated:YES];
     
@@ -248,10 +251,12 @@
                                               if(!error) {
                                                   DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
                                                   
-                                                  DiscussionController * controller = [[DiscussionController alloc] init];
+                                                  SharingDiscussionController * controller = [[SharingDiscussionController alloc] initWithAttachment:_attachement];
+                                                  
                                                   controller.hidesBottomBarWhenPushed = YES;
                                                   controller.model = model;
                                                   controller.title = conversation.title;
+                                                  controller.sharingController = self.sharingController;
                                                   
                                                   [MessagesModel markConversationAsRead:conversation completion:nil];
                                                   
@@ -270,11 +275,12 @@
                                         if(!error) {
                                             DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
                                             
-                                            DiscussionController * controller = [[DiscussionController alloc] init];
+                                            SharingDiscussionController * controller = [[SharingDiscussionController alloc] initWithAttachment:_attachement];
                                             controller.hidesBottomBarWhenPushed = YES;
                                             controller.model = model;
                                             controller.title = conversation.title;
-                                            
+                                            controller.sharingController = self.sharingController;
+
                                             [MessagesModel markConversationAsRead:conversation completion:nil];
                                             
                                             NSArray * newStack = @[self, controller];
@@ -318,7 +324,8 @@
 }
 
 - (void)cancelAction:(id)sender {
-    
+    NSAssert(_sharingController, @"Sharing controller not exists");
+    [_sharingController finishActivity:NO];
 }
 
 - (void)reloadModel {

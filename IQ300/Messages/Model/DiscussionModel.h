@@ -14,6 +14,7 @@
 @class IQConversation;
 @class IQAttachment;
 @class ALAsset;
+@class SharingAttachment;
 
 @protocol DiscussionModelDelegate <IQTableModelDelegate>
 
@@ -50,10 +51,6 @@
 - (void)setSubscribedToNotifications:(BOOL)subscribed;
 
 - (void)sendComment:(NSString*)comment
-         attachment:(IQAttachment*)attachment
-     withCompletion:(void (^)(NSError * error))completion;
-
-- (void)sendComment:(NSString*)comment
          attachment:(id)attachment
            fileName:(NSString*)fileName
            mimeType:(NSString*)mimeType
@@ -72,5 +69,13 @@
 - (void)lockConversation;
 
 - (void)unlockConversation;
+
+@end
+
+@interface DiscussionModel(Sharing)
+
+- (void)sendComment:(NSString*)comment
+         attachment:(SharingAttachment*)attachment
+     withCompletion:(void (^)(NSError * error))completion;
 
 @end

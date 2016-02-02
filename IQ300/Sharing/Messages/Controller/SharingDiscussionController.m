@@ -19,7 +19,6 @@
 #import "DispatchAfterExecution.h"
 #import "ALAsset+Extension.h"
 #import "IQConversation.h"
-#import "PhotoViewController.h"
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "CSectionHeaderView.h"
@@ -34,6 +33,7 @@
 #import "IQService+Messages.h"
 #import "IQActivityViewController.h"
 #import "IQAttachment.h"
+#import "SharingViewController.h"
 
 #define SECTION_HEIGHT 12
 
@@ -45,7 +45,7 @@
     CGPoint _tableContentOffset;
     BOOL _blockUpdation;
     
-    IQAttachment *_attachment;
+    SharingAttachment *_attachment;
 }
 
 @end
@@ -54,7 +54,7 @@
 
 @dynamic model;
 
-- (instancetype)initWithAttachment:(IQAttachment *)attachment {
+- (instancetype)initWithAttachment:(SharingAttachment *)attachment {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _attachment = attachment;
@@ -97,11 +97,12 @@
     [self setActivityIndicatorBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.3f]];
     [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     
-    [_mainView.inputView.sendButton setEnabled:NO];
-
     [_mainView.inputView.sendButton addTarget:self
                                        action:@selector(sendButtonAction:)
                              forControlEvents:UIControlEventTouchUpInside];
+    
+    [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
+                                      forState:UIControlStateNormal];
 
     __weak typeof(self) weakSelf = self;
     [self.tableView
@@ -357,7 +358,6 @@
 }
 
 - (void)sendButtonAction:(UIButton*)sender {
-    
     [_mainView.inputView.sendButton setEnabled:NO];
     [_mainView.inputView.attachButton setEnabled:NO];
     [_mainView.inputView.commentTextView setEditable:NO];
@@ -365,12 +365,18 @@
     
     [self.model sendComment:_mainView.inputView.commentTextView.text attachment:_attachment withCompletion:^(NSError *error) {
         if (!error) {
-            //close this controller
+            [self activityDidFinish:YES];
         }
         else {
             [self proccessServiceError:error];
+            [self activityDidFinish:NO];
         }
     }];
+}
+
+- (void)activityDidFinish:(BOOL)success {
+    NSAssert(_sharingController, @"Sharing contoller not exists");
+    [_sharingController finishActivity:success];
 }
 
 - (void)expandButtonAction:(UIButton*)sender {

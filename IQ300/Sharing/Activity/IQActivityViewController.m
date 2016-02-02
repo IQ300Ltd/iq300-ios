@@ -8,7 +8,6 @@
 
 #import "IQActivityViewController.h"
 #import "IQOpenInActivity.h"
-#import "IQAttachment.h"
 #import "IQShareToMessageActivity.h"
 
 @interface IQActivityViewController () <IQOpenInActivityDelegate>
@@ -17,7 +16,7 @@
 
 @implementation IQActivityViewController
 
-- (instancetype)initWithAttachment:(IQAttachment *)attachment {
+- (instancetype)initWithAttachment:(SharingAttachment *)attachment {
     IQOpenInActivity *openInActivity = [[IQOpenInActivity alloc] init];
     IQShareToMessageActivity *shareToMessageActivity = [[IQShareToMessageActivity alloc] init];
     

@@ -521,22 +521,19 @@
         PhotoViewController * controller = [[PhotoViewController alloc] init];
         controller.imageURL = [NSURL URLWithString:attachment.originalURL];
         controller.fileName = attachment.displayName;
+        controller.contentType = attachment.contentType;
         [self.navigationController pushViewController:controller animated:YES];
     }
     else if ([attachment.localURL length] > 0) {
         [self showActivityViewControllerAttachment:attachment fromRect:rectForAppearing];
     }
     else {
-        [self showActivityIndicator];
-        NSArray * urlComponents = [attachment.originalURL componentsSeparatedByString:@"?"];
-        NSString * fileExtension = [[urlComponents firstObject] pathExtension];
+        [self showActivityIndicator];        
         [[DownloadManager sharedManager] downloadDataFromURL:attachment.originalURL
-                                                     success:^(NSOperation *operation, NSString * storedURL, NSData *responseData) {
-                                                         NSString * destinationURL = [storedURL stringByAppendingPathExtension:fileExtension];
-                                                         [[NSFileManager defaultManager] moveItemAtURL:[NSURL fileURLWithPath:storedURL]
-                                                                                                 toURL:[NSURL fileURLWithPath:destinationURL]
-                                                                                                 error:nil];
-                                                         attachment.localURL = destinationURL;
+                                                    MIMEType:attachment.contentType
+                                                     success:^(NSOperation *operation, NSURL * storedURL, NSData *responseData) {
+
+                                                         attachment.localURL = storedURL.path;
                                                          
                                                          NSError *saveError = nil;
                                                          if(![attachment.managedObjectContext saveToPersistentStore:&saveError] ) {
@@ -560,7 +557,10 @@
 
 - (void)showActivityViewControllerAttachment:(IQAttachment *)attachment fromRect:(CGRect)rect {
     [self hideActivityIndicator];
-    IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:attachment];
+    
+    IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:[[SharingAttachment alloc] initWithPath:attachment.localURL
+                                                                                                                            displayName:attachment.displayName
+                                                                                                                            contentType:attachment.contentType]];
     controller.delegate = self;
     [self presentViewController:controller animated:YES completion:nil];
 }
@@ -792,19 +792,6 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - UIDocumentInteractionController Delegate Methods
-
-- (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
-    return  self;
-}
-
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(NSString *)application {
-
-}
-
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
-    _documentController = nil;
-}
 
 - (UITableViewCell<IQCommentCell>*)cellForView:(UIView*)view {
     BOOL superIsCommentCell = [view.superview isKindOfClass:[UITableViewCell class]] &&
@@ -911,5 +898,16 @@
                           tapBlock:nil];
     }
 }
+
+#pragma mark - UIDocumentInteractionController Delegate Methods
+
+- (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
+    return  self;
+}
+
+- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
+    _documentController = nil;
+}
+
 
 @end

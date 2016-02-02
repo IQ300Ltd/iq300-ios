@@ -8,10 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-@class IQAttachment;
+@class SharingAttachment;
+@class SharingViewController;
 
 @protocol SharingViewControllerProtocol <NSObject>
 
-- (instancetype)initWithAttachment:(IQAttachment *)attachment;
+@property (nonatomic, weak) SharingViewController *sharingController;
+
+- (instancetype)initWithAttachment:(SharingAttachment *)attachment;
 
 @end

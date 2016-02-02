@@ -26,6 +26,7 @@
 #import "IQConversation.h"
 #import "NSManagedObject+ActiveRecord.h"
 #import "SystemCommentCell.h"
+#import "SharingAttachment.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -304,7 +305,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 }
 
 - (void)sendComment:(NSString *)comment
-         attachment:(IQAttachment *)attachment
+         attachment:(SharingAttachment *)attachment
      withCompletion:(void (^)(NSError *))completion {
     
     void (^sendCommentBlock)(NSArray * attachmentIds) = ^ (NSArray * attachments) {
@@ -349,14 +350,14 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                                                         action:GAIFileUploadEventAction];
                                                           }
                                                           else {
-                                                              NSError *error;
+                                                              NSError *localError;
                                                               
-                                                              IQAttachment *localAttachment = [self createLocalAttachmentWithFilePath:attachment.localURL fileName:attachment.displayName contentType:attachment.contentType error:&error];
+                                                              IQAttachment *localAttachment = [self createLocalAttachmentWithFilePath:attachment.localURL fileName:attachment.displayName contentType:attachment.contentType error:&localError];
                                                               if (localAttachment) {
-                                                                  sendCommentBlock(@[attachmentObject]);
+                                                                  sendCommentBlock(@[localAttachment]);
                                                               }
                                                               else if (completion) {
-                                                                  completion(error);
+                                                                  completion(localError ? localError : error);
                                                               }
                                                           }
                                                       }];
@@ -646,7 +647,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
             if([asset writeToFile:filePath error:&exportAssetError]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSError * createEntityError = nil;
-                    IQAttachment * attachment =[self createLocalAttachmentWithFilePath:[filePath absoluteString]
+                    IQAttachment * attachment =[self createLocalAttachmentWithFilePath:[filePath path]
                                                                               fileName:fileName
                                                                            contentType:mimeType
                                                                                  error:&createEntityError];
@@ -682,7 +683,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                           options:NSDataWritingAtomic error:&saveDataError];
             if (!saveDataError) {
                 NSError * createEntityError = nil;
-                IQAttachment * attachment = [self createLocalAttachmentWithFilePath:[filePath absoluteString]
+                IQAttachment * attachment = [self createLocalAttachmentWithFilePath:[filePath path]
                                                                            fileName:fileName
                                                                         contentType:mimeType
                                                                               error:&createEntityError];

@@ -18,6 +18,8 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
-- (instancetype)initWithAttachment:(IQAttachment *)attachment NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithAttachment:(SharingAttachment *)attachment NS_DESIGNATED_INITIALIZER;
+
+@property (nonatomic, weak) SharingViewController *sharingController;
 
 @end

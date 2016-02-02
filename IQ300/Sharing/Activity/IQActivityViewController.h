@@ -7,10 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SharingAttachment.h"
 
 @protocol IQActivityViewControllerDelegate;
-
-@class IQAttachment;
 
 @interface IQActivityViewController : UIActivityViewController
 
@@ -19,7 +18,7 @@
 
 - (instancetype _Nonnull)initWithActivityItems:(nonnull NSArray *)activityItems applicationActivities:(nullable NSArray<__kindof UIActivity *> *)applicationActivities NS_UNAVAILABLE;
 
-- (instancetype _Nullable)initWithAttachment:(nonnull IQAttachment *)attachment NS_DESIGNATED_INITIALIZER;
+- (instancetype _Nullable)initWithAttachment:(nonnull SharingAttachment *)attachment NS_DESIGNATED_INITIALIZER;
 
 @end
 

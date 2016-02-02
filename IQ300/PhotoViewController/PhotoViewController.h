@@ -12,5 +12,7 @@
 
 @property (nonatomic, strong) NSString * fileName;
 @property (nonatomic, strong) NSURL * imageURL;
+@property (nonatomic, strong) NSString *contentType;
 
 @end
+
