@@ -205,7 +205,6 @@
 		73840DE11B1C75A500BCEAFC /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7399F9331ABC3A240013FA11 /* PhotoViewController.m */; };
 		73840DE21B1C75A500BCEAFC /* NotificationsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A87EF81AA4597800C4A7C3 /* NotificationsHelper.m */; };
 		73840DE31B1C75A500BCEAFC /* TaskAttachmentsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1C41ADE93D600023120 /* TaskAttachmentsModel.m */; };
-		73840DE41B1C75A500BCEAFC /* NotificationsGroupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ACB0BC1A7A1882004F5D99 /* NotificationsGroupModel.m */; };
 		73840DE51B1C75A500BCEAFC /* IQTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7311709B1AB81505008A4D09 /* IQTabBarController.m */; };
 		73840DE61B1C75A500BCEAFC /* DiscussionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C3B5E1A3075D90032C057 /* DiscussionModel.m */; };
 		73840DE71B1C75A500BCEAFC /* TChangesCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FE0A371AC0294A007176A1 /* TChangesCounter.m */; };
@@ -286,7 +285,6 @@
 		73840E351B1C75A500BCEAFC /* TasksMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A700541A95D0E600A1C2AC /* TasksMenuModel.m */; };
 		73840E361B1C75A500BCEAFC /* NSManagedObject+ActiveRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7385D4BD1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m */; };
 		73840E371B1C75A500BCEAFC /* IQUtilityButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 739073BB1A4877860057BA18 /* IQUtilityButtonView.m */; };
-		73840E381B1C75A500BCEAFC /* NotificationsGroupController.m in Sources */ = {isa = PBXBuildFile; fileRef = 738C7F671A792D3200A25C70 /* NotificationsGroupController.m */; };
 		73840E391B1C75A500BCEAFC /* IQBadgeStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381137B1A4C2A260061280F /* IQBadgeStyle.m */; };
 		73840E3A1B1C75A500BCEAFC /* IQService.m in Sources */ = {isa = PBXBuildFile; fileRef = 737DD22F1A14F00400CC4443 /* IQService.m */; };
 		73840E3B1B1C75A500BCEAFC /* RMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A113F91A1C8D1B00293EC5 /* RMenuCell.m */; };
@@ -499,7 +497,6 @@
 		738916BD1ABAFB800017EF86 /* gray_checked_checkbox.png in Resources */ = {isa = PBXBuildFile; fileRef = 738916B91ABAFB800017EF86 /* gray_checked_checkbox.png */; };
 		738916BE1ABAFB800017EF86 /* gray_checked_checkbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 738916BA1ABAFB800017EF86 /* gray_checked_checkbox@2x.png */; };
 		73891FF51A2C97ED008D8885 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */; };
-		738C7F681A792D3200A25C70 /* NotificationsGroupController.m in Sources */ = {isa = PBXBuildFile; fileRef = 738C7F671A792D3200A25C70 /* NotificationsGroupController.m */; };
 		738C7F6E1A792D7500A25C70 /* NGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 738C7F6D1A792D7500A25C70 /* NGroupCell.m */; };
 		738CE1E61A0B3F4E0096B374 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1E51A0B3F4E0096B374 /* main.m */; };
 		738CE1E91A0B3F4E0096B374 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 738CE1E81A0B3F4E0096B374 /* AppDelegate.m */; };
@@ -630,7 +627,6 @@
 		73A949A91A38632C008EC469 /* ConversationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A949A81A38632C008EC469 /* ConversationCell.m */; };
 		73ACA0421A31E1D4005C0259 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73ACA0411A31E1D4005C0259 /* AssetsLibrary.framework */; };
 		73ACA0441A31E1E2005C0259 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73ACA0431A31E1E2005C0259 /* MediaPlayer.framework */; };
-		73ACB0BD1A7A1882004F5D99 /* NotificationsGroupModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ACB0BC1A7A1882004F5D99 /* NotificationsGroupModel.m */; };
 		73ADA8D91A36DB8D0032C1FA /* ContactPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8D81A36DB8D0032C1FA /* ContactPickerController.m */; };
 		73ADA8DC1A36DBEF0032C1FA /* ContactPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8DB1A36DBEF0032C1FA /* ContactPickerView.m */; };
 		73ADA8E21A36E4CB0032C1FA /* ContactsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ADA8E11A36E4CB0032C1FA /* ContactsModel.m */; };
@@ -1050,8 +1046,6 @@
 		73891FF11A2C4F40008D8885 /* DispatchAfterExecution.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DispatchAfterExecution.h; sourceTree = "<group>"; };
 		73891FF31A2C97ED008D8885 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
 		73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
-		738C7F661A792D3200A25C70 /* NotificationsGroupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsGroupController.h; sourceTree = "<group>"; };
-		738C7F671A792D3200A25C70 /* NotificationsGroupController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsGroupController.m; sourceTree = "<group>"; };
 		738C7F6C1A792D7500A25C70 /* NGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGroupCell.h; sourceTree = "<group>"; };
 		738C7F6D1A792D7500A25C70 /* NGroupCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NGroupCell.m; sourceTree = "<group>"; };
 		738CE1E01A0B3F4E0096B374 /* IQ 300.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IQ 300.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1257,8 +1251,6 @@
 		73A949A81A38632C008EC469 /* ConversationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationCell.m; sourceTree = "<group>"; };
 		73ACA0411A31E1D4005C0259 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		73ACA0431A31E1E2005C0259 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
-		73ACB0BB1A7A1882004F5D99 /* NotificationsGroupModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsGroupModel.h; sourceTree = "<group>"; };
-		73ACB0BC1A7A1882004F5D99 /* NotificationsGroupModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsGroupModel.m; sourceTree = "<group>"; };
 		73ADA8D71A36DB8D0032C1FA /* ContactPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactPickerController.h; sourceTree = "<group>"; };
 		73ADA8D81A36DB8D0032C1FA /* ContactPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactPickerController.m; sourceTree = "<group>"; };
 		73ADA8DA1A36DBEF0032C1FA /* ContactPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactPickerView.h; sourceTree = "<group>"; };
@@ -2014,8 +2006,6 @@
 				7379EEB91A11E47700D69BBD /* NotificationsController.m */,
 				739BC7961A4A9DC7007FC95C /* CommentsController.h */,
 				739BC7971A4A9DC7007FC95C /* CommentsController.m */,
-				738C7F661A792D3200A25C70 /* NotificationsGroupController.h */,
-				738C7F671A792D3200A25C70 /* NotificationsGroupController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -2027,8 +2017,6 @@
 				73A700511A95D0AF00A1C2AC /* NotificationsMenuModel.m */,
 				738EA7AA1A1DD69F0065D39F /* NotificationsModel.h */,
 				738EA7AB1A1DD69F0065D39F /* NotificationsModel.m */,
-				73ACB0BB1A7A1882004F5D99 /* NotificationsGroupModel.h */,
-				73ACB0BC1A7A1882004F5D99 /* NotificationsGroupModel.m */,
 				739BC7991A4A9E63007FC95C /* CommentsModel.h */,
 				739BC79A1A4A9E63007FC95C /* CommentsModel.m */,
 			);
@@ -3394,7 +3382,6 @@
 				73840DE31B1C75A500BCEAFC /* TaskAttachmentsModel.m in Sources */,
 				7306742B1B1C91E8003961B5 /* LeftSideTabBarController.m in Sources */,
 				73176CA21B3ADDD700E6AC60 /* IQEditableTextCell.m in Sources */,
-				73840DE41B1C75A500BCEAFC /* NotificationsGroupModel.m in Sources */,
 				73840DE51B1C75A500BCEAFC /* IQTabBarController.m in Sources */,
 				73840DE61B1C75A500BCEAFC /* DiscussionModel.m in Sources */,
 				73840DE71B1C75A500BCEAFC /* TChangesCounter.m in Sources */,
@@ -3500,7 +3487,6 @@
 				73DA02EE1B1D9A5B00CA24E5 /* LeftSideTabBar.m in Sources */,
 				73840E371B1C75A500BCEAFC /* IQUtilityButtonView.m in Sources */,
 				739CFFA21B397FC000B4AED0 /* FeedbacksController.m in Sources */,
-				73840E381B1C75A500BCEAFC /* NotificationsGroupController.m in Sources */,
 				73B5615D1B4286E200A883DC /* FeedbackView.m in Sources */,
 				73840E391B1C75A500BCEAFC /* IQBadgeStyle.m in Sources */,
 				73840E3A1B1C75A500BCEAFC /* IQService.m in Sources */,
@@ -3638,7 +3624,6 @@
 				730BE4111B3D621400E26994 /* FeedbackCell.m in Sources */,
 				734B91151B31BE500084CA8E /* RegistrationStatusView.m in Sources */,
 				73D7F1CD1ADE93D600023120 /* TaskAttachmentsModel.m in Sources */,
-				73ACB0BD1A7A1882004F5D99 /* NotificationsGroupModel.m in Sources */,
 				7311709C1AB81505008A4D09 /* IQTabBarController.m in Sources */,
 				739C3B5F1A3075D90032C057 /* DiscussionModel.m in Sources */,
 				73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */,
@@ -3747,7 +3732,6 @@
 				7385D4BE1A28A7B0000B94BD /* NSManagedObject+ActiveRecord.m in Sources */,
 				FBC7CB4F1B579812004E8382 /* ConversationDeletedObjects.m in Sources */,
 				739073BC1A4877860057BA18 /* IQUtilityButtonView.m in Sources */,
-				738C7F681A792D3200A25C70 /* NotificationsGroupController.m in Sources */,
 				7381137C1A4C2A260061280F /* IQBadgeStyle.m in Sources */,
 				737DD2301A14F00400CC4443 /* IQService.m in Sources */,
 				73176CA71B3ADE2200E6AC60 /* IQSelectionModel.m in Sources */,

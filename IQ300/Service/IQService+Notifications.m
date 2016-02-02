@@ -80,6 +80,28 @@
                    handler:handler];
 }
 
+- (void)notificationsUpdatedAfter:(NSDate*)date
+                           unread:(NSNumber*)unread
+                             page:(NSNumber*)page
+                              per:(NSNumber*)per
+                             sort:(IQSortDirection)sort
+                          handler:(ObjectRequestCompletionHandler)handler {
+    NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                                  @"updated_at_after" : NSObjectNullForNil(date),
+                                                                  @"unread"           : NSObjectNullForNil(unread),
+                                                                  @"page"             : NSObjectNullForNil(page),
+                                                                  @"per"              : NSObjectNullForNil(per),
+                                                                  }).mutableCopy;
+    
+    if(sort != IQSortDirectionNo) {
+        parameters[@"sort"] = IQSortDirectionToString(sort);
+    }
+    
+    [self getObjectsAtPath:@"/api/v1/notifications"
+                parameters:parameters
+                   handler:handler];
+}
+
 - (void)notificationsWithIds:(NSArray*)ids handler:(ObjectRequestCompletionHandler)handler {
     [self getObjectsAtPath:@"/api/v1/notifications"
                 parameters:@{ @"by_ids" : ids, @"per" : @(NSIntegerMax) }

@@ -580,10 +580,10 @@ fileAttributeName:(NSString*)fileAttributeName
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotification class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsHolder class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v1/notifications"
-                                                   fromKeyPath:@"notifications"
+                                                   fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];

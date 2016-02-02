@@ -15,7 +15,6 @@
 
 @property (nonatomic, strong) IQTask * task;
 @property (nonatomic, strong) TaskPolicyInspector * policyInspector;
-@property (nonatomic, strong) NSString * notificationsGroupSid;
 
 + (void)taskTabControllerForTaskWithId:(NSNumber*)taskId completion:(void (^)(TaskTabController * controller, NSError * error))completion;
 

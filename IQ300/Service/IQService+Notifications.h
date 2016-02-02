@@ -37,6 +37,13 @@
                          sort:(IQSortDirection)sort
                       handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)notificationsUpdatedAfter:(NSDate*)date
+                           unread:(NSNumber*)unread
+                             page:(NSNumber*)page
+                              per:(NSNumber*)per
+                             sort:(IQSortDirection)sort
+                          handler:(ObjectRequestCompletionHandler)handler;
+
 - (void)notificationsWithIds:(NSArray*)ids handler:(ObjectRequestCompletionHandler)handler;
 
 - (void)unreadNotificationIdsWithHandler:(ObjectRequestCompletionHandler)handler;
