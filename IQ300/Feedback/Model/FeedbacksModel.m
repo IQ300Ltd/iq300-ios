@@ -129,7 +129,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
     NSInteger count = [self numberOfItemsInSection:0];
-    NSInteger page = (count > 0) ? count / _portionLenght : 0;
+    NSInteger page = (count > 0) ? count / _portionLenght + 1 : 1;
     
     [[IQService sharedService] feedbacksBeforeId:nil
                                             page:@(page)

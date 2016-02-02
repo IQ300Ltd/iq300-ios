@@ -48,17 +48,29 @@
     return self;
 }
 
-//- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-//    [super setSelected:selected animated:animated];
-//    self.textLabel.textColor = (selected) ? SELECTED_CONTACT_NAME_COLOR : CONTACT_NAME_COLOR;
-//    self.detailTextLabel.textColor = (selected) ? SELECTED_CONTACT_NAME_COLOR : DETAIL_TEXT_COLOR;
-//}
-//
-//- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
-//    [super setHighlighted:highlighted animated:animated];
-//    self.textLabel.textColor = (highlighted) ? SELECTED_CONTACT_NAME_COLOR : CONTACT_NAME_COLOR;
-//    self.detailTextLabel.textColor = (highlighted) ? SELECTED_CONTACT_NAME_COLOR : DETAIL_TEXT_COLOR;
-//}
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGRect bounds = self.contentView.bounds;
+    CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
+    
+    CGSize imageViewSize = CGSizeMake(35, 35);
+    self.imageView.frame = CGRectMake(actualBounds.origin.x,
+                                      actualBounds.origin.y + (actualBounds.size.height - imageViewSize.height) / 2.0f,
+                                      imageViewSize.width,
+                                      imageViewSize.height);
+    
+    CGFloat textlabelX = CGRectGetMaxX(self.imageView.frame) + 10.f;
+    self.textLabel.frame = CGRectMake(textlabelX,
+                                      self.imageView.frame.origin.y,
+                                      _accessoryImageView.frame.origin.x - textlabelX - 10,
+                                      self.textLabel.frame.size.height);
+    
+    self.detailTextLabel.frame = CGRectMake(textlabelX,
+                                      CGRectGetMaxY(self.textLabel.frame) + 3.0f,
+                                      _accessoryImageView.frame.origin.x - textlabelX - 10,
+                                      self.detailTextLabel.frame.size.height);
+}
 
 - (void)setItem:(IQContact *)item {
     super.item = item;
@@ -70,7 +82,7 @@
         [self.imageView sd_setImageWithURL:[NSURL URLWithString:item.user.thumbUrl]
                           placeholderImage:[UIImage imageNamed:@"default_avatar.png"]
                                  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                     [self setNeedsDisplay];
+                                     [self setNeedsLayout];
                                  }];
     }
 }

@@ -75,7 +75,7 @@ SPEC CHECKSUMS:
   CTAssetsPickerController: 22913b579bb752f3df0f64a08b52aceb010c3389
   GoogleAnalytics-iOS-SDK: fb15cc7e3d01d06d531653f37443fda90274d53d
   ISO8601DateFormatterValueTransformer: 52da467d6ec899d6aedda8e48280ac92e8ee97e6
-  libPusher: 7f94e576983a94b4f5d482216410127d006f7143
+  libPusher: 62734f61cb5210dfb144b6706b93f29ddee7ba31
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MMDrawerController: 7a4cf8e25596bf2434e03ce50d22a8608ddee6a1
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96

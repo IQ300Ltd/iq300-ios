@@ -14,15 +14,11 @@
 #import "IQSelectionController.h"
 #import "DispatchAfterExecution.h"
 
-#define SEPARATOR_HEIGHT 0.5f
-#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
-#define BOTTOM_VIEW_HEIGHT 65
+#define BOTTOM_VIEW_HEIGHT 0
 
 @interface CreateFeedbackController () {
     CGFloat _tableBottomMarging;
     NSIndexPath * _editableIndexPath;
-    UIView * _bottomSeparatorView;
-    ExtendedButton * _sendButton;
     FeedbackCategoriesModel * _categoriesModel;
     FeedbackTypesModel * _typesModel;
 }
@@ -64,24 +60,11 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [[UIView alloc] init];
     
-    _bottomSeparatorView = [[UIView alloc] init];
-    [_bottomSeparatorView setBackgroundColor:SEPARATOR_COLOR];
-    [self.view addSubview:_bottomSeparatorView];
-    
-    _sendButton = [[ExtendedButton alloc] init];
-    _sendButton.layer.cornerRadius = 4.0f;
-    _sendButton.layer.borderWidth = 0.5f;
-    [_sendButton setTitle:NSLocalizedString(@"Send", nil)
-                 forState:UIControlStateNormal];
-    [_sendButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
-    [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
-    [_sendButton setBackgroundColor:IQ_CELADON_COLOR];
-    [_sendButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
-    [_sendButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
-    _sendButton.layer.borderColor = _sendButton.backgroundColor.CGColor;
-    [_sendButton setClipsToBounds:YES];
-    [_sendButton addTarget:self action:@selector(sendButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_sendButton];
+    UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mark_tab_item.png"]
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(sendButtonAction:)];
+    self.navigationItem.rightBarButtonItem = rightBarButton;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -106,19 +89,6 @@
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-    
-    CGRect actualBounds = self.view.bounds;
-    
-    _bottomSeparatorView.frame = CGRectMake(actualBounds.origin.x,
-                                            actualBounds.origin.y + actualBounds.size.height - BOTTOM_VIEW_HEIGHT,
-                                            actualBounds.size.width,
-                                            SEPARATOR_HEIGHT);
-    
-    CGSize doneButtonSize = CGSizeMake(300, 40);
-    _sendButton.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - doneButtonSize.width) / 2.0f,
-                                   actualBounds.origin.y + actualBounds.size.height - doneButtonSize.height - 10.0f,
-                                   doneButtonSize.width,
-                                   doneButtonSize.height);
     [self layoutTabelView];
 }
 
@@ -168,11 +138,15 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
-    textView.text = newString;
     [self.model updateFieldAtIndexPath:_editableIndexPath withValue:newString];
+    return YES;
+}
+
+- (void)textViewDidChange:(UITextView *)textView {
+    UITextRange *range = textView.selectedTextRange;
+    textView.text = textView.text;
+    textView.selectedTextRange = range;
     [self updateCellFrameIfNeed];
-    
-    return NO;
 }
 
 #pragma mark - Keyboard Notifications
@@ -220,7 +194,7 @@
                               tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                                   if (buttonIndex == 1 || buttonIndex == 2) {
                                       if (buttonIndex == 1) {
-                                          [self sendButtonAction:_sendButton];
+                                          [self sendButtonAction:self.navigationItem.rightBarButtonItem];
                                       }
                                       else {
                                           [self.navigationController popViewControllerAnimated:YES];
@@ -234,7 +208,7 @@
     }
 }
 
-- (void)sendButtonAction:(UIButton*)sender {
+- (void)sendButtonAction:(UIBarButtonItem *)sender {
     if (_editableIndexPath) {
         IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
         [cell.titleTextView resignFirstResponder];
