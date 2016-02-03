@@ -12,7 +12,9 @@
 @class IQDiscussion;
 @class IQComment;
 @class IQConversation;
+@class IQAttachment;
 @class ALAsset;
+@class SharingAttachment;
 
 @protocol DiscussionModelDelegate <IQTableModelDelegate>
 
@@ -67,5 +69,13 @@
 - (void)lockConversation;
 
 - (void)unlockConversation;
+
+@end
+
+@interface DiscussionModel(Sharing)
+
+- (void)sendComment:(NSString*)comment
+         attachment:(SharingAttachment*)attachment
+     withCompletion:(void (^)(NSError * error))completion;
 
 @end

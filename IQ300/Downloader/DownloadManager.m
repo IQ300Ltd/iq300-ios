@@ -8,6 +8,12 @@
 #import "DownloadManager.h"
 #import "FileStore.h"
 
+@interface DownloadManager ()
+
+@property (nonatomic, strong) NSOperationQueue *operationQueue;
+
+@end
+
 static DownloadManager * _sharedManager = nil;
 
 @implementation DownloadManager
@@ -55,7 +61,7 @@ static DownloadManager * _sharedManager = nil;
 
 
 - (void)downloadDataFromURL:(NSString*)url
-                    success:(void (^)(NSOperation *operation, NSString * storedURL, NSData * responseData))success
+                    success:(void (^)(NSOperation *operation, NSURL * storedURL, NSData * responseData))success
                     failure:(void (^)(NSOperation *operation, NSError *error))failure {
     
     [self downloadDataFromURL:url
@@ -64,16 +70,49 @@ static DownloadManager * _sharedManager = nil;
                   andProgress:nil];
 }
 
+- (void)downloadDataFromURL:(NSString *)url
+                   MIMEType:(NSString *)MIMEType
+                    success:(void (^)(NSOperation *, NSURL *, NSData *))success
+                    failure:(void (^)(NSOperation *, NSError *))failure {
+    [self downloadDataFromURL:url
+                     MIMEType:MIMEType
+                      success:success
+                      failure:failure
+                  andProgress:nil];
+}
 
 - (void)downloadDataFromURL:(NSString*)url
-                    success:(void (^)(NSOperation *operation, NSString * storedURL, NSData * responseData))success
+                    success:(void (^)(NSOperation *operation, NSURL * storedURL, NSData * responseData))success
                     failure:(void (^)(NSOperation *operation, NSError *error))failure
                 andProgress:(void(^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress {
-    NSString * escapedUrl = [url stringByReplacingOccurrencesOfString:@"'" withString:@"%27"];
-    [[FileStore sharedStore] queryDiskDataForKey:escapedUrl done:^(NSData *data) {
-        if(data) {
-            if(success) {
-                success(nil, [[FileStore sharedStore] storeFilePathForURL:url], data);
+    [self downloadDataFromURL:url
+                     MIMEType:nil
+                      success:success
+                      failure:failure
+                  andProgress:progress];
+
+}
+
+- (void)downloadDataFromURL:(NSString*)url
+                   MIMEType:(NSString *)MIMEType
+                    success:(void (^)(NSOperation *operation, NSURL * storedURL, NSData * responseData))success
+                    failure:(void (^)(NSOperation *operation, NSError *error))failure
+                andProgress:(void(^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress {
+    
+    NSURL *fromURL = [NSURL URLWithString:url];
+    BOOL hasFileExtension = (fromURL && fromURL.pathExtension && fromURL.pathExtension.length > 0) || !MIMEType;
+    
+    void(^queryBlock)(NSData *data) = ^(NSData *data) {
+        if (data) {
+            if (success) {
+                NSURL *filePath = nil;
+                if (hasFileExtension) {
+                    filePath =[[FileStore sharedStore] filePathURLForKey:fromURL.path extension:fromURL.pathExtension];
+                }
+                else if (MIMEType){
+                    filePath = [[FileStore sharedStore] filePathURLForKey:fromURL.path MIMEType:MIMEType];
+                }
+                success(nil, filePath, data);
             }
         }
         else {
@@ -81,16 +120,29 @@ static DownloadManager * _sharedManager = nil;
             void(^successBlock)(NSOperation *operation, NSData *responseData) = ^(NSOperation *operation, NSData *responseData) {
                 [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
                 if(responseData) {
-                    [[FileStore sharedStore] storeData:responseData
-                                                forKey:url
-                                                  done:^(NSString *fileName, NSError *error) {
-                                                      if (!error && fileName)
-                                                      {
-                                                          success(operation, [[FileStore sharedStore] storeFilePathForURL:url], responseData);
-                                                      }
-                                                  }];
+                    if (hasFileExtension) {
+                        [[FileStore sharedStore] storeData:responseData
+                                                    forKey:fromURL.path
+                                                 extension:fromURL.pathExtension
+                                                      done:^(NSString *fileName, NSError *error) {
+                                                          if (!error && fileName)
+                                                          {
+                                                              success(operation, [[FileStore sharedStore] filePathURLForFileName:fileName], responseData);
+                                                          }
+                                                      }];
+                    }
+                    else {
+                        [[FileStore sharedStore] storeData:responseData
+                                                    forKey:fromURL.path
+                                                  MIMEType:MIMEType
+                                                      done:^(NSString *fileName, NSError *error) {
+                                                          if (!error && fileName)
+                                                          {
+                                                              success(operation, [[FileStore sharedStore] filePathURLForFileName:fileName], responseData);
+                                                          }
+                                                      }];
+                    }
                 }
-
             };
             
             void(^failureBlock)(NSOperation *operation, NSError *error) = ^(NSOperation *operation, NSError *error) {
@@ -100,76 +152,30 @@ static DownloadManager * _sharedManager = nil;
                 }
             };
             
+            void(^progressBlock)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) = nil;
+            if (progress) {
+                progressBlock = ^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+                    progress(bytesRead, totalBytesRead, totalBytesExpectedToRead);
+                };
+            }
+            
+            NSString * escapedUrl = [url stringByReplacingOccurrencesOfString:@"'" withString:@"%27"];
             NSURLRequest * request = [NSURLRequest requestWithURL:[NSURL URLWithString:escapedUrl]];
             AFHTTPRequestOperation * operation = [self downloadOperationWithRequest:request
                                                                             success:successBlock
                                                                             failure:failureBlock
-                                                                        andProgress:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-                                                                                if (progress) {
-                                                                                     progress(bytesRead, totalBytesRead, totalBytesExpectedToRead);
-                                                                                }
-                                                                            }];
+                                                                        andProgress:progressBlock];
             [self enqueueObjectRequestOperation:operation];
             [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
         }
-    }];
-}
-
-- (void)authorizedDownloadDataFromURL:(NSString *)url
-                              headers:(NSDictionary*)headers
-                              success:(void (^)(NSOperation *, NSData *))success
-                              failure:(void (^)(NSOperation *, NSError *))failure {
-    [self authorizedDownloadDataFromURL:url
-                                headers:headers
-                                success:success
-                                failure:failure
-                            andProgress:nil];
-}
-
-- (void)authorizedDownloadDataFromURL:(NSString*)url
-                              headers:(NSDictionary*)headers
-                              success:(void (^)(NSOperation *operation, NSData * responseData))success
-                              failure:(void (^)(NSOperation *operation, NSError *error))failure
-                          andProgress:(void(^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress {
-    [[FileStore sharedStore] queryDiskDataForKey:url done:^(NSData *data) {
-        if(data) {
-            if(success) {
-                success(nil, data);
-            }
-        }
-        else {
-            NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
-            [request setAllHTTPHeaderFields:headers];
-            
-            AFHTTPRequestOperation * operation = [self downloadOperationWithRequest:request
-                                                                            success:^(NSOperation *operation, NSData *responseData) {
-                                                                                [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-                                                                                if(responseData) {
-                                                                                    [[FileStore sharedStore] storeData:responseData
-                                                                                                                forKey:url
-                                                                                                                  done:^(NSString *filePath, NSError *error) {
-                                                                                                                      if (!error && filePath) {
-                                                                                                                          if(success) {
-                                                                                                                              success(operation, data);
-                                                                                                                          }
-                                                                                                                      }
-                                                                                                                  }];
-                                                                                }
-                                                                            }
-                                                                            failure:^(NSOperation *operation, NSError *error) {
-                                                                                [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-                                                                                if(failure) {
-                                                                                    failure(operation, error);
-                                                                                }
-                                                                            } andProgress:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-                                                                                if (progress) {
-                                                                                    progress(bytesRead, totalBytesRead, totalBytesExpectedToRead);
-                                                                                }
-                                                                            }];
-            [self enqueueObjectRequestOperation:operation];
-            [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
-        }
-    }];
+    };
+    
+    if (hasFileExtension) {
+        [[FileStore sharedStore] queryDiskDataForKey:fromURL.path extension:fromURL.pathExtension done:queryBlock];
+    }
+    else {
+        [[FileStore sharedStore] queryDiskDataForKey:fromURL.path MIMEType:MIMEType done:queryBlock];
+    }
 }
 
 - (BOOL)isDataDownloadedFromURL:(NSString*)url {

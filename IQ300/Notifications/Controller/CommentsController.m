@@ -31,10 +31,13 @@
 #import "UIImage+Extensions.h"
 #import "UIActionSheet+Blocks.h"
 
+#import "IQActivityViewController.h"
+#import "SharingAttachment.h"
+
 #define DISPATCH_DELAY 1.0f
 
 @interface CommentsController() <UserPickerControllerDelegate, SWTableViewCellDelegate, UIImagePickerControllerDelegate,
-                                 UINavigationControllerDelegate> {
+                                 UINavigationControllerDelegate, IQActivityViewControllerDelegate> {
     CommentsView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachmentAsset;
@@ -377,7 +380,7 @@
 }
 
 - (void)updateUserInteraction:(NSString *)text {
-    BOOL isSendButtonEnabled = [self isTextValid:text];
+    BOOL isSendButtonEnabled = [self isTextValid:text] || _attachmentImage || _attachmentAsset;
     [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
 }
 
@@ -495,28 +498,25 @@
         controller.hidesBottomBarWhenPushed = YES;
         controller.imageURL = [NSURL URLWithString:attachment.originalURL];
         controller.fileName = attachment.displayName;
+        controller.contentType = attachment.contentType;
         [self.navigationController pushViewController:controller animated:YES];
     }
     else if ([attachment.localURL length] > 0) {
-        [self showOpenInForURL:attachment.localURL fromRect:rectForAppearing];
+        [self showActivityViewControllerAttachment:attachment fromRect:rectForAppearing];
     }
     else {
         [self showActivityIndicator];
-        NSArray * urlComponents = [attachment.originalURL componentsSeparatedByString:@"?"];
-        NSString * fileExtension = [[urlComponents firstObject] pathExtension];
         [[DownloadManager sharedManager] downloadDataFromURL:attachment.originalURL
-                                                     success:^(NSOperation *operation, NSString * storedURL, NSData *responseData) {
-                                                         NSString * destinationURL = [storedURL stringByAppendingPathExtension:fileExtension];
-                                                         [[NSFileManager defaultManager] moveItemAtURL:[NSURL fileURLWithPath:storedURL]
-                                                                                                 toURL:[NSURL fileURLWithPath:destinationURL]
-                                                                                                 error:nil];
-                                                         attachment.localURL = destinationURL;
+                                                    MIMEType:attachment.contentType
+                                                     success:^(NSOperation *operation, NSURL * storedURL, NSData *responseData) {
+    
+                                                         attachment.localURL = storedURL.path;
                                                          
                                                          NSError *saveError = nil;
                                                          if(![attachment.managedObjectContext saveToPersistentStore:&saveError] ) {
                                                              NSLog(@"Save attachment error: %@", saveError);
                                                          }
-                                                         [self showOpenInForURL:destinationURL fromRect:rectForAppearing];
+                                                         [self showActivityViewControllerAttachment:attachment fromRect:rectForAppearing];
                                                      }
                                                      failure:^(NSOperation *operation, NSError *error) {
                                                          [self hideActivityIndicator];
@@ -524,17 +524,29 @@
     }
 }
 
-- (void)showOpenInForURL:(NSString*)localURL fromRect:(CGRect)rect {
+- (void)showActivityViewControllerAttachment:(IQAttachment *)attachment fromRect:(CGRect)rect {
     [self hideActivityIndicator];
-    NSURL * documentURL = [NSURL fileURLWithPath:localURL isDirectory:NO];
-    _documentController = [UIDocumentInteractionController interactionControllerWithURL:documentURL];
-    [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
-    if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
-        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
-                           message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
-                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                 otherButtonTitles:nil
-                          tapBlock:nil];
+    
+    IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:[[SharingAttachment alloc] initWithPath:attachment.localURL
+                                                                                                                            displayName:attachment.displayName
+                                                                                                                            contentType:attachment.contentType]];
+    controller.delegate = self;
+    controller.documentInteractionControllerRect = rect;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        controller.modalPresentationStyle = UIModalPresentationPopover;
+        [self presentViewController:controller animated:YES completion:nil];
+        
+        if ([controller respondsToSelector:@selector(popoverPresentationController)]) {
+            UIPopoverPresentationController *popoverController = [controller popoverPresentationController];
+            popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+            popoverController.sourceView = self.view;
+            popoverController.sourceRect = rect;
+        }
+    }
+    else {
+        controller.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:controller animated:YES completion:nil];
     }
 }
 
@@ -736,20 +748,6 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - UIDocumentInteractionController Delegate Methods
-
-- (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
-    return  self;
-}
-
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(NSString *)application {
-    
-}
-
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
-    _documentController = nil;
-}
-
 - (void)drawerDidShowNotification:(NSNotification*)notification {
     [_mainView.inputView.commentTextView resignFirstResponder];
 }
@@ -887,6 +885,34 @@
     return nil;
 }
 
+#pragma mark - IQActivityViewControllerDelegate
+
+- (BOOL)willShowDocumentInteractionController {
+    return YES;
+}
+- (void)shouldShowDocumentInteractionController:(UIDocumentInteractionController * _Nonnull)controller fromRect:(CGRect)rect{
+    _documentController = controller;
+    [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
+    if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
+        [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                           message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
+                 cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                 otherButtonTitles:nil
+                          tapBlock:nil];
+    }
+}
+
+#pragma mark - UIDocumentInteractionController Delegate Methods
+
+- (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
+    return  self;
+}
+
+- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application {
+    _documentController = nil;
+}
+
+
 - (void)dealloc {
     [self.tableView removeGestureRecognizer:_tableGesture];
     _tableGesture.delegate = nil;
@@ -894,5 +920,7 @@
     [self.model setSubscribedToNotifications:NO];
     [self.model setDelegate:nil];
 }
+
+
 
 @end

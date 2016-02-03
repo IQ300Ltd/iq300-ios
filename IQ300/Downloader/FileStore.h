@@ -11,7 +11,7 @@
 extern NSString * const FileStoreErrorDomain;
 
 typedef void(^FileStoreQueryDiskDataHandler)(NSData * data);
-typedef void(^FileStoreSaveDataToDiskHandler)(NSString * filePath, NSError * error);
+typedef void(^FileStoreSaveDataToDiskHandler)(NSString * fileName, NSError * error);
 
 @interface FileStore : NSObject
 
@@ -41,21 +41,40 @@ typedef void(^FileStoreSaveDataToDiskHandler)(NSString * filePath, NSError * err
  * Store an data into disk at the given key.
  *
  * @param data The data to store
+ * @param key The unique data file key, usually it's data file absolute URL
+ * @param MIMEType The MIME type of target file
+ */
+- (NSString *)storeData:(NSData *)data forKey:(NSString *)key MIMEType:(NSString *)MIMEType error:(NSError * __autoreleasing *)error;
+- (void)storeData:(NSData *)data forKey:(NSString *)key MIMEType:(NSString *)MIMEType done:(FileStoreSaveDataToDiskHandler)doneBlock;
+
+/**
+ * Store an data into disk at the given key.
+ *
+ * @param data The data to store
+ * @param key The unique data file key, usually it's data file absolute URL
+ * @param extension The extension of target file
+ */
+- (void)storeData:(NSData *)data forKey:(NSString *)key extension:(NSString *)extension done:(FileStoreSaveDataToDiskHandler)doneBlock;
+
+/**
+ * Store an data into disk at the given key.
+ *
+ * @param data The data to store
  * @param fileName The unique data file name
  */
 - (void)storeData:(NSData *)data forFileName:(NSString *)fileName done:(FileStoreSaveDataToDiskHandler)doneBlock;
 
-/**
- * Move file from URL to internal storage
- */
-- (void)storeFileFromFileURL:(NSURL*)fileUrl forFileName:(NSString *)fileName done:(FileStoreSaveDataToDiskHandler)doneBlock;
+///**
+// * Move file from URL to internal storage
+// */
+//- (void)storeFileFromFileURL:(NSURL *)fileUrl forFileName:(NSString *)fileName done:(FileStoreSaveDataToDiskHandler)doneBlock;
 
 /**
  * Move file from URL to internal storage
  *
  * @return Saved file name
  */
-- (NSString*)storeFileFromFileURL:(NSURL*)fileUrl forFileName:(NSString *)fileName error:(NSError**)error;
+- (NSString*)storeFileFromFileURL:(NSURL *)fileUrl forFileName:(NSString *)fileName error:(NSError**)error;
 
 /**
  * Move file from @filePath to @destinationPath(may locate not in internal storage). Helper method.
@@ -63,7 +82,7 @@ typedef void(^FileStoreSaveDataToDiskHandler)(NSString * filePath, NSError * err
  * @completion Moved file data
  */
 
-- (BOOL)storeFileFromURL:(NSURL*)filePath atPath:(NSString*)destinationPath error:(NSError**)error;
+- (BOOL)storeFileFromURL:(NSURL *)filePath to:(NSURL *)destinationPath error:(NSError**)error;
 
 /**
  * Query the disk data asynchronousely.
@@ -72,6 +91,23 @@ typedef void(^FileStoreSaveDataToDiskHandler)(NSString * filePath, NSError * err
  */
 - (void)queryDiskDataForKey:(NSString *)key done:(FileStoreQueryDiskDataHandler)doneBlock;
 
+
+/**
+ * Query the disk data asynchronousely.
+ *
+ * @param key The unique key used to store the wanted data
+ * @param MIMEType The MIME type of target file
+ */
+- (void)queryDiskDataForKey:(NSString *)key MIMEType:(NSString *)MIMEType done:(FileStoreQueryDiskDataHandler)doneBlock;
+
+/**
+ * Query the disk data asynchronousely.
+ *
+ * @param key The unique key used to store the wanted data
+ * @param extension The extension of target file
+ */
+- (void)queryDiskDataForKey:(NSString *)key extension:(NSString *)extension done:(FileStoreQueryDiskDataHandler)doneBlock;
+
 /**
  * Query the disk data asynchronousely.
  *
@@ -79,26 +115,30 @@ typedef void(^FileStoreSaveDataToDiskHandler)(NSString * filePath, NSError * err
  */
 - (void)queryDiskDataForFileName:(NSString *)fileName done:(FileStoreQueryDiskDataHandler)doneBlock;
 
+
 - (BOOL)isDataStoredForKey:(NSString*)key;
+
+- (BOOL)isDataStoredForKey:(NSString*)key MIMEType:(NSString *)MIMEType;
+
+- (BOOL)isDataStoredForKey:(NSString*)key extension:(NSString *)extension;
 
 - (BOOL)isFileStoredNamed:(NSString*)fileName;
 
-- (NSURL*)filePathURLForKey:(NSString*)key;
 
-/**
- * StoreFilePathForURL.
- *
- * @return File path for url in internal storage.
- */
+- (NSURL *)filePathURLForKey:(NSString*)key;
 
-- (NSString *)storeFilePathForURL:(NSString*)url;
+- (NSURL *)filePathURLForKey:(NSString *)key MIMEType:(NSString *)MIMEType;
 
-/**
- * Remove the data from disk synchronousely
- *
- * @param key The unique data file key
- */
+- (NSURL *)filePathURLForKey:(NSString *)key extension:(NSString *)extension;
+
+- (NSURL *)filePathURLForFileName:(NSString *)filename;
+
+
 - (void)removeDataForKey:(NSString *)key;
+
+- (void)removeDataForKey:(NSString *)key MIMEType:(NSString *)MIMEType;
+
+- (void)removeDataForKey:(NSString *)key extension:(NSString *)extension;
 
 /**
  * Remove the data from disk synchronousely
@@ -121,7 +161,5 @@ typedef void(^FileStoreSaveDataToDiskHandler)(NSString * filePath, NSError * err
  * Get the number of data files in the disk store
  */
 - (NSUInteger)getDiskCount;
-
-- (NSString*)filePathStringForKey:(NSString*)key;
 
 @end
