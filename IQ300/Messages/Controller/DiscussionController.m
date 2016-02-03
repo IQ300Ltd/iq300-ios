@@ -393,7 +393,7 @@
 }
 
 - (void)updateUserInteraction:(NSString *)text {
-    BOOL isSendButtonEnabled = [self isTextValid:text];
+    BOOL isSendButtonEnabled = [self isTextValid:text] || _attachmentAsset || _attachmentImage;
     [_mainView.inputView.sendButton setEnabled:isSendButtonEnabled];
 }
 
