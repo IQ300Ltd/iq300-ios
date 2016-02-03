@@ -381,7 +381,7 @@ fileAttributeName:(NSString*)fileAttributeName
 }
 
 - (void)createAttachmentWithFileAtPath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler {
-    [self postFileAtPath:[NSURL fileURLWithPath:filePath]
+    [self postFileAtPath:[NSURL fileURLWithPath:filePath isDirectory:NO]
                     path:@"/api/v1/attachments"
               parameters:nil
        fileAttributeName:@"attachment[file]"

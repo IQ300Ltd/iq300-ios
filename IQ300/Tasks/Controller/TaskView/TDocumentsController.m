@@ -28,6 +28,9 @@
 @interface TDocumentsController () <IQActivityViewControllerDelegate> {
     TaskAttachmentsModel * _attachmentsModel;
     UIDocumentInteractionController * _documentController;
+#ifdef IPAD
+    UIPopoverController *_popoverController;
+#endif
 }
 
 @end
@@ -112,6 +115,7 @@
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
          [weakSelf reloadDataWithCompletion:^(NSError *error) {
+             [self proccessServiceError:error];
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
@@ -319,22 +323,32 @@
     controller.delegate = self;
     controller.documentInteractionControllerRect = rect;
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        controller.modalPresentationStyle = UIModalPresentationPopover;
-        [self presentViewController:controller animated:YES completion:nil];
+#ifdef IPAD
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        UIPopoverPresentationController *popoverController = [controller popoverPresentationController];
+        popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+        popoverController.sourceView = self.view;
+        popoverController.sourceRect = rect;
         
-        if ([controller respondsToSelector:@selector(popoverPresentationController)]) {
-            UIPopoverPresentationController *popoverController = [controller popoverPresentationController];
-            popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
-            popoverController.sourceView = self.view;
-            popoverController.sourceRect = rect;
-        }
+        [self presentViewController:controller animated:YES completion:nil];
     }
     else {
-        controller.modalPresentationStyle = UIModalPresentationFullScreen;
-        [self presentViewController:controller animated:YES completion:nil];
+        _popoverController = [[UIPopoverController alloc] initWithContentViewController:controller];
+        _popoverController.delegate = (id<UIPopoverControllerDelegate>)self;
+        [_popoverController presentPopoverFromRect:rect inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     }
+    
+#else
+    [self presentViewController:controller animated:YES completion:nil];
+#endif
+    
 }
+
+#ifdef IPAD
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    _popoverController = nil;
+}
+#endif
 
 #pragma mark - Policies methods
 

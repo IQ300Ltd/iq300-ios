@@ -17,6 +17,9 @@
     UIScrollView * _scrollView;
     UIActivityIndicatorView * _activityIndicator;
     UIDocumentInteractionController *_documentController;
+#ifdef IPAD
+    UIPopoverController *_popoverController;
+#endif
 }
 
 @end
@@ -155,6 +158,18 @@
 }
 
 - (void)backButtonAction:(UIButton*)sender {
+#ifdef IPAD
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+        if (_popoverController) {
+            [_popoverController dismissPopoverAnimated:NO];
+        }
+    }
+    else {
+        if (self.presentedViewController) {
+            [self dismissViewControllerAnimated:NO completion:nil];
+        }
+    }
+#endif
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -166,24 +181,34 @@
                                                                 displayName:_fileName
                                                                 contentType:_contentType];
     
-    IQActivityViewController *activityViewContoller = [[IQActivityViewController alloc] initWithAttachment:attachment];
-    activityViewContoller.delegate = self;
+    IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:attachment];
+    controller.delegate = self;
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        activityViewContoller.modalPresentationStyle = UIModalPresentationPopover;
-        [self presentViewController:activityViewContoller animated:YES completion:nil];
-        
-        if ([activityViewContoller respondsToSelector:@selector(popoverPresentationController)]) {
-            UIPopoverPresentationController *popoverController = [activityViewContoller popoverPresentationController];
-            popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
-            popoverController.barButtonItem = self.navigationItem.rightBarButtonItem;
-        }
+#ifdef IPAD
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        UIPopoverPresentationController *popoverController = [controller popoverPresentationController];
+        popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+        popoverController.barButtonItem = self.navigationItem.rightBarButtonItem;
+        [self presentViewController:controller animated:YES completion:nil];
     }
     else {
-        activityViewContoller.modalPresentationStyle = UIModalPresentationFullScreen;
-        [self presentViewController:activityViewContoller animated:YES completion:nil];
+        _popoverController = [[UIPopoverController alloc] initWithContentViewController:controller];
+        _popoverController.delegate = (id<UIPopoverControllerDelegate>)self;
+        [_popoverController presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     }
+    
+#else
+    [self presentViewController:controller animated:YES completion:nil];
+#endif
+
 }
+
+#ifdef IPAD
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    _popoverController = nil;
+}
+#endif
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

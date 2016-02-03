@@ -113,6 +113,9 @@
                  if (httpStatusCode == 403) {
                      [weakSelf proccessUserRemovedFromConversation];
                  }
+                 else {
+                     [self proccessServiceError:error];
+                 }
              }
              else {
                  [self proccessUserAddToConversation];
