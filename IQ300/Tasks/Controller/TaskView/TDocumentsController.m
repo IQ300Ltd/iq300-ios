@@ -28,6 +28,7 @@
 @interface TDocumentsController () <IQActivityViewControllerDelegate> {
     TaskAttachmentsModel * _attachmentsModel;
     UIDocumentInteractionController * _documentController;
+    UIPopoverController *_popoverController; //for ios7
 }
 
 @end
@@ -112,6 +113,7 @@
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
          [weakSelf reloadDataWithCompletion:^(NSError *error) {
+             [self proccessServiceError:error];
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
@@ -320,20 +322,27 @@
     controller.documentInteractionControllerRect = rect;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        controller.modalPresentationStyle = UIModalPresentationPopover;
-        [self presentViewController:controller animated:YES completion:nil];
-        
-        if ([controller respondsToSelector:@selector(popoverPresentationController)]) {
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
             UIPopoverPresentationController *popoverController = [controller popoverPresentationController];
             popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
             popoverController.sourceView = self.view;
             popoverController.sourceRect = rect;
+            
+            [self presentViewController:controller animated:YES completion:nil];
+        }
+        else {
+            _popoverController = [[UIPopoverController alloc] initWithContentViewController:controller];
+            _popoverController.delegate = (id<UIPopoverControllerDelegate>)self;
+            [_popoverController presentPopoverFromRect:rect inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
         }
     }
     else {
-        controller.modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:YES completion:nil];
     }
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    _popoverController = nil;
 }
 
 #pragma mark - Policies methods

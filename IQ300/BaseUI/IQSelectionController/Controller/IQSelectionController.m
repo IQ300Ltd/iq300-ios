@@ -39,6 +39,7 @@
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
          [weakSelf.model updateModelWithCompletion:^(NSError *error) {
+             [self proccessServiceError:error];
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
