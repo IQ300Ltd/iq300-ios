@@ -37,6 +37,7 @@
 @property (nonatomic, strong) NSNumber * hasDiscussion;
 @property (nonatomic, strong) NSNumber * discussionId;
 @property (nonatomic, strong) NSNumber * commentId;
+@property (nonatomic, strong) NSNumber * isPinned;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

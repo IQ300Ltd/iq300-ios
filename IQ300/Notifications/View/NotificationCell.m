@@ -56,6 +56,10 @@
         [_markAsReadedButton setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
         [_markAsReadedButton setImage:[UIImage imageNamed:@"check_mark_medium"] forState:UIControlStateNormal];
         
+        _pinnedButton = [[UIButton alloc] init];
+        [_pinnedButton setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
+        [_pinnedButton setImage:[UIImage imageNamed:@"pinned.png"] forState:UIControlStateNormal];
+
         _contentInsets = UIEdgeInsetsMake(VERTICAL_INSETS, HORIZONTAL_INSETS, VERTICAL_INSETS, HORIZONTAL_INSETS);
         _contentBackgroundInsets = UIEdgeInsetsZero;
         
@@ -153,12 +157,17 @@
     _contentBackgroundView.backgroundColor = (isReaded) ? CONTEN_BACKGROUND_COLOR_R :
                                                           CONTEN_BACKGROUND_COLOR;
     self.rightUtilityButtons = (isReaded) ? nil : @[_markAsReadedButton];
+    self.leftUtilityButtons = @[_pinnedButton];
     
     _dateLabel.text = [_item.createdAt dateToDayTimeString];
     _userNameLabel.hidden = ([_item.user.displayName length] == 0);
     _userNameLabel.text = _item.user.displayName;
     _actionLabel.text = _item.mainDescription;
     _descriptionLabel.text = _item.additionalDescription;
+    
+    NSString * pinnedImageName = ([_item.isPinned boolValue]) ? @"unpinned.png" : @"pinned.png";
+    [_pinnedButton setImage:[UIImage imageNamed:pinnedImageName] forState:UIControlStateNormal];
+    
     [self setNeedsLayout];
 }
 

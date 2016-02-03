@@ -45,6 +45,7 @@
 @dynamic hasDiscussion;
 @dynamic discussionId;
 @dynamic commentId;
+@dynamic isPinned;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class])
@@ -62,7 +63,8 @@
                                                    @"available_actions" : @"availableActions",
                                                    @"has_discussion"    : @"hasDiscussion",
                                                    @"discussion_id"     : @"discussionId",
-                                                   @"comment_id"        : @"commentId"
+                                                   @"comment_id"        : @"commentId",
+                                                   @"pinned"            : @"isPinned"
                                                    }];
     
     RKRelationshipMapping * notificableRelation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"notificable"

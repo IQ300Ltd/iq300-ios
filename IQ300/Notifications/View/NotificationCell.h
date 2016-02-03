@@ -27,6 +27,7 @@
 @property (nonatomic, strong) UILabel * userNameLabel;
 @property (nonatomic, strong) UILabel * actionLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;
+@property (nonatomic, strong) UIButton * pinnedButton;
 @property (nonatomic, strong) UIButton * markAsReadedButton;
 
 @property (nonatomic, strong) IQNotification * item;

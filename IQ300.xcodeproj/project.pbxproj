@@ -92,6 +92,14 @@
 		731462841B3443B500E9CC60 /* IQCommunityExecutorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 731462821B3441E600E9CC60 /* IQCommunityExecutorCell.m */; };
 		731526FB1C61F3050077E0BD /* IQNotificationCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 731526FA1C61F3050077E0BD /* IQNotificationCounters.m */; };
 		731526FC1C61F3050077E0BD /* IQNotificationCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 731526FA1C61F3050077E0BD /* IQNotificationCounters.m */; };
+		731527001C6219F90077E0BD /* pinned.png in Resources */ = {isa = PBXBuildFile; fileRef = 731526FE1C6219F90077E0BD /* pinned.png */; };
+		731527011C6219F90077E0BD /* pinned.png in Resources */ = {isa = PBXBuildFile; fileRef = 731526FE1C6219F90077E0BD /* pinned.png */; };
+		731527021C6219F90077E0BD /* pinned@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 731526FF1C6219F90077E0BD /* pinned@2x.png */; };
+		731527031C6219F90077E0BD /* pinned@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 731526FF1C6219F90077E0BD /* pinned@2x.png */; };
+		731527061C621A370077E0BD /* unpinned.png in Resources */ = {isa = PBXBuildFile; fileRef = 731527041C621A370077E0BD /* unpinned.png */; };
+		731527071C621A370077E0BD /* unpinned.png in Resources */ = {isa = PBXBuildFile; fileRef = 731527041C621A370077E0BD /* unpinned.png */; };
+		731527081C621A370077E0BD /* unpinned@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 731527051C621A370077E0BD /* unpinned@2x.png */; };
+		731527091C621A370077E0BD /* unpinned@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 731527051C621A370077E0BD /* unpinned@2x.png */; };
 		73176C881B3AA38C00E6AC60 /* MTableFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73176C871B3AA38C00E6AC60 /* MTableFooterView.m */; };
 		73176C921B3ADD4D00E6AC60 /* IQSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73176C901B3ADD4D00E6AC60 /* IQSelectionController.m */; };
 		73176C931B3ADD4D00E6AC60 /* IQSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73176C901B3ADD4D00E6AC60 /* IQSelectionController.m */; };
@@ -898,6 +906,10 @@
 		731462821B3441E600E9CC60 /* IQCommunityExecutorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQCommunityExecutorCell.m; sourceTree = "<group>"; };
 		731526F91C61F3050077E0BD /* IQNotificationCounters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationCounters.h; sourceTree = "<group>"; };
 		731526FA1C61F3050077E0BD /* IQNotificationCounters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationCounters.m; sourceTree = "<group>"; };
+		731526FE1C6219F90077E0BD /* pinned.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinned.png; sourceTree = "<group>"; };
+		731526FF1C6219F90077E0BD /* pinned@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pinned@2x.png"; sourceTree = "<group>"; };
+		731527041C621A370077E0BD /* unpinned.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unpinned.png; sourceTree = "<group>"; };
+		731527051C621A370077E0BD /* unpinned@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unpinned@2x.png"; sourceTree = "<group>"; };
 		73176C861B3AA38C00E6AC60 /* MTableFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTableFooterView.h; sourceTree = "<group>"; };
 		73176C871B3AA38C00E6AC60 /* MTableFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTableFooterView.m; sourceTree = "<group>"; };
 		73176C8F1B3ADD4D00E6AC60 /* IQSelectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSelectionController.h; sourceTree = "<group>"; };
@@ -1679,6 +1691,17 @@
 			path = Tabs;
 			sourceTree = "<group>";
 		};
+		731526FD1C6219D90077E0BD /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				731526FE1C6219F90077E0BD /* pinned.png */,
+				731526FF1C6219F90077E0BD /* pinned@2x.png */,
+				731527041C621A370077E0BD /* unpinned.png */,
+				731527051C621A370077E0BD /* unpinned@2x.png */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
 		73176C8D1B3ADD0800E6AC60 /* IQSelectionController */ = {
 			isa = PBXGroup;
 			children = (
@@ -1931,6 +1954,7 @@
 		736B6BCE1A0B5BCB00034D9B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				731526FD1C6219D90077E0BD /* Notifications */,
 				2DAF33791C60AD1500554211 /* Sharing */,
 				738FE6E21A162B10009F26A2 /* TabBar */,
 				73BA98891A109E26005AEC00 /* Menu */,
@@ -3062,6 +3086,7 @@
 				73840E921B1C75A500BCEAFC /* task_documents_tab@2x.png in Resources */,
 				73865C2A1B20688A00118292 /* notif_tab.png in Resources */,
 				73840E931B1C75A500BCEAFC /* filter_gray_collapseed@2x.png in Resources */,
+				731527071C621A370077E0BD /* unpinned.png in Resources */,
 				73840E941B1C75A500BCEAFC /* backArrow.png in Resources */,
 				73840E951B1C75A500BCEAFC /* bell_ico.png in Resources */,
 				73865C221B20688A00118292 /* messages_tab.png in Resources */,
@@ -3127,6 +3152,7 @@
 				73865C321B20688A00118292 /* tasks_tab_selected.png in Resources */,
 				73840ECD1B1C75A500BCEAFC /* bell_red_ico.png in Resources */,
 				73840ECF1B1C75A500BCEAFC /* notifications_menu.plist in Resources */,
+				731527011C6219F90077E0BD /* pinned.png in Resources */,
 				73840ED01B1C75A500BCEAFC /* delete_ico@2x.png in Resources */,
 				73840ED21B1C75A500BCEAFC /* top_header_bg.png in Resources */,
 				73415D041BCE332C0042DD09 /* Launch Screen.storyboard in Resources */,
@@ -3148,6 +3174,7 @@
 				73865C361B20688A00118292 /* white_logo.png in Resources */,
 				73840EE11B1C75A500BCEAFC /* menu_collapseed@2x.png in Resources */,
 				73840EE21B1C75A500BCEAFC /* view_all_ico@2x.png in Resources */,
+				731527031C6219F90077E0BD /* pinned@2x.png in Resources */,
 				73060D661B417322001AE08E /* feedback_proposal_type@2x.png in Resources */,
 				73840EE31B1C75A500BCEAFC /* edit_gray_ico@2x.png in Resources */,
 				73840EE41B1C75A500BCEAFC /* community_ico@2x.png in Resources */,
@@ -3193,6 +3220,7 @@
 				73060D621B417322001AE08E /* feedback_error_type@2x.png in Resources */,
 				73840F051B1C75A500BCEAFC /* login_logo.png in Resources */,
 				73840F071B1C75A500BCEAFC /* search_icon@2x.png in Resources */,
+				731527091C621A370077E0BD /* unpinned@2x.png in Resources */,
 				73FC83B41B3BF1E900ADFBC2 /* feedback_ico.png in Resources */,
 				73840F081B1C75A500BCEAFC /* filter_expanded@2x.png in Resources */,
 			);
@@ -3221,6 +3249,7 @@
 				731170851AB80AFF008A4D09 /* task_member_tab@2x.png in Resources */,
 				73CCB6AF1B4E8B13000BF728 /* edit_conference_icon@2x.png in Resources */,
 				73865C411B206C4A00118292 /* tasks_tab_selected.png in Resources */,
+				731527001C6219F90077E0BD /* pinned.png in Resources */,
 				73A113FD1A1CAA5900293EC5 /* default_avatar.png in Resources */,
 				731170921AB80B0E008A4D09 /* project_ico.png in Resources */,
 				7311707D1AB80AFF008A4D09 /* task_comments_tab@2x.png in Resources */,
@@ -3270,9 +3299,11 @@
 				73F2A5541A39AB3000E9D324 /* attachment_img.png in Resources */,
 				738916BB1ABAFB800017EF86 /* gray_checkbox.png in Resources */,
 				73BA98901A109F4D005AEC00 /* menu_expanded.png in Resources */,
+				731527081C621A370077E0BD /* unpinned@2x.png in Resources */,
 				7399F9271ABC018D0013FA11 /* white_add_ico@2x.png in Resources */,
 				73F2A55C1A39AB3000E9D324 /* msg_sent.png in Resources */,
 				731170931AB80B0E008A4D09 /* project_ico@2x.png in Resources */,
+				731527021C6219F90077E0BD /* pinned@2x.png in Resources */,
 				73D7858C1AE7FDB400A952DF /* bell_red_ico.png in Resources */,
 				73BA98941A109FDD005AEC00 /* notifications_menu.plist in Resources */,
 				739D67D61AC2C5C100859274 /* delete_ico@2x.png in Resources */,
@@ -3316,6 +3347,7 @@
 				732952BA1A69441D0066B336 /* bubble_blue@2x.png in Resources */,
 				73A949901A3821AD008EC469 /* backWhiteArrow@2x.png in Resources */,
 				731170911AB80B0E008A4D09 /* edit_white_ico@2x.png in Resources */,
+				731527061C621A370077E0BD /* unpinned.png in Resources */,
 				738FE7071A162B10009F26A2 /* notif_tab.png in Resources */,
 				73060D651B417322001AE08E /* feedback_proposal_type@2x.png in Resources */,
 				7398F7901B4D07B40009EAD1 /* conference_icon@2x.png in Resources */,
@@ -3745,7 +3777,6 @@
 				734B91151B31BE500084CA8E /* RegistrationStatusView.m in Sources */,
 				73D7F1CD1ADE93D600023120 /* TaskAttachmentsModel.m in Sources */,
 				2DAF33691C6087C600554211 /* IQActivityViewController.m in Sources */,
-				73ACB0BD1A7A1882004F5D99 /* NotificationsGroupModel.m in Sources */,
 				7311709C1AB81505008A4D09 /* IQTabBarController.m in Sources */,
 				739C3B5F1A3075D90032C057 /* DiscussionModel.m in Sources */,
 				73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */,
