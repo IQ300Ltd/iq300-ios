@@ -531,7 +531,23 @@
                                                                                                                             displayName:attachment.displayName
                                                                                                                             contentType:attachment.contentType]];
     controller.delegate = self;
-    [self presentViewController:controller animated:YES completion:nil];
+    controller.documentInteractionControllerRect = rect;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        controller.modalPresentationStyle = UIModalPresentationPopover;
+        [self presentViewController:controller animated:YES completion:nil];
+        
+        if ([controller respondsToSelector:@selector(popoverPresentationController)]) {
+            UIPopoverPresentationController *popoverController = [controller popoverPresentationController];
+            popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+            popoverController.sourceView = self.view;
+            popoverController.sourceRect = rect;
+        }
+    }
+    else {
+        controller.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:controller animated:YES completion:nil];
+    }
 }
 
 - (void)expandButtonAction:(UIButton*)sender {

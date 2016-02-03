@@ -168,7 +168,21 @@
     
     IQActivityViewController *activityViewContoller = [[IQActivityViewController alloc] initWithAttachment:attachment];
     activityViewContoller.delegate = self;
-    [self presentViewController:activityViewContoller animated:YES completion:nil];
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        activityViewContoller.modalPresentationStyle = UIModalPresentationPopover;
+        [self presentViewController:activityViewContoller animated:YES completion:nil];
+        
+        if ([activityViewContoller respondsToSelector:@selector(popoverPresentationController)]) {
+            UIPopoverPresentationController *popoverController = [activityViewContoller popoverPresentationController];
+            popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+            popoverController.barButtonItem = self.navigationItem.rightBarButtonItem;
+        }
+    }
+    else {
+        activityViewContoller.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:activityViewContoller animated:YES completion:nil];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -185,7 +199,7 @@
 - (void)shouldShowDocumentInteractionController:(UIDocumentInteractionController *)controller fromRect:(CGRect)rect {
     _documentController = controller;
     [_documentController setDelegate:(id<UIDocumentInteractionControllerDelegate>)self];
-    if(![_documentController presentOpenInMenuFromRect:rect inView:self.view animated:YES]) {
+    if(![_documentController presentOpenInMenuFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES]) {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"You do not have an application installed to view files of this type", nil)
                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
