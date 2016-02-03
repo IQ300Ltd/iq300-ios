@@ -29,7 +29,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     self = [super init];
     
     if (self) {
-        _totalItemsCount = -1;
         _unreadItemsCount = -1;
     }
     
@@ -38,13 +37,6 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 - (NSString*)title {
     return NSLocalizedString(@"Notifications", nil);
-}
-
-- (void)setTotalItemsCount:(NSInteger)totalItemsCount {
-    if(_totalItemsCount != totalItemsCount) {
-        //_totalItemsCount = totalItemsCount;
-        //[self reloadItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    }
 }
 
 - (void)setUnreadItemsCount:(NSInteger)unreadItemsCount {
@@ -108,10 +100,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (NSString*)badgeTextAtIndexPath:(NSIndexPath*)indexPath {
-    if (indexPath.row == 0 && _totalItemsCount > 0) {
-        return [NSString stringWithFormat:@"%ld", (long)_totalItemsCount];
-    }
-    else if (indexPath.row == 1 && _unreadItemsCount > 0) {
+    if (indexPath.row == 1 && _unreadItemsCount > 0) {
         return [NSString stringWithFormat:@"%ld", (long)_unreadItemsCount];
     }
     return nil;

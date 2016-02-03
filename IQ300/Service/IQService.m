@@ -618,7 +618,7 @@ fileAttributeName:(NSString*)fileAttributeName
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationCounters class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"/api/v2/notifications/counters"
                                                    fromKeyPath:@"notification_counters"

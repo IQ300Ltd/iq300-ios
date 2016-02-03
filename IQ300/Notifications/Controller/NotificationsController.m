@@ -16,7 +16,7 @@
 #import "NotificationsModel.h"
 #import "IQNotification.h"
 #import "NotificationCell.h"
-#import "IQCounters.h"
+#import "IQNotificationCounters.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQBadgeView.h"
 #import "IQService+Messages.h"
@@ -148,7 +148,7 @@
 
 - (void)updateGlobalCounter {
     __weak typeof(self) weakSelf = self;
-    [self.model updateCountersWithCompletion:^(IQCounters *counter, NSError *error) {
+    [self.model updateCountersWithCompletion:^(IQNotificationCounters *counter, NSError *error) {
         [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue]];
     }];
 }
@@ -193,7 +193,6 @@
 #pragma mark - IQTableModel Delegate
 
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
-    _menuModel.totalItemsCount = self.model.totalItemsCount;
     _menuModel.unreadItemsCount = self.model.unreadItemsCount;
 }
 

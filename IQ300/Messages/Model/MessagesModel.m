@@ -29,7 +29,6 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     NSInteger _portionLenght;
     NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
-    NSInteger _totalItemsCount;
     NSInteger _unreadItemsCount;
     __weak id _newMessageObserver;
     __weak id _conversationsChangedObserver;
@@ -144,7 +143,6 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"discussion.updateDate" ascending:SORT_DIRECTION == IQSortDirectionAscending];
         _sortDescriptors = @[descriptor];
         _portionLenght = 20;
-        _totalItemsCount = 0;
         _unreadItemsCount = 0;
         self.modelUpdateRequired = YES;
         
@@ -377,10 +375,6 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     }
 }
 
-- (NSInteger)totalItemsCount {
-    return _totalItemsCount;
-}
-
 - (NSInteger)unreadItemsCount {
     return _unreadItemsCount;
 }
@@ -388,7 +382,6 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counter, NSError * error))completion {
     [[IQService sharedService] conversationsCountersWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
         if(counter) {
-            _totalItemsCount = [counter.totalCount integerValue];
             _unreadItemsCount = [counter.unreadCount integerValue];
         }
         if(completion) {

@@ -15,6 +15,7 @@
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "IQNotificationCenter.h"
 #import "IQNotificationsHolder.h"
+#import "IQNotificationCounters.h"
 
 #define CACHE_FILE_NAME @"NotificationsModelcache"
 #define SORT_DIRECTION IQSortDirectionAscending
@@ -26,7 +27,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     NSInteger _portionLenght;
     NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
-    NSInteger _totalItemsCount;
     NSInteger _unreadItemsCount;
     __weak id _notfObserver;
 }
@@ -61,7 +61,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                                     ascending:NO];
         _sortDescriptors = @[descriptor];
         _loadUnreadOnly = YES;
-        _totalItemsCount = 0;
         _unreadItemsCount = 0;
     }
     return self;
@@ -184,10 +183,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     }
 }
 
-- (NSInteger)totalItemsCount {
-    return _totalItemsCount;
-}
-
 - (NSInteger)unreadItemsCount {
     return _unreadItemsCount;
 }
@@ -204,7 +199,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                           NSLog(@"Save notification error: %@", saveError);
                                                       }
                                                       
-                                                      [self updateCountersWithCompletion:^(IQCounters *counters, NSError *error) {
+                                                      [self updateCountersWithCompletion:^(IQNotificationCounters *counters, NSError *error) {
                                                           if(self.loadUnreadOnly && _unreadItemsCount > 0 &&
                                                              [_fetchController.fetchedObjects count] == 0) {
                                                               [self loadNextPartWithCompletion:nil];
@@ -221,7 +216,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     [[IQService sharedService] markAllNotificationsAsReadWithHandler:^(BOOL success, NSData *responseData, NSError *error) {
         if(success) {
             [self markAllLocalNotificationAsRead];
-            [self updateCountersWithCompletion:^(IQCounters *counters, NSError *error) {
+            [self updateCountersWithCompletion:^(IQNotificationCounters *counters, NSError *error) {
                 if(self.loadUnreadOnly && _unreadItemsCount > 0 &&
                    [_fetchController.fetchedObjects count] == 0) {
                     [self loadNextPartWithCompletion:nil];
@@ -234,10 +229,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     }];
 }
 
-- (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion {
-    [[IQService sharedService] notificationsCountWithHandler:^(BOOL success, IQCounters * counter, NSData *responseData, NSError *error) {
+- (void)updateCountersWithCompletion:(void (^)(IQNotificationCounters * counters, NSError * error))completion {
+    [[IQService sharedService] notificationsCountWithHandler:^(BOOL success, IQNotificationCounters * counter, NSData *responseData, NSError *error) {
         if(success) {
-            _totalItemsCount = [counter.totalCount integerValue];
             _unreadItemsCount = [counter.unreadCount integerValue];
             [self modelCountersDidChanged];
         }

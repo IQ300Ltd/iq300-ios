@@ -11,6 +11,7 @@
 
 #import "IQUser.h"
 #import "IQCounters.h"
+#import "IQNotificationCounters.h"
 #import "IQConversation.h"
 #import "IQDiscussion.h"
 #import "IQComment.h"

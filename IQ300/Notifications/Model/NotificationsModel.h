@@ -8,9 +8,8 @@
 
 #import "IQTableModel.h"
 
-@class IQNotificationsGroup;
 @class IQNotification;
-@class IQCounters;
+@class IQNotificationCounters;
 
 @interface NotificationsModel : NSObject<IQTableModel>
 
@@ -39,13 +38,12 @@
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 
-- (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
 
 - (void)markNotificationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion;
 
-- (void)updateCountersWithCompletion:(void (^)(IQCounters * counters, NSError * error))completion;
+- (void)updateCountersWithCompletion:(void (^)(IQNotificationCounters * counters, NSError * error))completion;
 
 - (void)resubscribeToIQNotifications;
 

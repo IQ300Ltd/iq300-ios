@@ -68,6 +68,8 @@
 		7314627C1B341D2300E9CC60 /* IQDoubleDetailsTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7314627A1B3400F700E9CC60 /* IQDoubleDetailsTextCell.m */; };
 		731462801B34249600E9CC60 /* IQDoubleDateTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7314627E1B34242200E9CC60 /* IQDoubleDateTextCell.m */; };
 		731462841B3443B500E9CC60 /* IQCommunityExecutorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 731462821B3441E600E9CC60 /* IQCommunityExecutorCell.m */; };
+		731526FB1C61F3050077E0BD /* IQNotificationCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 731526FA1C61F3050077E0BD /* IQNotificationCounters.m */; };
+		731526FC1C61F3050077E0BD /* IQNotificationCounters.m in Sources */ = {isa = PBXBuildFile; fileRef = 731526FA1C61F3050077E0BD /* IQNotificationCounters.m */; };
 		73176C881B3AA38C00E6AC60 /* MTableFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73176C871B3AA38C00E6AC60 /* MTableFooterView.m */; };
 		73176C921B3ADD4D00E6AC60 /* IQSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73176C901B3ADD4D00E6AC60 /* IQSelectionController.m */; };
 		73176C931B3ADD4D00E6AC60 /* IQSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73176C901B3ADD4D00E6AC60 /* IQSelectionController.m */; };
@@ -845,6 +847,8 @@
 		7314627E1B34242200E9CC60 /* IQDoubleDateTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQDoubleDateTextCell.m; sourceTree = "<group>"; };
 		731462811B3441E600E9CC60 /* IQCommunityExecutorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQCommunityExecutorCell.h; sourceTree = "<group>"; };
 		731462821B3441E600E9CC60 /* IQCommunityExecutorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQCommunityExecutorCell.m; sourceTree = "<group>"; };
+		731526F91C61F3050077E0BD /* IQNotificationCounters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQNotificationCounters.h; sourceTree = "<group>"; };
+		731526FA1C61F3050077E0BD /* IQNotificationCounters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQNotificationCounters.m; sourceTree = "<group>"; };
 		73176C861B3AA38C00E6AC60 /* MTableFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTableFooterView.h; sourceTree = "<group>"; };
 		73176C871B3AA38C00E6AC60 /* MTableFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTableFooterView.m; sourceTree = "<group>"; };
 		73176C8F1B3ADD4D00E6AC60 /* IQSelectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSelectionController.h; sourceTree = "<group>"; };
@@ -2368,6 +2372,8 @@
 				73C286AF1A94B5E30011FD51 /* IQNotificationsHolder.m */,
 				73DD80071A68E83800A6ADA5 /* IQNotificationIds.h */,
 				73DD80081A68E83800A6ADA5 /* IQNotificationIds.m */,
+				731526F91C61F3050077E0BD /* IQNotificationCounters.h */,
+				731526FA1C61F3050077E0BD /* IQNotificationCounters.m */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -3476,6 +3482,7 @@
 				73840E551B1C75A500BCEAFC /* CommentCell.m in Sources */,
 				73840E561B1C75A500BCEAFC /* IQNavigationController.m in Sources */,
 				73840E571B1C75A500BCEAFC /* CommunitiesModel.m in Sources */,
+				731526FC1C61F3050077E0BD /* IQNotificationCounters.m in Sources */,
 				73840E581B1C75A500BCEAFC /* DiscussionView.m in Sources */,
 				73176CA41B3ADDD700E6AC60 /* IQSelectableTextCell.m in Sources */,
 				73840E591B1C75A500BCEAFC /* TCService.m in Sources */,
@@ -3713,6 +3720,7 @@
 				739C3B621A3076D60032C057 /* CommentCell.m in Sources */,
 				7379EEB31A11E26200D69BBD /* IQNavigationController.m in Sources */,
 				73D7F1F71ADE95A900023120 /* CommunitiesModel.m in Sources */,
+				731526FB1C61F3050077E0BD /* IQNotificationCounters.m in Sources */,
 				739C3B681A3086BA0032C057 /* DiscussionView.m in Sources */,
 				737DD22D1A14EFE900CC4443 /* TCService.m in Sources */,
 				739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */,

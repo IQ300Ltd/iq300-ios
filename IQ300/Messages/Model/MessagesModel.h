@@ -25,7 +25,6 @@
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
 
-- (NSInteger)totalItemsCount;
 - (NSInteger)unreadItemsCount;
 - (void)updateCountersWithCompletion:(void (^)(IQCounters * counter, NSError * error))completion;
 
