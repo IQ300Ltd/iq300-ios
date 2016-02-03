@@ -21,7 +21,6 @@
     IQShareToMessageActivity *shareToMessageActivity = [[IQShareToMessageActivity alloc] init];
     
     self = [super initWithActivityItems:@[attachment] applicationActivities:@[openInActivity, shareToMessageActivity]];
-    
     if (self) {
         openInActivity.delegate = self;
         
