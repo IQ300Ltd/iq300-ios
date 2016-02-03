@@ -84,10 +84,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _mainView.noDataLabel.text = NSLocalizedString((self.model.loadUnreadOnly) ? NoUnreadNotificationFound : NoNotificationFound, nil);
+    _mainView.noDataLabel.text = NSLocalizedString((self.model.filterType == IQNotificationsFilterUnread) ? NoUnreadNotificationFound : NoNotificationFound, nil);
     
     _menuModel = [[NotificationsMenuModel alloc] init];
-    [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:(self.model.loadUnreadOnly) ? 1 : 0
+    [_menuModel selectItemAtIndexPath:[NSIndexPath indexPathForRow:self.model.filterType
                                                          inSection:0]];
     
     __weak typeof(self) weakSelf = self;
@@ -193,14 +193,16 @@
 #pragma mark - IQTableModel Delegate
 
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
+    _menuModel.pinnedItemsCount = self.model.pinnedItemsCount;
     _menuModel.unreadItemsCount = self.model.unreadItemsCount;
 }
 
 #pragma mark - Menu Responder Delegate
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
-    self.model.loadUnreadOnly = (indexPath.row == 1);
-    _mainView.noDataLabel.text = NSLocalizedString((indexPath.row == 0) ? NoNotificationFound : NoUnreadNotificationFound, nil);
+    self.model.filterType = (IQNotificationsFilter)indexPath.row;
+    _mainView.noDataLabel.text = NSLocalizedString((self.model.filterType == IQNotificationsFilterUnread) ? NoUnreadNotificationFound : NoNotificationFound, nil);
+
     [self reloadModel];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
@@ -218,7 +220,7 @@
             }
         }
         else {
-            [self proccessServiceError:error];
+            [weakSelf proccessServiceError:error];
         }
     };
     
@@ -234,6 +236,23 @@
         else {
             [self.model declineNotification:cell.item completion:completion];
         }
+    }
+}
+
+- (void)swipeableTableViewCell:(NotificationCell *)cell didTriggerLeftUtilityButtonWithIndex:(NSInteger)index {
+    __weak typeof (self) weakSelf = self;
+    void(^completion)(NSError *error) = ^(NSError *error) {
+        if (error) {
+            [weakSelf proccessServiceError:error];
+        }
+    };
+    
+    NSIndexPath * itemIndexPath = [self.model indexPathOfObject:cell.item];
+    if([cell.item.isPinned boolValue]) {
+        [self.model unpinnedNotificationAtIndexPath:itemIndexPath completion:completion];
+    }
+    else {
+        [self.model pinnedNotificationAtIndexPath:itemIndexPath completion:completion];
     }
 }
 

@@ -14,14 +14,26 @@
 			<dict>
 				<key>itemId</key>
 				<integer>0</integer>
+				<key>type</key>
+				<integer>1</integer>
 				<key>title</key>
-				<string>Все</string>
+				<string>Закреплённые</string>
 			</dict>
 			<dict>
 				<key>itemId</key>
 				<integer>1</integer>
+				<key>type</key>
+				<integer>0</integer>
 				<key>title</key>
-				<string>Непрочитанные</string>
+				<string>Новые</string>
+			</dict>
+			<dict>
+				<key>itemId</key>
+				<integer>2</integer>
+				<key>type</key>
+				<integer>0</integer>
+				<key>title</key>
+				<string>Все</string>
 			</dict>
 		</array>
 	</dict>

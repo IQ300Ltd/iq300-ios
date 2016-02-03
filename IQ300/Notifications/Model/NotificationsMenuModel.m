@@ -46,6 +46,13 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     }
 }
 
+- (void)setPinnedItemsCount:(NSInteger)pinnedItemsCount {
+    if(_pinnedItemsCount != pinnedItemsCount) {
+        _pinnedItemsCount = pinnedItemsCount;
+        [self reloadItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    }
+}
+
 - (NSUInteger)numberOfSections {
     return [_sections count];
 }
@@ -100,6 +107,9 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (NSString*)badgeTextAtIndexPath:(NSIndexPath*)indexPath {
+    if (indexPath.row == 0 && _pinnedItemsCount > 0) {
+        return [NSString stringWithFormat:@"%ld", (long)_pinnedItemsCount];
+    }
     if (indexPath.row == 1 && _unreadItemsCount > 0) {
         return [NSString stringWithFormat:@"%ld", (long)_unreadItemsCount];
     }

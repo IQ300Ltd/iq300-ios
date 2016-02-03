@@ -38,6 +38,7 @@
 
 - (void)notificationsAfterId:(NSNumber*)notificationId
                       unread:(NSNumber*)unread
+                      pinned:(NSNumber*)pinned
                         page:(NSNumber*)page
                          per:(NSNumber*)per
                         sort:(IQSortDirection)sort
@@ -45,6 +46,7 @@
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"id_more_than" : NSObjectNullForNil(notificationId),
                                                                   @"unread"       : NSObjectNullForNil(unread),
+                                                                  @"only_pinned"  : NSObjectNullForNil(pinned),
                                                                   @"page"         : NSObjectNullForNil(page),
                                                                   @"per"          : NSObjectNullForNil(per),
                                                                   }).mutableCopy;
@@ -60,6 +62,7 @@
 
 - (void)notificationsBeforeId:(NSNumber*)notificationId
                        unread:(NSNumber*)unread
+                       pinned:(NSNumber*)pinned
                          page:(NSNumber*)page
                           per:(NSNumber*)per
                          sort:(IQSortDirection)sort
@@ -67,6 +70,7 @@
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"id_less_than" : NSObjectNullForNil(notificationId),
                                                                   @"unread"       : NSObjectNullForNil(unread),
+                                                                  @"only_pinned"  : NSObjectNullForNil(pinned),
                                                                   @"page"         : NSObjectNullForNil(page),
                                                                   @"per"          : NSObjectNullForNil(per),
                                                                   }).mutableCopy;
@@ -82,6 +86,7 @@
 
 - (void)notificationsUpdatedAfter:(NSDate*)date
                            unread:(NSNumber*)unread
+                           pinned:(NSNumber*)pinned
                              page:(NSNumber*)page
                               per:(NSNumber*)per
                              sort:(IQSortDirection)sort
@@ -89,6 +94,7 @@
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
                                                                   @"updated_at_after" : NSObjectNullForNil(date),
                                                                   @"unread"           : NSObjectNullForNil(unread),
+                                                                  @"only_pinned"      : NSObjectNullForNil(pinned),
                                                                   @"page"             : NSObjectNullForNil(page),
                                                                   @"per"              : NSObjectNullForNil(per),
                                                                   }).mutableCopy;
@@ -165,6 +171,28 @@
 - (void)declineNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
                path:[NSString stringWithFormat:@"/api/v2/notifications/%@/decline", notificationId]
+         parameters:nil
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if(handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
+- (void)pinnedNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v2/notifications/%@/pin", notificationId]
+         parameters:nil
+            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                if(handler) {
+                    handler(success, responseData, error);
+                }
+            }];
+}
+
+- (void)unpinnedNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v2/notifications/%@/unpin", notificationId]
          parameters:nil
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if(handler) {

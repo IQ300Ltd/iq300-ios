@@ -14,6 +14,7 @@
 
 @property (nonatomic, readonly) NSString * title;
 @property (nonatomic, assign)   NSInteger unreadItemsCount;
+@property (nonatomic, assign)   NSInteger pinnedItemsCount;
 @property (nonatomic, weak)     id<IQTableModelDelegate> delegate;
 
 @end

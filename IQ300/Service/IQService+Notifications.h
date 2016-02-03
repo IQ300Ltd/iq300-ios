@@ -25,6 +25,7 @@
 
 - (void)notificationsAfterId:(NSNumber*)notificationId
                       unread:(NSNumber*)unread
+                      pinned:(NSNumber*)pinned
                         page:(NSNumber*)page
                          per:(NSNumber*)per
                         sort:(IQSortDirection)sort
@@ -32,6 +33,7 @@
 
 - (void)notificationsBeforeId:(NSNumber*)notificationId
                        unread:(NSNumber*)unread
+                       pinned:(NSNumber*)pinned
                          page:(NSNumber*)page
                           per:(NSNumber*)per
                          sort:(IQSortDirection)sort
@@ -39,6 +41,7 @@
 
 - (void)notificationsUpdatedAfter:(NSDate*)date
                            unread:(NSNumber*)unread
+                           pinned:(NSNumber*)pinned
                              page:(NSNumber*)page
                               per:(NSNumber*)per
                              sort:(IQSortDirection)sort
@@ -57,5 +60,9 @@
 - (void)acceptNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
 - (void)declineNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
+
+- (void)pinnedNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
+
+- (void)unpinnedNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler;
 
 @end

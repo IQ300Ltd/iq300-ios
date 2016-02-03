@@ -11,9 +11,15 @@
 @class IQNotification;
 @class IQNotificationCounters;
 
+typedef NS_ENUM(NSUInteger, IQNotificationsFilter) {
+    IQNotificationsFilterPinned = 0,
+    IQNotificationsFilterUnread = 1,
+    IQNotificationsFilterAll = 2
+};
+
 @interface NotificationsModel : NSObject<IQTableModel>
 
-@property (nonatomic, assign) BOOL loadUnreadOnly;
+@property (nonatomic, assign) IQNotificationsFilter filterType;
 @property (nonatomic, assign) CGFloat cellWidth;
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
@@ -39,6 +45,7 @@
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
 
 - (NSInteger)unreadItemsCount;
+- (NSInteger)pinnedItemsCount;
 
 - (void)markNotificationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion;
@@ -52,5 +59,8 @@
 - (void)acceptNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
 
 - (void)declineNotification:(IQNotification*)notification completion:(void (^)(NSError * error))completion;
+
+- (void)pinnedNotificationAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
+- (void)unpinnedNotificationAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion;
 
 @end

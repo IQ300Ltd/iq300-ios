@@ -28,6 +28,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     NSArray * _sortDescriptors;
     NSFetchedResultsController * _fetchController;
     NSInteger _unreadItemsCount;
+    NSInteger _pinnedItemsCount;
     __weak id _notfObserver;
 }
 
@@ -60,8 +61,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt"
                                                                     ascending:NO];
         _sortDescriptors = @[descriptor];
-        _loadUnreadOnly = YES;
-        _unreadItemsCount = 0;
+        _filterType = IQNotificationsFilterUnread;
     }
     return self;
 }
@@ -131,7 +131,8 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     else {
         NSNumber * notificationId = [self getLastIdFromTop:NO];
         [[IQService sharedService] notificationsBeforeId:notificationId
-                                                  unread:(_loadUnreadOnly) ? @(YES) : nil
+                                                  unread:(_filterType == IQNotificationsFilterUnread) ? @(YES) : @(NO)
+                                                  pinned:(_filterType == IQNotificationsFilterPinned) ? @(YES) : @(NO)
                                                     page:@(1)
                                                      per:@(_portionLenght)
                                                     sort:IQSortDirectionDescending
@@ -155,6 +156,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     [self updateCounters];
     [[IQService sharedService] notificationsUpdatedAfter:lastUpdatedDate
                                                   unread:@(NO)
+                                                  pinned:@(NO)
                                                     page:@(1)
                                                      per:@(_portionLenght)
                                                     sort:(lastUpdatedDate) ? IQSortDirectionAscending : IQSortDirectionDescending
@@ -187,6 +189,10 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     return _unreadItemsCount;
 }
 
+- (NSInteger)pinnedItemsCount {
+    return _pinnedItemsCount;
+}
+
 - (void)markNotificationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
     IQNotification * item = [self itemAtIndexPath:indexPath];
     [[IQService sharedService] markNotificationAsRead:item.notificationId
@@ -200,7 +206,8 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                       }
                                                       
                                                       [self updateCountersWithCompletion:^(IQNotificationCounters *counters, NSError *error) {
-                                                          if(self.loadUnreadOnly && _unreadItemsCount > 0 &&
+                                                          if(((_filterType == IQNotificationsFilterUnread && _unreadItemsCount > 0) ||
+                                                              (_filterType == IQNotificationsFilterPinned && _pinnedItemsCount > 0)) &&
                                                              [_fetchController.fetchedObjects count] == 0) {
                                                               [self loadNextPartWithCompletion:nil];
                                                           }
@@ -217,7 +224,8 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         if(success) {
             [self markAllLocalNotificationAsRead];
             [self updateCountersWithCompletion:^(IQNotificationCounters *counters, NSError *error) {
-                if(self.loadUnreadOnly && _unreadItemsCount > 0 &&
+                if(((_filterType == IQNotificationsFilterUnread && _unreadItemsCount > 0) ||
+                    (_filterType == IQNotificationsFilterPinned && _pinnedItemsCount > 0)) &&
                    [_fetchController.fetchedObjects count] == 0) {
                     [self loadNextPartWithCompletion:nil];
                 }
@@ -233,6 +241,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     [[IQService sharedService] notificationsCountWithHandler:^(BOOL success, IQNotificationCounters * counter, NSData *responseData, NSError *error) {
         if(success) {
             _unreadItemsCount = [counter.unreadCount integerValue];
+            _pinnedItemsCount = [counter.pinnedCount integerValue];
             [self modelCountersDidChanged];
         }
         if(completion) {
@@ -289,11 +298,54 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                  }];
 }
 
+- (void)pinnedNotificationAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
+    IQNotification * item = [self itemAtIndexPath:indexPath];
+    [[IQService sharedService] pinnedNotificationWithId:item.notificationId
+                                                handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                    if(success) {
+                                                        item.isPinned = @(YES);
+                                                        
+                                                        NSError *saveError = nil;
+                                                        if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
+                                                            NSLog(@"Save notification error: %@", saveError);
+                                                        }
+                                                        
+                                                        [self updateCountersWithCompletion:^(IQNotificationCounters *counters, NSError *error) {
+                                                        }];
+                                                    }
+                                                    if(completion) {
+                                                        completion(error);
+                                                    }
+                                                }];
+}
+
+- (void)unpinnedNotificationAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
+    IQNotification * item = [self itemAtIndexPath:indexPath];
+    [[IQService sharedService] unpinnedNotificationWithId:item.notificationId
+                                                  handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                      if(success) {
+                                                          item.isPinned = @(NO);
+                                                          
+                                                          NSError *saveError = nil;
+                                                          if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
+                                                              NSLog(@"Save notification error: %@", saveError);
+                                                          }
+                                                          
+                                                          [self updateCountersWithCompletion:^(IQNotificationCounters *counters, NSError *error) {
+                                                          }];
+                                                      }
+                                                      if(completion) {
+                                                          completion(error);
+                                                      }
+                                                  }];
+}
+
 #pragma mark - Private methods
 
 - (void)notificationsUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] notificationsUpdatedAfter:lastUpdatedDate
                                                   unread:@(NO)
+                                                  pinned:@(NO)
                                                     page:page
                                                      per:@(_portionLenght)
                                                     sort:IQSortDirectionAscending
@@ -379,11 +431,16 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     
     NSString * predicateFormat = @"ownerId = %@";
     NSPredicate * predicate = [NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId];
-    if(_loadUnreadOnly) {
+
+    if(_filterType == IQNotificationsFilterUnread) {
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
     }
-    
+    else if(_filterType == IQNotificationsFilterPinned) {
+        NSPredicate * pinnedCondition = [NSPredicate predicateWithFormat:@"(isPinned == YES)"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[pinnedCondition, predicate]];
+    }
+
     NSError * fetchError = nil;
     [_fetchController.fetchRequest setPredicate:predicate];
     [_fetchController.fetchRequest setSortDescriptors:_sortDescriptors];
@@ -413,9 +470,13 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     NSString * predicateFormat = @"ownerId = %@";
     NSPredicate * predicate = [NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId];
 
-    if(_loadUnreadOnly) {
+    if(_filterType == IQNotificationsFilterUnread) {
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
+    }
+    else if(_filterType == IQNotificationsFilterPinned) {
+        NSPredicate * pinnedCondition = [NSPredicate predicateWithFormat:@"(isPinned == YES)"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[pinnedCondition, predicate]];
     }
     
     [fetchRequest setPredicate:predicate];
@@ -441,7 +502,8 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
     NSNumber * lastLoadedId = [self getLastIdFromTop:YES];
     [[IQService sharedService] notificationsBeforeId:lastLoadedId
-                                              unread:(_loadUnreadOnly) ? @(YES) : nil
+                                              unread:(_filterType == IQNotificationsFilterUnread) ? @(YES) : @(NO)
+                                              pinned:(_filterType == IQNotificationsFilterPinned) ? @(YES) : @(NO)
                                                 page:@(1)
                                                  per:@(_portionLenght)
                                                 sort:IQSortDirectionDescending
