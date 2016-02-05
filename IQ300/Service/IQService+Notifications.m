@@ -63,16 +63,18 @@
 - (void)notificationsBeforeId:(NSNumber*)notificationId
                        unread:(NSNumber*)unread
                        pinned:(NSNumber*)pinned
+                withoutPinned:(NSNumber*)withoutPinned
                          page:(NSNumber*)page
                           per:(NSNumber*)per
                          sort:(IQSortDirection)sort
                       handler:(ObjectRequestCompletionHandler)handler {
     NSMutableDictionary * parameters = IQParametersExcludeEmpty(@{
-                                                                  @"id_less_than" : NSObjectNullForNil(notificationId),
-                                                                  @"unread"       : NSObjectNullForNil(unread),
-                                                                  @"only_pinned"  : NSObjectNullForNil(pinned),
-                                                                  @"page"         : NSObjectNullForNil(page),
-                                                                  @"per"          : NSObjectNullForNil(per),
+                                                                  @"id_less_than"   : NSObjectNullForNil(notificationId),
+                                                                  @"unread"         : NSObjectNullForNil(unread),
+                                                                  @"only_pinned"    : NSObjectNullForNil(pinned),
+                                                                  @"without_pinned" : NSObjectNullForNil(withoutPinned),
+                                                                  @"page"           : NSObjectNullForNil(page),
+                                                                  @"per"            : NSObjectNullForNil(per),
                                                                   }).mutableCopy;
     
     if(sort != IQSortDirectionNo) {
@@ -87,6 +89,7 @@
 - (void)notificationsUpdatedAfter:(NSDate*)date
                            unread:(NSNumber*)unread
                            pinned:(NSNumber*)pinned
+                    withoutPinned:(NSNumber*)withoutPinned
                              page:(NSNumber*)page
                               per:(NSNumber*)per
                              sort:(IQSortDirection)sort
@@ -95,6 +98,7 @@
                                                                   @"updated_at_after" : NSObjectNullForNil(date),
                                                                   @"unread"           : NSObjectNullForNil(unread),
                                                                   @"only_pinned"      : NSObjectNullForNil(pinned),
+                                                                  @"without_pinned"   : NSObjectNullForNil(withoutPinned),
                                                                   @"page"             : NSObjectNullForNil(page),
                                                                   @"per"              : NSObjectNullForNil(per),
                                                                   }).mutableCopy;

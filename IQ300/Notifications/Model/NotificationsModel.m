@@ -131,8 +131,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     else {
         NSNumber * notificationId = [self getLastIdFromTop:NO];
         [[IQService sharedService] notificationsBeforeId:notificationId
-                                                  unread:(_filterType == IQNotificationsFilterUnread) ? @(YES) : @(NO)
-                                                  pinned:(_filterType == IQNotificationsFilterPinned) ? @(YES) : @(NO)
+                                                  unread:(_filterType == IQNotificationsFilterUnread) ? @(YES) : nil
+                                                  pinned:(_filterType == IQNotificationsFilterPinned) ? @(YES) : nil
+                                           withoutPinned:(_filterType != IQNotificationsFilterPinned) ? @(YES) : nil
                                                     page:@(1)
                                                      per:@(_portionLenght)
                                                     sort:IQSortDirectionDescending
@@ -155,8 +156,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
     [self updateCounters];
     [[IQService sharedService] notificationsUpdatedAfter:lastUpdatedDate
-                                                  unread:@(NO)
-                                                  pinned:@(NO)
+                                                  unread:(_filterType == IQNotificationsFilterUnread) ? @(YES) : nil
+                                                  pinned:(_filterType == IQNotificationsFilterPinned) ? @(YES) : nil
+                                           withoutPinned:(_filterType != IQNotificationsFilterPinned) ? @(YES) : nil
                                                     page:@(1)
                                                      per:@(_portionLenght)
                                                     sort:(lastUpdatedDate) ? IQSortDirectionAscending : IQSortDirectionDescending
@@ -344,8 +346,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)notificationsUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] notificationsUpdatedAfter:lastUpdatedDate
-                                                  unread:@(NO)
-                                                  pinned:@(NO)
+                                                  unread:(_filterType == IQNotificationsFilterUnread) ? @(YES) : nil
+                                                  pinned:(_filterType == IQNotificationsFilterPinned) ? @(YES) : nil
+                                           withoutPinned:(_filterType != IQNotificationsFilterPinned) ? @(YES) : nil
                                                     page:page
                                                      per:@(_portionLenght)
                                                     sort:IQSortDirectionAscending
@@ -436,8 +439,13 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
     }
-    else if(_filterType == IQNotificationsFilterPinned) {
+
+    if(_filterType == IQNotificationsFilterPinned) {
         NSPredicate * pinnedCondition = [NSPredicate predicateWithFormat:@"(isPinned == YES)"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[pinnedCondition, predicate]];
+    }
+    else {
+        NSPredicate * pinnedCondition = [NSPredicate predicateWithFormat:@"(isPinned == NO)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[pinnedCondition, predicate]];
     }
 
@@ -474,8 +482,13 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
         NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"(readed == NO || hasActions == YES)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
     }
-    else if(_filterType == IQNotificationsFilterPinned) {
+    
+    if(_filterType == IQNotificationsFilterPinned) {
         NSPredicate * pinnedCondition = [NSPredicate predicateWithFormat:@"(isPinned == YES)"];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[pinnedCondition, predicate]];
+    }
+    else {
+        NSPredicate * pinnedCondition = [NSPredicate predicateWithFormat:@"(isPinned == NO)"];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[pinnedCondition, predicate]];
     }
     
@@ -502,8 +515,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
     NSNumber * lastLoadedId = [self getLastIdFromTop:YES];
     [[IQService sharedService] notificationsBeforeId:lastLoadedId
-                                              unread:(_filterType == IQNotificationsFilterUnread) ? @(YES) : @(NO)
-                                              pinned:(_filterType == IQNotificationsFilterPinned) ? @(YES) : @(NO)
+                                              unread:(_filterType == IQNotificationsFilterUnread) ? @(YES) : nil
+                                              pinned:(_filterType == IQNotificationsFilterPinned) ? @(YES) : nil
+                                       withoutPinned:(_filterType != IQNotificationsFilterPinned) ? @(YES) : nil
                                                 page:@(1)
                                                  per:@(_portionLenght)
                                                 sort:IQSortDirectionDescending

@@ -34,6 +34,7 @@
 - (void)notificationsBeforeId:(NSNumber*)notificationId
                        unread:(NSNumber*)unread
                        pinned:(NSNumber*)pinned
+                withoutPinned:(NSNumber*)withoutPinned
                          page:(NSNumber*)page
                           per:(NSNumber*)per
                          sort:(IQSortDirection)sort
@@ -42,6 +43,7 @@
 - (void)notificationsUpdatedAfter:(NSDate*)date
                            unread:(NSNumber*)unread
                            pinned:(NSNumber*)pinned
+                    withoutPinned:(NSNumber*)withoutPinned
                              page:(NSNumber*)page
                               per:(NSNumber*)per
                              sort:(IQSortDirection)sort
