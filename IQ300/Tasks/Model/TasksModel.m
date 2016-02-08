@@ -331,7 +331,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                           search:self.search
                                             sort:_sort
                                          handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
-                                             if(success && holder.currentPage < holder.totalPages) {
+                                             if(success && [holder.currentPage compare:holder.totalPages] == NSOrderedAscending) {
                                                  [self tasksUpdatesAfterDate:lastUpdatedDate
                                                                         page:@([page integerValue] + 1)
                                                                   completion:completion];
@@ -364,7 +364,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                           search:self.search
                                             sort:_sort
                                          handler:^(BOOL success, IQTasksHolder * holder, NSData *responseData, NSError *error) {
-                                             if(success && holder.currentPage < holder.totalPages) {
+                                             if(success && [holder.currentPage compare:holder.totalPages] == NSOrderedAscending) {
                                                  [self otherFoldersUpdatesAfterDate:lastUpdatedDate
                                                                                page:@([page integerValue] + 1)
                                                                          completion:completion];
