@@ -345,6 +345,9 @@
             [self.navigationController pushViewController:controller
                                                  animated:YES];
         }
+        else {
+            [self proccessServiceError:error];
+        }
     }];
 }
 

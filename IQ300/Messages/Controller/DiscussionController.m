@@ -908,6 +908,7 @@
                                                        [self.tableView reloadData];
                                                        [self.navigationController popViewControllerAnimated:YES];
                                                    }
+                                                   [self proccessServiceError:error];
                                                }];
     }
 }

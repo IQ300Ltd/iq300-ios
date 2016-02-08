@@ -220,6 +220,7 @@
                 if (!error) {
                     [self.navigationController popViewControllerAnimated:YES];
                 }
+                [self proccessServiceError:error];
             }];
         });
     }
