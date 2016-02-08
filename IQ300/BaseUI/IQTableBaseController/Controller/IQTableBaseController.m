@@ -40,6 +40,17 @@
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    
+    if([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
+    if([self.tableView respondsToSelector:@selector(setCellLayoutMarginsFollowReadableWidth:)])
+    {
+        self.tableView.cellLayoutMarginsFollowReadableWidth = NO;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
