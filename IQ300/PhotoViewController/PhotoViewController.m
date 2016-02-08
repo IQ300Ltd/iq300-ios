@@ -162,6 +162,7 @@
     if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
         if (_popoverController) {
             [_popoverController dismissPopoverAnimated:NO];
+            _popoverController = nil;
         }
     }
     else {
@@ -174,6 +175,16 @@
 }
 
 - (void)shareAction:(id)sender {
+#ifdef IPAD
+    if (SYSTEM_VERSION_LESS_THAN(@"8.0") && _popoverController) {
+        [_popoverController dismissPopoverAnimated:YES];
+        _popoverController = nil;
+    }
+    else if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") && self.presentedViewController){
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+    else {
+#endif
     SDWebImageManager *manager = [SDWebImageManager sharedManager];
     NSString *key = [manager cacheKeyForURL:_imageView.sd_imageURL];
 
@@ -199,6 +210,10 @@
     
 #else
     [self presentViewController:controller animated:YES completion:nil];
+#endif
+        
+#ifdef IPAD 
+    }
 #endif
 
 }
