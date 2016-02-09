@@ -178,7 +178,7 @@
                                              leftDrawerViewController:leftDrawer];
     self.drawerController = drawerController;
     [self.drawerController setRestorationIdentifier:@"MMDrawer"];
-    [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
+    [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeCustom];
     [self.drawerController setMaximumLeftDrawerWidth:MENU_WIDTH];
     [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModePanningDrawerView |
      MMCloseDrawerGestureModePanningCenterView];
@@ -191,7 +191,7 @@
             [gesture isKindOfClass:[UIPanGestureRecognizer class]]) {
             
             UIView * centerView = drawerController.centerViewController.view;
-            CGRect rect = UIEdgeInsetsInsetRect(centerView.frame, UIEdgeInsetsMake(0.0, 0.0, 0.0, centerView.frame.size.width * 0.60f));
+            CGRect rect = UIEdgeInsetsInsetRect(centerView.frame, UIEdgeInsetsMake(0.0, 0.0, 0.0, centerView.frame.size.width * 0.80f));
             if (CGRectContainsPoint(rect, [touch locationInView:centerView])) {
                 return YES;
             }

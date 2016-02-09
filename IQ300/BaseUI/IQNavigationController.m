@@ -89,7 +89,7 @@
                                                    animated:YES];
     }
     
-    [self.mm_drawerController setOpenDrawerGestureModeMask:(isLeftMenuEnabled) ? MMOpenDrawerGestureModeAll :
+    [self.mm_drawerController setOpenDrawerGestureModeMask:(isLeftMenuEnabled) ? MMOpenDrawerGestureModeCustom :
                                                                                  MMOpenDrawerGestureModeNone];
 #endif
 }
