@@ -272,13 +272,15 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                    handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
                                                        if(!error) {
                                                            [self updateDefaultStatusesForComments:comments];
-                                                           [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
-                                                               if (!error) {
-                                                                   [self modelDidChanged];
-                                                                   [self clearRemovedComments];
-                                                               }
-                                                           }];
                                                        }
+                                                       
+                                                       [self reloadModelSourceControllerWithCompletion:^(NSError * fetchError) {
+                                                           if (!error) {
+                                                               [self clearRemovedComments];
+                                                           }
+                                                           [self modelDidChanged];
+                                                       }];
+
                                                        if(completion) {
                                                            completion(error);
                                                        }
