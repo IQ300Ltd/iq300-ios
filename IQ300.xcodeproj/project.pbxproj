@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2DA55D691C69BEFA00A880D4 /* document_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DA55D681C69BEFA00A880D4 /* document_placeholder.png */; };
+		2DA55D6A1C69BEFA00A880D4 /* document_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DA55D681C69BEFA00A880D4 /* document_placeholder.png */; };
+		2DA55D751C6A045C00A880D4 /* IQAttachmentButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA55D741C6A045C00A880D4 /* IQAttachmentButton.m */; };
+		2DA55D761C6A045C00A880D4 /* IQAttachmentButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA55D741C6A045C00A880D4 /* IQAttachmentButton.m */; };
+		2DA55D791C6A04EF00A880D4 /* IQAttachmentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA55D781C6A04EF00A880D4 /* IQAttachmentsView.m */; };
+		2DA55D7A1C6A04EF00A880D4 /* IQAttachmentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA55D781C6A04EF00A880D4 /* IQAttachmentsView.m */; };
 		2DAF335B1C6085C200554211 /* SharingViewControllerFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF335A1C6085C200554211 /* SharingViewControllerFactory.m */; };
 		2DAF335C1C6085C200554211 /* SharingViewControllerFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF335A1C6085C200554211 /* SharingViewControllerFactory.m */; };
 		2DAF33651C6087C600554211 /* IQOpenInActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF33601C6087C600554211 /* IQOpenInActivity.m */; };
@@ -816,6 +822,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2DA55D681C69BEFA00A880D4 /* document_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = document_placeholder.png; sourceTree = "<group>"; };
+		2DA55D731C6A045C00A880D4 /* IQAttachmentButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachmentButton.h; sourceTree = "<group>"; };
+		2DA55D741C6A045C00A880D4 /* IQAttachmentButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachmentButton.m; sourceTree = "<group>"; };
+		2DA55D771C6A04EF00A880D4 /* IQAttachmentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachmentsView.h; sourceTree = "<group>"; };
+		2DA55D781C6A04EF00A880D4 /* IQAttachmentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachmentsView.m; sourceTree = "<group>"; };
 		2DAF33581C6071EE00554211 /* SharingConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingConstants.h; sourceTree = "<group>"; };
 		2DAF33591C6085C200554211 /* SharingViewControllerFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharingViewControllerFactory.h; sourceTree = "<group>"; };
 		2DAF335A1C6085C200554211 /* SharingViewControllerFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingViewControllerFactory.m; sourceTree = "<group>"; };
@@ -1954,6 +1965,7 @@
 		736B6BCE1A0B5BCB00034D9B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2DA55D681C69BEFA00A880D4 /* document_placeholder.png */,
 				731526FD1C6219D90077E0BD /* Notifications */,
 				2DAF33791C60AD1500554211 /* Sharing */,
 				738FE6E21A162B10009F26A2 /* TabBar */,
@@ -1988,6 +2000,10 @@
 		736B6BE31A0B833900034D9B /* BaseUI */ = {
 			isa = PBXGroup;
 			children = (
+				2DA55D771C6A04EF00A880D4 /* IQAttachmentsView.h */,
+				2DA55D781C6A04EF00A880D4 /* IQAttachmentsView.m */,
+				2DA55D731C6A045C00A880D4 /* IQAttachmentButton.h */,
+				2DA55D741C6A045C00A880D4 /* IQAttachmentButton.m */,
 				73176C941B3ADDD700E6AC60 /* Cells */,
 				73B9EA001ADCF9DF00159A66 /* IQTableBaseController */,
 				73176C8D1B3ADD0800E6AC60 /* IQSelectionController */,
@@ -2458,6 +2474,7 @@
 				739850BE1A2DB05400DB5B21 /* MessagesView.m */,
 				739C3B661A3086B90032C057 /* DiscussionView.h */,
 				739C3B671A3086BA0032C057 /* DiscussionView.m */,
+				739C3B611A3076D60032C057 /* CommentCell.m */,
 				73A949A71A38632C008EC469 /* ConversationCell.h */,
 				73A949A81A38632C008EC469 /* ConversationCell.m */,
 				7382CA931A4566BD00D5EE1F /* CSectionHeaderView.h */,
@@ -2468,7 +2485,6 @@
 				737136331B53A4F60043B87B /* ContactInfoCell.m */,
 				73D256F01B66040D00EBE118 /* IQCommentCell.h */,
 				739C3B601A3076D60032C057 /* CommentCell.h */,
-				739C3B611A3076D60032C057 /* CommentCell.m */,
 				73D256EC1B6603AC00EBE118 /* SystemCommentCell.h */,
 				73D256ED1B6603AC00EBE118 /* SystemCommentCell.m */,
 				73ADA8EA1A36FD680032C1FA /* ContactCell.h */,
@@ -3156,6 +3172,7 @@
 				73840ED01B1C75A500BCEAFC /* delete_ico@2x.png in Resources */,
 				73840ED21B1C75A500BCEAFC /* top_header_bg.png in Resources */,
 				73415D041BCE332C0042DD09 /* Launch Screen.storyboard in Resources */,
+				2DA55D6A1C69BEFA00A880D4 /* document_placeholder.png in Resources */,
 				2DAF33861C60AD2600554211 /* open_in_icon@3x.png in Resources */,
 				73840ED31B1C75A500BCEAFC /* msg_error@2x.png in Resources */,
 				73865C201B20688A00118292 /* messages_tab_selected.png in Resources */,
@@ -3282,6 +3299,7 @@
 				73B9EA1E1ADD2DA800159A66 /* calendar_accessory_image@2x.png in Resources */,
 				73F2A5501A39AB3000E9D324 /* attach_ico.png in Resources */,
 				738916BE1ABAFB800017EF86 /* gray_checked_checkbox@2x.png in Resources */,
+				2DA55D691C69BEFA00A880D4 /* document_placeholder.png in Resources */,
 				7398F78E1B4D07B40009EAD1 /* conference_icon.png in Resources */,
 				731170801AB80AFF008A4D09 /* task_history_tab.png in Resources */,
 				73D3DF2B1AF11542000DD34F /* clear_button_icon.png in Resources */,
@@ -3568,6 +3586,7 @@
 				73840DFE1B1C75A500BCEAFC /* GAIService.m in Sources */,
 				73840E001B1C75A500BCEAFC /* IQSession.m in Sources */,
 				73840E011B1C75A500BCEAFC /* IQService+Tasks.m in Sources */,
+				2DA55D7A1C6A04EF00A880D4 /* IQAttachmentsView.m in Sources */,
 				73840E021B1C75A500BCEAFC /* MenuSectionHeader.m in Sources */,
 				2DAF335C1C6085C200554211 /* SharingViewControllerFactory.m in Sources */,
 				73840E031B1C75A500BCEAFC /* TaskActivitiesModel.m in Sources */,
@@ -3692,6 +3711,7 @@
 				73B561651B42B02B00A883DC /* FeedbackController.m in Sources */,
 				73840E5F1B1C75A500BCEAFC /* TasksMenuCounters.m in Sources */,
 				73840E601B1C75A500BCEAFC /* TaskCommunityCell.m in Sources */,
+				2DA55D761C6A045C00A880D4 /* IQAttachmentButton.m in Sources */,
 				73840E611B1C75A500BCEAFC /* ExtendedButton.m in Sources */,
 				73840E621B1C75A500BCEAFC /* TAttachmentCell.m in Sources */,
 				73840E631B1C75A500BCEAFC /* CommentsModel.m in Sources */,
@@ -3770,6 +3790,7 @@
 				73D7F1E41ADE94B400023120 /* TActivityItemCell.m in Sources */,
 				73C16C7A1AEF9CF500155BB1 /* TInfoExpandableLineView.m in Sources */,
 				7399F9341ABC3A240013FA11 /* PhotoViewController.m in Sources */,
+				2DA55D751C6A045C00A880D4 /* IQAttachmentButton.m in Sources */,
 				73A87EF91AA4597800C4A7C3 /* NotificationsHelper.m in Sources */,
 				73176C921B3ADD4D00E6AC60 /* IQSelectionController.m in Sources */,
 				730BE3EF1B3D1EE900E26994 /* IQService+Feedback.m in Sources */,
@@ -3866,6 +3887,7 @@
 				73B9EA0B1ADCFE9F00159A66 /* IQTableManagedModel.m in Sources */,
 				734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */,
 				731DEEC81A2F11A1002F5FEB /* MessagesModel.m in Sources */,
+				2DA55D791C6A04EF00A880D4 /* IQAttachmentsView.m in Sources */,
 				739850E61A2E023D00DB5B21 /* IQService+Messages.m in Sources */,
 				73D7F1CE1ADE93D600023120 /* TaskMembersModel.m in Sources */,
 				73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */,

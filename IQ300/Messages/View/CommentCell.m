@@ -13,9 +13,11 @@
 #import "IQBadgeView.h"
 #import "IQConversation.h"
 #import "IQSession.h"
+#import "IQAttachmentsView.h"
 
 #define CONTENT_INSET 8.0f
-#define ATTACHMENT_VIEW_HEIGHT 15.0f
+#define ATTACHMENTS_VIEW_HEIGHT 110.0f
+
 #define DESCRIPTION_PADDING 7
 #define DESCRIPTION_LEFT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
 #define DESCRIPTION_RIGHT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
@@ -49,7 +51,6 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 @interface CommentCell() {
     BOOL _commentIsMine;
     UIImageView * _bubbleImageView;
-    NSMutableArray * _attachButtons;
     UITapGestureRecognizer * _singleTapGesture;
     UIView * _separatorView;
 }
@@ -119,11 +120,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
             height = MIN(height, COLLAPSED_COMMENT_CELL_MAX_HEIGHT);
 
             if(canExpand) {
-                height += ATTACHMENT_VIEW_HEIGHT + CONTENT_OFFSET * 2.0f;
+                height += 15.0f + CONTENT_OFFSET * 2.0f;
             }
         }
         else {
-            height += ATTACHMENT_VIEW_HEIGHT + CONTENT_OFFSET;
+            height += 15.0f + CONTENT_OFFSET;
         }
     }
     else {
@@ -136,7 +137,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 
     BOOL hasAttachment = ([item.attachments count] > 0);
     if(hasAttachment) {
-        height += (ATTACHMENT_VIEW_HEIGHT + CONTENT_OFFSET) * item.attachments.count;
+        height += ATTACHMENTS_VIEW_HEIGHT + CONTENT_OFFSET;
     }
     
     return height;
@@ -170,7 +171,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         UIView * contentView = self.contentView;
         [self setBackgroundColor:[UIColor clearColor]];
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-       
+    
         _contentInsets = UIEdgeInsetsMake(0.0f, CONTENT_INSET, 0.0f, CONTENT_INSET);
         
         _timeLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
@@ -257,14 +258,15 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         [_expandButton setHidden:YES];
         [contentView addSubview:_expandButton];
         
-        _attachButtons = [NSMutableArray array];
+        _attachmentsView = [[IQAttachmentsView alloc] initWithFrame:CGRectZero];
+        [contentView addSubview:_attachmentsView];
     }
     
     return self;
 }
 
 - (NSArray*)attachButtons {
-    return [_attachButtons copy];
+    return [_attachmentsView attachmentButtons];
 }
 
 - (void)layoutSubviews {
@@ -328,8 +330,8 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         contentRect.size.height -= USER_INFO_HEIGHT;
     }
     
-    CGFloat expandViewHeight = (hasExpandView) ? ATTACHMENT_VIEW_HEIGHT + CONTENT_OFFSET : 0.0f;
-    CGFloat attachmentRectHeight = (hasAttachment) ? (ATTACHMENT_VIEW_HEIGHT + CONTENT_OFFSET) * [_attachButtons count] : 0.0f;
+    CGFloat expandViewHeight = (hasExpandView) ? 15.0f + CONTENT_OFFSET : 0.0f;
+    CGFloat attachmentRectHeight = (hasAttachment) ? ATTACHMENTS_VIEW_HEIGHT + CONTENT_OFFSET : 0.0f;
     CGFloat descriptioHeight =  (contentRect.size.height - DESCRIPTION_PADDING * 2) - attachmentRectHeight - expandViewHeight;
     
     _descriptionTextView.frame = CGRectMake(contentRect.origin.x + DESCRIPTION_PADDING,
@@ -341,28 +343,22 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + CONTENT_OFFSET,
                                          CGRectBottom(_descriptionTextView.frame) + CONTENT_OFFSET,
                                          (IS_IPAD) ? 100.0f : 90.0f,
-                                         ATTACHMENT_VIEW_HEIGHT);
+                                         15.0f);
     }
     
     if(hasAttachment) {
+        CGFloat attachmentX = _descriptionTextView.frame.origin.x;
         CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + CONTENT_OFFSET :
-                                                    contentRect.origin.y + CONTENT_OFFSET;
+        contentRect.origin.y + CONTENT_OFFSET;
         
         if(hasExpandView) {
             attachButtonY = CGRectBottom(_expandButton.frame) + CONTENT_OFFSET;
         }
         
-        CGSize constrainedSize = CGSizeMake(_descriptionTextView.frame.size.width, ATTACHMENT_VIEW_HEIGHT);
-        CGFloat attachmentX = _descriptionTextView.frame.origin.x;
-        for (UIButton * attachButton in _attachButtons) {
-            CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
-            attachButton.frame = CGRectMake(attachmentX,
-                                            attachButtonY,
-                                            MIN(attachmentSize.width + 5.0f, _descriptionTextView.frame.size.width),
-                                            attachmentSize.height);
-            
-            attachButtonY = CGRectBottom(attachButton.frame) + CONTENT_OFFSET;
-        }
+        [_attachmentsView setFrame:CGRectMake(attachmentX, attachButtonY, _descriptionTextView.frame.size.width, ATTACHMENTS_VIEW_HEIGHT)];
+    }
+    else {
+        [_attachmentsView setFrame:CGRectZero];
     }
 }
 
@@ -417,45 +413,10 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
     _descriptionTextView.attributedText = [self formatedTextFromText:_item.body];
     
-    BOOL hasAttachment = ([_item.attachments count] > 0);
-    if(hasAttachment) {
-        CGFloat attachFontSize = (IS_IPAD) ? 12 : 11.0f;
-        UIColor * titleColor = [UIColor colorWithHexInt:0x358bae];
-        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x224f60];
-        UIImage * bacgroundImage = [UIImage imageNamed:@"attach_ico.png"];
-        for (IQAttachment * attachment in _item.attachments) {
-            UIButton * attachButton = [[UIButton alloc] init];
-            [attachButton setImage:bacgroundImage forState:UIControlStateNormal];
-            [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:attachFontSize]];
-            [attachButton setTitleColor:titleColor forState:UIControlStateNormal];
-            [attachButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
-            [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
-            attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-
-            NSDictionary *underlineAttribute = @{
-                                                 NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:attachFontSize],
-                                                 NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                                                 NSForegroundColorAttributeName : titleColor
-                                                 };
-            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
-                                                                             attributes:underlineAttribute]
-                                    forState:UIControlStateNormal];
-            
-            underlineAttribute = @{
-                                   NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:attachFontSize],
-                                   NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                                   NSForegroundColorAttributeName : titleHighlightedColor
-                                   };
-            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
-                                                                             attributes:underlineAttribute]
-                                    forState:UIControlStateHighlighted];
-
-            
-            [self.contentView addSubview:attachButton];
-            [_attachButtons addObject:attachButton];
-        }
+    if (item.attachments.count > 0) {
+        [_attachmentsView setItems:[_item.attachments allObjects] isMine:_commentIsMine];
     }
-
+    
     [self setStatus:[_item.commentStatus integerValue]];
     [_statusImageView setHidden:!_commentIsMine];
     [self setBubbleImageForStyle:(_commentIsMine) ? CommentCellStyleRight : CommentCellStyleLeft];
@@ -481,20 +442,19 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     [_descriptionTextView setTextColor:DESCRIPTION_RIGHT_TEXT_COLOR];
 
     [self setStatus:IQCommentStatusUnknown];
-    for (UIButton * attachButton in _attachButtons) {
+    for (UIButton * attachButton in [_attachmentsView attachmentButtons]) {
         [attachButton removeTarget:nil
                             action:NULL
                   forControlEvents:UIControlEventTouchUpInside];
     }
+    
+    [_attachmentsView setItems:nil isMine:NO];
     
     [self setExpandButtonTitle:@"Show all"];
     [_expandButton setHidden:YES];
     [_expandButton removeTarget:nil
                          action:NULL
                forControlEvents:UIControlEventTouchUpInside];
-    
-    [_attachButtons makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    [_attachButtons removeAllObjects];
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {
