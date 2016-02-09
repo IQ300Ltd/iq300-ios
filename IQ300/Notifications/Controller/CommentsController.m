@@ -110,6 +110,7 @@
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
          [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
+             [self proccessServiceError:error];
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
@@ -533,6 +534,9 @@
     IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:[[SharingAttachment alloc] initWithPath:attachment.localURL
                                                                                                                             displayName:attachment.displayName
                                                                                                                             contentType:attachment.contentType]];
+    if (![attachment.contentType hasPrefix:@"video"]) {
+        controller.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+    }
     controller.delegate = self;
     controller.documentInteractionControllerRect = rect;
     

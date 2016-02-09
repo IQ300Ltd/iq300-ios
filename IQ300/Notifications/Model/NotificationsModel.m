@@ -353,7 +353,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                      per:@(_portionLenght)
                                                     sort:IQSortDirectionAscending
                                                  handler:^(BOOL success, IQNotificationsHolder * holder, NSData *responseData, NSError *error) {
-                                                     if(success && holder.currentPage < holder.totalPages) {
+                                                     if(success && [holder.currentPage compare:holder.totalPages] == NSOrderedAscending) {
                                                          [self notificationsUpdatesAfterDate:lastUpdatedDate
                                                                                         page:@([page integerValue] + 1)
                                                                                   completion:completion];

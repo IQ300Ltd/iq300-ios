@@ -148,7 +148,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                                                  per:@(_portionLenght)
                                               search:self.search
                                              handler:^(BOOL success, IQFeedbacksHolder * holder, NSData *responseData, NSError *error) {
-                                                 if(success && holder.currentPage < holder.totalPages) {
+                                                 if(success && [holder.currentPage compare:holder.totalPages] == NSOrderedAscending) {
                                                      [self feedbacksUpdatesAfterDate:lastUpdatedDate
                                                                                 page:@([page integerValue] + 1)
                                                                           completion:completion];

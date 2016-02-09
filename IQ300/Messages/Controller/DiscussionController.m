@@ -567,6 +567,9 @@
     IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:[[SharingAttachment alloc] initWithPath:attachment.localURL
                                                                                                                             displayName:attachment.displayName
                                                                                                                             contentType:attachment.contentType]];
+    if (![attachment.contentType hasPrefix:@"video"]) {
+        controller.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+    }
     controller.delegate = self;
     controller.documentInteractionControllerRect = rect;
 
@@ -905,6 +908,7 @@
                                                        [self.tableView reloadData];
                                                        [self.navigationController popViewControllerAnimated:YES];
                                                    }
+                                                   [self proccessServiceError:error];
                                                }];
     }
 }
