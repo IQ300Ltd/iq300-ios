@@ -32,6 +32,9 @@
         
         self.layer.borderColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.5f].CGColor;
         self.layer.borderWidth = 0.5f;
+        
+        _defaultColor = [UIColor colorWithHexInt:0xcaddee];
+        _mineColor = [UIColor colorWithHexInt:0xe0e0e0];
     }
     return self;
 }
@@ -67,7 +70,7 @@
         [_customImageView setImage:plasehodler];
     }
     
-    self.backgroundColor = [UIColor colorWithHexInt:isMine ? 0xe0e0e0 : 0xcaddee];
+    self.backgroundColor = isMine ? _mineColor : _defaultColor;
     
     [_label setText:attachment.displayName];
     

@@ -15,6 +15,9 @@
 @property (nonatomic, strong) UIImageView *customImageView;
 @property (nonatomic, strong) UILabel *label;
 
+@property (nonatomic, strong) UIColor *defaultColor;
+@property (nonatomic, strong) UIColor *mineColor;
+
 - (void)setItem:(IQAttachment *)attachment isMine:(BOOL)isMine;
 
 @end

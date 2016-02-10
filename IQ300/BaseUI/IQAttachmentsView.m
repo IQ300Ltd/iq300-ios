@@ -50,6 +50,11 @@
 }
 
 - (void)setItems:(NSArray<__kindof IQAttachment *> *)items isMine:(BOOL)isMine{
+    for (UIButton * attachButton in _attachemntViews) {
+        [attachButton removeTarget:nil
+                            action:NULL
+                  forControlEvents:UIControlEventTouchUpInside];
+    }
     [_attachemntViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [_attachemntViews removeAllObjects];
     

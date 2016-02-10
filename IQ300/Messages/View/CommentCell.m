@@ -442,11 +442,6 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     [_descriptionTextView setTextColor:DESCRIPTION_RIGHT_TEXT_COLOR];
 
     [self setStatus:IQCommentStatusUnknown];
-    for (UIButton * attachButton in [_attachmentsView attachmentButtons]) {
-        [attachButton removeTarget:nil
-                            action:NULL
-                  forControlEvents:UIControlEventTouchUpInside];
-    }
     
     [_attachmentsView setItems:nil isMine:NO];
     
