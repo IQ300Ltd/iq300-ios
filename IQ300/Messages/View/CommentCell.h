@@ -11,6 +11,8 @@
 #define COMMENT_CELL_MAX_HEIGHT CGFLOAT_MAX
 #define COMMENT_CELL_MIN_HEIGHT 47.0f
 
+@class IQAttachmentsView;
+
 @interface CommentCell : UITableViewCell<IQCommentCell> {
     UIEdgeInsets _contentInsets;
 }
@@ -21,6 +23,8 @@
 @property (nonatomic, readonly) UITextView * descriptionTextView;
 @property (nonatomic, readonly) UIImageView * statusImageView;
 @property (nonatomic, readonly) UIButton * expandButton;
+@property (nonatomic, readonly) IQAttachmentsView *attachmentsView;
+
 @property (nonatomic, readonly) NSArray * attachButtons;
 
 @property (nonatomic, strong) IQComment * item;

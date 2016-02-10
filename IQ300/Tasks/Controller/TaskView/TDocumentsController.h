@@ -6,13 +6,13 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import "IQTableBaseController.h"
+#import "TCCollectionController.h"
 #import "TaskAttachmentsModel.h"
 #import "TaskTabItemController.h"
 
 @class IQTask;
 
-@interface TDocumentsController : IQTableBaseController<TaskTabItemController>
+@interface TDocumentsController : TCCollectionController<TaskTabItemController>
 
 @property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, strong) TaskAttachmentsModel * model;

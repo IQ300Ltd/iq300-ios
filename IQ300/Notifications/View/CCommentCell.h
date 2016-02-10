@@ -21,6 +21,7 @@
 #endif
 
 @class IQComment;
+@class IQAttachmentsView;
 
 @interface CCommentCell : SWTableViewCell {
     UIEdgeInsets _contentInsets;
@@ -35,6 +36,8 @@
 @property (nonatomic, assign, getter=isExpanded) BOOL expanded;
 @property (nonatomic, assign, getter=isExpandable) BOOL expandable;
 @property (nonatomic, assign, getter=isCommentHighlighted) BOOL commentHighlighted;
+
+@property (nonatomic, readonly) IQAttachmentsView *attachmentsView;
 @property (nonatomic, readonly) NSArray * attachButtons;
 
 @property (nonatomic, strong) NSString * author;
