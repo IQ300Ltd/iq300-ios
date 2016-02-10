@@ -11,7 +11,7 @@
 
 #define ITEM_SPACING 5.0f
 
-#define ITEM_WIDTH 75.0f
+#define ITEM_WIDTH 85.0f
 
 @interface IQAttachmentsView()
 

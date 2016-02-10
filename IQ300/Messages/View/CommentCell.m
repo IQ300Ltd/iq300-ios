@@ -16,7 +16,7 @@
 #import "IQAttachmentsView.h"
 
 #define CONTENT_INSET 8.0f
-#define ATTACHMENTS_VIEW_HEIGHT 110.0f
+#define ATTACHMENTS_VIEW_HEIGHT 120.0f
 
 #define DESCRIPTION_PADDING 7
 #define DESCRIPTION_LEFT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]

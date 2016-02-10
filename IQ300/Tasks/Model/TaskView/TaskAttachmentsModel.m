@@ -33,7 +33,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
     if (self) {
         self.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"createDate" ascending:NO]];
         [self resubscribeToIQNotifications];
-        _cellSize = CGSizeMake(75.0f, 110.0f);
+        _cellSize = CGSizeMake(85.0f, 120.0f);
     }
     return self;
 }
