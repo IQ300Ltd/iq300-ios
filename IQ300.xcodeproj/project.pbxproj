@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D80E7E71C6B17C2009DD5A0 /* TCCollectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7DF1C6B17C2009DD5A0 /* TCCollectionController.m */; };
+		2D80E7E81C6B17C2009DD5A0 /* TCCollectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7DF1C6B17C2009DD5A0 /* TCCollectionController.m */; };
+		2D80E7E91C6B17C2009DD5A0 /* TCCollectionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7E21C6B17C2009DD5A0 /* TCCollectionModel.m */; };
+		2D80E7EA1C6B17C2009DD5A0 /* TCCollectionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7E21C6B17C2009DD5A0 /* TCCollectionModel.m */; };
+		2D80E7EB1C6B17C2009DD5A0 /* TCManagedCollectionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7E41C6B17C2009DD5A0 /* TCManagedCollectionModel.m */; };
+		2D80E7EC1C6B17C2009DD5A0 /* TCManagedCollectionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7E41C6B17C2009DD5A0 /* TCManagedCollectionModel.m */; };
+		2D80E7ED1C6B17C2009DD5A0 /* UICollectionView+Updates.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7E61C6B17C2009DD5A0 /* UICollectionView+Updates.m */; };
+		2D80E7EE1C6B17C2009DD5A0 /* UICollectionView+Updates.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7E61C6B17C2009DD5A0 /* UICollectionView+Updates.m */; };
+		2D80E7F51C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */; };
+		2D80E7F61C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */; };
 		2DA55D691C69BEFA00A880D4 /* document_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DA55D681C69BEFA00A880D4 /* document_placeholder.png */; };
 		2DA55D6A1C69BEFA00A880D4 /* document_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DA55D681C69BEFA00A880D4 /* document_placeholder.png */; };
 		2DA55D751C6A045C00A880D4 /* IQAttachmentButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA55D741C6A045C00A880D4 /* IQAttachmentButton.m */; };
@@ -822,6 +832,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2D80E7DD1C6B17C2009DD5A0 /* TCCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCCollectionCell.h; sourceTree = "<group>"; };
+		2D80E7DE1C6B17C2009DD5A0 /* TCCollectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCCollectionController.h; sourceTree = "<group>"; };
+		2D80E7DF1C6B17C2009DD5A0 /* TCCollectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCCollectionController.m; sourceTree = "<group>"; };
+		2D80E7E01C6B17C2009DD5A0 /* TCCollectionModel+Subclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TCCollectionModel+Subclass.h"; sourceTree = "<group>"; };
+		2D80E7E11C6B17C2009DD5A0 /* TCCollectionModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCCollectionModel.h; sourceTree = "<group>"; };
+		2D80E7E21C6B17C2009DD5A0 /* TCCollectionModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCCollectionModel.m; sourceTree = "<group>"; };
+		2D80E7E31C6B17C2009DD5A0 /* TCManagedCollectionModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCManagedCollectionModel.h; sourceTree = "<group>"; };
+		2D80E7E41C6B17C2009DD5A0 /* TCManagedCollectionModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCManagedCollectionModel.m; sourceTree = "<group>"; };
+		2D80E7E51C6B17C2009DD5A0 /* UICollectionView+Updates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionView+Updates.h"; sourceTree = "<group>"; };
+		2D80E7E61C6B17C2009DD5A0 /* UICollectionView+Updates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+Updates.m"; sourceTree = "<group>"; };
+		2D80E7F31C6B19B1009DD5A0 /* UIViewController+ErrorHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ErrorHandle.h"; sourceTree = "<group>"; };
+		2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+ErrorHandle.m"; sourceTree = "<group>"; };
 		2DA55D681C69BEFA00A880D4 /* document_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = document_placeholder.png; sourceTree = "<group>"; };
 		2DA55D731C6A045C00A880D4 /* IQAttachmentButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachmentButton.h; sourceTree = "<group>"; };
 		2DA55D741C6A045C00A880D4 /* IQAttachmentButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachmentButton.m; sourceTree = "<group>"; };
@@ -1599,6 +1621,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2D80E7DC1C6B17C2009DD5A0 /* TCCollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				2D80E7DD1C6B17C2009DD5A0 /* TCCollectionCell.h */,
+				2D80E7DE1C6B17C2009DD5A0 /* TCCollectionController.h */,
+				2D80E7DF1C6B17C2009DD5A0 /* TCCollectionController.m */,
+				2D80E7E01C6B17C2009DD5A0 /* TCCollectionModel+Subclass.h */,
+				2D80E7E11C6B17C2009DD5A0 /* TCCollectionModel.h */,
+				2D80E7E21C6B17C2009DD5A0 /* TCCollectionModel.m */,
+				2D80E7E31C6B17C2009DD5A0 /* TCManagedCollectionModel.h */,
+				2D80E7E41C6B17C2009DD5A0 /* TCManagedCollectionModel.m */,
+				2D80E7E51C6B17C2009DD5A0 /* UICollectionView+Updates.h */,
+				2D80E7E61C6B17C2009DD5A0 /* UICollectionView+Updates.m */,
+			);
+			path = TCCollectionView;
+			sourceTree = "<group>";
+		};
 		2DAF335D1C6087C600554211 /* Activity */ = {
 			isa = PBXGroup;
 			children = (
@@ -2004,6 +2043,7 @@
 				2DA55D781C6A04EF00A880D4 /* IQAttachmentsView.m */,
 				2DA55D731C6A045C00A880D4 /* IQAttachmentButton.h */,
 				2DA55D741C6A045C00A880D4 /* IQAttachmentButton.m */,
+				2D80E7DC1C6B17C2009DD5A0 /* TCCollectionView */,
 				73176C941B3ADDD700E6AC60 /* Cells */,
 				73B9EA001ADCF9DF00159A66 /* IQTableBaseController */,
 				73176C8D1B3ADD0800E6AC60 /* IQSelectionController */,
@@ -2112,6 +2152,8 @@
 				733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */,
 				73CB5B4E1B32D326005B688C /* IQEmailValidator.h */,
 				73CB5B4F1B32D326005B688C /* IQEmailValidator.m */,
+				2D80E7F31C6B19B1009DD5A0 /* UIViewController+ErrorHandle.h */,
+				2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -3534,6 +3576,7 @@
 				FBC7CB521B579CBD004E8382 /* ConversationDeletedObjects.m in Sources */,
 				73840DD61B1C75A500BCEAFC /* ContactCell.m in Sources */,
 				73840DD71B1C75A500BCEAFC /* TaskFilterCell.m in Sources */,
+				2D80E7F61C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m in Sources */,
 				CBEB62F81C5F3475005A11C2 /* SharingMessagesController.m in Sources */,
 				73840DD81B1C75A500BCEAFC /* LoginView.m in Sources */,
 				73840DD91B1C75A500BCEAFC /* IQTaskDataHolder.m in Sources */,
@@ -3623,6 +3666,7 @@
 				73840E191B1C75A500BCEAFC /* IQBadgeView.m in Sources */,
 				73840E1A1B1C75A500BCEAFC /* UserPickerController.m in Sources */,
 				73840E1B1B1C75A500BCEAFC /* IQTableBaseController.m in Sources */,
+				2D80E7EC1C6B17C2009DD5A0 /* TCManagedCollectionModel.m in Sources */,
 				2DAF33661C6087C600554211 /* IQOpenInActivity.m in Sources */,
 				73840E1C1B1C75A500BCEAFC /* IQ300.xcdatamodeld in Sources */,
 				73840E1D1B1C75A500BCEAFC /* NSManagedObjectContext+AsyncFetch.m in Sources */,
@@ -3644,6 +3688,7 @@
 				7314627C1B341D2300E9CC60 /* IQDoubleDetailsTextCell.m in Sources */,
 				731462801B34249600E9CC60 /* IQDoubleDateTextCell.m in Sources */,
 				73840E2D1B1C75A500BCEAFC /* FileStore.m in Sources */,
+				2D80E7EE1C6B17C2009DD5A0 /* UICollectionView+Updates.m in Sources */,
 				73840E2E1B1C75A500BCEAFC /* NotificationsView.m in Sources */,
 				73840E2F1B1C75A500BCEAFC /* IQCounters.m in Sources */,
 				73840E301B1C75A500BCEAFC /* ExTextField.m in Sources */,
@@ -3660,6 +3705,7 @@
 				73CCB6A41B4E739D000BF728 /* BottomLineView.m in Sources */,
 				73DA02EE1B1D9A5B00CA24E5 /* LeftSideTabBar.m in Sources */,
 				73840E371B1C75A500BCEAFC /* IQUtilityButtonView.m in Sources */,
+				2D80E7EA1C6B17C2009DD5A0 /* TCCollectionModel.m in Sources */,
 				739CFFA21B397FC000B4AED0 /* FeedbacksController.m in Sources */,
 				73B5615D1B4286E200A883DC /* FeedbackView.m in Sources */,
 				73840E391B1C75A500BCEAFC /* IQBadgeStyle.m in Sources */,
@@ -3710,6 +3756,7 @@
 				73840E5D1B1C75A500BCEAFC /* NotificationsController.m in Sources */,
 				73B561651B42B02B00A883DC /* FeedbackController.m in Sources */,
 				73840E5F1B1C75A500BCEAFC /* TasksMenuCounters.m in Sources */,
+				2D80E7E81C6B17C2009DD5A0 /* TCCollectionController.m in Sources */,
 				73840E601B1C75A500BCEAFC /* TaskCommunityCell.m in Sources */,
 				2DA55D761C6A045C00A880D4 /* IQAttachmentButton.m in Sources */,
 				73840E611B1C75A500BCEAFC /* ExtendedButton.m in Sources */,
@@ -3832,6 +3879,7 @@
 				739C3B5C1A3075B00032C057 /* DiscussionController.m in Sources */,
 				73C286B01A94B5E30011FD51 /* IQNotificationsHolder.m in Sources */,
 				73A7CA671A9F10DE0038DEF1 /* TasksFilterController.m in Sources */,
+				2D80E7E71C6B17C2009DD5A0 /* TCCollectionController.m in Sources */,
 				736110651B0A1827005ACEB5 /* GAIService.m in Sources */,
 				73176C9D1B3ADDD700E6AC60 /* IQDateDetailsCell.m in Sources */,
 				73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */,
@@ -3882,6 +3930,7 @@
 				CBEB63261C5F3A70005A11C2 /* SharingViewController.m in Sources */,
 				736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */,
 				732952B31A692EE90066B336 /* lcl.m in Sources */,
+				2D80E7F51C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m in Sources */,
 				730BE4181B3D864600E26994 /* IQFeedback.m in Sources */,
 				735D49071AE5283600F6A753 /* TaskExecutorsGroup.m in Sources */,
 				73B9EA0B1ADCFE9F00159A66 /* IQTableManagedModel.m in Sources */,
@@ -3890,6 +3939,7 @@
 				2DA55D791C6A04EF00A880D4 /* IQAttachmentsView.m in Sources */,
 				739850E61A2E023D00DB5B21 /* IQService+Messages.m in Sources */,
 				73D7F1CE1ADE93D600023120 /* TaskMembersModel.m in Sources */,
+				2D80E7EB1C6B17C2009DD5A0 /* TCManagedCollectionModel.m in Sources */,
 				73BA989D1A10A29C005AEC00 /* IQMenuSerializator.m in Sources */,
 				730BE3F81B3D219E00E26994 /* IQFeedbackCategory.m in Sources */,
 				73BA98771A1092DF005AEC00 /* MTableHeaderView.m in Sources */,
@@ -3898,6 +3948,7 @@
 				73A9499D1A3832D7008EC469 /* FileStore.m in Sources */,
 				738FE7191A163C16009F26A2 /* NotificationsView.m in Sources */,
 				731DEECB1A2F27AE002F5FEB /* IQCounters.m in Sources */,
+				2D80E7E91C6B17C2009DD5A0 /* TCCollectionModel.m in Sources */,
 				738FE7211A1652D2009F26A2 /* ExTextField.m in Sources */,
 				735D48FB1AE4DA7100F6A753 /* ExecutersGroupSection.m in Sources */,
 				738FE6D11A15F119009F26A2 /* RKMappingResult+Result.m in Sources */,
@@ -3957,6 +4008,7 @@
 				73970E921AA5C45300AC2414 /* TasksMenuCounters.m in Sources */,
 				73B561601B428F4200A883DC /* FeedbackComments.m in Sources */,
 				73D260D31AE0FA070009CC38 /* TaskCommunityCell.m in Sources */,
+				2D80E7ED1C6B17C2009DD5A0 /* UICollectionView+Updates.m in Sources */,
 				737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */,
 				73D7F1E51ADE94B400023120 /* TAttachmentCell.m in Sources */,
 				739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */,

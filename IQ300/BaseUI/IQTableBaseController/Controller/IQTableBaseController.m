@@ -5,8 +5,6 @@
 //  Created by Tayphoon on 20.11.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <MBProgressHUD/MBProgressHUD.h>
-
 #import "IQTableBaseController.h"
 #import "DispatchAfterExecution.h"
 #import "IQService.h"
@@ -263,39 +261,6 @@
 - (void)updateNoDataLabelVisibility {
     if (_noDataLabel) {
         _noDataLabel.hidden = ([self.model numberOfItemsInSection:0] > 0);
-    }
-}
-
-- (void)showHudWindowWithText:(NSString *)message {
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
-    
-    // Configure for text only and offset down
-    hud.mode = MBProgressHUDModeText;
-    hud.detailsLabelText = message;
-    hud.margin = 10.f;
-    hud.removeFromSuperViewOnHide = YES;
-    
-    [hud hide:YES afterDelay:3];
-}
-
-- (void)showErrorAlertWithMessage:(NSString *)message {
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Attention", nil)
-                                                         message:message
-                                                        delegate:nil
-                                               cancelButtonTitle:@"OK"
-                                               otherButtonTitles:nil];
-    
-    [alertView show];
-}
-
-- (void)proccessServiceError:(NSError*)error {
-    if (error) {
-        if (IsNetworUnreachableError(error) || ![IQService sharedService].isServiceReachable) {
-            [self showHudWindowWithText:NSLocalizedString(INTERNET_UNREACHABLE_MESSAGE, nil)];
-        }
-        else {
-            [self showErrorAlertWithMessage:error.localizedDescription];
-        }
     }
 }
 

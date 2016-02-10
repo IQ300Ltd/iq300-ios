@@ -105,4 +105,12 @@
     return mapping;
 }
 
+- (void)addAttachmentsObject:(NSManagedObject *)value{
+    [self willChangeValueForKey:@"attachments"];
+    NSMutableOrderedSet *tempSet = [NSMutableOrderedSet orderedSetWithOrderedSet:self.attachments];
+    [tempSet addObject: value];
+    self.attachments = tempSet;
+    [self didChangeValueForKey:@"attachments"];
+}
+
 @end

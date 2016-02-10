@@ -47,4 +47,7 @@
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 
+- (void)addAttachmentsObject:(NSManagedObject *)object;
+
+
 @end

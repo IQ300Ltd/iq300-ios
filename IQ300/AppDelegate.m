@@ -9,6 +9,7 @@
 #import <MMDrawerController/MMDrawerController.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+#import <SDWebImage/SDWebImageManager.h>
 
 #import "AppDelegate.h"
 #import "TasksController.h"
@@ -243,6 +244,11 @@
 #endif
     
     [GAIService initializeGoogleAnalytics];
+    
+    [[SDWebImageManager sharedManager] setCacheKeyFilter:^(NSURL *url) {
+        url = [[NSURL alloc] initWithScheme:url.scheme host:url.host path:url.path];
+        return [url absoluteString];
+    }];
 
     return YES;
 }

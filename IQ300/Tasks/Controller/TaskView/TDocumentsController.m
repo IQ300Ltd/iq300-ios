@@ -25,8 +25,11 @@
 #import "IQActivityViewController.h"
 #import "SharingAttachment.h"
 
+#define COLLECTION_INSET 15.0f
+
 @interface TDocumentsController () <IQActivityViewControllerDelegate> {
     TaskAttachmentsModel * _attachmentsModel;
+    UICollectionView *_collectionView;
     UIDocumentInteractionController * _documentController;
 #ifdef IPAD
     UIPopoverController *_popoverController;
@@ -76,7 +79,9 @@
         self.model.taskId = taskId;
         
         if(self.isViewLoaded) {
-            [self updateModel];
+            [self.model reloadModelSourceControllerWithCompletion:^(NSError *error) {
+                [self.collectionView reloadData];
+            }];
         }
     }
 }
@@ -99,7 +104,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.tableView.tableFooterView = [UIView new];
+    
+    [self.collectionView registerClass:[TAttachmentCell class]
+            forCellWithReuseIdentifier:[self.model reuseIdentifierForCellAtIndexPath:[NSIndexPath indexPathForItem:0
+                                                                                                         inSection:0]]];
 
     [self setActivityIndicatorBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.3f]];
     [self setActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -112,11 +120,11 @@
                                                object:nil];
     
     __weak typeof(self) weakSelf = self;
-    [self.tableView
+    [self.collectionView
      insertPullToRefreshWithActionHandler:^{
-         [weakSelf reloadDataWithCompletion:^(NSError *error) {
+         [weakSelf.model updateModelWithCompletion:^(NSError *error) {
              [self proccessServiceError:error];
-             [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
+             [[weakSelf.collectionView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }
      position:SVPullToRefreshPositionTop];
@@ -138,7 +146,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
     [self updateModel];
 }
 
@@ -151,33 +158,41 @@
     self.model.resetReadFlagAutomatically = NO;
 }
 
-#pragma mark - UITableView DataSource
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    TAttachmentCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
-    
-    if (!cell) {
-        cell = [self.model createCellForIndexPath:indexPath];
+- (UICollectionView*)collectionView {
+    if (!_collectionView) {
+        UICollectionViewFlowLayout * collectionViewFlowLayout = [[UICollectionViewFlowLayout alloc] init];
+        [collectionViewFlowLayout setSectionInset:UIEdgeInsetsMake(COLLECTION_INSET, COLLECTION_INSET, COLLECTION_INSET, COLLECTION_INSET)];
+        [collectionViewFlowLayout setMinimumInteritemSpacing:COLLECTION_INSET];
+        [collectionViewFlowLayout setMinimumLineSpacing:COLLECTION_INSET];
+        _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
+                                             collectionViewLayout:collectionViewFlowLayout];
+        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        _collectionView.backgroundColor = [UIColor whiteColor];
+        _collectionView.bounces = YES;
+        _collectionView.alwaysBounceVertical = YES;
     }
-    
-    cell.item = [self.model itemAtIndexPath:indexPath];
-    
+    return _collectionView;
+}
+
+
+#pragma mark - UICollectionView DataSource
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    TAttachmentCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:[self.model reuseIdentifierForCellAtIndexPath:indexPath]
+                                                                            forIndexPath:indexPath];
+    [cell setItem:[self.model itemAtIndexPath:indexPath]];
     return cell;
 }
 
-#pragma mark - UITableView Delegate
+#pragma mark - UICollectionView Delegate
 
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //Enable or disable view attachments
-    if([self.policyInspector isActionAvailable:@"read" inCategory:self.category]) {
-        return indexPath;
-    }
-    return nil;
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    return [self.policyInspector isActionAvailable:@"read" inCategory:self.category];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     IQAttachment * attachment = [self.model itemAtIndexPath:indexPath];
-    TAttachmentCell * cell = (TAttachmentCell*)[self.tableView cellForRowAtIndexPath:indexPath];
+    TAttachmentCell * cell = (TAttachmentCell*)[self.collectionView cellForItemAtIndexPath:indexPath];
     
     CGRect rectForAppearing = [cell.superview convertRect:cell.frame toView:self.view];
     if([attachment.contentType rangeOfString:@"image"].location != NSNotFound &&
@@ -226,7 +241,8 @@
 
 - (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
     [self showActivityIndicator];
-    
+    [self.collectionView setContentOffset:CGPointZero animated:NO];
+
     __weak typeof(self) weakSelf = self;
     [self.model addAttachmentWithAsset:asset
                               fileName:[asset fileName]
@@ -246,8 +262,6 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - IQTableModel Delegate
-
 - (void)modelCountersDidChanged:(TaskAttachmentsModel*)model {
     self.tabBarItem.badgeValue = BadgTextFromInteger([self.model.unreadCount integerValue]);
 }
@@ -255,14 +269,14 @@
 #pragma mark - Activity indicator overrides
 
 - (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
-    [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
+    [self.collectionView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:NO];
     
     [super showActivityIndicatorAnimated:YES completion:nil];
 }
 
 - (void)hideActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion {
     [super hideActivityIndicatorAnimated:YES completion:^{
-        [self.tableView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
+        [self.collectionView setPullToRefreshAtPosition:SVPullToRefreshPositionTop shown:YES];
         
         if (completion) {
             completion();
@@ -275,13 +289,7 @@
 - (void)updateModel {
     if([IQSession defaultSession]) {
         [self showActivityIndicatorAnimated:YES completion:nil];
-        
-        [self.model updateModelWithCompletion:^(NSError *error) {
-            if(!error) {
-                [self.tableView reloadData];
-            }
-            
-            [self updateNoDataLabelVisibility];
+        [self.model updateModelWithCompletion:^(NSError *updateError) {
             dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
                 [self hideActivityIndicatorAnimated:YES completion:nil];
             });
@@ -291,13 +299,7 @@
 
 - (void)applicationWillEnterForeground {
     if([IQSession defaultSession]) {
-        [self showActivityIndicatorAnimated:YES completion:nil];
-        
-        [self.model updateModelWithCompletion:^(NSError *error) {
-            dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
-                [self hideActivityIndicatorAnimated:YES completion:nil];
-            });
-        }];
+        [self updateModel];
         
         if (self.model.resetReadFlagAutomatically) {
             [self.model resetReadFlagWithCompletion:nil];
@@ -359,7 +361,7 @@
 - (void)taskPolicyDidChanged:(NSNotification*)notification {
     if (notification.object == _policyInspector && [self isVisible]) {
         [self updateInterfaceFoPolicies];
-        [self.tableView reloadData];
+        [self.collectionView reloadData];
     }
 }
 
