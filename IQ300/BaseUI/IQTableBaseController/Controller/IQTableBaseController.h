@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "IQTableModel.h"
+#import "UIViewController+ErrorHandle.h"
 
 @interface IQTableBaseController : UIViewController<UITableViewDataSource, UITableViewDelegate, IQTableModelDelegate>
 
@@ -23,12 +24,6 @@
 - (void)scrollToTopAnimated:(BOOL)animated delay:(CGFloat)delay;
 
 - (void)updateNoDataLabelVisibility;
-
-- (void)showHudWindowWithText:(NSString*)message;
-
-- (void)showErrorAlertWithMessage:(NSString*)message;
-
-- (void)proccessServiceError:(NSError*)error;
 
 - (void)showActivityIndicatorAnimated:(BOOL)animated completion:(void (^)(void))completion;
 

@@ -12,9 +12,10 @@
 #import "IQBadgeView.h"
 #import "IQConversation.h"
 #import "IQSession.h"
+#import "IQAttachmentsView.h"
 
 #define CONTENT_INSET 8.0f
-#define ATTACHMENT_VIEW_HEIGHT 15.0f
+#define ATTACHMENTS_VIEW_HEIGHT 120.0f
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
@@ -36,7 +37,6 @@
 
 @interface CCommentCell() {
     BOOL _commentIsMine;
-    NSMutableArray * _attachButtons;
     UITapGestureRecognizer * _singleTapGesture;
 }
 
@@ -63,11 +63,11 @@
             height = MIN(height, COLLAPSED_COMMENT_CELL_MAX_HEIGHT);
             
             if(canExpand) {
-                height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET;
+                height += 15.0f + ATTACHMENT_VIEW_Y_OFFSET;
             }
         }
         else {
-            height += ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET;
+            height += 15.0f + ATTACHMENT_VIEW_Y_OFFSET;
         }
     }
     else {
@@ -76,7 +76,7 @@
 
     BOOL hasAttachment = ([item.attachments count] > 0);
     if(hasAttachment) {
-        height += (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [item.attachments count] - ATTACHMENT_VIEW_Y_OFFSET;
+        height += ATTACHMENTS_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET;
     }
     
     return height;
@@ -187,14 +187,15 @@
         [_expandButton setHidden:YES];
         [contentView addSubview:_expandButton];
         
-        _attachButtons = [NSMutableArray array];
+        _attachmentsView = [[IQAttachmentsView alloc] initWithFrame:CGRectZero];
+        [contentView addSubview:_attachmentsView];
     }
     
     return self;
 }
 
 - (NSArray*)attachButtons {
-    return [_attachButtons copy];
+    return [_attachmentsView attachmentButtons];
 }
 
 - (void)layoutSubviews {
@@ -230,8 +231,8 @@
                                   topLabelSize.width,
                                   topLabelSize.height);
     
-    CGFloat attachmentRectHeight = (hasAttachment) ? (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [_attachButtons count] - ATTACHMENT_VIEW_Y_OFFSET : 0.0f;
-    CGFloat expandViewHeight = (hasExpandView) ? ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET : 0.0f;
+    CGFloat attachmentRectHeight = (hasAttachment) ? ATTACHMENTS_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET : 0.0f;
+    CGFloat expandViewHeight = (hasExpandView) ? 15.0f + ATTACHMENT_VIEW_Y_OFFSET : 0.0f;
     CGFloat descriptionY = CGRectBottom(_userNameLabel.frame) + DESCRIPTION_Y_OFFSET;
     CGFloat descriptionHeight = (hasDescription) ? actualBounds.size.height - descriptionY - attachmentRectHeight - expandViewHeight : 0.0f;
     
@@ -244,27 +245,21 @@
         _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + 7.0f,
                                          CGRectBottom(_descriptionTextView.frame) + 5.0f,
                                          (IS_IPAD) ? 100.0f : 90.0f,
-                                         ATTACHMENT_VIEW_HEIGHT);
+                                         15.0f);
     }
     
     if(hasAttachment) {
+        CGFloat attachmentX = _descriptionTextView.frame.origin.x + 5.0f;
         CGFloat attachmentY = (hasAttachment && !hasDescription) ? _descriptionTextView.frame.origin.y + 2.0f : CGRectBottom(_descriptionTextView.frame) + 5.0f;
         
         if(hasExpandView) {
             attachmentY = CGRectBottom(_expandButton.frame) + ATTACHMENT_VIEW_Y_OFFSET;
         }
         
-        CGSize constrainedSize = CGSizeMake(actualBounds.size.width, ATTACHMENT_VIEW_HEIGHT);
-        CGFloat attachmentX = _descriptionTextView.frame.origin.x + 5.0f;
-        for (UIButton * attachButton in _attachButtons) {
-            CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
-            attachButton.frame = CGRectMake(attachmentX,
-                                            attachmentY,
-                                            MIN(attachmentSize.width + 5.0f, actualBounds.size.width - attachmentX),
-                                            attachmentSize.height);
-            
-            attachmentY = CGRectBottom(attachButton.frame) + ATTACHMENT_VIEW_Y_OFFSET;
-        }
+        [_attachmentsView setFrame:CGRectMake(attachmentX, attachmentY, _descriptionTextView.frame.size.width, ATTACHMENTS_VIEW_HEIGHT)];
+    }
+    else {
+        [_attachmentsView setFrame:CGRectZero];
     }
 }
 
@@ -294,42 +289,8 @@
     _userNameLabel.hidden = ([_item.author.displayName length] == 0);
     _userNameLabel.text = _item.author.displayName;
         
-    UIView * contentView = [super valueForKey:@"_contentCellView"];
-    BOOL hasAttachment = ([_item.attachments count] > 0);
-    
-    if(hasAttachment) {
-        CGFloat attachFontSize = (IS_IPAD) ? 12 : 11.0f;
-        for (IQAttachment * attachment in _item.attachments) {
-            UIButton * attachButton = [[UIButton alloc] init];
-            [attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
-            [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:attachFontSize]];
-            [attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
-            [attachButton setTitleColor:[UIColor colorWithHexInt:0x446b7a] forState:UIControlStateHighlighted];
-            [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
-            attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            
-            NSDictionary *underlineAttribute = @{
-                                                 NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:attachFontSize],
-                                                 NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                                                 NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x358bae]
-                                                 };
-            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
-                                                                             attributes:underlineAttribute]
-                                    forState:UIControlStateNormal];
-            
-            underlineAttribute = @{
-                                   NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:attachFontSize],
-                                   NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                                   NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x446b7a]
-                                   };
-            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
-                                                                             attributes:underlineAttribute]
-                                    forState:UIControlStateHighlighted];
-            
-            [attachButton sizeToFit];
-            [contentView addSubview:attachButton];
-            [_attachButtons addObject:attachButton];
-        }
+    if (item.attachments.count > 0) {
+        [_attachmentsView setItems:[_item.attachments allObjects] isMine:YES];
     }
     
     if (_commentIsMine) {
@@ -383,20 +344,14 @@
     _descriptionTextView.selectable = YES;
     [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
 
-    for (UIButton * attachButton in _attachButtons) {
-        [attachButton removeTarget:nil
-                            action:NULL
-                  forControlEvents:UIControlEventTouchUpInside];
-    }
+    [_attachmentsView setItems:nil isMine:YES];
+
     
     [self setExpandButtonTitle:@"Show all"];
     [_expandButton setHidden:YES];
     [_expandButton removeTarget:nil
                          action:NULL
                forControlEvents:UIControlEventTouchUpInside];
-    
-    [_attachButtons makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    [_attachButtons removeAllObjects];
 }
 
 - (UILabel*)makeLabelWithTextColor:(UIColor*)textColor font:(UIFont*)font localaizedKey:(NSString*)localaizedKey {
