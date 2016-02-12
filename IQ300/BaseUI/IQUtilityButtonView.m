@@ -88,12 +88,6 @@
         [button removeFromSuperview];
     }
     
-    
-    for (UIButton *button in self.utilityButtons)
-    {
-        [button removeFromSuperview];
-    }
-    
     [super setValue:[utilityButtons copy] forKey:@"_utilityButtons"];
     
     if (utilityButtons.count)

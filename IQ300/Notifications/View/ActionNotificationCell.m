@@ -93,6 +93,7 @@
         }
         
         [self setRightUtilityButtons:actionButtons WithButtonWidth:116.0f];
+        self.leftUtilityButtons = nil;
     }
     [self setNeedsLayout];
 }

@@ -27,6 +27,7 @@
 #import "TaskTabController.h"
 #import "IQService+Feedback.h"
 #import "FeedbackController.h"
+#import "IQMenuItem.h"
 
 @interface NotificationsController() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationsView * _mainView;
@@ -113,12 +114,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mark_tab_item.png"]
-                                                                        style:UIBarButtonItemStylePlain
-                                                                       target:self
-                                                                       action:@selector(markAllAsReaded:)];
-    self.navigationItem.rightBarButtonItem = rightBarButton;
-    
+    [self updateNavigationBarItems];
     [self.leftMenuController setMenuResponder:self];
     [self.leftMenuController setTableHaderHidden:YES];
     [self.leftMenuController setModel:_menuModel];
@@ -129,6 +125,7 @@
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
 
+    [self updateControllerTitle];
     [self.model resubscribeToIQNotifications];
 }
 
@@ -151,7 +148,7 @@
 - (void)updateGlobalCounter {
     __weak typeof(self) weakSelf = self;
     [self.model updateCountersWithCompletion:^(IQNotificationCounters *counter, NSError *error) {
-        [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue]];
+        [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue] + [counter.pinnedCount integerValue]];
     }];
 }
 
@@ -197,6 +194,7 @@
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     _menuModel.pinnedItemsCount = self.model.pinnedItemsCount;
     _menuModel.unreadItemsCount = self.model.unreadItemsCount;
+    [self updateBarBadgeWithValue:self.model.pinnedItemsCount + self.model.unreadItemsCount];
 }
 
 #pragma mark - Menu Responder Delegate
@@ -206,6 +204,8 @@
     _mainView.noDataLabel.text = NSLocalizedString((self.model.filterType == IQNotificationsFilterUnread) ? NoUnreadNotificationFound : NoNotificationFound, nil);
 
     [self reloadModel];
+    [self updateNavigationBarItems];
+    [self updateControllerTitle];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
 }
 
@@ -451,6 +451,27 @@
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
     self.tabBarItem.badgeValue = BadgTextFromInteger(badgeValue);
 }
+
+- (void)updateNavigationBarItems {
+    if (self.model.filterType != IQNotificationsFilterPinned) {
+        UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mark_tab_item.png"]
+                                                                            style:UIBarButtonItemStylePlain
+                                                                           target:self
+                                                                           action:@selector(markAllAsReaded:)];
+        self.navigationItem.rightBarButtonItem = rightBarButton;
+    }
+    else {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+}
+
+- (void)updateControllerTitle {
+    NSIndexPath * indexPath = [_menuModel indexPathForSelectedItem];
+    IQMenuItem * menuItem = [_menuModel itemAtIndexPath:indexPath];
+    
+    self.navigationItem.title = menuItem.title;
+}
+
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

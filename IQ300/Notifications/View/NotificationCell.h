@@ -12,8 +12,14 @@
 #define READ_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
+
+#ifdef IPAD
 #define NOTIFICATION_CELL_MAX_HEIGHT 105.0f
-#define NOTIFICATION_CELL_MIN_HEIGHT 76.0f
+#define NOTIFICATION_CELL_MIN_HEIGHT 83.0f
+#else
+#define NOTIFICATION_CELL_MAX_HEIGHT 105.0f
+#define NOTIFICATION_CELL_MIN_HEIGHT 78.0f
+#endif
 
 @class IQNotification;
 
@@ -23,7 +29,9 @@
 }
 
 @property (nonatomic, strong) UIView * contentBackgroundView;
+@property (nonatomic, strong) UILabel * typeLabel;
 @property (nonatomic, strong) UILabel * dateLabel;
+@property (nonatomic, strong) UILabel * titleLabel;
 @property (nonatomic, strong) UILabel * userNameLabel;
 @property (nonatomic, strong) UILabel * actionLabel;
 @property (nonatomic, strong) UILabel * descriptionLabel;

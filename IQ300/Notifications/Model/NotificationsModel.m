@@ -197,28 +197,31 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)markNotificationAsReadAtIndexPath:(NSIndexPath*)indexPath completion:(void (^)(NSError * error))completion {
     IQNotification * item = [self itemAtIndexPath:indexPath];
-    [[IQService sharedService] markNotificationAsRead:item.notificationId
-                                              handler:^(BOOL success, NSData *responseData, NSError *error) {
-                                                  if(success) {
-                                                      item.readed = @(YES);
-                                                      
-                                                      NSError *saveError = nil;
-                                                      if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
-                                                          NSLog(@"Save notification error: %@", saveError);
-                                                      }
-                                                      
-                                                      [self updateCountersWithCompletion:^(IQNotificationCounters *counters, NSError *error) {
-                                                          if(((_filterType == IQNotificationsFilterUnread && _unreadItemsCount > 0) ||
-                                                              (_filterType == IQNotificationsFilterPinned && _pinnedItemsCount > 0)) &&
-                                                             [_fetchController.fetchedObjects count] == 0) {
-                                                              [self loadNextPartWithCompletion:nil];
+    
+    if (![item.isPinned boolValue]) {
+        [[IQService sharedService] markNotificationAsRead:item.notificationId
+                                                  handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                      if(success) {
+                                                          item.readed = @(YES);
+                                                          
+                                                          NSError *saveError = nil;
+                                                          if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
+                                                              NSLog(@"Save notification error: %@", saveError);
                                                           }
-                                                      }];
-                                                  }
-                                                  if(completion) {
-                                                      completion(error);
-                                                  }
-                                              }];
+                                                          
+                                                          [self updateCountersWithCompletion:^(IQNotificationCounters *counters, NSError *error) {
+                                                              if(((_filterType == IQNotificationsFilterUnread && _unreadItemsCount > 0) ||
+                                                                  (_filterType == IQNotificationsFilterPinned && _pinnedItemsCount > 0)) &&
+                                                                 [_fetchController.fetchedObjects count] == 0) {
+                                                                  [self loadNextPartWithCompletion:nil];
+                                                              }
+                                                          }];
+                                                      }
+                                                      if(completion) {
+                                                          completion(error);
+                                                      }
+                                                  }];
+    }
 }
 
 - (void)markAllNotificationAsReadWithCompletion:(void (^)(NSError * error))completion {
@@ -306,14 +309,14 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                 handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                     if(success) {
                                                         item.isPinned = @(YES);
-                                                        
+                                                        item.readed = @(NO);
+
                                                         NSError *saveError = nil;
                                                         if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
                                                             NSLog(@"Save notification error: %@", saveError);
                                                         }
                                                         
-                                                        [self updateCountersWithCompletion:^(IQNotificationCounters *counters, NSError *error) {
-                                                        }];
+                                                        [self updateCounters];
                                                     }
                                                     if(completion) {
                                                         completion(error);
@@ -326,15 +329,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     [[IQService sharedService] unpinnedNotificationWithId:item.notificationId
                                                   handler:^(BOOL success, NSData *responseData, NSError *error) {
                                                       if(success) {
-                                                          item.isPinned = @(NO);
+                                                          [self resetActionsForNotification:item];
                                                           
-                                                          NSError *saveError = nil;
-                                                          if(![item.managedObjectContext saveToPersistentStore:&saveError] ) {
-                                                              NSLog(@"Save notification error: %@", saveError);
-                                                          }
-                                                          
-                                                          [self updateCountersWithCompletion:^(IQNotificationCounters *counters, NSError *error) {
-                                                          }];
+                                                          [self updateCounters];
                                                       }
                                                       if(completion) {
                                                           completion(error);
@@ -410,6 +407,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
     notification.hasActions = @(NO);
     notification.availableActions = nil;
     notification.readed = @(YES);
+    notification.isPinned = @(NO);
     
     NSError *saveError = nil;
     if(![notification.managedObjectContext saveToPersistentStore:&saveError] ) {
@@ -530,7 +528,6 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)updateCounters {
     [self updateCountersWithCompletion:nil];
-    [self initGlobalCounterUpdate];
 }
 
 - (void)initGlobalCounterUpdate {

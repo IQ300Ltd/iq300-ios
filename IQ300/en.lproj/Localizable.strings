@@ -55,6 +55,7 @@
 "Contract" = "Contract";
 "DocShare" = "Document";
 "ErrorReport" = "Feedback";
+"Contact" = "Contact";
 
 //Tasks statuses
 "browsed" = "Browsed";

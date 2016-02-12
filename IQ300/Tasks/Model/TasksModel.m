@@ -359,7 +359,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 - (void)otherFoldersUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] tasksUpdatedAfter:lastUpdatedDate
                                    excludeFolder:self.folder
-                                            page:@(1)
+                                            page:page
                                              per:@(_portionLenght)
                                           search:self.search
                                             sort:_sort
