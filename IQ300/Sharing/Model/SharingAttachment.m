@@ -62,6 +62,10 @@
         return self;
     }
     else {
+        if ([activityType isEqualToString:UIActivityTypeSaveToCameraRoll]) {
+            return _localURL;
+        }
+        
         if (!_fileData) {
             _fileData = [NSData dataWithContentsOfFile:_localURL];
         }

@@ -12,7 +12,10 @@
 
 @property (nonatomic, strong) NSString * fileName;
 @property (nonatomic, strong) NSURL * imageURL;
+@property (nonatomic, strong) NSURL * previewURL;
 @property (nonatomic, strong) NSString *contentType;
+
+@property (nonatomic, assign, readonly, getter=isLoaded) BOOL loaded;
 
 @end
 
