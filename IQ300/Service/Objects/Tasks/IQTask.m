@@ -126,11 +126,11 @@
     [self didChangeValueForKey:@"attachments"];
 }
 
-- (void)didChangeValueForKey:(NSString *)key {
-    [super didChangeValueForKey:key];
-    if ([key isEqualToString:@"reconciliationActions"]) {
-        self.reconciliationActionsCount = @([self.reconciliationActions count]);
-    }
+- (void)setReconciliationActions:(NSOrderedSet *)reconciliationActions {
+    [self willChangeValueForKey:@"reconciliationActions"];
+    [self setPrimitiveValue:reconciliationActions forKey:@"reconciliationActions"];
+    self.reconciliationActionsCount = @([reconciliationActions count]);
+    [self didChangeValueForKey:@"reconciliationActions"];
 }
 
 @end
