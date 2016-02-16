@@ -154,28 +154,23 @@ extern NSString * DescriptionForSortField(NSString * sortField) {
                                                 status:self.statusFilter
                                            communityId:self.communityId
                                                handler:^(BOOL success, TaskFilterCounters * counters, NSData *responseData, NSError *error) {
-                                                   if (success) {
-                                                       [_sections removeAllObjects];
-                                                       
-                                                       TaskFilterSection * statusSection = [self makeStatusesSectionFromStatuses:counters.statuses];
-                                                       [_sections addObject:statusSection];
-                                                       
-                                                       NSSortDescriptor * descriptor = [NSSortDescriptor sortDescriptorWithKey:@"count" ascending:NO];
-                                                       TaskFilterSection * communitiesSection = [[TaskFilterSection alloc] init];
-                                                       communitiesSection.title = NSLocalizedString(@"Communities", nil);
-                                                       communitiesSection.expandable = YES;
-                                                       communitiesSection.items = [counters.communities sortedArrayUsingDescriptors:@[descriptor]];
-                                                       [_sections addObject:communitiesSection];
-                                                       
-                                                       TaskFilterSection * sortingSection = [self makeSortSection];
-                                                       [_sections addObject:sortingSection];
-                                                       
-                                                       [self selectItemsByFields];
-                                                       if(completion) {
-                                                           completion(nil);
-                                                       }
-                                                   }
-                                                   else if(completion) {
+                                                   [_sections removeAllObjects];
+                                                   
+                                                   TaskFilterSection * statusSection = [self makeStatusesSectionFromStatuses:counters.statuses];
+                                                   [_sections addObject:statusSection];
+                                                   
+                                                   NSSortDescriptor * descriptor = [NSSortDescriptor sortDescriptorWithKey:@"count" ascending:NO];
+                                                   TaskFilterSection * communitiesSection = [[TaskFilterSection alloc] init];
+                                                   communitiesSection.title = NSLocalizedString(@"Communities", nil);
+                                                   communitiesSection.expandable = YES;
+                                                   communitiesSection.items = [counters.communities sortedArrayUsingDescriptors:@[descriptor]];
+                                                   [_sections addObject:communitiesSection];
+                                                   
+                                                   TaskFilterSection * sortingSection = [self makeSortSection];
+                                                   [_sections addObject:sortingSection];
+                                                   
+                                                   [self selectItemsByFields];
+                                                   if(completion) {
                                                        completion(error);
                                                    }
                                                }];

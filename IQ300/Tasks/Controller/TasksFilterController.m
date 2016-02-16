@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
+#import "UIViewController+ErrorHandle.h"
+
 #import "TasksFilterController.h"
 #import "ExpandableTableView.h"
 #import "TaskFilterCell.h"
@@ -114,9 +116,8 @@
 
     if(self.model) {
         [self.model updateModelWithCompletion:^(NSError *error) {
-            if(!error) {
-                [_tableView reloadData];
-            }
+            [_tableView reloadData];
+            [self proccessServiceError:error];
         }];
     }
 }
@@ -188,6 +189,7 @@
                 [self model:self.model didChangeSectionAtIndex:COMMUNITY_SECTION forChangeType:NSFetchedResultsChangeUpdate];
                 [self modelDidChangeContent:self.model];
             }
+            [self proccessServiceError:error];
         }];
     }
     else if((selectedIndexPath && [selectedIndexPath compare:indexPath] != NSOrderedSame) || !selectedIndexPath) {
@@ -294,6 +296,7 @@
         if(!error) {
             [_tableView reloadData];
         }
+        [self proccessServiceError:error];
     }];
 }
 

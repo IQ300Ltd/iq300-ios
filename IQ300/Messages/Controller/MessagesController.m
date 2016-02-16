@@ -436,6 +436,7 @@
     void(^compleationBlock)(NSError * error) = ^(NSError * error) {
         [self.tableView reloadData];
         [self updateNoDataLabelVisibility];
+        [self proccessServiceError:error];
     };
     
     [self.model setFilter:text];
