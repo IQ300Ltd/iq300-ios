@@ -318,6 +318,7 @@
                                                  [self updateTaskPolicies];
                                              }
                                              else {
+                                                 [self proccessServiceError:error];
                                                  [_deferredActionButton setEnabled:YES];
                                              }
                                              _deferredActionButton = nil;
