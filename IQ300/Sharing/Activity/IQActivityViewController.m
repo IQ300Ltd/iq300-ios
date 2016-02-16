@@ -9,6 +9,10 @@
 #import "IQActivityViewController.h"
 #import "IQOpenInActivity.h"
 #import "IQShareToMessageActivity.h"
+#import "IQSaveVideoActivity.h"
+#import "SharingConstants.h"
+
+NSString * const IQActivityTypeSaveVideo = @"ru.iq300.activity.savevideo";
 
 @interface IQActivityViewController () <IQOpenInActivityDelegate>
 
@@ -19,11 +23,11 @@
 - (instancetype)initWithAttachment:(SharingAttachment *)attachment {
     IQOpenInActivity *openInActivity = [[IQOpenInActivity alloc] init];
     IQShareToMessageActivity *shareToMessageActivity = [[IQShareToMessageActivity alloc] init];
+    IQSaveVideoActivity *saveVideoActivity = [[IQSaveVideoActivity alloc] init];
     
-    self = [super initWithActivityItems:@[attachment] applicationActivities:@[openInActivity, shareToMessageActivity]];
+    self = [super initWithActivityItems:@[attachment] applicationActivities:@[saveVideoActivity, openInActivity, shareToMessageActivity]];
     if (self) {
         openInActivity.delegate = self;
-        
     }
     return self;
 }

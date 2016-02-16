@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "SharingAttachment.h"
 
+extern NSString *const IQActivityTypeSaveVideo;
+
 @protocol IQActivityViewControllerDelegate;
 
 @interface IQActivityViewController : UIActivityViewController
@@ -16,9 +18,9 @@
 @property (nonatomic, weak) id<IQActivityViewControllerDelegate> delegate;
 @property (nonatomic, assign) CGRect documentInteractionControllerRect;
 
-- (instancetype _Nonnull)initWithActivityItems:(nonnull NSArray *)activityItems applicationActivities:(nullable NSArray<__kindof UIActivity *> *)applicationActivities NS_UNAVAILABLE;
+- (instancetype)initWithActivityItems:(NSArray *)activityItems applicationActivities:(NSArray<__kindof UIActivity *> *)applicationActivities NS_UNAVAILABLE;
 
-- (instancetype _Nullable)initWithAttachment:(nonnull SharingAttachment *)attachment NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithAttachment:(SharingAttachment *)attachment NS_DESIGNATED_INITIALIZER;
 
 @end
 
@@ -27,6 +29,6 @@
 @optional
 
 - (BOOL)willShowDocumentInteractionController;
-- (void)shouldShowDocumentInteractionController:(UIDocumentInteractionController * _Nonnull)controller fromRect:(CGRect)rect;
+- (void)shouldShowDocumentInteractionController:(UIDocumentInteractionController *)controller fromRect:(CGRect)rect;
 
 @end

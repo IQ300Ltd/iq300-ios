@@ -13,6 +13,7 @@
 #import "IQProject.h"
 #import "IQCommunity.h"
 #import "IQManagedTodoItem.h"
+#import "IQReconciliation.h"
 
 @implementation IQTask
 
@@ -45,6 +46,11 @@
 @dynamic todoItems;
 @dynamic attachments;
 
+@dynamic reconciliation;
+@dynamic reconciliationState;
+@dynamic reconciliationActions;
+
+@dynamic reconciliationActionsCount;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
@@ -69,7 +75,9 @@
                                                   @"discussion_id"            : @"discussionId",
                                                   @"child_ids"                : @"childIds",
                                                   @"comments_count"           : @"commentsCount",
-                                                  @"available_status_actions" : @"availableActions"
+                                                  @"available_status_actions" : @"availableActions",
+                                                  @"reconciliation_state"     : @"reconciliationState",
+                                                  @"reconciliation_actions"   : @"reconciliationActions",
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"customer"
@@ -102,6 +110,11 @@
                                                          withMapping:[IQAttachment objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:relation];
     
+    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"reconciliation_decisions_stat"
+                                                           toKeyPath:@"reconciliation"
+                                                         withMapping:[IQReconciliation objectMappingForManagedObjectStore:store]];
+    [mapping addPropertyMapping:relation];
+    
     return mapping;
 }
 
@@ -111,6 +124,13 @@
     [tempSet addObject: value];
     self.attachments = tempSet;
     [self didChangeValueForKey:@"attachments"];
+}
+
+- (void)didChangeValueForKey:(NSString *)key {
+    [super didChangeValueForKey:key];
+    if ([key isEqualToString:@"reconciliationActions"]) {
+        self.reconciliationActionsCount = @([self.reconciliationActions count]);
+    }
 }
 
 @end

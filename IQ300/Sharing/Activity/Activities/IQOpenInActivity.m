@@ -7,7 +7,7 @@
 //
 
 #import "IQOpenInActivity.h"
-#import "IQAttachment.h"
+#import "SharingAttachment.h"
 #import "SharingConstants.h"
 
 @interface IQOpenInActivity ()
@@ -40,7 +40,7 @@
 }
 
 - (void)prepareWithActivityItems:(NSArray *)activityItems {
-    IQAttachment *attachment = activityItems.firstObject;
+    SharingAttachment *attachment = activityItems.firstObject;
     NSString *fileURL = [[attachment.localURL stringByDeletingLastPathComponent] stringByAppendingString:[NSString stringWithFormat:@"/%@", attachment.displayName]];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     [fileManager copyItemAtPath:attachment.localURL toPath:fileURL error:nil];

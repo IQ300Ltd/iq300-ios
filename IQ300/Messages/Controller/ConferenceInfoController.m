@@ -350,11 +350,12 @@
              otherButtonTitles:@[NSLocalizedString(@"Yes", nil)]
                       tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                           if (buttonIndex == 1) {
-                              [self.navigationController popToRootViewControllerAnimated:YES];
-                              
                               [self.model leaveConversationWithCompletion:^(NSError * error) {
                                   if (error) {
                                       [self proccessServiceError:error];
+                                  }
+                                  else {
+                                      [self.navigationController popToRootViewControllerAnimated:YES];
                                   }
                               }];
                           }

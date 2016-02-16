@@ -370,4 +370,18 @@
                    handler:handler];
 }
 
+- (void)approveTaskWithId:(NSNumber *)taskId handler:(ObjectRequestCompletionHandler)handler {
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v2/tasks/%@/reconciliation_list/approve", taskId]
+         parameters:nil
+            handler:handler];
+}
+
+- (void)disapproveTaskWithId:(NSNumber *)taskId handler:(ObjectRequestCompletionHandler)handler {
+    [self putObject:nil
+               path:[NSString stringWithFormat:@"/api/v2/tasks/%@/reconciliation_list/disapprove", taskId]
+         parameters:nil
+            handler:handler];
+}
+
 @end

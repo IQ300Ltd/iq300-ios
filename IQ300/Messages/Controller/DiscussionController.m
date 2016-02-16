@@ -528,6 +528,7 @@
         controller.imageURL = [NSURL URLWithString:attachment.originalURL];
         controller.fileName = attachment.displayName;
         controller.contentType = attachment.contentType;
+        controller.previewURL = [NSURL URLWithString:attachment.previewURL];
         [self.navigationController pushViewController:controller animated:YES];
     }
     else if ([attachment.localURL length] > 0) {
@@ -567,10 +568,12 @@
     IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:[[SharingAttachment alloc] initWithPath:attachment.localURL
                                                                                                                             displayName:attachment.displayName
                                                                                                                             contentType:attachment.contentType]];
+    NSMutableArray *excludedActivityes = [[NSMutableArray alloc] init];
+    [excludedActivityes addObject:UIActivityTypeSaveToCameraRoll];
     if (![attachment.contentType hasPrefix:@"video"]) {
-        controller.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+        [excludedActivityes addObject:IQActivityTypeSaveVideo];
     }
-    controller.delegate = self;
+    controller.excludedActivityTypes = [excludedActivityes copy];    controller.delegate = self;
     controller.documentInteractionControllerRect = rect;
 
 #ifdef IPAD

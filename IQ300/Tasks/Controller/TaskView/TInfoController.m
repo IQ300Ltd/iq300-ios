@@ -24,7 +24,7 @@
 #import "TaskController.h"
 #import "IQTaskDataHolder.h"
 
-@interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate> {
+@interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate> {
     __weak UIButton * _deferredActionButton;
     __weak id _notfObserver;
     BOOL _changeStateEnabled;
@@ -232,37 +232,64 @@
 #pragma mark - TInfoHeaderView Delegate
 
 - (void)headerView:(TInfoHeaderView*)headerView tapActionAtIndex:(NSInteger)actionIndex actionButton:(UIButton*)actionButton {
-    NSArray * actions = [self.task.availableActions array];
+    NSMutableArray * actions = [[self.task.availableActions array] mutableCopy];
+    [actions addObjectsFromArray:[self.task.reconciliationActions array]];
+    
     NSString * action = (actionIndex < [actions count]) ? actions[actionIndex] : nil;
     [actionButton setEnabled:NO];
     
-    if ([action length] > 0) {
-        if([action isEqualToString:@"refuse"]) {
-            _deferredActionButton = actionButton;
-            UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                                     delegate:self
-                                                            cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                       destructiveButtonTitle:nil
-                                                            otherButtonTitles:NSLocalizedString(@"Not in my competence", nil),
-                                                                              NSLocalizedString(@"Incorrect task time", nil),
-                                                                              NSLocalizedString(@"Not enough information", nil), nil];
-            [actionSheet showInView:self.view];
+    if (actionIndex < [[self.task.availableActions array] count]) {
+        if ([action length] > 0) {
+            if([action isEqualToString:@"refuse"]) {
+                _deferredActionButton = actionButton;
+                UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                                          delegate:self
+                                                                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                            destructiveButtonTitle:nil
+                                                                 otherButtonTitles:NSLocalizedString(@"Not in my competence", nil),
+                                               NSLocalizedString(@"Incorrect task time", nil),
+                                               NSLocalizedString(@"Not enough information", nil), nil];
+                [actionSheet showInView:self.view];
+            }
+            else {
+                [[IQService sharedService] changeStatus:action
+                                          forTaskWithId:self.taskId
+                                                 reason:nil
+                                                handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                                    if (success) {
+                                                        self.task = task;
+                                                        [self updateTaskPolicies];
+                                                    }
+                                                    else {
+                                                        [self proccessServiceError:error];
+                                                        [actionButton setEnabled:YES];
+                                                    }
+                                                }];
+            }
+        }
+    }
+    else {
+        if ([action isEqualToString:@"approve"]) {
+            [[IQService sharedService] approveTaskWithId:self.taskId handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                if (success) {
+                    self.task = task;
+                    [self updateTaskPolicies];
+                }
+                else {
+                    [self proccessServiceError:error];
+                    [actionButton setEnabled:YES];
+                }
+            }];
         }
         else {
-            [[IQService sharedService] changeStatus:action
-                                      forTaskWithId:self.taskId
-                                             reason:nil
-                                            handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
-                                                if (success) {
-                                                    self.task = task;
-                                                    [self updateTaskPolicies];
-                                                }
-                                                else {
-                                                    [self proccessServiceError:error];
+            _deferredActionButton = actionButton;
 
-                                                    [actionButton setEnabled:YES];
-                                                }
-                                            }];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+                                                                message:NSLocalizedString(@"Are you sure you want to mismatched task?", nil)
+                                                               delegate:self
+                                                      cancelButtonTitle:NSLocalizedString(@"No", nil)
+                                                      otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+            [alertView show];
         }
     }
 }
@@ -270,37 +297,59 @@
 #pragma mark - ActionSheet Delegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    static NSDictionary * reasons = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        reasons = @{
-                                @(0) : @"not_in_my_competence",
-                                @(1) : @"incorrect_task_time",
-                                @(2) : @"not_enough_information"
-                                };
-    });
-    
-    NSString * reason = [reasons objectForKey:@(buttonIndex)];
-    if(reason) {
-        [[IQService sharedService] changeStatus:@"refuse"
-                                  forTaskWithId:self.taskId
-                                         reason:reason
-                                        handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
-                                            if (success) {
-                                                self.task = task;
-                                                [self updateTaskPolicies];
-                                            }
-                                            else {
-                                                [_deferredActionButton setEnabled:YES];
-                                            }
-                                        }];
+     static NSDictionary * reasons = nil;
+     static dispatch_once_t oncePredicate;
+     dispatch_once(&oncePredicate, ^{
+         reasons = @{
+                     @(0) : @"not_in_my_competence",
+                     @(1) : @"incorrect_task_time",
+                     @(2) : @"not_enough_information"
+                     };
+     });
+     
+     NSString * reason = [reasons objectForKey:@(buttonIndex)];
+     if(reason) {
+         [[IQService sharedService] changeStatus:@"refuse"
+                                   forTaskWithId:self.taskId
+                                          reason:reason
+                                         handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+                                             if (success) {
+                                                 self.task = task;
+                                                 [self updateTaskPolicies];
+                                             }
+                                             else {
+                                                 [self proccessServiceError:error];
+                                                 [_deferredActionButton setEnabled:YES];
+                                             }
+                                             _deferredActionButton = nil;
+                                         }];
+     }
+     else {
+         [_deferredActionButton setEnabled:YES];
+         _deferredActionButton = nil;
+     }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex != alertView.cancelButtonIndex) {
+        [[IQService sharedService] disapproveTaskWithId:self.taskId handler:^(BOOL success, IQTask * task, NSData *responseData, NSError *error) {
+            if (success) {
+                self.task = task;
+                [self updateTaskPolicies];
+            }
+            else {
+                [self proccessServiceError:error];
+                [_deferredActionButton setEnabled:YES];
+            }
+            _deferredActionButton = nil;
+        }];
     }
     else {
         [_deferredActionButton setEnabled:YES];
+        _deferredActionButton = nil;
     }
-    
-    _deferredActionButton = nil;
 }
+
 
 #pragma mark - Private methods
 

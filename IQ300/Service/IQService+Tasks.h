@@ -106,4 +106,8 @@
 - (void)taskIdsDeletedAfter:(NSDate*)deletedAfter
                     handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)approveTaskWithId:(NSNumber *)taskId handler:(ObjectRequestCompletionHandler)handler;
+
+- (void)disapproveTaskWithId:(NSNumber *)taskId handler:(ObjectRequestCompletionHandler)handler;
+
 @end

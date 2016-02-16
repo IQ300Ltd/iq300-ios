@@ -16,6 +16,7 @@
 #import "IQProject.h"
 #import "TaskHelper.h"
 #import "ExtendedButton.h"
+#import "IQReconciliation.h"
 
 #define LINE_HEIGHT 45.5f
 #define CONTENT_LEFT_INSET 10.0f
@@ -103,13 +104,18 @@
         height += LINE_HEIGHT;
     }
     
-    if ([task.availableActions count] > 0) {
+    if (task.reconciliation) {
+        height += LINE_HEIGHT;
+    }
+    
+    NSUInteger totalActions = [task.availableActions count] + [task.reconciliationActions count];
+    if (totalActions > 0) {
 #ifdef IPAD
         CGFloat buttonsInRow = roundf(hederWidth / (BUTTON_OFFSET + BUTTON_WIDTH));
-        NSUInteger buttonRowsCount = ceil([task.availableActions count] / buttonsInRow);
+        NSUInteger buttonRowsCount = ceil(totalActions / buttonsInRow);
         height += BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * buttonRowsCount - BUTTON_OFFSET;
 #else
-        height += BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * [task.availableActions count] - BUTTON_OFFSET;
+        height += BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * totalActions - BUTTON_OFFSET;
 #endif
     }
 
@@ -180,6 +186,11 @@
         [_communityInfoView.imageView setImage:[UIImage imageNamed:@"community_ico.png"]];
         [self addSubview:_communityInfoView];
         
+        _reconciliationInfoView = [[TInfoLineView alloc] init];
+        _reconciliationInfoView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        [_reconciliationInfoView.imageView setImage:[UIImage imageNamed:@"marker-check.png"]];
+        [self addSubview:_reconciliationInfoView];
+        
         _buttonsHolder = [[BottomLineView alloc] init];
         _buttonsHolder.bottomLineHeight = 0.5f;
         _buttonsHolder.bottomLineColor = [UIColor colorWithHexInt:0xc0c0c0];
@@ -235,7 +246,17 @@
         _communityInfoView.imageView.image = [UIImage imageNamed:@"community_ico.png"];
     }
     
-    NSArray * actions = [task.availableActions array];
+    if (task.reconciliation) {
+        _reconciliationInfoView.textLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:
+                                                                                                       NSLocalizedString(@"Task was reconciled by %@ in %@", nil),
+                                                                                                       task.reconciliation.approvedCount,
+                                                                                                       task.reconciliation.totalCount]
+                                                                                           attributes:attributes];
+    }
+    
+    NSMutableArray * actions = [[task.availableActions array] mutableCopy];
+    [actions addObjectsFromArray:[task.reconciliationActions array]];
+    
     for (NSInteger i = 0; i < [actions count]; i++) {
         NSString * actionType = actions[i];
         BOOL isPositiveAction = [TaskHelper isPositiveActionWithType:actionType];
@@ -374,6 +395,19 @@
                                               0.0f);
     }
     
+    if ([_reconciliationInfoView.textLabel.text length] > 0) {
+        _reconciliationInfoView.frame = CGRectMake(bounds.origin.x,
+                                              CGRectBottom(_communityInfoView.frame),
+                                              bounds.size.width,
+                                              LINE_HEIGHT);
+    }
+    else {
+        _reconciliationInfoView.frame = CGRectMake(bounds.origin.x,
+                                              CGRectBottom(_communityInfoView.frame),
+                                              bounds.size.width,
+                                              0.0f);
+    }
+    
     
     if([_buttonsHolder.subviews count] > 0) {
         NSUInteger buttonsCount = [_buttonsHolder.subviews count];
@@ -395,7 +429,7 @@
         CGFloat buttonY = BUTTON_VERTICAL_PADDING;
         CGFloat buttonsHolderHeight = BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * [[_buttonsHolder subviews] count] - BUTTON_OFFSET;
         CGRect buttonsHolderRect = CGRectMake(bounds.origin.x,
-                                              CGRectBottom(_communityInfoView.frame),
+                                              CGRectBottom(_reconciliationInfoView.frame),
                                               bounds.size.width,
                                               buttonsHolderHeight);
 #endif

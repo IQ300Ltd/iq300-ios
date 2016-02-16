@@ -178,3 +178,10 @@
 //Sharing
 "Open in ..." = "Open in ...";
 "Share to messages" = "Share to messages";
+"Save video" = "Save video";
+
+//Reconciliation
+"Task was reconciled by %@ in %@" = "Task was reconciled by %@ in %@";
+"Approve" = "Approve";
+"Disapprove" = "Disapprove";
+"Are you sure you want to mismatched task?" = "Are you sure you want to mismatched task?";
