@@ -6,6 +6,8 @@
 //  Copyright © 2016 Tayphoon. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #import "IQSaveVideoActivity.h"
 #import "SharingConstants.h"
 #import "SharingAttachment.h"
@@ -53,20 +55,13 @@
 }
 
 - (void)performActivity {
-    if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(_videoURL)) {
-        UISaveVideoAtPathToSavedPhotosAlbum(_videoURL, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
-    }
-    else {
-        [self activityDidFinish:NO];
-    }
+    ALAssetsLibrary* library = [[ALAssetsLibrary alloc] init];
+    [library writeVideoAtPathToSavedPhotosAlbum:[NSURL URLWithString:_videoURL]
+                                completionBlock:^(NSURL *assetURL, NSError *error){
+                                    [self activityDidFinish:!error];
+                                }];
 }
 
-- (void)video: (NSString *) videoPath didFinishSavingWithError: (NSError *) error contextInfo: (void *) contextInfo {
-    if (error) {
-        NSLog(@"Video saving error: %@", error);
-    }
-    [self activityDidFinish:!error];
-}
 
 
 @end
