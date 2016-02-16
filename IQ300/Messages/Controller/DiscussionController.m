@@ -573,10 +573,6 @@
     }
     controller.delegate = self;
     controller.documentInteractionControllerRect = rect;
-    
-    controller.completionWithItemsHandler = ^(NSString * activityType, BOOL completed, NSArray * returnedItems, NSError * activityError) {
-        
-    };
 
 #ifdef IPAD
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {

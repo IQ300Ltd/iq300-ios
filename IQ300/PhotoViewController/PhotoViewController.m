@@ -35,15 +35,13 @@
     self.title = self.fileName;
     
     _scrollView = [[UIScrollView alloc] init];
-//    _scrollView.minimumZoomScale = 0.5;
-//    _scrollView.maximumZoomScale = 6.0;
-//    _scrollView.contentSize = CGSizeMake(1280, 960);
     _scrollView.delegate = self;
+    _scrollView.maximumZoomScale = 1.0;
+    _scrollView.multipleTouchEnabled = YES;
     [self.view addSubview:_scrollView];
  
     _imageView = [[UIImageView alloc] init];
     _imageView.backgroundColor = [UIColor clearColor];
-//    _imageView.contentMode = UIViewContentModeScaleAspectFit;
     [_scrollView addSubview:_imageView];
 
     _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
@@ -58,9 +56,6 @@
     
     UIBarButtonItem *shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareAction:)];
     self.navigationItem.rightBarButtonItem = shareButton;
-    
-    
-
 }
 
 - (BOOL)isLeftMenuEnabled {
@@ -71,7 +66,7 @@
     [super viewWillAppear:animated];
     
     if(_imageURL && !_loaded) {
-        //[_activityIndicator startAnimating];
+        [_activityIndicator startAnimating];
         self.navigationItem.rightBarButtonItem.enabled = NO;
 
         UIImage *previewImage = nil;
@@ -87,13 +82,12 @@
                                options:0
                              completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                  if (!error) {
-                                     [self updateView];
-                                     self.navigationItem.rightBarButtonItem.enabled = YES;
                                      _loaded = YES;
+                                     self.navigationItem.rightBarButtonItem.enabled = YES;
+                                     [self updateView];
                                  }
                                  [_activityIndicator stopAnimating];
                              }];
-        [self updateView];
     }
 }
 
@@ -108,6 +102,7 @@
     CGRect actualBounds = self.view.bounds;
     _scrollView.frame = actualBounds;
     _activityIndicator.center = self.view.center;
+    [self updateView];
 }
 
 #pragma mark - UIScrollView delegate
@@ -143,10 +138,11 @@
 - (void)updateView {
     UIImage * image = _imageView.image;
     
+    CGSize viewSize = self.view.bounds.size;
     CGSize contentSize = CGSizeZero;
     UIViewContentMode contentMode = UIViewContentModeCenter;
     
-    if (image.size.width <= self.view.bounds.size.width && image.size.height <= self.view.bounds.size.height) {
+    if (image.size.width <= viewSize.width && image.size.height <= viewSize.height) {
         contentSize = self.view.bounds.size;
         contentMode = _loaded ? UIViewContentModeCenter : UIViewContentModeScaleAspectFit;
     }
@@ -155,23 +151,27 @@
         contentMode = UIViewContentModeCenter;
     }
     
-    _scrollView.contentSize = contentSize;
-    _scrollView.multipleTouchEnabled = YES;
+    _scrollView.zoomScale = 1.0f;
+    _scrollView.minimumZoomScale = 1.0f;
+    _scrollView.frame = self.view.bounds;
+
     
-    _imageView.frame = CGRectMake(0.0,
-                                  0.0,
+    _scrollView.contentSize = CGSizeMake(contentSize.width < viewSize.width ? viewSize.width : contentSize.width,
+                                         contentSize.height < viewSize.height ? viewSize.height : contentSize.height);
+    
+    _imageView.contentMode = contentMode;
+    _imageView.frame = CGRectMake(0,
+                                  0,
                                   contentSize.width,
                                   contentSize.height);
+
     
-//    CGFloat hRatio = _scrollView.frame.size.width / img.size.width;
-//    CGFloat vRatio = _scrollView.frame.size.height / img.size.height;
-//    
-//    CGFloat minZoom = MIN(hRatio, vRatio);
-//    
-//    _scrollView.maximumZoomScale = 1.0;
-//    _scrollView.minimumZoomScale = minZoom;
-//    
-//    _scrollView.zoomScale = minZoom;
+    CGFloat hRatio = _scrollView.bounds.size.width / contentSize.width;
+    CGFloat vRatio = _scrollView.bounds.size.height / contentSize.height;
+    CGFloat minZoom = MIN(hRatio, vRatio);
+    
+    _scrollView.minimumZoomScale = minZoom;
+    _scrollView.zoomScale = minZoom;
 }
 
 - (void)backButtonAction:(UIButton*)sender {
