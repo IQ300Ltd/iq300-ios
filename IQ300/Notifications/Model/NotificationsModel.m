@@ -389,7 +389,7 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 - (void)markAllLocalNotificationAsRead {
     NSManagedObjectContext * context = _fetchController.managedObjectContext;
     NSFetchRequest * fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"IQNotification"];
-    NSString * predicateFormat = @"readed == NO AND ownerId = %@";
+    NSString * predicateFormat = @"readed == NO AND isPinned == NO AND ownerId = %@";
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:predicateFormat, [IQSession defaultSession].userId]];
     [context executeFetchRequest:fetchRequest completion:^(NSArray *objects, NSError *error) {
         if ([objects count] > 0) {
