@@ -77,6 +77,12 @@
 			</dict>
 			<dict>
 				<key>itemId</key>
+				<integer>11</integer>
+				<key>title</key>
+				<string>На согласовании</string>
+			</dict>
+			<dict>
+				<key>itemId</key>
 				<integer>9</integer>
 				<key>title</key>
 				<string>Архив</string>

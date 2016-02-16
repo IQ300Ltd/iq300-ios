@@ -49,7 +49,9 @@
                                 @"cancel"        : @"Cancel",
                                 @"resend"        : @"Send to execute",
                                 @"force_accept"  : @"Take as done",
-                                @"rollback"      : @"← Return to work"
+                                @"rollback"      : @"← Return to work",
+                                @"approve"       : @"Approve",
+                                @"disapprove"    : @"Disapprove"
                                 };
     });
     

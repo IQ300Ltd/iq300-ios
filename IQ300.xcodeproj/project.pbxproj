@@ -15,6 +15,14 @@
 		2D6AE2331C730DAE00A2B02D /* save_video_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE2301C730DAE00A2B02D /* save_video_icon@2x.png */; };
 		2D6AE2341C730DAE00A2B02D /* save_video_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE2311C730DAE00A2B02D /* save_video_icon@3x.png */; };
 		2D6AE2351C730DAE00A2B02D /* save_video_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE2321C730DAE00A2B02D /* save_video_icon.png */; };
+		2D6AE23C1C73362D00A2B02D /* IQReconciliation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6AE2391C73362C00A2B02D /* IQReconciliation.m */; };
+		2D6AE23D1C73362D00A2B02D /* IQReconciliation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6AE2391C73362C00A2B02D /* IQReconciliation.m */; };
+		2D6AE24A1C73406000A2B02D /* marker-check.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE2471C73406000A2B02D /* marker-check.png */; };
+		2D6AE24B1C73406000A2B02D /* marker-check.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE2471C73406000A2B02D /* marker-check.png */; };
+		2D6AE24C1C73406000A2B02D /* marker-check@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE2481C73406000A2B02D /* marker-check@2x.png */; };
+		2D6AE24D1C73406000A2B02D /* marker-check@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE2481C73406000A2B02D /* marker-check@2x.png */; };
+		2D6AE24E1C73406000A2B02D /* marker-check@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE2491C73406000A2B02D /* marker-check@3x.png */; };
+		2D6AE24F1C73406000A2B02D /* marker-check@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE2491C73406000A2B02D /* marker-check@3x.png */; };
 		2D80E7E71C6B17C2009DD5A0 /* TCCollectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7DF1C6B17C2009DD5A0 /* TCCollectionController.m */; };
 		2D80E7E81C6B17C2009DD5A0 /* TCCollectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7DF1C6B17C2009DD5A0 /* TCCollectionController.m */; };
 		2D80E7E91C6B17C2009DD5A0 /* TCCollectionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7E21C6B17C2009DD5A0 /* TCCollectionModel.m */; };
@@ -848,6 +856,11 @@
 		2D6AE2301C730DAE00A2B02D /* save_video_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "save_video_icon@2x.png"; sourceTree = "<group>"; };
 		2D6AE2311C730DAE00A2B02D /* save_video_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "save_video_icon@3x.png"; sourceTree = "<group>"; };
 		2D6AE2321C730DAE00A2B02D /* save_video_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = save_video_icon.png; sourceTree = "<group>"; };
+		2D6AE2381C73362C00A2B02D /* IQReconciliation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQReconciliation.h; sourceTree = "<group>"; };
+		2D6AE2391C73362C00A2B02D /* IQReconciliation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQReconciliation.m; sourceTree = "<group>"; };
+		2D6AE2471C73406000A2B02D /* marker-check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "marker-check.png"; sourceTree = "<group>"; };
+		2D6AE2481C73406000A2B02D /* marker-check@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "marker-check@2x.png"; sourceTree = "<group>"; };
+		2D6AE2491C73406000A2B02D /* marker-check@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "marker-check@3x.png"; sourceTree = "<group>"; };
 		2D80E7DD1C6B17C2009DD5A0 /* TCCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCCollectionCell.h; sourceTree = "<group>"; };
 		2D80E7DE1C6B17C2009DD5A0 /* TCCollectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCCollectionController.h; sourceTree = "<group>"; };
 		2D80E7DF1C6B17C2009DD5A0 /* TCCollectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCCollectionController.m; sourceTree = "<group>"; };
@@ -2713,6 +2726,9 @@
 				73B9EA1A1ADD2DA800159A66 /* calendar_accessory_image@2x.png */,
 				73B9EA1B1ADD2DA800159A66 /* right_gray_arrow.png */,
 				73B9EA1C1ADD2DA800159A66 /* right_gray_arrow@2x.png */,
+				2D6AE2471C73406000A2B02D /* marker-check.png */,
+				2D6AE2481C73406000A2B02D /* marker-check@2x.png */,
+				2D6AE2491C73406000A2B02D /* marker-check@3x.png */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -2825,6 +2841,8 @@
 				735D49061AE5283500F6A753 /* TaskExecutorsGroup.m */,
 				73486E391B6F98EE00DEBD66 /* IQTaskDeletedIds.h */,
 				73486E3A1B6F98EE00DEBD66 /* IQTaskDeletedIds.m */,
+				2D6AE2381C73362C00A2B02D /* IQReconciliation.h */,
+				2D6AE2391C73362C00A2B02D /* IQReconciliation.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -3170,6 +3188,7 @@
 				73840E931B1C75A500BCEAFC /* filter_gray_collapseed@2x.png in Resources */,
 				731527071C621A370077E0BD /* unpinned.png in Resources */,
 				73840E941B1C75A500BCEAFC /* backArrow.png in Resources */,
+				2D6AE24F1C73406000A2B02D /* marker-check@3x.png in Resources */,
 				73840E951B1C75A500BCEAFC /* bell_ico.png in Resources */,
 				73865C221B20688A00118292 /* messages_tab.png in Resources */,
 				73840E961B1C75A500BCEAFC /* check_mark_medium@2x.png in Resources */,
@@ -3198,6 +3217,7 @@
 				73FC83B51B3BF1ED00ADFBC2 /* feedback_ico_selected.png in Resources */,
 				73840EAD1B1C75A500BCEAFC /* calendar_accessory_image.png in Resources */,
 				73840EAE1B1C75A500BCEAFC /* menu_collapseed.png in Resources */,
+				2D6AE24B1C73406000A2B02D /* marker-check.png in Resources */,
 				73840EAF1B1C75A500BCEAFC /* Images.xcassets in Resources */,
 				73840EB01B1C75A500BCEAFC /* right_gray_arrow.png in Resources */,
 				73865C1E1B20688A00118292 /* left_tabbar_background.png in Resources */,
@@ -3277,6 +3297,7 @@
 				73840EF21B1C75A500BCEAFC /* task_comments_tab.png in Resources */,
 				2DAF33851C60AD2600554211 /* open_in_icon@2x.png in Resources */,
 				73060D641B417322001AE08E /* feedback_proposal_type.png in Resources */,
+				2D6AE24D1C73406000A2B02D /* marker-check@2x.png in Resources */,
 				73060D601B417322001AE08E /* feedback_error_type.png in Resources */,
 				7398F78F1B4D07B40009EAD1 /* conference_icon.png in Resources */,
 				73865C2D1B20688A00118292 /* tabbar_background@2x.png in Resources */,
@@ -3330,6 +3351,7 @@
 				7311707F1AB80AFF008A4D09 /* task_documents_tab@2x.png in Resources */,
 				2D6AE22F1C730D7B00A2B02D /* save_video_icon@3x.png in Resources */,
 				73C16C7E1AEFB09F00155BB1 /* filter_gray_collapseed@2x.png in Resources */,
+				2D6AE24E1C73406000A2B02D /* marker-check@3x.png in Resources */,
 				7395C5111A3192C500A6D5DA /* backArrow.png in Resources */,
 				73D0DDFB1A95F2AB008710FF /* bell_ico.png in Resources */,
 				73882D911A24B62500B8BE90 /* check_mark_medium@2x.png in Resources */,
@@ -3338,6 +3360,7 @@
 				73865C411B206C4A00118292 /* tasks_tab_selected.png in Resources */,
 				731527001C6219F90077E0BD /* pinned.png in Resources */,
 				73A113FD1A1CAA5900293EC5 /* default_avatar.png in Resources */,
+				2D6AE24C1C73406000A2B02D /* marker-check@2x.png in Resources */,
 				731170921AB80B0E008A4D09 /* project_ico.png in Resources */,
 				7311707D1AB80AFF008A4D09 /* task_comments_tab@2x.png in Resources */,
 				73A7CA821A9F55ED0038DEF1 /* filter_expanded.png in Resources */,
@@ -3444,6 +3467,7 @@
 				73060D611B417322001AE08E /* feedback_error_type@2x.png in Resources */,
 				738916BD1ABAFB800017EF86 /* gray_checked_checkbox.png in Resources */,
 				73A9498F1A3821AD008EC469 /* backWhiteArrow.png in Resources */,
+				2D6AE24A1C73406000A2B02D /* marker-check.png in Resources */,
 				73F2A55D1A39AB3000E9D324 /* msg_sent@2x.png in Resources */,
 				7356C5D11B12070000BF0CB4 /* GAIEvents.strings in Resources */,
 				738FE7111A162B10009F26A2 /* tasks_tab.png in Resources */,
@@ -3684,6 +3708,7 @@
 				73840E111B1C75A500BCEAFC /* NSDate+CupertinoYankee.m in Sources */,
 				73840E121B1C75A500BCEAFC /* NSError+Extension.m in Sources */,
 				73840E131B1C75A500BCEAFC /* TasksController.m in Sources */,
+				2D6AE23D1C73362D00A2B02D /* IQReconciliation.m in Sources */,
 				2DAF336A1C6087C600554211 /* IQActivityViewController.m in Sources */,
 				737136351B53A4F60043B87B /* ContactInfoCell.m in Sources */,
 				73840E141B1C75A500BCEAFC /* TaskController.m in Sources */,
@@ -4060,6 +4085,7 @@
 				739CFFA51B397FDF00B4AED0 /* FeedbacksModel.m in Sources */,
 				73BF7C611AD5199C00C52D41 /* UIViewController+Additions.m in Sources */,
 				735D48F51AE4D6DB00F6A753 /* TaskExecutersController.m in Sources */,
+				2D6AE23C1C73362D00A2B02D /* IQReconciliation.m in Sources */,
 				730BE4091B3D549400E26994 /* IQSelectionManagedModel.m in Sources */,
 				73A7D67E1AD2796D002B7AFF /* TCRequestItemsHolder.m in Sources */,
 				73A113F71A1C88DD00293EC5 /* IQMenuCellFactory.m in Sources */,

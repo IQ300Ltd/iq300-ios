@@ -43,6 +43,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 #define ARCHIVE_FORMAT @"type LIKE[c] 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
                          status IN {\"accepted\", \"canceled\"}"
 
+#define RECONCILABLE_FORMAT @"type LIKE[c] 'Task' AND status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\"} AND reconciliationActionsCount > 0"
+
 @interface TasksModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;
     NSFetchedResultsController * _fetchController;
@@ -59,13 +61,14 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
         _folders = @{
-                     @"actual"    : ACTUAL_FORMAT,
-                     @"overdue"   : OVERDUE_FORMAT,
-                     @"inbox"     : INBOX_FORMAT,
-                     @"outbox"    : OUTBOX_FORMAT,
-                     @"watchable" : @"type LIKE[c] 'Task' AND (customer.userId != $userId AND executor.userId != $userId)",
-                     @"templates" : @"type LIKE[c] 'TemplateTask' AND ownerId == $userId AND ownerType LIKE[c] 'User'",
-                     @"archive"   : ARCHIVE_FORMAT
+                     @"actual"       : ACTUAL_FORMAT,
+                     @"overdue"      : OVERDUE_FORMAT,
+                     @"inbox"        : INBOX_FORMAT,
+                     @"outbox"       : OUTBOX_FORMAT,
+                     @"watchable"    : @"type LIKE[c] 'Task' AND (customer.userId != $userId AND executor.userId != $userId)",
+                     @"templates"    : @"type LIKE[c] 'TemplateTask' AND ownerId == $userId AND ownerType LIKE[c] 'User'",
+                     @"archive"      : ARCHIVE_FORMAT,
+                     @"reconcilable" : RECONCILABLE_FORMAT
                      };
     });
     

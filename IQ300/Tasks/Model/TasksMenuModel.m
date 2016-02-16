@@ -66,7 +66,8 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                      @(7) : @"outbox",
                      @(8) : @"watchable",
                      @(9) : @"archive",
-                     @(10) : @"templates"
+                     @(10) : @"templates",
+                     @(11) : @"reconcilable"
                      };
         
         _selectedItemIndexPath = [NSIndexPath indexPathForRow:0
@@ -182,11 +183,9 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (NSString*)folderForMenuItemAtIndexPath:(NSIndexPath*)indexPath {
-    if([_folders objectForKey:@(indexPath.row)]) {
-        return [_folders objectForKey:@(indexPath.row)];
-    }
-    
-    return nil;
+    IQMenuSection *section = [_sections objectAtIndex:indexPath.section] ;
+    IQMenuItem *item = [section.menuItems objectAtIndex:indexPath.row];
+    return [_folders objectForKey:item.itemId];
 }
 
 - (NSIndexPath*)indexPathForItemWithFolder:(NSString*)folder {

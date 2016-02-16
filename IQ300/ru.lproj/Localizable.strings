@@ -198,3 +198,9 @@
 "Open in ..." = "Открыть в ...";
 "Share to messages" = "Копировать в сообщения";
 "Save video" = "Сохранить видео";
+
+//Reconciliation
+"Task was reconciled by %@ in %@" = "Задачу согласовали %@ из %@";
+"Approve" = "Согласовать";
+"Disapprove" = "Отозвать согласование";
+"Are you sure you want to mismatched task?" = "Вы действительно хотите рассогласовать задачу?";
