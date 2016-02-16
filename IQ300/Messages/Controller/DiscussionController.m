@@ -568,10 +568,12 @@
     IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:[[SharingAttachment alloc] initWithPath:attachment.localURL
                                                                                                                             displayName:attachment.displayName
                                                                                                                             contentType:attachment.contentType]];
+    NSMutableArray *excludedActivityes = [[NSMutableArray alloc] init];
+    [excludedActivityes addObject:UIActivityTypeSaveToCameraRoll];
     if (![attachment.contentType hasPrefix:@"video"]) {
-        controller.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+        [excludedActivityes addObject:IQActivityTypeSaveVideo];
     }
-    controller.delegate = self;
+    controller.excludedActivityTypes = [excludedActivityes copy];    controller.delegate = self;
     controller.documentInteractionControllerRect = rect;
 
 #ifdef IPAD
