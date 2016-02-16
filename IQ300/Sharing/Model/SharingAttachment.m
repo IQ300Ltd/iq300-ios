@@ -61,7 +61,7 @@
     if ([activityType hasPrefix:IQ_ACTIVITY_TYPE_PREFIX]) {
         return self;
     }
-    else {
+    else {        
         if (!_fileData) {
             _fileData = [NSData dataWithContentsOfFile:_localURL];
         }

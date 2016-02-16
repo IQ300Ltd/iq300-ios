@@ -201,6 +201,7 @@
         controller.imageURL = [NSURL URLWithString:attachment.originalURL];
         controller.fileName = attachment.displayName;
         controller.contentType = attachment.contentType;
+        controller.previewURL = [NSURL URLWithString:attachment.previewURL];
         [self.navigationController pushViewController:controller animated:YES];
     }
     else if ([attachment.localURL length] > 0) {
