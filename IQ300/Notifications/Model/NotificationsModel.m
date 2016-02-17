@@ -343,9 +343,9 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
 
 - (void)notificationsUpdatesAfterDate:(NSDate*)lastUpdatedDate page:(NSNumber*)page completion:(void (^)(NSError * error))completion {
     [[IQService sharedService] notificationsUpdatedAfter:lastUpdatedDate
-                                                  unread:(_filterType == IQNotificationsFilterUnread) ? @(YES) : nil
-                                                  pinned:(_filterType == IQNotificationsFilterPinned) ? @(YES) : nil
-                                           withoutPinned:(_filterType != IQNotificationsFilterPinned) ? @(YES) : nil
+                                                  unread:nil
+                                                  pinned:nil
+                                           withoutPinned:nil
                                                     page:page
                                                      per:@(_portionLenght)
                                                     sort:IQSortDirectionAscending
