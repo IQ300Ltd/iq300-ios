@@ -416,8 +416,7 @@
 }
 
 - (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
-    NSString * title = ([notification.notificable.title length] > 0) ? notification.notificable.title :
-                                                                       NSLocalizedString(notification.notificable.type, nil);
+    NSString * title = ([notification.notificable.title length] > 0) ? notification.notificable.title : notification.notificable.translatedType;
     NSNumber * commentId = notification.commentId;
     [[IQService sharedService] discussionWithId:notification.discussionId
                                         handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {

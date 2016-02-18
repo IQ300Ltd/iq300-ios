@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSNumber * notificableId;
 @property (nonatomic, strong) NSString * type;
 @property (nonatomic, strong) NSString * title;
+@property (nonatomic, strong) NSString * translatedType;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 
