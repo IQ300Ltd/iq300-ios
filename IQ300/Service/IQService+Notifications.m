@@ -27,7 +27,7 @@
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     
-    [self getObjectsAtPath:@"/api/v2/notifications"
+    [self getObjectsAtPath:@"notifications"
                 parameters:parameters
                    handler:handler];
 }
@@ -55,7 +55,7 @@
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     
-    [self getObjectsAtPath:@"/api/v2/notifications"
+    [self getObjectsAtPath:@"notifications"
                 parameters:parameters
                    handler:handler];
 }
@@ -81,7 +81,7 @@
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     
-    [self getObjectsAtPath:@"/api/v2/notifications"
+    [self getObjectsAtPath:@"notifications"
                 parameters:parameters
                    handler:handler];
 }
@@ -107,19 +107,19 @@
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     
-    [self getObjectsAtPath:@"/api/v2/notifications"
+    [self getObjectsAtPath:@"notifications"
                 parameters:parameters
                    handler:handler];
 }
 
 - (void)notificationsWithIds:(NSArray*)ids handler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v2/notifications"
+    [self getObjectsAtPath:@"notifications"
                 parameters:@{ @"by_ids" : ids, @"per" : @(NSIntegerMax) }
                    handler:handler];
 }
 
 - (void)unreadNotificationIdsWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v2/notifications/unread_ids"
+    [self getObjectsAtPath:@"notifications/unread_ids"
                 parameters:nil
                    handler:^(BOOL success, IQNotificationIds * holder, NSData *responseData, NSError *error) {
                        if(success && holder) {
@@ -135,7 +135,7 @@
 
 - (void)markNotificationAsRead:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
-               path:@"/api/v2/notifications/read"
+               path:@"notifications/read"
          parameters:@{ @"notification_ids" : (notificationId) ? @[notificationId] : [NSNull null] }
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if(handler) {
@@ -146,7 +146,7 @@
 
 - (void)markAllNotificationsAsReadWithHandler:(RequestCompletionHandler)handler {
     [self putObject:nil
-               path:@"/api/v2/notifications/read_all"
+               path:@"notifications/read_all"
          parameters:nil
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if(handler) {
@@ -156,14 +156,14 @@
 }
 
 - (void)notificationsCountWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v2/notifications/counters"
+    [self getObjectsAtPath:@"notifications/counters"
                 parameters:nil
                    handler:handler];
 }
 
 - (void)acceptNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v2/notifications/%@/accept", notificationId]
+               path:[NSString stringWithFormat:@"notifications/%@/accept", notificationId]
          parameters:nil
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if(handler) {
@@ -174,7 +174,7 @@
 
 - (void)declineNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v2/notifications/%@/decline", notificationId]
+               path:[NSString stringWithFormat:@"notifications/%@/decline", notificationId]
          parameters:nil
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if(handler) {
@@ -185,7 +185,7 @@
 
 - (void)pinnedNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v2/notifications/%@/pin", notificationId]
+               path:[NSString stringWithFormat:@"notifications/%@/pin", notificationId]
          parameters:nil
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if(handler) {
@@ -196,7 +196,7 @@
 
 - (void)unpinnedNotificationWithId:(NSNumber*)notificationId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v2/notifications/%@/unpin", notificationId]
+               path:[NSString stringWithFormat:@"notifications/%@/unpin", notificationId]
          parameters:nil
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if(handler) {

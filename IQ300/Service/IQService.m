@@ -112,7 +112,7 @@ BOOL IsNetworUnreachableError(NSError * error) {
                                    @"email"        : NSStringNullForNil(email),
                                    @"password"     : NSStringNullForNil(password) };
     [self postObject:nil
-                path:@"/api/v1/sessions"
+                path:@"sessions"
           parameters:parameters
              handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
                  if (success && token) {
@@ -129,7 +129,7 @@ BOOL IsNetworUnreachableError(NSError * error) {
 - (void)logout {
     if (self.session.token) {
         [self deleteObject:nil
-                      path:@"/api/v1/sessions"
+                      path:@"sessions"
                 parameters:@{ @"access_token" : self.session.token }
                    handler:nil];
         self.session = nil;
@@ -151,7 +151,7 @@ BOOL IsNetworUnreachableError(NSError * error) {
                                    @"device_token"    : NSStringNullForNil(deviceToken)
                                    };
     [self postObject:nil
-                path:@"/api/v1/registrations"
+                path:@"registrations"
           parameters:parameters
              handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
                  if (success && token) {
@@ -169,7 +169,7 @@ BOOL IsNetworUnreachableError(NSError * error) {
     NSDictionary * parameters = @{ @"device_token"       : NSStringNullForNil(deviceToken),
                                    @"confirmation_token" : NSStringNullForNil(token)};
     [self postObject:nil
-                path:@"/api/v1/confirmation"
+                path:@"confirmation"
           parameters:parameters
              handler:^(BOOL success, IQToken * token, NSData *responseData, NSError *error) {
                  if (success && token) {
@@ -185,7 +185,7 @@ BOOL IsNetworUnreachableError(NSError * error) {
 }
 
 - (void)userInfoWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/users/current"
+    [self getObjectsAtPath:@"users/current"
                 parameters:nil
                    handler:^(BOOL success, IQUser * user, NSData *responseData, NSError *error) {
                        if(success) {
@@ -206,7 +206,7 @@ BOOL IsNetworUnreachableError(NSError * error) {
                                             }
                                      };
         [self postObject:nil
-                    path:@"/api/v1/devices"
+                    path:@"devices"
               parameters:parameters
                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                      if(handler) {
@@ -372,7 +372,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
 - (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler {
     [self postAsset:asset
-               path:@"/api/v1/attachments"
+               path:@"attachments"
          parameters:nil
   fileAttributeName:@"attachment[file]"
            fileName:fileName
@@ -382,7 +382,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
 - (void)createAttachmentWithFileAtPath:(NSString*)filePath fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler {
     [self postFileAtPath:[NSURL fileURLWithPath:filePath isDirectory:NO]
-                    path:@"/api/v1/attachments"
+                    path:@"attachments"
               parameters:nil
        fileAttributeName:@"attachment[file]"
                 fileName:fileName
@@ -392,7 +392,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
 - (void)createAttachmentWithImage:(UIImage*)image fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler {
     [self postData:UIImagePNGRepresentation(image)
-              path:@"/api/v1/attachments"
+              path:@"attachments"
         parameters:nil
  fileAttributeName:@"attachment[file]"
           fileName:fileName
@@ -489,7 +489,7 @@ fileAttributeName:(NSString*)fileAttributeName
         
         NSURLRequest * loginRequest = [self.objectManager requestWithObject:nil
                                                                      method:RKRequestMethodPOST
-                                                                       path:@"/api/v1/sessions"
+                                                                       path:@"sessions"
                                                                  parameters:parameters];
         NSURLResponse *response = nil;
         NSError * responseError = nil;
@@ -551,7 +551,7 @@ fileAttributeName:(NSString*)fileAttributeName
 - (void)initDescriptors {
     RKResponseDescriptor * descriptor = [IQServiceResponse responseDescriptorForClass:[IQToken class]
                                                                                method:RKRequestMethodPOST
-                                                                          pathPattern:@"/api/v1/sessions"
+                                                                          pathPattern:@"sessions"
                                                                           fromKeyPath:nil
                                                                                 store:self.objectManager.managedObjectStore];
     
@@ -559,14 +559,14 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodDELETE
-                                                         pathPattern:@"/api/v1/sessions"
+                                                         pathPattern:@"sessions"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQToken class]
                                                                                method:RKRequestMethodPOST
-                                                                          pathPattern:@"/api/v1/registrations"
+                                                                          pathPattern:@"registrations"
                                                                           fromKeyPath:nil
                                                                                 store:self.objectManager.managedObjectStore];
     
@@ -574,7 +574,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQToken class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/confirmation"
+                                                   pathPattern:@"confirmation"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -582,7 +582,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationsHolder class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v2/notifications"
+                                                   pathPattern:@"notifications"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -590,7 +590,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationIds class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v2/notifications/unread_ids"
+                                                   pathPattern:@"notifications/unread_ids"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -598,7 +598,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQUser class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/users/current"
+                                                   pathPattern:@"users/current"
                                                    fromKeyPath:@"user"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -606,21 +606,21 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v2/notifications/read"
+                                                         pathPattern:@"notifications/read"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v2/notifications/read_all"
+                                                         pathPattern:@"notifications/read_all"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQNotificationCounters class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v2/notifications/counters"
+                                                   pathPattern:@"notifications/counters"
                                                    fromKeyPath:@"notification_counters"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -628,7 +628,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/conversations"
+                                                   pathPattern:@"conversations"
                                                    fromKeyPath:@"conversations"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -636,7 +636,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/conversations/:id"
+                                                   pathPattern:@"conversations/:id"
                                                    fromKeyPath:@"conversation"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -644,7 +644,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/conversations"
+                                                   pathPattern:@"conversations"
                                                    fromKeyPath:@"conversation"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -652,7 +652,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/conversations/create_conference"
+                                                   pathPattern:@"conversations/create_conference"
                                                    fromKeyPath:@"conversation"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -660,7 +660,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/conversations/:id/dialog_to_conference"
+                                                   pathPattern:@"conversations/:id/dialog_to_conference"
                                                    fromKeyPath:@"conversation"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -668,7 +668,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversationMember class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/conversations/:id/participants"
+                                                   pathPattern:@"conversations/:id/participants"
                                                    fromKeyPath:@"participants"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -676,7 +676,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[ConversationDeletedObjects class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/conversations/deleted_ids"
+                                                   pathPattern:@"conversations/deleted_ids"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -684,49 +684,49 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPOST
-                                                         pathPattern:@"/api/v1/conversations/:id/participants"
+                                                         pathPattern:@"conversations/:id/participants"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodDELETE
-                                                         pathPattern:@"/api/v1/conversations/:id/participants/:id"
+                                                         pathPattern:@"conversations/:id/participants/:id"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/conversations/:id/participants/leave"
+                                                         pathPattern:@"conversations/:id/participants/leave"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/conversations/:id/update_title"
+                                                         pathPattern:@"conversations/:id/update_title"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/discussions/:id"
+                                                         pathPattern:@"discussions/:id"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/discussions/:id/comments/read"
+                                                         pathPattern:@"discussions/:id/comments/read"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQDiscussion class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/discussions/:id"
+                                                   pathPattern:@"discussions/:id"
                                                    fromKeyPath:@"discussion"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -734,7 +734,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQCounters class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/conversations/counters"
+                                                   pathPattern:@"conversations/counters"
                                                    fromKeyPath:@"conversation_counters"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -742,7 +742,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQComment class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/discussions/:id/comments"
+                                                   pathPattern:@"discussions/:id/comments"
                                                    fromKeyPath:@"comments"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -750,7 +750,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQComment class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/discussions/:id/comments"
+                                                   pathPattern:@"discussions/:id/comments"
                                                    fromKeyPath:@"comment"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -758,7 +758,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQComment class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/discussions/:id/comments/:id"
+                                                   pathPattern:@"discussions/:id/comments/:id"
                                                    fromKeyPath:@"comment"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -766,7 +766,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/attachments"
+                                                   pathPattern:@"attachments"
                                                    fromKeyPath:@"attachment"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -774,7 +774,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQContact class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/contacts"
+                                                   pathPattern:@"contacts"
                                                    fromKeyPath:@"contacts"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -782,7 +782,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQContactsDeletedIds class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/contacts/deleted_ids"
+                                                   pathPattern:@"contacts/deleted_ids"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -790,35 +790,35 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPOST
-                                                         pathPattern:@"/api/v1/devices"
+                                                         pathPattern:@"devices"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v2/notifications/:id/accept"
+                                                         pathPattern:@"notifications/:id/accept"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v2/notifications/:id/decline"
+                                                         pathPattern:@"notifications/:id/decline"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v2/notifications/:id/pin"
+                                                         pathPattern:@"notifications/:id/pin"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
 
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v2/notifications/:id/unpin"
+                                                         pathPattern:@"notifications/:id/unpin"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [self.objectManager addResponseDescriptor:descriptor];
@@ -826,7 +826,7 @@ fileAttributeName:(NSString*)fileAttributeName
     //Tasks
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTasksHolder class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks"
+                                                   pathPattern:@"tasks"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -834,7 +834,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[TaskFilterCounters class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/filter_counters"
+                                                   pathPattern:@"tasks/filter_counters"
                                                    fromKeyPath:@"filter_counters"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -842,7 +842,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[TasksMenuCounters class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/menu_counters"
+                                                   pathPattern:@"tasks/menu_counters"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -850,7 +850,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[TChangesCounter class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/:id/changes"
+                                                   pathPattern:@"tasks/:id/changes"
                                                    fromKeyPath:@"changes"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -858,7 +858,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/:id/"
+                                                   pathPattern:@"tasks/:id/"
                                                    fromKeyPath:@"task"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -866,7 +866,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
                                                         method:RKRequestMethodPUT
-                                                   pathPattern:@"/api/v1/tasks/:id/change_status"
+                                                   pathPattern:@"tasks/:id/change_status"
                                                    fromKeyPath:@"task"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -874,13 +874,13 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
                                                         method:RKRequestMethodPUT
-                                                   pathPattern:@"/api/v1/tasks/:id/rollback"
+                                                   pathPattern:@"tasks/:id/rollback"
                                                    fromKeyPath:@"task"
                                                          store:self.objectManager.managedObjectStore];
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedTodoItem class]
                                                         method:RKRequestMethodPUT
-                                                   pathPattern:@"/api/v1/tasks/:id/todo_items/:id/complete"
+                                                   pathPattern:@"tasks/:id/todo_items/:id/complete"
                                                    fromKeyPath:@"todo_item"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -888,7 +888,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedTodoItem class]
                                                         method:RKRequestMethodPUT
-                                                   pathPattern:@"/api/v1/tasks/:id/todo_items/:id/rollback"
+                                                   pathPattern:@"tasks/:id/todo_items/:id/rollback"
                                                    fromKeyPath:@"todo_item"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -896,7 +896,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedTodoItem class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/:id/todo_items"
+                                                   pathPattern:@"tasks/:id/todo_items"
                                                    fromKeyPath:@"todo_items"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -914,7 +914,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedTodoItem class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/tasks/:id/todo_items/apply_changes"
+                                                   pathPattern:@"tasks/:id/todo_items/apply_changes"
                                                    fromKeyPath:@"todo_items"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -922,7 +922,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/tasks/:id/changes/read"
+                                                         pathPattern:@"tasks/:id/changes/read"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
     
@@ -930,7 +930,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskMember class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/:id/accessor_users"
+                                                   pathPattern:@"tasks/:id/accessor_users"
                                                    fromKeyPath:@"accessor_users"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -938,7 +938,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskMember class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/tasks/:id/accessor_users"
+                                                   pathPattern:@"tasks/:id/accessor_users"
                                                    fromKeyPath:@"accessor_user"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -946,7 +946,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodDELETE
-                                                         pathPattern:@"/api/v1/tasks/:id/accessor_users/:id"
+                                                         pathPattern:@"tasks/:id/accessor_users/:id"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
@@ -954,7 +954,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/:id/attachments"
+                                                   pathPattern:@"tasks/:id/attachments"
                                                    fromKeyPath:@"attachments"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -962,7 +962,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/tasks/:id/attachments"
+                                                   pathPattern:@"tasks/:id/attachments"
                                                    fromKeyPath:@"attachment"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -970,7 +970,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodPUT
-                                                         pathPattern:@"/api/v1/tasks/:id/accessor_users/leave"
+                                                         pathPattern:@"tasks/:id/accessor_users/leave"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
     
@@ -978,7 +978,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[TaskPolicies class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/:id/abilities"
+                                                   pathPattern:@"tasks/:id/abilities"
                                                    fromKeyPath:@"policy"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -986,7 +986,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskActivityItem class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/:id/activities"
+                                                   pathPattern:@"tasks/:id/activities"
                                                    fromKeyPath:@"activities"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -994,7 +994,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQCommunity class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/communities"
+                                                   pathPattern:@"tasks/communities"
                                                    fromKeyPath:@"communities"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1002,7 +1002,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQCommunity class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/communities/most_used"
+                                                   pathPattern:@"tasks/communities/most_used"
                                                    fromKeyPath:@"community"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1010,7 +1010,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[TaskExecutorsGroup class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/communities/:id/executors"
+                                                   pathPattern:@"communities/:id/executors"
                                                    fromKeyPath:@"executors"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1024,7 +1024,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/tasks"
+                                                   pathPattern:@"tasks"
                                                    fromKeyPath:@"task"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1038,7 +1038,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
                                                         method:RKRequestMethodPUT
-                                                   pathPattern:@"/api/v1/tasks/:id/"
+                                                   pathPattern:@"tasks/:id/"
                                                    fromKeyPath:@"task"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1046,7 +1046,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
                                                         method:RKRequestMethodPUT
-                                                   pathPattern:@"/api/v2/tasks/:id/reconciliation_list/approve"
+                                                   pathPattern:@"tasks/:id/reconciliation_list/approve"
                                                    fromKeyPath:@"task"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1054,7 +1054,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTask class]
                                                         method:RKRequestMethodPUT
-                                                   pathPattern:@"/api/v2/tasks/:id/reconciliation_list/disapprove"
+                                                   pathPattern:@"tasks/:id/reconciliation_list/disapprove"
                                                    fromKeyPath:@"task"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1062,7 +1062,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQTaskDeletedIds class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/tasks/deleted_ids"
+                                                   pathPattern:@"tasks/deleted_ids"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1070,7 +1070,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[CommentDeletedObjects class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/discussions/:id/comments/deleted_ids"
+                                                   pathPattern:@"discussions/:id/comments/deleted_ids"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1078,7 +1078,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
                                                               method:RKRequestMethodDELETE
-                                                         pathPattern:@"/api/v1/discussions/:id/comments/:id"
+                                                         pathPattern:@"discussions/:id/comments/:id"
                                                              keyPath:nil
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];;
     
@@ -1086,7 +1086,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQFeedbacksHolder class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/error_reports"
+                                                   pathPattern:@"error_reports"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1094,7 +1094,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedFeedback class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/error_reports/:id"
+                                                   pathPattern:@"error_reports/:id"
                                                    fromKeyPath:@"error_report"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1102,7 +1102,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedFeedback class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"/api/v1/error_reports"
+                                                   pathPattern:@"error_reports"
                                                    fromKeyPath:@"error_report"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1117,7 +1117,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQFeedbackCategory class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/error_reports/categories"
+                                                   pathPattern:@"error_reports/categories"
                                                    fromKeyPath:@"error_report_categories"
                                                          store:self.objectManager.managedObjectStore];
     
@@ -1125,7 +1125,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQFeedbackType class]
                                                         method:RKRequestMethodGET
-                                                   pathPattern:@"/api/v1/error_reports/types"
+                                                   pathPattern:@"error_reports/types"
                                                    fromKeyPath:@"error_report_types"
                                                          store:self.objectManager.managedObjectStore];
     

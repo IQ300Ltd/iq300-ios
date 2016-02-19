@@ -137,7 +137,7 @@
     
     NSLog(@"\n\nService adress is %@\n\n", SERVICE_URL);
     
-    [IQService serviceWithURL:SERVICE_URL andSession:[IQSession defaultSession]];
+    [IQService serviceWithURL:[NSString stringWithFormat:@"%@%@", SERVER_URL, @"/api/v2"] andSession:[IQSession defaultSession]];
     [AppDelegate setupNotificationCenter];
     [AppDelegate registerForRemoteNotifications];
 

@@ -22,7 +22,7 @@
                                                            @"search"           : NSStringNullForNil(search)
                                                            });
     
-    [self getObjectsAtPath:@"/api/v1/error_reports"
+    [self getObjectsAtPath:@"error_reports"
                 parameters:parameters
                    handler:handler];
 }
@@ -39,33 +39,33 @@
                                                            @"search"       : NSStringNullForNil(search)
                                                            });
     
-    [self getObjectsAtPath:@"/api/v1/error_reports"
+    [self getObjectsAtPath:@"error_reports"
                 parameters:parameters
                    handler:handler];
 }
 
 - (void)feedbackWithId:(NSNumber*)feedbackId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(feedbackId);
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/error_reports/%@", feedbackId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"error_reports/%@", feedbackId]
                 parameters:nil
                    handler:handler];
 }
 
 - (void)feedbackCategoriesWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/error_reports/categories"
+    [self getObjectsAtPath:@"error_reports/categories"
                 parameters:nil
                    handler:handler];
 }
 
 - (void)feedbackTypesWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/error_reports/types"
+    [self getObjectsAtPath:@"error_reports/types"
                 parameters:nil
                    handler:handler];
 }
 
 - (void)createFeedback:(IQFeedback*)feedback handler:(ObjectRequestCompletionHandler)handler {
     [self postObject:feedback
-                path:@"/api/v1/error_reports"
+                path:@"error_reports"
           parameters:nil
              handler:handler];
 }

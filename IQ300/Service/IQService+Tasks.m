@@ -32,7 +32,7 @@
                                                            @"search"           : NSStringNullForNil(search)
                                                            });
     
-    [self getObjectsAtPath:@"/api/v1/tasks"
+    [self getObjectsAtPath:@"tasks"
                 parameters:parameters
                    handler:handler];
 }
@@ -53,7 +53,7 @@
                                                            @"search"           : NSStringNullForNil(search)
                                                            });
     
-    [self getObjectsAtPath:@"/api/v1/tasks"
+    [self getObjectsAtPath:@"tasks"
                 parameters:parameters
                    handler:handler];
 }
@@ -80,7 +80,7 @@
                                                            });
     
     
-    [self getObjectsAtPath:@"/api/v1/tasks"
+    [self getObjectsAtPath:@"tasks"
                 parameters:parameters
                    handler:handler];
 }
@@ -95,27 +95,27 @@
                                                            @"by_community" : NSObjectNullForNil(communityId),
                                                            });
 
-    [self getObjectsAtPath:@"/api/v1/tasks/filter_counters"
+    [self getObjectsAtPath:@"tasks/filter_counters"
                 parameters:parameters
                    handler:handler];
 }
 
 - (void)tasksMenuCountersWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/tasks/menu_counters"
+    [self getObjectsAtPath:@"tasks/menu_counters"
                 parameters:nil
                    handler:handler];
 }
 
 - (void)taskChangesCounterById:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/changes", taskId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"tasks/%@/changes", taskId]
                 parameters:nil
                    handler:handler];
 }
 
 - (void)taskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/", taskId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"tasks/%@/", taskId]
                 parameters:nil
                    handler:handler];
 }
@@ -128,7 +128,7 @@
                                                            });
     
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/change_status", taskId]
+               path:[NSString stringWithFormat:@"tasks/%@/change_status", taskId]
          parameters:parameters
             handler:handler];
 }
@@ -138,7 +138,7 @@
     NSParameterAssert(taskId);
 
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items/%@/complete", taskId, itemId]
+               path:[NSString stringWithFormat:@"tasks/%@/todo_items/%@/complete", taskId, itemId]
          parameters:nil
             handler:handler];
 }
@@ -146,7 +146,7 @@
 - (void)rollbackTaskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/rollback", taskId]
+               path:[NSString stringWithFormat:@"tasks/%@/rollback", taskId]
          parameters:nil
             handler:handler];
 }
@@ -156,7 +156,7 @@
     NSParameterAssert(taskId);
 
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items/%@/rollback", taskId, itemId]
+               path:[NSString stringWithFormat:@"tasks/%@/todo_items/%@/rollback", taskId, itemId]
          parameters:nil
             handler:handler];
 }
@@ -171,7 +171,7 @@
         return fRequest;
     };
     
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items", taskId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"tasks/%@/todo_items", taskId]
                 parameters:nil
                 fetchBlock:fetchBlock
                    handler:handler];
@@ -191,7 +191,7 @@
     holder.items = tododList;
     
     [self postObject:holder
-                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/todo_items/apply_changes", taskId]
+                path:[NSString stringWithFormat:@"tasks/%@/todo_items/apply_changes", taskId]
           parameters:nil
           fetchBlock:fetchBlock
              handler:handler];
@@ -202,7 +202,7 @@
     NSParameterAssert(category);
 
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/changes/read", taskId]
+               path:[NSString stringWithFormat:@"tasks/%@/changes/read", taskId]
          parameters:@{ @"tabs" : @[category] }
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if (handler) {
@@ -214,7 +214,7 @@
 - (void)attachmentsByTaskId:(NSNumber *)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/attachments", taskId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"tasks/%@/attachments", taskId]
                 parameters:nil
                    handler:handler];
 }
@@ -222,7 +222,7 @@
 - (void)addAttachmentWithId:(NSNumber*)attachmentId taskId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self postObject:nil
-                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/attachments", taskId]
+                path:[NSString stringWithFormat:@"tasks/%@/attachments", taskId]
           parameters:@{ @"attachment_id" : attachmentId }
              handler:handler];
 }
@@ -236,7 +236,7 @@
     };
 
     NSParameterAssert(taskId);
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users", taskId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"tasks/%@/accessor_users", taskId]
                 parameters:nil
                 fetchBlock:fetchBlock
                    handler:handler];
@@ -245,7 +245,7 @@
 - (void)addMemberWithUserId:(NSNumber*)userId inTaskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
     [self postObject:nil
-                path:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users", taskId]
+                path:[NSString stringWithFormat:@"tasks/%@/accessor_users", taskId]
           parameters:@{ @"user_id" : userId }
              handler:handler];
 }
@@ -255,7 +255,7 @@
     NSParameterAssert(taskId);
 
     [self deleteObject:nil
-                  path:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users/%@", taskId, memberId]
+                  path:[NSString stringWithFormat:@"tasks/%@/accessor_users/%@", taskId, memberId]
             parameters:nil
                handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                    if (handler) {
@@ -268,7 +268,7 @@
     NSParameterAssert(taskId);
   
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/accessor_users/leave", taskId]
+               path:[NSString stringWithFormat:@"tasks/%@/accessor_users/leave", taskId]
          parameters:nil
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if (handler) {
@@ -279,7 +279,7 @@
 
 - (void)policiesForTaskWithId:(NSNumber*)taskId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(taskId);
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/abilities", taskId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"tasks/%@/abilities", taskId]
                 parameters:nil
                    handler:handler];
 }
@@ -302,7 +302,7 @@
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
 
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/activities", taskId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"tasks/%@/activities", taskId]
                 parameters:parameters
                    handler:handler];
 }
@@ -323,20 +323,20 @@
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/%@/activities", taskId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"tasks/%@/activities", taskId]
                 parameters:parameters
                    handler:handler];
   
 }
 
 - (void)taskCommunitiesWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/tasks/communities"
+    [self getObjectsAtPath:@"tasks/communities"
                 parameters:nil
                    handler:handler];
 }
 
 - (void)mostUsedCommunityWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/tasks/communities/most_used"
+    [self getObjectsAtPath:@"tasks/communities/most_used"
                 parameters:nil
                    handler:handler];
 }
@@ -344,42 +344,42 @@
 - (void)taskExecutorsForCommunityId:(NSNumber*)communityId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(communityId);
 
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/communities/%@/executors", communityId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"communities/%@/executors", communityId]
                 parameters:nil
                    handler:handler];
 }
 
 - (void)createTask:(IQTaskDataHolder*)task handler:(ObjectRequestCompletionHandler)handler {
     [self postObject:task
-                path:@"/api/v1/tasks"
+                path:@"tasks"
           parameters:nil
              handler:handler];
 }
 
 - (void)saveTask:(IQTaskDataHolder*)task handler:(ObjectRequestCompletionHandler)handler {
     [self putObject:task
-               path:[NSString stringWithFormat:@"/api/v1/tasks/%@/", task.taskId]
+               path:[NSString stringWithFormat:@"tasks/%@/", task.taskId]
          parameters:nil
             handler:handler];
 }
 
 - (void)taskIdsDeletedAfter:(NSDate*)deletedAfter
                     handler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/tasks/deleted_ids"]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"tasks/deleted_ids"]
                 parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
                    handler:handler];
 }
 
 - (void)approveTaskWithId:(NSNumber *)taskId handler:(ObjectRequestCompletionHandler)handler {
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v2/tasks/%@/reconciliation_list/approve", taskId]
+               path:[NSString stringWithFormat:@"tasks/%@/reconciliation_list/approve", taskId]
          parameters:nil
             handler:handler];
 }
 
 - (void)disapproveTaskWithId:(NSNumber *)taskId handler:(ObjectRequestCompletionHandler)handler {
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v2/tasks/%@/reconciliation_list/disapprove", taskId]
+               path:[NSString stringWithFormat:@"tasks/%@/reconciliation_list/disapprove", taskId]
          parameters:nil
             handler:handler];
 }

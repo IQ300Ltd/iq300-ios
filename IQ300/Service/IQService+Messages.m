@@ -31,20 +31,20 @@
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     
-    [self getObjectsAtPath:@"/api/v1/conversations"
+    [self getObjectsAtPath:@"conversations"
                 parameters:parameters
                    handler:handler];
 }
 
 - (void)conversationWithId:(NSNumber*)conversationid handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(conversationid);
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/conversations/%@", conversationid]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"conversations/%@", conversationid]
                 parameters:nil
                    handler:handler];
 }
 
 - (void)conversationsCountersWithHandler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/conversations/counters"
+    [self getObjectsAtPath:@"conversations/counters"
                 parameters:nil
                    handler:handler];
 }
@@ -52,7 +52,7 @@
 - (void)createConversationWithRecipientId:(NSNumber*)recipientId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(recipientId);
     [self postObject:nil
-                path:@"/api/v1/conversations"
+                path:@"conversations"
           parameters:@{ @"recipient_id" : recipientId }
              handler:handler];
 }
@@ -60,7 +60,7 @@
 - (void)createConversationWithRecipientIds:(NSArray*)recipientIds handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(recipientIds);
     [self postObject:nil
-                path:@"/api/v1/conversations/create_conference"
+                path:@"conversations/create_conference"
           parameters:@{ @"participant_ids" : recipientIds }
              handler:handler];
 }
@@ -71,7 +71,7 @@
     NSParameterAssert(conversationId);
     NSParameterAssert(userIds);
     [self postObject:nil
-                path:[NSString stringWithFormat:@"/api/v1/conversations/%@/dialog_to_conference", conversationId]
+                path:[NSString stringWithFormat:@"conversations/%@/dialog_to_conference", conversationId]
           parameters:@{ @"participant_ids" : userIds }
              handler:handler];
 }
@@ -81,7 +81,7 @@
                         handler:(RequestCompletionHandler)handler {
     NSParameterAssert(conversationId);
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/conversations/%@/update_title", conversationId]
+               path:[NSString stringWithFormat:@"conversations/%@/update_title", conversationId]
          parameters:@{ @"title" : NSStringNullForNil(title) }
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if (handler) {
@@ -92,7 +92,7 @@
 
 - (void)membersForConversation:(NSNumber *)conversationId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(conversationId);
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/conversations/%@/participants", conversationId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"conversations/%@/participants", conversationId]
                 parameters:nil
                    handler:handler];
 }
@@ -103,7 +103,7 @@
                   handler:(RequestCompletionHandler)handler {
     NSParameterAssert(conversationId);
     [self postObject:nil
-                path:[NSString stringWithFormat:@"/api/v1/conversations/%@/participants", conversationId]
+                path:[NSString stringWithFormat:@"conversations/%@/participants", conversationId]
           parameters:@{ @"user_ids" : NSObjectNullForNil(memberIds) }
              handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                  if(handler) {
@@ -118,7 +118,7 @@
     NSParameterAssert(memberId);
     NSParameterAssert(conversationId);
     [self deleteObject:nil
-                  path:[NSString stringWithFormat:@"/api/v1/conversations/%@/participants/%@", conversationId, memberId]
+                  path:[NSString stringWithFormat:@"conversations/%@/participants/%@", conversationId, memberId]
             parameters:nil
                handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                    if(handler) {
@@ -130,7 +130,7 @@
 - (void)leaveConversationWithId:(NSNumber*)conversationId handler:(RequestCompletionHandler)handler {
     NSParameterAssert(conversationId);
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/conversations/%@/participants/leave", conversationId]
+               path:[NSString stringWithFormat:@"conversations/%@/participants/leave", conversationId]
          parameters:nil
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if(handler) {
@@ -143,14 +143,14 @@
 
 - (void)discussionWithId:(NSNumber*)discussionId handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(discussionId);
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@", discussionId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"discussions/%@", discussionId]
                 parameters:nil
                    handler:handler];
 }
 
 - (void)markDiscussionAsReadedWithId:(NSNumber *)discussionId handler:(RequestCompletionHandler)handler {
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/discussions/%@", discussionId]
+               path:[NSString stringWithFormat:@"discussions/%@", discussionId]
          parameters:nil
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if(handler) {
@@ -173,7 +173,7 @@
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
 
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments", discussionId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"discussions/%@/comments", discussionId]
                 parameters:parameters
                    handler:handler];
 }
@@ -182,7 +182,7 @@
                        discussionId:(NSNumber*)discussionId
                             handler:(RequestCompletionHandler)handler {
     [self putObject:nil
-               path:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/read", discussionId]
+               path:[NSString stringWithFormat:@"discussions/%@/comments/read", discussionId]
          parameters:@{ @"comment_ids" : commentIds }
             handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                 if(handler) {
@@ -200,7 +200,7 @@
                                                            @"attachment_ids" : NSObjectNullForNil(attachmentIds)
                                                           });
     [self postObject:nil
-                path:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments", discussionId]
+                path:[NSString stringWithFormat:@"discussions/%@/comments", discussionId]
           parameters:@{ @"comment" : parameters }
              handler:handler];
 }
@@ -208,7 +208,7 @@
 - (void)commentWithId:(NSNumber*)commentId
          discussionId:(NSNumber*)discussionId
               handler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/%@", discussionId, commentId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"discussions/%@/comments/%@", discussionId, commentId]
                 parameters:nil
                    handler:handler];
 }
@@ -228,7 +228,7 @@
         parameters[@"sort"] = IQSortDirectionToString(sort);
     }
     
-    [self getObjectsAtPath:@"/api/v1/contacts"
+    [self getObjectsAtPath:@"contacts"
                 parameters:parameters
                    handler:handler];
 
@@ -236,7 +236,7 @@
 
 - (void)contactIdsDeletedAfter:(NSDate*)deletedAfter
                        handler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/contacts/deleted_ids"
+    [self getObjectsAtPath:@"contacts/deleted_ids"
                 parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
                    handler:handler];
 }
@@ -245,7 +245,7 @@
                discussionId:(NSNumber*)discussionId
                     handler:(RequestCompletionHandler)handler {
     [self deleteObject:nil
-                  path:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/%@", discussionId, commentId]
+                  path:[NSString stringWithFormat:@"discussions/%@/comments/%@", discussionId, commentId]
             parameters:nil
                handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
                    if (handler) {
@@ -259,14 +259,14 @@
                        handler:(ObjectRequestCompletionHandler)handler {
     NSParameterAssert(discussionId);
     
-    [self getObjectsAtPath:[NSString stringWithFormat:@"/api/v1/discussions/%@/comments/deleted_ids", discussionId]
+    [self getObjectsAtPath:[NSString stringWithFormat:@"discussions/%@/comments/deleted_ids", discussionId]
                 parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
                    handler:handler];
 }
 
 - (void)conversationsIdsDeletedAfter:(NSDate*)deletedAfter
                              handler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"/api/v1/conversations/deleted_ids"
+    [self getObjectsAtPath:@"conversations/deleted_ids"
                 parameters:IQParametersExcludeEmpty(@{ @"deleted_at_after" : NSObjectNullForNil(deletedAfter) })
                    handler:handler];
 }
