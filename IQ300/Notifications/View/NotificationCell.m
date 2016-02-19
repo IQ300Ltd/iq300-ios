@@ -194,7 +194,7 @@
     CONTEN_BACKGROUND_COLOR;
     self.rightUtilityButtons = (isReaded || [_item.isPinned boolValue]) ? nil : @[_markAsReadedButton];
     
-    _typeLabel.text = NSLocalizedString(_item.notificable.type, nil);
+    _typeLabel.text = _item.notificable.translatedType;
     _dateLabel.text = [_item.createdAt dateToDayTimeString];
     _titleLabel.text = _item.notificable.title;
     _userNameLabel.hidden = ([_item.user.displayName length] == 0);
