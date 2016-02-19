@@ -18,6 +18,7 @@
 @property (nonatomic, strong) NSNumber * outboxCompleted;
 @property (nonatomic, strong) NSNumber * outboxRefused;
 @property (nonatomic, strong) NSNumber * total;
+@property (nonatomic, strong) NSNumber * notApproved;
 
 + (RKObjectMapping*)objectMapping;
 
