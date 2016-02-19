@@ -14,15 +14,17 @@
 @dynamic notificableId;
 @dynamic type;
 @dynamic title;
+@dynamic translatedType;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class])
                                                     inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"notificableId"]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"id"    : @"notificableId",
-                                                  @"type"  : @"type",
-                                                  @"title" : @"title"
+                                                  @"id"                   : @"notificableId",
+                                                  @"type.name"            : @"type",
+                                                  @"title"                : @"title",
+                                                  @"type.translated_name" : @"translatedType"
                                                   }];
     return mapping;
 }

@@ -70,8 +70,7 @@
         
         for (NSString * actionType in availableActions) {
             BOOL isPositiveAction = [NotificationsHelper isPositiveActionWithType:actionType];
-            NSString * combineType = ([item.notificable.type length] > 0) ? [NSString stringWithFormat:@"%@_%@", item.notificable.type, actionType] :
-            actionType;
+            NSString * combineType = ([item.notificable.type length] > 0) ? [NSString stringWithFormat:@"%@_%@", item.notificable.type, actionType] : actionType;
             NSString * localizeKey = [NotificationsHelper displayNameForActionType:[combineType lowercaseString]];
             UIButton * actionButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 99.0f, 31.0f)];
             actionButton.layer.cornerRadius = 3.0f;
