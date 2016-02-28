@@ -40,10 +40,16 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 #define OUTBOX_FORMAT @"type LIKE[c] 'Task' AND customer.userId == $userId AND executor.userId != $userId AND \
                         status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\", \"on_init\"}"
 
-#define ARCHIVE_FORMAT @"type LIKE[c] 'Task' AND (customer.userId == $userId OR executor.userId == $userId) AND \
+#define ARCHIVE_FORMAT @"type LIKE[c] 'Task' AND \
                          status IN {\"accepted\", \"canceled\"}"
 
-#define RECONCILABLE_FORMAT @"type LIKE[c] 'Task' AND status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\"} AND reconciliationActionsCount > 0"
+#define RECONCILABLE_FORMAT @"type LIKE[c] 'Task' AND \
+                              status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\"} AND \
+                              reconciliationActionsCount > 0"
+
+#define WATCHABLE_FORMAT @"type LIKE[c] 'Task' AND \
+                           (customer.userId != $userId AND executor.userId != $userId) AND \
+                           status IN {\"new\", \"in_work\", \"browsed\", \"completed\", \"refused\", \"declined\"}"
 
 @interface TasksModel() <NSFetchedResultsControllerDelegate> {
     NSInteger _portionLenght;
@@ -65,7 +71,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
                      @"overdue"      : OVERDUE_FORMAT,
                      @"inbox"        : INBOX_FORMAT,
                      @"outbox"       : OUTBOX_FORMAT,
-                     @"watchable"    : @"type LIKE[c] 'Task' AND (customer.userId != $userId AND executor.userId != $userId)",
+                     @"watchable"    : WATCHABLE_FORMAT,
                      @"templates"    : @"type LIKE[c] 'TemplateTask' AND ownerId == $userId AND ownerType LIKE[c] 'User'",
                      @"archive"      : ARCHIVE_FORMAT,
                      @"reconcilable" : RECONCILABLE_FORMAT
