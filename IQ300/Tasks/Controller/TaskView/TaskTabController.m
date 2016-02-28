@@ -65,8 +65,7 @@
         [self setViewControllers:@[[[TInfoController alloc] init],
                                    [[TCommentsController alloc] init],
                                    [[TMembersController alloc] init],
-                                   [[TDocumentsController alloc] init],
-                                   [[TaskActivitiesController alloc] init]
+                                   [[TDocumentsController alloc] init]
                                    ]];
     }
     return self;
@@ -169,9 +168,6 @@
     
     TDocumentsController * documentsController = self.viewControllers[3];
     [documentsController setTaskId:task.taskId];
-    
-    TaskActivitiesController * activitiesController = self.viewControllers[4];
-    [activitiesController setTaskId:task.taskId];
 }
 
 - (void)updateControllersInspector:(TaskPolicyInspector*)inspector {
@@ -186,9 +182,6 @@
     
     TDocumentsController * documentsController = self.viewControllers[3];
     [documentsController setPolicyInspector:inspector];
-    
-    TaskActivitiesController * activitiesController = self.viewControllers[4];
-    [activitiesController setPolicyInspector:inspector];
 }
 
 - (void)updateCounters {
