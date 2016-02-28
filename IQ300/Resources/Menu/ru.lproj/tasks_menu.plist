@@ -87,12 +87,6 @@
 				<key>title</key>
 				<string>Архив</string>
 			</dict>
-			<dict>
-				<key>itemId</key>
-				<integer>10</integer>
-				<key>title</key>
-				<string>Шаблоны</string>
-			</dict>
 		</array>
 	</dict>
 </array>

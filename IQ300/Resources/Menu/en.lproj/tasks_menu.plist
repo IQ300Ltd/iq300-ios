@@ -87,12 +87,6 @@
 				<key>title</key>
 				<string>Archive</string>
 			</dict>
-			<dict>
-				<key>itemId</key>
-				<integer>10</integer>
-				<key>title</key>
-				<string>Templates</string>
-			</dict>
 		</array>
 	</dict>
 </array>
