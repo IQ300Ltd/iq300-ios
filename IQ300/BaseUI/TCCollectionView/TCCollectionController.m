@@ -60,8 +60,8 @@
 - (UILabel*)noDataLabel {
     if(!_noDataLabel) {
         _noDataLabel = [[UILabel alloc] init];
-        [_noDataLabel setFont:[UIFont systemFontOfSize:15]];
-        [_noDataLabel setTextColor:[UIColor lightGrayColor]];
+        [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
+        [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
         _noDataLabel.textAlignment = NSTextAlignmentCenter;
         _noDataLabel.backgroundColor = [UIColor clearColor];
         _noDataLabel.numberOfLines = 0;
@@ -78,7 +78,6 @@
             _noDataLabel.frame = self.view.frame;
         }
     }
-    
     return _noDataLabel;
 }
 

@@ -167,7 +167,7 @@
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds
                                              collectionViewLayout:collectionViewFlowLayout];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        _collectionView.backgroundColor = [UIColor whiteColor];
+        _collectionView.backgroundColor = [UIColor clearColor];
         _collectionView.bounces = YES;
         _collectionView.alwaysBounceVertical = YES;
     }
