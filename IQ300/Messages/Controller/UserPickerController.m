@@ -70,30 +70,46 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    IQUser * user = [self.model itemAtIndexPath:indexPath];
+    id item = [self.model itemAtIndexPath:indexPath];
+
     
-    cell.textLabel.text = user.displayName;
-    cell.detailTextLabel.text = user.nickName;
-    
-    if([user.thumbUrl length] > 0) {
-        [cell.imageView sd_setImageWithURL:[NSURL URLWithString:user.thumbUrl]
-                          placeholderImage:[UIImage imageNamed:@"default_avatar.png"]
-                                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            [cell setNeedsDisplay];
-        }];
+    if ([item isKindOfClass:[IQUser class]]) {
+        IQUser *user = item;
+        cell.textLabel.text = user.displayName;
+        cell.detailTextLabel.text = user.nickName;
+        
+        if([user.thumbUrl length] > 0) {
+            [cell.imageView sd_setImageWithURL:[NSURL URLWithString:user.thumbUrl]
+                              placeholderImage:[UIImage imageNamed:@"default_avatar.png"]
+                                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                         [cell setNeedsDisplay];
+                                     }];
+        }
     }
-    
+    else if ([item isKindOfClass:[AllUsersObject class]]) {
+        AllUsersObject *object = item;
+        cell.textLabel.text = object.displayName;
+        cell.detailTextLabel.text = object.email;
+        [cell.imageView setImage:[UIImage imageNamed:@"default_avatar.png"]];
+    }
     return cell;
 }
 
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQUser * user = [self.model itemAtIndexPath:indexPath];
-    
-    if([self.delegate respondsToSelector:@selector(userPickerController:didPickUser:)]) {
-        [self.delegate userPickerController:self didPickUser:user];
+    if([self.delegate respondsToSelector:@selector(userPickerController:didPickUsers:)]) {
+        id object = [self.model itemAtIndexPath:indexPath];
+        if ([object isKindOfClass:[IQUser class]]) {
+            [self.delegate userPickerController:self didPickUsers:@[object]];
+        }
+        else if ([object isKindOfClass:[AllUsersObject class]]) {
+            NSPredicate *currentUserPredicate = [NSPredicate predicateWithFormat:@"userId !=%@", [IQSession defaultSession].userId];
+            [self.delegate userPickerController:self didPickUsers:[self.model.users filteredArrayUsingPredicate:currentUserPredicate]];
+        }
     }
+
+    
 }
 
 #pragma mark - Private methods

@@ -22,6 +22,9 @@
 
 @implementation SystemCommentCell
 
+@synthesize avalibleNicks;
+@synthesize currentUserNick;
+
 + (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded сellWidth:(CGFloat)cellWidth {
     CGFloat contentWidth = cellWidth - CONTENT_INSET * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;

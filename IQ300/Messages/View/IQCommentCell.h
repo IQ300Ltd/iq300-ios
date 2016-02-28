@@ -20,6 +20,9 @@
 @property (nonatomic, assign, getter=isExpanded) BOOL expanded;
 @property (nonatomic, assign, getter=isExpandable) BOOL expandable;
 
+@property (nonatomic, strong) NSString *currentUserNick;
+@property (nonatomic, weak) NSArray *avalibleNicks;
+
 + (CGFloat)heightForItem:(IQComment *)item expanded:(BOOL)expanded сellWidth:(CGFloat)cellWidth;
 + (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item сellWidth:(CGFloat)cellWidth;
 

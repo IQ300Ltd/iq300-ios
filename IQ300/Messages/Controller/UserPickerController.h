@@ -15,7 +15,7 @@
 @protocol UserPickerControllerDelegate <NSObject>
 
 @optional
-- (void)userPickerController:(UserPickerController*)picker didPickUser:(IQUser*)user;
+- (void)userPickerController:(UserPickerController*)picker didPickUsers:(NSArray <__kindof IQUser *>*)users;
 
 @end
 

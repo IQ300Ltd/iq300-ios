@@ -802,18 +802,29 @@
     _userPickerController.view.frame = CGRectMake(0.0f, 0.0f, _mainView.tableView.frame.size.width, _mainView.tableView.frame.size.height);
 }
 
-- (void)userPickerController:(UserPickerController*)picker didPickUser:(IQUser*)user {
-    if(user) {
+- (void)userPickerController:(UserPickerController*)picker didPickUsers:(NSArray<__kindof IQUser *> *)users {
+    if(users.count > 0) {
         NSString * inputText = _mainView.inputView.commentTextView.text;
         if(_inputWordRange.location != NSNotFound) {
             BOOL needSpace = (_inputWordRange.location + _inputWordRange.length == inputText.length);
-            NSString * resultString = (needSpace) ? [NSString stringWithFormat:@"@%@ ", user.nickName] :
-                                                    [NSString stringWithFormat:@"@%@", user.nickName];
+            NSMutableString *mutableResultString = [[NSMutableString alloc] init];
+            
+            for (IQUser *user in users) {
+                if (mutableResultString.length == 0) {
+                    [mutableResultString appendFormat:@"@%@", user.nickName];
+                }
+                else {
+                    [mutableResultString appendFormat:@" @%@", user.nickName];
+                }
+            }
+            if (needSpace) {
+                [mutableResultString appendString:@" "];
+            }
             
             inputText = [inputText stringByReplacingCharactersInRange:_inputWordRange
-                                                           withString:resultString];
+                                                           withString:mutableResultString];
             _mainView.inputView.commentTextView.text = inputText;
-            _mainView.inputView.commentTextView.selectedRange = NSMakeRange(_inputWordRange.location + [resultString length], 0);
+            _mainView.inputView.commentTextView.selectedRange = NSMakeRange(_inputWordRange.location + [mutableResultString length], 0);
         }
         [self hideUserPickerController];
     }

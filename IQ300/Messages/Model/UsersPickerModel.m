@@ -14,6 +14,7 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 
 @interface UsersPickerModel() {
     NSArray * _usersInternal;
+    NSArray * _usersWithAll;
 }
 
 @end
@@ -26,6 +27,13 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
         _sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"displayName" ascending:YES]];
     }
     return self;
+}
+
+- (void)setUsers:(NSArray *)users {
+    _users = users;
+    
+    AllUsersObject *allUsersObject = [[AllUsersObject alloc] init];
+    _usersWithAll = [users arrayByAddingObject:allUsersObject];
 }
 
 - (NSUInteger)numberOfSections {
@@ -82,7 +90,7 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, filterPredicate]];
     }
     
-    _usersInternal = [[_users filteredArrayUsingPredicate:predicate] sortedArrayUsingDescriptors:self.sortDescriptors];
+    _usersInternal = [[_usersWithAll filteredArrayUsingPredicate:predicate] sortedArrayUsingDescriptors:self.sortDescriptors];
     
     if(completion) {
         completion(nil);
@@ -92,6 +100,7 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 - (void)clearModelData {
     _users = nil;
     _usersInternal = nil;
+    _usersWithAll = nil;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -163,6 +172,20 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+@end
+
+@implementation AllUsersObject
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _email = @"All";
+        _displayName = NSLocalizedString(_email, nil);
+        _userId = @(NSIntegerMin);
+    }
+    return self;
 }
 
 @end

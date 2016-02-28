@@ -17,3 +17,11 @@
 @property (nonatomic, weak) id<IQTableModelDelegate> delegate;
 
 @end
+
+@interface AllUsersObject : NSObject
+
+@property (nonatomic, strong) NSString *email;
+@property (nonatomic, strong) NSString *displayName;
+@property (nonatomic, strong) NSNumber *userId;
+
+@end

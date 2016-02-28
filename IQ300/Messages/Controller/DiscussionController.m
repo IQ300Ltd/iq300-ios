@@ -33,10 +33,12 @@
 #import "IQService.h"
 #import "IQService+Messages.h"
 #import "IQActivityViewController.h"
+#import "UserPickerController.h"
+#import "IQLayoutManager.h"
 
 #define SECTION_HEIGHT 12
 
-@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate, IQActivityViewControllerDelegate> {
+@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate, IQActivityViewControllerDelegate, UserPickerControllerDelegate> {
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachmentAsset;
@@ -48,6 +50,11 @@
 #ifdef IPAD
     UIPopoverController *_popoverController;
 #endif
+    UserPickerController * _userPickerController;
+    NSRange _inputWordRange;
+    
+    NSArray *_avalibleNicks;
+    NSString *_currentUserNick;
 }
 
 @end
@@ -139,6 +146,11 @@
                                                                        target:self
                                                                        action:@selector(rightBarButtonAction:)];
     self.navigationItem.rightBarButtonItem = rightBarButton;
+    
+    _avalibleNicks = [[self.model.discussion.users allObjects] valueForKey:@"nickName"];
+    IQUser * curUser = [IQUser userWithId:[IQSession defaultSession].userId
+                                inContext:[IQService sharedService].context];
+    _currentUserNick = curUser.nickName;
 }
 
 - (BOOL)isLeftMenuEnabled {
@@ -221,6 +233,8 @@
     }
     
     IQComment * comment = [self.model itemAtIndexPath:indexPath];
+    cell.avalibleNicks = _avalibleNicks;
+    cell.currentUserNick = _currentUserNick;
     cell.item = comment;
 
     cell.expandable = [self.model isCellExpandableAtIndexPath:indexPath];
@@ -370,6 +384,14 @@
     }
     
     return NO;
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if (textView == _mainView.inputView.commentTextView) {
+        NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
+        [self showAutoCompleationIfNeedForText:newString selectedRange:NSMakeRange((range.length > 0) ? range.location : range.location + 1, 0)];
+    }
+    return YES;
 }
 
 #pragma mark - Private methods
@@ -721,6 +743,8 @@
     if (isTableScrolledToBottom && inputHeightWillBeChanged) {
         [self scrollToBottomAnimated:NO delay:0.0f];
     }
+    
+    [self layoutUserPickerController];
 }
 
 - (void)scrollToBottomIfNeedAnimated:(BOOL)animated delay:(CGFloat)delay {
@@ -951,5 +975,87 @@
     _documentController = nil;
 }
 
+#pragma mark - User picker methods
+
+- (void)showAutoCompleationIfNeedForText:(NSString*)text selectedRange:(NSRange)selectedRange {
+    if([text length] > 0) {
+        NSString * beforeString = [text substringToIndex:selectedRange.location];
+        NSString * afterString =  [text substringFromIndex:selectedRange.location];
+        
+        NSArray * wordArrayBefor = [beforeString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString * wordTypedBefor = [wordArrayBefor lastObject];
+        NSArray * wordArrayAfter = [afterString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString * wordTypedAfter = [wordArrayAfter firstObject];
+        
+        NSString * typedWord = [wordTypedBefor stringByAppendingString:wordTypedAfter];
+        if([typedWord length] > 0 && [[typedWord substringToIndex:1] isEqualToString:@"@"]) {
+            NSInteger location = selectedRange.location;
+            _inputWordRange = NSMakeRange(location - [wordTypedBefor length], [wordTypedBefor length] + [wordTypedAfter length]);
+            [self showUserPickerControllerWithFilter:[typedWord substringFromIndex:1]];
+        }
+        else {
+            _inputWordRange = NSMakeRange(0, 0);
+            [self hideUserPickerController];
+        }
+    }
+    else {
+        _inputWordRange = NSMakeRange(0, 0);
+        [self hideUserPickerController];
+    }
+}
+
+- (void)showUserPickerControllerWithFilter:(NSString*)filter {
+    if (!_userPickerController) {
+        UsersPickerModel * model = [[UsersPickerModel alloc] init];
+        model.users = [self.model.discussion.users allObjects];
+        
+        _userPickerController = [[UserPickerController alloc] init];
+        _userPickerController.delegate = self;
+        _userPickerController.model = model;
+        [_mainView insertSubview:_userPickerController.view aboveSubview:_mainView.tableView];
+    }
+    
+    _userPickerController.filter = filter;
+}
+
+- (void)hideUserPickerController {
+    if (_userPickerController) {
+        _userPickerController.delegate = nil;
+        [_userPickerController.view removeFromSuperview];
+        _userPickerController = nil;
+    }
+}
+
+- (void)layoutUserPickerController {
+    _userPickerController.view.frame = CGRectMake(0.0f, 0.0f, _mainView.tableView.frame.size.width, _mainView.tableView.frame.size.height);
+}
+
+- (void)userPickerController:(UserPickerController*)picker didPickUsers:(NSArray<__kindof IQUser *> *)users {
+    if(users.count > 0) {
+        NSString * inputText = _mainView.inputView.commentTextView.text;
+        if(_inputWordRange.location != NSNotFound) {
+            BOOL needSpace = (_inputWordRange.location + _inputWordRange.length == inputText.length);
+            NSMutableString *mutableResultString = [[NSMutableString alloc] init];
+            
+            for (IQUser *user in users) {
+                if (mutableResultString.length == 0) {
+                    [mutableResultString appendFormat:@"@%@", user.nickName];
+                }
+                else {
+                    [mutableResultString appendFormat:@" @%@", user.nickName];
+                }
+            }
+            if (needSpace) {
+                [mutableResultString appendString:@" "];
+            }
+            
+            inputText = [inputText stringByReplacingCharactersInRange:_inputWordRange
+                                                           withString:mutableResultString];
+            _mainView.inputView.commentTextView.text = inputText;
+            _mainView.inputView.commentTextView.selectedRange = NSMakeRange(_inputWordRange.location + [mutableResultString length], 0);
+        }
+        [self hideUserPickerController];
+    }
+}
 
 @end

@@ -14,6 +14,7 @@
 #import "IQConversation.h"
 #import "IQSession.h"
 #import "IQAttachmentsView.h"
+#import "IQLayoutManager.h"
 
 #define CONTENT_INSET 8.0f
 #define ATTACHMENTS_VIEW_HEIGHT 120.0f
@@ -207,7 +208,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapRecognized:)];
         _singleTapGesture.numberOfTapsRequired = 1;
         
-        _descriptionTextView = [[UITextView alloc] init];
+        _descriptionTextView = [[IQTextView alloc] init];
         [_descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
         [_descriptionTextView setTextColor:DESCRIPTION_RIGHT_TEXT_COLOR];
         _descriptionTextView.textAlignment = NSTextAlignmentLeft;
@@ -513,6 +514,8 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 
 - (NSAttributedString*)formatedTextFromText:(NSString*)text {
     if([text length] > 0) {
+        NSError * error = nil;
+        
         UIColor * textColor = (_commentIsMine) ? DESCRIPTION_LEFT_TEXT_COLOR :
                                                  DESCRIPTION_RIGHT_TEXT_COLOR;
         NSDictionary * attributes = @{
@@ -522,12 +525,40 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         
         NSMutableAttributedString * aText = [[NSMutableAttributedString alloc] initWithString:text
                                                                                    attributes:attributes];
-                
-        //add links to pattern task#taskId
-        NSError * error = nil;
-        NSString * pattern = [NSString stringWithFormat:@"%@#\\d+$", NSLocalizedString(@"Task", nil)];
-        NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:&error];
+        
+        NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"(?:^|\\s)(?:@)(\\w+)" options:0 error:&error];
         NSArray * matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
+        for (NSTextCheckingResult *match in matches) {
+            NSRange wordRange = [match rangeAtIndex:1];
+            NSString * nickName = [text substringWithRange:wordRange];
+            
+            if([_avalibleNicks containsObject:nickName]) {
+                BOOL isCurUserNick = ([nickName isEqualToString:_currentUserNick]);
+                
+                wordRange.location = wordRange.location - 1;
+                wordRange.length = wordRange.length + 1;
+                
+                if (!isCurUserNick) {
+                    NSDictionary * highlightAttribute = @{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d] };
+                    [aText addAttributes:@{ IQNikHighlightAttributeName : highlightAttribute,
+                                            NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
+                                   range:wordRange];
+                }
+                else {
+                    NSDictionary * highlightAttribute = @{ IQNikBackgroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] };
+                    [aText addAttributes:@{ IQNikHighlightAttributeName : highlightAttribute,
+                                            NSForegroundColorAttributeName: [UIColor whiteColor] }
+                                   range:wordRange];
+                }
+            }
+        }
+
+        
+        //add links to pattern task#taskId
+
+        NSString * pattern = [NSString stringWithFormat:@"%@#\\d+$", NSLocalizedString(@"Task", nil)];
+        regex = [NSRegularExpression regularExpressionWithPattern:pattern options:NSRegularExpressionCaseInsensitive error:&error];
+        matches = [regex matchesInString:text options:0 range:NSMakeRange(0, text.length)];
         for (NSTextCheckingResult *match in matches) {
             NSRange wordRange = [match range];
             NSString * taskLink = [text substringWithRange:wordRange];
