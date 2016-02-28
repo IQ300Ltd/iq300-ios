@@ -130,7 +130,7 @@
 "Yes" = "Да";
 "No" = "Нет";
 "Save changes?" = "Сохранить изменения?";
-"Save the name of the group?" = "Сохранить название группы?";
+"Save the name of the group?" = "Сохранить название конференции?";
 "Set task" = "Поставить задачу";
 "Сancellation" = "Отмена";
 "Select all" = "Выбрать всех";
@@ -181,16 +181,16 @@
 
 "Create" = "Создать";
 "You should select at least one contact" = "Необходимо выбрать хотя бы один контакт";
-"Group info" = "Информация о группе";
-"Leave group" = "Покинуть группу";
-"Group administrator:" = "Администратор группы:";
-"Group members:" = "Участники группы:";
-"Group name" = "Название группы";
-"Group name must not be empty" = "Название группы не должно быть пустым";
+"Group info" = "Информация о конференции";
+"Leave group" = "Покинуть конференцию";
+"Group administrator:" = "Администратор конференции:";
+"Group members:" = "Участники конференции:";
+"Group name" = "Название конференции";
+"Group name must not be empty" = "Название конференции не должно быть пустым";
 "Add" = "Добавить";
-"Are you sure you want to leave the chat?" = "Вы действительно хотите выйти из чата?";
-"Administrator deleted You from this chat" = "Администратор удалил Вас из этого чата";
-"You agree to remove the user from the chat?" = "Вы действительно хотите удалить участника из чата?";
+"Are you sure you want to leave the chat?" = "Вы действительно хотите выйти из конференции?";
+"Administrator deleted You from this chat" = "Администратор удалил Вас из этой конференции";
+"You agree to remove the user from the chat?" = "Вы действительно хотите удалить участника из конференции?";
 "File download failed" = "Ошибка загрузки файла";
 
 
