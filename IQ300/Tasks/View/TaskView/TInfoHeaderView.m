@@ -232,8 +232,9 @@
     _complexityInfoView.textLabel.text = task.complexity.displayName;
     
     
-    NSMutableString *estimatedTimeString = [[NSMutableString alloc] init];
-    if (task.estimatedTime) {
+    if (task.estimatedTime && task.estimatedTime.integerValue != 0) {
+        NSMutableString *estimatedTimeString = [[NSMutableString alloc] init];
+
         NSUInteger seconds = task.estimatedTime.unsignedIntegerValue;
         
         NSUInteger hours = (NSUInteger)(seconds / 3600);
@@ -242,19 +243,21 @@
         if (hours < 10) {
             [estimatedTimeString appendString:@"0"];
         }
-        [estimatedTimeString appendFormat:@"%i", hours];
+        [estimatedTimeString appendFormat:@"%lu", (unsigned long)hours];
         [estimatedTimeString appendString:@":"];
 
         if (minutes < 10) {
             [estimatedTimeString appendFormat:@"0"];
         }
-        [estimatedTimeString appendFormat:@"%i", minutes];
+        [estimatedTimeString appendFormat:@"%lu", (unsigned long)minutes];
+        
+        _estimatedTimeInfoView.textLabel.text = estimatedTimeString;
+        _estimatedTimeInfoView.hidden = NO;
     }
     else {
-        [estimatedTimeString appendString:@"00:00"];
+        _estimatedTimeInfoView.hidden = YES;
     }
     
-    _estimatedTimeInfoView.textLabel.text = estimatedTimeString;
 
     
     NSMutableParagraphStyle * paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -415,8 +418,9 @@
     
     _complexityInfoView.frame = CGRectMake(bounds.origin.x,
                                            CGRectBottom(_statusView.frame),
-                                           halfWidhtLineSize.width,
+                                           _estimatedTimeInfoView.hidden ? bounds.size.width : halfWidhtLineSize.width,
                                            halfWidhtLineSize.height);
+    
     _estimatedTimeInfoView.frame = CGRectMake(CGRectRight(_complexityInfoView.frame),
                                               _complexityInfoView.frame.origin.y,
                                               halfWidhtLineSize.width,

@@ -149,8 +149,8 @@
         NSUInteger hours = (NSUInteger)(seconds / 3600);
         NSUInteger minutes = (NSUInteger)(seconds - hours * 3600) / 60;
         
-        _hoursTextField.text = [NSString stringWithFormat:(hours < 10 ? @"0%i" : @"%i"), hours];
-        _minutesTextField.text = [NSString stringWithFormat:(minutes < 10 ? @"0%i" : @"%i"), minutes];
+        _hoursTextField.text = (hours == 0 ? nil : [NSString stringWithFormat:(hours < 10 ? @"0%lu" : @"%lu"), (unsigned long)hours]);
+        _minutesTextField.text = ((hours == 0 && minutes == 0) ? nil : [NSString stringWithFormat:(minutes < 10 ? @"0%lu" : @"%lu"), (unsigned long)minutes]);
     }
 }
 
