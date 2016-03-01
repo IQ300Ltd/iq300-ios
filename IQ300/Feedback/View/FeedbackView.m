@@ -83,6 +83,14 @@
         _statusLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:_statusLabel];
         
+        _messagesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"message_blue_buble.png"]];
+        [self addSubview:_messagesImageView];
+        
+        _commentsCountLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+                                                      font:LABELS_FONT
+                                             localaizedKey:nil];
+        [self addSubview:_commentsCountLabel];
+        
         _feedbackTypeLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
                                                      font:TYPE_FONT
                                             localaizedKey:nil];
@@ -154,6 +162,11 @@
     _authorLabel.text = feedback.author.displayName;
     _descriptionTextView.text = feedback.feedbackDescription;
     
+    BOOL showCommentsCount = ([feedback.commentsCount integerValue] > 0);
+    _commentsCountLabel.hidden = !showCommentsCount;
+    _messagesImageView.hidden = !showCommentsCount;
+    _commentsCountLabel.text = [feedback.commentsCount stringValue];
+    
     for (UIButton * attachButton in _attachButtons) {
         [attachButton removeTarget:nil
                             action:NULL
@@ -205,15 +218,31 @@
     [super layoutSubviews];
     CGRect actualBounds = UIEdgeInsetsInsetRect(self.bounds, _contentInsets);
 
-    CGFloat topLabelsWidth = actualBounds.size.width / 2.0f;
-    _dateLabel.frame = CGRectMake(actualBounds.origin.x,
-                                  actualBounds.origin.y,
-                                  topLabelsWidth,
-                                  LABELS_HEIGHT);
+    CGSize dateLabelSize = [_dateLabel sizeThatFits:CGSizeMake(actualBounds.size.width, LABELS_HEIGHT)];
     
-    _statusLabel.frame = CGRectMake(actualBounds.origin.x + topLabelsWidth,
+    CGSize messagesImageSize = [_messagesImageView.image size];
+    CGSize messagesTextSize = [_commentsCountLabel sizeThatFits:CGSizeMake(actualBounds.size.width, CGFLOAT_MAX)];
+    
+    CGFloat maximalHeight = MAX(MAX(messagesImageSize.height, messagesTextSize.height), dateLabelSize.height);
+    
+    _dateLabel.frame = CGRectMake(actualBounds.origin.x,
+                                  actualBounds.origin.y + (maximalHeight - dateLabelSize.height) / 2.0f,
+                                  dateLabelSize.width,
+                                  dateLabelSize.height);
+    CGFloat labelOffset = 5.0f;
+    _messagesImageView.frame = CGRectMake(actualBounds.origin.x + (actualBounds.size.width - messagesImageSize.width - messagesTextSize.width - labelOffset) / 2.0f,
+                                          actualBounds.origin.y + (maximalHeight - messagesImageSize.height) / 2.0f,
+                                          messagesImageSize.width,
+                                          messagesImageSize.height);
+    
+    _commentsCountLabel.frame = CGRectMake(CGRectRight(_messagesImageView.frame) + labelOffset,
+                                           actualBounds.origin.y + (maximalHeight - messagesTextSize.height) / 2.0f,
+                                           messagesTextSize.width,
+                                           messagesTextSize.height);
+
+    _statusLabel.frame = CGRectMake(CGRectRight(_commentsCountLabel.frame),
                                     actualBounds.origin.y,
-                                    topLabelsWidth,
+                                    actualBounds.size.width - CGRectRight(_commentsCountLabel.frame),
                                     LABELS_HEIGHT);
     
     _feedbackTypeLabel.frame = CGRectMake(actualBounds.origin.x,

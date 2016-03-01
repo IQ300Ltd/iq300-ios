@@ -18,6 +18,9 @@
 @property (nonatomic, readonly) UILabel * feedbackTypeLabel;
 @property (nonatomic, readonly) UILabel * feedbackCategoryLabel;
 @property (nonatomic, readonly) UILabel * authorLabel;
+@property (nonatomic, readonly) UIImageView * messagesImageView;
+@property (nonatomic, readonly) UILabel * commentsCountLabel;
+
 @property (nonatomic, readonly) IQTextView * descriptionTextView;
 
 @property (nonatomic, readonly) NSArray * attachButtons;
