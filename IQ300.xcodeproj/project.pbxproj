@@ -33,6 +33,18 @@
 		2D80E7EE1C6B17C2009DD5A0 /* UICollectionView+Updates.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7E61C6B17C2009DD5A0 /* UICollectionView+Updates.m */; };
 		2D80E7F51C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */; };
 		2D80E7F61C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */; };
+		2D96C1291C8581D500D8B4F8 /* estimated_time_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1261C8581D500D8B4F8 /* estimated_time_icon@3x.png */; };
+		2D96C12A1C8581D500D8B4F8 /* estimated_time_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1261C8581D500D8B4F8 /* estimated_time_icon@3x.png */; };
+		2D96C12B1C8581D500D8B4F8 /* estimated_time_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1271C8581D500D8B4F8 /* estimated_time_icon@2x.png */; };
+		2D96C12C1C8581D500D8B4F8 /* estimated_time_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1271C8581D500D8B4F8 /* estimated_time_icon@2x.png */; };
+		2D96C12D1C8581D500D8B4F8 /* estimated_time_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1281C8581D500D8B4F8 /* estimated_time_icon.png */; };
+		2D96C12E1C8581D500D8B4F8 /* estimated_time_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1281C8581D500D8B4F8 /* estimated_time_icon.png */; };
+		2D96C1321C85825700D8B4F8 /* complexity_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C12F1C85825700D8B4F8 /* complexity_icon@3x.png */; };
+		2D96C1331C85825700D8B4F8 /* complexity_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C12F1C85825700D8B4F8 /* complexity_icon@3x.png */; };
+		2D96C1341C85825700D8B4F8 /* complexity_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1301C85825700D8B4F8 /* complexity_icon@2x.png */; };
+		2D96C1351C85825700D8B4F8 /* complexity_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1301C85825700D8B4F8 /* complexity_icon@2x.png */; };
+		2D96C1361C85825700D8B4F8 /* complexity_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1311C85825700D8B4F8 /* complexity_icon.png */; };
+		2D96C1371C85825700D8B4F8 /* complexity_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1311C85825700D8B4F8 /* complexity_icon.png */; };
 		2DA55D691C69BEFA00A880D4 /* document_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DA55D681C69BEFA00A880D4 /* document_placeholder.png */; };
 		2DA55D6A1C69BEFA00A880D4 /* document_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DA55D681C69BEFA00A880D4 /* document_placeholder.png */; };
 		2DA55D751C6A045C00A880D4 /* IQAttachmentButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DA55D741C6A045C00A880D4 /* IQAttachmentButton.m */; };
@@ -61,6 +73,18 @@
 		2DAF33A21C60CA6F00554211 /* copy_to_message_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF339F1C60CA6F00554211 /* copy_to_message_icon@3x.png */; };
 		2DAF33A31C60CA6F00554211 /* copy_to_message_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33A01C60CA6F00554211 /* copy_to_message_icon@2x.png */; };
 		2DAF33A41C60CA6F00554211 /* copy_to_message_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DAF33A11C60CA6F00554211 /* copy_to_message_icon.png */; };
+		2DD5CB301C840C6A002CE8C0 /* IQComplexity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB2D1C840C6A002CE8C0 /* IQComplexity.m */; };
+		2DD5CB311C840C6A002CE8C0 /* IQComplexity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB2D1C840C6A002CE8C0 /* IQComplexity.m */; };
+		2DD5CB341C842BCD002CE8C0 /* TaskComplexityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB331C842BCC002CE8C0 /* TaskComplexityCell.m */; };
+		2DD5CB351C842BCD002CE8C0 /* TaskComplexityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB331C842BCC002CE8C0 /* TaskComplexityCell.m */; };
+		2DD5CB381C842CD0002CE8C0 /* TaskComplexityModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB371C842CD0002CE8C0 /* TaskComplexityModel.m */; };
+		2DD5CB391C842CD0002CE8C0 /* TaskComplexityModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB371C842CD0002CE8C0 /* TaskComplexityModel.m */; };
+		2DD5CB3C1C8435E5002CE8C0 /* TaskComplexityController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB3B1C8435E5002CE8C0 /* TaskComplexityController.m */; };
+		2DD5CB3D1C8435E5002CE8C0 /* TaskComplexityController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB3B1C8435E5002CE8C0 /* TaskComplexityController.m */; };
+		2DD5CB401C84474B002CE8C0 /* TaskEstimatedTimeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB3F1C84474B002CE8C0 /* TaskEstimatedTimeCell.m */; };
+		2DD5CB411C84474B002CE8C0 /* TaskEstimatedTimeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB3F1C84474B002CE8C0 /* TaskEstimatedTimeCell.m */; };
+		2DD5CB441C8447BC002CE8C0 /* TaskComplexityPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */; };
+		2DD5CB451C8447BC002CE8C0 /* TaskComplexityPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */; };
 		73060D561B41345D001AE08E /* UITextView+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 73060D551B41345D001AE08E /* UITextView+Validation.m */; };
 		73060D571B41345D001AE08E /* UITextView+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 73060D551B41345D001AE08E /* UITextView+Validation.m */; };
 		73060D5F1B417322001AE08E /* feedback_error_type.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D591B417322001AE08E /* feedback_error_type.png */; };
@@ -873,6 +897,12 @@
 		2D80E7E61C6B17C2009DD5A0 /* UICollectionView+Updates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+Updates.m"; sourceTree = "<group>"; };
 		2D80E7F31C6B19B1009DD5A0 /* UIViewController+ErrorHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ErrorHandle.h"; sourceTree = "<group>"; };
 		2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+ErrorHandle.m"; sourceTree = "<group>"; };
+		2D96C1261C8581D500D8B4F8 /* estimated_time_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "estimated_time_icon@3x.png"; sourceTree = "<group>"; };
+		2D96C1271C8581D500D8B4F8 /* estimated_time_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "estimated_time_icon@2x.png"; sourceTree = "<group>"; };
+		2D96C1281C8581D500D8B4F8 /* estimated_time_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = estimated_time_icon.png; sourceTree = "<group>"; };
+		2D96C12F1C85825700D8B4F8 /* complexity_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "complexity_icon@3x.png"; sourceTree = "<group>"; };
+		2D96C1301C85825700D8B4F8 /* complexity_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "complexity_icon@2x.png"; sourceTree = "<group>"; };
+		2D96C1311C85825700D8B4F8 /* complexity_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = complexity_icon.png; sourceTree = "<group>"; };
 		2DA55D681C69BEFA00A880D4 /* document_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = document_placeholder.png; sourceTree = "<group>"; };
 		2DA55D731C6A045C00A880D4 /* IQAttachmentButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachmentButton.h; sourceTree = "<group>"; };
 		2DA55D741C6A045C00A880D4 /* IQAttachmentButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachmentButton.m; sourceTree = "<group>"; };
@@ -901,6 +931,18 @@
 		2DAF339F1C60CA6F00554211 /* copy_to_message_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "copy_to_message_icon@3x.png"; sourceTree = "<group>"; };
 		2DAF33A01C60CA6F00554211 /* copy_to_message_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "copy_to_message_icon@2x.png"; sourceTree = "<group>"; };
 		2DAF33A11C60CA6F00554211 /* copy_to_message_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = copy_to_message_icon.png; sourceTree = "<group>"; };
+		2DD5CB2C1C840C6A002CE8C0 /* IQComplexity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQComplexity.h; sourceTree = "<group>"; };
+		2DD5CB2D1C840C6A002CE8C0 /* IQComplexity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQComplexity.m; sourceTree = "<group>"; };
+		2DD5CB321C842BCC002CE8C0 /* TaskComplexityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskComplexityCell.h; sourceTree = "<group>"; };
+		2DD5CB331C842BCC002CE8C0 /* TaskComplexityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskComplexityCell.m; sourceTree = "<group>"; };
+		2DD5CB361C842CD0002CE8C0 /* TaskComplexityModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskComplexityModel.h; sourceTree = "<group>"; };
+		2DD5CB371C842CD0002CE8C0 /* TaskComplexityModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskComplexityModel.m; sourceTree = "<group>"; };
+		2DD5CB3A1C8435E5002CE8C0 /* TaskComplexityController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskComplexityController.h; sourceTree = "<group>"; };
+		2DD5CB3B1C8435E5002CE8C0 /* TaskComplexityController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskComplexityController.m; sourceTree = "<group>"; };
+		2DD5CB3E1C84474B002CE8C0 /* TaskEstimatedTimeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskEstimatedTimeCell.h; sourceTree = "<group>"; };
+		2DD5CB3F1C84474B002CE8C0 /* TaskEstimatedTimeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskEstimatedTimeCell.m; sourceTree = "<group>"; };
+		2DD5CB421C8447BC002CE8C0 /* TaskComplexityPickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskComplexityPickerCell.h; sourceTree = "<group>"; };
+		2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskComplexityPickerCell.m; sourceTree = "<group>"; };
 		3C453A1313F35DF8AD783316 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		73060D541B41345D001AE08E /* UITextView+Validation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+Validation.h"; sourceTree = "<group>"; };
 		73060D551B41345D001AE08E /* UITextView+Validation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+Validation.m"; sourceTree = "<group>"; };
@@ -2682,6 +2724,12 @@
 			isa = PBXGroup;
 			children = (
 				731170711AB80AFF008A4D09 /* Tabs */,
+				2D96C12F1C85825700D8B4F8 /* complexity_icon@3x.png */,
+				2D96C1301C85825700D8B4F8 /* complexity_icon@2x.png */,
+				2D96C1311C85825700D8B4F8 /* complexity_icon.png */,
+				2D96C1261C8581D500D8B4F8 /* estimated_time_icon@3x.png */,
+				2D96C1271C8581D500D8B4F8 /* estimated_time_icon@2x.png */,
+				2D96C1281C8581D500D8B4F8 /* estimated_time_icon.png */,
 				73A7CA721A9F55ED0038DEF1 /* asc_sort_ico.png */,
 				73A7CA731A9F55ED0038DEF1 /* asc_sort_ico@2x.png */,
 				73A7CA741A9F55ED0038DEF1 /* desc_sort_ico.png */,
@@ -2843,6 +2891,8 @@
 				73486E3A1B6F98EE00DEBD66 /* IQTaskDeletedIds.m */,
 				2D6AE2381C73362C00A2B02D /* IQReconciliation.h */,
 				2D6AE2391C73362C00A2B02D /* IQReconciliation.m */,
+				2DD5CB2C1C840C6A002CE8C0 /* IQComplexity.h */,
+				2DD5CB2D1C840C6A002CE8C0 /* IQComplexity.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -2859,6 +2909,8 @@
 				735D48F31AE4D6DB00F6A753 /* TaskExecutersController.h */,
 				735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */,
 				73A50D151ADFDB0D00251CB7 /* TaskFieldEditController.h */,
+				2DD5CB3A1C8435E5002CE8C0 /* TaskComplexityController.h */,
+				2DD5CB3B1C8435E5002CE8C0 /* TaskComplexityController.m */,
 			);
 			path = CreatEditTask;
 			sourceTree = "<group>";
@@ -2914,6 +2966,8 @@
 				73D7F1F61ADE95A900023120 /* CommunitiesModel.m */,
 				735D48F61AE4D85000F6A753 /* TaskExecutorsModel.h */,
 				735D48F71AE4D85000F6A753 /* TaskExecutorsModel.m */,
+				2DD5CB361C842CD0002CE8C0 /* TaskComplexityModel.h */,
+				2DD5CB371C842CD0002CE8C0 /* TaskComplexityModel.m */,
 			);
 			path = CreatEditTask;
 			sourceTree = "<group>";
@@ -2958,6 +3012,12 @@
 				735D49001AE51D2100F6A753 /* TaskExecutorCell.m */,
 				735D48F91AE4DA7100F6A753 /* ExecutersGroupSection.h */,
 				735D48FA1AE4DA7100F6A753 /* ExecutersGroupSection.m */,
+				2DD5CB321C842BCC002CE8C0 /* TaskComplexityCell.h */,
+				2DD5CB331C842BCC002CE8C0 /* TaskComplexityCell.m */,
+				2DD5CB421C8447BC002CE8C0 /* TaskComplexityPickerCell.h */,
+				2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */,
+				2DD5CB3E1C84474B002CE8C0 /* TaskEstimatedTimeCell.h */,
+				2DD5CB3F1C84474B002CE8C0 /* TaskEstimatedTimeCell.m */,
 			);
 			path = CreatEditTask;
 			sourceTree = "<group>";
@@ -3171,6 +3231,7 @@
 				73840E861B1C75A500BCEAFC /* filter_collapseed@2x.png in Resources */,
 				73865C351B20688A00118292 /* tasks_tab@2x.png in Resources */,
 				73840E871B1C75A500BCEAFC /* msg_error.png in Resources */,
+				2D96C12A1C8581D500D8B4F8 /* estimated_time_icon@3x.png in Resources */,
 				73865C2E1B20688A00118292 /* tabbar_selected_image.png in Resources */,
 				73840E891B1C75A500BCEAFC /* task_member_tab.png in Resources */,
 				73865C341B20688A00118292 /* tasks_tab.png in Resources */,
@@ -3194,9 +3255,11 @@
 				73840E961B1C75A500BCEAFC /* check_mark_medium@2x.png in Resources */,
 				73865C291B20688A00118292 /* notif_tab_selected@2x.png in Resources */,
 				73840E971B1C75A500BCEAFC /* task_member_tab@2x.png in Resources */,
+				2D96C1351C85825700D8B4F8 /* complexity_icon@2x.png in Resources */,
 				73865C331B20688A00118292 /* tasks_tab_selected@2x.png in Resources */,
 				73840E981B1C75A500BCEAFC /* default_avatar.png in Resources */,
 				73840E9A1B1C75A500BCEAFC /* project_ico.png in Resources */,
+				2D96C1331C85825700D8B4F8 /* complexity_icon@3x.png in Resources */,
 				73840E9B1B1C75A500BCEAFC /* task_comments_tab@2x.png in Resources */,
 				73FC83B31B3BF1E700ADFBC2 /* feedback_ico@2x.png in Resources */,
 				73CCB6B01B4E8B13000BF728 /* edit_conference_icon@2x.png in Resources */,
@@ -3233,6 +3296,7 @@
 				73840EB71B1C75A500BCEAFC /* attach_ico.png in Resources */,
 				73840EB81B1C75A500BCEAFC /* gray_checked_checkbox@2x.png in Resources */,
 				73840EB91B1C75A500BCEAFC /* task_history_tab.png in Resources */,
+				2D96C12E1C8581D500D8B4F8 /* estimated_time_icon.png in Resources */,
 				73840EBA1B1C75A500BCEAFC /* clear_button_icon.png in Resources */,
 				7398F7951B4D0A190009EAD1 /* user_icon.png in Resources */,
 				73840EBB1B1C75A500BCEAFC /* task_status_ico.png in Resources */,
@@ -3252,6 +3316,7 @@
 				73840ECA1B1C75A500BCEAFC /* msg_sent.png in Resources */,
 				73840ECB1B1C75A500BCEAFC /* project_ico@2x.png in Resources */,
 				73865C321B20688A00118292 /* tasks_tab_selected.png in Resources */,
+				2D96C12C1C8581D500D8B4F8 /* estimated_time_icon@2x.png in Resources */,
 				73840ECD1B1C75A500BCEAFC /* bell_red_ico.png in Resources */,
 				73840ECF1B1C75A500BCEAFC /* notifications_menu.plist in Resources */,
 				731527011C6219F90077E0BD /* pinned.png in Resources */,
@@ -3303,6 +3368,7 @@
 				73865C2D1B20688A00118292 /* tabbar_background@2x.png in Resources */,
 				73840EF31B1C75A500BCEAFC /* bubble_blue@2x.png in Resources */,
 				73840EF41B1C75A500BCEAFC /* backWhiteArrow@2x.png in Resources */,
+				2D96C1371C85825700D8B4F8 /* complexity_icon.png in Resources */,
 				73CB5B581B32D7EC005B688C /* IQValidatorLocalization.strings in Resources */,
 				73865C2B1B20688A00118292 /* notif_tab@2x.png in Resources */,
 				73840EF61B1C75A500BCEAFC /* edit_white_ico@2x.png in Resources */,
@@ -3379,6 +3445,7 @@
 				73A700491A95C0DC00A1C2AC /* next_header_button@2x.png in Resources */,
 				73C58C101A1F532500C83729 /* mark_tab_item.png in Resources */,
 				73060D5F1B417322001AE08E /* feedback_error_type.png in Resources */,
+				2D96C1321C85825700D8B4F8 /* complexity_icon@3x.png in Resources */,
 				7395C5121A3192C500A6D5DA /* backArrow@2x.png in Resources */,
 				73B9EA1D1ADD2DA800159A66 /* calendar_accessory_image.png in Resources */,
 				73CCB6A71B4E87AE000BF728 /* add_user_icon.png in Resources */,
@@ -3392,6 +3459,7 @@
 				73B9EA1E1ADD2DA800159A66 /* calendar_accessory_image@2x.png in Resources */,
 				73F2A5501A39AB3000E9D324 /* attach_ico.png in Resources */,
 				738916BE1ABAFB800017EF86 /* gray_checked_checkbox@2x.png in Resources */,
+				2D96C1361C85825700D8B4F8 /* complexity_icon.png in Resources */,
 				2DA55D691C69BEFA00A880D4 /* document_placeholder.png in Resources */,
 				7398F78E1B4D07B40009EAD1 /* conference_icon.png in Resources */,
 				731170801AB80AFF008A4D09 /* task_history_tab.png in Resources */,
@@ -3418,8 +3486,10 @@
 				73D7858C1AE7FDB400A952DF /* bell_red_ico.png in Resources */,
 				73BA98941A109FDD005AEC00 /* notifications_menu.plist in Resources */,
 				739D67D61AC2C5C100859274 /* delete_ico@2x.png in Resources */,
+				2D96C1291C8581D500D8B4F8 /* estimated_time_icon@3x.png in Resources */,
 				2D6AE22E1C730D7B00A2B02D /* save_video_icon@2x.png in Resources */,
 				2D6AE22D1C730D7B00A2B02D /* save_video_icon.png in Resources */,
+				2D96C1341C85825700D8B4F8 /* complexity_icon@2x.png in Resources */,
 				737E7C5B1A0CC8A400E8BB81 /* top_header_bg.png in Resources */,
 				73F2A5591A39AB3000E9D324 /* msg_error@2x.png in Resources */,
 				73AF73E51A3B0C0D001B8E42 /* msg_viewed@2x.png in Resources */,
@@ -3438,6 +3508,7 @@
 				73884BFA1A6CEFED004C454B /* view_all_ico@2x.png in Resources */,
 				7311708F1AB80B0E008A4D09 /* edit_gray_ico@2x.png in Resources */,
 				73D0DDFE1A95F2AB008710FF /* community_ico@2x.png in Resources */,
+				2D96C12D1C8581D500D8B4F8 /* estimated_time_icon.png in Resources */,
 				73060D631B417322001AE08E /* feedback_proposal_type.png in Resources */,
 				73A7CA841A9F55ED0038DEF1 /* filterSelected.png in Resources */,
 				73060D691B417322001AE08E /* feedback_question_type@2x.png in Resources */,
@@ -3445,6 +3516,7 @@
 				2DAF339D1C60C9F000554211 /* open_in_icon@2x.png in Resources */,
 				73D3DF2C1AF11542000DD34F /* clear_button_icon@2x.png in Resources */,
 				738FE7081A162B10009F26A2 /* notif_tab@2x.png in Resources */,
+				2D96C12B1C8581D500D8B4F8 /* estimated_time_icon@2x.png in Resources */,
 				731170821AB80AFF008A4D09 /* task_info_tab.png in Resources */,
 				73F2A5521A39AB3000E9D324 /* attachment_add_img.png in Resources */,
 				73CCB6AD1B4E8B13000BF728 /* edit_conference_icon.png in Resources */,
@@ -3637,6 +3709,7 @@
 				73840DDA1B1C75A500BCEAFC /* IQComment.m in Sources */,
 				73840DDB1B1C75A500BCEAFC /* NSDate+IQFormater.m in Sources */,
 				733ADD1D1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */,
+				2DD5CB3D1C8435E5002CE8C0 /* TaskComplexityController.m in Sources */,
 				CBEB63271C5F3A70005A11C2 /* SharingViewController.m in Sources */,
 				73840DDC1B1C75A500BCEAFC /* IQService+Notifications.m in Sources */,
 				73840DDD1B1C75A500BCEAFC /* UIViewController+LeftMenu.m in Sources */,
@@ -3749,11 +3822,14 @@
 				73840E2F1B1C75A500BCEAFC /* IQCounters.m in Sources */,
 				73840E301B1C75A500BCEAFC /* ExTextField.m in Sources */,
 				73840E311B1C75A500BCEAFC /* ExecutersGroupSection.m in Sources */,
+				2DD5CB311C840C6A002CE8C0 /* IQComplexity.m in Sources */,
 				73840E321B1C75A500BCEAFC /* RKMappingResult+Result.m in Sources */,
 				73840E331B1C75A500BCEAFC /* TaskPolicyInspector.m in Sources */,
 				73EFAA071B440614007FD5D7 /* FeedbacksView.m in Sources */,
 				73840E341B1C75A500BCEAFC /* IQNotification.m in Sources */,
+				2DD5CB391C842CD0002CE8C0 /* TaskComplexityModel.m in Sources */,
 				730BE4061B3D541700E26994 /* FeedbackCategoriesModel.m in Sources */,
+				2DD5CB451C8447BC002CE8C0 /* TaskComplexityPickerCell.m in Sources */,
 				73840E351B1C75A500BCEAFC /* TasksMenuModel.m in Sources */,
 				730BE40A1B3D549400E26994 /* IQSelectionManagedModel.m in Sources */,
 				730BE42A1B3D8F8E00E26994 /* FeedbackCategoryCell.m in Sources */,
@@ -3769,6 +3845,7 @@
 				73840E3B1B1C75A500BCEAFC /* RMenuCell.m in Sources */,
 				737136311B539BBF0043B87B /* ContactsSectionView.m in Sources */,
 				73840E3C1B1C75A500BCEAFC /* TaskPolicies.m in Sources */,
+				2DD5CB351C842BCD002CE8C0 /* TaskComplexityCell.m in Sources */,
 				73840E3D1B1C75A500BCEAFC /* IQLog.m in Sources */,
 				731E5BD11B3161F200DF56C7 /* IQValidationHelper.m in Sources */,
 				73840E3E1B1C75A500BCEAFC /* main.m in Sources */,
@@ -3826,6 +3903,7 @@
 				73840E681B1C75A500BCEAFC /* NSString+MD5.m in Sources */,
 				730BE41D1B3D889A00E26994 /* FeedbackTypesModel.m in Sources */,
 				73840E691B1C75A500BCEAFC /* TCObjectSerializator.m in Sources */,
+				2DD5CB411C84474B002CE8C0 /* TaskEstimatedTimeCell.m in Sources */,
 				73840E6A1B1C75A500BCEAFC /* UIColor+Extensions.m in Sources */,
 				73840E6B1B1C75A500BCEAFC /* UIImage+Extensions.m in Sources */,
 				73840E6C1B1C75A500BCEAFC /* CommunitiesController.m in Sources */,
@@ -3960,6 +4038,7 @@
 				73D3DF281AF0FB14000DD34F /* SubMenuCell.m in Sources */,
 				731E5BC11B31548E00DF56C7 /* IQTextContainer.m in Sources */,
 				73D7F1B91ADE932700023120 /* TInfoController.m in Sources */,
+				2DD5CB3C1C8435E5002CE8C0 /* TaskComplexityController.m in Sources */,
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,
 				73C58C071A1F145200C83729 /* NSDate+CupertinoYankee.m in Sources */,
 				73B1EF291B67B96D00960D7F /* IQContactsDeletedIds.m in Sources */,
@@ -4032,6 +4111,7 @@
 				730BE4051B3D541700E26994 /* FeedbackCategoriesModel.m in Sources */,
 				733ADD1C1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */,
 				FBC7CB4C1B57979A004E8382 /* CommentDeletedObjects.m in Sources */,
+				2DD5CB301C840C6A002CE8C0 /* IQComplexity.m in Sources */,
 				739850D81A2DD32E00DB5B21 /* IQConversation.m in Sources */,
 				738EF8271A9CA88400894755 /* IQProject.m in Sources */,
 				73970E8F1AA5A7CC00AC2414 /* TaskFilterCounters.m in Sources */,
@@ -4049,11 +4129,14 @@
 				73D7F1B81ADE932700023120 /* TDocumentsController.m in Sources */,
 				73CB5B501B32D326005B688C /* IQEmailValidator.m in Sources */,
 				730BE3F41B3D1FBC00E26994 /* IQManagedFeedback.m in Sources */,
+				2DD5CB381C842CD0002CE8C0 /* TaskComplexityModel.m in Sources */,
 				7393C4111A1A2FF400E9E944 /* LoginController.m in Sources */,
 				739C3B621A3076D60032C057 /* CommentCell.m in Sources */,
 				7379EEB31A11E26200D69BBD /* IQNavigationController.m in Sources */,
 				73D7F1F71ADE95A900023120 /* CommunitiesModel.m in Sources */,
+				2DD5CB401C84474B002CE8C0 /* TaskEstimatedTimeCell.m in Sources */,
 				731526FB1C61F3050077E0BD /* IQNotificationCounters.m in Sources */,
+				2DD5CB441C8447BC002CE8C0 /* TaskComplexityPickerCell.m in Sources */,
 				739C3B681A3086BA0032C057 /* DiscussionView.m in Sources */,
 				737DD22D1A14EFE900CC4443 /* TCService.m in Sources */,
 				CBEB632B1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */,
@@ -4071,6 +4154,7 @@
 				739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */,
 				73ADA8D91A36DB8D0032C1FA /* ContactPickerController.m in Sources */,
 				73D7F1E71ADE94B400023120 /* TInfoLineView.m in Sources */,
+				2DD5CB341C842BCD002CE8C0 /* TaskComplexityCell.m in Sources */,
 				73F63E8C1AA08ED0000DA319 /* TaskFilterSortItem.m in Sources */,
 				73176C9F1B3ADDD700E6AC60 /* IQDetailsTextCell.m in Sources */,
 				73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */,

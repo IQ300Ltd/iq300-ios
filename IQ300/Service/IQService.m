@@ -1130,6 +1130,16 @@ fileAttributeName:(NSString*)fileAttributeName
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQComplexity class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"tasks/complexity_kinds"
+                                                   fromKeyPath:@"data"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    
 }
 
 @end

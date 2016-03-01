@@ -21,6 +21,9 @@
 #import "TaskCommunityCell.h"
 #import "IQEMultiLineTextCell.h"
 
+#import "TaskComplexityCell.h"
+#import "TaskEstimatedTimeCell.h"
+
 #ifdef IPAD
 #import "IQCommunityExecutorCell.h"
 #import "IQDoubleDateTextCell.h"
@@ -33,6 +36,8 @@ static NSString * DoubleDateCellReuseIdentifier = @"DoubleDateCellReuseIdentifie
 static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
 static NSString * CommunityCellReuseIdentifier = @"CommunityCellReuseIdentifier";
 static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier";
+static NSString * ComplexityCellReuseIdentifier = @"ComplexityCellReuseIdentifier";
+static NSString * EstimatedTimeCellReuserIdentifier = @"EstimatedTimeCellReuserIdentifier";
 
 #define MAX_NUMBER_OF_CHARACTERS 255
 
@@ -67,8 +72,10 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                           @(1) : [IQDetailsTextCell class],
                           @(2) : [TaskCommunityCell class],
                           @(3) : [TaskExecutersCell class],
-                          @(4) : [IQDateDetailsCell class],
-                          @(5) : [IQDateDetailsCell class]
+                          @(4) : [TaskComplexityCell class],
+                          @(5) : [TaskEstimatedTimeCell class],
+                          @(6) : [IQDateDetailsCell class],
+                          @(7) : [IQDateDetailsCell class]
 #endif
                           };
     });
@@ -92,8 +99,10 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                               @(1) : DetailCellReuseIdentifier,
                               @(2) : CommunityCellReuseIdentifier,
                               @(3) : ExecutorsCellReuseIdentifier,
-                              @(4) : DateCellReuseIdentifier,
-                              @(5) : DateCellReuseIdentifier
+                              @(4) : ComplexityCellReuseIdentifier,
+                              @(5) : EstimatedTimeCellReuserIdentifier,
+                              @(6) : DateCellReuseIdentifier,
+                              @(7) : DateCellReuseIdentifier
 #endif
                               };
     });
@@ -129,7 +138,7 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
 #ifdef IPAD
     return 4;
 #else
-    return (_isExecutersChangesEnabled) ? 6 : 5;
+    return (_isExecutersChangesEnabled) ? 8 : 7;
 #endif
 }
 
@@ -181,8 +190,10 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                       @(1) : @"Description",
                       @(2) : @"Community",
                       @(3) : @"Performers",
-                      @(4) : @"Begins",
-                      @(5) : @"Perform to"};
+                      @(4) : @"Complexity",
+                      @(5) : @"Estimated time",
+                      @(6) : @"Begins",
+                      @(7) : @"Perform to"};
     });
     
     NSString * title = _titlies[@(realIndexPath.row)];
@@ -198,8 +209,10 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                            @(1) : @"Description",
                            @(2) : @"Community",
                            @(3) : @"Executors",
-                           @(4) : @"Begins",
-                           @(5) : @"Perform to"};
+                           @(4) : @"Normal",
+                           @(5) : @"0:00",
+                           @(6) : @"Begins",
+                           @(7) : @"Perform to"};
     });
     
     NSString * placeholder = _placeholders[@(realIndexPath.row)];
@@ -248,9 +261,9 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
             }
             
 #ifdef IPAD
-            if (realIndexPath.row > 1) {
+            if (realIndexPath.row > 1 && realIndexPath.row != 5) {
 #else
-            if (realIndexPath.row != 0) {
+            if (realIndexPath.row != 0 && realIndexPath.row != 5) {
 #endif
                 [self modelWillChangeContent];
                 [self modelDidChangeObject:nil
@@ -325,8 +338,10 @@ static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier"
                     @(1) : @"taskDescription",
                     @(2) : @"community",
                     @(3) : @"executors",
-                    @(4) : @"startDate",
-                    @(5) : @"endDate"
+                    @(4) : @"complexity",
+                    @(5) : @"estimatedTimeSeconds",
+                    @(6) : @"startDate",
+                    @(7) : @"endDate"
                     };
     });
     

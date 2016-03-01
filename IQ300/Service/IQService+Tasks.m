@@ -384,4 +384,8 @@
             handler:handler];
 }
 
+- (void)complexityKindsWithHadnler:(ObjectRequestCompletionHandler)handler {
+    [self getObjectsAtPath:@"tasks/complexity_kinds" parameters:nil handler:handler];
+}
+
 @end

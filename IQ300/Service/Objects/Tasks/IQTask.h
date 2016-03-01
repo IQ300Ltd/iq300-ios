@@ -14,6 +14,7 @@
 @class IQReconciliation;
 @class RKObjectMapping;
 @class RKManagedObjectStore;
+@class IQComplexity;
 
 @interface IQTask : NSManagedObject
 
@@ -36,15 +37,18 @@
 @property (nonatomic, strong) NSNumber         * discussionId;
 @property (nonatomic, strong) NSNumber         * commentsCount;
 @property (nonatomic, strong) NSString         * reconciliationState;
+@property (nonatomic, strong) NSNumber         * estimatedTime;
 
 @property (nonatomic, strong) IQUser           * customer;
 @property (nonatomic, strong) IQUser           * executor;
 @property (nonatomic, strong) IQCommunity      * community;
 @property (nonatomic, strong) IQProject        * project;
 @property (nonatomic, strong) IQReconciliation * reconciliation;
+@property (nonatomic, strong) IQComplexity     * complexity;
 
 @property (nonatomic, strong) NSSet            * childIds;
 @property (nonatomic, strong) NSOrderedSet     * availableActions;
+@property (nonatomic, strong) NSOrderedSet     * availableFeatures;
 @property (nonatomic, strong) NSOrderedSet     * todoItems;
 @property (nonatomic, strong) NSOrderedSet     * attachments;
 @property (nonatomic, strong) NSOrderedSet     * reconciliationActions;

@@ -18,6 +18,8 @@
 #import "TaskExecutersController.h"
 #import "IQCommunity.h"
 #import "NSDate+CupertinoYankee.h"
+#import "TaskComplexityController.h"
+#import "TaskEstimatedTimeCell.h"
 
 #ifdef IPAD
 #import "IQDoubleDetailsTextCell.h"
@@ -27,7 +29,7 @@
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
 #define BOTTOM_VIEW_HEIGHT 0
 
-@interface TaskController() {
+@interface TaskController() <UITextFieldDelegate> {
     CGFloat _tableBottomMarging;
     NSIndexPath * _editableIndexPath;
 }
@@ -152,11 +154,21 @@
     }
     else {
 #endif
-        cell.detailTitle = [self.model detailTitleForItemAtIndexPath:indexPath];
-        cell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
-        cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
-        cell.enabled = [self.model isItemEnabledAtIndexPath:indexPath];
+        if ([cell isKindOfClass:[TaskEstimatedTimeCell class]]) {
+            TaskEstimatedTimeCell *timeCell = (TaskEstimatedTimeCell*)cell;
+            timeCell.hoursTextField.delegate = self;
+            timeCell.hoursTextField.tag = 1;
+            timeCell.minutesTextField.delegate = self;
+            timeCell.minutesTextField.tag = 2;
+        }
+        else {
+            cell.detailTitle = [self.model detailTitleForItemAtIndexPath:indexPath];
+            cell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
+            cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
+        }
         cell.item = [self.model itemAtIndexPath:indexPath];
+        cell.enabled = [self.model isItemEnabledAtIndexPath:indexPath];
+
 #ifdef IPAD
     }
 #endif
@@ -166,21 +178,28 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     IQEditableTextCell * cell = (IQEditableTextCell*)[tableView cellForRowAtIndexPath:_editableIndexPath];
-    if (cell.titleTextView.isFirstResponder && ![indexPath isEqual:_editableIndexPath]) {
+    if  ([cell isKindOfClass:[TaskEstimatedTimeCell class]]) {
+        TaskEstimatedTimeCell *timeCell = (TaskEstimatedTimeCell*)cell;
+        if ((timeCell.hoursTextField.isFirstResponder || timeCell.minutesTextField.isFirstResponder) && ![indexPath isEqual:_editableIndexPath]) {
+            [timeCell.hoursTextField resignFirstResponder];
+            [timeCell.minutesTextField resignFirstResponder];
+        }
+    }
+    else if (cell.titleTextView.isFirstResponder && ![indexPath isEqual:_editableIndexPath]) {
         //hide keyboard
         [cell.titleTextView resignFirstResponder];
     }
     
     NSIndexPath * realIndexPath = [self.model realIndexPathForPath:indexPath];
     
-    if (realIndexPath.row > 3) {
+    if (realIndexPath.row > 5) {
         [self showDataPickerForIndexPath:realIndexPath];
     }
 
 #ifdef IPAD
-    else if(realIndexPath.row > 1) {
+    else if(realIndexPath.row > 1 && realIndexPath.row != 5) {
 #else
-    else if(realIndexPath.row != 0) {
+    else if(realIndexPath.row != 0 && realIndexPath.row != 5) {
 #endif
         UIViewController<TaskFieldEditController> * controller = [self controllerForItemIndexPath:realIndexPath];
         if (controller) {
@@ -233,8 +252,47 @@
     textView.selectedTextRange = range;
     [self updateCellFrameIfNeed];
 }
+    
+#pragma mark - UITextFieldDelegate Methods
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    _editableIndexPath = [self indexPathForCellChildView:textField];
+    return YES;
+}
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+
+    if ([string rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location != NSNotFound)
+    {
+        return NO;
+    }
+    NSString *updatedText = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
+    if (updatedText.length > (textField.tag == 1 ? 3 : 2))
+    {
+        return !string.length;
+    }
+    
+    if (textField.tag == 2) {
+        if (updatedText.integerValue > 59) {
+            return NO;
+        }
+    }
+    
+    TaskEstimatedTimeCell *cell = [self.tableView cellForRowAtIndexPath:_editableIndexPath];
+    
+    if (textField.tag == 1) {
+        [self.model updateFieldAtIndexPath:_editableIndexPath withValue:@(updatedText.integerValue * 3600 + cell.minutesTextField.text.integerValue * 60)];
+
+    }
+    else {
+        [self.model updateFieldAtIndexPath:_editableIndexPath withValue:@(cell.hoursTextField.text.integerValue * 3600 + updatedText.integerValue * 60)];
+    }
+    
+    
+    return YES;
+}
+    
 #pragma mark - Keyboard Notifications
 
 - (void)onKeyboardWillShow:(NSNotification *)notification {
@@ -465,7 +523,8 @@
         _controllers = @{
                          @(1) : [TaskDescriptionController class],
                          @(2) : [CommunitiesController class],
-                         @(3) : [TaskExecutersController class]
+                         @(3) : [TaskExecutersController class],
+                         @(4) : [TaskComplexityController class]
                          };
     });
     

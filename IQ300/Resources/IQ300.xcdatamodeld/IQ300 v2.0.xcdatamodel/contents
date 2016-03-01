@@ -47,6 +47,11 @@
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="community" inverseEntity="IQTask" syncable="YES"/>
     </entity>
+    <entity name="IQComplexity" representedClassName="IQComplexity" syncable="YES">
+        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="value" attributeType="Integer 16" syncable="YES"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="complexity" inverseEntity="IQTask" syncable="YES"/>
+    </entity>
     <entity name="IQContact" representedClassName="IQContact" syncable="YES">
         <attribute name="contactId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -151,12 +156,14 @@
     </entity>
     <entity name="IQTask" representedClassName="IQTask" syncable="YES">
         <attribute name="availableActions" optional="YES" attributeType="Transformable" valueTransformerName="OrderedArrayTransformer" syncable="YES"/>
+        <attribute name="availableFeatures" optional="YES" attributeType="Transformable" valueTransformerName="OrderedArrayTransformer" syncable="YES"/>
         <attribute name="childIds" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
         <attribute name="commentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="duration" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="endDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="estimatedTime" optional="YES" attributeType="Integer 64" syncable="YES"/>
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="-1" syncable="YES"/>
         <attribute name="ownerType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="parentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -175,6 +182,7 @@
         <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQAttachment" inverseName="tasks" inverseEntity="IQAttachment" syncable="YES"/>
         <relationship name="community" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQCommunity" inverseName="tasks" inverseEntity="IQCommunity" syncable="YES"/>
+        <relationship name="complexity" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQComplexity" inverseName="tasks" inverseEntity="IQComplexity" syncable="YES"/>
         <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="taskCustomers" inverseEntity="IQUser" syncable="YES"/>
         <relationship name="executor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="taskExecutors" inverseEntity="IQUser" syncable="YES"/>
         <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQProject" inverseName="tasks" inverseEntity="IQProject" syncable="YES"/>
@@ -238,9 +246,10 @@
         <element name="IQNotification" positionX="0" positionY="0" width="128" height="270"/>
         <element name="IQProject" positionX="0" positionY="0" width="128" height="90"/>
         <element name="IQReconciliation" positionX="9" positionY="153" width="128" height="120"/>
-        <element name="IQTask" positionX="0" positionY="0" width="128" height="493"/>
+        <element name="IQTask" positionX="0" positionY="0" width="128" height="540"/>
         <element name="IQTaskActivityItem" positionX="0" positionY="0" width="128" height="165"/>
         <element name="IQTaskMember" positionX="0" positionY="0" width="128" height="195"/>
         <element name="IQUser" positionX="0" positionY="0" width="128" height="300"/>
+        <element name="IQComplexity" positionX="9" positionY="153" width="128" height="90"/>
     </elements>
 </model>

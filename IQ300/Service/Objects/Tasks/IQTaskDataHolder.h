@@ -10,6 +10,7 @@
 
 @class IQTask;
 @class IQCommunity;
+@class IQComplexity;
 @class RKObjectMapping;
 
 @interface IQTaskDataHolder : NSObject
@@ -23,6 +24,11 @@
 @property (nonatomic, strong) NSDate  * startDate;
 @property (nonatomic, strong) NSDate  * endDate;
 @property (nonatomic, strong) NSString * taskDescription;
+
+@property (nonatomic, strong) NSNumber *estimatedTimeSeconds;
+
+@property (nonatomic, strong) IQComplexity *complexity;
+
 
 + (IQTaskDataHolder*)holderWithTask:(IQTask*)task;
 

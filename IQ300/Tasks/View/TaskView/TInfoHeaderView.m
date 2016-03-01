@@ -17,6 +17,7 @@
 #import "TaskHelper.h"
 #import "ExtendedButton.h"
 #import "IQReconciliation.h"
+#import "IQComplexity.h"
 
 #define LINE_HEIGHT 45.5f
 #define CONTENT_LEFT_INSET 10.0f
@@ -77,7 +78,7 @@
     }
     
     CGFloat hederWidth = width - CONTENT_LEFT_INSET - CONTENT_RIGHT_INSET;
-    CGFloat height = HORIZONTAL_PADDING * 2 + TASK_ID_HEIGHT + TITLE_OFFSET + USER_OFFSET + USER_HEIGHT + LINE_HEIGHT;
+    CGFloat height = HORIZONTAL_PADDING * 2 + TASK_ID_HEIGHT + TITLE_OFFSET + USER_OFFSET + USER_HEIGHT + LINE_HEIGHT + LINE_HEIGHT;
     
     CGSize titleLabelSize = [task.title sizeWithFont:TITLE_FONT
                                          constrainedToSize:CGSizeMake(hederWidth, CGFLOAT_MAX)
@@ -196,6 +197,19 @@
         _buttonsHolder.bottomLineColor = [UIColor colorWithHexInt:0xc0c0c0];
         [_buttonsHolder setBackgroundColor:[UIColor whiteColor]];
         [self addSubview:_buttonsHolder];
+        
+        _complexityInfoView = [[TInfoLineView alloc] init];
+        _complexityInfoView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _complexityInfoView.drawTopSeparator = YES;
+        [_complexityInfoView.imageView setImage:[UIImage imageNamed:@"complexity_icon.png"]];
+        [self addSubview:_complexityInfoView];
+        
+        _estimatedTimeInfoView = [[TInfoLineView alloc] init];
+        _estimatedTimeInfoView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        [_estimatedTimeInfoView.imageView setImage:[UIImage imageNamed:@"estimated_time_icon.png"]];
+        _estimatedTimeInfoView.drawTopSeparator = YES;
+        _estimatedTimeInfoView.drawLeftSeparator = YES;
+        [self addSubview:_estimatedTimeInfoView];
     }
     
     return self;
@@ -214,7 +228,35 @@
     _statusView.textLabel.text = NSLocalizedString(task.status, nil);
 
     _dueDateView.textLabel.text = [task.endDate dateToDayString];
+    
+    _complexityInfoView.textLabel.text = task.complexity.displayName;
+    
+    
+    NSMutableString *estimatedTimeString = [[NSMutableString alloc] init];
+    if (task.estimatedTime) {
+        NSUInteger seconds = task.estimatedTime.unsignedIntegerValue;
+        
+        NSUInteger hours = (NSUInteger)(seconds / 3600);
+        NSUInteger minutes = (NSUInteger)((seconds - hours * 3600) / 60);
+        
+        if (hours < 10) {
+            [estimatedTimeString appendString:@"0"];
+        }
+        [estimatedTimeString appendFormat:@"%i", hours];
+        [estimatedTimeString appendString:@":"];
 
+        if (minutes < 10) {
+            [estimatedTimeString appendFormat:@"0"];
+        }
+        [estimatedTimeString appendFormat:@"%i", minutes];
+    }
+    else {
+        [estimatedTimeString appendString:@"00:00"];
+    }
+    
+    _estimatedTimeInfoView.textLabel.text = estimatedTimeString;
+
+    
     NSMutableParagraphStyle * paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.maximumLineHeight = [_communityInfoView.textLabel.font pointSize];
     paragraphStyle.minimumLineHeight = 0;
@@ -253,6 +295,7 @@
                                                                                                        task.reconciliation.totalCount]
                                                                                            attributes:attributes];
     }
+    
     
     NSMutableArray * actions = [[task.availableActions array] mutableCopy];
     [actions addObjectsFromArray:[task.reconciliationActions array]];
@@ -358,26 +401,36 @@
     }
 
     
-    CGSize statusDueSize = CGSizeMake(bounds.size.width / 2.0f, LINE_HEIGHT);
+    CGSize halfWidhtLineSize = CGSizeMake(bounds.size.width / 2.0f, LINE_HEIGHT);
     
     _statusView.frame = CGRectMake(bounds.origin.x,
                                    CGRectBottom(_descriptionView.frame),
-                                   statusDueSize.width,
-                                   statusDueSize.height);
+                                   halfWidhtLineSize.width,
+                                   halfWidhtLineSize.height);
+    
     _dueDateView.frame = CGRectMake(CGRectRight(_statusView.frame),
                                     _statusView.frame.origin.y,
-                                    statusDueSize.width,
-                                    statusDueSize.height);
+                                    halfWidhtLineSize.width,
+                                    halfWidhtLineSize.height);
+    
+    _complexityInfoView.frame = CGRectMake(bounds.origin.x,
+                                           CGRectBottom(_statusView.frame),
+                                           halfWidhtLineSize.width,
+                                           halfWidhtLineSize.height);
+    _estimatedTimeInfoView.frame = CGRectMake(CGRectRight(_complexityInfoView.frame),
+                                              _complexityInfoView.frame.origin.y,
+                                              halfWidhtLineSize.width,
+                                              halfWidhtLineSize.height);
 
     if ([_projectInfoView.textLabel.text length] > 0) {
         _projectInfoView.frame = CGRectMake(bounds.origin.x,
-                                            CGRectBottom(_statusView.frame),
+                                            CGRectBottom(_complexityInfoView.frame),
                                             bounds.size.width,
                                             LINE_HEIGHT);
     }
     else {
         _projectInfoView.frame = CGRectMake(bounds.origin.x,
-                                            CGRectBottom(_statusView.frame),
+                                            CGRectBottom(_complexityInfoView.frame),
                                             bounds.size.width,
                                             0.0f);
     }
