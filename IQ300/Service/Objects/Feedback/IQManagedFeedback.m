@@ -11,7 +11,7 @@
 #import "IQUser.h"
 #import "IQFeedbackType.h"
 #import "IQFeedbackCategory.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 
 @implementation IQManagedFeedback
 
@@ -60,7 +60,7 @@
     
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"attachments"
                                                            toKeyPath:@"attachments"
-                                                         withMapping:[IQAttachment objectMappingForManagedObjectStore:store]];
+                                                         withMapping:[IQManagedAttachment objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:relation];
     
     return mapping;

@@ -345,7 +345,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     [[IQService sharedService] createAttachmentWithFileAtPath:attachment.localURL
                                                      fileName:attachment.displayName
                                                      mimeType:attachment.contentType
-                                                      handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
+                                                      handler:^(BOOL success, IQManagedAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                           if(success) {
                                                               sendCommentBlock(@[attachmentObject]);
                                                               [GAIService sendEventForCategory:GAICommonEventCategory
@@ -354,7 +354,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                           else {
                                                               NSError *localError;
                                                               
-                                                              IQAttachment *localAttachment = [self createLocalAttachmentWithFilePath:attachment.localURL fileName:attachment.displayName contentType:attachment.contentType error:&localError];
+                                                              IQManagedAttachment *localAttachment = [self createLocalAttachmentWithFilePath:attachment.localURL fileName:attachment.displayName contentType:attachment.contentType error:&localError];
                                                               if (localAttachment) {
                                                                   sendCommentBlock(@[localAttachment]);
                                                               }
@@ -408,7 +408,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
         [[IQService sharedService] createAttachmentWithAsset:attachment
                                                     fileName:fileName
                                                     mimeType:mimeType
-                                                     handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
+                                                     handler:^(BOOL success, IQManagedAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                         if(success) {
                                                             sendCommentBlock(@[attachmentObject]);
                                                             [GAIService sendEventForCategory:GAICommonEventCategory
@@ -418,7 +418,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                             [self createLocalAttachmentWithAsset:(ALAsset*)attachment
                                                                                         fileName:fileName
                                                                                         mimeType:mimeType
-                                                                                      completion:^(IQAttachment * attachmentObject, NSError *error) {
+                                                                                      completion:^(IQManagedAttachment * attachmentObject, NSError *error) {
                                                                                           if(attachmentObject) {
                                                                                               sendCommentBlock(@[attachmentObject]);
                                                                                           }
@@ -433,7 +433,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
         [[IQService sharedService] createAttachmentWithImage:attachment
                                                     fileName:fileName
                                                     mimeType:mimeType
-                                                     handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
+                                                     handler:^(BOOL success, IQManagedAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                          if(success) {
                                                              sendCommentBlock(@[attachmentObject]);
                                                              [GAIService sendEventForCategory:GAICommonEventCategory
@@ -443,7 +443,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                              [self createLocalAttachmentWithImage:(UIImage*)attachment
                                                                                          fileName:fileName
                                                                                          mimeType:mimeType
-                                                                                       completion:^(IQAttachment * attachmentObject, NSError *error) {
+                                                                                       completion:^(IQManagedAttachment * attachmentObject, NSError *error) {
                                                                  if(attachmentObject) {
                                                                      sendCommentBlock(@[attachmentObject]);
                                                                  }
@@ -483,12 +483,12 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                          }];
     };
 
-    IQAttachment * localAttachment = [[comment.attachments allObjects] firstObject];
+    IQManagedAttachment * localAttachment = [[comment.attachments allObjects] firstObject];
     if([localAttachment.originalURL length] > 0) {
         [[IQService sharedService] createAttachmentWithFileAtPath:localAttachment.localURL
                                                          fileName:localAttachment.displayName
                                                          mimeType:localAttachment.contentType
-                                                          handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
+                                                          handler:^(BOOL success, IQManagedAttachment * attachment, NSData *responseData, NSError *error) {
                                                               if(success) {
                                                                   sendCommentBlock(@[attachment]);
                                                                   [GAIService sendEventForCategory:GAICommonEventCategory
@@ -519,7 +519,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 
 - (void)deleteLocalComment:(IQComment *)comment {
     NSArray * attachments = [comment.attachments allObjects];
-    for (IQAttachment * attachment in attachments) {
+    for (IQManagedAttachment * attachment in attachments) {
         NSError * removeError = nil;
         if(![[NSFileManager defaultManager] removeItemAtPath:attachment.localURL error:&removeError]) {
             NSLog(@"Failed delete tmp attachment file with error: %@", removeError);
@@ -636,7 +636,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 - (void)createLocalAttachmentWithAsset:(ALAsset*)asset
                               fileName:(NSString*)fileName
                               mimeType:(NSString *)mimeType
-                            completion:(void (^)(IQAttachment * attachment, NSError * error))completion {
+                            completion:(void (^)(IQManagedAttachment * attachment, NSError * error))completion {
     NSError * error = nil;
     NSString * diskCachePath = [self createCacheDirIfNeedWithError:&error];
     NSURL * filePath = [NSURL fileURLWithPath:[[diskCachePath stringByAppendingPathComponent:[NSString UUIDString]]
@@ -649,7 +649,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
             if([asset writeToFile:filePath error:&exportAssetError]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSError * createEntityError = nil;
-                    IQAttachment * attachment =[self createLocalAttachmentWithFilePath:[filePath path]
+                    IQManagedAttachment * attachment =[self createLocalAttachmentWithFilePath:[filePath path]
                                                                               fileName:fileName
                                                                            contentType:mimeType
                                                                                  error:&createEntityError];
@@ -671,7 +671,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 - (void)createLocalAttachmentWithImage:(UIImage*)image
                               fileName:(NSString*)fileName
                               mimeType:(NSString *)mimeType
-                            completion:(void (^)(IQAttachment * attachment, NSError * error))completion {
+                            completion:(void (^)(IQManagedAttachment * attachment, NSError * error))completion {
     NSError * error = nil;
     NSString * diskCachePath = [self createCacheDirIfNeedWithError:&error];
     NSURL * filePath = [NSURL fileURLWithPath:[[diskCachePath stringByAppendingPathComponent:[NSString UUIDString]]
@@ -685,7 +685,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                           options:NSDataWritingAtomic error:&saveDataError];
             if (!saveDataError) {
                 NSError * createEntityError = nil;
-                IQAttachment * attachment = [self createLocalAttachmentWithFilePath:[filePath path]
+                IQManagedAttachment * attachment = [self createLocalAttachmentWithFilePath:[filePath path]
                                                                            fileName:fileName
                                                                         contentType:mimeType
                                                                               error:&createEntityError];
@@ -703,17 +703,17 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     }
 }
 
-- (IQAttachment*)createLocalAttachmentWithFilePath:(NSString*)filePath fileName:(NSString*)fileName contentType:(NSString*)contentType error:(NSError**)error {
+- (IQManagedAttachment*)createLocalAttachmentWithFilePath:(NSString*)filePath fileName:(NSString*)fileName contentType:(NSString*)contentType error:(NSError**)error {
     NSManagedObjectContext * context = [IQService sharedService].context;
-    NSNumber * uniqId = [IQAttachment uniqueLocalIdInContext:context error:error];
+    NSNumber * uniqId = [IQManagedAttachment uniqueLocalIdInContext:context error:error];
     if (*error || !uniqId) {
         return nil;
     }
 
-    NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass([IQAttachment class])
+    NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass([IQManagedAttachment class])
                                                inManagedObjectContext:context];
     
-    IQAttachment * attachment = (IQAttachment*)[[NSManagedObject alloc] initWithEntity:entity
+    IQManagedAttachment * attachment = (IQManagedAttachment*)[[NSManagedObject alloc] initWithEntity:entity
                                                         insertIntoManagedObjectContext:context];
     
     attachment.localId = uniqId;

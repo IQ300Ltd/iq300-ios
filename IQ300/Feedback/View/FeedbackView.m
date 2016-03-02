@@ -12,7 +12,7 @@
 #import "IQFeedbackCategory.h"
 #import "IQUser.h"
 #import "NSDate+IQFormater.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 
 #define VIEWS_INSET 10.0f
 #define ATTACHMENT_VIEW_HEIGHT 15.0f
@@ -167,7 +167,7 @@
     
     if(hasAttachment) {
         CGFloat attachFontSize = (IS_IPAD) ? 12 : 11.0f;
-        for (IQAttachment * attachment in feedback.attachments) {
+        for (IQManagedAttachment * attachment in feedback.attachments) {
             UIButton * attachButton = [[UIButton alloc] init];
             [attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
             [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:attachFontSize]];

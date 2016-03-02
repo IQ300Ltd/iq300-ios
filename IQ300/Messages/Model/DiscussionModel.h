@@ -12,7 +12,7 @@
 @class IQDiscussion;
 @class IQComment;
 @class IQConversation;
-@class IQAttachment;
+@class IQManagedAttachment;
 @class ALAsset;
 @class SharingAttachment;
 

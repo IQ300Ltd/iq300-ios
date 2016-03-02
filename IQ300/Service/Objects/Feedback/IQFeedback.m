@@ -40,12 +40,22 @@
 
 @end
 
+@interface IQFeedback ()
+
+@property (nonatomic, strong) NSMutableArray *mutableAttachments;
+@property (nonatomic, strong) NSMutableArray *mutableAttachmentIds;
+
+@end
+
 @implementation IQFeedback
 
 - (id)init {
     self = [super init];
     if (self) {
         _platformInfo = [[IQPlatformInfo alloc] init];
+        
+        _mutableAttachments = [[NSMutableArray alloc] init];
+        _mutableAttachmentIds = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -72,5 +82,27 @@
     
     return [objectMapping inverseMapping];
 }
+
+- (void)addAttachement:(id<IQAttachment>)attachment {
+    [_mutableAttachments addObject:attachment];
+}
+
+- (void)removeAttachementAtIndex:(NSUInteger)index {
+    [_mutableAttachments removeObjectAtIndex:index];
+}
+
+- (void)addAttachmentId:(NSNumber *)attachmentId {
+    [_mutableAttachmentIds addObject:attachmentId];
+}
+
+- (NSArray *)attachements {
+    return [_mutableAttachments copy];
+}
+
+- (NSArray *)attachmentIds {
+    return [_mutableAttachmentIds copy];
+}
+
+
 
 @end

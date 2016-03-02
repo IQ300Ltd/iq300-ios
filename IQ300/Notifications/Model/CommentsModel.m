@@ -255,7 +255,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         [[IQService sharedService] createAttachmentWithAsset:attachment
                                                     fileName:fileName
                                                     mimeType:mimeType
-                                                     handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
+                                                     handler:^(BOOL success, IQManagedAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                          if(success) {
                                                              sendCommentBlock(@[attachmentObject]);
                                                              [GAIService sendEventForCategory:GAICommonEventCategory
@@ -270,7 +270,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         [[IQService sharedService] createAttachmentWithImage:attachment
                                                     fileName:fileName
                                                     mimeType:mimeType
-                                                     handler:^(BOOL success, IQAttachment * attachmentObject, NSData *responseData, NSError *error) {
+                                                     handler:^(BOOL success, IQManagedAttachment * attachmentObject, NSData *responseData, NSError *error) {
                                                          if(success) {
                                                              sendCommentBlock(@[attachmentObject]);
                                                              [GAIService sendEventForCategory:GAICommonEventCategory
@@ -305,12 +305,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                          }];
     };
     
-    IQAttachment * localAttachment = [[comment.attachments allObjects] firstObject];
+    IQManagedAttachment * localAttachment = [[comment.attachments allObjects] firstObject];
     if([localAttachment.originalURL length] > 0) {
         [[IQService sharedService] createAttachmentWithFileAtPath:localAttachment.localURL
                                                          fileName:localAttachment.displayName
                                                          mimeType:localAttachment.contentType
-                                                          handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
+                                                          handler:^(BOOL success, IQManagedAttachment * attachment, NSData *responseData, NSError *error) {
                                                               if(success) {
                                                                   sendCommentBlock(@[attachment]);
                                                                   [GAIService sendEventForCategory:GAICommonEventCategory
@@ -341,7 +341,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)deleteLocalComment:(IQComment *)comment {
     NSArray * attachments = [comment.attachments allObjects];
-    for (IQAttachment * attachment in attachments) {
+    for (IQManagedAttachment * attachment in attachments) {
         [attachment.managedObjectContext deleteObject:attachment];
     }
     
@@ -419,13 +419,13 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     return nil;
 }
 
-- (void)crecreateLocalAttachmentWithAsset:(ALAsset*)asset completion:(void (^)(IQAttachment * attachment, NSError * error))completion {
+- (void)crecreateLocalAttachmentWithAsset:(ALAsset*)asset completion:(void (^)(IQManagedAttachment * attachment, NSError * error))completion {
     NSError * error = nil;
     NSString * diskCachePath = [self createCacheDirIfNeedWithError:&error];
     NSURL * filePath = [NSURL fileURLWithPath:[[diskCachePath stringByAppendingPathComponent:[NSString UUIDString]]
                                                stringByAppendingPathExtension:[asset.fileName pathExtension]]];
     NSManagedObjectContext * context = [IQService sharedService].context;
-    NSNumber * uniqId = (!error) ? [IQAttachment uniqueLocalIdInContext:context error:&error] : nil;
+    NSNumber * uniqId = (!error) ? [IQManagedAttachment uniqueLocalIdInContext:context error:&error] : nil;
     
     if (uniqId && !error) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -434,10 +434,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
             if([asset writeToFile:filePath error:&exportAssetError]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSError * saveError = nil;
-                    NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass([IQAttachment class])
+                    NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass([IQManagedAttachment class])
                                                                inManagedObjectContext:context];
                     
-                    IQAttachment * attachment = (IQAttachment*)[[NSManagedObject alloc] initWithEntity:entity
+                    IQManagedAttachment * attachment = (IQManagedAttachment*)[[NSManagedObject alloc] initWithEntity:entity
                                                                         insertIntoManagedObjectContext:context];
                     
                     attachment.localId = uniqId;

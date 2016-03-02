@@ -43,7 +43,7 @@
     
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"attachments"
                                                            toKeyPath:@"attachments"
-                                                         withMapping:[IQAttachment objectMappingForManagedObjectStore:store]];
+                                                         withMapping:[IQManagedAttachment objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:relation];
 
     return mapping;

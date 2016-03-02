@@ -11,7 +11,7 @@
 #import "SharingViewControllerProtocol.h"
 
 @class IQConversation;
-@class IQAttachment;
+@class IQManagedAttachment;
 @class SharingViewController;
 
 @interface SharingDiscussionController : IQTableBaseController <SharingViewControllerProtocol>

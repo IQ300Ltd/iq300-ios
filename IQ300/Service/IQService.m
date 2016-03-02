@@ -764,7 +764,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     [self.objectManager addResponseDescriptor:descriptor];
 
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedAttachment class]
                                                         method:RKRequestMethodPOST
                                                    pathPattern:@"attachments"
                                                    fromKeyPath:@"attachment"
@@ -952,7 +952,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedAttachment class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"tasks/:id/attachments"
                                                    fromKeyPath:@"attachments"
@@ -960,7 +960,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     [self.objectManager addResponseDescriptor:descriptor];
 
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQAttachment class]
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQManagedAttachment class]
                                                         method:RKRequestMethodPOST
                                                    pathPattern:@"tasks/:id/attachments"
                                                    fromKeyPath:@"attachment"

@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class IQAttachment;
+@class IQManagedAttachment;
 
 @interface TAttachmentCell : UICollectionViewCell
 
-@property (nonatomic, strong) IQAttachment *item;
+@property (nonatomic, strong) IQManagedAttachment *item;
 
 @end

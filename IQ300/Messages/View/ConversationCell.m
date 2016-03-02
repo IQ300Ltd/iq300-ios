@@ -232,7 +232,7 @@
     [_attachButton setHidden:(!hasAttachment)];
     
     if(hasAttachment) {
-        IQAttachment * attachment = [[_item.lastComment.attachments allObjects] lastObject];
+        IQManagedAttachment * attachment = [[_item.lastComment.attachments allObjects] lastObject];
         [_attachButton setTitle:attachment.displayName forState:UIControlStateNormal];
     }
 

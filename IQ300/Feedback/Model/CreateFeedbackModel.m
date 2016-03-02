@@ -13,9 +13,13 @@
 #import "IQFeedbackType.h"
 #import "IQService+Feedback.h"
 #import "IQEMultiLineTextCell.h"
+#import "FeedbackAttachmentsCell.h"
+#import "IQManagedAttachment.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
+static NSString * AttachmentsCellReuseIdentifier = @"AttachmentsCellReuseIdentifier";
+
 NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 
 @interface CreateFeedbackModel() {
@@ -36,6 +40,7 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
                           @(0) : [IQDetailsTextCell class],
                           @(1) : [IQDetailsTextCell class],
                           @(2) : [IQEMultiLineTextCell class],
+                          @(3) : [FeedbackAttachmentsCell class]
                           };
     });
     
@@ -52,6 +57,7 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
                               @(0) : DetailCellReuseIdentifier,
                               @(1) : DetailCellReuseIdentifier,
                               @(2) : CellReuseIdentifier,
+                              @(3) : AttachmentsCellReuseIdentifier,
                               };
     });
     
@@ -77,7 +83,7 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 }
 
 - (NSUInteger)numberOfItemsInSection:(NSInteger)section {
-    return 3;
+    return 4;
 }
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath {
@@ -87,8 +93,11 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
     else if(indexPath.row == 1) {
         return _feedback.feedbackCategory.title;
     }
-    else {
+    else if (indexPath.row == 2){
        return _feedback.feedbackDescription;
+    }
+    else {
+       return _feedback.attachements;
     }
 }
 
@@ -104,10 +113,17 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath *)indexPath {
     Class cellClass = [CreateFeedbackModel cellClassAtIndexPath:indexPath];
     
-    NSString * detaiTitle = [self detailTitleForItemAtIndexPath:indexPath];
     id item = [self itemAtIndexPath:indexPath];
     if (cellClass) {
-        return [cellClass heightForItem:item detailTitle:detaiTitle width:self.cellWidth];
+        NSString * detaiTitle = [self detailTitleForItemAtIndexPath:indexPath];
+
+        if ([cellClass respondsToSelector:(@selector(heightForItem:detailTitle:width:))]) {
+            return [cellClass heightForItem:item detailTitle:detaiTitle width:self.cellWidth];
+        }
+        
+        if ([cellClass respondsToSelector:(@selector(heightForItems:cellWidth:showAddButton:))]) {
+            return [cellClass heightForItems:item cellWidth:self.cellWidth showAddButton:YES];
+        }
     }
     return 50.0f;
 }
@@ -145,13 +161,21 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 }
 
 - (void)updateFieldAtIndexPath:(NSIndexPath *)indexPath withValue:(id)value {
-    if (indexPath.row < 2) {
+    if (indexPath.row < 2 || indexPath.row == 3) {
         
         if (indexPath.row == 0) {
             _feedback.feedbackType = value;
         }
-        else {
+        else if (indexPath.row == 1){
             _feedback.feedbackCategory = value;
+        }
+        else {
+            if ([value conformsToProtocol:@protocol(IQAttachment)]) {
+                [_feedback addAttachement:value];
+            }
+            else if ([value isKindOfClass:[NSNumber class]]) {
+                [_feedback removeAttachementAtIndex:[value unsignedIntegerValue]];
+            }
         }
         
         [self modelWillChangeContent];
@@ -167,12 +191,45 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 }
 
 - (void)createFeedbackWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService] createFeedback:_feedback
-                                      handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                          if (completion) {
-                                              completion(error);
-                                          }
-                                      }];
+    IQFeedback *feedback = _feedback;
+    
+    void (^uploadFeedbackBlock)() = ^() {
+        [[IQService sharedService] createFeedback:_feedback
+                                          handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                              if (completion) {
+                                                  completion(error);
+                                              }
+                                          }];
+    };
+    
+    if (_feedback.attachements.count > 0) {
+        void (^uploadAttachmentBlock)() = ^() {
+            NSArray *attachments = feedback.attachements;
+            NSArray *attachmentIds = feedback.attachmentIds;
+            if (attachments.count == attachmentIds.count) {
+                uploadFeedbackBlock();
+            }
+            else {
+                id<IQAttachment> attachment = [attachments objectAtIndex:attachmentIds.count];
+                [[IQService sharedService] createAttachmentWithFileAtPath:[attachment localURL]
+                                                                 fileName:[attachment displayName]
+                                                                 mimeType:[attachment contentType]
+                                                                  handler:^(BOOL success, IQManagedAttachment *object, NSData *responseData, NSError *error) {
+                                                                      if (success) {
+                                                                          [feedback addAttachmentId:object.attachmentId];
+                                                                          uploadAttachmentBlock();
+                                                                      }
+                                                                      else {
+                                                                          completion(error);
+                                                                      }
+                                                                  }];
+            }
+        };
+        uploadAttachmentBlock();
+    }
+    else {
+        uploadFeedbackBlock();
+    }
 }
 
 - (BOOL)isAllFieldsValidWithError:(NSError**)error {
@@ -205,7 +262,7 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 
 - (BOOL)modelHasChanges {
     return (_feedback.feedbackCategory != nil || _feedback.feedbackType ||
-            [_feedback.feedbackDescription length] > 0);
+            [_feedback.feedbackDescription length] > 0 || _feedback.attachements.count > 0);
 }
 
 @end

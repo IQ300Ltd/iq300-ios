@@ -541,7 +541,7 @@
     }
     
     IQComment * comment = cell.item;
-    IQAttachment * attachment = [[comment.attachments allObjects] objectAtIndex:sender.tag];
+    IQManagedAttachment * attachment = [[comment.attachments allObjects] objectAtIndex:sender.tag];
     
     CGRect rectForAppearing = [sender.superview convertRect:sender.frame toView:self.view];
     if([attachment.contentType rangeOfString:@"image"].location != NSNotFound &&
@@ -584,7 +584,7 @@
     }
 }
 
-- (void)showActivityViewControllerAttachment:(IQAttachment *)attachment fromRect:(CGRect)rect {
+- (void)showActivityViewControllerAttachment:(IQManagedAttachment *)attachment fromRect:(CGRect)rect {
     [self hideActivityIndicator];
     
     IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:[[SharingAttachment alloc] initWithPath:attachment.localURL

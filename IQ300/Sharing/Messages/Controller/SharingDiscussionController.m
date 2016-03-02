@@ -32,7 +32,7 @@
 #import "IQService.h"
 #import "IQService+Messages.h"
 #import "IQActivityViewController.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 #import "SharingViewController.h"
 
 #define SECTION_HEIGHT 12

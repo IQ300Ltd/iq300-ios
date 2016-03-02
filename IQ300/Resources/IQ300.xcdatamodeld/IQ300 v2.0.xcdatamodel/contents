@@ -6,23 +6,6 @@
         <attribute name="viewDate" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="discussions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="userViews" inverseEntity="IQDiscussion" syncable="YES"/>
     </entity>
-    <entity name="IQAttachment" representedClassName="IQAttachment" syncable="YES">
-        <attribute name="atDescription" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="attachmentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="contentType" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="localURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="originalURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="previewURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="unifiedContentType" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="unread" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQComment" inverseName="attachments" inverseEntity="IQComment" syncable="YES"/>
-        <relationship name="feedbacks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQManagedFeedback" inverseName="attachments" inverseEntity="IQManagedFeedback" syncable="YES"/>
-        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="attachments" inverseEntity="IQTask" syncable="YES"/>
-    </entity>
     <entity name="IQComment" representedClassName="IQComment" syncable="YES">
         <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="commentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -33,7 +16,7 @@
         <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="unread" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="IQAttachment" inverseName="comments" inverseEntity="IQAttachment" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="IQManagedAttachment" inverseName="comments" inverseEntity="IQManagedAttachment" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="comments" inverseEntity="IQUser" syncable="YES"/>
         <relationship name="conversation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="lastComment" inverseEntity="IQConversation" syncable="YES"/>
     </entity>
@@ -93,6 +76,23 @@
         <attribute name="typeId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <relationship name="feedbacks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQManagedFeedback" inverseName="feedbackType" inverseEntity="IQManagedFeedback" syncable="YES"/>
     </entity>
+    <entity name="IQManagedAttachment" representedClassName="IQManagedAttachment" syncable="YES">
+        <attribute name="atDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attachmentId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="contentType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="localURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="originalURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="previewURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unifiedContentType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unread" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQComment" inverseName="attachments" inverseEntity="IQComment" syncable="YES"/>
+        <relationship name="feedbacks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQManagedFeedback" inverseName="attachments" inverseEntity="IQManagedFeedback" syncable="YES"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="attachments" inverseEntity="IQTask" syncable="YES"/>
+    </entity>
     <entity name="IQManagedFeedback" representedClassName="IQManagedFeedback" syncable="YES">
         <attribute name="commentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -102,7 +102,7 @@
         <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQAttachment" inverseName="feedbacks" inverseEntity="IQAttachment" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQManagedAttachment" inverseName="feedbacks" inverseEntity="IQManagedAttachment" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="feedbacks" inverseEntity="IQUser" syncable="YES"/>
         <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQFeedbackCategory" inverseName="feedbacks" inverseEntity="IQFeedbackCategory" syncable="YES"/>
         <relationship name="feedbackType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQFeedbackType" inverseName="feedbacks" inverseEntity="IQFeedbackType" syncable="YES"/>
@@ -180,7 +180,7 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQAttachment" inverseName="tasks" inverseEntity="IQAttachment" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQManagedAttachment" inverseName="tasks" inverseEntity="IQManagedAttachment" syncable="YES"/>
         <relationship name="community" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQCommunity" inverseName="tasks" inverseEntity="IQCommunity" syncable="YES"/>
         <relationship name="complexity" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQComplexity" inverseName="tasks" inverseEntity="IQComplexity" syncable="YES"/>
         <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="taskCustomers" inverseEntity="IQUser" syncable="YES"/>
@@ -231,25 +231,25 @@
         <relationship name="tasksMember" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTaskMember" inverseName="user" inverseEntity="IQTaskMember" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CViewInfo" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="IQAttachment" positionX="0" positionY="0" width="128" height="270"/>
-        <element name="IQComment" positionX="0" positionY="0" width="128" height="225"/>
-        <element name="IQCommunity" positionX="0" positionY="0" width="128" height="165"/>
-        <element name="IQContact" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="IQConversation" positionX="0" positionY="0" width="128" height="240"/>
-        <element name="IQDiscussion" positionX="0" positionY="0" width="128" height="150"/>
-        <element name="IQFeedbackCategory" positionX="0" positionY="0" width="128" height="90"/>
-        <element name="IQFeedbackType" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="IQManagedFeedback" positionX="0" positionY="0" width="128" height="225"/>
-        <element name="IQManagedTodoItem" positionX="0" positionY="0" width="128" height="180"/>
-        <element name="IQNotificable" positionX="0" positionY="0" width="128" height="120"/>
-        <element name="IQNotification" positionX="0" positionY="0" width="128" height="270"/>
-        <element name="IQProject" positionX="0" positionY="0" width="128" height="90"/>
-        <element name="IQReconciliation" positionX="9" positionY="153" width="128" height="120"/>
-        <element name="IQTask" positionX="0" positionY="0" width="128" height="540"/>
-        <element name="IQTaskActivityItem" positionX="0" positionY="0" width="128" height="165"/>
-        <element name="IQTaskMember" positionX="0" positionY="0" width="128" height="195"/>
-        <element name="IQUser" positionX="0" positionY="0" width="128" height="300"/>
-        <element name="IQComplexity" positionX="9" positionY="153" width="128" height="90"/>
+        <element name="CViewInfo" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQManagedAttachment" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQComment" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQCommunity" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQComplexity" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQContact" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQConversation" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQDiscussion" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQFeedbackCategory" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQFeedbackType" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQManagedFeedback" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQManagedTodoItem" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQNotificable" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQNotification" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQProject" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQReconciliation" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQTask" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQTaskActivityItem" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQTaskMember" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IQUser" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

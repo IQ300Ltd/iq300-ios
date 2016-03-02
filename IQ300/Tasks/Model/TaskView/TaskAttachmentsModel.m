@@ -8,7 +8,7 @@
 #import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
 
 #import "TaskAttachmentsModel.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 #import "TAttachmentCell.h"
 #import "IQService+Tasks.h"
 #import "TChangesCounter.h"
@@ -43,7 +43,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 }
 
 - (NSString*)entityName {
-    return @"IQAttachment";
+    return @"IQManagedAttachment";
 }
 
 - (NSManagedObjectContext *)context {
@@ -92,10 +92,10 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
 
 
 - (void)addAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName attachmentType:(NSString*)type completion:(void (^)(NSError * error))completion {
-    void (^addAttachmentBlock)(IQAttachment * attachment) = ^ (IQAttachment * param) {
+    void (^addAttachmentBlock)(IQManagedAttachment * attachment) = ^ (IQManagedAttachment * param) {
         [[IQService sharedService] addAttachmentWithId:param.attachmentId
                                                 taskId:self.taskId
-                                               handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
+                                               handler:^(BOOL success, IQManagedAttachment * attachment, NSData *responseData, NSError *error) {
                                                    if (success) {
                                                        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"IQTask"];
                                                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"taskId == %@", self.taskId];
@@ -124,7 +124,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
         [[IQService sharedService] createAttachmentWithAsset:asset
                                                     fileName:fileName
                                                     mimeType:type
-                                                     handler:^(BOOL success, IQAttachment * attachment, NSData *responseData, NSError *error) {
+                                                     handler:^(BOOL success, IQManagedAttachment * attachment, NSData *responseData, NSError *error) {
                                                          if(success) {
                                                              addAttachmentBlock(attachment);
                                                              [GAIService sendEventForCategory:GAICommonEventCategory

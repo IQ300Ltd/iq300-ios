@@ -10,7 +10,7 @@
 #import "TDocumentsController.h"
 #import "IQTask.h"
 #import "TAttachmentCell.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 #import "PhotoViewController.h"
 #import "DownloadManager.h"
 #import "UIViewController+ScreenActivityIndicator.h"
@@ -191,7 +191,7 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    IQAttachment * attachment = [self.model itemAtIndexPath:indexPath];
+    IQManagedAttachment * attachment = [self.model itemAtIndexPath:indexPath];
     TAttachmentCell * cell = (TAttachmentCell*)[self.collectionView cellForItemAtIndexPath:indexPath];
     
     CGRect rectForAppearing = [cell.superview convertRect:cell.frame toView:self.view];
@@ -317,7 +317,7 @@
     [self presentViewController:picker animated:YES completion:nil];
 }
 
-- (void)showActivityViewControllerAttachment:(IQAttachment *)attachment fromRect:(CGRect)rect {
+- (void)showActivityViewControllerAttachment:(IQManagedAttachment *)attachment fromRect:(CGRect)rect {
     [self hideActivityIndicator];
     
     IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:[[SharingAttachment alloc] initWithPath:attachment.localURL

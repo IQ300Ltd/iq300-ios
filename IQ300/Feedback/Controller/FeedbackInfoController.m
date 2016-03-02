@@ -11,7 +11,7 @@
 #import "IQBadgeIndicatorView.h"
 #import "UITabBarItem+CustomBadgeView.h"
 #import "IQManagedFeedback.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 #import "PhotoViewController.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 #import "DownloadManager.h"
@@ -121,7 +121,7 @@
 }
 
 - (void)attachViewButtonAction:(UIButton*)sender {
-    IQAttachment * attachment = [_feedback.attachments objectAtIndex:sender.tag];
+    IQManagedAttachment * attachment = [_feedback.attachments objectAtIndex:sender.tag];
     
     CGRect rectForAppearing = [sender.superview convertRect:sender.frame toView:self.view];
     if([attachment.contentType rangeOfString:@"image"].location != NSNotFound &&
@@ -157,7 +157,7 @@
     }
 }
 
-- (void)showActivityViewControllerAttachment:(IQAttachment *)attachment fromRect:(CGRect)rect {
+- (void)showActivityViewControllerAttachment:(IQManagedAttachment *)attachment fromRect:(CGRect)rect {
     [self hideActivityIndicator];
     
     IQActivityViewController *controller = [[IQActivityViewController alloc] initWithAttachment:[[SharingAttachment alloc] initWithPath:attachment.localURL
