@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
+#import <CTAssetsPickerController/CTAssetsPickerController.h>
+
 #import "CreateFeedbackController.h"
 #import "IQDetailsTextCell.h"
 #import "ExtendedButton.h"
@@ -13,14 +15,19 @@
 #import "FeedbackTypesModel.h"
 #import "IQSelectionController.h"
 #import "DispatchAfterExecution.h"
+#import "FeedbackAttachmentsCell.h"
+#import "UIActionSheet+Blocks.h"
+#import "FileStore.h"
 
 #define BOTTOM_VIEW_HEIGHT 0
 
-@interface CreateFeedbackController () {
+@interface CreateFeedbackController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>{
     CGFloat _tableBottomMarging;
     NSIndexPath * _editableIndexPath;
     FeedbackCategoriesModel * _categoriesModel;
     FeedbackTypesModel * _typesModel;
+    
+    CGPoint _tableContentOffset;
 }
 
 @end
@@ -106,19 +113,36 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    cell.detailTitle = [self.model detailTitleForItemAtIndexPath:indexPath];
-    cell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
-    cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
-    cell.item = [self.model itemAtIndexPath:indexPath];
-    
+    if ([cell isKindOfClass:[FeedbackAttachmentsCell class]]) {
+        FeedbackAttachmentsCell *feedbackCell = (FeedbackAttachmentsCell *)cell;
+        [feedbackCell setItems:[self.model itemAtIndexPath:indexPath]];
+        [feedbackCell setAddButtonShown:YES];
+        [feedbackCell.addButton addTarget:self action:@selector(attachButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        NSArray *buttons = feedbackCell.buttons;
+        NSUInteger tag = 0;
+        for (IQAttachmentButton *button in buttons) {
+            [button.deleteButton addTarget:self action:@selector(deleteButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+            button.tag = tag++;
+        }
+    }
+    else {
+        cell.detailTitle = [self.model detailTitleForItemAtIndexPath:indexPath];
+        cell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
+        cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
+        cell.item = [self.model itemAtIndexPath:indexPath];
+    }
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQEditableTextCell * cell = (IQEditableTextCell*)[tableView cellForRowAtIndexPath:_editableIndexPath];
-    if (cell.titleTextView.isFirstResponder && ![indexPath isEqual:_editableIndexPath]) {
-        //hide keyboard
-        [cell.titleTextView resignFirstResponder];
+    UITableViewCell * cell = [tableView cellForRowAtIndexPath:_editableIndexPath];
+    
+    if ([cell isKindOfClass:[IQEditableTextCell class]]) {
+        IQEditableTextCell *editableCell = (IQEditableTextCell*)cell;
+        if (editableCell.titleTextView.isFirstResponder && ![indexPath isEqual:_editableIndexPath]) {
+            //hide keyboard
+            [editableCell.titleTextView resignFirstResponder];
+        }
     }
     
     if (indexPath.row < 2) {
@@ -198,6 +222,7 @@
                                       }
                                       else {
                                           [self.navigationController popViewControllerAnimated:YES];
+                                          [self.model clearModelData];
                                       }
                                   }
                               }];
@@ -205,6 +230,7 @@
     }
     else {
         [self.navigationController popViewControllerAnimated:YES];
+        [self.model clearModelData];
     }
 }
 
@@ -221,6 +247,7 @@
                     [self.navigationController popViewControllerAnimated:YES];
                 }
                 [self proccessServiceError:error];
+                [self.model clearModelData];
             }];
         });
     }
@@ -295,4 +322,173 @@
     }
     return YES;
 }
+
+- (void)attachButtonAction:(UIButton*)sender {
+    if (_editableIndexPath) {
+        IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
+        [cell.titleTextView resignFirstResponder];
+    }
+    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                              delegate:nil
+                                                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                destructiveButtonTitle:nil
+                                                     otherButtonTitles:NSLocalizedString(@"Take a picture", nil),
+                                   NSLocalizedString(@"Photos", nil), nil];
+    
+    [actionSheet setDidDismissBlock:^(UIActionSheet * __nonnull actionSheet, NSInteger buttonIndex) {
+        if (buttonIndex == 0) {
+            _tableContentOffset = self.tableView.contentOffset;
+            if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+                UIImagePickerController * imagePicker = [[UIImagePickerController alloc] init];
+                [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
+                [imagePicker setCameraDevice:UIImagePickerControllerCameraDeviceRear];
+                [imagePicker setAllowsEditing:NO];
+                [imagePicker setShowsCameraControls:YES];
+                [imagePicker setDelegate:self];
+                imagePicker.hidesBottomBarWhenPushed = YES;
+                [self presentViewController:imagePicker animated:YES completion:nil];
+            }
+            else {
+                [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                                   message:NSLocalizedString(@"The camera is not available", nil)
+                         cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                         otherButtonTitles:nil
+                                  tapBlock:nil];
+            }
+        }
+        else if (buttonIndex == 1) {
+            CTAssetsPickerController *picker = [[CTAssetsPickerController alloc] init];
+            picker.assetsFilter = [ALAssetsFilter allAssets];
+            picker.showsCancelButton = YES;
+            picker.delegate = (id<CTAssetsPickerControllerDelegate>)self;
+            picker.showsNumberOfAssets = NO;
+            [self presentViewController:picker animated:YES completion:nil];
+        }
+    }];
+    
+    [actionSheet showInView:self.view];
+}
+
+- (void)deleteButtonAction:(id)sender {
+    [self.model updateFieldAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] withValue:@([sender tag])];
+}
+
+#pragma mark - UIImagePickerController delegate 
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    //Fix offset changed by image picker
+    if (!CGPointEqualToPoint(_tableContentOffset, self.tableView.contentOffset)) {
+        self.tableView.contentOffset = _tableContentOffset;
+    }
+    _tableContentOffset = CGPointZero;
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage * image = info[UIImagePickerControllerOriginalImage];
+    
+    [picker dismissViewControllerAnimated:YES completion:^{
+        //Fix offset changed by image picker
+        if (!CGPointEqualToPoint(_tableContentOffset, self.tableView.contentOffset)) {
+            self.tableView.contentOffset = _tableContentOffset;
+        }
+        _tableContentOffset = CGPointZero;
+        
+        if (image) {
+            NSString * title = @"You can reduce the image size by scaling it to one of the following sizes";
+            UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(title, nil)
+                                                                      delegate:nil
+                                                             cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                        destructiveButtonTitle:nil
+                                                             otherButtonTitles:NSLocalizedStringWithFormat(@"Small (%ld%%)", 30, nil),
+                                           NSLocalizedStringWithFormat(@"Medium (%ld%%)", 50, nil),
+                                           NSLocalizedStringWithFormat(@"Large (%ld%%)", 80, nil),
+                                           NSLocalizedString(@"Actual", nil), nil];
+            
+            [actionSheet setDidDismissBlock:^(UIActionSheet * __nonnull actionSheet, NSInteger buttonIndex) {
+                UIImage *attachmentImage = nil;
+                if (buttonIndex <= 2) {
+                    CGFloat scale = 1.0f;
+                    switch (buttonIndex) {
+                        case 0:
+                            scale = 0.3f;
+                            break;
+                            
+                        case 1:
+                            scale = 0.5f;
+                            break;
+                            
+                        case 2:
+                            scale = 0.8f;
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                    CGSize scaledSize = CGSizeMake(image.size.width * scale,
+                                                   image.size.height * scale);
+                    UIImage * scaledImage = [image imageWithFixedOrientation];
+                    attachmentImage = [UIImage scaleImage:scaledImage size:scaledSize];
+                }
+                else if(buttonIndex != actionSheet.cancelButtonIndex) {
+                    attachmentImage = [image imageWithFixedOrientation];
+                }
+                
+                if (attachmentImage != nil) {
+                    [[FileStore sharedStore] storeData:UIImageJPEGRepresentation(attachmentImage, 1.0f)
+                                                forKey:[NSUUID UUID].UUIDString
+                                              MIMEType:@"image/jpeg"
+                                                  done:^(NSString *fileName, NSError *error) {
+                                                      IQAttachment *attachment = [[IQAttachment alloc] init];
+                                                      
+                                                      attachment.displayName = @"IMG.jpeg";
+                                                      attachment.originalURL = attachment.localURL = attachment.previewURL = [[FileStore sharedStore] filePathURLForFileName:fileName].path;
+                                                      attachment.contentType = @"image/jpeg";
+                                                      [self.model updateFieldAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] withValue:attachment];
+                                                  }];
+                }
+            }];
+            
+            [actionSheet showInView:self.view];
+        }
+    }];
+}
+
+#pragma mark - Assets Picker Delegate
+
+- (BOOL)assetsPickerController:(CTAssetsPickerController *)picker isDefaultAssetsGroup:(ALAssetsGroup *)group {
+    return ([[group valueForProperty:ALAssetsGroupPropertyType] integerValue] == ALAssetsGroupAll);
+}
+
+- (BOOL)assetsPickerController:(CTAssetsPickerController *)picker shouldEnableAsset:(ALAsset *)asset {
+    if ([[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo]) {
+        NSTimeInterval duration = [[asset valueForProperty:ALAssetPropertyDuration] doubleValue];
+        return lround(duration) >= 5;
+    }
+    return YES;
+}
+
+- (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
+    if (asset) {
+        ALAssetRepresentation *representation = [asset defaultRepresentation];
+        Byte *buffer = (Byte *)malloc((size_t)representation.size);
+        NSUInteger buffered = [representation getBytes:buffer fromOffset:0 length:(NSUInteger)representation.size error:nil];
+        NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+        NSString* MIMEType = (__bridge_transfer NSString*)UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)[representation UTI], kUTTagClassMIMEType);
+
+        [[FileStore sharedStore] storeData:data forKey:[NSUUID UUID].UUIDString MIMEType:MIMEType done:^(NSString *fileName, NSError *error) {
+            IQAttachment *attachment = [[IQAttachment alloc] init];
+            
+            attachment.displayName = representation.filename;
+            attachment.originalURL = attachment.localURL = attachment.previewURL = [[FileStore sharedStore] filePathURLForFileName:fileName].path;
+            attachment.contentType = MIMEType;
+            [self.model updateFieldAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] withValue:attachment];
+        }];
+    }
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+
 @end

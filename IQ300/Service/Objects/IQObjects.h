@@ -15,7 +15,7 @@
 #import "IQConversation.h"
 #import "IQDiscussion.h"
 #import "IQComment.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 #import "IQContact.h"
 #import "IQContactsDeletedIds.h"
 #import "IQNotification.h"

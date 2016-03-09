@@ -12,10 +12,20 @@
 #import "IQFeedbackCategory.h"
 #import "IQUser.h"
 #import "NSDate+IQFormater.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
+#import "IQAttachmentButton.h"
 
 #define VIEWS_INSET 10.0f
-#define ATTACHMENT_VIEW_HEIGHT 15.0f
+
+#define INLINE_SPACE_MIN 15.0f
+#define INTERLINE_SPACE 15.0f
+
+#define ITEM_HEIGHT 120.0f
+#define ITEM_WIDHT 85.0f
+
+#define ATTACHEMENTS_OFFSET 15.0f
+
+#define FEEDBACK_ATTACHEMENT_HORIZONTAL_INSETS 18.0f
 
 #ifdef IPAD
 #define TYPE_FONT [UIFont fontWithName:IQ_HELVETICA_BOLD size:17.0f]
@@ -56,12 +66,17 @@
         CGSize descriptionSize = [descriptionTextView sizeThatFits:CGSizeMake(viewWidth, CGFLOAT_MAX)];
         height += descriptionSize.height;
     }
-        
-    BOOL hasAttachment = ([feedback.attachments count] > 0);
-    if(hasAttachment) {
-        height += (ATTACHMENT_VIEW_HEIGHT + ATTACHMENT_VIEW_Y_OFFSET) * [feedback.attachments count];
-    }
     
+    CGFloat actualWidth = viewWidth - FEEDBACK_ATTACHEMENT_HORIZONTAL_INSETS * 2.0f;
+    
+    NSUInteger itemsCountPerRow = (NSUInteger)((actualWidth + INLINE_SPACE_MIN) / (ITEM_WIDHT + INLINE_SPACE_MIN));
+    NSUInteger itemsCount = feedback.attachments.count;
+    
+    NSUInteger rowsCount = itemsCount / itemsCountPerRow + (itemsCount % itemsCountPerRow != 0 ? 1 : 0);
+    
+    if (rowsCount > 0) {
+        height += rowsCount * (ITEM_HEIGHT + INTERLINE_SPACE) - INTERLINE_SPACE + ATTACHEMENTS_OFFSET;
+    }
     return height;
 }
 
@@ -121,6 +136,8 @@
                                                     NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
                                                     };
         [self addSubview:_descriptionTextView];
+        
+        
     }
     return self;
 }
@@ -179,37 +196,11 @@
     BOOL hasAttachment = ([feedback.attachments count] > 0);
     
     if(hasAttachment) {
-        CGFloat attachFontSize = (IS_IPAD) ? 12 : 11.0f;
-        for (IQAttachment * attachment in feedback.attachments) {
-            UIButton * attachButton = [[UIButton alloc] init];
-            [attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateNormal];
-            [attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:attachFontSize]];
-            [attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
-            [attachButton setTitleColor:[UIColor colorWithHexInt:0x446b7a] forState:UIControlStateHighlighted];
-            [attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
-            attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            
-            NSDictionary *underlineAttribute = @{
-                                                 NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:attachFontSize],
-                                                 NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                                                 NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x358bae]
-                                                 };
-            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
-                                                                             attributes:underlineAttribute]
-                                    forState:UIControlStateNormal];
-            
-            underlineAttribute = @{
-                                   NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:attachFontSize],
-                                   NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                                   NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x446b7a]
-                                   };
-            [attachButton setAttributedTitle:[[NSAttributedString alloc] initWithString:attachment.displayName
-                                                                             attributes:underlineAttribute]
-                                    forState:UIControlStateHighlighted];
-            
-            [attachButton sizeToFit];
-            [self addSubview:attachButton];
-            [_attachButtons addObject:attachButton];
+        for (IQManagedAttachment * attachment in feedback.attachments) {
+            IQAttachmentButton *attachmentButton = [[IQAttachmentButton alloc] initWithFrame:CGRectZero];
+            [attachmentButton setItem:attachment isMine:YES];
+            [self addSubview:attachmentButton];
+            [_attachButtons addObject:attachmentButton];
         }
     }
 }
@@ -267,20 +258,31 @@
                                             actualBounds.size.width,
                                             descriptionSize.height);
     
+    
+    
     BOOL hasAttachment = ([_attachButtons count] > 0);
     if(hasAttachment) {
-        CGFloat attachmentX = _descriptionTextView.frame.origin.x;
-        CGFloat attachmentY = CGRectBottom(_descriptionTextView.frame) + 5.0f;
-        CGSize constrainedSize = CGSizeMake(actualBounds.size.width, ATTACHMENT_VIEW_HEIGHT);
+        CGRect attachementActualBounds = CGRectMake(FEEDBACK_ATTACHEMENT_HORIZONTAL_INSETS,
+                                                    CGRectBottom(_descriptionTextView.frame) + ATTACHEMENTS_OFFSET,
+                                                    self.bounds.size.width - FEEDBACK_ATTACHEMENT_HORIZONTAL_INSETS * 2.0f,
+                                                    CGFLOAT_MAX);
+        NSUInteger itemsCountPerRow = (NSUInteger)((attachementActualBounds.size.width + INLINE_SPACE_MIN) / (ITEM_WIDHT + INLINE_SPACE_MIN));
+        CGFloat inlineSpace = (attachementActualBounds.size.width - (itemsCountPerRow * ITEM_WIDHT)) / (itemsCountPerRow > 1 ? (itemsCountPerRow - 1) : 1);
         
-        for (UIButton * attachButton in _attachButtons) {
-            CGSize attachmentSize = [attachButton sizeThatFits:constrainedSize];
-            attachButton.frame = CGRectMake(attachmentX,
-                                            attachmentY,
-                                            MIN(attachmentSize.width + 5.0f, actualBounds.size.width - attachmentX),
-                                            attachmentSize.height);
+        CGFloat xPosition = attachementActualBounds.origin.x;
+        CGFloat xStep = ITEM_WIDHT + inlineSpace;
+        
+        CGFloat yPosition = attachementActualBounds.origin.y;
+        CGFloat yStep = ITEM_HEIGHT + INTERLINE_SPACE;
+        
+        for (IQAttachmentButton *button in _attachButtons) {
+            button.frame = CGRectMake(xPosition, yPosition, ITEM_WIDHT, ITEM_HEIGHT);
             
-            attachmentY = CGRectBottom(attachButton.frame) + ATTACHMENT_VIEW_Y_OFFSET;
+            xPosition += xStep;
+            if (xPosition >= CGRectRight(attachementActualBounds)) {
+                xPosition = attachementActualBounds.origin.x;
+                yPosition += yStep;
+            }
         }
     }
 }

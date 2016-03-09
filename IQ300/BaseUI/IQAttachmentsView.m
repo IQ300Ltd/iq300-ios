@@ -49,7 +49,7 @@
     }
 }
 
-- (void)setItems:(NSArray<__kindof IQAttachment *> *)items isMine:(BOOL)isMine{
+- (void)setItems:(NSArray<__kindof id<IQAttachment>> *)items isMine:(BOOL)isMine{
     for (UIButton * attachButton in _attachemntViews) {
         [attachButton removeTarget:nil
                             action:NULL
@@ -58,7 +58,7 @@
     [_attachemntViews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [_attachemntViews removeAllObjects];
     
-    for (IQAttachment *attachment in items) {
+    for (id<IQAttachment> attachment in items) {
         IQAttachmentButton *attachmentView = [[IQAttachmentButton alloc] initWithFrame:CGRectZero];
         [attachmentView setItem:attachment isMine:isMine];
         [_scrollView addSubview:attachmentView];

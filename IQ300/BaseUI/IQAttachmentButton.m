@@ -7,7 +7,7 @@
 //
 
 #import "IQAttachmentButton.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 #import <UIImageView+WebCache.h>
 
 @implementation IQAttachmentButton
@@ -15,8 +15,16 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        _roundRectContainer = [[UIView alloc] initWithFrame:CGRectZero];
+        _roundRectContainer.layer.cornerRadius = 5.0f;
+        _roundRectContainer.layer.masksToBounds = YES;
+        _roundRectContainer.layer.borderColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.5f].CGColor;
+        _roundRectContainer.layer.borderWidth = 0.5f;
+        _roundRectContainer.userInteractionEnabled = NO;
+        [self addSubview:_roundRectContainer];
+                
         _customImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        [self addSubview:_customImageView];
+        [_roundRectContainer addSubview:_customImageView];
         
         _label = [[UILabel alloc] initWithFrame:CGRectZero];
         [_label setNumberOfLines:2];
@@ -25,22 +33,21 @@
         [_label setFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 12 : 11.0f]];
         [_label setTextColor:[UIColor blackColor]];
         
-        [self addSubview:_label];
-        
-        self.layer.cornerRadius = 5.0f;
-        self.layer.masksToBounds = YES;
-        
-        self.layer.borderColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.5f].CGColor;
-        self.layer.borderWidth = 0.5f;
+        [_roundRectContainer addSubview:_label];
         
         _defaultColor = [UIColor colorWithHexInt:0xcaddee];
         _mineColor = [UIColor colorWithHexInt:0xe0e0e0];
+        
+        _deleteButton = [[UIButton alloc] initWithFrame:CGRectZero];
+        [_deleteButton setImage:[UIImage imageNamed:@"close-circle.png"] forState:UIControlStateNormal];
+        [self addSubview:_deleteButton];
     }
     return self;
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    _roundRectContainer.frame = self.bounds;
     
     CGSize size = self.bounds.size;
     
@@ -48,33 +55,62 @@
     
     [_customImageView setFrame:CGRectMake(0, 0, size.width, size.height - labelHeight)];
     [_label setFrame:CGRectMake(2.0f, size.height - labelHeight, size.width - 4.0f, labelHeight)];
+    
+    CGSize deleteImageSize = [_deleteButton imageForState:UIControlStateNormal].size;
+    [_deleteButton setFrame:CGRectMake(size.width - deleteImageSize.width / 2.0f, - deleteImageSize.height / 2.0f, deleteImageSize.width, deleteImageSize.height)];
 }
 
-- (void)setItem:(IQAttachment *)attachment isMine:(BOOL)isMine {
+- (void)setItem:(id<IQAttachment>)attachment isMine:(BOOL)isMine {
+    [self setItem:attachment isMine:isMine showDeleteButton:NO];
+}
+
+- (void)setItem:(id<IQAttachment>)attachment isMine:(BOOL)isMine showDeleteButton:(BOOL)show {
     UIImage *plasehodler = [UIImage imageNamed:@"document_placeholder"];
     
     if (attachment.previewURL && attachment.previewURL.length > 0) {
         __weak typeof(self) weakSelf = self;
-        [_customImageView sd_setImageWithURL:[NSURL URLWithString:attachment.previewURL]
-                      placeholderImage:plasehodler
-                               options:0
-                             completed:^(UIImage *image,
-                                         NSError *error,
-                                         SDImageCacheType
-                                         cacheType,
-                                         NSURL *imageURL) {
-                                 [weakSelf setNeedsLayout];
-                             }];
+        
+        NSURL *url = [NSURL URLWithString:attachment.previewURL];
+        
+        if ([url.scheme hasPrefix:@"http"]) {
+            [_customImageView sd_setImageWithURL:[NSURL URLWithString:attachment.previewURL]
+                                placeholderImage:plasehodler
+                                         options:0
+                                       completed:^(UIImage *image,
+                                                   NSError *error,
+                                                   SDImageCacheType
+                                                   cacheType,
+                                                   NSURL *imageURL) {
+                                           [weakSelf setNeedsLayout];
+                                       }];
+        }
+        else {
+            [_customImageView setImage:[UIImage imageWithContentsOfFile:attachment.previewURL]];
+        }
     }
     else {
         [_customImageView setImage:plasehodler];
     }
     
-    self.backgroundColor = isMine ? _mineColor : _defaultColor;
+    _roundRectContainer.backgroundColor = isMine ? _mineColor : _defaultColor;
     
     [_label setText:attachment.displayName];
     
     [self setNeedsLayout];
+    
+    self.deleteButtonShown = show;
+}
+
+- (void)setDeleteButtonShown:(BOOL)deleteButtonShown {
+    _deleteButtonShown = deleteButtonShown;
+    self.deleteButton.hidden = !deleteButtonShown;
+}
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    if (_deleteButtonShown && CGRectContainsPoint(self.deleteButton.frame, point)) {
+        return YES;
+    }
+    return [super pointInside:point withEvent:event];
 }
 
 

@@ -7,7 +7,7 @@
 //
 
 #import "IQUser.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 
 @class RKObjectMapping;
 @class RKManagedObjectStore;

@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "IQAttachment.h"
 
 @class RKObjectMapping;
 @class IQFeedbackType;
@@ -25,7 +26,10 @@
 @property (nonatomic, strong) NSNumber * categoryId;
 @property (nonatomic, strong) NSString * type;
 @property (nonatomic, strong) NSString * feedbackDescription;
-@property (nonatomic, strong) NSArray * attachmentIds;
+
+@property (nonatomic, strong, readonly) NSArray *attachements;
+@property (nonatomic, strong, readonly) NSArray * attachmentIds;
+
 
 @property (nonatomic, strong) IQFeedbackType * feedbackType;
 @property (nonatomic, strong) IQFeedbackCategory * feedbackCategory;
@@ -34,5 +38,11 @@
 + (RKObjectMapping*)objectMapping;
 
 + (RKObjectMapping*)requestObjectMapping;
+
+- (void)addAttachement:(id <IQAttachment>)attachment;
+- (void)removeAttachementAtIndex:(NSUInteger)index;
+- (id <IQAttachment>)attachmentAtIndex:(NSUInteger)index;
+
+- (void)addAttachmentId:(NSNumber *)attachmentId;
 
 @end

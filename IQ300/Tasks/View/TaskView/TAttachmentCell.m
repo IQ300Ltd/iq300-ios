@@ -7,7 +7,7 @@
 //
 
 #import "TAttachmentCell.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 #import "IQAttachmentButton.h"
 
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe0e0e0]
@@ -37,7 +37,7 @@
     return self;
 }
 
-- (void)setItem:(IQAttachment *)item {
+- (void)setItem:(IQManagedAttachment *)item {
     _item = item;
     
     BOOL unread = [item.unread boolValue];

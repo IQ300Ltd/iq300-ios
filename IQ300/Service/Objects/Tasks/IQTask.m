@@ -9,7 +9,7 @@
 
 #import "IQTask.h"
 #import "IQUser.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 #import "IQProject.h"
 #import "IQCommunity.h"
 #import "IQManagedTodoItem.h"
@@ -113,7 +113,7 @@
 
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"attachments"
                                                            toKeyPath:@"attachments"
-                                                         withMapping:[IQAttachment objectMappingForManagedObjectStore:store]];
+                                                         withMapping:[IQManagedAttachment objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:relation];
     
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"reconciliation_decisions_stat"

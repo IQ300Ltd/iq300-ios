@@ -7,15 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class IQAttachment;
+#import "IQAttachment.h"
 
 @interface IQAttachmentsView : UIView
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong, readonly) NSArray *attachmentButtons;
 
-- (void)setItems:(NSArray<__kindof IQAttachment *> *)items isMine:(BOOL)isMine;
+- (void)setItems:(NSArray<__kindof id<IQAttachment>> *)items isMine:(BOOL)isMine;
 - (BOOL)hasAttachments;
 
 @end

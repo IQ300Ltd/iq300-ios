@@ -33,6 +33,30 @@
 		2D80E7EE1C6B17C2009DD5A0 /* UICollectionView+Updates.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7E61C6B17C2009DD5A0 /* UICollectionView+Updates.m */; };
 		2D80E7F51C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */; };
 		2D80E7F61C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */; };
+		2D86C8C31C86B82C001C0B90 /* IQAttachmentAddButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D86C8C21C86B82C001C0B90 /* IQAttachmentAddButton.m */; };
+		2D86C8C41C86B82C001C0B90 /* IQAttachmentAddButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D86C8C21C86B82C001C0B90 /* IQAttachmentAddButton.m */; };
+		2D86C8D41C86BC1E001C0B90 /* close-circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8D11C86BC1E001C0B90 /* close-circle.png */; };
+		2D86C8D51C86BC1E001C0B90 /* close-circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8D11C86BC1E001C0B90 /* close-circle.png */; };
+		2D86C8D61C86BC1E001C0B90 /* close-circle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8D21C86BC1E001C0B90 /* close-circle@2x.png */; };
+		2D86C8D71C86BC1E001C0B90 /* close-circle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8D21C86BC1E001C0B90 /* close-circle@2x.png */; };
+		2D86C8D81C86BC1E001C0B90 /* close-circle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8D31C86BC1E001C0B90 /* close-circle@3x.png */; };
+		2D86C8D91C86BC1E001C0B90 /* close-circle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8D31C86BC1E001C0B90 /* close-circle@3x.png */; };
+		2D86C8DC1C86C4F7001C0B90 /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D86C8DB1C86C4F7001C0B90 /* IQAttachment.m */; };
+		2D86C8DD1C86C4F7001C0B90 /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D86C8DB1C86C4F7001C0B90 /* IQAttachment.m */; };
+		2D86C8E01C86C9B0001C0B90 /* FeedbackAttachmentsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D86C8DF1C86C9B0001C0B90 /* FeedbackAttachmentsCell.m */; };
+		2D86C8E11C86C9B0001C0B90 /* FeedbackAttachmentsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D86C8DF1C86C9B0001C0B90 /* FeedbackAttachmentsCell.m */; };
+		2D86C8E51C86E2B2001C0B90 /* add_attachment_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8E21C86E2B2001C0B90 /* add_attachment_icon.png */; };
+		2D86C8E61C86E2B2001C0B90 /* add_attachment_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8E21C86E2B2001C0B90 /* add_attachment_icon.png */; };
+		2D86C8E71C86E2B2001C0B90 /* add_attachment_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8E31C86E2B2001C0B90 /* add_attachment_icon@2x.png */; };
+		2D86C8E81C86E2B2001C0B90 /* add_attachment_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8E31C86E2B2001C0B90 /* add_attachment_icon@2x.png */; };
+		2D86C8E91C86E2B2001C0B90 /* add_attachment_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8E41C86E2B2001C0B90 /* add_attachment_icon@3x.png */; };
+		2D86C8EA1C86E2B2001C0B90 /* add_attachment_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8E41C86E2B2001C0B90 /* add_attachment_icon@3x.png */; };
+		2D86C9001C870BE4001C0B90 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8FD1C870BE4001C0B90 /* plus.png */; };
+		2D86C9011C870BE4001C0B90 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8FD1C870BE4001C0B90 /* plus.png */; };
+		2D86C9021C870BE4001C0B90 /* plus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8FE1C870BE4001C0B90 /* plus@2x.png */; };
+		2D86C9031C870BE4001C0B90 /* plus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8FE1C870BE4001C0B90 /* plus@2x.png */; };
+		2D86C9041C870BE4001C0B90 /* plus@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8FF1C870BE4001C0B90 /* plus@3x.png */; };
+		2D86C9051C870BE4001C0B90 /* plus@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D86C8FF1C870BE4001C0B90 /* plus@3x.png */; };
 		2D96C1291C8581D500D8B4F8 /* estimated_time_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1261C8581D500D8B4F8 /* estimated_time_icon@3x.png */; };
 		2D96C12A1C8581D500D8B4F8 /* estimated_time_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1261C8581D500D8B4F8 /* estimated_time_icon@3x.png */; };
 		2D96C12B1C8581D500D8B4F8 /* estimated_time_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D96C1271C8581D500D8B4F8 /* estimated_time_icon@2x.png */; };
@@ -188,7 +212,7 @@
 		733ADD1D1B46C03F00B3DBF4 /* UIDevice-Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */; };
 		73415D031BCE332C0042DD09 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73415D021BCE332C0042DD09 /* Launch Screen.storyboard */; };
 		73415D041BCE332C0042DD09 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73415D021BCE332C0042DD09 /* Launch Screen.storyboard */; };
-		734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQAttachment.m */; };
+		734433651A2DEBF300102FC8 /* IQManagedAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQManagedAttachment.m */; };
 		73486E3B1B6F98EE00DEBD66 /* IQTaskDeletedIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73486E3A1B6F98EE00DEBD66 /* IQTaskDeletedIds.m */; };
 		73486E3C1B6F98EE00DEBD66 /* IQTaskDeletedIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 73486E3A1B6F98EE00DEBD66 /* IQTaskDeletedIds.m */; };
 		734965D11AB1A60100263B57 /* CTaskFilterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 734965D01AB1A60100263B57 /* CTaskFilterCell.m */; };
@@ -346,7 +370,7 @@
 		73840E211B1C75A500BCEAFC /* lcl.m in Sources */ = {isa = PBXBuildFile; fileRef = 732952A81A692EE90066B336 /* lcl.m */; };
 		73840E221B1C75A500BCEAFC /* TaskExecutorsGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49061AE5283500F6A753 /* TaskExecutorsGroup.m */; };
 		73840E231B1C75A500BCEAFC /* IQTableManagedModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B9EA0A1ADCFE9F00159A66 /* IQTableManagedModel.m */; };
-		73840E241B1C75A500BCEAFC /* IQAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQAttachment.m */; };
+		73840E241B1C75A500BCEAFC /* IQManagedAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 734433641A2DEBF300102FC8 /* IQManagedAttachment.m */; };
 		73840E251B1C75A500BCEAFC /* MessagesModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 731DEEC71A2F11A1002F5FEB /* MessagesModel.m */; };
 		73840E261B1C75A500BCEAFC /* IQService+Messages.m in Sources */ = {isa = PBXBuildFile; fileRef = 739850E51A2E023D00DB5B21 /* IQService+Messages.m */; };
 		73840E271B1C75A500BCEAFC /* TaskMembersModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1C61ADE93D600023120 /* TaskMembersModel.m */; };
@@ -897,6 +921,21 @@
 		2D80E7E61C6B17C2009DD5A0 /* UICollectionView+Updates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+Updates.m"; sourceTree = "<group>"; };
 		2D80E7F31C6B19B1009DD5A0 /* UIViewController+ErrorHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ErrorHandle.h"; sourceTree = "<group>"; };
 		2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+ErrorHandle.m"; sourceTree = "<group>"; };
+		2D86C8C11C86B82C001C0B90 /* IQAttachmentAddButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachmentAddButton.h; sourceTree = "<group>"; };
+		2D86C8C21C86B82C001C0B90 /* IQAttachmentAddButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachmentAddButton.m; sourceTree = "<group>"; };
+		2D86C8D11C86BC1E001C0B90 /* close-circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close-circle.png"; sourceTree = "<group>"; };
+		2D86C8D21C86BC1E001C0B90 /* close-circle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close-circle@2x.png"; sourceTree = "<group>"; };
+		2D86C8D31C86BC1E001C0B90 /* close-circle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close-circle@3x.png"; sourceTree = "<group>"; };
+		2D86C8DA1C86C4F7001C0B90 /* IQAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachment.h; sourceTree = "<group>"; };
+		2D86C8DB1C86C4F7001C0B90 /* IQAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachment.m; sourceTree = "<group>"; };
+		2D86C8DE1C86C9B0001C0B90 /* FeedbackAttachmentsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackAttachmentsCell.h; sourceTree = "<group>"; };
+		2D86C8DF1C86C9B0001C0B90 /* FeedbackAttachmentsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedbackAttachmentsCell.m; sourceTree = "<group>"; };
+		2D86C8E21C86E2B2001C0B90 /* add_attachment_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_attachment_icon.png; sourceTree = "<group>"; };
+		2D86C8E31C86E2B2001C0B90 /* add_attachment_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add_attachment_icon@2x.png"; sourceTree = "<group>"; };
+		2D86C8E41C86E2B2001C0B90 /* add_attachment_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add_attachment_icon@3x.png"; sourceTree = "<group>"; };
+		2D86C8FD1C870BE4001C0B90 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
+		2D86C8FE1C870BE4001C0B90 /* plus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plus@2x.png"; sourceTree = "<group>"; };
+		2D86C8FF1C870BE4001C0B90 /* plus@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plus@3x.png"; sourceTree = "<group>"; };
 		2D96C1261C8581D500D8B4F8 /* estimated_time_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "estimated_time_icon@3x.png"; sourceTree = "<group>"; };
 		2D96C1271C8581D500D8B4F8 /* estimated_time_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "estimated_time_icon@2x.png"; sourceTree = "<group>"; };
 		2D96C1281C8581D500D8B4F8 /* estimated_time_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = estimated_time_icon.png; sourceTree = "<group>"; };
@@ -1060,8 +1099,8 @@
 		733ADD1A1B46C03F00B3DBF4 /* UIDevice-Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice-Hardware.m"; sourceTree = "<group>"; };
 		733ADD1B1B46C03F00B3DBF4 /* UIDevice-Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice-Hardware.h"; sourceTree = "<group>"; };
 		73415D021BCE332C0042DD09 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		734433631A2DEBF300102FC8 /* IQAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAttachment.h; sourceTree = "<group>"; };
-		734433641A2DEBF300102FC8 /* IQAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAttachment.m; sourceTree = "<group>"; };
+		734433631A2DEBF300102FC8 /* IQManagedAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQManagedAttachment.h; sourceTree = "<group>"; };
+		734433641A2DEBF300102FC8 /* IQManagedAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQManagedAttachment.m; sourceTree = "<group>"; };
 		73486E391B6F98EE00DEBD66 /* IQTaskDeletedIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskDeletedIds.h; sourceTree = "<group>"; };
 		73486E3A1B6F98EE00DEBD66 /* IQTaskDeletedIds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTaskDeletedIds.m; sourceTree = "<group>"; };
 		734965CF1AB1A60100263B57 /* CTaskFilterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTaskFilterCell.h; sourceTree = "<group>"; };
@@ -2083,6 +2122,15 @@
 		736B6BCE1A0B5BCB00034D9B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2D86C8FD1C870BE4001C0B90 /* plus.png */,
+				2D86C8FE1C870BE4001C0B90 /* plus@2x.png */,
+				2D86C8FF1C870BE4001C0B90 /* plus@3x.png */,
+				2D86C8E21C86E2B2001C0B90 /* add_attachment_icon.png */,
+				2D86C8E31C86E2B2001C0B90 /* add_attachment_icon@2x.png */,
+				2D86C8E41C86E2B2001C0B90 /* add_attachment_icon@3x.png */,
+				2D86C8D11C86BC1E001C0B90 /* close-circle.png */,
+				2D86C8D21C86BC1E001C0B90 /* close-circle@2x.png */,
+				2D86C8D31C86BC1E001C0B90 /* close-circle@3x.png */,
 				2DA55D681C69BEFA00A880D4 /* document_placeholder.png */,
 				731526FD1C6219D90077E0BD /* Notifications */,
 				2DAF33791C60AD1500554211 /* Sharing */,
@@ -2120,6 +2168,8 @@
 			children = (
 				2DA55D771C6A04EF00A880D4 /* IQAttachmentsView.h */,
 				2DA55D781C6A04EF00A880D4 /* IQAttachmentsView.m */,
+				2D86C8C11C86B82C001C0B90 /* IQAttachmentAddButton.h */,
+				2D86C8C21C86B82C001C0B90 /* IQAttachmentAddButton.m */,
 				2DA55D731C6A045C00A880D4 /* IQAttachmentButton.h */,
 				2DA55D741C6A045C00A880D4 /* IQAttachmentButton.m */,
 				2D80E7DC1C6B17C2009DD5A0 /* TCCollectionView */,
@@ -2627,8 +2677,10 @@
 				739850DB1A2DD35C00DB5B21 /* IQDiscussion.m */,
 				739850DD1A2DD4D700DB5B21 /* IQComment.h */,
 				739850DE1A2DD4D700DB5B21 /* IQComment.m */,
-				734433631A2DEBF300102FC8 /* IQAttachment.h */,
-				734433641A2DEBF300102FC8 /* IQAttachment.m */,
+				734433631A2DEBF300102FC8 /* IQManagedAttachment.h */,
+				734433641A2DEBF300102FC8 /* IQManagedAttachment.m */,
+				2D86C8DA1C86C4F7001C0B90 /* IQAttachment.h */,
+				2D86C8DB1C86C4F7001C0B90 /* IQAttachment.m */,
 				73AF73DF1A3AFEBA001B8E42 /* CViewInfo.h */,
 				73AF73E01A3AFEBA001B8E42 /* CViewInfo.m */,
 				737136371B53C1430043B87B /* IQConversationMember.h */,
@@ -2716,6 +2768,8 @@
 				73B5615B1B4286E200A883DC /* FeedbackView.m */,
 				73EFAA041B440614007FD5D7 /* FeedbacksView.h */,
 				73EFAA051B440614007FD5D7 /* FeedbacksView.m */,
+				2D86C8DE1C86C9B0001C0B90 /* FeedbackAttachmentsCell.h */,
+				2D86C8DF1C86C9B0001C0B90 /* FeedbackAttachmentsCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -3270,6 +3324,7 @@
 				73840EA11B1C75A500BCEAFC /* message_blue_buble.png in Resources */,
 				73840EA31B1C75A500BCEAFC /* desc_sort_ico.png in Resources */,
 				73840EA41B1C75A500BCEAFC /* desc_sort_ico@2x.png in Resources */,
+				2D86C8D71C86BC1E001C0B90 /* close-circle@2x.png in Resources */,
 				73840EA61B1C75A500BCEAFC /* filter_collapseed.png in Resources */,
 				73840EA81B1C75A500BCEAFC /* bubble_gray.png in Resources */,
 				73840EA91B1C75A500BCEAFC /* attachment_add_img@2x.png in Resources */,
@@ -3288,9 +3343,11 @@
 				73865C3C1B206B4700118292 /* messgaes_tab_selected.png in Resources */,
 				73840EB11B1C75A500BCEAFC /* asc_sort_ico.png in Resources */,
 				73865C3D1B206B4700118292 /* messgaes_tab_selected@2x.png in Resources */,
+				2D86C9011C870BE4001C0B90 /* plus.png in Resources */,
 				73840EB31B1C75A500BCEAFC /* edit_white_ico.png in Resources */,
 				2DAF33841C60AD2600554211 /* open_in_icon.png in Resources */,
 				73840EB41B1C75A500BCEAFC /* tasks_menu.plist in Resources */,
+				2D86C9051C870BE4001C0B90 /* plus@3x.png in Resources */,
 				73840EB51B1C75A500BCEAFC /* gray_checkbox@2x.png in Resources */,
 				73840EB61B1C75A500BCEAFC /* calendar_accessory_image@2x.png in Resources */,
 				73840EB71B1C75A500BCEAFC /* attach_ico.png in Resources */,
@@ -3334,9 +3391,11 @@
 				2D6AE2351C730DAE00A2B02D /* save_video_icon.png in Resources */,
 				73840ED91B1C75A500BCEAFC /* mark_tab_item@2x.png in Resources */,
 				73060D681B417322001AE08E /* feedback_question_type.png in Resources */,
+				2D86C9031C870BE4001C0B90 /* plus@2x.png in Resources */,
 				73840EDA1B1C75A500BCEAFC /* attach_ico@2x.png in Resources */,
 				73840EDB1B1C75A500BCEAFC /* msg_viewed.png in Resources */,
 				73840EDD1B1C75A500BCEAFC /* message_blue_buble@2x.png in Resources */,
+				2D86C8E81C86E2B2001C0B90 /* add_attachment_icon@2x.png in Resources */,
 				73840EDF1B1C75A500BCEAFC /* menu_expanded@2x.png in Resources */,
 				73840EE01B1C75A500BCEAFC /* asc_sort_ico@2x.png in Resources */,
 				73865C371B20688A00118292 /* white_logo@2x.png in Resources */,
@@ -3353,10 +3412,12 @@
 				73840EE91B1C75A500BCEAFC /* clear_button_icon@2x.png in Resources */,
 				73865C1F1B20688A00118292 /* left_tabbar_background@2x.png in Resources */,
 				73840EEC1B1C75A500BCEAFC /* task_info_tab.png in Resources */,
+				2D86C8D51C86BC1E001C0B90 /* close-circle.png in Resources */,
 				7398F7971B4D0A190009EAD1 /* user_icon@2x.png in Resources */,
 				73840EED1B1C75A500BCEAFC /* attachment_add_img.png in Resources */,
 				73840EEE1B1C75A500BCEAFC /* view_all_ico.png in Resources */,
 				73840EEF1B1C75A500BCEAFC /* delete_ico.png in Resources */,
+				2D86C8E61C86E2B2001C0B90 /* add_attachment_icon.png in Resources */,
 				73840EF01B1C75A500BCEAFC /* next_header_button.png in Resources */,
 				73840EF11B1C75A500BCEAFC /* right_gray_arrow@2x.png in Resources */,
 				73840EF21B1C75A500BCEAFC /* task_comments_tab.png in Resources */,
@@ -3367,6 +3428,7 @@
 				7398F78F1B4D07B40009EAD1 /* conference_icon.png in Resources */,
 				73865C2D1B20688A00118292 /* tabbar_background@2x.png in Resources */,
 				73840EF31B1C75A500BCEAFC /* bubble_blue@2x.png in Resources */,
+				2D86C8EA1C86E2B2001C0B90 /* add_attachment_icon@3x.png in Resources */,
 				73840EF41B1C75A500BCEAFC /* backWhiteArrow@2x.png in Resources */,
 				2D96C1371C85825700D8B4F8 /* complexity_icon.png in Resources */,
 				73CB5B581B32D7EC005B688C /* IQValidatorLocalization.strings in Resources */,
@@ -3395,6 +3457,7 @@
 				73840F071B1C75A500BCEAFC /* search_icon@2x.png in Resources */,
 				731527091C621A370077E0BD /* unpinned@2x.png in Resources */,
 				73FC83B41B3BF1E900ADFBC2 /* feedback_ico.png in Resources */,
+				2D86C8D91C86BC1E001C0B90 /* close-circle@3x.png in Resources */,
 				73840F081B1C75A500BCEAFC /* filter_expanded@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3406,6 +3469,8 @@
 				73A7CA811A9F55ED0038DEF1 /* filter_collapseed@2x.png in Resources */,
 				73F2A5581A39AB3000E9D324 /* msg_error.png in Resources */,
 				738FE70A1A162B10009F26A2 /* notif_tab_selected@2x.png in Resources */,
+				2D86C8E71C86E2B2001C0B90 /* add_attachment_icon@2x.png in Resources */,
+				2D86C8E51C86E2B2001C0B90 /* add_attachment_icon.png in Resources */,
 				731170841AB80AFF008A4D09 /* task_member_tab.png in Resources */,
 				732952B91A69441D0066B336 /* bubble_blue.png in Resources */,
 				7393C40E1A1A2FCF00E9E944 /* login_logo@2x.png in Resources */,
@@ -3438,6 +3503,7 @@
 				738FE7011A162B10009F26A2 /* messages_tab.png in Resources */,
 				73A7CA7E1A9F55ED0038DEF1 /* desc_sort_ico.png in Resources */,
 				73A7CA7F1A9F55ED0038DEF1 /* desc_sort_ico@2x.png in Resources */,
+				2D86C9001C870BE4001C0B90 /* plus.png in Resources */,
 				73A7CA801A9F55ED0038DEF1 /* filter_collapseed.png in Resources */,
 				73CB5B571B32D7EC005B688C /* IQValidatorLocalization.strings in Resources */,
 				73C3FE7D1A4591E50042DAA6 /* bubble_gray.png in Resources */,
@@ -3489,6 +3555,7 @@
 				2D96C1291C8581D500D8B4F8 /* estimated_time_icon@3x.png in Resources */,
 				2D6AE22E1C730D7B00A2B02D /* save_video_icon@2x.png in Resources */,
 				2D6AE22D1C730D7B00A2B02D /* save_video_icon.png in Resources */,
+				2D86C9041C870BE4001C0B90 /* plus@3x.png in Resources */,
 				2D96C1341C85825700D8B4F8 /* complexity_icon@2x.png in Resources */,
 				737E7C5B1A0CC8A400E8BB81 /* top_header_bg.png in Resources */,
 				73F2A5591A39AB3000E9D324 /* msg_error@2x.png in Resources */,
@@ -3496,6 +3563,7 @@
 				738FE7101A162B10009F26A2 /* tabbar_background@2x.png in Resources */,
 				738FE70F1A162B10009F26A2 /* tabbar_background.png in Resources */,
 				73C3FE7E1A4591E50042DAA6 /* bubble_gray@2x.png in Resources */,
+				2D86C8E91C86E2B2001C0B90 /* add_attachment_icon@3x.png in Resources */,
 				73C58C111A1F532500C83729 /* mark_tab_item@2x.png in Resources */,
 				73F2A5511A39AB3000E9D324 /* attach_ico@2x.png in Resources */,
 				73AF73E41A3B0C0D001B8E42 /* msg_viewed.png in Resources */,
@@ -3523,12 +3591,14 @@
 				2DAF339E1C60C9F000554211 /* open_in_icon@3x.png in Resources */,
 				2DAF339B1C60C9F000554211 /* copy_to_message_icon@3x.png in Resources */,
 				73CCB6A91B4E87AE000BF728 /* add_user_icon@2x.png in Resources */,
+				2D86C8D61C86BC1E001C0B90 /* close-circle@2x.png in Resources */,
 				73884BF91A6CEFED004C454B /* view_all_ico.png in Resources */,
 				739D67D51AC2C5C100859274 /* delete_ico.png in Resources */,
 				73A700481A95C0DC00A1C2AC /* next_header_button.png in Resources */,
 				7398F7941B4D0A190009EAD1 /* user_icon.png in Resources */,
 				73B9EA201ADD2DA800159A66 /* right_gray_arrow@2x.png in Resources */,
 				7311707C1AB80AFF008A4D09 /* task_comments_tab.png in Resources */,
+				2D86C8D81C86BC1E001C0B90 /* close-circle@3x.png in Resources */,
 				732952BA1A69441D0066B336 /* bubble_blue@2x.png in Resources */,
 				73A949901A3821AD008EC469 /* backWhiteArrow@2x.png in Resources */,
 				731170911AB80B0E008A4D09 /* edit_white_ico@2x.png in Resources */,
@@ -3552,6 +3622,8 @@
 				73A113FE1A1CAA5900293EC5 /* default_avatar@2x.png in Resources */,
 				73F2A5571A39AB3000E9D324 /* createNewMessage@2x.png in Resources */,
 				73C16C7D1AEFB09F00155BB1 /* filter_gray_collapseed.png in Resources */,
+				2D86C8D41C86BC1E001C0B90 /* close-circle.png in Resources */,
+				2D86C9021C870BE4001C0B90 /* plus@2x.png in Resources */,
 				7399F9371ABC3C390013FA11 /* reset_filter.png in Resources */,
 				73F9D1B21AA7369E0030DE90 /* FiltersLocalization.strings in Resources */,
 				7393C40D1A1A2FCF00E9E944 /* login_logo.png in Resources */,
@@ -3723,6 +3795,7 @@
 				73840DE31B1C75A500BCEAFC /* TaskAttachmentsModel.m in Sources */,
 				7306742B1B1C91E8003961B5 /* LeftSideTabBarController.m in Sources */,
 				73176CA21B3ADDD700E6AC60 /* IQEditableTextCell.m in Sources */,
+				2D86C8E11C86C9B0001C0B90 /* FeedbackAttachmentsCell.m in Sources */,
 				73840DE51B1C75A500BCEAFC /* IQTabBarController.m in Sources */,
 				73840DE61B1C75A500BCEAFC /* DiscussionModel.m in Sources */,
 				73840DE71B1C75A500BCEAFC /* TChangesCounter.m in Sources */,
@@ -3807,7 +3880,7 @@
 				73840E221B1C75A500BCEAFC /* TaskExecutorsGroup.m in Sources */,
 				73EFAA031B43DD3B007FD5D7 /* IQEMultiLineTextCell.m in Sources */,
 				73840E231B1C75A500BCEAFC /* IQTableManagedModel.m in Sources */,
-				73840E241B1C75A500BCEAFC /* IQAttachment.m in Sources */,
+				73840E241B1C75A500BCEAFC /* IQManagedAttachment.m in Sources */,
 				73840E251B1C75A500BCEAFC /* MessagesModel.m in Sources */,
 				73840E261B1C75A500BCEAFC /* IQService+Messages.m in Sources */,
 				73840E271B1C75A500BCEAFC /* TaskMembersModel.m in Sources */,
@@ -3889,7 +3962,9 @@
 				73840E5D1B1C75A500BCEAFC /* NotificationsController.m in Sources */,
 				73B561651B42B02B00A883DC /* FeedbackController.m in Sources */,
 				73840E5F1B1C75A500BCEAFC /* TasksMenuCounters.m in Sources */,
+				2D86C8DD1C86C4F7001C0B90 /* IQAttachment.m in Sources */,
 				2D80E7E81C6B17C2009DD5A0 /* TCCollectionController.m in Sources */,
+				2D86C8C41C86B82C001C0B90 /* IQAttachmentAddButton.m in Sources */,
 				73840E601B1C75A500BCEAFC /* TaskCommunityCell.m in Sources */,
 				2DA55D761C6A045C00A880D4 /* IQAttachmentButton.m in Sources */,
 				73840E611B1C75A500BCEAFC /* ExtendedButton.m in Sources */,
@@ -3946,6 +4021,7 @@
 				739850BF1A2DB05400DB5B21 /* MessagesView.m in Sources */,
 				73A7983C1A35B96F006F5721 /* ALAssetInputStream.m in Sources */,
 				738356301A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m in Sources */,
+				2D86C8C31C86B82C001C0B90 /* IQAttachmentAddButton.m in Sources */,
 				738EF8241A9CA76700894755 /* IQCommunity.m in Sources */,
 				73D7F1B61ADE932700023120 /* TaskTabController.m in Sources */,
 				7385D4AD1A288ED2000B94BD /* IQNotificationCenter.m in Sources */,
@@ -4069,7 +4145,7 @@
 				730BE4181B3D864600E26994 /* IQFeedback.m in Sources */,
 				735D49071AE5283600F6A753 /* TaskExecutorsGroup.m in Sources */,
 				73B9EA0B1ADCFE9F00159A66 /* IQTableManagedModel.m in Sources */,
-				734433651A2DEBF300102FC8 /* IQAttachment.m in Sources */,
+				734433651A2DEBF300102FC8 /* IQManagedAttachment.m in Sources */,
 				731DEEC81A2F11A1002F5FEB /* MessagesModel.m in Sources */,
 				2DA55D791C6A04EF00A880D4 /* IQAttachmentsView.m in Sources */,
 				739850E61A2E023D00DB5B21 /* IQService+Messages.m in Sources */,
@@ -4102,6 +4178,7 @@
 				73A113FA1A1C8D1B00293EC5 /* RMenuCell.m in Sources */,
 				739D67D21AC29F8200859274 /* TaskPolicies.m in Sources */,
 				732953901A69208000F3704C /* IQLog.m in Sources */,
+				2D86C8E01C86C9B0001C0B90 /* FeedbackAttachmentsCell.m in Sources */,
 				73176CA31B3ADDD700E6AC60 /* IQSelectableTextCell.m in Sources */,
 				731E5BD01B3161F200DF56C7 /* IQValidationHelper.m in Sources */,
 				738CE1E61A0B3F4E0096B374 /* main.m in Sources */,
@@ -4155,6 +4232,7 @@
 				73ADA8D91A36DB8D0032C1FA /* ContactPickerController.m in Sources */,
 				73D7F1E71ADE94B400023120 /* TInfoLineView.m in Sources */,
 				2DD5CB341C842BCD002CE8C0 /* TaskComplexityCell.m in Sources */,
+				2D86C8DC1C86C4F7001C0B90 /* IQAttachment.m in Sources */,
 				73F63E8C1AA08ED0000DA319 /* TaskFilterSortItem.m in Sources */,
 				73176C9F1B3ADDD700E6AC60 /* IQDetailsTextCell.m in Sources */,
 				73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */,

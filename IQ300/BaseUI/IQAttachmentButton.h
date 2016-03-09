@@ -7,17 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class IQAttachment;
+#import "IQAttachment.h"
 
 @interface IQAttachmentButton : UIButton
 
-@property (nonatomic, strong) UIImageView *customImageView;
-@property (nonatomic, strong) UILabel *label;
+@property (nonatomic, strong) UIView *roundRectContainer;
+@property (nonatomic, strong, readonly) UIImageView *customImageView;
+@property (nonatomic, strong, readonly) UILabel *label;
+@property (nonatomic, strong, readonly) UIButton *deleteButton;
 
 @property (nonatomic, strong) UIColor *defaultColor;
 @property (nonatomic, strong) UIColor *mineColor;
 
-- (void)setItem:(IQAttachment *)attachment isMine:(BOOL)isMine;
+@property (nonatomic, assign) BOOL deleteButtonShown;
+
+- (void)setItem:(id<IQAttachment>)attachment isMine:(BOOL)isMine;
+- (void)setItem:(id<IQAttachment>)attachment isMine:(BOOL)isMine showDeleteButton:(BOOL)show;
 
 @end

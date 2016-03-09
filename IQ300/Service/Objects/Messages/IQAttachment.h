@@ -2,32 +2,28 @@
 //  IQAttachment.h
 //  IQ300
 //
-//  Created by Tayphoon on 02.12.14.
-//  Copyright (c) 2014 Tayphoon. All rights reserved.
+//  Created by Vladislav Grigoryev on 02/03/16.
+//  Copyright © 2016 Tayphoon. All rights reserved.
 //
 
-#import <CoreData/CoreData.h>
+#import <Foundation/Foundation.h>
 
-@class RKObjectMapping;
-@class RKManagedObjectStore;
+@protocol IQAttachment <NSObject>
 
-@interface IQAttachment : NSManagedObject
-
-@property (nonatomic, strong) NSNumber * attachmentId;
-@property (nonatomic, strong) NSNumber * localId;
-@property (nonatomic, strong) NSDate   * createDate;
 @property (nonatomic, strong) NSString * displayName;
-@property (nonatomic, strong) NSString * atDescription;
-@property (nonatomic, strong) NSNumber * ownerId;
-@property (nonatomic, strong) NSString * contentType;
-@property (nonatomic, strong) NSString * unifiedContentType;
 @property (nonatomic, strong) NSString * originalURL;
 @property (nonatomic, strong) NSString * localURL;
 @property (nonatomic, strong) NSString * previewURL;
-@property (nonatomic, strong) NSNumber * unread;
+@property (nonatomic, strong) NSString * contentType;
 
-+ (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
+@end
 
-+ (NSNumber*)uniqueLocalIdInContext:(NSManagedObjectContext*)context error:(NSError**)error;
+@interface IQAttachment : NSObject <IQAttachment>
+
+@property (nonatomic, strong) NSString * displayName;
+@property (nonatomic, strong) NSString * originalURL;
+@property (nonatomic, strong) NSString * localURL;
+@property (nonatomic, strong) NSString * previewURL;
+@property (nonatomic, strong) NSString * contentType;
 
 @end

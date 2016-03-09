@@ -8,7 +8,7 @@
 
 #import "IQShareToMessageActivity.h"
 #import "SharingViewController.h"
-#import "IQAttachment.h"
+#import "IQManagedAttachment.h"
 #import "SharingConstants.h"
 
 @interface IQShareToMessageActivity ()
