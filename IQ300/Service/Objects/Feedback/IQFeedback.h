@@ -41,6 +41,7 @@
 
 - (void)addAttachement:(id <IQAttachment>)attachment;
 - (void)removeAttachementAtIndex:(NSUInteger)index;
+- (id <IQAttachment>)attachmentAtIndex:(NSUInteger)index;
 
 - (void)addAttachmentId:(NSNumber *)attachmentId;
 

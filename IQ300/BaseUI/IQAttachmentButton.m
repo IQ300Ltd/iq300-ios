@@ -20,8 +20,9 @@
         _roundRectContainer.layer.masksToBounds = YES;
         _roundRectContainer.layer.borderColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.5f].CGColor;
         _roundRectContainer.layer.borderWidth = 0.5f;
+        _roundRectContainer.userInteractionEnabled = NO;
         [self addSubview:_roundRectContainer];
-        
+                
         _customImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         [_roundRectContainer addSubview:_customImageView];
         
@@ -71,20 +72,21 @@
         
         NSURL *url = [NSURL URLWithString:attachment.previewURL];
         
-//        if (url.scheme.length == 0 && url) {
-//            <#statements#>
-//        }
-//        
-        [_customImageView sd_setImageWithURL:[NSURL URLWithString:attachment.previewURL]
-                            placeholderImage:plasehodler
-                                     options:0
-                                   completed:^(UIImage *image,
-                                               NSError *error,
-                                               SDImageCacheType
-                                               cacheType,
-                                               NSURL *imageURL) {
-                                       [weakSelf setNeedsLayout];
-                                   }];
+        if ([url.scheme hasPrefix:@"http"]) {
+            [_customImageView sd_setImageWithURL:[NSURL URLWithString:attachment.previewURL]
+                                placeholderImage:plasehodler
+                                         options:0
+                                       completed:^(UIImage *image,
+                                                   NSError *error,
+                                                   SDImageCacheType
+                                                   cacheType,
+                                                   NSURL *imageURL) {
+                                           [weakSelf setNeedsLayout];
+                                       }];
+        }
+        else {
+            [_customImageView setImage:[UIImage imageWithContentsOfFile:attachment.previewURL]];
+        }
     }
     else {
         [_customImageView setImage:plasehodler];
@@ -102,6 +104,13 @@
 - (void)setDeleteButtonShown:(BOOL)deleteButtonShown {
     _deleteButtonShown = deleteButtonShown;
     self.deleteButton.hidden = !deleteButtonShown;
+}
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    if (_deleteButtonShown && CGRectContainsPoint(self.deleteButton.frame, point)) {
+        return YES;
+    }
+    return [super pointInside:point withEvent:event];
 }
 
 

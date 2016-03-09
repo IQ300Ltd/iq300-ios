@@ -15,6 +15,8 @@
 #define ITEM_HEIGHT 120.0f
 #define ITEM_WIDHT 85.0f
 
+#define FEEDBACK_ATTACHEMENT_HORIZONTAL_INSETS 18.0f
+
 #define LABEL_TEXT NSLocalizedString(@"Attachments", nil)
 #define ADD_ATTACHMENT_IMAGE_NAME @"plus.png"
 
@@ -31,7 +33,7 @@
 
 + (CGFloat)heightForItems:(NSArray<__kindof id<IQAttachment>> *)items cellWidth:(CGFloat)cellWidth showAddButton:(BOOL)show{
     
-    CGFloat actualWidth = cellWidth - CONTENT_HORIZONTAL_INSETS * 2.0f;
+    CGFloat actualWidth = cellWidth - FEEDBACK_ATTACHEMENT_HORIZONTAL_INSETS * 2.0f;
     
     NSUInteger itemsCountPerRow = (NSUInteger)((actualWidth + INLINE_SPACE_MIN) / (ITEM_WIDHT + INLINE_SPACE_MIN));
     NSUInteger itemsCount = items.count;
@@ -40,7 +42,7 @@
     
     NSUInteger resultHeight = CELL_MIN_HEIGHT;
     if (rowsCount > 0) {
-        resultHeight += rowsCount * (ITEM_HEIGHT + INTERLINE_SPACE) - INTERLINE_SPACE + CONTENT_VERTICAL_INSETS;
+        resultHeight += rowsCount * (ITEM_HEIGHT + INTERLINE_SPACE) - INTERLINE_SPACE + CONTENT_VERTICAL_INSETS * 2.0f;
     }
     
     return resultHeight;
@@ -50,13 +52,16 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         _mutableButtons = [[NSMutableArray alloc] init];
-        _contentInsets = UIEdgeInsetsMake(CONTENT_VERTICAL_INSETS, CONTENT_HORIZONTAL_INSETS, CONTENT_VERTICAL_INSETS, CONTENT_HORIZONTAL_INSETS);
+        _contentInsets = UIEdgeInsetsMake(CONTENT_VERTICAL_INSETS, FEEDBACK_ATTACHEMENT_HORIZONTAL_INSETS, CONTENT_VERTICAL_INSETS, FEEDBACK_ATTACHEMENT_HORIZONTAL_INSETS);
         _itemSize = CGSizeMake(ITEM_WIDHT, ITEM_HEIGHT);
         _addButtonShown = NO;
         
         _titleView = [[UIView alloc] initWithFrame:CGRectZero];
         _titleView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
         [self.contentView addSubview:_titleView];
+        
+        self.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+
         
         _label = [[UILabel alloc] initWithFrame:CGRectZero];
         [_label setFont:TEXT_FONT];
@@ -111,19 +116,23 @@
     _titleView.frame = CGRectMake(0, 0, self.bounds.size.width, CELL_MIN_HEIGHT);
     
     CGRect titleViewActualBounds = UIEdgeInsetsInsetRect(_titleView.frame, _contentInsets);
-    
     CGSize labelSize = [_label sizeThatFits:titleViewActualBounds.size];
     CGSize imageSize = CGSizeMake(15.0f, 15.0f);
     
-    _label.frame = CGRectMake(titleViewActualBounds.origin.x + 5,
+    _label.frame = CGRectMake(titleViewActualBounds.origin.x,
                               titleViewActualBounds.origin.y + (titleViewActualBounds.size.height - labelSize.height) / 2.0f,
                               labelSize.width,
                               labelSize.height);
     
-    _addButton.frame = CGRectMake(CGRectRight(titleViewActualBounds) - imageSize.width,
-                                  titleViewActualBounds.origin.y + (titleViewActualBounds.size.height - imageSize.height) / 2.0f,
-                                  imageSize.width,
-                                  imageSize.height);
+    _addButton.frame = CGRectMake(self.bounds.size.width - CELL_MIN_HEIGHT,
+                                  0,
+                                  CELL_MIN_HEIGHT,
+                                  CELL_MIN_HEIGHT);
+
+    _addButton.imageEdgeInsets = UIEdgeInsetsMake((CELL_MIN_HEIGHT - imageSize.height) / 2.0f,
+                                                  (CELL_MIN_HEIGHT - imageSize.width) / 2.0f,
+                                                  (CELL_MIN_HEIGHT - imageSize.height) / 2.0f,
+                                                  (CELL_MIN_HEIGHT - imageSize.width) / 2.0f);
     _addButton.hidden = !_addButtonShown;
     
     

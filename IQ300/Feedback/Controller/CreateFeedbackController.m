@@ -118,6 +118,12 @@
         [feedbackCell setItems:[self.model itemAtIndexPath:indexPath]];
         [feedbackCell setAddButtonShown:YES];
         [feedbackCell.addButton addTarget:self action:@selector(attachButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        NSArray *buttons = feedbackCell.buttons;
+        NSUInteger tag = 0;
+        for (IQAttachmentButton *button in buttons) {
+            [button.deleteButton addTarget:self action:@selector(deleteButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+            button.tag = tag++;
+        }
     }
     else {
         cell.detailTitle = [self.model detailTitleForItemAtIndexPath:indexPath];
@@ -216,6 +222,7 @@
                                       }
                                       else {
                                           [self.navigationController popViewControllerAnimated:YES];
+                                          [self.model clearModelData];
                                       }
                                   }
                               }];
@@ -223,6 +230,7 @@
     }
     else {
         [self.navigationController popViewControllerAnimated:YES];
+        [self.model clearModelData];
     }
 }
 
@@ -239,6 +247,7 @@
                     [self.navigationController popViewControllerAnimated:YES];
                 }
                 [self proccessServiceError:error];
+                [self.model clearModelData];
             }];
         });
     }
@@ -315,6 +324,10 @@
 }
 
 - (void)attachButtonAction:(UIButton*)sender {
+    if (_editableIndexPath) {
+        IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
+        [cell.titleTextView resignFirstResponder];
+    }
     UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                               delegate:nil
                                                      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
@@ -356,7 +369,11 @@
     [actionSheet showInView:self.view];
 }
 
-#pragma mark - UIImagePickerController delegate
+- (void)deleteButtonAction:(id)sender {
+    [self.model updateFieldAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] withValue:@([sender tag])];
+}
+
+#pragma mark - UIImagePickerController delegate 
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -453,8 +470,22 @@
 }
 
 - (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
-    
-    
+    if (asset) {
+        ALAssetRepresentation *representation = [asset defaultRepresentation];
+        Byte *buffer = (Byte *)malloc((size_t)representation.size);
+        NSUInteger buffered = [representation getBytes:buffer fromOffset:0 length:(NSUInteger)representation.size error:nil];
+        NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+        NSString* MIMEType = (__bridge_transfer NSString*)UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)[representation UTI], kUTTagClassMIMEType);
+
+        [[FileStore sharedStore] storeData:data forKey:[NSUUID UUID].UUIDString MIMEType:MIMEType done:^(NSString *fileName, NSError *error) {
+            IQAttachment *attachment = [[IQAttachment alloc] init];
+            
+            attachment.displayName = representation.filename;
+            attachment.originalURL = attachment.localURL = attachment.previewURL = [[FileStore sharedStore] filePathURLForFileName:fileName].path;
+            attachment.contentType = MIMEType;
+            [self.model updateFieldAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] withValue:attachment];
+        }];
+    }
     
     [picker dismissViewControllerAnimated:YES completion:nil];
 }

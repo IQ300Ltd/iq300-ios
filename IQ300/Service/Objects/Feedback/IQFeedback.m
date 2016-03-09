@@ -91,6 +91,10 @@
     [_mutableAttachments removeObjectAtIndex:index];
 }
 
+- (id <IQAttachment>)attachmentAtIndex:(NSUInteger)index {
+    return [_mutableAttachments objectAtIndex:index];
+}
+
 - (void)addAttachmentId:(NSNumber *)attachmentId {
     [_mutableAttachmentIds addObject:attachmentId];
 }

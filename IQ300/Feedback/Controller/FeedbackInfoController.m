@@ -72,15 +72,6 @@
     [super viewDidLoad];
     
     [self updateViewWithFeedback:self.feedback];
-    
-    NSInteger buttonIndex = 0;
-    for (UIButton * attachButton in _feedbackView.attachButtons) {
-        [attachButton addTarget:self
-                         action:@selector(attachViewButtonAction:)
-               forControlEvents:UIControlEventTouchUpInside];
-        [attachButton setTag:buttonIndex];
-        buttonIndex ++;
-    }
 }
 
 - (void)viewDidLayoutSubviews {
@@ -117,6 +108,15 @@
 - (void)updateViewWithFeedback:(IQManagedFeedback*)feedback {
     if (feedback) {
         [_feedbackView updateViewWithFeedback:feedback];
+        
+        NSInteger buttonIndex = 0;
+        for (UIButton * attachButton in _feedbackView.attachButtons) {
+            [attachButton addTarget:self
+                             action:@selector(attachViewButtonAction:)
+                   forControlEvents:UIControlEventTouchUpInside];
+            [attachButton setTag:buttonIndex];
+            buttonIndex ++;
+        }
     }
 }
 

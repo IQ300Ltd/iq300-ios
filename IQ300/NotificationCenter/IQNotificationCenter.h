@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 //#define kLOG_ALL_EVENTS
-#define kLOG_TRACE
+//#define kLOG_TRACE
 
 #ifdef kLOG_TRACE
 #define DNSLog(x, ...) NSLog(@"%s %d: " x, __FUNCTION__, __LINE__, ##__VA_ARGS__)

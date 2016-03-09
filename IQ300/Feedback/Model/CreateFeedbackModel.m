@@ -15,6 +15,7 @@
 #import "IQEMultiLineTextCell.h"
 #import "FeedbackAttachmentsCell.h"
 #import "IQManagedAttachment.h"
+#import "FileStore.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
@@ -174,6 +175,10 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
                 [_feedback addAttachement:value];
             }
             else if ([value isKindOfClass:[NSNumber class]]) {
+                NSURL *url = [NSURL URLWithString:[_feedback attachmentAtIndex:[value unsignedIntegerValue]].localURL];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[FileStore sharedStore] removeDataForFileName:url.lastPathComponent];
+                });
                 [_feedback removeAttachementAtIndex:[value unsignedIntegerValue]];
             }
         }
@@ -191,45 +196,44 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 }
 
 - (void)createFeedbackWithCompletion:(void (^)(NSError * error))completion {
-    IQFeedback *feedback = _feedback;
-    
-    void (^uploadFeedbackBlock)() = ^() {
-        [[IQService sharedService] createFeedback:_feedback
-                                          handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                              if (completion) {
-                                                  completion(error);
-                                              }
-                                          }];
-    };
-    
-    if (_feedback.attachements.count > 0) {
-        void (^uploadAttachmentBlock)() = ^() {
-            NSArray *attachments = feedback.attachements;
-            NSArray *attachmentIds = feedback.attachmentIds;
-            if (attachments.count == attachmentIds.count) {
-                uploadFeedbackBlock();
-            }
-            else {
-                id<IQAttachment> attachment = [attachments objectAtIndex:attachmentIds.count];
-                [[IQService sharedService] createAttachmentWithFileAtPath:[attachment localURL]
-                                                                 fileName:[attachment displayName]
-                                                                 mimeType:[attachment contentType]
-                                                                  handler:^(BOOL success, IQManagedAttachment *object, NSData *responseData, NSError *error) {
-                                                                      if (success) {
-                                                                          [feedback addAttachmentId:object.attachmentId];
-                                                                          uploadAttachmentBlock();
-                                                                      }
-                                                                      else {
-                                                                          completion(error);
-                                                                      }
-                                                                  }];
-            }
-        };
-        uploadAttachmentBlock();
+    [self uploadAttachmentsWithCompletion:^(BOOL success, NSError *error) {
+        if (success) {
+            [[IQService sharedService] createFeedback:_feedback
+                                              handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                  if (completion) {
+                                                      completion(error);
+                                                  }
+                                              }];
+        }
+        completion(error);
+    }];
+}
+
+- (void)uploadAttachmentsWithCompletion:(void (^)(BOOL success, NSError *error)) completion {
+    NSArray *attachments = _feedback.attachements;
+    NSArray *attachmentIds = _feedback.attachmentIds;
+    if (attachments.count == attachmentIds.count) {
+        if (completion) {
+            completion(YES, nil);
+        }
     }
     else {
-        uploadFeedbackBlock();
+        id<IQAttachment> attachment = [attachments objectAtIndex:attachmentIds.count];
+        __weak typeof(self) weakSelf = self;
+        [[IQService sharedService] createAttachmentWithFileAtPath:[attachment localURL]
+                                                         fileName:[attachment displayName]
+                                                         mimeType:[attachment contentType]
+                                                          handler:^(BOOL success, IQManagedAttachment *object, NSData *responseData, NSError *error) {
+                                                              if (success) {
+                                                                  [_feedback addAttachmentId:object.attachmentId];
+                                                                  [weakSelf uploadAttachmentsWithCompletion:completion];
+                                                              }
+                                                              else {
+                                                                  completion(NO, error);
+                                                              }
+                                                          }];
     }
+
 }
 
 - (BOOL)isAllFieldsValidWithError:(NSError**)error {
@@ -263,6 +267,15 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 - (BOOL)modelHasChanges {
     return (_feedback.feedbackCategory != nil || _feedback.feedbackType ||
             [_feedback.feedbackDescription length] > 0 || _feedback.attachements.count > 0);
+}
+
+- (void)clearModelData {
+    NSArray *attachments = _feedback.attachements;
+    for (IQAttachment *attachment in attachments) {
+        NSURL *url = [NSURL URLWithString:attachment.localURL];
+        [[FileStore sharedStore] removeDataForFileName:url.lastPathComponent];
+    }
+    [super clearModelData];
 }
 
 @end
