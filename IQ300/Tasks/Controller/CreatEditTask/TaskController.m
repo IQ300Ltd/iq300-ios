@@ -23,6 +23,7 @@
 
 #ifdef IPAD
 #import "IQDoubleDetailsTextCell.h"
+#import "IQComplexityEstimatedTimeDoubleCell.h"
 #endif
 
 #define SEPARATOR_HEIGHT 0.5f
@@ -127,7 +128,7 @@
 #ifdef IPAD
     if ([cell isKindOfClass:[IQDoubleDetailsTextCell class]]) {
         NSIndexPath * itemIndexPath = [indexPath copy];
-        if (indexPath.row == 3) {
+        if (indexPath.row == 4) {
             itemIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1
                                                inSection:indexPath.section];
         }
@@ -151,6 +152,29 @@
         id secondItem = [self.model itemAtIndexPath:secondIndexPath];
         
         doubleCell.item = @[NSObjectNullForNil(item), NSObjectNullForNil(secondItem)];
+    }
+    else if ([cell isKindOfClass:[IQComplexityEstimatedTimeDoubleCell class]]){
+        NSIndexPath * itemIndexPath = [indexPath copy];
+        if (indexPath.row == 3) {
+            itemIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1
+                                               inSection:indexPath.section];
+        }
+        NSIndexPath * secondIndexPath = [NSIndexPath indexPathForRow:itemIndexPath.row + 1
+                                                           inSection:itemIndexPath.section];
+        
+        IQComplexityEstimatedTimeDoubleCell *complexityCell = (IQComplexityEstimatedTimeDoubleCell *)cell;
+        IQComplexity *complexity = [self.model itemAtIndexPath:itemIndexPath];
+        NSNumber *time = [self.model itemAtIndexPath:secondIndexPath];
+        [complexityCell setComplexity:complexity estimatedTime:time];
+        
+        complexityCell.estimatedCell.hoursTextField.delegate = self;
+        complexityCell.estimatedCell.hoursTextField.tag = 1;
+        complexityCell.estimatedCell.minutesTextField.delegate = self;
+        complexityCell.estimatedCell.minutesTextField.tag = 2;
+        
+        complexityCell.complexityCell.detailTitle = [self.model detailTitleForItemAtIndexPath:itemIndexPath];
+        complexityCell.complexityCell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:itemIndexPath];
+        complexityCell.complexityCell.titleTextView.delegate = (id<UITextViewDelegate>)self;
     }
     else {
 #endif
@@ -455,9 +479,9 @@
 
 - (void)showDataPickerForIndexPath:(NSIndexPath*)indexPath {
 #ifdef IPAD
-    IQDoubleDetailsTextCell * cell = (IQDoubleDetailsTextCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3
+    IQDoubleDetailsTextCell * cell = (IQDoubleDetailsTextCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4
                                                                                                                         inSection:indexPath.section]];
-    UIView * showInView = (indexPath.row == 4) ? cell.titleTextView : cell.secondTitleTextView;
+    UIView * showInView = (indexPath.row == 5) ? cell.titleTextView : cell.secondTitleTextView;
 #else
     IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:indexPath];
     UIView * showInView = cell.titleTextView;

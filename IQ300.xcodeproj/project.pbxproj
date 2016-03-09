@@ -109,6 +109,7 @@
 		2DD5CB411C84474B002CE8C0 /* TaskEstimatedTimeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB3F1C84474B002CE8C0 /* TaskEstimatedTimeCell.m */; };
 		2DD5CB441C8447BC002CE8C0 /* TaskComplexityPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */; };
 		2DD5CB451C8447BC002CE8C0 /* TaskComplexityPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */; };
+		3DAE09831C90566A00031479 /* IQComplexityEstimatedTimeDoubleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE09811C90566600031479 /* IQComplexityEstimatedTimeDoubleCell.m */; };
 		73060D561B41345D001AE08E /* UITextView+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 73060D551B41345D001AE08E /* UITextView+Validation.m */; };
 		73060D571B41345D001AE08E /* UITextView+Validation.m in Sources */ = {isa = PBXBuildFile; fileRef = 73060D551B41345D001AE08E /* UITextView+Validation.m */; };
 		73060D5F1B417322001AE08E /* feedback_error_type.png in Resources */ = {isa = PBXBuildFile; fileRef = 73060D591B417322001AE08E /* feedback_error_type.png */; };
@@ -983,6 +984,8 @@
 		2DD5CB421C8447BC002CE8C0 /* TaskComplexityPickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskComplexityPickerCell.h; sourceTree = "<group>"; };
 		2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskComplexityPickerCell.m; sourceTree = "<group>"; };
 		3C453A1313F35DF8AD783316 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		3DAE09801C90566600031479 /* IQComplexityEstimatedTimeDoubleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQComplexityEstimatedTimeDoubleCell.h; sourceTree = "<group>"; };
+		3DAE09811C90566600031479 /* IQComplexityEstimatedTimeDoubleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQComplexityEstimatedTimeDoubleCell.m; sourceTree = "<group>"; };
 		73060D541B41345D001AE08E /* UITextView+Validation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+Validation.h"; sourceTree = "<group>"; };
 		73060D551B41345D001AE08E /* UITextView+Validation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+Validation.m"; sourceTree = "<group>"; };
 		73060D591B417322001AE08E /* feedback_error_type.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = feedback_error_type.png; sourceTree = "<group>"; };
@@ -3072,6 +3075,8 @@
 				2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */,
 				2DD5CB3E1C84474B002CE8C0 /* TaskEstimatedTimeCell.h */,
 				2DD5CB3F1C84474B002CE8C0 /* TaskEstimatedTimeCell.m */,
+				3DAE09801C90566600031479 /* IQComplexityEstimatedTimeDoubleCell.h */,
+				3DAE09811C90566600031479 /* IQComplexityEstimatedTimeDoubleCell.m */,
 			);
 			path = CreatEditTask;
 			sourceTree = "<group>";
@@ -3868,6 +3873,7 @@
 				73840E191B1C75A500BCEAFC /* IQBadgeView.m in Sources */,
 				73840E1A1B1C75A500BCEAFC /* UserPickerController.m in Sources */,
 				73840E1B1B1C75A500BCEAFC /* IQTableBaseController.m in Sources */,
+				3DAE09831C90566A00031479 /* IQComplexityEstimatedTimeDoubleCell.m in Sources */,
 				2D80E7EC1C6B17C2009DD5A0 /* TCManagedCollectionModel.m in Sources */,
 				2DAF33661C6087C600554211 /* IQOpenInActivity.m in Sources */,
 				73840E1C1B1C75A500BCEAFC /* IQ300.xcdatamodeld in Sources */,

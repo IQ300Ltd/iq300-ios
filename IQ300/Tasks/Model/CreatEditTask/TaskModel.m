@@ -27,6 +27,7 @@
 #ifdef IPAD
 #import "IQCommunityExecutorCell.h"
 #import "IQDoubleDateTextCell.h"
+#import "IQComplexityEstimatedTimeDoubleCell.h"
 #endif
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
@@ -38,6 +39,7 @@ static NSString * CommunityCellReuseIdentifier = @"CommunityCellReuseIdentifier"
 static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier";
 static NSString * ComplexityCellReuseIdentifier = @"ComplexityCellReuseIdentifier";
 static NSString * EstimatedTimeCellReuserIdentifier = @"EstimatedTimeCellReuserIdentifier";
+static NSString * ComplexityEstimatedTimeCellReuseIdentifier =  @"ComplexityEstimatedTimeCellReuseIdentifier";
 
 #define MAX_NUMBER_OF_CHARACTERS 255
 
@@ -67,7 +69,8 @@ static NSString * EstimatedTimeCellReuserIdentifier = @"EstimatedTimeCellReuserI
 #ifdef IPAD
                           @(1) : [IQEMultiLineTextCell class],
                           @(2) : [IQCommunityExecutorCell class],
-                          @(3) : [IQDoubleDateTextCell class],
+                          @(3) : [IQComplexityEstimatedTimeDoubleCell class],
+                          @(4) : [IQDoubleDateTextCell class],
 #else
                           @(1) : [IQDetailsTextCell class],
                           @(2) : [TaskCommunityCell class],
@@ -94,7 +97,8 @@ static NSString * EstimatedTimeCellReuserIdentifier = @"EstimatedTimeCellReuserI
 #ifdef IPAD
                               @(1) : CellReuseIdentifier,
                               @(2) : DoubleDetailCellReuseIdentifier,
-                              @(3) : DoubleDateCellReuseIdentifier
+                              @(3) : ComplexityEstimatedTimeCellReuseIdentifier,
+                              @(4) : DoubleDateCellReuseIdentifier
 #else
                               @(1) : DetailCellReuseIdentifier,
                               @(2) : CommunityCellReuseIdentifier,
@@ -136,7 +140,7 @@ static NSString * EstimatedTimeCellReuserIdentifier = @"EstimatedTimeCellReuserI
 
 - (NSUInteger)numberOfItemsInSection:(NSInteger)section {
 #ifdef IPAD
-    return 4;
+    return 5;
 #else
     return (_isExecutersChangesEnabled) ? 8 : 7;
 #endif
@@ -145,7 +149,7 @@ static NSString * EstimatedTimeCellReuserIdentifier = @"EstimatedTimeCellReuserI
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath {
     NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
     NSUInteger numberOfSections = [self numberOfSections];
-    NSUInteger numberOfRows = (!IS_IPAD) ? [self numberOfItemsInSection:indexPath.section] : 6;
+    NSUInteger numberOfRows = (!IS_IPAD) ? [self numberOfItemsInSection:indexPath.section] : 8;
     
     if(indexPath.section < numberOfSections && indexPath.row < numberOfRows) {
         return [self fieldValueAtIndexPath:realIndexPath];
@@ -170,8 +174,11 @@ static NSString * EstimatedTimeCellReuserIdentifier = @"EstimatedTimeCellReuserI
     
     NSString * detaiTitle = [self detailTitleForItemAtIndexPath:indexPath];
     id item = [self itemAtIndexPath:indexPath];
-    if (cellClass) {
+    if ([cellClass respondsToSelector:@selector(heightForItem:detailTitle:width:)]) {
         return [cellClass heightForItem:item detailTitle:detaiTitle width:self.cellWidth];
+    }
+    else if ([cellClass respondsToSelector:@selector(heightForComplexity:estimatedTime:widht:)]) {
+        return [cellClass heightForComplexity:_task.complexity estimatedTime:_task.estimatedTimeSeconds widht:self.cellWidth];
     }
     return 50.0f;
 }

@@ -11,6 +11,8 @@
 
 @interface TaskEstimatedTimeCell : UITableViewCell<IQTableCell>
 
++ (CGFloat)heightForItem:(id)item detailTitle:(NSString*)detailTitle width:(CGFloat)width;
+
 @property (nonatomic, strong) UILabel *label;
 
 @property (nonatomic, strong) UILabel *commaLabel;
