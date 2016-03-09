@@ -10,11 +10,15 @@
 #import "IQFeedbacksHolder.h"
 #import "IQService+Feedback.h"
 #import "FeedbackCell.h"
+#import "IQNotificationCenter.h"
 
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 @interface FeedbacksModel() {
     NSInteger _portionLenght;
+    
+    __weak id _feedbackObserver;
+    __weak id _feedbackMessagesObserver;
 }
 
 @end
@@ -27,6 +31,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         _portionLenght = 20;
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"feedbackId" ascending:NO];
         self.sortDescriptors = @[descriptor];
+        [self resubscribeToIQNotifications];
     }
     return self;
 }
@@ -202,6 +207,45 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         return feedback.createdDate;
     }
     return nil;
+}
+
+- (void)resubscribeToIQNotifications {
+    [self unsubscribeFromIQNotifications];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^feedbackUpdateBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        [weakSelf updateModelWithCompletion:nil];
+    };
+    
+    _feedbackObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQFeedbackDidChangedNotification
+                                                                       queue:nil
+                                                                  usingBlock:feedbackUpdateBlock];
+    
+    void (^feedbackUpdateMessagesBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
+        NSString * disscusionParentType = [commentData[@"discussable"][@"type"] lowercaseString];
+        
+        if([disscusionParentType isEqualToString:@"errorreport"]) {
+            [weakSelf updateModelWithCompletion:nil];
+        }
+    };
+    
+    _feedbackMessagesObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNewMessageNotification queue:nil usingBlock:feedbackUpdateMessagesBlock];
+}
+
+- (void)unsubscribeFromIQNotifications {
+    if(_feedbackObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_feedbackObserver];
+    }
+    
+    if (_feedbackMessagesObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_feedbackMessagesObserver];
+    }
+}
+
+- (void)dealloc {
+    [self unsubscribeFromIQNotifications];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

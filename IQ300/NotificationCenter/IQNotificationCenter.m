@@ -22,6 +22,7 @@ NSString * const IQTaskCommentsDidChangedNotification = @"task_comments_changed"
 NSString * const IQTaskMembersDidChangedNotification = @"task_users_changed";
 NSString * const IQTaskAttachmentsDidChangedNotification = @"task_documents_changed";
 NSString * const IQNotificationDataKey = @"IQNotificationDataKey";
+NSString * const IQFeedbackDidChangedNotification = @"error_reports_state_changed";
 
 @class IQCNotification;
 

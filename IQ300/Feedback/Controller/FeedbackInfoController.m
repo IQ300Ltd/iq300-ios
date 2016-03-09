@@ -18,6 +18,7 @@
 #import "IQService+Feedback.h"
 #import "IQActivityViewController.h"
 #import "SharingAttachment.h"
+#import "IQNotificationCenter.h"
 
 @interface FeedbackInfoController() <IQActivityViewControllerDelegate> {
     FeedbackView * _feedbackView;
@@ -25,6 +26,9 @@
 #ifdef IPAD
     UIPopoverController *_popoverController;
 #endif
+    
+    __weak id _feedbackObserver;
+    __weak id _feedbackMessagesObserver;
 }
 
 @end
@@ -70,7 +74,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self resubscribeToIQNotifications];
     [self updateViewWithFeedback:self.feedback];
 }
 
@@ -104,6 +108,46 @@
 }
 
 #pragma mark - Private methods
+
+- (void)resubscribeToIQNotifications {
+    [self unsubscribeFromIQNotifications];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^feedbackUpdateBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        [weakSelf updateFeedback];
+    };
+    
+    _feedbackObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQFeedbackDidChangedNotification
+                                                                           queue:nil
+                                                                      usingBlock:feedbackUpdateBlock];
+    
+    void (^feedbackUpdateMessagesBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSDictionary * commentData = notf.userInfo[IQNotificationDataKey][@"comment"];
+        NSString * disscusionParentType = [commentData[@"discussable"][@"type"] lowercaseString];
+        
+        if([disscusionParentType isEqualToString:@"errorreport"]) {
+            [weakSelf updateFeedback];
+        }
+    };
+    
+    _feedbackMessagesObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQNewMessageNotification queue:nil usingBlock:feedbackUpdateMessagesBlock];
+}
+
+- (void)unsubscribeFromIQNotifications {
+    if(_feedbackObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_feedbackObserver];
+    }
+    
+    if (_feedbackMessagesObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_feedbackMessagesObserver];
+    }
+}
+
+- (void)dealloc {
+    [self unsubscribeFromIQNotifications];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 - (void)updateViewWithFeedback:(IQManagedFeedback*)feedback {
     if (feedback) {
