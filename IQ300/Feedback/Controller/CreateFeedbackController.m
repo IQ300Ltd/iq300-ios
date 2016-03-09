@@ -18,6 +18,7 @@
 #import "FeedbackAttachmentsCell.h"
 #import "UIActionSheet+Blocks.h"
 #import "FileStore.h"
+#import "UIViewController+ScreenActivityIndicator.h"
 
 #define BOTTOM_VIEW_HEIGHT 0
 
@@ -235,6 +236,7 @@
 }
 
 - (void)sendButtonAction:(UIBarButtonItem *)sender {
+    [self showActivityIndicator];
     if (_editableIndexPath) {
         IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
         [cell.titleTextView resignFirstResponder];
@@ -243,6 +245,7 @@
     if ([self isAllFieldsValid]) {
         dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
             [self.model createFeedbackWithCompletion:^(NSError *error) {
+                [self hideActivityIndicator];
                 if (!error) {
                     [self.navigationController popViewControllerAnimated:YES];
                 }
