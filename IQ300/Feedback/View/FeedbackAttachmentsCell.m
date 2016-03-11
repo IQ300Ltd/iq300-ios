@@ -15,7 +15,7 @@
 #define ITEM_HEIGHT 120.0f
 #define ITEM_WIDHT 85.0f
 
-#define FEEDBACK_ATTACHEMENT_HORIZONTAL_INSETS 18.0f
+#define FEEDBACK_ATTACHEMENT_HORIZONTAL_INSETS 17.5f
 
 #define LABEL_TEXT NSLocalizedString(@"Attachments", nil)
 #define ADD_ATTACHMENT_IMAGE_NAME @"plus.png"
