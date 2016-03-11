@@ -123,7 +123,7 @@
         NSUInteger tag = 0;
         for (IQAttachmentButton *button in buttons) {
             [button.deleteButton addTarget:self action:@selector(deleteButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-            button.tag = tag++;
+            button.deleteButton.tag = tag++;
         }
     }
     else {
