@@ -1005,17 +1005,19 @@
 }
 
 - (void)showUserPickerControllerWithFilter:(NSString*)filter {
-    if (!_userPickerController) {
-        UsersPickerModel * model = [[UsersPickerModel alloc] init];
-        model.users = [self.model.discussion.users allObjects];
+    if (self.model.discussion.users.count > 1) {
+        if (!_userPickerController) {
+            UsersPickerModel * model = [[UsersPickerModel alloc] init];
+            model.users = [self.model.discussion.users allObjects];
+            
+            _userPickerController = [[UserPickerController alloc] init];
+            _userPickerController.delegate = self;
+            _userPickerController.model = model;
+            [_mainView insertSubview:_userPickerController.view aboveSubview:_mainView.tableView];
+        }
         
-        _userPickerController = [[UserPickerController alloc] init];
-        _userPickerController.delegate = self;
-        _userPickerController.model = model;
-        [_mainView insertSubview:_userPickerController.view aboveSubview:_mainView.tableView];
+        _userPickerController.filter = filter;
     }
-    
-    _userPickerController.filter = filter;
 }
 
 - (void)hideUserPickerController {
