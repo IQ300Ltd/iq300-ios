@@ -135,6 +135,7 @@
                                                     NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
                                                     NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
                                                     };
+        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypePhoneNumber;
         [self addSubview:_descriptionTextView];
         
         

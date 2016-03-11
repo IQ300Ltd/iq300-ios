@@ -222,7 +222,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                                     NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
                                                     NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
                                                     };
-        
+        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypePhoneNumber;
         [_descriptionTextView addGestureRecognizer:_singleTapGesture];
         [contentView addSubview:_descriptionTextView];
         

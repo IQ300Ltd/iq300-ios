@@ -684,6 +684,9 @@
 
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
     if (textView != _mainView.inputView.commentTextView) {
+        if ([URL.scheme isEqualToString:@"tel"]){
+            return YES;
+        }
         //This is not me, this is fucking strange url
         NSString * unescapedString = [[URL absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         unescapedString = [unescapedString stringByReplacingOccurrencesOfString:@"%20" withString:@" "];

@@ -87,6 +87,9 @@
             [self openTaskControllerForTaskId:@(taskId)];
         }
     }
+    else if ([URL.scheme isEqualToString:@"tel"]){
+        return YES;
+    }
     else {
         NSString * unescapedString = [[URL absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         unescapedString = [unescapedString stringByReplacingOccurrencesOfString:@"%20" withString:@" "];

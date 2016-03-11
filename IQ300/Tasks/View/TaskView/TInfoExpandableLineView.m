@@ -39,6 +39,7 @@ static const CGFloat HEADER_HEIGHT = 45.5f;
         _detailsTextLabel.textContainerInset = UIEdgeInsetsZero;
         _detailsTextLabel.contentInset = UIEdgeInsetsZero;
         _detailsTextLabel.scrollEnabled = NO;
+        _detailsTextLabel.dataDetectorTypes = UIDataDetectorTypePhoneNumber;
         [self addSubview:_detailsTextLabel];
         
         _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapRecognized:)];
