@@ -16,13 +16,12 @@
 @optional
 
 - (void)taskFieldEditController:(id<TaskFieldEditController>)controller didChangeFieldValue:(id)value;
+- (void)didCancelTaskFieldEditController:(id<TaskFieldEditController>)controller;
 
 @end
 
 @protocol TaskFieldEditController <NSObject>
 
-@property (nonatomic, strong) NSIndexPath * fieldIndexPath;
-@property (nonatomic, strong) id fieldValue;
 @property (nonatomic, strong) IQTaskDataHolder * task;
 @property (nonatomic, weak)   id delegate;
 

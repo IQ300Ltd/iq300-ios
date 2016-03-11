@@ -12,6 +12,7 @@
 #import "IQSession.h"
 #import "IQCommunity.h"
 #import "DispatchAfterExecution.h"
+#import "IQTaskDataHolder.h"
 
 @interface CommunitiesController () {
 }
@@ -36,9 +37,9 @@
     return NO;
 }
 
-- (void)setFieldValue:(IQCommunity *)fieldValue {
-    _fieldValue = fieldValue;
-    self.model.communityId = _fieldValue.communityId;
+- (void)setTask:(IQTaskDataHolder *)task {
+    _task = task;
+    self.model.communityId = task.community.communityId;
 }
 
 - (void)viewDidLoad {
@@ -147,6 +148,7 @@
 #pragma mark - Private methods
 
 - (void)backButtonAction:(UIButton*)sender {
+    [self.delegate didCancelTaskFieldEditController:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

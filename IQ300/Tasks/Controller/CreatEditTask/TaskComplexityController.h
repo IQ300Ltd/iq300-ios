@@ -14,8 +14,6 @@
 
 @interface TaskComplexityController : IQTableBaseController <TaskFieldEditController>
 
-@property (nonatomic, strong) NSIndexPath * fieldIndexPath;
-@property (nonatomic, strong) IQComplexity * fieldValue;
 @property (nonatomic, strong) IQTaskDataHolder * task;
 @property (nonatomic, weak) id delegate;
 

@@ -17,6 +17,7 @@
 #import "ExTextField.h"
 #import "BottomLineView.h"
 #import "UIScrollView+PullToRefreshInsert.h"
+#import "IQTaskDataHolder.h"
 
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
@@ -54,15 +55,11 @@
     return NO;
 }
 
-- (void)setFieldValue:(NSArray *)fieldValue {
-    _fieldValue = fieldValue;
-    self.model.executors = _fieldValue;
-}
-
 - (void)setTask:(IQTaskDataHolder *)task {
     _task = task;
     self.model.communityId = _task.community.communityId;
     self.model.editingMode = (_task.taskId != nil);
+    self.model.executors = [task.executors copy];
 }
 
 - (void)viewDidLoad {
@@ -298,9 +295,9 @@
 }
 
 - (void)backButtonAction:(UIButton*)sender {
-    BOOL selectionIsEmpty = (_fieldValue == nil && self.model.executors == nil);
-    if ([_fieldValue count] != [self.model.executors count] ||
-        (!selectionIsEmpty && ![_fieldValue isEqualToArray:self.model.executors])) {
+    BOOL selectionIsEmpty = (_task.executors == nil && self.model.executors == nil);
+    if ([_task.executors count] != [self.model.executors count] ||
+        (!selectionIsEmpty && ![_task.executors isEqualToArray:self.model.executors])) {
         [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                            message:NSLocalizedString(@"Save changes?", nil)
                  cancelButtonTitle:NSLocalizedString(@"Сancellation", nil)
@@ -309,6 +306,9 @@
                               if (buttonIndex == 1 || buttonIndex == 2) {
                                   if (buttonIndex == 1) {
                                       [self saveChanges];
+                                  }
+                                  else {
+                                      [self.delegate didCancelTaskFieldEditController:self];
                                   }
                                   [self.navigationController popViewControllerAnimated:YES];
                               }

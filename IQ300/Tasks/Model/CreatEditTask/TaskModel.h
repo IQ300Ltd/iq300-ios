@@ -13,26 +13,16 @@
 
 @interface TaskModel : IQTableModel
 
-@property (nonatomic, strong) IQTaskDataHolder * task;
+@property (nonatomic, strong, readonly) IQTaskDataHolder * task;
+@property (nonatomic, strong, readonly) IQCommunity * defaultCommunity;
+
 @property (nonatomic, assign) CGFloat cellWidth;
-@property (nonatomic, strong) IQCommunity * defaultCommunity;
 
-- (NSString*)placeholderForItemAtIndexPath:(NSIndexPath*)indexPath;
+- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithDefaultCommunity:(IQCommunity *)community;
+- (instancetype)initWithTask:(IQTaskDataHolder *)task;
 
-- (NSString*)detailTitleForItemAtIndexPath:(NSIndexPath*)indexPath;
-
-- (void)updateFieldAtIndexPath:(NSIndexPath*)indexPath withValue:(id)value;
-
-- (BOOL)isItemEnabledAtIndexPath:(NSIndexPath*)indexPath;
-
-/**
- *  Real index path
- *
- *  @param indexPath Selected index path
- *
- *  @return Real index path(exclude hidden index paths)
- */
-- (NSIndexPath*)realIndexPathForPath:(NSIndexPath*)indexPath;
+- (void)updateItem:(id)item atIndexPath:(NSIndexPath *)indexPath withValue:(id)value;
 
 - (NSInteger)maxNumberOfCharactersForPath:(NSIndexPath*)indexPath;
 

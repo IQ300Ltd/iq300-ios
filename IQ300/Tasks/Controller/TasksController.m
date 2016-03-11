@@ -336,8 +336,7 @@
 - (void)createTaskAction:(UIButton*)sender {
     [[IQService sharedService] mostUsedCommunityWithHandler:^(BOOL success, id community, NSData *responseData, NSError *error) {
         if (success) {
-            TaskModel * model = [[TaskModel alloc] init];
-            model.defaultCommunity = community;
+            TaskModel * model = [[TaskModel alloc] initWithDefaultCommunity:community];
             
             TaskController * controller = [[TaskController alloc] init];
             controller.model = model;

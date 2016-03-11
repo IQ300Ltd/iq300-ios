@@ -14,8 +14,6 @@
     UIEdgeInsets _textViewInsets;
 }
 
-@property (nonatomic, strong) NSIndexPath * fieldIndexPath;
-@property (nonatomic, strong) NSString * fieldValue;
 @property (nonatomic, strong) IQTaskDataHolder * task;
 @property (nonatomic, weak) id delegate;
 

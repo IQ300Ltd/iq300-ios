@@ -18,6 +18,14 @@
     return [IQDetailsTextCell heightForItem:text detailTitle:detailTitle width:width];
 }
 
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        self.titleTextView.placeholderColor = [UIColor blackColor];
+    }
+    return self;
+}
+
 - (void)setItem:(IQComplexity *)item {
     [super setItem:item];
     
