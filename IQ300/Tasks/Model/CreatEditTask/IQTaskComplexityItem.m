@@ -17,7 +17,7 @@
     NSAssert([task respondsToSelector:@selector(complexity)], @"Task dont respond to executors selector");
     
     IQComplexity *complexity = [task complexity];
-    NSString *text = [NSString stringWithFormat:@"%@ :%@", NSLocalizedString(@"Complexity", nil),
+    NSString *text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Complexity", nil),
                                                            (complexity ? complexity.displayName : NSLocalizedString(@"Normal", nil))];
     self = [super initWithText:text];
     if (self) {
@@ -28,7 +28,7 @@
 
 - (void)setTask:(id)task {
     IQComplexity *complexity = [task complexity];
-    NSString *text = [NSString stringWithFormat:@"%@ :%@", NSLocalizedString(@"Complexity", nil),
+    NSString *text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Complexity", nil),
                       (complexity ? complexity.displayName : NSLocalizedString(@"Normal", nil))];
     self.text = text;
 }
@@ -37,7 +37,7 @@
     [task setComplexity:value];
     
     IQComplexity *complexity = value;
-    NSString *text = [NSString stringWithFormat:@"%@ :%@", NSLocalizedString(@"Complexity", nil),
+    NSString *text = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Complexity", nil),
                       (complexity ? complexity.displayName : NSLocalizedString(@"Normal", nil))];
     self.text = text;
     

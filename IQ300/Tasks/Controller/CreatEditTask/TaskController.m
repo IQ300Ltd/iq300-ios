@@ -261,7 +261,7 @@
     }
     NSString *updatedText = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
-    if (updatedText.length > (textField.tag == 1 ? 3 : 2))
+    if (updatedText.length > (textField == cell.hoursTextField ? 3 : 2))
     {
         return !string.length;
     }
@@ -314,11 +314,23 @@
     _editingItem = nil;
 }
 
+- (void)didCancelTaskFieldEditController:(id<TaskFieldEditController>)controller {
+    _editingCell = nil;
+    _editingIndexPath = nil;
+    _editingItem = nil;
+}
+
 #pragma mark - TaskDescriptionController delegate
 
 - (void)descriptionControllerDidChangedText:(TaskDescriptionController*)controller {
     [self.model updateItem:_editingItem atIndexPath:_editingIndexPath withValue:controller.textView.text];
+    
+    _editingItem = nil;
+    _editingIndexPath = nil;
+    _editingCell = nil;
 }
+
+
 
 #pragma mark - Private methods
 

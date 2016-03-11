@@ -232,6 +232,11 @@ static NSString * IQTextCellReuseIdentifier = @"IQTextCellReuseIdentifier";
                     executor.executorName = user.displayName;
                     self.task.executors = @[executor];
                 }
+                 _items = [self generateItems];
+                _cellClasses = [self generateCellClasses];
+                [self modelDidChanged];
+            }
+            else {
                 [self updateItems];
                 [self modelDidChanged];
             }

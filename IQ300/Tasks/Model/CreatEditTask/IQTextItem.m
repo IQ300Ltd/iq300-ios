@@ -23,6 +23,7 @@
     if (self) {
         _placeholder = placeholder;
         _editable = editable;
+        _returnKeyType = UIReturnKeyDone;
     }
     return self;
 }

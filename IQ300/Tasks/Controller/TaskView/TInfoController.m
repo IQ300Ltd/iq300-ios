@@ -354,7 +354,7 @@
 #pragma mark - Private methods
 
 - (void)editButtonAction:(UIButton*)sender {
-    TaskModel * model = [[TaskModel alloc] initWithTask:self.task];
+    TaskModel * model = [[TaskModel alloc] initWithTask:[IQTaskDataHolder holderWithTask:self.task]];
     
     TaskController * controller = [[TaskController alloc] init];
     controller.model = model;

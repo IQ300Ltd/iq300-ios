@@ -12,6 +12,7 @@
 #import "IQComplexity.h"
 #import "IQSession.h"
 #import "DispatchAfterExecution.h"
+#import "IQTaskDataHolder.h"
 
 @implementation TaskComplexityController
 
@@ -70,7 +71,7 @@
     IQComplexity * item = [self.model itemAtIndexPath:indexPath];
     [cell setItem:item];
     
-    BOOL isCellSelected = (_fieldValue == nil && [item.value isEqualToNumber:@(1)]) || (_fieldValue != nil && [item.value isEqualToNumber:_fieldValue.value]);
+    BOOL isCellSelected = (_task.complexity == nil && [item.value isEqualToNumber:@(1)]) || (_task.complexity != nil && [item.value isEqualToNumber:_task.complexity.value]);
     [cell setAccessoryType:(isCellSelected) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone];
     
     return cell;
@@ -116,6 +117,7 @@
 #pragma mark - Private methods
 
 - (void)backButtonAction:(UIButton*)sender {
+    [self.delegate didCancelTaskFieldEditController:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

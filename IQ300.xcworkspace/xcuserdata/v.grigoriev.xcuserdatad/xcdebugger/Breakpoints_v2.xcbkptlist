@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "IQ300/Tasks/Model/CreatEditTask/TaskModel.m"
-            timestampString = "479376018.776979"
+            filePath = "IQ300/Tasks/Model/CreatEditTask/IQTaskComplexityItem.m"
+            timestampString = "479379285.636573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "223"
-            endingLineNumber = "223"
-            landmarkName = "-updateItem:atIndexPath:withValue:"
+            startingLineNumber = "19"
+            endingLineNumber = "19"
+            landmarkName = "-initWithTask:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -3059,13 +3059,13 @@
 			children = (
 				73D7F19F1ADE92BC00023120 /* TaskController.h */,
 				73D7F1A01ADE92BC00023120 /* TaskController.m */,
+				73A50D151ADFDB0D00251CB7 /* TaskFieldEditController.h */,
 				73D7F1F21ADE957F00023120 /* CommunitiesController.h */,
 				73D7F1F31ADE957F00023120 /* CommunitiesController.m */,
 				73A50D0F1ADFAA4400251CB7 /* TaskDescriptionController.h */,
 				73A50D101ADFAA4400251CB7 /* TaskDescriptionController.m */,
 				735D48F31AE4D6DB00F6A753 /* TaskExecutersController.h */,
 				735D48F41AE4D6DB00F6A753 /* TaskExecutersController.m */,
-				73A50D151ADFDB0D00251CB7 /* TaskFieldEditController.h */,
 				2DD5CB3A1C8435E5002CE8C0 /* TaskComplexityController.h */,
 				2DD5CB3B1C8435E5002CE8C0 /* TaskComplexityController.m */,
 			);

@@ -22,6 +22,7 @@
     if (self) {
 #ifdef IPAD
         self.editable = YES;
+        self.returnKeyType = UIReturnKeyDefault;
 #else
         self.accessoryImageName = @"right_gray_arrow.png";
 #endif

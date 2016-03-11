@@ -8,6 +8,7 @@
 
 #import "TaskDescriptionController.h"
 #import "DispatchAfterExecution.h"
+#import "IQTaskDataHolder.h"
 
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
@@ -46,7 +47,7 @@
     _textView.textContainer.lineBreakMode = NSLineBreakByWordWrapping;
     _textView.textContainerInset = UIEdgeInsetsZero;
     _textView.contentInset = UIEdgeInsetsZero;
-    _textView.text = self.fieldValue;
+    _textView.text = self.task.taskDescription;
     _textView.placeholderInsets = UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 5.0f);
     _textView.delegate = self;
     [self.view addSubview:_textView];
@@ -168,7 +169,7 @@
 
 - (void)backButtonAction:(UIButton*)sender {
     [_textView resignFirstResponder];
-    NSString * oldDescription = ([self.fieldValue length] > 0) ? self.fieldValue : @"";
+    NSString * oldDescription = ([self.task.taskDescription length] > 0) ? self.task.taskDescription : @"";
     if (![oldDescription isEqualToString:_textView.text]) {
         dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
             [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
@@ -180,12 +181,16 @@
                                       if (buttonIndex == 1) {
                                           [self saveChanges];
                                       }
+                                      else {
+                                          [self.delegate didCancelTaskFieldEditController:self];
+                                      }
                                       [self.navigationController popViewControllerAnimated:YES];
                                   }
                               }];
         });
     }
     else {
+        [self.delegate didCancelTaskFieldEditController:self];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
@@ -197,7 +202,7 @@
 }
 
 - (void)saveChanges {
-    if ([self.fieldValue isEqualToString:_textView.text] == NO &&
+    if ([self.task.taskDescription isEqualToString:_textView.text] == NO &&
         [self.delegate respondsToSelector:@selector(taskFieldEditController:didChangeFieldValue:)]) {
         [self.delegate taskFieldEditController:self didChangeFieldValue:_textView.text];
     }

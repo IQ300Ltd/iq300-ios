@@ -112,6 +112,7 @@
     _textView.placeholder = item.placeholder;
     _accessoryImageView.image = [UIImage imageNamed:item.accessoryImageName];
     _textView.userInteractionEnabled = [item editable];
+    _textView.returnKeyType = item.returnKeyType;
 }
 
 - (void)prepareForReuse {
