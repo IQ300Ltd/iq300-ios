@@ -160,6 +160,7 @@
     [infoController setTask:task];
     
     TCommentsController * commentsController = self.viewControllers[1];
+    [commentsController setTaskTitle:task.title];
     [commentsController setTaskId:task.taskId];
     [commentsController setDiscussionId:task.discussionId];
     

@@ -13,6 +13,7 @@
 
 @interface TCommentsController : CommentsController<TaskTabItemController>
 
+@property (nonatomic, strong) NSString *taskTitle;
 @property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, strong) NSNumber * discussionId;
 @property (nonatomic, strong) NSNumber * badgeValue;

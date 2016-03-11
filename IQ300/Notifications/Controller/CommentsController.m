@@ -801,7 +801,8 @@
 }
 
 - (void)layoutUserPickerController {
-    _userPickerController.view.frame = CGRectMake(0.0f, 0.0f, _mainView.tableView.frame.size.width, _mainView.tableView.frame.size.height);
+    _userPickerController.view.frame = CGRectMake(0.0f, _mainView.titleLabel.frame.size.height
+                                                , _mainView.tableView.frame.size.width, _mainView.tableView.frame.size.height);
 }
 
 - (void)userPickerController:(UserPickerController*)picker didPickUsers:(NSArray<__kindof IQUser *> *)users {

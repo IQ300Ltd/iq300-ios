@@ -19,6 +19,7 @@
 #import "NSManagedObject+ActiveRecord.h"
 #import "IQDiscussion.h"
 #import "TaskTabController.h"
+#import "CommentsView.h"
 
 @interface TCommentsController () {
     __weak id _notfObserver;
@@ -74,7 +75,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    CommentsView *commentsView = (CommentsView *)self.view;
+    commentsView.titleLabelHidden = NO;
+    commentsView.titleLabel.text = _taskTitle;
     [self.noDataLabel setText:NSLocalizedString(@"No comments", nil)];
 }
 

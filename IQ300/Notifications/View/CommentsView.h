@@ -12,9 +12,12 @@
 
 @interface CommentsView : UIView
 
+@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UITableView * tableView;
 @property (nonatomic, readonly) CommentInputView * inputView;
 @property (nonatomic, assign) CGFloat inputHeight;
 @property (nonatomic, assign) CGFloat inputOffset;
+
+@property (nonatomic, assign) BOOL titleLabelHidden;
 
 @end
