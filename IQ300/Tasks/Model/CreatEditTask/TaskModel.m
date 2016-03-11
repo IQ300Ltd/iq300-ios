@@ -22,7 +22,13 @@
 #import "IQEMultiLineTextCell.h"
 
 #import "TaskComplexityCell.h"
-#import "TaskEstimatedTimeCell.h"
+
+#import "IQTextCell.h"
+#import "IQTaskItems.h"
+
+#import "IQTextCell.h"
+#import "IQMultipleCellsCell.h"
+#import "IQEstimatedTimeCell.h"
 
 #ifdef IPAD
 #import "IQCommunityExecutorCell.h"
@@ -30,287 +36,223 @@
 #import "IQComplexityEstimatedTimeDoubleCell.h"
 #endif
 
-static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
-static NSString * DetailCellReuseIdentifier = @"DetailCellReuseIdentifier";
-static NSString * DoubleDetailCellReuseIdentifier = @"DoubleDetailCellReuseIdentifier";
-static NSString * DoubleDateCellReuseIdentifier = @"DoubleDateCellReuseIdentifier";
-static NSString * DateCellReuseIdentifier = @"DateCellReuseIdentifier";
-static NSString * CommunityCellReuseIdentifier = @"CommunityCellReuseIdentifier";
-static NSString * ExecutorsCellReuseIdentifier = @"ExecutorsCellReuseIdentifier";
-static NSString * ComplexityCellReuseIdentifier = @"ComplexityCellReuseIdentifier";
-static NSString * EstimatedTimeCellReuserIdentifier = @"EstimatedTimeCellReuserIdentifier";
-static NSString * ComplexityEstimatedTimeCellReuseIdentifier =  @"ComplexityEstimatedTimeCellReuseIdentifier";
+NSString * const TaskModelTextEditAction   = @"TaskModelTextEditAction";
+NSString * const TaskModelDataPickerAction = @"TaskModelDataPickerAction";
+NSString * const TaskModelComplexityAction = @"TaskModelComplexityAction";
+NSString * const TaskModelCommunityAction  = @"TaskModelCommunityAction";
+NSString * const TaskModelExecutorsAction  = @"TaskModelExecutorsAction";
+
+static NSString * IQTextCellReuseIdentifier = @"IQTextCellReuseIdentifier";
 
 #define MAX_NUMBER_OF_CHARACTERS 255
-
-@interface NSObject(TaskModelCells)
-
-+ (CGFloat)heightForItem:(id)item detailTitle:(NSString*)detailTitle width:(CGFloat)width;
-
-@end
 
 @interface TaskModel() {
     BOOL _isExecutersChangesEnabled;
     IQTaskDataHolder * _initState;
+    NSArray *_cellClasses;
 }
 
 @end
 
 @implementation TaskModel
 
-#pragma mark - Cells Factory methods
-
-+ (Class)cellClassAtIndexPath:(NSIndexPath*)indexPath {
++ (Class)cellClassForItem:(id)item {
     static NSDictionary * _cellsClasses = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
         _cellsClasses = @{
-                          @(0) : [IQEditableTextCell class],
-#ifdef IPAD
-                          @(1) : [IQEMultiLineTextCell class],
-                          @(2) : [IQCommunityExecutorCell class],
-                          @(3) : [IQComplexityEstimatedTimeDoubleCell class],
-                          @(4) : [IQDoubleDateTextCell class],
-#else
-                          @(1) : [IQDetailsTextCell class],
-                          @(2) : [TaskCommunityCell class],
-                          @(3) : [TaskExecutersCell class],
-                          @(4) : [TaskComplexityCell class],
-                          @(5) : [TaskEstimatedTimeCell class],
-                          @(6) : [IQDateDetailsCell class],
-                          @(7) : [IQDateDetailsCell class]
-#endif
+                          NSStringFromClass([IQTaskEstimatedTimeItem class]) : [IQEstimatedTimeCell class],
                           };
     });
     
-    Class cellClass = [_cellsClasses objectForKey:@(indexPath.row)];
-    
-    return (cellClass) ? cellClass : [IQEditableTextCell class];
+    Class cellClass = [_cellsClasses objectForKey:NSStringFromClass([item class])];
+    return (cellClass) ? cellClass : [IQTextCell class];
 }
 
-+ (NSString*)cellIdentifierForItemAtIndexPath:(NSIndexPath*)indexPath {
-    static NSDictionary * _cellsIdentifiers = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _cellsIdentifiers = @{
-                              @(0) : CellReuseIdentifier,
-#ifdef IPAD
-                              @(1) : CellReuseIdentifier,
-                              @(2) : DoubleDetailCellReuseIdentifier,
-                              @(3) : ComplexityEstimatedTimeCellReuseIdentifier,
-                              @(4) : DoubleDateCellReuseIdentifier
-#else
-                              @(1) : DetailCellReuseIdentifier,
-                              @(2) : CommunityCellReuseIdentifier,
-                              @(3) : ExecutorsCellReuseIdentifier,
-                              @(4) : ComplexityCellReuseIdentifier,
-                              @(5) : EstimatedTimeCellReuserIdentifier,
-                              @(6) : DateCellReuseIdentifier,
-                              @(7) : DateCellReuseIdentifier
-#endif
-                              };
-    });
-    
-    if([_cellsIdentifiers objectForKey:@(indexPath.row)]) {
-        return [_cellsIdentifiers objectForKey:@(indexPath.row)];
++ (NSString *)reuseIdentifierForCellClass:(id)cellClass {
+    if ([cellClass isKindOfClass:[NSArray class]]) {
+        return [IQMultipleCellsCell reuseIdentifierForCellClasses:cellClass];
     }
-    
-    return CellReuseIdentifier;
+    return NSStringFromClass(cellClass);
 }
 
-#pragma mark - TaskModel
-
-- (id)init {
+- (instancetype)initWithDefaultCommunity:(IQCommunity *)community {
     self = [super init];
-    if(self) {
-
+    if (self) {
+        _defaultCommunity = community;
+        _task = [self createTask];
+        _initState = [_task copy];
+        _isExecutersChangesEnabled = (![[_task.community.type lowercaseString] isEqualToString:@"defaultcommunity"]);
+        _items = [self generateItems];
+        _cellClasses = [self generateCellClasses];
     }
     return self;
 }
 
-- (void)setTask:(IQTaskDataHolder *)task {
-    _task = task;
-    _initState = [_task copy];
-    _isExecutersChangesEnabled = (![[_task.community.type lowercaseString] isEqualToString:@"defaultcommunity"]);
-}
-
-- (NSUInteger)numberOfSections {
-    return 1;
-}
-
-- (NSUInteger)numberOfItemsInSection:(NSInteger)section {
-#ifdef IPAD
-    return 5;
-#else
-    return (_isExecutersChangesEnabled) ? 8 : 7;
-#endif
-}
-
-- (id)itemAtIndexPath:(NSIndexPath *)indexPath {
-    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
-    NSUInteger numberOfSections = [self numberOfSections];
-    NSUInteger numberOfRows = (!IS_IPAD) ? [self numberOfItemsInSection:indexPath.section] : 8;
-    
-    if(indexPath.section < numberOfSections && indexPath.row < numberOfRows) {
-        return [self fieldValueAtIndexPath:realIndexPath];
+- (instancetype)initWithTask:(IQTaskDataHolder *)task {
+    self = [super init];
+    if (self) {
+        _task = task;
+        _initState = [_task copy];
+        _isExecutersChangesEnabled = (![[_task.community.type lowercaseString] isEqualToString:@"defaultcommunity"]);
+        _items = [self generateItems];
+        _cellClasses = [self generateCellClasses];
     }
-    return nil;
+    return self;
 }
 
-- (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {    
-    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
+- (IQTaskDataHolder*)createTask {
+    NSDate * today = [NSDate date];
+    IQTaskDataHolder * task = [[IQTaskDataHolder alloc] init];
+    task.startDate = [today beginningOfDay];
+    task.endDate = [today endOfDay];
+    task.community = self.defaultCommunity;
+    return task;
+}
 
-    Class cellClass = [TaskModel cellClassAtIndexPath:realIndexPath];
+#pragma mark - Cells Factory methods
+
+- (NSArray *)generateItems {
+    NSMutableArray *mutableItems = [[NSMutableArray alloc] init];
+    [mutableItems addObject:[[IQTaskTitleItem alloc] initWithTask:_task]];
+    [mutableItems addObject:[[IQTaskDescriptionItem alloc] initWithTask:_task]];
     
-    UITableViewCell * cell = [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                              reuseIdentifier:[TaskModel cellIdentifierForItemAtIndexPath:realIndexPath]];
-    
-    return cell;
+    if (_isExecutersChangesEnabled) {
+#ifdef IPAD
+        [mutableItems addObject:@[[[IQTaskCommunityItem alloc] initWithTask:_task],
+                                  [[IQTaskExecutorsItem alloc] initWithTask:_task],
+                                  ]];
+#else 
+        [mutableItems addObject:[[IQTaskCommunityItem alloc] initWithTask:_task]];
+        [mutableItems addObject:[[IQTaskExecutorsItem alloc] initWithTask:_task]];
+#endif
+    }
+    else {
+        [mutableItems addObject:[[IQTaskCommunityItem alloc] initWithTask:_task]];
+    }
+#ifdef IPAD
+    [mutableItems addObject:@[[[IQTaskComplexityItem alloc] initWithTask:_task],
+                              [[IQTaskEstimatedTimeItem alloc] initWithTask:_task]
+                              ]];
+    [mutableItems addObject:@[[[IQTaskStartDateItem alloc] initWithTask:_task],
+                              [[IQTaskEndDateItem alloc] initWithTask:_task]
+                              ]];
+#else
+    [mutableItems addObject:[[IQTaskComplexityItem alloc] initWithTask:_task]];
+    [mutableItems addObject:[[IQTaskEstimatedTimeItem alloc] initWithTask:_task]];
+    [mutableItems addObject:[[IQTaskStartDateItem alloc] initWithTask:_task]];
+    [mutableItems addObject:[[IQTaskEndDateItem alloc] initWithTask:_task]];
+#endif
+    return [mutableItems copy];
+}
+
+- (NSArray *)generateCellClasses {
+    NSMutableArray *mutableCellClasses = [[NSMutableArray alloc] initWithCapacity:[_items count]];
+    for (id item in _items) {
+        if ([item isKindOfClass:[NSArray class]]) {
+            NSMutableArray *nestedArray = [[NSMutableArray alloc] initWithCapacity:[item count]];
+            for (id nestedItem in item) {
+                [nestedArray addObject:[TaskModel cellClassForItem:nestedItem]];
+            }
+            [mutableCellClasses addObject:[nestedArray copy]];
+        }
+        else {
+            [mutableCellClasses addObject:[TaskModel cellClassForItem:item]];
+        }
+    }
+    return [mutableCellClasses copy];
+}
+
+- (void)updateItems {
+    for (id item in _items) {
+        if ([item isKindOfClass:[NSArray class]]) {
+            for (id nestedItem in item) {
+                [nestedItem setTask:_task];
+            }
+        }
+        else {
+            [item setTask:_task];
+        }
+    }
+
+}
+
+#pragma mark - IQTableModel
+
+- (void)updateModelWithCompletion:(void (^)(NSError *))completion {
+    if (completion) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(nil);
+        });
+    }
+}
+
+- (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
+    id cellClass = [_cellClasses objectAtIndex:indexPath.row];
+    if ([cellClass isKindOfClass:[NSArray class]]) {
+        return [[IQMultipleCellsCell alloc] initWithStyle:UITableViewCellStyleSubtitle cellClassess:cellClass];
+    }
+    return [[cellClass alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[self reuseIdentifierForIndexPath:indexPath]];
+}
+
+- (NSString *)reuseIdentifierForIndexPath:(NSIndexPath *)indexPath {
+    id cellClass = [_cellClasses objectAtIndex:indexPath.row];
+    return [NSString stringWithFormat:@"%@%li", [TaskModel reuseIdentifierForCellClass:cellClass], (long)indexPath.row];
 }
 
 - (CGFloat)heightForItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
-    Class cellClass = [TaskModel cellClassAtIndexPath:realIndexPath];
     
-    NSString * detaiTitle = [self detailTitleForItemAtIndexPath:indexPath];
+    id cellClass = [_cellClasses objectAtIndex:indexPath.row];
     id item = [self itemAtIndexPath:indexPath];
-    if ([cellClass respondsToSelector:@selector(heightForItem:detailTitle:width:)]) {
-        return [cellClass heightForItem:item detailTitle:detaiTitle width:self.cellWidth];
+
+    if ([cellClass isKindOfClass:[NSArray class]]) {
+        return [IQMultipleCellsCell heightForItem:item cellClasses:cellClass width:self.cellWidth];
     }
-    else if ([cellClass respondsToSelector:@selector(heightForComplexity:estimatedTime:widht:)]) {
-        return [cellClass heightForComplexity:_task.complexity estimatedTime:_task.estimatedTimeSeconds widht:self.cellWidth];
-    }
-    return 50.0f;
+    return [cellClass heightForItem:item width:self.cellWidth];
 }
 
-- (NSString*)reuseIdentifierForIndexPath:(NSIndexPath *)indexPath {
-    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
-    return [TaskModel cellIdentifierForItemAtIndexPath:realIndexPath];
-}
-
-- (NSString*)detailTitleForItemAtIndexPath:(NSIndexPath*)indexPath {
-    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
-   static NSDictionary * _titlies = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _titlies = @{ @(0) : @"Title",
-                      @(1) : @"Description",
-                      @(2) : @"Community",
-                      @(3) : @"Performers",
-                      @(4) : @"Complexity",
-                      @(5) : @"Estimated time",
-                      @(6) : @"Begins",
-                      @(7) : @"Perform to"};
-    });
-    
-    NSString * title = _titlies[@(realIndexPath.row)];
-    return title;
-}
-
-- (NSString*)placeholderForItemAtIndexPath:(NSIndexPath*)indexPath {
-    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
-    static NSDictionary * _placeholders = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _placeholders = @{ @(0) : @"Title",
-                           @(1) : @"Description",
-                           @(2) : @"Community",
-                           @(3) : @"Executors",
-                           @(4) : @"Normal",
-                           @(5) : @"0:00",
-                           @(6) : @"Begins",
-                           @(7) : @"Perform to"};
-    });
-    
-    NSString * placeholder = _placeholders[@(realIndexPath.row)];
-    return NSLocalizedString(placeholder, nil);
-}
-
-- (void)updateModelWithCompletion:(void (^)(NSError *))completion {
-    NSError * error = nil;
-
-    if (self.task == nil) {
-        self.task = [self createTask];
-    }
-    
-    if (completion) {
-        completion(error);
-    }
-}
-
-- (void)updateFieldAtIndexPath:(NSIndexPath*)indexPath withValue:(id)value {
+- (void)updateItem:(id<IQTaskItemProtocol>)item atIndexPath:(NSIndexPath *)indexPath withValue:(id)value {
     if (indexPath != nil) {
-        NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
-        NSString * field = [self fieldAtIndexPath:realIndexPath];
-        if ([self.task respondsToSelector:NSSelectorFromString(field)]) {
-            [self.task setValue:value forKey:field];
+        [item updateWithTask:_task value:value];
+        
+        if ([item isKindOfClass:[IQTaskCommunityItem class]]) {
+            IQCommunity * community = value;
             
-            if (realIndexPath.row == 2) {
-                IQCommunity * community = value;
+            self.task.executors = nil;
+            
+            BOOL isExecutersChangesEnabled = (![[community.type lowercaseString] isEqualToString:@"defaultcommunity"]);
+            if (_isExecutersChangesEnabled != isExecutersChangesEnabled) {
+                _isExecutersChangesEnabled = isExecutersChangesEnabled;
                 
-                self.task.executors = nil;
-                
-                BOOL isExecutersChangesEnabled = (![[community.type lowercaseString] isEqualToString:@"defaultcommunity"]);
-                if (_isExecutersChangesEnabled != isExecutersChangesEnabled) {
-                    _isExecutersChangesEnabled = isExecutersChangesEnabled;
-                    
-                    if (!_isExecutersChangesEnabled) {
-                        IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
-                                                 inContext:[IQService sharedService].context];
-                        TaskExecutor * executor = [[TaskExecutor alloc] init];
-                        executor.executorId = user.userId;
-                        executor.executorName = user.displayName;
-                        self.task.executors = @[executor];
-                    }
-
-                    [self modelDidChanged];
+                if (!_isExecutersChangesEnabled) {
+                    IQUser * user = [IQUser userWithId:[IQSession defaultSession].userId
+                                             inContext:[IQService sharedService].context];
+                    TaskExecutor * executor = [[TaskExecutor alloc] init];
+                    executor.executorId = user.userId;
+                    executor.executorName = user.displayName;
+                    self.task.executors = @[executor];
                 }
-            }
-            
-#ifdef IPAD
-            if (realIndexPath.row > 1 && realIndexPath.row != 5) {
-#else
-            if (realIndexPath.row != 0 && realIndexPath.row != 5) {
-#endif
-                [self modelWillChangeContent];
-                [self modelDidChangeObject:nil
-                               atIndexPath:indexPath
-                             forChangeType:NSFetchedResultsChangeUpdate
-                              newIndexPath:nil];
-                [self modelDidChangeContent];
+                [self updateItems];
+                [self modelDidChanged];
             }
         }
-    }
-}
-
-- (BOOL)isItemEnabledAtIndexPath:(NSIndexPath*)indexPath {
-    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
-    if (self.task.taskId != nil && realIndexPath.row == 2) {
-        return NO;
-    }
-#ifdef IPAD
-    else if(realIndexPath.row == 3) {
-        return _isExecutersChangesEnabled;
-    }
-#endif
-    return YES;
-}
-
-- (NSIndexPath*)realIndexPathForPath:(NSIndexPath*)indexPath {
-#ifndef IPAD
-    if (!_isExecutersChangesEnabled) {
-        if (indexPath.row > 2) {
-            return [NSIndexPath indexPathForRow:indexPath.row + 1
-                                      inSection:indexPath.section];
+        else if ([item isKindOfClass:[IQTaskStartDateItem class]]) {
+            [self updateItems];
+            [self modelDidChanged];
+        }
+        else if (![item editable]) {
+            [self modelWillChangeContent];
+            [self modelDidChangeObject:nil
+                                           atIndexPath:indexPath
+                                         forChangeType:NSFetchedResultsChangeUpdate
+                                          newIndexPath:nil];
+            [self modelDidChangeContent];
         }
     }
-#endif
-    return indexPath;
 }
 
 - (NSInteger)maxNumberOfCharactersForPath:(NSIndexPath*)indexPath {
-    NSIndexPath * realIndexPath = [self realIndexPathForPath:indexPath];
-    return (realIndexPath.row == 0) ? MAX_NUMBER_OF_CHARACTERS : NSIntegerMax;
+    return (indexPath.row == 0) ? MAX_NUMBER_OF_CHARACTERS : NSIntegerMax;
 }
 
 - (BOOL)modelHasChanges {
@@ -327,45 +269,6 @@ static NSString * ComplexityEstimatedTimeCellReuseIdentifier =  @"ComplexityEsti
 }
 
 #pragma mark - Private methods
-    
-- (id)fieldValueAtIndexPath:(NSIndexPath*)indexPath {
-    NSString * field = [self fieldAtIndexPath:indexPath];
-    if ([self.task respondsToSelector:NSSelectorFromString(field)]) {
-        return [self.task valueForKey:field];
-    }
-    return nil;
-}
-
-- (NSString*)fieldAtIndexPath:(NSIndexPath*)indexPath {
-    static NSDictionary * _fields = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _fields = @{
-                    @(0) : @"title",
-                    @(1) : @"taskDescription",
-                    @(2) : @"community",
-                    @(3) : @"executors",
-                    @(4) : @"complexity",
-                    @(5) : @"estimatedTimeSeconds",
-                    @(6) : @"startDate",
-                    @(7) : @"endDate"
-                    };
-    });
-    
-    if([_fields objectForKey:@(indexPath.row)]) {
-        return _fields[@(indexPath.row)];
-    }
-    return nil;
-}
-
-- (IQTaskDataHolder*)createTask {
-    NSDate * today = [NSDate date];
-    IQTaskDataHolder * task = [[IQTaskDataHolder alloc] init];
-    task.startDate = [today beginningOfDay];
-    task.endDate = [today endOfDay];
-    task.community = self.defaultCommunity;
-    return task;
-}
 
 - (BOOL)executrosHasChanges {
     BOOL selectionIsEmpty = (_task.executors == nil && _initState.executors == nil);

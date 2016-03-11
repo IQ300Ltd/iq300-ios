@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "IQ300/Tasks/Controller/CreatEditTask/TaskController.m"
-            timestampString = "479225480.263708"
+            filePath = "IQ300/Tasks/Model/CreatEditTask/TaskModel.m"
+            timestampString = "479376018.776979"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "217"
-            endingLineNumber = "217"
-            landmarkName = "-tableView:didSelectRowAtIndexPath:"
+            startingLineNumber = "223"
+            endingLineNumber = "223"
+            landmarkName = "-updateItem:atIndexPath:withValue:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

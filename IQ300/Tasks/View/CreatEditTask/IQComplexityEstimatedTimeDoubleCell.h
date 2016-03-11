@@ -8,14 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "TaskComplexityCell.h"
-#import "TaskEstimatedTimeCell.h"
+#import "IQEstimatedTimeCell.h"
 
 @class IQComplexity;
 
 @interface IQComplexityEstimatedTimeDoubleCell : UITableViewCell
 
 @property (nonatomic, strong) TaskComplexityCell *complexityCell;
-@property (nonatomic, strong) TaskEstimatedTimeCell *estimatedCell;
+@property (nonatomic, strong) IQEstimatedTimeCell *estimatedCell;
 
 
 + (CGFloat)heightForComplexity:(IQComplexity *)compexity estimatedTime:(NSNumber *)esimatedTime widht:(CGFloat)widht;

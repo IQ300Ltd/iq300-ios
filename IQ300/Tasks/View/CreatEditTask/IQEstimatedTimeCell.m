@@ -7,25 +7,26 @@
 //
 
 #import <CoreText/CoreText.h>
-#import "TaskEstimatedTimeCell.h"
-#import "IQDetailsTextCell.h"
+#import "IQTextCell.h"
+#import "IQEstimatedTimeCell.h"
+#import "IQTaskEstimatedTimeItem.h"
 
 #define COMMA_INSET 2.0f
 #define HOURS_INSET 0.0f
 #define HOURS_WIDHT_ADDITION 10.0f
 
-@interface TaskEstimatedTimeCell () {
+@interface IQEstimatedTimeCell () <UITextFieldDelegate> {
     UIEdgeInsets _contentInsets;
 }
 
 @end
 
-@implementation TaskEstimatedTimeCell
+@implementation IQEstimatedTimeCell
 
-+ (CGFloat)heightForItem:(id)item detailTitle:(NSString*)detailTitle width:(CGFloat)width {
++ (CGFloat)heightForItem:(IQTaskEstimatedTimeItem *)item width:(CGFloat)width {
     CGFloat actualWidht = width - CONTENT_HORIZONTAL_INSETS;
     CGFloat height = CONTENT_VERTICAL_INSETS * 2.0f;
-
+    
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
     label.font = TEXT_FONT;
     label.textColor = TEXT_COLOR;
@@ -50,6 +51,7 @@
     
     height += MAX(labelSize.height, MAX(minutesSize.height, hoursSize.height));
     return MAX(height, CELL_MIN_HEIGHT);
+
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -89,6 +91,7 @@
         _hoursTextField.returnKeyType = UIReturnKeyNext;
         _hoursTextField.keyboardType = UIKeyboardTypeDecimalPad;
         [_hoursTextField setPlaceholder:NSLocalizedString(@"HH", nil)];
+        _hoursTextField.delegate = self;
         [self.contentView addSubview:_hoursTextField];
         
         _minutesTextField = [[UITextField alloc] initWithFrame:CGRectZero];
@@ -98,6 +101,7 @@
         _minutesTextField.backgroundColor = [UIColor clearColor];
         _minutesTextField.returnKeyType = UIReturnKeyDone;
         _minutesTextField.keyboardType = UIKeyboardTypeDecimalPad;
+        _minutesTextField.delegate = self;
 
         [_minutesTextField setPlaceholder:NSLocalizedString(@"MM", nil)];
         [self.contentView addSubview:_minutesTextField];
@@ -142,17 +146,85 @@
                                         actualBounds.size.height);
 }
 
-- (void)setItem:(NSNumber *)item {
-    if (item && [item isKindOfClass:[NSNumber class]]) {
-        NSUInteger seconds = item.unsignedIntegerValue;
-        
-        NSUInteger hours = (NSUInteger)(seconds / 3600);
-        NSUInteger minutes = (NSUInteger)(seconds - hours * 3600) / 60;
-        
-        _hoursTextField.text = (hours == 0 ? nil : [NSString stringWithFormat:(hours < 10 ? @"0%lu" : @"%lu"), (unsigned long)hours]);
-        _minutesTextField.text = ((hours == 0 && minutes == 0) ? nil : [NSString stringWithFormat:(minutes < 10 ? @"0%lu" : @"%lu"), (unsigned long)minutes]);
+- (CGFloat)heightForWidth:(CGFloat)width {
+    CGFloat actualWidht = width - CONTENT_HORIZONTAL_INSETS;
+    CGFloat height = CONTENT_VERTICAL_INSETS * 2.0f;
+    
+    
+    CGSize labelSize = [_label sizeThatFits:CGSizeMake(actualWidht, CGFLOAT_MAX)];
+    CGSize hoursSize = [_hoursTextField sizeThatFits:CGSizeMake(actualWidht, CGFLOAT_MAX)];
+    CGSize minutesSize = [_minutesTextField sizeThatFits:CGSizeMake(actualWidht, CGFLOAT_MAX)];
+    
+    height += MAX(labelSize.height, MAX(minutesSize.height, hoursSize.height));
+    return MAX(height, CELL_MIN_HEIGHT);
+}
+
+- (void)setItem:(IQTaskEstimatedTimeItem *)item {
+    _hoursTextField.text = item.hours;
+    _minutesTextField.text = item.minutes;
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    if (_delegate) {
+        if ([_delegate respondsToSelector:@selector(estimatedTimeCell:textFieldShouldBeginEditing:)]) {
+            return [_delegate estimatedTimeCell:self textFieldShouldBeginEditing:textField];
+        }
+    }
+    return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    if (_delegate) {
+        if ([_delegate respondsToSelector:@selector(estimatedTimeCell:textFieldDidBeginEditing:)]) {
+            [_delegate estimatedTimeCell:self textFieldDidBeginEditing:textField];
+        }
     }
 }
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    if (_delegate) {
+        if ([_delegate respondsToSelector:@selector(estimatedTimeCell:textFieldShouldEndEditing:)]) {
+            return [_delegate estimatedTimeCell:self textFieldShouldEndEditing:textField];
+        }
+    }
+    return YES;
+}
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    if (_delegate) {
+        if ([_delegate respondsToSelector:@selector(estimatedTimeCell:textFieldDidEndEditing:)]) {
+            [_delegate estimatedTimeCell:self textFieldDidEndEditing:textField];
+        }
+    }
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    if (_delegate) {
+        if ([_delegate respondsToSelector:@selector(estimatedTimeCell:textField:shouldChangeCharactersInRange:replacementString:)]) {
+            return [_delegate estimatedTimeCell:self textField:textField shouldChangeCharactersInRange:range replacementString:string];
+        }
+    }
+    return YES;
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField {
+    if (_delegate) {
+        if ([_delegate respondsToSelector:@selector(estimatedTimeCell:textFieldShouldClear:)]) {
+            return [_delegate estimatedTimeCell:self textFieldShouldClear:textField];
+        }
+    }
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if (_delegate) {
+        if ([_delegate respondsToSelector:@selector(estimatedTimeCell:textFieldShouldReturn:)]) {
+            return [_delegate estimatedTimeCell:self textFieldShouldReturn:textField];
+        }
+    }
+    return YES;
+}
+
+
 
 
 @end

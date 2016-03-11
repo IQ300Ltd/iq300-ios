@@ -19,20 +19,30 @@
 #import "IQCommunity.h"
 #import "NSDate+CupertinoYankee.h"
 #import "TaskComplexityController.h"
-#import "TaskEstimatedTimeCell.h"
+#import "IQEstimatedTimeCell.h"
 
 #ifdef IPAD
 #import "IQDoubleDetailsTextCell.h"
 #import "IQComplexityEstimatedTimeDoubleCell.h"
 #endif
 
+#import "IQTextCell.h"
+#import "IQMultipleCellsCell.h"
+
+#import "IQTaskItems.h"
+#import "IQMultipleCellsCell.h"
+#import "IQEstimatedTimeCell.h"
+
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
 #define BOTTOM_VIEW_HEIGHT 0
 
-@interface TaskController() <UITextFieldDelegate> {
+@interface TaskController() <IQEstimatedTimeCellDelegate, IQMultipleCellsCellDelegate, IQEstimatedTimeCellDelegate, IQTextCellDelegate> {
+    NSIndexPath *_editingIndexPath;
+    UITableViewCell *_editingCell;
+    id _editingItem;
+    
     CGFloat _tableBottomMarging;
-    NSIndexPath * _editableIndexPath;
 }
 
 @end
@@ -107,185 +117,144 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.model.cellWidth = tableView.frame.size.width;
-#ifdef IPAD
-    if (indexPath.row > 1) {
-        CGFloat firstHeight = [self.model heightForItemAtIndexPath:indexPath];
-        CGFloat secondHeight = [self.model heightForItemAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1
-                                                                                       inSection:indexPath.section]];
-        return MAX(firstHeight, secondHeight);
-    }
-#endif
     return [self.model heightForItemAtIndexPath:indexPath];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQEditableTextCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
+    UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:[self.model reuseIdentifierForIndexPath:indexPath]];
     
     if (!cell) {
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-#ifdef IPAD
-    if ([cell isKindOfClass:[IQDoubleDetailsTextCell class]]) {
-        NSIndexPath * itemIndexPath = [indexPath copy];
-        if (indexPath.row == 4) {
-            itemIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1
-                                               inSection:indexPath.section];
-        }
-        
-        IQDoubleDetailsTextCell * doubleCell = (IQDoubleDetailsTextCell*)cell;
-        cell.tag = itemIndexPath.row;
-        NSIndexPath * secondIndexPath = [NSIndexPath indexPathForRow:itemIndexPath.row + 1
-                                                           inSection:itemIndexPath.section];
-        
-        doubleCell.detailTitle = [self.model detailTitleForItemAtIndexPath:itemIndexPath];
-        doubleCell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:itemIndexPath];
-        doubleCell.titleTextView.delegate = (id<UITextViewDelegate>)self;
-        doubleCell.enabled = [self.model isItemEnabledAtIndexPath:itemIndexPath];
-        
-        doubleCell.secondDetailTitle = [self.model detailTitleForItemAtIndexPath:secondIndexPath];
-        doubleCell.secondTitleTextView.placeholder = [self.model placeholderForItemAtIndexPath:secondIndexPath];
-        doubleCell.secondTitleTextView.delegate = (id<UITextViewDelegate>)self;
-        doubleCell.secondEnabled = [self.model isItemEnabledAtIndexPath:secondIndexPath];
-        
-        id item = [self.model itemAtIndexPath:itemIndexPath];
-        id secondItem = [self.model itemAtIndexPath:secondIndexPath];
-        
-        doubleCell.item = @[NSObjectNullForNil(item), NSObjectNullForNil(secondItem)];
+    if ([cell respondsToSelector:@selector(setItem:)]) {
+        [cell performSelector:@selector(setItem:) withObject:[self.model itemAtIndexPath:indexPath]];
     }
-    else if ([cell isKindOfClass:[IQComplexityEstimatedTimeDoubleCell class]]){
-        NSIndexPath * itemIndexPath = [indexPath copy];
-        if (indexPath.row == 3) {
-            itemIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1
-                                               inSection:indexPath.section];
-        }
-        NSIndexPath * secondIndexPath = [NSIndexPath indexPathForRow:itemIndexPath.row + 1
-                                                           inSection:itemIndexPath.section];
-        
-        IQComplexityEstimatedTimeDoubleCell *complexityCell = (IQComplexityEstimatedTimeDoubleCell *)cell;
-        IQComplexity *complexity = [self.model itemAtIndexPath:itemIndexPath];
-        NSNumber *time = [self.model itemAtIndexPath:secondIndexPath];
-        [complexityCell setComplexity:complexity estimatedTime:time];
-        
-        complexityCell.estimatedCell.hoursTextField.delegate = self;
-        complexityCell.estimatedCell.hoursTextField.tag = 1;
-        complexityCell.estimatedCell.minutesTextField.delegate = self;
-        complexityCell.estimatedCell.minutesTextField.tag = 2;
-        
-        complexityCell.complexityCell.detailTitle = [self.model detailTitleForItemAtIndexPath:itemIndexPath];
-        complexityCell.complexityCell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:itemIndexPath];
-        complexityCell.complexityCell.titleTextView.delegate = (id<UITextViewDelegate>)self;
-    }
-    else {
-#endif
-        if ([cell isKindOfClass:[TaskEstimatedTimeCell class]]) {
-            TaskEstimatedTimeCell *timeCell = (TaskEstimatedTimeCell*)cell;
-            timeCell.hoursTextField.delegate = self;
-            timeCell.hoursTextField.tag = 1;
-            timeCell.minutesTextField.delegate = self;
-            timeCell.minutesTextField.tag = 2;
-        }
-        else {
-            cell.detailTitle = [self.model detailTitleForItemAtIndexPath:indexPath];
-            cell.titleTextView.placeholder = [self.model placeholderForItemAtIndexPath:indexPath];
-            cell.titleTextView.delegate = (id<UITextViewDelegate>)self;
-        }
-        cell.item = [self.model itemAtIndexPath:indexPath];
-        cell.enabled = [self.model isItemEnabledAtIndexPath:indexPath];
 
+    if ([cell respondsToSelector:@selector(setDelegate:)]) {
+        [cell performSelector:@selector(setDelegate:) withObject:self];
+    }
+    
 #ifdef IPAD
+    if ([cell isKindOfClass:[IQMultipleCellsCell class]]) {
+        IQMultipleCellsCell *multiCell = (IQMultipleCellsCell *)cell;
+        for (UITableViewCell *nestedCell in multiCell.cells) {
+            if ([nestedCell respondsToSelector:@selector(setDelegate:)]) {
+                [nestedCell performSelector:@selector(setDelegate:) withObject:self];
+            }
+        }
     }
 #endif
-
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQEditableTextCell * cell = (IQEditableTextCell*)[tableView cellForRowAtIndexPath:_editableIndexPath];
-    if  ([cell isKindOfClass:[TaskEstimatedTimeCell class]]) {
-        TaskEstimatedTimeCell *timeCell = (TaskEstimatedTimeCell*)cell;
-        if ((timeCell.hoursTextField.isFirstResponder || timeCell.minutesTextField.isFirstResponder) && ![indexPath isEqual:_editableIndexPath]) {
-            [timeCell.hoursTextField resignFirstResponder];
-            [timeCell.minutesTextField resignFirstResponder];
-        }
-    }
-    else if (cell.titleTextView.isFirstResponder && ![indexPath isEqual:_editableIndexPath]) {
-        //hide keyboard
-        [cell.titleTextView resignFirstResponder];
-    }
-    
-    NSIndexPath * realIndexPath = [self.model realIndexPathForPath:indexPath];
-    
-    if (realIndexPath.row > 5) {
-        [self showDataPickerForIndexPath:realIndexPath];
-    }
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    id item = [self.model itemAtIndexPath:indexPath];
+    [self performActionForItem:item cell:cell atIndexPath:indexPath];
+}
 
-#ifdef IPAD
-    else if(realIndexPath.row > 1 && realIndexPath.row != 5) {
-#else
-    else if(realIndexPath.row != 0 && realIndexPath.row != 5) {
-#endif
-        UIViewController<TaskFieldEditController> * controller = [self controllerForItemIndexPath:realIndexPath];
+- (void)multipleCellsCell:(IQMultipleCellsCell *)cell didSelectSubcellAtIndex:(NSUInteger)index {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    NSArray *items = [self.model itemAtIndexPath:indexPath];
+    id item = [items objectAtIndex:index];
+    UITableViewCell *nestedCell = [cell.cells objectAtIndex:index];
+    [self performActionForItem:item cell:nestedCell atIndexPath:indexPath];
+}
+
+- (void)performActionForItem:(id)item cell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
+    if (![_editingCell isEqual:cell]) {
+        [_editingCell endEditing:YES];
+        
+        _editingCell = cell;
+        _editingItem = item;
+        _editingIndexPath = indexPath;
+        
+        UIViewController <TaskFieldEditController> *controller = [self controllerForItem:item];
         if (controller) {
-            id item = [self.model itemAtIndexPath:indexPath];
-            controller.fieldIndexPath = indexPath;
-            controller.fieldValue = item;
             controller.task = self.model.task;
             controller.delegate = self;
             [self.navigationController pushViewController:controller animated:YES];
         }
+        else if ([item isKindOfClass:[IQTaskStartDateItem class]] ||
+                 [item isKindOfClass:[IQTaskEndDateItem class]]){
+            [self showDataPicker];
+        }
     }
 }
 
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-#ifdef IPAD
-    //Disable select for double details cell. See IQDoubleDetailsTextCell.
-    if(indexPath.row > 1) {
-        return nil;
+#pragma mark - IQTextCellDelegate
+
+- (BOOL)textCell:(IQTextCell *)cell textViewShouldBeginEditing:(UITextView *)textView {
+    _editingIndexPath = [self.tableView indexPathForCell:cell];
+    if (!_editingIndexPath) {
+        IQMultipleCellsCell *multiCell = nil;
+        UIView *superview = cell.superview;
+        while (![superview isKindOfClass:[IQMultipleCellsCell class]]) {
+            superview = superview.superview;
+        }
+        multiCell = (IQMultipleCellsCell *)superview;
+        _editingIndexPath = [self.tableView indexPathForCell:multiCell];
+        
+        NSArray *items = [self.model itemAtIndexPath:_editingIndexPath];
+        _editingItem = [items objectAtIndex:[multiCell.cells indexOfObject:cell]];
     }
-#endif
-    return ([self.model isItemEnabledAtIndexPath:indexPath]) ? indexPath : nil;
-}
-
-#pragma mark - UITextViewDelegate Methods
-
-- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
-    _editableIndexPath = [self indexPathForCellChildView:textView];
+    else {
+        _editingItem = [self.model itemAtIndexPath:_editingIndexPath];
+    }
+    _editingCell = cell;
     return YES;
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+- (BOOL)textCell:(IQTextCell *)cell textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    
     //Disable line wrapping text for specific cells
     if (textView.returnKeyType == UIReturnKeyDone && [text isEqualToString:@"\n"]) {
         [textView resignFirstResponder];
         return NO;
     }
-
+    
     NSString * newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
-    if (([newString length] <= [self.model maxNumberOfCharactersForPath:_editableIndexPath])) {
-        [self.model updateFieldAtIndexPath:_editableIndexPath withValue:newString];
+    if (([newString length] <= [self.model maxNumberOfCharactersForPath:_editingIndexPath])) {
+        [self.model updateItem:_editingItem atIndexPath:_editingIndexPath withValue:newString];
         return YES;
     }
     
     return NO;
 }
-    
-- (void)textViewDidChange:(UITextView *)textView {
+
+- (void)textCell:(IQTextCell *)cell textViewDidChange:(UITextView *)textView {
     UITextRange *range = textView.selectedTextRange;
     textView.text = textView.text;
     textView.selectedTextRange = range;
     [self updateCellFrameIfNeed];
 }
-    
-#pragma mark - UITextFieldDelegate Methods
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    _editableIndexPath = [self indexPathForCellChildView:textField];
+#pragma mark - IQEstemetedTimeCellDelegate
+
+- (BOOL)estimatedTimeCell:(IQEstimatedTimeCell *)cell textFieldShouldBeginEditing:(UITextField *)textField {
+    _editingIndexPath = [self.tableView indexPathForCell:cell];
+    if (!_editingIndexPath) {
+        IQMultipleCellsCell *multiCell = nil;
+        UIView *superview = cell.superview;
+        while (![superview isKindOfClass:[IQMultipleCellsCell class]]) {
+            superview = superview.superview;
+        }
+        multiCell = (IQMultipleCellsCell *)superview;
+        _editingIndexPath = [self.tableView indexPathForCell:multiCell];
+        
+        NSArray *items = [self.model itemAtIndexPath:_editingIndexPath];
+        _editingItem = [items objectAtIndex:[multiCell.cells indexOfObject:cell]];
+    }
+    else {
+        _editingItem = [self.model itemAtIndexPath:_editingIndexPath];
+    }
+    _editingCell = cell;
     return YES;
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-
+- (BOOL)estimatedTimeCell:(IQEstimatedTimeCell *)cell textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
     if ([string rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location != NSNotFound)
     {
         return NO;
@@ -297,23 +266,23 @@
         return !string.length;
     }
     
-    if (textField.tag == 2) {
+    if (textField == cell.minutesTextField) {
         if (updatedText.integerValue > 59) {
             return NO;
         }
     }
     
-    TaskEstimatedTimeCell *cell = [self.tableView cellForRowAtIndexPath:_editableIndexPath];
     
-    if (textField.tag == 1) {
-        [self.model updateFieldAtIndexPath:_editableIndexPath withValue:@(updatedText.integerValue * 3600 + cell.minutesTextField.text.integerValue * 60)];
-
+    if (textField == cell.hoursTextField) {
+        [self.model updateItem:_editingItem
+                   atIndexPath:_editingIndexPath
+                     withValue:@(updatedText.integerValue * 3600 + cell.minutesTextField.text.integerValue * 60)];
     }
     else {
-        [self.model updateFieldAtIndexPath:_editableIndexPath withValue:@(cell.hoursTextField.text.integerValue * 3600 + updatedText.integerValue * 60)];
+        [self.model updateItem:_editingItem
+                   atIndexPath:_editingIndexPath
+                     withValue:@(cell.hoursTextField.text.integerValue * 3600 + updatedText.integerValue * 60)];
     }
-    
-    
     return YES;
 }
     
@@ -323,15 +292,14 @@
     [self makeInputViewTransitionWithDownDirection:NO
                                       notification:notification];
     
-    if (_editableIndexPath) {
-        [self.tableView scrollToRowAtIndexPath:_editableIndexPath
+    if (_editingIndexPath) {
+        [self.tableView scrollToRowAtIndexPath:_editingIndexPath
                               atScrollPosition:UITableViewScrollPositionBottom
                                       animated:NO];
     }
 }
 
 - (void)onKeyboardWillHide:(NSNotification *)notification {
-    _editableIndexPath = nil;
     [self makeInputViewTransitionWithDownDirection:YES
                                       notification:notification];
 }
@@ -339,19 +307,17 @@
 #pragma mark - TaskFieldEditController delegate
 
 - (void)taskFieldEditController:(id<TaskFieldEditController>)controller didChangeFieldValue:(id)value {
-    [self.model updateFieldAtIndexPath:controller.fieldIndexPath withValue:value];
+    [self.model updateItem:_editingItem atIndexPath:_editingIndexPath withValue:value];
+    
+    _editingIndexPath = nil;
+    _editingCell = nil;
+    _editingItem = nil;
 }
 
 #pragma mark - TaskDescriptionController delegate
 
 - (void)descriptionControllerDidChangedText:(TaskDescriptionController*)controller {
-    self.model.task.taskDescription = controller.textView.text;
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:3 inSection:0]]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
-    }];
+    [self.model updateItem:_editingItem atIndexPath:_editingIndexPath withValue:controller.textView.text];
 }
 
 #pragma mark - Private methods
@@ -463,57 +429,70 @@
 }
 
 - (void)updateCellFrameIfNeed {
-    IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
-    CGFloat cellHeight = [IQEditableTextCell heightForItem:cell.titleTextView.text
-                                               detailTitle:cell.detailTitle
-                                                     width:self.model.cellWidth];
+    CGFloat cellHeight = [self.model heightForItemAtIndexPath:_editingIndexPath];
     
-    if (cell.frame.size.height != cellHeight) {
+    if (_editingCell.frame.size.height != cellHeight) {
         [self.tableView beginUpdates];
         [self.tableView endUpdates];
-        [self.tableView scrollToRowAtIndexPath:_editableIndexPath
+        [self.tableView scrollToRowAtIndexPath:_editingIndexPath
                               atScrollPosition:UITableViewScrollPositionBottom
                                       animated:YES];
     }
 }
 
-- (void)showDataPickerForIndexPath:(NSIndexPath*)indexPath {
-#ifdef IPAD
-    IQDoubleDetailsTextCell * cell = (IQDoubleDetailsTextCell*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:4
-                                                                                                                        inSection:indexPath.section]];
-    UIView * showInView = (indexPath.row == 5) ? cell.titleTextView : cell.secondTitleTextView;
-#else
-    IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:indexPath];
-    UIView * showInView = cell.titleTextView;
+- (Class)controllerClassForItem:(id)item {
+    static NSDictionary * _controllers = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        _controllers = @{
+#ifndef IPAD
+                         NSStringFromClass([IQTaskDescriptionItem class]) : [TaskDescriptionController class],
 #endif
+                         NSStringFromClass([IQTaskCommunityItem class]) : [CommunitiesController class],
+                         NSStringFromClass([IQTaskExecutorsItem class]) : [TaskExecutersController class],
+                         NSStringFromClass([IQTaskComplexityItem class]) : [TaskComplexityController class]
+                         };
+    });
+    return  [_controllers objectForKey:NSStringFromClass([item class])];
+}
+
+- (UIViewController<TaskFieldEditController>*)controllerForItem:(id)item {
     
-    BOOL isBeginDateEdit = (indexPath.row == 4);
+    Class controllerClass = [self controllerClassForItem:item];
+    if(controllerClass) {
+        UIViewController<TaskFieldEditController> * controller = [[controllerClass alloc] init];
+        return controller;
+    }
+    
+    return nil;
+}
+
+- (void)showDataPicker{
+    UIView * showInView = _editingCell;
+
+    BOOL isBeginDateEdit = [_editingItem isKindOfClass:[IQTaskStartDateItem class]];
     NSString * title = [NSString stringWithFormat:@"%@:", NSLocalizedString((isBeginDateEdit) ? @"Begins" : @"Perform to", nil)];
     NSDate * selectedDate = (isBeginDateEdit) ? self.model.task.startDate : self.model.task.endDate;
     
     __weak typeof (self) weakSelf = self;
     ActionDateDoneBlock doneBlock = ^(ActionSheetDatePicker *picker, NSDate * selectedDate, id origin) {
-        if (isBeginDateEdit) {
-            weakSelf.model.task.startDate = selectedDate;
-            if ([selectedDate compare:weakSelf.model.task.endDate] == NSOrderedDescending) {
-                weakSelf.model.task.endDate = [selectedDate endOfDay];
-            }
-        }
-        else {
-            weakSelf.model.task.endDate = selectedDate;
-        }
-        
-        [weakSelf.model updateModelWithCompletion:^(NSError *error) {
-            [weakSelf.tableView reloadData];
-        }];
+        [weakSelf.model updateItem:_editingItem atIndexPath:_editingIndexPath withValue:selectedDate];
+        _editingItem = nil;
+        _editingIndexPath = nil;
+        _editingCell = nil;
     };
+    
+    
     
     ActionSheetDatePicker * picker = [[ActionSheetDatePicker alloc] initWithTitle:title
                                                                    datePickerMode:UIDatePickerModeDateAndTime
                                                                      selectedDate:selectedDate
                                                                         doneBlock:doneBlock
-                                                                      cancelBlock:nil
-                                                                           origin:showInView];
+                                                                      cancelBlock:^(ActionSheetDatePicker *picker) {
+                                                                          _editingCell = nil;
+                                                                          _editingIndexPath = nil;
+                                                                          _editingItem = nil;
+                                                                      } origin:showInView];
     
 #ifdef USE_DEFAULT_LOCALIZATION
     picker.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"ru_RU"];
@@ -538,36 +517,6 @@
                                                             target:nil
                                                             action:nil]];
     [picker showActionSheetPicker];
-}
-
-- (UIViewController<TaskFieldEditController>*)controllerForItemIndexPath:(NSIndexPath*)indexPath {
-    static NSDictionary * _controllers = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _controllers = @{
-                         @(1) : [TaskDescriptionController class],
-                         @(2) : [CommunitiesController class],
-                         @(3) : [TaskExecutersController class],
-                         @(4) : [TaskComplexityController class]
-                         };
-    });
-    
-    if([_controllers objectForKey:@(indexPath.row)]) {
-        Class controllerClass = _controllers[@(indexPath.row)];
-        UIViewController<TaskFieldEditController> * controller = [[controllerClass alloc] init];
-        return controller;
-    }
-    
-    return nil;
-}
-
-- (NSIndexPath*)indexPathForCellChildView:(UIView*)childView {
-    if ([childView.superview isKindOfClass:[UITableViewCell class]] || !childView.superview) {
-        UITableViewCell * cell = (UITableViewCell*)childView.superview;
-        return [self.tableView indexPathForCell:cell];
-    }
-    
-    return [self indexPathForCellChildView:childView.superview];
 }
 
 @end
