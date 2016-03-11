@@ -236,13 +236,13 @@
 }
 
 - (void)sendButtonAction:(UIBarButtonItem *)sender {
-    [self showActivityIndicator];
     if (_editableIndexPath) {
         IQEditableTextCell * cell = (IQEditableTextCell*)[self.tableView cellForRowAtIndexPath:_editableIndexPath];
         [cell.titleTextView resignFirstResponder];
     }
 
     if ([self isAllFieldsValid]) {
+        [self showActivityIndicator];
         dispatch_after_delay(0.5f, dispatch_get_main_queue(), ^{
             [self.model createFeedbackWithCompletion:^(NSError *error) {
                 [self hideActivityIndicator];
