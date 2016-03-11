@@ -14,6 +14,7 @@
 static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 
 @interface FeedbackCategoriesModel() {
+    NSArray *_filterIndexes;
 }
 
 @end
@@ -55,15 +56,15 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError *))completion {
-    if([_fetchController.fetchedObjects count] == 0) {
-        [self reloadModelSourceControllerWithCompletion:completion];
-    }
-
+    __weak typeof(self) weakSelf = self;
     [[IQService sharedService] feedbackCategoriesWithHandler:^(BOOL success, NSArray * items, NSData *responseData, NSError *error) {
-        if (completion) {
-            completion(error);
-        }
+        _filterIndexes = [items valueForKey:@"categoryId"];
+        [weakSelf reloadModelSourceControllerWithCompletion:completion];
     }];
+}
+
+- (NSPredicate *)fetchPredicate {
+    return [NSPredicate predicateWithFormat:@"SELF.categoryId IN %@", _filterIndexes];
 }
 
 @end
