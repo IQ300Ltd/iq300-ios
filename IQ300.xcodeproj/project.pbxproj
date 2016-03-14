@@ -4523,7 +4523,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "cfb8eba9-a1db-4b25-a98c-d63dc106ef52";
+				PROVISIONING_PROFILE = "97d552c7-dbf1-4ed2-980d-6c4ebe35f240";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -4597,7 +4597,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobileHD;
 				PRODUCT_NAME = "IQ 300 HD";
-				PROVISIONING_PROFILE = "41abce65-5340-4373-8af0-09cc997c3d9e";
+				PROVISIONING_PROFILE = "a1904a5e-5e13-48ac-acd4-fddb6eb0d29c";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -4635,7 +4635,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobileHD;
 				PRODUCT_NAME = "IQ 300 HD";
-				PROVISIONING_PROFILE = "cb83c270-3a5c-4fc8-a787-f171c772841f";
+				PROVISIONING_PROFILE = "001e1cce-1cdd-4431-8557-8b2ea6667901";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -4779,7 +4779,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ba62a303-a83a-4d4c-8ef1-8ad27abaefe7";
+				PROVISIONING_PROFILE = "373de8ef-4ffd-4adb-9237-f2dae109bdf3";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
