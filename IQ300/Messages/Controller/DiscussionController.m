@@ -111,7 +111,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
-         void (^completiation)(NSError * error) = ^(NSError * error) {
+         void (^completiation)(NSError * error, NSIndexPath *indexPath) = ^(NSError * error, NSIndexPath *indexPath) {
              if (error) {
                  NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
                  if (httpStatusCode == 403) {
@@ -123,6 +123,7 @@
              }
              else {
                  [self proccessUserAddToConversation];
+                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
              }
              
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];

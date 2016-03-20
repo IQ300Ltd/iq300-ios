@@ -213,7 +213,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         [self clearRemovedConversations];
 
         BOOL isFilterEnabled = ([_filter length] > 0);
-        [[IQService sharedService] conversationsUnread:nil
+        [[IQService sharedService] conversationsUnread:(_loadUnreadOnly) ? @(YES) : nil
                                                   page:@(1)
                                                    per:@(_portionLenght)
                                                 search:_filter

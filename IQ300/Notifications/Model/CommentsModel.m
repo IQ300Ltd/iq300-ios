@@ -58,8 +58,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         _expandedCells = [NSMutableDictionary dictionary];
         _expandableCells = [NSMutableDictionary dictionary];
         _portionLenght = 20;
-        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createDate" ascending:YES];
-        _sortDescriptors = @[descriptor];
+        NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"createDate" ascending:NO];
+        NSSortDescriptor * idSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"commentId" ascending:NO];
+        _sortDescriptors = @[descriptor, idSortDescriptor];
     }
     return self;
 }
@@ -112,9 +113,12 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (id)itemAtIndexPath:(NSIndexPath*)indexPath {
-    if(indexPath.section < [self numberOfSections] &&
-       indexPath.row < [self numberOfItemsInSection:indexPath.section]) {
-        return [_fetchController objectAtIndexPath:indexPath];
+    NSUInteger numberOfItems = [self numberOfItemsInSection:indexPath.section];
+    NSUInteger numberOfSections = [self numberOfSections];
+    if(indexPath.section < numberOfSections &&
+       indexPath.row < numberOfItems) {
+        return [_fetchController objectAtIndexPath:[NSIndexPath indexPathForRow:(numberOfItems - indexPath.row - 1)
+                                                                      inSection:numberOfSections - indexPath.section - 1]];
     }
     return nil;
 }
@@ -158,54 +162,70 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         [self reloadModelWithCompletion:completion];
     }
     else {
-        [self clearRemovedComments];
-        
-        [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                          page:@(1)
-                                                           per:@(_portionLenght)
-                                                          sort:SORT_DIRECTION
-                                                       handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                           if(completion) {
-                                                               completion(error);
-                                                           }
-                                                       }];
+        [self clearRemovedCommentsWithCompletion:^(BOOL success, NSData *responseData, NSError *error) {
+            [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                              page:@(1)
+                                                               per:@(_portionLenght)
+                                                              sort:SORT_DIRECTION
+                                                           handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                               if(completion) {
+                                                                   completion(error);
+                                                               }
+                                                           }];
+        }];
     }
 }
 
-- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion {
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error, NSIndexPath *indexPath))completion {
     if([_fetchController.fetchedObjects count] == 0) {
-        [self reloadModelWithCompletion:completion];
+        [self reloadModelWithCompletion:^(NSError *error) {
+            completion(error,  [NSIndexPath indexPathForRow:[self numberOfSections] > 0 ? [self numberOfItemsInSection:0] : 0 inSection:0]);
+        }];
     }
     else {
-        NSInteger count = [self numberOfItemsInSection:0];
-        NSInteger page = (count > 0) ? count / _portionLenght + 1 : 1;
-        [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                          page:@(page)
-                                                           per:@(_portionLenght)
-                                                          sort:SORT_DIRECTION
-                                                       handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                           if(completion) {
-                                                               completion(error);
-                                                           }
-                                                       }];
+        [self clearRemovedCommentsWithCompletion:^(BOOL success, NSData *responseData, NSError *error) {
+            if (success) {
+                NSInteger count = [_fetchController.fetchedObjects count];
+                NSInteger page = (count > 0) ? count / _portionLenght + 1 : 1;
+                [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                                  page:@(page)
+                                                                   per:@(_portionLenght)
+                                                                  sort:SORT_DIRECTION
+                                                               handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                                   if(!error) {
+                                                                       [self loadNextPartSourceControllerWithCount:comments.count completion:^(NSError *error, NSUInteger addedSectionsCount, NSUInteger addedRows) {
+                                                                           if(completion) {
+                                                                               completion(error, [NSIndexPath indexPathForRow:addedRows inSection:addedSectionsCount]);
+                                                                           }
+                                                                       }];
+                                                                   }
+                                                                   else if(completion) {
+                                                                       completion(error, nil);
+                                                                   }
+                                                                   
+                                                               }];
+            }
+            else {
+                if (completion) {
+                    completion(error, nil);
+                }
+            }
+        }];
     }
 }
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion {
-    [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
-        if (!error) {
-            [self modelDidChanged];
-        }
-    }];
-    
     [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
                                                       page:@(1)
                                                        per:@(_portionLenght)
                                                       sort:SORT_DIRECTION
                                                    handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                       if(completion) {
-                                                           completion(error);
-                                                       }
+                                               
+                                                       [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+                                                           if(completion) {
+                                                               completion(error);
+                                                           }
+                                                       }];
                                                    }];
 }
 
@@ -485,6 +505,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     
     NSError * fetchError = nil;
     [_fetchController.fetchRequest setPredicate:predicate];
+    [_fetchController.fetchRequest setFetchLimit:_portionLenght];
     [_fetchController.fetchRequest setSortDescriptors:_sortDescriptors];
     [_fetchController setDelegate:self];
     [_fetchController performFetch:&fetchError];
@@ -493,6 +514,37 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         completion(fetchError);
     }
 }
+
+- (void)loadNextPartSourceControllerWithCount:(NSUInteger)count
+                                   completion:(void (^)(NSError * error,
+                                                        NSUInteger addedSectionsCount, NSUInteger addedRows))completion {
+    NSError * fetchError = nil;
+    NSUInteger addedSectionsCount = 0;
+    NSUInteger addedRows = 0;
+    if (count > 0) {
+        [NSFetchedResultsController deleteCacheWithName:CACHE_FILE_NAME];
+        
+        NSUInteger sectionsCount = [self numberOfSections];
+        NSMutableArray *sections = [[NSMutableArray alloc] initWithCapacity:sectionsCount];
+        for (NSUInteger i = 0; i < sectionsCount; ++i) {
+            [sections addObject:@([self numberOfItemsInSection:i])];
+        }
+        
+        NSInteger fetchLimit = _fetchController.fetchRequest.fetchLimit;
+        
+        [_fetchController.fetchRequest setFetchLimit:fetchLimit + count];
+        [_fetchController performFetch:&fetchError];
+        if (!fetchError) {
+            addedSectionsCount = [self numberOfSections] - sectionsCount;
+            addedRows = [self numberOfItemsInSection:addedSectionsCount] - [[sections objectAtIndex:0] integerValue];
+            [self modelDidChanged];
+        }
+    }
+    if (completion) {
+        completion(fetchError, addedSectionsCount, addedRows);
+    }
+}
+
 
 - (NSString*)createCacheDirIfNeedWithError:(NSError**)error {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
@@ -565,18 +617,22 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     }
 }
 
-- (void)clearRemovedComments {
+- (void)clearRemovedCommentsWithCompletion:(RequestCompletionHandler)handler{
     NSDate * lastRequestDate = [CommentsModel lastRequestDate];
     
     [[IQService sharedService] commentIdsDeletedAfter:lastRequestDate
-                                         discussionId:self.discussion.discussionId
+                                         discussionId:_discussion.discussionId
                                               handler:^(BOOL success, CommentDeletedObjects * object, NSData *responseData, NSError *error) {
                                                   if (success) {
                                                       [CommentsModel setLastRequestDate:object.serverDate];
                                                       [self removeLocalCommentsWithIds:object.objectIds];
                                                   }
-                                              }];
+                                                  if (handler) {
+                                                      handler(success, responseData, error);
+                                                  }
+                                               }];
 }
+
 
 - (void)removeLocalCommentsWithIds:(NSArray*)commentIds {
     if ([commentIds count] > 0) {
