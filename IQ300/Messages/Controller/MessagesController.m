@@ -24,12 +24,16 @@
 #import "IQContact.h"
 #import "UIScrollView+PullToRefreshInsert.h"
 #import "IQDrawerController.h"
+#import "MessagesMenuModel.h"
+#import "IQMenuItem.h"
 
 #define DISPATCH_DELAY 0.7
 
 @interface MessagesController() <IQSelectionControllerDelegate> {
     MessagesView * _messagesView;
     dispatch_after_block _cancelBlock;
+    MessagesMenuModel * _menuModel;
+
 }
 
 @end
@@ -66,6 +70,8 @@
         
         self.tabBarItem.customBadgeView = badgeView;
         self.tabBarItem.badgeOrigin = CGPointMake(5.5f, 5.5f);
+        
+        _menuModel = [[MessagesMenuModel alloc] init];
     }
     return self;
 }
@@ -134,9 +140,14 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self.leftMenuController setModel:nil];
-    [self.leftMenuController reloadMenuWithCompletion:nil];
-    
+    [self.leftMenuController setMenuResponder:self];
+    [self.leftMenuController setTableHaderHidden:YES];
+    [self.leftMenuController setModel:_menuModel];
+    __weak typeof(self) weakSelf = self;
+    [self.leftMenuController reloadMenuWithCompletion:^{
+        [weakSelf updateControllerTitle];
+    }];
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
@@ -188,6 +199,7 @@
     __weak typeof(self) weakSelf = self;
     [self.model updateCountersWithCompletion:^(IQCounters *counter, NSError *error) {
         [weakSelf updateBarBadgeWithValue:[counter.unreadCount integerValue]];
+        _menuModel.unreadCount = counter.unreadCount;
     }];
 }
 
@@ -229,11 +241,13 @@
 
 - (void)modelCountersDidChanged:(id<IQTableModel>)model {
     [self updateBarBadgeWithValue:self.model.unreadItemsCount];
+    _menuModel.unreadCount = @(self.model.unreadItemsCount);
 }
 
 #pragma mark - Menu Responder Delegate
 
 - (void)menuController:(MenuViewController*)controller didSelectMenuItemAtIndexPath:(NSIndexPath*)indexPath {
+    [self updateControllerTitle];
     self.model.loadUnreadOnly = (indexPath.row == 1);
     [self reloadModel];
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
@@ -300,6 +314,14 @@
 }
 
 #pragma mark - Private methods
+
+- (void)updateControllerTitle {
+    NSIndexPath * indexPath = [_menuModel indexPathForSelectedItem];
+    IQMenuItem * menuItem = [_menuModel itemAtIndexPath:indexPath];
+    NSString * title = menuItem.title;
+    self.navigationItem.title = title;
+}
+
 
 - (void)createDiscussionWithUserId:(NSNumber*)userId {
     [MessagesModel createConversationWithRecipientId:userId

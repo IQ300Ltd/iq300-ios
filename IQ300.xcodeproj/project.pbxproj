@@ -109,6 +109,10 @@
 		2DD5CB411C84474B002CE8C0 /* IQEstimatedTimeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB3F1C84474B002CE8C0 /* IQEstimatedTimeCell.m */; };
 		2DD5CB441C8447BC002CE8C0 /* TaskComplexityPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */; };
 		2DD5CB451C8447BC002CE8C0 /* TaskComplexityPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */; };
+		3D21439C1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */; };
+		3D21439D1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */; };
+		3D2143BE1C9E854A00ACA554 /* messages_menu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3D2143BC1C9E854A00ACA554 /* messages_menu.plist */; };
+		3D2143BF1C9E854A00ACA554 /* messages_menu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3D2143BC1C9E854A00ACA554 /* messages_menu.plist */; };
 		3DAE09831C90566A00031479 /* IQComplexityEstimatedTimeDoubleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE09811C90566600031479 /* IQComplexityEstimatedTimeDoubleCell.m */; };
 		3DAE09871C90B1E300031479 /* IQStringItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE09861C90B1E300031479 /* IQStringItem.m */; };
 		3DAE09881C90B1E300031479 /* IQStringItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE09861C90B1E300031479 /* IQStringItem.m */; };
@@ -1010,6 +1014,10 @@
 		2DD5CB421C8447BC002CE8C0 /* TaskComplexityPickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskComplexityPickerCell.h; sourceTree = "<group>"; };
 		2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskComplexityPickerCell.m; sourceTree = "<group>"; };
 		3C453A1313F35DF8AD783316 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		3D21439A1C9E80DA00ACA554 /* MessagesMenuModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagesMenuModel.h; sourceTree = "<group>"; };
+		3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesMenuModel.m; sourceTree = "<group>"; };
+		3D2143BD1C9E854A00ACA554 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/messages_menu.plist; sourceTree = "<group>"; };
+		3D2143C01C9E855E00ACA554 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ru; path = ru.lproj/messages_menu.plist; sourceTree = "<group>"; };
 		3DAE09801C90566600031479 /* IQComplexityEstimatedTimeDoubleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQComplexityEstimatedTimeDoubleCell.h; sourceTree = "<group>"; };
 		3DAE09811C90566600031479 /* IQComplexityEstimatedTimeDoubleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQComplexityEstimatedTimeDoubleCell.m; sourceTree = "<group>"; };
 		3DAE09851C90B1E300031479 /* IQStringItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQStringItem.h; sourceTree = "<group>"; };
@@ -2729,6 +2737,8 @@
 			children = (
 				731DEEC61A2F11A1002F5FEB /* MessagesModel.h */,
 				731DEEC71A2F11A1002F5FEB /* MessagesModel.m */,
+				3D21439A1C9E80DA00ACA554 /* MessagesMenuModel.h */,
+				3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */,
 				739C3B5D1A3075D90032C057 /* DiscussionModel.h */,
 				739C3B5E1A3075D90032C057 /* DiscussionModel.m */,
 				7371362A1B538DF00043B87B /* ConferenceInfoModel.h */,
@@ -3004,6 +3014,7 @@
 				73BA988B1A109F4D005AEC00 /* menu_collapseed@2x.png */,
 				73BA988C1A109F4D005AEC00 /* menu_expanded.png */,
 				73BA988D1A109F4D005AEC00 /* menu_expanded@2x.png */,
+				3D2143BC1C9E854A00ACA554 /* messages_menu.plist */,
 				73D0DDF11A95D24C008710FF /* tasks_menu.plist */,
 				73BA98961A109FDD005AEC00 /* notifications_menu.plist */,
 			);
@@ -3434,6 +3445,7 @@
 				73840EA81B1C75A500BCEAFC /* bubble_gray.png in Resources */,
 				73840EA91B1C75A500BCEAFC /* attachment_add_img@2x.png in Resources */,
 				73840EAA1B1C75A500BCEAFC /* next_header_button@2x.png in Resources */,
+				3D2143BF1C9E854A00ACA554 /* messages_menu.plist in Resources */,
 				73840EAB1B1C75A500BCEAFC /* mark_tab_item.png in Resources */,
 				73FC83B61B3BF1F000ADFBC2 /* feedback_ico_selected@2x.png in Resources */,
 				73840EAC1B1C75A500BCEAFC /* backArrow@2x.png in Resources */,
@@ -3578,6 +3590,7 @@
 				2D86C8E51C86E2B2001C0B90 /* add_attachment_icon.png in Resources */,
 				731170841AB80AFF008A4D09 /* task_member_tab.png in Resources */,
 				732952B91A69441D0066B336 /* bubble_blue.png in Resources */,
+				3D2143BE1C9E854A00ACA554 /* messages_menu.plist in Resources */,
 				7393C40E1A1A2FCF00E9E944 /* login_logo@2x.png in Resources */,
 				73882D901A24B62500B8BE90 /* check_mark_medium.png in Resources */,
 				737E7C5C1A0CC8A400E8BB81 /* top_header_bg@2x.png in Resources */,
@@ -3914,6 +3927,7 @@
 				73840DEA1B1C75A500BCEAFC /* MessagesController.m in Sources */,
 				73840DEC1B1C75A500BCEAFC /* TodoListModel.m in Sources */,
 				73840DED1B1C75A500BCEAFC /* IQMenuItem.m in Sources */,
+				3D21439D1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */,
 				73840DEE1B1C75A500BCEAFC /* IQMenuSection.m in Sources */,
 				73840DEF1B1C75A500BCEAFC /* IQContact.m in Sources */,
 				FBC7CB511B579CBA004E8382 /* CommentDeletedObjects.m in Sources */,
@@ -4180,6 +4194,7 @@
 				739C3B5F1A3075D90032C057 /* DiscussionModel.m in Sources */,
 				73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */,
 				2DAF33771C609AC500554211 /* SharingAttachment.m in Sources */,
+				3D21439C1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */,
 				73C384C91A9725DA00B66D0F /* IQTask.m in Sources */,
 				73176CA11B3ADDD700E6AC60 /* IQEditableTextCell.m in Sources */,
 				738EF82A1A9CA95600894755 /* IQManagedTodoItem.m in Sources */,
@@ -4391,6 +4406,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		3D2143BC1C9E854A00ACA554 /* messages_menu.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3D2143BD1C9E854A00ACA554 /* en */,
+				3D2143C01C9E855E00ACA554 /* ru */,
+			);
+			name = messages_menu.plist;
+			sourceTree = "<group>";
+		};
 		7356C5D31B12070000BF0CB4 /* GAIEvents.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
