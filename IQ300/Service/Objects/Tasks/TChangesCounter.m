@@ -17,8 +17,12 @@
                                                   @"details"   : @"details",
                                                   @"comments"  : @"comments",
                                                   @"users"     : @"users",
-                                                  @"documents" : @"documents"
+                                                  @"documents" : @"documents",
+                                                  @"reconciliation" : @"reconciliation",
+                                                  @"time_entries" : @"timeEntries",
+                                                  @"subtasks" : @"subtasks",
                                                   }];
+    
     return mapping;
 }
 

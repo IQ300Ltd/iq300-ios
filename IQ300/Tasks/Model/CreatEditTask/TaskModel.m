@@ -77,10 +77,15 @@ static NSString * IQTextCellReuseIdentifier = @"IQTextCellReuseIdentifier";
 }
 
 - (instancetype)initWithDefaultCommunity:(IQCommunity *)community {
+    return [self initWithDefaultCommunity:community parentTask:nil];
+}
+
+- (instancetype)initWithDefaultCommunity:(IQCommunity *)community parentTask:(IQTask *)task {
     self = [super init];
     if (self) {
         _defaultCommunity = community;
         _task = [self createTask];
+        _task.parentTask = task;
         _initState = [_task copy];
         _isExecutersChangesEnabled = (![[_task.community.type lowercaseString] isEqualToString:@"defaultcommunity"]);
         _items = [self generateItems];
@@ -129,6 +134,9 @@ static NSString * IQTextCellReuseIdentifier = @"IQTextCellReuseIdentifier";
     }
     else {
         [mutableItems addObject:[[IQTaskCommunityItem alloc] initWithTask:_task]];
+    }
+    if (_task.parentTask) {
+        [mutableItems addObject:[[IQTaskParentAccessItem alloc] initWithTask:_task]];
     }
 #ifdef IPAD
     [mutableItems addObject:@[[[IQTaskComplexityItem alloc] initWithTask:_task],

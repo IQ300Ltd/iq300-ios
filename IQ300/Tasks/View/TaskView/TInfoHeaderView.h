@@ -37,6 +37,9 @@
 @property (nonatomic, readonly) TInfoLineView *complexityInfoView;
 @property (nonatomic, readonly) TInfoLineView *estimatedTimeInfoView;
 
+@property (nonatomic, readonly) UIButton *parentTaskInfoButton;
+@property (nonatomic, readonly) TInfoLineView *parentTaskInfoView;
+
 @property (nonatomic, weak) id<TInfoHeaderViewDelegate> delegate;
 
 - (void)setupByTask:(IQTask*)task;

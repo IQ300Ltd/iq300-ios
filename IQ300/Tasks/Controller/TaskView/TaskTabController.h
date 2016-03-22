@@ -13,6 +13,7 @@
 
 @interface TaskTabController : IQTabBarController
 
+@property (nonatomic, strong) NSNumber *priveousTaskId;
 @property (nonatomic, strong) IQTask * task;
 @property (nonatomic, strong) TaskPolicyInspector * policyInspector;
 

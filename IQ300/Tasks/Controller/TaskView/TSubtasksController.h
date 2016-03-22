@@ -1,23 +1,22 @@
 //
-//  TaskController.h
+//  TSubtasksController.h
 //  IQ300
 //
-//  Created by Tayphoon on 17.03.15.
-//  Copyright (c) 2015 Tayphoon. All rights reserved.
+//  Created by Vladislav Grigoriev on 22/03/16.
+//  Copyright © 2016 Tayphoon. All rights reserved.
 //
 
 #import "IQTableBaseController.h"
 #import "TaskTabItemController.h"
-#import "ManagedTodoListModel.h"
 
+@class TaskSubtasksModel;
 @class IQTask;
 
-@interface TInfoController : IQTableBaseController<TaskTabItemController>
+@interface TSubtasksController : IQTableBaseController<TaskTabItemController>
 
 @property (nonatomic, strong) NSNumber * priveousTaskId;
-@property (nonatomic, strong) ManagedTodoListModel * model;
-@property (nonatomic, strong) NSNumber * taskId;
 @property (nonatomic, strong) IQTask * task;
+@property (nonatomic, strong) TaskSubtasksModel * model;
 @property (nonatomic, strong) NSNumber * badgeValue;
 @property (nonatomic, weak) TaskPolicyInspector * policyInspector;
 

@@ -111,7 +111,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableView
      insertPullToRefreshWithActionHandler:^{
-         void (^completiation)(NSError * error, NSIndexPath *indexPath) = ^(NSError * error, NSIndexPath *indexPath) {
+         void (^completiation)(NSError * error) = ^(NSError * error) {
              if (error) {
                  NSInteger httpStatusCode = [error.userInfo[TCHttpStatusCodeKey] integerValue];
                  if (httpStatusCode == 403) {
@@ -123,12 +123,11 @@
              }
              else {
                  [self proccessUserAddToConversation];
-                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
              }
              
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          };
-         [weakSelf.model loadNextPartWithCompletion:completiation];
+         [weakSelf.model updateModelWithCompletion:completiation];
      }
      position:SVPullToRefreshPositionTop];
     
@@ -294,13 +293,7 @@
 
 - (void)modelDidChanged:(id<IQTableModel>)model {
     [super modelDidChanged:model];
-    
-    CGFloat bottomPosition = self.tableView.contentSize.height - self.tableView.bounds.size.height - 1.0f;
-    BOOL isTableScrolledToBottom = (self.tableView.contentOffset.y >= bottomPosition);
-    
-    if(isTableScrolledToBottom) {
-        [self scrollToBottomIfNeedAnimated:YES delay:1.0f];
-    }
+    [self scrollToBottomAnimated:NO delay:0.0f];
 }
 
 - (void)model:(DiscussionModel *)model conversationTitleDidChanged:(NSString *)newTitle {
@@ -495,6 +488,7 @@
 }
 
 - (void)attachButtonAction:(UIButton*)sender {
+    [_mainView.inputView endEditing:YES];
     UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                               delegate:nil
                                                      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)

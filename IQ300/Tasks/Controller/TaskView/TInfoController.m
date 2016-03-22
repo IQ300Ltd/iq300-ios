@@ -23,6 +23,7 @@
 #import "TodoListModel.h"
 #import "TaskController.h"
 #import "IQTaskDataHolder.h"
+#import "TaskTabController.h"
 
 @interface TInfoController() <TInfoHeaderViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate> {
     __weak UIButton * _deferredActionButton;
@@ -353,6 +354,24 @@
 
 #pragma mark - Private methods
 
+- (void)parentButtonAction:(UIButton *)sender {
+     if ([_task.parentId isEqual:_priveousTaskId]) {
+         [self.navigationController popViewControllerAnimated:YES];
+     }
+     else {
+         [[IQService sharedService] taskWithId:_task.parentId handler:^(BOOL success, IQTask *object, NSData *responseData, NSError *error) {
+             TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:object.taskId];
+             TaskTabController * controller = [[TaskTabController alloc] init];
+             controller.task = object;
+             controller.policyInspector = policyInspector;
+             controller.hidesBottomBarWhenPushed = YES;
+             controller.priveousTaskId = _task.taskId;
+             
+             [self.navigationController pushViewController:controller animated:YES];
+         }];
+     }
+}
+
 - (void)editButtonAction:(UIButton*)sender {
     TaskModel * model = [[TaskModel alloc] initWithTask:[IQTaskDataHolder holderWithTask:self.task]];
     
@@ -475,6 +494,7 @@
     }];
     [headerView setupByTask:self.task];
     headerView.delegate = self;
+    [headerView.parentTaskInfoButton addTarget:self action:@selector(parentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     return headerView;
 }
 

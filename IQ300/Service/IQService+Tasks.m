@@ -85,6 +85,15 @@
                    handler:handler];
 }
 
+- (void)tasksWithParentId:(NSNumber *)parentId handler:(ObjectRequestCompletionHandler)handler {
+    NSDictionary *parameters = IQParametersExcludeEmpty(@{
+                                                          @"children_of" : NSObjectNullForNil(parentId)
+                                                          });
+    [self getObjectsAtPath:@"tasks"
+                parameters:parameters
+                   handler:handler];
+}
+
 - (void)filterCountersForFolder:(NSString*)folder
                          status:(NSString*)status
                     communityId:(NSNumber*)communityId

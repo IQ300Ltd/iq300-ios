@@ -40,6 +40,8 @@
                  sort:(NSString*)sort
               handler:(ObjectRequestCompletionHandler)handler;
 
+- (void)tasksWithParentId:(NSNumber *)parentId handler:(ObjectRequestCompletionHandler)handler;
+
 - (void)filterCountersForFolder:(NSString*)folder
                          status:(NSString*)status
                     communityId:(NSNumber*)communityId

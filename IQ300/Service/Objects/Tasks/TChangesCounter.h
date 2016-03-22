@@ -16,6 +16,9 @@
 @property (nonatomic, strong) NSNumber * comments;
 @property (nonatomic, strong) NSNumber * users;
 @property (nonatomic, strong) NSNumber * documents;
+@property (nonatomic, strong) NSNumber * reconciliation;
+@property (nonatomic, strong) NSNumber * timeEntries;
+@property (nonatomic, strong) NSNumber * subtasks;
 
 + (RKObjectMapping*)objectMapping;
 

@@ -23,6 +23,7 @@
 #import "TaskNotifications.h"
 #import "IQTask.h"
 #import "NSManagedObject+ActiveRecord.h"
+#import "TSubtasksController.h"
 
 @interface TaskTabController () <IQTabBarControllerDelegate> {
     CGFloat _tabbarWidth;
@@ -65,7 +66,8 @@
         [self setViewControllers:@[[[TInfoController alloc] init],
                                    [[TCommentsController alloc] init],
                                    [[TMembersController alloc] init],
-                                   [[TDocumentsController alloc] init]
+                                   [[TDocumentsController alloc] init],
+                                   [[TSubtasksController alloc] init]
                                    ]];
     }
     return self;
@@ -169,6 +171,9 @@
     
     TDocumentsController * documentsController = self.viewControllers[3];
     [documentsController setTaskId:task.taskId];
+    
+    TSubtasksController *subtasksController = self.viewControllers[4];
+    [subtasksController setTask:task];
 }
 
 - (void)updateControllersInspector:(TaskPolicyInspector*)inspector {
@@ -183,6 +188,19 @@
     
     TDocumentsController * documentsController = self.viewControllers[3];
     [documentsController setPolicyInspector:inspector];
+    
+    TSubtasksController *subtasksController = self.viewControllers[4];
+    [subtasksController setPolicyInspector:inspector];
+}
+
+- (void)setPriveousTaskId:(NSNumber *)priveousTaskId {
+    _priveousTaskId = priveousTaskId;
+    
+    TInfoController * infoController = self.viewControllers[0];
+    [infoController setPriveousTaskId:priveousTaskId];
+    
+    TSubtasksController *subtasksController = self.viewControllers[4];
+    [subtasksController setPriveousTaskId:priveousTaskId];
 }
 
 - (void)updateCounters {
@@ -207,6 +225,11 @@
                                                       TDocumentsController * documentsController = self.viewControllers[3];
                                                       if (self.selectedIndex != 3) {
                                                           documentsController.badgeValue = counter.documents;
+                                                      }
+                                                      
+                                                      TSubtasksController *subtasksController = self.viewControllers[4];
+                                                      if (self.selectedIndex != 4) {
+                                                          subtasksController.badgeValue = counter.subtasks;
                                                       }
                                                   }
                                               }];

@@ -109,6 +109,10 @@
         height += LINE_HEIGHT;
     }
     
+    if (task.parentTitle.length > 0) {
+        height += LINE_HEIGHT;
+    }
+    
     NSUInteger totalActions = [task.availableActions count] + [task.reconciliationActions count];
     if (totalActions > 0) {
 #ifdef IPAD
@@ -210,6 +214,16 @@
         _estimatedTimeInfoView.drawTopSeparator = YES;
         _estimatedTimeInfoView.drawLeftSeparator = YES;
         [self addSubview:_estimatedTimeInfoView];
+       
+        _parentTaskInfoButton = [[UIButton alloc] init];
+        [self addSubview:_parentTaskInfoButton];
+        
+        _parentTaskInfoView = [[TInfoLineView alloc] init];
+        _parentTaskInfoView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        [_parentTaskInfoView.imageView setImage:[UIImage imageNamed:@"community_ico.png"]];
+        _parentTaskInfoView.drawTopSeparator = YES;
+        _parentTaskInfoView.userInteractionEnabled = NO;
+        [_parentTaskInfoButton addSubview:_parentTaskInfoView];
     }
     
     return self;
@@ -297,6 +311,12 @@
                                                                                                        task.reconciliation.approvedCount,
                                                                                                        task.reconciliation.totalCount]
                                                                                            attributes:attributes];
+    }
+    
+    _parentTaskInfoButton.hidden = ([task.parentTitle length] == 0);
+    if (task.parentTitle.length > 0) {
+        _parentTaskInfoView.textLabel.attributedText = [[NSAttributedString alloc] initWithString:task.parentTitle
+                                                                                       attributes:attributes];
     }
     
     
@@ -465,6 +485,20 @@
                                               0.0f);
     }
     
+    if (_parentTaskInfoView.textLabel.text.length > 0) {
+        _parentTaskInfoButton.frame = CGRectMake(bounds.origin.x,
+                                                 CGRectBottom(_reconciliationInfoView.frame),
+                                                 bounds.size.width,
+                                                 LINE_HEIGHT);
+    }
+    else {
+        _parentTaskInfoButton.frame = CGRectMake(bounds.origin.x,
+                                                 CGRectBottom(_reconciliationInfoView.frame),
+                                                 bounds.size.width,
+                                                 0.0f);
+    }
+    _parentTaskInfoView.frame = _parentTaskInfoButton.bounds;
+    
     
     if([_buttonsHolder.subviews count] > 0) {
         NSUInteger buttonsCount = [_buttonsHolder.subviews count];
@@ -486,7 +520,7 @@
         CGFloat buttonY = BUTTON_VERTICAL_PADDING;
         CGFloat buttonsHolderHeight = BUTTON_VERTICAL_PADDING * 2.0f + (BUTTON_OFFSET + BUTTON_HEIGHT) * [[_buttonsHolder subviews] count] - BUTTON_OFFSET;
         CGRect buttonsHolderRect = CGRectMake(bounds.origin.x,
-                                              CGRectBottom(_reconciliationInfoView.frame),
+                                              CGRectBottom(_parentTaskInfoButton.frame),
                                               bounds.size.width,
                                               buttonsHolderHeight);
 #endif

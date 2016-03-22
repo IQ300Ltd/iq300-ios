@@ -17,6 +17,6 @@
 #import "IQTaskEstimatedTimeItem.h"
 #import "IQTaskStartDateItem.h"
 #import "IQTaskEndDateItem.h"
-
+#import "IQTaskParentAccessItem.h"
 
 #endif /* IQTaskItems_h */

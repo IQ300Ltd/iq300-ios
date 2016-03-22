@@ -109,6 +109,14 @@
 		2DD5CB411C84474B002CE8C0 /* IQEstimatedTimeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB3F1C84474B002CE8C0 /* IQEstimatedTimeCell.m */; };
 		2DD5CB441C8447BC002CE8C0 /* TaskComplexityPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */; };
 		2DD5CB451C8447BC002CE8C0 /* TaskComplexityPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */; };
+		3D1D46711CA10BC5001F0524 /* TSubtasksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46701CA10BC5001F0524 /* TSubtasksController.m */; };
+		3D1D46721CA10BC5001F0524 /* TSubtasksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46701CA10BC5001F0524 /* TSubtasksController.m */; };
+		3D1D46751CA10EA7001F0524 /* TaskSubtasksModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46741CA10EA7001F0524 /* TaskSubtasksModel.m */; };
+		3D1D46761CA10EA7001F0524 /* TaskSubtasksModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46741CA10EA7001F0524 /* TaskSubtasksModel.m */; };
+		3D1D46791CA11073001F0524 /* TSubtaskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46781CA11073001F0524 /* TSubtaskCell.m */; };
+		3D1D467A1CA11073001F0524 /* TSubtaskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46781CA11073001F0524 /* TSubtaskCell.m */; };
+		3D1D467D1CA14044001F0524 /* IQTaskParentAccessItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D467C1CA14044001F0524 /* IQTaskParentAccessItem.m */; };
+		3D1D467E1CA14044001F0524 /* IQTaskParentAccessItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D467C1CA14044001F0524 /* IQTaskParentAccessItem.m */; };
 		3D21439C1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */; };
 		3D21439D1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */; };
 		3D2143BE1C9E854A00ACA554 /* messages_menu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3D2143BC1C9E854A00ACA554 /* messages_menu.plist */; };
@@ -1014,6 +1022,14 @@
 		2DD5CB421C8447BC002CE8C0 /* TaskComplexityPickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskComplexityPickerCell.h; sourceTree = "<group>"; };
 		2DD5CB431C8447BC002CE8C0 /* TaskComplexityPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskComplexityPickerCell.m; sourceTree = "<group>"; };
 		3C453A1313F35DF8AD783316 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		3D1D466F1CA10BC5001F0524 /* TSubtasksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSubtasksController.h; sourceTree = "<group>"; };
+		3D1D46701CA10BC5001F0524 /* TSubtasksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSubtasksController.m; sourceTree = "<group>"; };
+		3D1D46731CA10EA7001F0524 /* TaskSubtasksModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskSubtasksModel.h; sourceTree = "<group>"; };
+		3D1D46741CA10EA7001F0524 /* TaskSubtasksModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskSubtasksModel.m; sourceTree = "<group>"; };
+		3D1D46771CA11073001F0524 /* TSubtaskCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSubtaskCell.h; sourceTree = "<group>"; };
+		3D1D46781CA11073001F0524 /* TSubtaskCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSubtaskCell.m; sourceTree = "<group>"; };
+		3D1D467B1CA14044001F0524 /* IQTaskParentAccessItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskParentAccessItem.h; sourceTree = "<group>"; };
+		3D1D467C1CA14044001F0524 /* IQTaskParentAccessItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTaskParentAccessItem.m; sourceTree = "<group>"; };
 		3D21439A1C9E80DA00ACA554 /* MessagesMenuModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagesMenuModel.h; sourceTree = "<group>"; };
 		3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesMenuModel.m; sourceTree = "<group>"; };
 		3D2143BD1C9E854A00ACA554 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/messages_menu.plist; sourceTree = "<group>"; };
@@ -1905,6 +1921,8 @@
 				3DAE09AC1C91591C00031479 /* IQTaskStartDateItem.m */,
 				3DAE09AF1C91593300031479 /* IQTaskEndDateItem.h */,
 				3DAE09B01C91593300031479 /* IQTaskEndDateItem.m */,
+				3D1D467B1CA14044001F0524 /* IQTaskParentAccessItem.h */,
+				3D1D467C1CA14044001F0524 /* IQTaskParentAccessItem.m */,
 			);
 			name = Items;
 			sourceTree = "<group>";
@@ -3102,6 +3120,8 @@
 				73D7F1A51ADE932700023120 /* TaskActivitiesController.m */,
 				73D7F1B21ADE932700023120 /* TTodoItemsController.h */,
 				73D7F1B31ADE932700023120 /* TTodoItemsController.m */,
+				3D1D466F1CA10BC5001F0524 /* TSubtasksController.h */,
+				3D1D46701CA10BC5001F0524 /* TSubtasksController.m */,
 			);
 			path = TaskView;
 			sourceTree = "<group>";
@@ -3117,6 +3137,8 @@
 				73D7F1C41ADE93D600023120 /* TaskAttachmentsModel.m */,
 				73D7F1C51ADE93D600023120 /* TaskMembersModel.h */,
 				73D7F1C61ADE93D600023120 /* TaskMembersModel.m */,
+				3D1D46731CA10EA7001F0524 /* TaskSubtasksModel.h */,
+				3D1D46741CA10EA7001F0524 /* TaskSubtasksModel.m */,
 				73D7F1C71ADE93D600023120 /* TaskPolicyInspector.h */,
 				73D7F1C81ADE93D600023120 /* TaskPolicyInspector.m */,
 				73D7F1C91ADE93D600023120 /* TodoListModel.h */,
@@ -3160,6 +3182,8 @@
 				73D7F1E11ADE94B400023120 /* TodoListItemCell.m */,
 				73D7F1E21ADE94B400023120 /* TodoListSectionView.h */,
 				73D7F1E31ADE94B400023120 /* TodoListSectionView.m */,
+				3D1D46771CA11073001F0524 /* TSubtaskCell.h */,
+				3D1D46781CA11073001F0524 /* TSubtaskCell.m */,
 			);
 			path = TaskView;
 			sourceTree = "<group>";
@@ -3922,6 +3946,7 @@
 				73840DE71B1C75A500BCEAFC /* TChangesCounter.m in Sources */,
 				73B561591B42828B00A883DC /* FeedbackInfoController.m in Sources */,
 				73840DE81B1C75A500BCEAFC /* IQTask.m in Sources */,
+				3D1D467A1CA11073001F0524 /* TSubtaskCell.m in Sources */,
 				73840DE91B1C75A500BCEAFC /* IQManagedTodoItem.m in Sources */,
 				73060D571B41345D001AE08E /* UITextView+Validation.m in Sources */,
 				73840DEA1B1C75A500BCEAFC /* MessagesController.m in Sources */,
@@ -4012,6 +4037,7 @@
 				73840E271B1C75A500BCEAFC /* TaskMembersModel.m in Sources */,
 				73840E291B1C75A500BCEAFC /* IQMenuSerializator.m in Sources */,
 				73840E2A1B1C75A500BCEAFC /* MTableHeaderView.m in Sources */,
+				3D1D46721CA10BC5001F0524 /* TSubtasksController.m in Sources */,
 				73840E2B1B1C75A500BCEAFC /* TCommentsController.m in Sources */,
 				7314627C1B341D2300E9CC60 /* IQDoubleDetailsTextCell.m in Sources */,
 				731462801B34249600E9CC60 /* IQDoubleDateTextCell.m in Sources */,
@@ -4064,6 +4090,7 @@
 				73CB5B531B32D32D005B688C /* IQPasswordValidator.m in Sources */,
 				3DAE09AA1C9155FF00031479 /* IQTaskEstimatedTimeItem.m in Sources */,
 				CBEB632C1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */,
+				3D1D467E1CA14044001F0524 /* IQTaskParentAccessItem.m in Sources */,
 				73840E481B1C75A500BCEAFC /* IQBadgeIndicatorView.m in Sources */,
 				73840E491B1C75A500BCEAFC /* MenuViewController.m in Sources */,
 				73840E4A1B1C75A500BCEAFC /* UIActionSheet+Blocks.m in Sources */,
@@ -4083,6 +4110,7 @@
 				731526FC1C61F3050077E0BD /* IQNotificationCounters.m in Sources */,
 				73840E581B1C75A500BCEAFC /* DiscussionView.m in Sources */,
 				73176CA41B3ADDD700E6AC60 /* IQSelectableTextCell.m in Sources */,
+				3D1D46761CA10EA7001F0524 /* TaskSubtasksModel.m in Sources */,
 				73840E591B1C75A500BCEAFC /* TCService.m in Sources */,
 				73CB5B521B32D32A005B688C /* IQStringValidator.m in Sources */,
 				73840E5A1B1C75A500BCEAFC /* CommentsView.m in Sources */,
@@ -4139,6 +4167,7 @@
 				739CFFA11B397FC000B4AED0 /* FeedbacksController.m in Sources */,
 				73AF73E11A3AFEBA001B8E42 /* CViewInfo.m in Sources */,
 				73F2A5401A3983EB00E9D324 /* UIViewController+ScreenActivityIndicator.m in Sources */,
+				3D1D46711CA10BC5001F0524 /* TSubtasksController.m in Sources */,
 				3DAE098F1C913D7800031479 /* IQTextItem.m in Sources */,
 				730BE3FC1B3D235400E26994 /* IQFeedbackType.m in Sources */,
 				73C58C0A1A1F17FD00C83729 /* NSString+SizeWith.m in Sources */,
@@ -4323,6 +4352,7 @@
 				73176CA31B3ADDD700E6AC60 /* IQSelectableTextCell.m in Sources */,
 				731E5BD01B3161F200DF56C7 /* IQValidationHelper.m in Sources */,
 				738CE1E61A0B3F4E0096B374 /* main.m in Sources */,
+				3D1D46751CA10EA7001F0524 /* TaskSubtasksModel.m in Sources */,
 				73DD80091A68E83800A6ADA5 /* IQNotificationIds.m in Sources */,
 				7382CA951A4566BD00D5EE1F /* CSectionHeaderView.m in Sources */,
 				7373ED661A8A2EB500719FCD /* DeviceToken.m in Sources */,
@@ -4364,6 +4394,7 @@
 				739C3B681A3086BA0032C057 /* DiscussionView.m in Sources */,
 				737DD22D1A14EFE900CC4443 /* TCService.m in Sources */,
 				CBEB632B1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */,
+				3D1D46791CA11073001F0524 /* TSubtaskCell.m in Sources */,
 				739BC79E1A4A9E86007FC95C /* CommentsView.m in Sources */,
 				736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */,
 				2D6AE2281C7308BB00A2B02D /* IQSaveVideoActivity.m in Sources */,
@@ -4383,6 +4414,7 @@
 				73F63E8C1AA08ED0000DA319 /* TaskFilterSortItem.m in Sources */,
 				73176C9F1B3ADDD700E6AC60 /* IQDetailsTextCell.m in Sources */,
 				73F90CEF1A1B8D3F00225255 /* IQServiceResponse.m in Sources */,
+				3D1D467D1CA14044001F0524 /* IQTaskParentAccessItem.m in Sources */,
 				73B3C1AB1A7B73B9005F972D /* NSString+MD5.m in Sources */,
 				73F27D631AFCA94D00D72FF8 /* TCObjectSerializator.m in Sources */,
 				73486E3B1B6F98EE00DEBD66 /* IQTaskDeletedIds.m in Sources */,
@@ -4766,7 +4798,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "5ac735ed-0468-4418-9f6d-f8fce1698994";
+				PROVISIONING_PROFILE = "fcd9dc01-3647-43c2-92a0-60e5db7677e0";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

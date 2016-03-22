@@ -26,9 +26,11 @@
 @property (nonatomic, strong) NSString * taskDescription;
 
 @property (nonatomic, strong) NSNumber *estimatedTimeSeconds;
+@property (nonatomic, strong) NSNumber *parentTaskAccess;
 
 @property (nonatomic, strong) IQComplexity *complexity;
 
+@property (nonatomic, strong) IQTask *parentTask;
 
 + (IQTaskDataHolder*)holderWithTask:(IQTask*)task;
 

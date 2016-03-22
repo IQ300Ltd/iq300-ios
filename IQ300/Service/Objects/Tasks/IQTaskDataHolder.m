@@ -41,14 +41,16 @@
 + (RKObjectMapping*)createRequestObjectMapping {
     RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"title"          : @"title",
-                                                  @"community_id"   : @"community.communityId",
-                                                  @"executor_ids"   : @"executorIds",
-                                                  @"start_date"     : @"startDate",
-                                                  @"end_date"       : @"endDate",
-                                                  @"description"    : @"taskDescription",
-                                                  @"complexity"     : @"complexity.value",
-                                                  @"estimated_time" : @"estimatedTimeSeconds"
+                                                  @"title"                                    : @"title",
+                                                  @"community_id"                             : @"community.communityId",
+                                                  @"executor_ids"                             : @"executorIds",
+                                                  @"start_date"                               : @"startDate",
+                                                  @"end_date"                                 : @"endDate",
+                                                  @"description"                              : @"taskDescription",
+                                                  @"complexity"                               : @"complexity.value",
+                                                  @"estimated_time"                           : @"estimatedTimeSeconds",
+                                                  @"parent_id"                                : @"parentTask.taskId",
+                                                  @"executor_restrictions.parent_task_access" : @"parentTaskAccess",
                                                   }];
     
     return [mapping inverseMapping];
@@ -69,43 +71,7 @@
     return [mapping inverseMapping];
 }
 
-//+ (NSNumber *)secondsFromTimeString:(NSString *)dateString {
-//    NSString *trimmedString = [dateString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-//    
-//    NSError *error = nil;
-//    NSRegularExpression *dotCommaRegexp = [NSRegularExpression regularExpressionWithPattern:@"\\d+((\\.|,)(\\d)*)?" options:0 error:&error];
-//    if (error) {
-//        NSLog(@"Regexp error: %@", error.description);
-//        return nil;
-//    }
-//    NSTextCheckingResult *match = [dotCommaRegexp firstMatchInString:trimmedString options:0 range:NSMakeRange(0, trimmedString.length)];
-//    if (match) {
-//        CGFloat hours = trimmedString.floatValue;
-//        NSNumber *seconds = @((NSInteger)(hours * SECONDS_IN_HOUR));
-//        return seconds;
-//    }
-//    
-//    NSRegularExpression *colonRegexp = [NSRegularExpression regularExpressionWithPattern:@"\\d+(:(\\d)*){1,2}" options:0 error:&error];
-//    if (error) {
-//        NSLog(@"Regexp error: %@", error.description);
-//        return nil;
-//    }
-//    match = [colonRegexp firstMatchInString:trimmedString options:0 range:NSMakeRange(0, trimmedString.length)];
-//    if (match) {
-//        NSArray *components = [trimmedString componentsSeparatedByString:@":"];
-//        NSUInteger seconds = 0;
-//        NSUInteger componentWeight = SECONDS_IN_HOUR;
-//        for (NSString *component in components) {
-//            if (component.length > 0) {
-//                seconds += componentWeight * component.integerValue;
-//            }
-//            componentWeight /= 60;
-//        }
-//        return @(seconds);
-//    }
-//    
-//    return nil;
-//}
+
 
 - (id)copyWithZone:(NSZone *)zone {
     IQTaskDataHolder * copy = [[[self class] allocWithZone:zone] init];
@@ -125,6 +91,14 @@
     return copy;
 }
 
+- (void)setParentTask:(IQTask *)parentTask {
+    _parentTask = parentTask;
+    if (_parentTask) {
+        _startDate = parentTask.startDate;
+        _endDate = parentTask.endDate;
+    }
+}
+
 - (NSArray*)executorIds {
     return [self.executors valueForKey:@"executorId"];
 }
@@ -135,3 +109,42 @@
 
 
 @end
+
+
+//+ (NSNumber *)secondsFromTimeString:(NSString *)dateString {
+//    NSString *trimmedString = [dateString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+//
+//    NSError *error = nil;
+//    NSRegularExpression *dotCommaRegexp = [NSRegularExpression regularExpressionWithPattern:@"\\d+((\\.|,)(\\d)*)?" options:0 error:&error];
+//    if (error) {
+//        NSLog(@"Regexp error: %@", error.description);
+//        return nil;
+//    }
+//    NSTextCheckingResult *match = [dotCommaRegexp firstMatchInString:trimmedString options:0 range:NSMakeRange(0, trimmedString.length)];
+//    if (match) {
+//        CGFloat hours = trimmedString.floatValue;
+//        NSNumber *seconds = @((NSInteger)(hours * SECONDS_IN_HOUR));
+//        return seconds;
+//    }
+//
+//    NSRegularExpression *colonRegexp = [NSRegularExpression regularExpressionWithPattern:@"\\d+(:(\\d)*){1,2}" options:0 error:&error];
+//    if (error) {
+//        NSLog(@"Regexp error: %@", error.description);
+//        return nil;
+//    }
+//    match = [colonRegexp firstMatchInString:trimmedString options:0 range:NSMakeRange(0, trimmedString.length)];
+//    if (match) {
+//        NSArray *components = [trimmedString componentsSeparatedByString:@":"];
+//        NSUInteger seconds = 0;
+//        NSUInteger componentWeight = SECONDS_IN_HOUR;
+//        for (NSString *component in components) {
+//            if (component.length > 0) {
+//                seconds += componentWeight * component.integerValue;
+//            }
+//            componentWeight /= 60;
+//        }
+//        return @(seconds);
+//    }
+//
+//    return nil;
+//}

@@ -10,6 +10,7 @@
 
 @class IQTaskDataHolder;
 @class IQCommunity;
+@class IQTask;
 
 @interface TaskModel : IQTableModel
 
@@ -20,6 +21,7 @@
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithDefaultCommunity:(IQCommunity *)community;
+- (instancetype)initWithDefaultCommunity:(IQCommunity *)community parentTask:(IQTask *)task;
 - (instancetype)initWithTask:(IQTaskDataHolder *)task;
 
 - (void)updateItem:(id)item atIndexPath:(NSIndexPath *)indexPath withValue:(id)value;

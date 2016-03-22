@@ -20,6 +20,8 @@
 #import "NSDate+CupertinoYankee.h"
 #import "TaskComplexityController.h"
 #import "IQEstimatedTimeCell.h"
+#import "IQTask.h"
+#import "IQTaskParentAccessItem.h"
 
 #ifdef IPAD
 #import "IQDoubleDetailsTextCell.h"
@@ -66,7 +68,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = (self.model.task.taskId == nil) ? NSLocalizedString(@"Creating task", nil) :
+    self.title = (self.model.task.taskId == nil) ? (self.model.task.parentTask == nil ? NSLocalizedString(@"Creating task", nil) :
+                                                                                        NSLocalizedString(@"Creating subtask", nil)) :
                                                    NSLocalizedString(@"Editing task", nil);
 
     self.view.backgroundColor = [UIColor whiteColor];
@@ -170,15 +173,25 @@
         _editingItem = item;
         _editingIndexPath = indexPath;
         
-        UIViewController <TaskFieldEditController> *controller = [self controllerForItem:item];
-        if (controller) {
-            controller.task = self.model.task;
-            controller.delegate = self;
-            [self.navigationController pushViewController:controller animated:YES];
+        if ([item isKindOfClass:[IQTaskParentAccessItem class]]) {
+            IQTaskParentAccessItem *accessItem = (IQTaskParentAccessItem *)item;
+            [self.model updateItem:accessItem atIndexPath:_editingIndexPath withValue:@(!accessItem.selected)];
+            _editingCell = nil;
+            _editingItem = nil;
+            _editingIndexPath = nil;
         }
-        else if ([item isKindOfClass:[IQTaskStartDateItem class]] ||
-                 [item isKindOfClass:[IQTaskEndDateItem class]]){
-            [self showDataPicker];
+        else {
+            UIViewController <TaskFieldEditController> *controller = [self controllerForItem:item];
+            if (controller) {
+                controller.task = self.model.task;
+                controller.delegate = self;
+                [self.navigationController pushViewController:controller animated:YES];
+            }
+            else if ([item isKindOfClass:[IQTaskStartDateItem class]] ||
+                     [item isKindOfClass:[IQTaskEndDateItem class]]){
+                [self showDataPicker];
+            }
+
         }
     }
 }
@@ -517,6 +530,19 @@
         picker.minimumDate = [calendar dateByAddingComponents:dayComponent
                                                        toDate:self.model.task.startDate
                                                       options:0];
+    }
+    
+    if (self.model.task.parentTask) {
+        if (isBeginDateEdit) {
+            NSDateComponents *minuteComponents = [[NSDateComponents alloc] init];
+            minuteComponents.minute = -1;
+            
+            picker.minimumDate = self.model.task.parentTask.startDate;
+            picker.maximumDate = [calendar dateByAddingComponents:minuteComponents
+                                                           toDate:self.model.task.parentTask.endDate
+                                                          options:0];
+        }
+        picker.maximumDate = self.model.task.parentTask.endDate;
     }
     
     [picker setDoneButton:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil)
