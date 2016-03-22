@@ -179,7 +179,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error, NSIndexPath *indexPath))completion {
     if([_fetchController.fetchedObjects count] == 0) {
         [self reloadModelWithCompletion:^(NSError *error) {
-            completion(error,  [NSIndexPath indexPathForRow:[self numberOfSections] > 0 ? [self numberOfItemsInSection:0] : 0 inSection:0]);
+            completion(error, [_fetchController.fetchedObjects count] > 0 ? [NSIndexPath indexPathForRow:[self numberOfItemsInSection:0] inSection:0] : nil);
         }];
     }
     else {
@@ -193,11 +193,19 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                   sort:SORT_DIRECTION
                                                                handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
                                                                    if(!error) {
-                                                                       [self loadNextPartSourceControllerWithCount:comments.count completion:^(NSError *error, NSUInteger addedSectionsCount, NSUInteger addedRows) {
-                                                                           if(completion) {
-                                                                               completion(error, [NSIndexPath indexPathForRow:addedRows inSection:addedSectionsCount]);
+                                                                       if (comments.count > 0) {
+                                                                           [self loadNextPartSourceControllerWithCount:comments.count completion:^(NSError *error, NSUInteger addedSectionsCount, NSUInteger addedRows) {
+                                                                               if(completion) {
+                                                                                   completion(error, [NSIndexPath indexPathForRow:addedRows inSection:addedSectionsCount]);
+                                                                               }
+                                                                           }];
+                                                                       }
+                                                                       else {
+                                                                           if (completion) {
+                                                                               completion(error, nil);
                                                                            }
-                                                                       }];
+                                                                       }
+                                                                      
                                                                    }
                                                                    else if(completion) {
                                                                        completion(error, nil);
@@ -225,6 +233,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                            if(completion) {
                                                                completion(error);
                                                            }
+                                                           [self modelDidChanged];
                                                        }];
                                                    }];
 }
@@ -694,13 +703,17 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)modelDidChangeSectionAtIndex:(NSUInteger)sectionIndex forChangeType:(NSInteger)type {
     if ([self.delegate respondsToSelector:@selector(model:didChangeSectionAtIndex:forChangeType:)]) {
-        [self.delegate model:self didChangeSectionAtIndex:sectionIndex forChangeType:type];
+        [self.delegate model:self didChangeSectionAtIndex:[self numberOfSections] - sectionIndex - (type == NSFetchedResultsChangeDelete ? 0 : 1) forChangeType:type];
     }
 }
 
 - (void)modelDidChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSInteger)type newIndexPath:(NSIndexPath *)newIndexPath {
     if ([self.delegate respondsToSelector:@selector(model:didChangeObject:atIndexPath:forChangeType:newIndexPath:)]) {
-        [self.delegate model:self didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
+        [self.delegate model:self
+             didChangeObject:anObject
+                 atIndexPath:indexPath ? [NSIndexPath indexPathForRow:[self numberOfItemsInSection:indexPath.section] - indexPath.row - (type == NSFetchedResultsChangeDelete ? 0 : 1) inSection:[self numberOfSections] - indexPath.section - 1] : nil
+               forChangeType:type
+                newIndexPath:newIndexPath ? [NSIndexPath indexPathForRow:[self numberOfItemsInSection:newIndexPath.section] - newIndexPath.row - 1 inSection:[self numberOfSections] - newIndexPath.section - 1] : nil];
     }
 }
 

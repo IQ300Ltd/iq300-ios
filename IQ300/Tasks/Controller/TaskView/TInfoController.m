@@ -494,7 +494,7 @@
     }];
     [headerView setupByTask:self.task];
     headerView.delegate = self;
-    [headerView.parentTaskInfoButton addTarget:self action:@selector(parentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    //[headerView.parentTaskInfoButton addTarget:self action:@selector(parentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     return headerView;
 }
 

@@ -111,7 +111,9 @@
      insertPullToRefreshWithActionHandler:^{
          [weakSelf.model loadNextPartWithCompletion:^(NSError *error, NSIndexPath *indexPath) {
              [self proccessServiceError:error];
-             [weakSelf.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+             if (indexPath) {
+                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+             }
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
          }];
      }

@@ -123,7 +123,9 @@
              }
              else {
                  [self proccessUserAddToConversation];
-                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                 if (indexPath) {
+                     [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                 }
              }
              
              [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionTop] stopAnimating];
