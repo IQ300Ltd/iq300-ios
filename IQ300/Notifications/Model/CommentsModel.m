@@ -705,7 +705,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)modelNewComment:(IQComment*)comment {
-    
     if ([self.delegate respondsToSelector:@selector(model:newComment:)]) {
         [self.delegate model:self newComment:comment];
     }
