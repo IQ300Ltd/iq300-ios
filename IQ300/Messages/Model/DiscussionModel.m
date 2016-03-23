@@ -1036,11 +1036,23 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 
 - (void)modelDidChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSInteger)type newIndexPath:(NSIndexPath *)newIndexPath {
     if ([self.delegate respondsToSelector:@selector(model:didChangeObject:atIndexPath:forChangeType:newIndexPath:)]) {
+        
+        if (indexPath) {
+            NSUInteger section = [self numberOfSections] - indexPath.section - 1;
+            indexPath = [NSIndexPath indexPathForRow:[self numberOfItemsInSection:section] - indexPath.row - (type == NSFetchedResultsChangeDelete ? 0 : 1) inSection:section];
+        }
+        
+        if (newIndexPath) {
+            NSUInteger section = [self numberOfSections] - newIndexPath.section - 1;
+            newIndexPath = [NSIndexPath indexPathForRow:[self numberOfItemsInSection:section] - newIndexPath.row - 1 inSection:section];
+        }
+        
+        
         [self.delegate model:self
              didChangeObject:anObject
-                 atIndexPath:indexPath ? [NSIndexPath indexPathForRow:[self numberOfItemsInSection:indexPath.section] - indexPath.row - (type == NSFetchedResultsChangeDelete ? 0 : 1) inSection:[self numberOfSections] - indexPath.section - 1] : nil
+                 atIndexPath:indexPath
                forChangeType:type
-                newIndexPath:newIndexPath ? [NSIndexPath indexPathForRow:[self numberOfItemsInSection:newIndexPath.section] - newIndexPath.row - 1 inSection:[self numberOfSections] - newIndexPath.section - 1] : nil];
+                newIndexPath:newIndexPath];
     }
 }
 
