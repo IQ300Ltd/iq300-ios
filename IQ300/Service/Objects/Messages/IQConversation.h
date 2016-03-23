@@ -24,6 +24,7 @@
 @property (nonatomic, strong) NSNumber * locked;
 @property (nonatomic, strong) IQDiscussion * discussion;
 @property (nonatomic, strong) IQComment * lastComment;
+@property (nonatomic, strong) NSNumber *unread;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

@@ -28,6 +28,7 @@
 @dynamic lastComment;
 @dynamic users;
 @dynamic locked;
+@dynamic unread;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
@@ -41,7 +42,8 @@
                                                   @"admin_id"               : @"adminId",
                                                   @"kind"                   : @"type",
                                                   @"newest_comments_count"  : @"unreadCommentsCount",
-                                                  @"comments_count"         : @"totalCommentsCount"
+                                                  @"comments_count"         : @"totalCommentsCount",
+                                                  @"unread"                 : @"unread",
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"discussion"

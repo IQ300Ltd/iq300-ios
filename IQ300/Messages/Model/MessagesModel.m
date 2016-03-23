@@ -331,7 +331,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     
     NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];
     if(_loadUnreadOnly) {
-        NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"lastComment.unread == %@", @YES];
+        NSPredicate * readCondition = [NSPredicate predicateWithFormat:@"unread == %@", @YES];
         predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[readCondition, predicate]];
     }
     
