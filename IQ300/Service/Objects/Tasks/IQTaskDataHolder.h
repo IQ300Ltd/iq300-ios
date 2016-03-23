@@ -31,6 +31,8 @@
 @property (nonatomic, strong) IQComplexity *complexity;
 
 @property (nonatomic, strong) NSNumber *parentTaskId;
+@property (nonatomic, strong) NSDate *parentStartDate;
+@property (nonatomic, strong) NSDate *parentEndDate;
 
 + (IQTaskDataHolder*)holderWithTask:(IQTask*)task;
 

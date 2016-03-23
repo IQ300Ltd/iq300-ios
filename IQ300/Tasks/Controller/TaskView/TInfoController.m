@@ -379,10 +379,6 @@
    
     TaskController * controller = [[TaskController alloc] init];
     controller.model = model;
-    if (self.task.parentId) {
-        controller.startDateRestriction = self.task.parentStartDate;
-        controller.endDateRestriction = self.task.parentEndDate;
-    }
     controller.hidesBottomBarWhenPushed = YES;
     [self.parentViewController.navigationController pushViewController:controller
                                                                     animated:YES];

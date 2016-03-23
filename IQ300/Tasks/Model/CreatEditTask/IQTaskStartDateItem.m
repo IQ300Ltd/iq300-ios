@@ -8,7 +8,7 @@
 
 #import "IQTaskStartDateItem.h"
 #import "NSDate+IQFormater.h"
-#import "IQTask.h"
+#import "IQTaskDataHolder.h"
 #import "NSDate+CupertinoYankee.h"
 
 @implementation IQTaskStartDateItem
@@ -45,8 +45,12 @@
 - (void)updateWithTask:(id)task value:(id)value {
     [task setStartDate:value];
     
-    if ([[task startDate] compare:[task endDate]] == NSOrderedDescending) {
+    if ([[task startDate] compare:[task endDate]] != NSOrderedAscending) {
         [task setEndDate:[value endOfDay]];
+    }
+    
+    if ([[task endDate] compare:[task parentEndDate]] == NSOrderedDescending) {
+        [task setEndDate:[task parentEndDate]];
     }
 
     NSDate *date = value;

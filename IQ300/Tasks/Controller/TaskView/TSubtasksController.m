@@ -254,11 +254,11 @@
 - (void)addButtonAction:(id)sender {
     TaskModel * taskModel = [[TaskModel alloc] initWithDefaultCommunity:_task.community parentTask:_task];
     
+    
     TaskController * controller = [[TaskController alloc] init];
     controller.model = taskModel;
     controller.hidesBottomBarWhenPushed = YES;
-    controller.startDateRestriction = self.task.startDate;
-    controller.endDateRestriction = self.task.endDate;
+
     [self.navigationController pushViewController:controller
                                          animated:YES];
 

@@ -13,7 +13,4 @@
 
 @property (nonatomic, strong) TaskModel * model;
 
-@property (nonatomic, strong) NSDate *startDateRestriction;
-@property (nonatomic, strong) NSDate *endDateRestriction;
-
 @end

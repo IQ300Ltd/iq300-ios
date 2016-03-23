@@ -537,13 +537,13 @@
             NSDateComponents *minuteComponents = [[NSDateComponents alloc] init];
             minuteComponents.minute = -1;
             
-            picker.minimumDate = _startDateRestriction;
+            picker.minimumDate = self.model.task.parentStartDate;
             picker.maximumDate = [calendar dateByAddingComponents:minuteComponents
-                                                           toDate:_endDateRestriction
+                                                           toDate:self.model.task.parentEndDate
                                                           options:0];
         }
         else {
-            picker.maximumDate = _endDateRestriction;
+            picker.maximumDate = self.model.task.parentEndDate;
         }
     }
     

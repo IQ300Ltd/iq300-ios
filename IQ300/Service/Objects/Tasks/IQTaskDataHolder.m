@@ -37,6 +37,9 @@
     holder.parentTaskAccess = task.parentTaskAccessRestriction;
     holder.parentTaskId = task.parentId;
     
+    holder.parentStartDate = task.parentStartDate;
+    holder.parentEndDate = task.parentEndDate;
+    
     return holder;
 }
 
@@ -90,6 +93,8 @@
         copy.complexity = self.complexity;
         copy.parentTaskId = self.parentTaskId;
         copy.parentTaskAccess = self.parentTaskAccess;
+        copy.parentEndDate = self.parentEndDate;
+        copy.parentStartDate = self.parentStartDate;
     }
     
     return copy;
@@ -100,6 +105,8 @@
     if (_parentTaskId) {
         _startDate = parentTask.startDate;
         _endDate = parentTask.endDate;
+        _parentStartDate = parentTask.parentStartDate;
+        _parentEndDate = parentTask.parentEndDate;
     }
 }
 
