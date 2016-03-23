@@ -1139,7 +1139,13 @@ fileAttributeName:(NSString*)fileAttributeName
     
     [self.objectManager addResponseDescriptor:descriptor];
     
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQSubtasksHolder class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"tasks/:id/children"
+                                                   fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
     
+    [self.objectManager addResponseDescriptor:descriptor];
 }
 
 @end

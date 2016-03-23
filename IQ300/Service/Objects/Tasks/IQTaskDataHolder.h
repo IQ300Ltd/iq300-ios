@@ -30,12 +30,14 @@
 
 @property (nonatomic, strong) IQComplexity *complexity;
 
-@property (nonatomic, strong) IQTask *parentTask;
+@property (nonatomic, strong) NSNumber *parentTaskId;
 
 + (IQTaskDataHolder*)holderWithTask:(IQTask*)task;
 
 + (RKObjectMapping*)createRequestObjectMapping;
 
 + (RKObjectMapping*)editRequestObjectMapping;
+
+- (void)setParentTask:(IQTask *)parentTask;
 
 @end

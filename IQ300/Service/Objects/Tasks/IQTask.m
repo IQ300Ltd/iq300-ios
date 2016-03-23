@@ -59,6 +59,11 @@
 @dynamic parentTitle;
 @dynamic parentTaskAccess;
 
+@dynamic parentTaskAccessRestriction;
+
+@dynamic parentStartDate;
+@dynamic parentEndDate;
+
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
     [mapping setIdentificationAttributes:@[@"taskId"]];
@@ -88,7 +93,10 @@
                                                   @"estimated_time"                           : @"estimatedTime",
                                                   @"available_features"                       : @"availableFeatures",
                                                   @"parent.title"                             : @"parentTitle",
-                                                  @"executor_restrictions.parent_task_access" : @"parentTaskAccess"
+                                                  @"parent.has_access"                        : @"parentTaskAccess",
+                                                  @"parent.start_date"                        : @"parentStartDate",
+                                                  @"parent.end_date"                          : @"parentEndDate",
+                                                  @"executor_restrictions.parent_task_access" : @"parentTaskAccessRestriction",
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"customer"

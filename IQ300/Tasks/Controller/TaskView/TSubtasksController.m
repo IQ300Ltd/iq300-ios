@@ -23,6 +23,7 @@
 #import "TaskPolicyInspector.h"
 
 #import "TaskTabController.h"
+#import "IQSubtask.h"
 #import "IQTask.h"
 
 #import "TaskModel.h"
@@ -85,8 +86,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.noDataLabel setText:NSLocalizedString(@"No subtasks", nil)];
-    
     self.view.backgroundColor = [UIColor whiteColor];
     __weak typeof(self) weakSelf = self;
     [self.tableView
@@ -100,9 +99,16 @@
      }
      position:SVPullToRefreshPositionTop];
     
-    self.tableView.tableFooterView = [UIView new];
+    [self.tableView insertPullToRefreshWithActionHandler:^{
+        [weakSelf.model loadNextPartWithCompletion:^(NSError *error) {
+            [self proccessServiceError:error];
+            [[weakSelf.tableView pullToRefreshForPosition:SVPullToRefreshPositionBottom] stopAnimating];
+
+        }];
+    } position:SVPullToRefreshPositionBottom];
     
-    [self updateModel];
+    self.tableView.tableFooterView = [UIView new];
+    [self.noDataLabel setText:NSLocalizedString(@"No subtasks", nil)];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -154,7 +160,7 @@
         cell = [self.model createCellForIndexPath:indexPath];
     }
     
-    IQTask *item = [self.model itemAtIndexPath:indexPath];
+    IQSubtask *item = [self.model itemAtIndexPath:indexPath];
     cell.item = item;
     
     
@@ -170,20 +176,28 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    IQTask * task = [self.model itemAtIndexPath:indexPath];
+    IQSubtask * subtask = [self.model itemAtIndexPath:indexPath];
     
-    if ([task.taskId isEqual:_priveousTaskId]) {
+    if ([subtask.subtaskId isEqual:_priveousTaskId]) {
         [self.navigationController popViewControllerAnimated:YES];
     }
     else {
-        TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:task.taskId];
-        TaskTabController * controller = [[TaskTabController alloc] init];
-        controller.task = task;
-        controller.policyInspector = policyInspector;
-        controller.hidesBottomBarWhenPushed = YES;
-        controller.priveousTaskId = _task.taskId;
-        
-        [self.navigationController pushViewController:controller animated:YES];
+        [[IQService sharedService] taskWithId:subtask.subtaskId handler:^(BOOL success, IQTask *task, NSData *responseData, NSError *error) {
+            if (success) {
+                TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:task.taskId];
+                TaskTabController * controller = [[TaskTabController alloc] init];
+                controller.task = task;
+                controller.policyInspector = policyInspector;
+                controller.hidesBottomBarWhenPushed = YES;
+                controller.priveousTaskId = _task.taskId;
+                
+                [self.navigationController pushViewController:controller animated:YES];
+            }
+            else {
+                [self proccessServiceError:error];
+            }
+        }];
+
     }
 }
 
@@ -243,6 +257,8 @@
     TaskController * controller = [[TaskController alloc] init];
     controller.model = taskModel;
     controller.hidesBottomBarWhenPushed = YES;
+    controller.startDateRestriction = self.task.startDate;
+    controller.endDateRestriction = self.task.endDate;
     [self.navigationController pushViewController:controller
                                          animated:YES];
 

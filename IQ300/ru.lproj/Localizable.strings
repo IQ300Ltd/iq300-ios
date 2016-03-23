@@ -216,3 +216,10 @@
 "MM" = "ММ";
 
 "Attachments" = "Вложения";
+
+//Parent tasks
+"Parent task:" = "Базовая задача:";
+"Subtasks" = "Подзадачи";
+"Creating subtask" = "Создание подзадачи";
+"Access to parent" = "Доступ к родительской";
+"No subtasks" = "Подзадачи отсутствуют";

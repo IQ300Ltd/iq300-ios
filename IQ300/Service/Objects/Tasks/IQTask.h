@@ -40,6 +40,10 @@
 @property (nonatomic, strong) NSNumber         * estimatedTime;
 @property (nonatomic, strong) NSString         * parentTitle;
 @property (nonatomic, strong) NSNumber         * parentTaskAccess;
+@property (nonatomic, strong) NSNumber         * parentTaskAccessRestriction;
+
+@property (nonatomic, strong) NSDate           * parentStartDate;
+@property (nonatomic, strong) NSDate           * parentEndDate;
 
 @property (nonatomic, strong) IQUser           * customer;
 @property (nonatomic, strong) IQUser           * executor;

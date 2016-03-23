@@ -43,5 +43,7 @@
 #import "IQConversationMember.h"
 #import "IQTaskDeletedIds.h"
 #import "IQComplexity.h"
+#import "IQSubtask.h"
+#import "IQSubtasksHolder.h"
 
 #endif

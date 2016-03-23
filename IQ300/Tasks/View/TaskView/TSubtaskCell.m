@@ -9,7 +9,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 
 #import "TSubtaskCell.h"
-#import "IQTask.h"
+#import "IQSubtask.h"
 #import "NSDate+IQFormater.h"
 #import "IQUser.h"
 #import "IQCommunity.h"
@@ -43,7 +43,7 @@
 
 @implementation TSubtaskCell
 
-+ (CGFloat)heightForItem:(IQTask *)item andCellWidth:(CGFloat)cellWidth {
++ (CGFloat)heightForItem:(IQSubtask *)item andCellWidth:(CGFloat)cellWidth {
     CGFloat height = CONTENT_INSETS * 2.0f;
     CGFloat width = cellWidth - CONTENT_INSETS * 2.0f;
     
@@ -127,14 +127,6 @@
                                                       font:LABELS_FONT
                                              localaizedKey:nil];
         [contentView addSubview:_communityNameLabel];
-        
-        _messagesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"message_blue_buble.png"]];
-        [contentView addSubview:_messagesImageView];
-        
-        _commentsCountLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
-                                                      font:LABELS_FONT
-                                             localaizedKey:nil];
-        [contentView addSubview:_commentsCountLabel];
         
         _statusLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
                                                font:LABELS_FONT
@@ -233,35 +225,21 @@
                                            communityNameSize.width,
                                            communityNameSize.height);
     
-    CGSize messagesImageSize = [_messagesImageView image].size;
-    _messagesImageView.frame = CGRectMake(boundsCenterX,
-                                          _communityImageView.frame.origin.y + 2.0f,
-                                          messagesImageSize.width,
-                                          messagesImageSize.height);
-    
     constrainedSize = CGSizeMake(labelsMaxWidth, LABELS_HEIGHT);
     CGSize statusLabelSize = [_statusLabel.text sizeWithFont:_statusLabel.font
                                            constrainedToSize:constrainedSize
                                                lineBreakMode:NSLineBreakByWordWrapping];
     
     _statusLabel.frame = CGRectMake((actualBounds.origin.x + actualBounds.size.width) - statusLabelSize.width,
-                                    _messagesImageView.frame.origin.y,
+                                    _communityImageView.frame.origin.y + 2.0f,
                                     statusLabelSize.width,
                                     LABELS_HEIGHT);
-    
-    CGFloat countMaxWidth = labelsMaxWidth - messagesImageSize.width - labelsOffset;
-    countMaxWidth = MAX(countMaxWidth, _statusLabel.frame.origin.x - CGRectRight(_messagesImageView.frame) - labelsOffset);
-    
-    _commentsCountLabel.frame = CGRectMake(CGRectRight(_messagesImageView.frame) + labelsOffset,
-                                           _messagesImageView.frame.origin.y,
-                                           countMaxWidth,
-                                           messagesImageSize.height);
 }
 
-- (void)setItem:(IQTask *)item {
+- (void)setItem:(IQSubtask *)item {
     _item = item;
     
-    _taskIDLabel.text = [NSString stringWithFormat:@"#%@", _item.taskId];
+    _taskIDLabel.text = [NSString stringWithFormat:@"#%@", _item.subtaskId];
     _titleLabel.text = _item.title;
     _dueDateLabel.text = [_item.endDate dateToDayString];
     _fromLabel.text = _item.customer.displayName;
@@ -277,11 +255,6 @@
         _communityImageView.image = [UIImage imageNamed:@"community_ico.png"];
     }
     
-    BOOL showCommentsCount = ([_item.commentsCount integerValue] > 0);
-    
-    _commentsCountLabel.hidden = !showCommentsCount;
-    _messagesImageView.hidden = !showCommentsCount;
-    _commentsCountLabel.text = [NSString stringWithFormat:@"%@", _item.commentsCount];
     
     NSString * status = ([[_item.type lowercaseString] isEqualToString:@"templatetask"]) ? @"template" : _item.status;
     _statusLabel.textColor = [TaskHelper colorForTaskType:status];

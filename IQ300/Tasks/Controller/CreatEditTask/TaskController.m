@@ -68,7 +68,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = (self.model.task.taskId == nil) ? (self.model.task.parentTask == nil ? NSLocalizedString(@"Creating task", nil) :
+    self.title = (self.model.task.taskId == nil) ? (self.model.task.parentTaskId == nil ? NSLocalizedString(@"Creating task", nil) :
                                                                                         NSLocalizedString(@"Creating subtask", nil)) :
                                                    NSLocalizedString(@"Editing task", nil);
 
@@ -532,17 +532,19 @@
                                                       options:0];
     }
     
-    if (self.model.task.parentTask) {
+    if (self.model.task.parentTaskId) {
         if (isBeginDateEdit) {
             NSDateComponents *minuteComponents = [[NSDateComponents alloc] init];
             minuteComponents.minute = -1;
             
-            picker.minimumDate = self.model.task.parentTask.startDate;
+            picker.minimumDate = _startDateRestriction;
             picker.maximumDate = [calendar dateByAddingComponents:minuteComponents
-                                                           toDate:self.model.task.parentTask.endDate
+                                                           toDate:_endDateRestriction
                                                           options:0];
         }
-        picker.maximumDate = self.model.task.parentTask.endDate;
+        else {
+            picker.maximumDate = _endDateRestriction;
+        }
     }
     
     [picker setDoneButton:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil)

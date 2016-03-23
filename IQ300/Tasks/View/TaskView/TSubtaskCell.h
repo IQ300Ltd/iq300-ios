@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class IQTask;
+@class IQSubtask;
 
 @interface TSubtaskCell : UITableViewCell {
     UIEdgeInsets _contentInsets;
@@ -24,15 +24,13 @@
 @property (nonatomic, readonly) UILabel * dueDateLabel;
 @property (nonatomic, readonly) UIImageView * communityImageView;
 @property (nonatomic, readonly) UILabel * communityNameLabel;
-@property (nonatomic, readonly) UIImageView * messagesImageView;
-@property (nonatomic, readonly) UILabel * commentsCountLabel;
 @property (nonatomic, readonly) UILabel * statusLabel;
 @property (nonatomic, readonly) UIView * leftView;
 
 @property (nonatomic, assign) BOOL highlightTasks;
 
-@property (nonatomic, strong) IQTask * item;
+@property (nonatomic, strong) IQSubtask * item;
 
-+ (CGFloat)heightForItem:(IQTask *)item andCellWidth:(CGFloat)cellWidth;
++ (CGFloat)heightForItem:(IQSubtask *)item andCellWidth:(CGFloat)cellWidth;
 
 @end

@@ -359,27 +359,33 @@
          [self.navigationController popViewControllerAnimated:YES];
      }
      else {
-         [[IQService sharedService] taskWithId:_task.parentId handler:^(BOOL success, IQTask *object, NSData *responseData, NSError *error) {
-             TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:object.taskId];
-             TaskTabController * controller = [[TaskTabController alloc] init];
-             controller.task = object;
-             controller.policyInspector = policyInspector;
-             controller.hidesBottomBarWhenPushed = YES;
-             controller.priveousTaskId = _task.taskId;
-             
-             [self.navigationController pushViewController:controller animated:YES];
-         }];
+         if (_task.parentTaskAccess.boolValue) {
+             [[IQService sharedService] taskWithId:_task.parentId handler:^(BOOL success, IQTask *object, NSData *responseData, NSError *error) {
+                 TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:object.taskId];
+                 TaskTabController * controller = [[TaskTabController alloc] init];
+                 controller.task = object;
+                 controller.policyInspector = policyInspector;
+                 controller.hidesBottomBarWhenPushed = YES;
+                 controller.priveousTaskId = _task.taskId;
+                 
+                 [self.navigationController pushViewController:controller animated:YES];
+             }];
+         }
      }
 }
 
 - (void)editButtonAction:(UIButton*)sender {
     TaskModel * model = [[TaskModel alloc] initWithTask:[IQTaskDataHolder holderWithTask:self.task]];
-    
+   
     TaskController * controller = [[TaskController alloc] init];
     controller.model = model;
+    if (self.task.parentId) {
+        controller.startDateRestriction = self.task.parentStartDate;
+        controller.endDateRestriction = self.task.parentEndDate;
+    }
     controller.hidesBottomBarWhenPushed = YES;
     [self.parentViewController.navigationController pushViewController:controller
-                                                              animated:YES];
+                                                                    animated:YES];
 }
 
 - (void)editTodoItemsAction:(UIButton*)sender {
@@ -494,7 +500,7 @@
     }];
     [headerView setupByTask:self.task];
     headerView.delegate = self;
-    //[headerView.parentTaskInfoButton addTarget:self action:@selector(parentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView.parentTaskButton addTarget:self action:@selector(parentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     return headerView;
 }
 

@@ -16,6 +16,7 @@
 
 @property (nonatomic, assign) CGFloat cellWidth;
 
-//- (void)resetReadFlagWithCompletion:(void (^)(NSError * error))completion;
+- (void)updateModelWithCompletion:(void (^)(NSError * error))completion;
+- (void)loadNextPartWithCompletion:(void (^)(NSError * error))completion;
 
 @end

@@ -197,3 +197,10 @@
 "MM" = "MM";
 
 "Attachments" = "Attachments";
+
+//Parent tasks
+"Parent task:" = "Parent task:";
+"Subtasks" = "Subtasks";
+"Creating subtask" = "Creating subtask";
+"Access to parent" = "Access to parent";
+"No subtasks" = "No subtasks";

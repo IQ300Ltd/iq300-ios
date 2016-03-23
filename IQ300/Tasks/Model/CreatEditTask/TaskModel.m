@@ -135,7 +135,7 @@ static NSString * IQTextCellReuseIdentifier = @"IQTextCellReuseIdentifier";
     else {
         [mutableItems addObject:[[IQTaskCommunityItem alloc] initWithTask:_task]];
     }
-    if (_task.parentTask) {
+    if (_task.parentTaskId) {
         [mutableItems addObject:[[IQTaskParentAccessItem alloc] initWithTask:_task]];
     }
 #ifdef IPAD

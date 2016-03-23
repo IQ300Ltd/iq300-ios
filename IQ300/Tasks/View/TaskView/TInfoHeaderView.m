@@ -86,6 +86,32 @@
     
     height += titleLabelSize.height;
     
+    if (task.parentTitle.length > 0) {
+        NSString *baseTaskString = NSLocalizedString(@"Parent task:", nil);
+        CGSize titleSize = [baseTaskString sizeWithFont:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE] constrainedToSize:CGSizeMake(hederWidth, CGFLOAT_MAX)];
+        height += titleSize.height + USER_OFFSET;
+        
+        NSDictionary *attributes = nil;
+        
+        if (task.parentTaskAccess.boolValue) {
+            attributes = @{NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                           NSUnderlineColorAttributeName  : [UIColor blueColor],
+                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE],
+                           NSForegroundColorAttributeName : [UIColor blueColor],
+                           };
+        }
+        else {
+            attributes = @{
+                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE],
+                           NSForegroundColorAttributeName : [UIColor blackColor],
+                           };
+        }
+        
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:task.parentTitle attributes:attributes];
+        CGRect parentTitleRect = [attributedString boundingRectWithSize:CGSizeMake(hederWidth, CGFLOAT_MAX) options:0 context:nil];
+        height += parentTitleRect.size.height;
+    }
+    
     if (descriptionExpanded) {
         CGFloat descriptionHeight = [TInfoHeaderView heightForText:task.taskDescription
                                                               font:DESCRIPTION_FONT
@@ -152,6 +178,14 @@
                                   localaizedKey:nil];
         _toLabel.numberOfLines = 1;
         [self addSubview:_toLabel];
+        
+        _parentTaskLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+                                                   font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
+                                          localaizedKey:@"Parent task:"];
+        [self addSubview:_parentTaskLabel];
+        
+        _parentTaskButton = [[UIButton alloc] initWithFrame:CGRectZero];
+        [self addSubview:_parentTaskButton];
         
         _descriptionView = [[TInfoExpandableLineView alloc] init];
         _descriptionView.detailsTextLabel.font = DESCRIPTION_FONT;
@@ -220,6 +254,34 @@
     _titleLabel.text = task.title;
     _fromLabel.text = task.customer.displayName;
     _toLabel.text = ([task.executor.displayName length] > 0) ? [NSString stringWithFormat:@"> %@", task.executor.displayName] : @"";
+    
+    
+    if (task.parentTitle.length > 0) {
+        _parentTaskLabel.hidden = NO;
+        
+        NSDictionary *attributes = nil;
+        
+        if (task.parentTaskAccess.boolValue) {
+            attributes = @{NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
+                           NSUnderlineColorAttributeName  : [UIColor blueColor],
+                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE],
+                           NSForegroundColorAttributeName : [UIColor blueColor],
+                           };
+        }
+        else {
+            attributes = @{
+                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE],
+                           NSForegroundColorAttributeName : [UIColor blackColor],
+                           };
+        }
+        
+        _parentTaskButton.hidden = NO;
+        [_parentTaskButton setAttributedTitle:[[NSAttributedString alloc] initWithString:task.parentTitle attributes:attributes] forState:UIControlStateNormal];
+    }
+    else {
+        _parentTaskButton.hidden = YES;
+        _parentTaskLabel.hidden = YES;
+    }
     
     _descriptionView.enabled = ([task.taskDescription length] > 0);
     _descriptionView.detailsTextLabel.text = task.taskDescription;
@@ -386,19 +448,44 @@
                                 usersLabelFrame.size.width / 2.0f,
                                 usersLabelFrame.size.height);
     
+    if ([_parentTaskButton attributedTitleForState:UIControlStateNormal].length > 0) {
+        CGSize labelSize = [_parentTaskLabel sizeThatFits:CGSizeMake(headerBounds.size.width, CGFLOAT_MAX)];
+        _parentTaskLabel.frame = CGRectMake(headerBounds.origin.x,
+                                            CGRectBottom(_fromLabel.frame) + USER_OFFSET,
+                                            labelSize.width,
+                                            labelSize.height);
+        
+        CGSize buttonSize = [_parentTaskButton sizeThatFits:CGSizeMake(headerBounds.size.width, CGFLOAT_MAX)];
+        _parentTaskButton.frame = CGRectMake(headerBounds.origin.x ,
+                                             CGRectBottom(_parentTaskLabel.frame),
+                                             buttonSize.width,
+                                             buttonSize.height);
+    }
+    else {
+        _parentTaskLabel.frame = CGRectMake(headerBounds.origin.x,
+                                            CGRectBottom(_fromLabel.frame),
+                                            0.0f,
+                                            0.0f);
+        
+        _parentTaskButton.frame = CGRectMake(headerBounds.origin.x ,
+                                             CGRectBottom(_parentTaskLabel.frame),
+                                             0.0f,
+                                             0.0f);
+    }
+    
     if (_descriptionView.isExpanded) {
         CGFloat descriptionHight = [TInfoHeaderView heightForText:_descriptionView.detailsTextLabel.text
                                                              font:_descriptionView.detailsTextLabel.font
                                                             width:headerBounds.size.width];
         
         _descriptionView.frame = CGRectMake(bounds.origin.x,
-                                            CGRectBottom(_fromLabel.frame) + _headerInsets.bottom,
+                                            CGRectBottom(_parentTaskButton.frame) + _headerInsets.bottom,
                                             bounds.size.width,
                                             LINE_HEIGHT + descriptionHight + HORIZONTAL_PADDING);
     }
     else {
         _descriptionView.frame = CGRectMake(bounds.origin.x,
-                                            CGRectBottom(_fromLabel.frame) + _headerInsets.bottom,
+                                            CGRectBottom(_parentTaskButton.frame) + _headerInsets.bottom,
                                             bounds.size.width,
                                             LINE_HEIGHT);
     }

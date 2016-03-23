@@ -27,6 +27,10 @@
 @property (nonatomic, readonly) UILabel * titleLabel;
 @property (nonatomic, readonly) UILabel * fromLabel;
 @property (nonatomic, readonly) UILabel * toLabel;
+
+@property (nonatomic, strong) UILabel *parentTaskLabel;
+@property (nonatomic, strong) UIButton *parentTaskButton;
+
 @property (nonatomic, readonly) TInfoExpandableLineView * descriptionView;
 @property (nonatomic, readonly) TInfoLineView * statusView;
 @property (nonatomic, readonly) TInfoLineView * dueDateView;

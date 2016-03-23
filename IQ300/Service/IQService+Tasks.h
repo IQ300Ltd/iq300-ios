@@ -114,4 +114,6 @@
 
 - (void)complexityKindsWithHadnler:(ObjectRequestCompletionHandler)handler;
 
+- (void)subtasksForTaskWithId:(NSNumber *)taskId updatedAfter:(NSDate*)date page:(NSNumber *)page per:(NSNumber *)per handler:(ObjectRequestCompletionHandler)handler;
+
 @end

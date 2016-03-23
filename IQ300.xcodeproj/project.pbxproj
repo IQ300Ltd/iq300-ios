@@ -117,6 +117,10 @@
 		3D1D467A1CA11073001F0524 /* TSubtaskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46781CA11073001F0524 /* TSubtaskCell.m */; };
 		3D1D467D1CA14044001F0524 /* IQTaskParentAccessItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D467C1CA14044001F0524 /* IQTaskParentAccessItem.m */; };
 		3D1D467E1CA14044001F0524 /* IQTaskParentAccessItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D467C1CA14044001F0524 /* IQTaskParentAccessItem.m */; };
+		3D1D46811CA2A061001F0524 /* IQSubtask.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46801CA2A061001F0524 /* IQSubtask.m */; };
+		3D1D46821CA2A061001F0524 /* IQSubtask.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46801CA2A061001F0524 /* IQSubtask.m */; };
+		3D1D46851CA2C883001F0524 /* IQSubtasksHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46841CA2C883001F0524 /* IQSubtasksHolder.m */; };
+		3D1D46861CA2C883001F0524 /* IQSubtasksHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1D46841CA2C883001F0524 /* IQSubtasksHolder.m */; };
 		3D21439C1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */; };
 		3D21439D1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */; };
 		3D2143BE1C9E854A00ACA554 /* messages_menu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3D2143BC1C9E854A00ACA554 /* messages_menu.plist */; };
@@ -1030,6 +1034,10 @@
 		3D1D46781CA11073001F0524 /* TSubtaskCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSubtaskCell.m; sourceTree = "<group>"; };
 		3D1D467B1CA14044001F0524 /* IQTaskParentAccessItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQTaskParentAccessItem.h; sourceTree = "<group>"; };
 		3D1D467C1CA14044001F0524 /* IQTaskParentAccessItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQTaskParentAccessItem.m; sourceTree = "<group>"; };
+		3D1D467F1CA2A061001F0524 /* IQSubtask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSubtask.h; sourceTree = "<group>"; };
+		3D1D46801CA2A061001F0524 /* IQSubtask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSubtask.m; sourceTree = "<group>"; };
+		3D1D46831CA2C883001F0524 /* IQSubtasksHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSubtasksHolder.h; sourceTree = "<group>"; };
+		3D1D46841CA2C883001F0524 /* IQSubtasksHolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSubtasksHolder.m; sourceTree = "<group>"; };
 		3D21439A1C9E80DA00ACA554 /* MessagesMenuModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagesMenuModel.h; sourceTree = "<group>"; };
 		3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesMenuModel.m; sourceTree = "<group>"; };
 		3D2143BD1C9E854A00ACA554 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/messages_menu.plist; sourceTree = "<group>"; };
@@ -3044,6 +3052,8 @@
 			children = (
 				73C384C71A9725DA00B66D0F /* IQTask.h */,
 				73C384C81A9725DA00B66D0F /* IQTask.m */,
+				3D1D467F1CA2A061001F0524 /* IQSubtask.h */,
+				3D1D46801CA2A061001F0524 /* IQSubtask.m */,
 				73A50D121ADFBDAC00251CB7 /* IQTaskDataHolder.h */,
 				73A50D131ADFBDAC00251CB7 /* IQTaskDataHolder.m */,
 				73FE0A391AC03121007176A1 /* IQTaskMember.h */,
@@ -3061,6 +3071,8 @@
 				73A81F1D1ACD237700882FB0 /* IQTaskActivityItem.m */,
 				738EF82E1A9CBAA200894755 /* IQTasksHolder.h */,
 				738EF82F1A9CBAA200894755 /* IQTasksHolder.m */,
+				3D1D46831CA2C883001F0524 /* IQSubtasksHolder.h */,
+				3D1D46841CA2C883001F0524 /* IQSubtasksHolder.m */,
 				73970E8D1AA5A7CC00AC2414 /* TaskFilterCounters.h */,
 				73970E8E1AA5A7CC00AC2414 /* TaskFilterCounters.m */,
 				73970E901AA5C45300AC2414 /* TasksMenuCounters.h */,
@@ -4101,6 +4113,7 @@
 				73840E501B1C75A500BCEAFC /* TaskExecutor.m in Sources */,
 				73840E511B1C75A500BCEAFC /* IQTableModel.m in Sources */,
 				737136291B5387E20043B87B /* ConferenceInfoController.m in Sources */,
+				3D1D46821CA2A061001F0524 /* IQSubtask.m in Sources */,
 				73840E521B1C75A500BCEAFC /* TDocumentsController.m in Sources */,
 				731462841B3443B500E9CC60 /* IQCommunityExecutorCell.m in Sources */,
 				73840E541B1C75A500BCEAFC /* LoginController.m in Sources */,
@@ -4116,6 +4129,7 @@
 				73840E5A1B1C75A500BCEAFC /* CommentsView.m in Sources */,
 				73840E5B1B1C75A500BCEAFC /* MenuCell.m in Sources */,
 				73840E5C1B1C75A500BCEAFC /* IQTaskMember.m in Sources */,
+				3D1D46861CA2C883001F0524 /* IQSubtasksHolder.m in Sources */,
 				73840E5D1B1C75A500BCEAFC /* NotificationsController.m in Sources */,
 				3DAE09B61C915BBA00031479 /* IQMultipleCellsCell.m in Sources */,
 				3DAE09B21C91593300031479 /* IQTaskEndDateItem.m in Sources */,
@@ -4237,6 +4251,7 @@
 				73A9499C1A3832D7008EC469 /* DownloadManager.m in Sources */,
 				73D7F1D41ADE940300023120 /* TaskModel.m in Sources */,
 				73176C881B3AA38C00E6AC60 /* MTableFooterView.m in Sources */,
+				3D1D46811CA2A061001F0524 /* IQSubtask.m in Sources */,
 				2DAF335B1C6085C200554211 /* SharingViewControllerFactory.m in Sources */,
 				73A50D111ADFAA4400251CB7 /* TaskDescriptionController.m in Sources */,
 				737136341B53A4F60043B87B /* ContactInfoCell.m in Sources */,
@@ -4406,6 +4421,7 @@
 				2D80E7ED1C6B17C2009DD5A0 /* UICollectionView+Updates.m in Sources */,
 				737E7C621A0D027700E8BB81 /* ExtendedButton.m in Sources */,
 				73D7F1E51ADE94B400023120 /* TAttachmentCell.m in Sources */,
+				3D1D46851CA2C883001F0524 /* IQSubtasksHolder.m in Sources */,
 				739BC79B1A4A9E63007FC95C /* CommentsModel.m in Sources */,
 				73ADA8D91A36DB8D0032C1FA /* ContactPickerController.m in Sources */,
 				73D7F1E71ADE94B400023120 /* TInfoLineView.m in Sources */,

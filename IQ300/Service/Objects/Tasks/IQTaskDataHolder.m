@@ -34,6 +34,8 @@
     
     holder.estimatedTimeSeconds = task.estimatedTime;
     holder.complexity = task.complexity;
+    holder.parentTaskAccess = task.parentTaskAccessRestriction;
+    holder.parentTaskId = task.parentId;
     
     return holder;
 }
@@ -49,7 +51,7 @@
                                                   @"description"                              : @"taskDescription",
                                                   @"complexity"                               : @"complexity.value",
                                                   @"estimated_time"                           : @"estimatedTimeSeconds",
-                                                  @"parent_id"                                : @"parentTask.taskId",
+                                                  @"parent_id"                                : @"parentTaskId",
                                                   @"executor_restrictions.parent_task_access" : @"parentTaskAccess",
                                                   }];
     
@@ -86,14 +88,16 @@
         copy.executors = [self.executors copyWithZone:zone];
         copy.estimatedTimeSeconds = [self.estimatedTimeSeconds copyWithZone:zone];
         copy.complexity = self.complexity;
+        copy.parentTaskId = self.parentTaskId;
+        copy.parentTaskAccess = self.parentTaskAccess;
     }
     
     return copy;
 }
 
 - (void)setParentTask:(IQTask *)parentTask {
-    _parentTask = parentTask;
-    if (_parentTask) {
+    _parentTaskId = parentTask.taskId;
+    if (_parentTaskId) {
         _startDate = parentTask.startDate;
         _endDate = parentTask.endDate;
     }

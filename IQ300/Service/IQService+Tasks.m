@@ -397,4 +397,17 @@
     [self getObjectsAtPath:@"tasks/complexity_kinds" parameters:nil handler:handler];
 }
 
+
+- (void)subtasksForTaskWithId:(NSNumber *)taskId updatedAfter:(NSDate*)date page:(NSNumber *)page per:(NSNumber *)per handler:(ObjectRequestCompletionHandler)handler {
+    NSDictionary * parameters = IQParametersExcludeEmpty(@{
+                                                           @"updated_at_after" : NSObjectNullForNil(date),
+                                                           @"page"             : NSObjectNullForNil(page),
+                                                           @"per"              : NSObjectNullForNil(per),
+                                                           });
+    
+    [self getObjectsAtPath:[NSString stringWithFormat:@"tasks/%@/children", taskId]
+                parameters:parameters
+                   handler:handler];
+}
+
 @end
