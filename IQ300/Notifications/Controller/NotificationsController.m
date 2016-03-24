@@ -28,6 +28,9 @@
 #import "IQService+Feedback.h"
 #import "FeedbackController.h"
 #import "IQMenuItem.h"
+#import "DiscussionModel.h"
+#import "DiscussionController.h"
+#import "IQConversation.h"
 
 @interface NotificationsController() <UITableViewDelegate, UITableViewDataSource, SWTableViewCellDelegate> {
     NotificationsView * _mainView;
@@ -417,7 +420,6 @@
 
 - (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
     NSString * title = ([notification.notificable.title length] > 0) ? notification.notificable.title : notification.notificable.translatedType;
-    NSNumber * commentId = notification.commentId;
     [[IQService sharedService] discussionWithId:notification.discussionId
                                         handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
                                             if(success) {
@@ -429,22 +431,24 @@
                                                     [GAIService sendEventForCategory:GAINotificationsEventCategory
                                                                               action:GAIOpenReadedNotificationEventAction];
                                                 }
-
-                                                CommentsModel * model = [[CommentsModel alloc] initWithDiscussion:discussion];
-                                                CommentsController * controller = [[CommentsController alloc] init];
-                                                controller.model = model;
-                                                controller.title = title;
-                                                controller.highlightedCommentId = commentId;
-                                                controller.hidesBottomBarWhenPushed = YES;
-
-                                                [self.navigationController pushViewController:controller animated:YES];
                                                 
+                                                DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:discussion];
+                                                
+                                                DiscussionController * controller = [[DiscussionController alloc] init];
+                                                controller.hidesBottomBarWhenPushed = YES;
+                                                controller.title = discussion.conversation ? discussion.conversation.title : title;
+                                                controller.model = model;
+                                                
+                                                [self.navigationController pushViewController:controller animated:YES];
+
                                                 [self.model markNotificationAsReadAtIndexPath:indexPath completion:nil];
                                             }
                                             else {
                                                 [self proccessServiceError:error];
                                             }
                                         }];
+    /*
+     */
 }
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
