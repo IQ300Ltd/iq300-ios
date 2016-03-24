@@ -505,7 +505,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     };
 
     IQManagedAttachment * localAttachment = [[comment.attachments allObjects] firstObject];
-    if([localAttachment.originalURL length] > 0) {
+    if([localAttachment.localURL length] > 0) {
         [[IQService sharedService] createAttachmentWithFileAtPath:localAttachment.localURL
                                                          fileName:localAttachment.displayName
                                                          mimeType:localAttachment.contentType
