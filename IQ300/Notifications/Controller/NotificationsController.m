@@ -419,36 +419,32 @@
 }
 
 - (void)openCommentsControllerForNotification:(IQNotification*)notification atIndexPath:(NSIndexPath*)indexPath {
-    NSString * title = ([notification.notificable.title length] > 0) ? notification.notificable.title : notification.notificable.translatedType;
-    [[IQService sharedService] discussionWithId:notification.discussionId
-                                        handler:^(BOOL success, IQDiscussion * discussion, NSData *responseData, NSError *error) {
-                                            if(success) {
-                                                [GAIService sendEventForCategory:GAINotificationsEventCategory
-                                                                          action:GAIOpenNotificationEventAction
-                                                                           label:notification.notificable.type];
-
-                                                if ([notification.readed boolValue]) {
-                                                    [GAIService sendEventForCategory:GAINotificationsEventCategory
-                                                                              action:GAIOpenReadedNotificationEventAction];
-                                                }
-                                                
-                                                DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:discussion];
-                                                
-                                                DiscussionController * controller = [[DiscussionController alloc] init];
-                                                controller.hidesBottomBarWhenPushed = YES;
-                                                controller.title = discussion.conversation ? discussion.conversation.title : title;
-                                                controller.model = model;
-                                                
-                                                [self.navigationController pushViewController:controller animated:YES];
-
-                                                [self.model markNotificationAsReadAtIndexPath:indexPath completion:nil];
-                                            }
-                                            else {
-                                                [self proccessServiceError:error];
-                                            }
-                                        }];
-    /*
-     */
+    [[IQService sharedService] conversationWithId:[notification.notificable notificableId] handler:^(BOOL success, IQConversation * conversation, NSData *responseData, NSError *error) {
+        if(success) {
+            [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                      action:GAIOpenNotificationEventAction
+                                       label:notification.notificable.type];
+            
+            if ([notification.readed boolValue]) {
+                [GAIService sendEventForCategory:GAINotificationsEventCategory
+                                          action:GAIOpenReadedNotificationEventAction];
+            }
+            
+            DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
+            
+            DiscussionController * controller = [[DiscussionController alloc] init];
+            controller.hidesBottomBarWhenPushed = YES;
+            controller.title = conversation.title;
+            controller.model = model;
+            
+            [self.navigationController pushViewController:controller animated:YES];
+            
+            [self.model markNotificationAsReadAtIndexPath:indexPath completion:nil];
+        }
+        else {
+            [self proccessServiceError:error];
+        }
+    }];
 }
 
 - (void)updateBarBadgeWithValue:(NSInteger)badgeValue {
