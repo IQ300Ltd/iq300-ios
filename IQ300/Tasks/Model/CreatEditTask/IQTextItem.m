@@ -24,7 +24,6 @@
         _placeholder = placeholder;
         _editable = editable;
         _returnKeyType = UIReturnKeyDone;
-        _enabled = YES;
     }
     return self;
 }

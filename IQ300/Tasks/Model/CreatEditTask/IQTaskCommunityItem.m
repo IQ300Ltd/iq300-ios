@@ -21,6 +21,7 @@
     self = [super initWithText:community.title placeholder:placeholder];
     if (self) {
         self.accessoryImageName = @"right_gray_arrow.png";
+        self.enabled = [task taskId] == nil;
     }
     return self;
 }
@@ -28,11 +29,12 @@
 - (void)setTask:(id)task {
     IQCommunity *community = [task community];
     self.text = community.title;
+    self.enabled = [task taskId] == nil;
 }
 
 - (void)updateWithTask:(id)task value:(id)value {
     [task setCommunity:value];
-    self.text = [value title];
+    [self setTask:task];
 }
 
 @end

@@ -13,7 +13,6 @@
 @property (nonatomic, strong) NSString *text;
 @property (nonatomic, strong) NSString *placeholder;
 @property (nonatomic, assign) BOOL editable;
-@property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, assign) UIReturnKeyType returnKeyType;
 
 - (instancetype)initWithText:(NSString *)text;

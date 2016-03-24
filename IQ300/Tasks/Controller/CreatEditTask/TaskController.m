@@ -151,6 +151,11 @@
     return cell;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    id item = [self.model itemAtIndexPath:indexPath];
+    return [item enabled] ? indexPath : nil;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     id item = [self.model itemAtIndexPath:indexPath];

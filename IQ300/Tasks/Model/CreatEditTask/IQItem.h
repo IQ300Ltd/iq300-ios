@@ -11,5 +11,6 @@
 @interface IQItem : NSObject
 
 @property (nonatomic, strong) NSString *accessoryImageName;
+@property (nonatomic, assign) BOOL enabled;
 
 @end

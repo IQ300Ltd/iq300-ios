@@ -10,4 +10,12 @@
 
 @implementation IQItem
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _enabled = YES;
+    }
+    return self;
+}
+
 @end
