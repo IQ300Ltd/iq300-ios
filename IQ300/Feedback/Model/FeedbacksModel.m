@@ -32,6 +32,12 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
         NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"feedbackId" ascending:NO];
         self.sortDescriptors = @[descriptor];
         [self resubscribeToIQNotifications];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(accountDidChanged)
+                                                     name:AccountDidChangedNotification
+                                                   object:nil];
+        
     }
     return self;
 }
@@ -131,6 +137,17 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 }
 
 #pragma mark - Private methods
+
+- (void)accountDidChanged {
+    if([IQSession defaultSession]) {
+        [self resubscribeToIQNotifications];
+    }
+    else {
+        [self unsubscribeFromIQNotifications];
+        [self clearModelData];
+        [self modelDidChanged];
+    }
+}
 
 - (void)tryLoadFullPartitionWithCompletion:(void (^)(NSError * error))completion {
     NSInteger count = [self numberOfItemsInSection:0];
