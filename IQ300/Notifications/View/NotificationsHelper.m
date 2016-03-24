@@ -28,6 +28,9 @@
                                 
                                 @"basecommunity_accept"   : @"Accept",
                                 @"basecommunity_decline"  : @"Refuse",
+                                
+                                @"conversation_accept"    : @"Accept",
+                                @"conversation_decline"   : @"Refuse",
                                 };
     });
     
