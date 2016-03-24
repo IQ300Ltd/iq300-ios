@@ -85,12 +85,6 @@
     return _messagesView.tableView;
 }
 
-#ifdef IPAD
-- (BOOL)isLeftMenuEnabled {
-    return NO;
-}
-#endif
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
