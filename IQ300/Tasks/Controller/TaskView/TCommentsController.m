@@ -23,6 +23,7 @@
 
 @interface TCommentsController () {
     __weak id _notfObserver;
+    __weak id _usersObserver;
 }
 
 @property (nonatomic, assign) BOOL resetReadFlagAutomatically;
@@ -184,11 +185,31 @@
     _notfObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTaskCommentsDidChangedNotification
                                                                        queue:nil
                                                                   usingBlock:block];
+
+    void (^userBlock)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        NSArray * tasks = notf.userInfo[IQNotificationDataKey];
+        NSPredicate * filterPredicate = [NSPredicate predicateWithFormat:@"task_id == %@", weakSelf.taskId];
+        NSDictionary * curTask = [[tasks filteredArrayUsingPredicate:filterPredicate] lastObject];
+        
+        if(curTask) {
+            [weakSelf updateModel];
+        }
+    };
+    
+    
+    _usersObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQTaskMembersDidChangedNotification
+                                                                       queue:nil
+                                                                  usingBlock:userBlock];
+
 }
 
 - (void)unsubscribeFromIQNotifications {
     if(_notfObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_notfObserver];
+    }
+    if (_usersObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_usersObserver];
+
     }
 }
 

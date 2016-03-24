@@ -228,18 +228,23 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     else {
         [self clearRemovedCommentsWithCompletion:nil];
         
-        [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                          page:@(1)
-                                                           per:@(_portionLenght)
-                                                          sort:SORT_DIRECTION
-                                                       handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                           if(!error) {
-                                                               [self updateDefaultStatusesForComments:comments];
-                                                               if(completion) {
-                                                                   completion(error);
+        [[IQService sharedService] conversationWithId:_discussion.conversation.conversationId handler:^(BOOL success, IQConversation *object, NSData *responseData, NSError *error) {
+            _discussion = object.discussion;
+            [self modelConversationTitleDidChanged:object.title];
+            
+            [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                              page:@(1)
+                                                               per:@(_portionLenght)
+                                                              sort:SORT_DIRECTION
+                                                           handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                               if(!error) {
+                                                                   [self updateDefaultStatusesForComments:comments];
+                                                                   if(completion) {
+                                                                       completion(error);
+                                                                   }
                                                                }
-                                                           }
-                                                       }];
+                                                           }];
+        }];
     }
 }
 
@@ -876,9 +881,15 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                 }
                 else if([eventName isEqualToString:IQConferencesMemberDidAddEvent]) {
                     [self modelMemberDidAddWithId:data[@"user_id"]];
+                    [[IQService sharedService] conversationWithId:_discussion.conversation.conversationId handler:^(BOOL success, IQConversation *conversation, NSData *responseData, NSError *error) {
+                        _discussion = conversation.discussion;
+                    }];
                 }
                 else if([eventName isEqualToString:IQConferencesMemberDidRemovedEvent]) {
                     [self modelMemberDidRemovedWithId:data[@"user_id"]];
+                    [[IQService sharedService] conversationWithId:_discussion.conversation.conversationId handler:^(BOOL success, IQConversation *conversation, NSData *responseData, NSError *error) {
+                        _discussion = conversation.discussion;
+                    }];
                 }
             }
         }

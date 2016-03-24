@@ -158,23 +158,33 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
-    if([_fetchController.fetchedObjects count] == 0) {
-        [self reloadModelWithCompletion:completion];
+    [[IQService sharedService] discussionWithId:_discussion.discussionId handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+        if (success) {
+            if([_fetchController.fetchedObjects count] == 0) {
+                [self reloadModelWithCompletion:completion];
+            }
+            else {
+                [self clearRemovedCommentsWithCompletion:^(BOOL success, NSData *responseData, NSError *error) {
+                    [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
+                                                                      page:@(1)
+                                                                       per:@(_portionLenght)
+                                                                      sort:SORT_DIRECTION
+                                                                   handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
+                                                                       if(completion) {
+                                                                           completion(error);
+                                                                       }
+                                                                   }];
+                }];
+            }
+        }
+        else {
+            if (completion) {
+                completion(error);
+            }
+        }
+    }];
+
     }
-    else {
-        [self clearRemovedCommentsWithCompletion:^(BOOL success, NSData *responseData, NSError *error) {
-            [[IQService sharedService] commentsForDiscussionWithId:_discussion.discussionId
-                                                              page:@(1)
-                                                               per:@(_portionLenght)
-                                                              sort:SORT_DIRECTION
-                                                           handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                                               if(completion) {
-                                                                   completion(error);
-                                                               }
-                                                           }];
-        }];
-    }
-}
 
 - (void)loadNextPartWithCompletion:(void (^)(NSError * error, NSIndexPath *indexPath))completion {
     if([_fetchController.fetchedObjects count] == 0) {
