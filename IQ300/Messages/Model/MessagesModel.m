@@ -225,6 +225,11 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                            [self updateFilteredIdsWithArray:[conversations valueForKey:@"conversationId"]];
                                                            [self reloadModelSourceControllerWithCompletion:nil];
                                                        }
+                                                       [[IQService sharedService] conversationsUnread:(!_loadUnreadOnly) ? @(YES) : nil
+                                                                                                 page:@(1)
+                                                                                                  per:@(_portionLenght)
+                                                                                               search:_filter
+                                                                                                 sort:SORT_DIRECTION handler:nil];
                                                    }
                                                    
                                                    [self reloadModelSourceControllerWithCompletion:nil];
@@ -282,6 +287,12 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                            [self updateFilteredIdsWithArray:[conversations valueForKey:@"conversationId"]];
                                                            [self reloadModelSourceControllerWithCompletion:nil];
                                                        }
+                                                       
+                                                       [[IQService sharedService] conversationsUnread:(!_loadUnreadOnly) ? @(YES) : nil
+                                                                                                 page:@(1)
+                                                                                                  per:@(_portionLenght)
+                                                                                               search:_filter
+                                                                                                 sort:SORT_DIRECTION handler:nil];
                                                    }
                                                    
                                                    if(completion) {
