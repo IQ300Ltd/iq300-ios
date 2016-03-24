@@ -110,9 +110,11 @@
 - (void)setItem:(IQTextItem *)item {
     _textView.text = item.text;
     _textView.placeholder = item.placeholder;
-    _accessoryImageView.image = [UIImage imageNamed:item.accessoryImageName];
+    _accessoryImageView.image = (item.enabled) ? [UIImage imageNamed:item.accessoryImageName] : nil;
     _textView.userInteractionEnabled = [item editable];
     _textView.returnKeyType = item.returnKeyType;
+    
+    _textView.textColor = (item.enabled) ? TEXT_COLOR : SELECTED_TEXT_COLOR;
 }
 
 - (void)prepareForReuse {
