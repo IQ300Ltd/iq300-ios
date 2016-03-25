@@ -62,6 +62,11 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                                     ascending:NO];
         _sortDescriptors = @[descriptor];
         _filterType = IQNotificationsFilterUnread;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(accountDidChanged)
+                                                     name:AccountDidChangedNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -536,6 +541,19 @@ static NSString * NActionReuseIdentifier = @"NActionReuseIdentifier";
                                                         object:nil
                                                       userInfo:userInfo];
 }
+
+- (void)accountDidChanged {
+    if([IQSession defaultSession]) {
+        [self resubscribeToIQNotifications];
+        [self updateCountersWithCompletion:nil];
+    }
+    else {
+        [self unsubscribeFromIQNotifications];
+        [self clearModelData];
+        [self modelDidChanged];
+    }
+}
+
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
