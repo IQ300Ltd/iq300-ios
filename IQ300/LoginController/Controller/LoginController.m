@@ -38,6 +38,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [_loginView.enterButton setEnabled:YES];
+    
     _loginView.emailTextField.delegate = self;
     _loginView.passwordTextField.delegate = self;
     
@@ -57,6 +59,7 @@
         [self showErrorMessage:@"Email address is invalid"];
     }
     else {
+        [_loginView.enterButton setEnabled:NO];
         [[IQService sharedService] loginWithDeviceToken:[DeviceToken uniqueIdentifier]
                                                   email:_loginView.emailTextField.text
                                                password:_loginView.passwordTextField.text
@@ -71,9 +74,11 @@
                                                     }
                                                     else if(IsNetworUnreachableError(error) || ![IQService sharedService].isServiceReachable) {
                                                         [self showErrorMessage:INTERNET_UNREACHABLE_MESSAGE];
+                                                        [_loginView.enterButton setEnabled:YES];
                                                     }
                                                     else {
                                                         [self showErrorMessage:@"Wrong credentials"];
+                                                        [_loginView.enterButton setEnabled:YES];
                                                     }
                                                 }];
     }
