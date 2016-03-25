@@ -73,6 +73,7 @@
         NSURL *url = [NSURL URLWithString:attachment.previewURL];
         
         if ([url.scheme hasPrefix:@"http"]) {
+            [_customImageView setContentMode:UIViewContentModeCenter];
             [_customImageView sd_setImageWithURL:[NSURL URLWithString:attachment.previewURL]
                                 placeholderImage:plasehodler
                                          options:0
@@ -81,14 +82,17 @@
                                                    SDImageCacheType
                                                    cacheType,
                                                    NSURL *imageURL) {
+                                           [_customImageView setContentMode:UIViewContentModeScaleToFill];
                                            [weakSelf setNeedsLayout];
                                        }];
         }
         else {
+            [_customImageView setContentMode:UIViewContentModeScaleToFill];
             [_customImageView setImage:[UIImage imageWithContentsOfFile:attachment.previewURL]];
         }
     }
     else {
+        [_customImageView setContentMode:UIViewContentModeCenter];
         [_customImageView setImage:plasehodler];
     }
     

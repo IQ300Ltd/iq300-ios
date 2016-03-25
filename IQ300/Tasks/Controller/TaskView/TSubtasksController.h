@@ -8,8 +8,8 @@
 
 #import "IQTableBaseController.h"
 #import "TaskTabItemController.h"
+#import "TaskSubtasksModel.h"
 
-@class TaskSubtasksModel;
 @class IQTask;
 
 @interface TSubtasksController : IQTableBaseController<TaskTabItemController>
