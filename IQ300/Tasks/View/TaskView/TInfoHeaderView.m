@@ -95,9 +95,9 @@
         
         if (task.parentTaskAccess.boolValue) {
             attributes = @{NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                           NSUnderlineColorAttributeName  : [UIColor blueColor],
+                           NSUnderlineColorAttributeName  : [UIColor colorWithHexInt:0x358bae],
                            NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE],
-                           NSForegroundColorAttributeName : [UIColor blueColor],
+                           NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x358bae],
                            };
         }
         else {
