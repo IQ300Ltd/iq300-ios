@@ -217,12 +217,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _descriptionTextView.editable = NO;
         _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
         _descriptionTextView.scrollEnabled = NO;
-        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber;
         _descriptionTextView.linkTextAttributes = @{
                                                     NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
                                                     NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
                                                     };
-        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypePhoneNumber;
         [_descriptionTextView addGestureRecognizer:_singleTapGesture];
         [contentView addSubview:_descriptionTextView];
         

@@ -129,13 +129,12 @@
         _descriptionTextView.editable = NO;
         _descriptionTextView.textContainerInset = UIEdgeInsetsZero;
         _descriptionTextView.scrollEnabled = NO;
-        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink;
         _descriptionTextView.textContainer.lineFragmentPadding = 0;
         _descriptionTextView.linkTextAttributes = @{
                                                     NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
                                                     NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
                                                     };
-        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypePhoneNumber;
+        _descriptionTextView.dataDetectorTypes = UIDataDetectorTypePhoneNumber | UIDataDetectorTypeLink;
         [self addSubview:_descriptionTextView];
         
         
@@ -178,6 +177,8 @@
     _feedbackTypeLabel.text = feedback.feedbackType.title;
     _feedbackCategoryLabel.text = NSLocalizedStringWithFormat(@"Category: %@", feedback.category.title);
     _authorLabel.text = feedback.author.displayName;
+    
+    _descriptionTextView.text = nil;
     _descriptionTextView.text = feedback.feedbackDescription;
     
     BOOL showCommentsCount = ([feedback.commentsCount integerValue] > 0);
