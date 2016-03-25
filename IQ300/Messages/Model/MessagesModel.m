@@ -94,6 +94,16 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     }
 }
 
++ (void)reloadConversation:(IQConversation *)conversation completion:(void (^)(NSError *))completion {
+    if (conversation) {
+        [[IQService sharedService] conversationWithId:conversation.conversationId handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+            if (completion) {
+                completion(error);
+            }
+        }];
+    }
+}
+
 #pragma mark - Static private methods
 
 + (void)removeLocalConversationsWithIds:(NSArray *)conversationIds inContext:(NSManagedObjectContext*)context {

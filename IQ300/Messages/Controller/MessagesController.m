@@ -229,6 +229,9 @@
     [MessagesModel markConversationAsRead:conversation completion:^(NSError *error) {
         [weakSelf updateGlobalCounter];
     }];
+    
+    [MessagesModel reloadConversation:conversation completion:nil];
+    
 }
 
 #pragma mark - IQTableModel Delegate

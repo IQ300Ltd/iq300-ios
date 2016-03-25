@@ -20,6 +20,7 @@
 
 + (void)createConversationWithRecipientId:(NSNumber*)recipientId completion:(void (^)(IQConversation * conversation, NSError * error))completion;
 + (void)createConferenceWithUserIds:(NSArray*)userIds completion:(void (^)(IQConversation * conversation, NSError * error))completion;
++ (void)reloadConversation:(IQConversation *)conversation completion:(void (^)(NSError *))completion;
 + (void)markConversationAsRead:(IQConversation*)conversation completion:(void (^)(NSError * error))completion;
 
 - (void)reloadModelWithCompletion:(void (^)(NSError * error))completion;
