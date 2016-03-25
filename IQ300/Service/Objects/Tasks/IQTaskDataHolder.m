@@ -70,7 +70,8 @@
                                                   @"end_date"       : @"endDate",
                                                   @"description"    : @"taskDescription",
                                                   @"complexity"     : @"complexity.value",
-                                                  @"estimated_time" : @"estimatedTimeSeconds"
+                                                  @"estimated_time" : @"estimatedTimeSeconds",
+                                                  @"executor_restrictions.parent_task_access" : @"parentTaskAccess",
                                                   }];
     
     return [mapping inverseMapping];
