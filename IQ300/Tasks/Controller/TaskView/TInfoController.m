@@ -361,14 +361,19 @@
      else {
          if (_task.parentTaskAccess.boolValue) {
              [[IQService sharedService] taskWithId:_task.parentId handler:^(BOOL success, IQTask *object, NSData *responseData, NSError *error) {
-                 TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:object.taskId];
-                 TaskTabController * controller = [[TaskTabController alloc] init];
-                 controller.task = object;
-                 controller.policyInspector = policyInspector;
-                 controller.hidesBottomBarWhenPushed = YES;
-                 controller.priveousTaskId = _task.taskId;
-                 
-                 [self.navigationController pushViewController:controller animated:YES];
+                 if (success) {
+                     TaskPolicyInspector * policyInspector = [[TaskPolicyInspector alloc] initWithTaskId:object.taskId];
+                     TaskTabController * controller = [[TaskTabController alloc] init];
+                     controller.task = object;
+                     controller.policyInspector = policyInspector;
+                     controller.hidesBottomBarWhenPushed = YES;
+                     controller.priveousTaskId = _task.taskId;
+                     
+                     [self.navigationController pushViewController:controller animated:YES];
+                 }
+                 else {
+                     [self proccessServiceError:error];
+                 }
              }];
          }
      }
