@@ -192,8 +192,11 @@
             break;
         case NSFetchedResultsChangeUpdate:
             if ([indexPath isEqual:newIndexPath] || newIndexPath == nil) {
-                [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                                      withRowAnimation:UITableViewRowAnimationNone];
+                NSIndexPath *objectIndexPath = [self.model indexPathOfObject:anObject];
+                if  (!objectIndexPath || ([objectIndexPath isEqual:indexPath])) {
+                    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                                          withRowAnimation:UITableViewRowAnimationNone];
+                }
             }
             else if(indexPath && newIndexPath) {
                 [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
