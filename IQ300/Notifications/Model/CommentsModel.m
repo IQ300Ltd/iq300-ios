@@ -160,6 +160,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
     [[IQService sharedService] discussionWithId:_discussion.discussionId handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
         if (success) {
+            [self modelMembersUpdated];
             if([_fetchController.fetchedObjects count] == 0) {
                 [self reloadModelWithCompletion:completion];
             }
@@ -762,6 +763,13 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         [self.delegate modelCountersDidChanged:self];
     }
 }
+
+- (void)modelMembersUpdated {
+    if ([self.delegate respondsToSelector:@selector(modelMembersUpdated:)]) {
+        [self.delegate modelMembersUpdated:self];
+    }
+}
+
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

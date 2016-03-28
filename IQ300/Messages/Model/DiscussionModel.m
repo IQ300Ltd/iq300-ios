@@ -883,12 +883,14 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                     [self modelMemberDidAddWithId:data[@"user_id"]];
                     [[IQService sharedService] conversationWithId:_discussion.conversation.conversationId handler:^(BOOL success, IQConversation *conversation, NSData *responseData, NSError *error) {
                         _discussion = conversation.discussion;
+                        [weakSelf modelMembersUpdated];
                     }];
                 }
                 else if([eventName isEqualToString:IQConferencesMemberDidRemovedEvent]) {
                     [self modelMemberDidRemovedWithId:data[@"user_id"]];
                     [[IQService sharedService] conversationWithId:_discussion.conversation.conversationId handler:^(BOOL success, IQConversation *conversation, NSData *responseData, NSError *error) {
                         _discussion = conversation.discussion;
+                        [weakSelf modelMembersUpdated];
                     }];
                 }
             }
@@ -1107,6 +1109,12 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 - (void)modelCountersDidChanged {
     if([self.delegate respondsToSelector:@selector(modelCountersDidChanged:)]) {
         [self.delegate modelCountersDidChanged:self];
+    }
+}
+
+- (void)modelMembersUpdated {
+    if ([self.delegate respondsToSelector:@selector(modelMembersUpdated:)]) {
+        [self.delegate modelMembersUpdated:self];
     }
 }
 

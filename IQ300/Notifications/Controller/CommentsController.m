@@ -256,6 +256,10 @@
     }
 }
 
+- (void)modelMembersUpdated:(CommentsModel *)model {
+    _avalibleNicks = [[self.model.discussion.users allObjects] valueForKey:@"nickName"];
+}
+
 #pragma mark - Scroll Gesture Delegate
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {

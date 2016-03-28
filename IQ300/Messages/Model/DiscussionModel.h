@@ -24,6 +24,8 @@
 - (void)model:(DiscussionModel *)model memberDidRemovedWithId:(NSNumber*)userId;
 - (void)model:(DiscussionModel *)model didAddMemberWith:(NSNumber*)userId;
 
+- (void)modelMembersUpdated:(DiscussionModel *)model;
+
 @end
 
 @interface DiscussionModel : NSObject<IQTableModel>

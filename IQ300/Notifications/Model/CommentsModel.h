@@ -17,6 +17,7 @@
 
 @optional
 - (void)model:(CommentsModel*)model newComment:(IQComment*)comment;
+- (void)modelMembersUpdated:(CommentsModel *)model;
 
 @end
 
