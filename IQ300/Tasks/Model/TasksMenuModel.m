@@ -213,7 +213,7 @@ static NSString * CellReuseIdentifier = @"CellReuseIdentifier";
 - (NSIndexPath*)indexPathForItemWithStatus:(NSString*)status folder:(NSString*)folder {
     NSArray * keys = [_statuses allKeysForObject:status];
     NSString * key = [keys lastObject];
-    if ([key length] > 0 && [key rangeOfString:folder].location != NSNotFound) {
+    if ([folder length] > 0 && [key length] > 0 && [key rangeOfString:folder].location != NSNotFound) {
         NSInteger row = [[[key componentsSeparatedByString:@"_"] lastObject] integerValue];
         return [NSIndexPath indexPathForItem:row inSection:0];
     }

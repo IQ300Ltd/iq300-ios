@@ -312,7 +312,13 @@
 - (void)setupInitState {
     self.model.communityId = nil;
     self.model.statusFilter = nil;
-    self.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];
+
+    __weak typeof(self) weakSelf = self;
+    [_menuModel updateModelWithCompletion:^(NSError *error) {
+        if (!error) {
+            weakSelf.model.folder = [_menuModel folderForMenuItemAtIndexPath:[_menuModel indexPathForSelectedItem]];
+        }
+    }];
     
     NSString * title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(DescriptionForSortField(self.model.sortField), nil), (self.model.ascending) ? @"↑" : @"↓"];
     _mainView.titleLabel.text = title;
