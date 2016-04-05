@@ -22,6 +22,7 @@
 
 @class IQComment;
 @class IQAttachmentsView;
+@class IQOnlineIndicator;
 
 @interface CCommentCell : SWTableViewCell {
     UIEdgeInsets _contentInsets;
@@ -31,6 +32,7 @@
 @property (nonatomic, strong) UIView * contentBackgroundView;
 @property (nonatomic, strong) UILabel * dateLabel;
 @property (nonatomic, strong) UILabel * userNameLabel;
+@property (nonatomic, strong) IQOnlineIndicator *onlineIndicator;
 @property (nonatomic, strong) IQTextView * descriptionTextView;
 @property (nonatomic, strong) UIButton * expandButton;
 @property (nonatomic, assign, getter=isExpanded) BOOL expanded;

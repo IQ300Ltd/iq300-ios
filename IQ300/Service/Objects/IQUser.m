@@ -20,6 +20,7 @@
 @dynamic thumbUrl;
 @dynamic mediumUrl;
 @dynamic normalUrl;
+@dynamic online;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     return [self objectMappingForEntityName:NSStringFromClass([self class]) store:store];
@@ -37,7 +38,8 @@
                                                   @"pusher_channel"   : @"pusherChannel",
                                                   @"photo.thumb_url"  : @"thumbUrl",
                                                   @"photo.medium_url" : @"mediumUrl",
-                                                  @"photo.normal_url" : @"normalUrl"
+                                                  @"photo.normal_url" : @"normalUrl",
+                                                  @"online"           : @"online"
                                                   }];
     return mapping;
 }

@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSString * thumbUrl;
 @property (nonatomic, strong) NSString * mediumUrl;
 @property (nonatomic, strong) NSString * normalUrl;
+@property (nonatomic, strong) NSNumber *online;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 + (RKObjectMapping*)objectMappingForEntityName:(NSString*)entityName store:(RKManagedObjectStore*)store;

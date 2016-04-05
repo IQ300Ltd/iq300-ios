@@ -45,6 +45,10 @@
         [_logoutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _logoutButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         [self addSubview:_logoutButton];
+        
+        _onlineIndicator = [[IQOnlineIndicator alloc] init];
+        _onlineIndicator.style = IQOnlineIndicatorStyleCurrentUser;
+        [self addSubview:_onlineIndicator];
     }
     return self;
 }
@@ -55,10 +59,20 @@
     CGRect actualBounds = self.bounds;
     CGRect mainRect = UIEdgeInsetsInsetRect(actualBounds, _contentInsets);
     
+    CGSize onlineIndicatorSize = CGSizeMake(10.0f, 10.0f);
+    
     _userImageView.frame = CGRectMake(mainRect.origin.x,
                                       (mainRect.size.height - USER_ICON_SEZE) / 2.0f,
                                       USER_ICON_SEZE,
                                       USER_ICON_SEZE);
+    
+    CGSize userImageViewSize = _userImageView.bounds.size;
+    
+    CGFloat onlineIndicatorX = MIN(_userImageView.frame.origin.x + (userImageViewSize.width / 2.0f + userImageViewSize.width / 4.0f), CGRectRight(_userNameLabel.frame) - onlineIndicatorSize.width);
+    _onlineIndicator.frame = CGRectMake(onlineIndicatorX,
+                                        _userImageView.frame.origin.y + (userImageViewSize.height / 2.0f + userImageViewSize.height / 4.0f),
+                                        onlineIndicatorSize.width,
+                                        onlineIndicatorSize.height);
     
     CGFloat leftOffset = 11;
     CGFloat userNameLabelX = _userImageView.frame.origin.x + _userImageView.frame.size.width + leftOffset;

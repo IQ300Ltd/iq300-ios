@@ -13,6 +13,7 @@
 #import "IQConversation.h"
 #import "IQSession.h"
 #import "IQAttachmentsView.h"
+#import "IQOnlineIndicator.h"
 
 #define CONTENT_INSET 8.0f
 #define ATTACHMENTS_VIEW_HEIGHT 120.0f
@@ -134,6 +135,9 @@
         _userNameLabel.clipsToBounds = YES;
         [contentView addSubview:_userNameLabel];
         
+        _onlineIndicator = [[IQOnlineIndicator alloc] init];
+        [contentView addSubview:_onlineIndicator];
+        
         _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapRecognized:)];
         _singleTapGesture.numberOfTapsRequired = 1;
 
@@ -224,7 +228,11 @@
                                           userSize.width + 5,
                                           topLabelSize.height);
     }
-
+    
+    _onlineIndicator.frame = CGRectMake(CGRectRight(_userNameLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
+                                        _userNameLabel.frame.origin.y + (_userNameLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
+                                        ONLINE_INDICATOR_SIZE,
+                                        ONLINE_INDICATOR_SIZE);
     
     _dateLabel.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - topLabelSize.width,
                                   actualBounds.origin.y,
@@ -288,6 +296,7 @@
     _dateLabel.text = [_item.createDate dateToDayTimeString];
     _userNameLabel.hidden = ([_item.author.displayName length] == 0);
     _userNameLabel.text = _item.author.displayName;
+    _onlineIndicator.online = _item.author.online.boolValue;
         
     if (item.attachments.count > 0) {
         [_attachmentsView setItems:[_item.attachments allObjects] isMine:YES];

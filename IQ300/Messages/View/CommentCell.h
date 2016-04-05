@@ -13,6 +13,7 @@
 #define COMMENT_CELL_MIN_HEIGHT 47.0f
 
 @class IQAttachmentsView;
+@class IQOnlineIndicator;
 
 @interface CommentCell : UITableViewCell<IQCommentCell> {
     UIEdgeInsets _contentInsets;
@@ -22,6 +23,7 @@
 @property (nonatomic, readonly) UIImageView * userImageView;
 @property (nonatomic, readonly) UILabel * userNameLabel;
 @property (nonatomic, readonly) IQTextView * descriptionTextView;
+@property (nonatomic, strong) IQOnlineIndicator *onlineIndicator;
 @property (nonatomic, readonly) UIImageView * statusImageView;
 @property (nonatomic, readonly) UIButton * expandButton;
 @property (nonatomic, readonly) IQAttachmentsView *attachmentsView;

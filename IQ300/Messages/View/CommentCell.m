@@ -15,6 +15,8 @@
 #import "IQSession.h"
 #import "IQAttachmentsView.h"
 #import "IQLayoutManager.h"
+#import "IQOnlineIndicator.h"
+
 
 #define CONTENT_INSET 8.0f
 #define ATTACHMENTS_VIEW_HEIGHT 120.0f
@@ -260,6 +262,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         
         _attachmentsView = [[IQAttachmentsView alloc] initWithFrame:CGRectZero];
         [contentView addSubview:_attachmentsView];
+        
+        _onlineIndicator = [[IQOnlineIndicator alloc] init];
+        _onlineIndicator.hidden = YES;
+        [contentView addSubview:_onlineIndicator];
+
     }
     
     return self;
@@ -315,10 +322,17 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                                           userImageSize.height);
         
         CGFloat userNameX = CGRectRight(_userImageView.frame) + DESCRIPTION_PADDING;
+        CGSize userNameSize = [_userNameLabel sizeThatFits:CGSizeMake(contentRect.size.width - userNameX - DESCRIPTION_PADDING - ONLINE_INDICATOR_LEFT_OFFSET - ONLINE_INDICATOR_SIZE, CGFLOAT_MAX)];
+        
         _userNameLabel.frame = CGRectMake(CGRectRight(_userImageView.frame) + DESCRIPTION_PADDING,
                                           _userImageView.frame.origin.y,
-                                          contentRect.size.width - userNameX - DESCRIPTION_PADDING,
+                                          userNameSize.width,
                                           _userImageView.frame.size.height);
+        
+        _onlineIndicator.frame = CGRectMake(CGRectRight(_userNameLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
+                                            _userNameLabel.frame.origin.y + (_userNameLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
+                                            ONLINE_INDICATOR_SIZE,
+                                            ONLINE_INDICATOR_SIZE);
         
         CGFloat separatorHeight = 2.0f;
         _separatorView.frame = CGRectMake(contentRect.origin.x,
@@ -401,8 +415,10 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _userImageView.hidden = NO;
         _userNameLabel.hidden = NO;
         _separatorView.hidden = NO;
+        _onlineIndicator.hidden = NO;
 
         _userNameLabel.text = _item.author.displayName;
+        _onlineIndicator.online = _item.author.online.boolValue;
         if ([_item.author.thumbUrl length] > 0) {
             [_userImageView sd_setImageWithURL:[NSURL URLWithString:_item.author.thumbUrl]];
         }
@@ -434,6 +450,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     _userImageView.hidden = YES;
     _userNameLabel.hidden = YES;
     _separatorView.hidden = YES;
+    _onlineIndicator.hidden = YES;
 
     _descriptionTextView.delegate = nil;
     _descriptionTextView.selectable = NO;

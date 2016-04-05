@@ -22,7 +22,8 @@
                                                   @"photo.thumb_url"     : @"thumbUrl",
                                                   @"photo.medium_url"    : @"mediumUrl",
                                                   @"photo.normal_url"    : @"normalUrl",
-                                                  @"is_conference_admin" : @"isAdministrator"
+                                                  @"is_conference_admin" : @"isAdministrator",
+                                                  @"online"              : @"online",
                                                   }];
 
     return mapping;
@@ -37,6 +38,7 @@
     memeber.thumbUrl = user.thumbUrl;
     memeber.mediumUrl = user.mediumUrl;
     memeber.normalUrl = user.normalUrl;
+    memeber.online = user.online;
     return memeber;
 }
 

@@ -10,6 +10,7 @@
 #import "ContactInfoCell.h"
 #import "IQConversationMember.h"
 #import "IQUser.h"
+#import "IQOnlineIndicator.h"
 
 @implementation ContactInfoCell
 
@@ -32,14 +33,32 @@
         CALayer *cellImageLayer = self.imageView.layer;
         [cellImageLayer setCornerRadius:17.5];
         [cellImageLayer setMasksToBounds:YES];
+        
+        _onlineIndicator = [[IQOnlineIndicator alloc] init];
+        [contentView addSubview:_onlineIndicator];
     }
     
     return self;
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGSize textLabelSize = [self.textLabel sizeThatFits:CGSizeMake(self.textLabel.bounds.size.width - ONLINE_INDICATOR_LEFT_OFFSET - ONLINE_INDICATOR_SIZE, self.textLabel.bounds.size.height)];
+    self.textLabel.frame = CGRectMake(self.textLabel.frame.origin.x, self.textLabel.frame.origin.y, textLabelSize.width, self.textLabel.bounds.size.height);
+    
+    _onlineIndicator.frame = CGRectMake(CGRectRight(self.textLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
+                                        self.textLabel.frame.origin.y + (self.textLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
+                                        ONLINE_INDICATOR_SIZE,
+                                        ONLINE_INDICATOR_SIZE);
+
+}
+
 
 - (void)setItem:(IQConversationMember *)item {
     _item = item;
+  
+    _onlineIndicator.online = item.online.boolValue;
     
     if([_item.thumbUrl length] > 0) {
         [self.imageView sd_setImageWithURL:[NSURL URLWithString:_item.thumbUrl]

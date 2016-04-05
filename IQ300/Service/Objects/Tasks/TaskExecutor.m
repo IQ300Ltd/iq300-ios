@@ -14,8 +14,9 @@
 + (RKObjectMapping*)objectMapping {
     RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"id"   : @"executorId",
-                                                  @"name" : @"executorName"
+                                                  @"id"     : @"executorId",
+                                                  @"name"   : @"executorName",
+                                                  @"online" : @"online",
                                                   }];
     return mapping;
 }

@@ -72,6 +72,9 @@ static id _sharedService = nil;
         __unsafe_unretained typeof(self) weakSelf = self;
         [_objectManager.HTTPClient setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
             weakSelf.serviceReachabilityStatus = (TCServiceReachabilityStatus)status;
+            if (weakSelf.serviceReachabilityStatusBlock) {
+                weakSelf.serviceReachabilityStatusBlock(weakSelf.serviceReachabilityStatus);
+            }
         }];
 #endif
         

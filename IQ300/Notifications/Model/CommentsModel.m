@@ -36,6 +36,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     NSMutableDictionary * _expandedCells;
     NSMutableDictionary * _expandableCells;
     __weak id _newMessageObserver;
+    __weak id _userStatusChangedObserver;
 }
 
 @end
@@ -631,9 +632,31 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                         usingBlock:block];
 }
 
+- (void)resubscribeToUserStatusChangedNotificationWithChannel:(NSString *)channel {
+    [self unsubscribeToUserStatusChangedNotification];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        [weakSelf modelWillChangeContent];
+#warning add update
+        [weakSelf modelDidChangeContent];
+    };
+    
+    _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
+                                                                              channelName:channel
+                                                                                    queue:nil
+                                                                               usingBlock:block];
+}
+
 - (void)unsubscribeFromNewMessageNotification {
     if(_newMessageObserver) {
         [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
+    }
+}
+
+- (void)unsubscribeToUserStatusChangedNotification {
+    if (_userStatusChangedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_userStatusChangedObserver];
     }
 }
 

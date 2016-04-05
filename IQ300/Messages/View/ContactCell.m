@@ -10,6 +10,7 @@
 #import "ContactCell.h"
 #import "IQUser.h"
 #import "IQContact.h"
+#import "IQOnlineIndicator.h"
 
 #define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x2e4865]
 #define CONTACT_NAME_COLOR [UIColor colorWithHexInt:0x2c74a4]
@@ -43,6 +44,10 @@
         CALayer *cellImageLayer = self.imageView.layer;
         [cellImageLayer setCornerRadius:17.5];
         [cellImageLayer setMasksToBounds:YES];
+        
+        _onlineIndicator = [[IQOnlineIndicator alloc] init];
+        [self.contentView addSubview:_onlineIndicator];
+
     }
     
     return self;
@@ -61,10 +66,18 @@
                                       imageViewSize.height);
     
     CGFloat textlabelX = CGRectGetMaxX(self.imageView.frame) + 10.f;
+    CGSize textLabelSize = [self.textLabel sizeThatFits:CGSizeMake(_accessoryImageView.frame.origin.x - textlabelX - 10 - ONLINE_INDICATOR_LEFT_OFFSET - ONLINE_INDICATOR_SIZE, self.textLabel.frame.size.height)];
+    
     self.textLabel.frame = CGRectMake(textlabelX,
                                       self.imageView.frame.origin.y,
-                                      _accessoryImageView.frame.origin.x - textlabelX - 10,
-                                      self.textLabel.frame.size.height);
+                                      textLabelSize.width,
+                                      textLabelSize.height
+                                      );
+    
+    _onlineIndicator.frame = CGRectMake(CGRectRight(self.textLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
+                                        self.textLabel.frame.origin.y + (self.textLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
+                                        ONLINE_INDICATOR_SIZE,
+                                        ONLINE_INDICATOR_SIZE);
     
     self.detailTextLabel.frame = CGRectMake(textlabelX,
                                       CGRectGetMaxY(self.textLabel.frame) + 3.0f,
@@ -77,6 +90,8 @@
     
     self.textLabel.text = item.user.displayName;
     self.detailTextLabel.text = item.user.email;
+#pragma mark - add online
+//    _onlineIndicator.online = item.user.online;
     
     if([item.user.thumbUrl length] > 0) {
         [self.imageView sd_setImageWithURL:[NSURL URLWithString:item.user.thumbUrl]

@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong) NSNumber * executorId;
 @property (nonatomic, strong) NSString * executorName;
+@property (nonatomic, strong) NSNumber * online;
 
 + (RKObjectMapping*)objectMapping;
 

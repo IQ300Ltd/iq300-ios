@@ -7,6 +7,7 @@
 //
 
 #import "BottomLineView.h"
+#import "IQOnlineIndicator.h"
 
 #define DEFAULT_AVATAR_IMAGE @"default_avatar.png"
 
@@ -17,5 +18,6 @@
 @property (nonatomic, readonly) UIImageView * userImageView;
 @property (nonatomic, readonly) UILabel * userNameLabel;
 @property (nonatomic, readonly) UIButton * logoutButton;
+@property (nonatomic, readonly) IQOnlineIndicator *onlineIndicator;
 
 @end

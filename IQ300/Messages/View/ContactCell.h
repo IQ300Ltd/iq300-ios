@@ -9,9 +9,12 @@
 #import "IQSelectableTextCell.h"
 
 @class IQContact;
+@class IQOnlineIndicator;
 
 @interface ContactCell : IQSelectableTextCell
 
 @property (nonatomic, strong) IQContact * item;
+@property (nonatomic, strong) IQOnlineIndicator *onlineIndicator;
+
 
 @end

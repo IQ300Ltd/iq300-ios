@@ -9,10 +9,12 @@
 #import <SWTableViewCell/SWTableViewCell.h>
 
 @class IQTaskMember;
+@class IQOnlineIndicator;
 
 @interface TMemberCell : SWTableViewCell
 
 @property (nonatomic, strong) IQTaskMember * item;
 @property (nonatomic, strong) NSArray * availableActions;
+@property (nonatomic, strong) IQOnlineIndicator *onlineIndicator;
 
 @end

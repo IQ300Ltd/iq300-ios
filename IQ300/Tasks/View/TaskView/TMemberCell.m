@@ -11,6 +11,7 @@
 #import "TMemberCell.h"
 #import "IQTaskMember.h"
 #import "IQUser.h"
+#import "IQOnlineIndicator.h"
 
 #define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x2e4865]
 #define TEXT_COLOR [UIColor colorWithHexInt:0x2c74a4]
@@ -50,9 +51,22 @@
         CALayer *cellImageLayer = self.imageView.layer;
         [cellImageLayer setCornerRadius:17.5];
         [cellImageLayer setMasksToBounds:YES];
+        
+        _onlineIndicator = [[IQOnlineIndicator alloc] init];
+        [contentView addSubview:_onlineIndicator];
     }
     
     return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    _onlineIndicator.frame = CGRectMake(CGRectRight(self.textLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
+                                        self.textLabel.frame.origin.y + (self.textLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
+                                        ONLINE_INDICATOR_SIZE,
+                                        ONLINE_INDICATOR_SIZE);
+
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -77,6 +91,7 @@
                                      [self setNeedsDisplay];
                                  }];
     }
+    _onlineIndicator.online = _item.user.online.boolValue;
 
     self.textLabel.text = _item.user.displayName;
     self.detailTextLabel.numberOfLines = 0;

@@ -29,6 +29,8 @@ extern NSString * const IQTaskMembersDidChangedNotification;
 extern NSString * const IQTaskAttachmentsDidChangedNotification;
 extern NSString * const IQNotificationDataKey;
 extern NSString * const IQFeedbackDidChangedNotification;
+extern NSString * const IQUserDidChangeStatusNotification;
+
 
 @interface IQCNotification : NSObject
 

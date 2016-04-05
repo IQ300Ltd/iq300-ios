@@ -20,6 +20,7 @@
 @property (nonatomic, strong) NSString * mediumUrl;
 @property (nonatomic, strong) NSString * normalUrl;
 @property (nonatomic, strong) NSNumber * isAdministrator;
+@property (nonatomic, strong) NSNumber * online;
 
 + (RKObjectMapping*)objectMapping;
 

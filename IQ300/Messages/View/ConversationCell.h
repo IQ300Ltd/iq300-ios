@@ -11,6 +11,7 @@
 @class IQBadgeView;
 @class IQConversation;
 @class IQUser;
+@class IQOnlineIndicator;
 
 #define CONVERSATION_CELL_MAX_HEIGHT 86.0f
 #define CONVERSATION_CELL_MIN_HEIGHT 55.0f
@@ -27,6 +28,7 @@
 @property (nonatomic, strong) UILabel * descriptionLabel;
 @property (nonatomic, strong) UIButton * attachButton;
 @property (nonatomic, readonly) IQBadgeView * badgeView;
+@property (nonatomic, strong) IQOnlineIndicator *onlineIndicator;
 
 @property (nonatomic, strong) IQConversation * item;
 

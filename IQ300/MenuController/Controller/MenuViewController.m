@@ -103,6 +103,11 @@ CGFloat IQStatusBarHeight()
                                                  name:AccountDidChangedNotification
                                                object:nil];
     [self updateUserAccount];
+    
+    _accountHeader.onlineIndicator.online = [[IQService sharedService] isServiceReachable];
+    [[IQService sharedService] setReachabilityStatusChangeBlock:^(TCServiceReachabilityStatus status) {
+        _accountHeader.onlineIndicator.online = status > TCServicekReachabilityStatusNotReachable;
+    }];
 }
 
 - (void)viewDidLayoutSubviews {

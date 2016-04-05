@@ -13,6 +13,7 @@
 #import "IQBadgeView.h"
 #import "IQConversation.h"
 #import "IQSession.h"
+#import "IQOnlineIndicator.h"
 
 #define DEFAULT_AVATAR_IMAGE @"default_avatar.png"
 #define USER_ICON_SEZE 20
@@ -124,6 +125,9 @@
         [_attachButton setHidden:YES];
         [_attachButton setEnabled:NO];
         [contentView addSubview:_attachButton];
+        
+        _onlineIndicator = [[IQOnlineIndicator alloc] init];
+        [contentView addSubview:_onlineIndicator];
     }
     
     return self;
@@ -157,10 +161,16 @@
                                   CELL_HEADER_MIN_HEIGHT);
     
     CGFloat userNameX = CGRectRight(_userImageView.frame) + nameOffset;
+    CGSize titleSize = [_titleLabel sizeThatFits:CGSizeMake(_dateLabel.frame.origin.x - userNameX - 4.0f - (_onlineIndicator.hidden ? 0 : (ONLINE_INDICATOR_LEFT_OFFSET + ONLINE_INDICATOR_SIZE)), CELL_HEADER_MIN_HEIGHT)];
     _titleLabel.frame = CGRectMake(userNameX,
                                       actualBounds.origin.y,
-                                      _dateLabel.frame.origin.x - userNameX - 4.0f,
+                                      titleSize.width,
                                       CELL_HEADER_MIN_HEIGHT);
+
+    _onlineIndicator.frame = CGRectMake(CGRectRight(_titleLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
+                                        _titleLabel.frame.origin.y + (_titleLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
+                                        ONLINE_INDICATOR_SIZE,
+                                        ONLINE_INDICATOR_SIZE);
     
     BOOL hasDescription = ([_item.lastComment.body length] > 0);
     BOOL hasAttachment = ([_item.lastComment.attachments count] > 0);
@@ -217,9 +227,12 @@
     
     if(!isConference && [companion.thumbUrl length] > 0) {
         [_userImageView sd_setImageWithURL:[NSURL URLWithString:companion.thumbUrl]];
+        _onlineIndicator.hidden = NO;
+        _onlineIndicator.online = companion.online.boolValue;
     }
     else {
         _userImageView.image = defaulImage;
+        _onlineIndicator.hidden = YES;
     }
     
     NSString * body = ([_item.lastComment.body length] > 0) ? _item.lastComment.body : @"";
