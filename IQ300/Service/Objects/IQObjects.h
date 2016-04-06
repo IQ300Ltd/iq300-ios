@@ -45,5 +45,6 @@
 #import "IQComplexity.h"
 #import "IQSubtask.h"
 #import "IQSubtasksHolder.h"
+#import "IQChannel.h"
 
 #endif

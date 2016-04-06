@@ -13,6 +13,8 @@
 #import "IQTaskMember.h"
 #import "TChangesCounter.h"
 #import "IQNotificationCenter.h"
+#import "IQUser.h"
+#import "IQChannel.h"
 
 #define CACHE_FILE_NAME @"TMembersModelCache"
 #define SORT_DIRECTION IQSortDirectionAscending
@@ -22,6 +24,9 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
 @interface TaskMembersModel() <NSFetchedResultsControllerDelegate> {
     NSFetchedResultsController * _fetchController;
     __weak id _notfObserver;
+    
+    __weak id _userStatusChangedObserver;
+    NSString *_currentUserStatusChangedChannelName;
 }
 
 @end
@@ -108,6 +113,7 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
                                                if(completion) {
                                                    completion(error);
                                                }
+                                               [self subscribeToUserNotifications];
                                            }];
     }
 }
@@ -124,6 +130,7 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
                                            if(completion) {
                                                completion(error);
                                            }
+                                           [self subscribeToUserNotifications];
                                        }];
 }
 
@@ -134,6 +141,7 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
                                                if(completion) {
                                                    completion(error);
                                                }
+                                               [self subscribeToUserNotifications];
                                            }];
 }
 
@@ -150,6 +158,7 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
                                               if(completion) {
                                                   completion(error);
                                               }
+                                              [self subscribeToUserNotifications];
                                           }];
 }
 
@@ -296,6 +305,68 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
     }
 }
 
+#pragma mark - User subscrtiptions
+
+- (void)subscribeToUserNotifications {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *indexes = [_fetchController.fetchedObjects valueForKeyPath:@"user.userId"];
+        if (indexes.count > 0) {
+            [[IQService sharedService] subscribeToUserStatusChangedNotification:indexes
+                                                                        handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {
+                                                                            [self resubscribeToUserStatusChangedNotificationWithChannel:channel.name];
+                                                                        }];
+        }
+    });
+}
+
+- (void)resubscribeToUserStatusChangedNotificationWithChannel:(NSString *)channel {
+    [self unsubscribeToUserStatusChangedNotification];
+    
+    if (channel) {
+        __weak typeof(self) weakSelf = self;
+        void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+            [weakSelf modelWillChangeContent];
+            
+            NSArray *onlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"online_ids"];
+            NSArray *offlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"offline_ids"];
+            
+            NSArray *onlineUsersMembers = [_fetchController.fetchedObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"user.userId IN %@", onlineUserIndexes]];
+            
+            for (IQTaskMember *member in  onlineUsersMembers) {
+                member.user.online = @(YES);
+                NSIndexPath *indexPath = [self indexPathOfObject:member];
+                [self modelDidChangeObject:member atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            
+            NSArray *offlineUserMembers = [_fetchController.fetchedObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"user.userId IN %@", offlineUserIndexes]];
+            
+            for (IQTaskMember *member in  offlineUserMembers) {
+                member.user.online = @(NO);
+                NSIndexPath *indexPath = [self indexPathOfObject:member];
+                [self modelDidChangeObject:member atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            [[IQService sharedService].context saveToPersistentStore:nil];
+            
+            [weakSelf modelDidChangeContent];
+        };
+        
+        _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
+                                                                                  channelName:channel
+                                                                                        queue:nil
+                                                                                   usingBlock:block];
+        
+    }
+    _currentUserStatusChangedChannelName = channel;
+}
+
+- (void)unsubscribeToUserStatusChangedNotification {
+    if (_userStatusChangedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_userStatusChangedObserver];
+    }
+}
+
+
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController*)controller {
@@ -365,6 +436,7 @@ static NSString * ReuseIdentifier = @"MReuseIdentifier";
 
 - (void)dealloc {
     [self unsubscribeFromIQNotifications];
+    [self unsubscribeToUserStatusChangedNotification];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

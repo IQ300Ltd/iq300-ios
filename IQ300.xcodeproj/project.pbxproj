@@ -505,6 +505,8 @@
 		3D1D4CC71CA6B012001F0524 /* top_header_bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3D1D4AFD1CA55775001F0524 /* top_header_bg@3x.png */; };
 		3D21439C1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */; };
 		3D21439D1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */; };
+		3D6A2BFF1CB4E81F004C7DD4 /* IQChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6A2BFE1CB4E81F004C7DD4 /* IQChannel.m */; };
+		3D6A2C001CB4E81F004C7DD4 /* IQChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6A2BFE1CB4E81F004C7DD4 /* IQChannel.m */; };
 		3DA1BFED1CB384960053889D /* IQOnlineIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DA1BFEC1CB384960053889D /* IQOnlineIndicator.m */; };
 		3DA1BFEE1CB384960053889D /* IQOnlineIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DA1BFEC1CB384960053889D /* IQOnlineIndicator.m */; };
 		3DAE09831C90566A00031479 /* IQComplexityEstimatedTimeDoubleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE09811C90566600031479 /* IQComplexityEstimatedTimeDoubleCell.m */; };
@@ -1375,6 +1377,8 @@
 		3D1D4AFD1CA55775001F0524 /* top_header_bg@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top_header_bg@3x.png"; sourceTree = "<group>"; };
 		3D21439A1C9E80DA00ACA554 /* MessagesMenuModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagesMenuModel.h; sourceTree = "<group>"; };
 		3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesMenuModel.m; sourceTree = "<group>"; };
+		3D6A2BFD1CB4E81F004C7DD4 /* IQChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQChannel.h; sourceTree = "<group>"; };
+		3D6A2BFE1CB4E81F004C7DD4 /* IQChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQChannel.m; sourceTree = "<group>"; };
 		3DA1BFEB1CB384960053889D /* IQOnlineIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQOnlineIndicator.h; sourceTree = "<group>"; };
 		3DA1BFEC1CB384960053889D /* IQOnlineIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQOnlineIndicator.m; sourceTree = "<group>"; };
 		3DA1BFEF1CB3B6330053889D /* IQ300 v3.0.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "IQ300 v3.0.xcdatamodel"; sourceTree = "<group>"; };
@@ -3057,6 +3061,8 @@
 				7373ED591A89EF2000719FCD /* IQObjectsHolder.h */,
 				7373ED5A1A89EF2000719FCD /* IQObjectsHolder.m */,
 				738EA7A41A1DD0570065D39F /* IQObjects.h */,
+				3D6A2BFD1CB4E81F004C7DD4 /* IQChannel.h */,
+				3D6A2BFE1CB4E81F004C7DD4 /* IQChannel.m */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -4384,6 +4390,7 @@
 				731E5BC91B315DA000DF56C7 /* RegistrationView.m in Sources */,
 				73840DFA1B1C75A500BCEAFC /* IQTodoItem.m in Sources */,
 				73840DFB1B1C75A500BCEAFC /* DiscussionController.m in Sources */,
+				3D6A2C001CB4E81F004C7DD4 /* IQChannel.m in Sources */,
 				73840DFC1B1C75A500BCEAFC /* IQNotificationsHolder.m in Sources */,
 				73840DFD1B1C75A500BCEAFC /* TasksFilterController.m in Sources */,
 				73840DFE1B1C75A500BCEAFC /* GAIService.m in Sources */,
@@ -4673,6 +4680,7 @@
 				2D80E7E71C6B17C2009DD5A0 /* TCCollectionController.m in Sources */,
 				736110651B0A1827005ACEB5 /* GAIService.m in Sources */,
 				3DAE09971C9142AE00031479 /* IQTaskDescriptionItem.m in Sources */,
+				3D6A2BFF1CB4E81F004C7DD4 /* IQChannel.m in Sources */,
 				73176C9D1B3ADDD700E6AC60 /* IQDateDetailsCell.m in Sources */,
 				73F90CEA1A1B6B6D00225255 /* IQSession.m in Sources */,
 				738EF82D1A9CB8D300894755 /* IQService+Tasks.m in Sources */,

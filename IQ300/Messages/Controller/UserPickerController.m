@@ -13,6 +13,7 @@
 #import "IQSession.h"
 #import "ContactCell.h"
 #import "IQUser.h"
+#import "IQOnlineIndicator.h"
 
 #define DISPATCH_DELAY 0.7
 
@@ -77,6 +78,7 @@
         IQUser *user = item;
         cell.textLabel.text = user.displayName;
         cell.detailTextLabel.text = user.nickName;
+        cell.onlineIndicator.online = user.online.boolValue;
         
         if([user.thumbUrl length] > 0) {
             [cell.imageView sd_setImageWithURL:[NSURL URLWithString:user.thumbUrl]

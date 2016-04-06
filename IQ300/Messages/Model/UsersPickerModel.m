@@ -9,12 +9,19 @@
 #import "UsersPickerModel.h"
 #import "ContactCell.h"
 #import "IQSession.h"
+#import "IQService.h"
+#import "IQChannel.h"
+#import "IQNotificationCenter.h"
+#import "IQUser.h"
 
 static NSString * UReuseIdentifier = @"UReuseIdentifier";
 
 @interface UsersPickerModel() {
     NSArray * _usersInternal;
     NSArray * _usersWithAll;
+    
+    __weak id _userStatusChangedObserver;
+    NSString *_currentUserStatusChangedChannelName;
 }
 
 @end
@@ -95,6 +102,7 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
     if(completion) {
         completion(nil);
     }
+    [self subscribeToUserNotifications];
 }
 
 - (void)clearModelData {
@@ -172,6 +180,62 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self unsubscribeToUserStatusChangedNotification];
+}
+
+#pragma mark - User subscrtiptions
+
+- (void)subscribeToUserNotifications {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *indexes = [_usersInternal valueForKey:@"userId"];
+        [[IQService sharedService] subscribeToUserStatusChangedNotification:indexes
+                                                                    handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {
+                                                                        [self resubscribeToUserStatusChangedNotificationWithChannel:channel.name];
+                                                                    }];
+    });
+}
+
+- (void)resubscribeToUserStatusChangedNotificationWithChannel:(NSString *)channel {
+    [self unsubscribeToUserStatusChangedNotification];
+    
+    __weak typeof(self) weakSelf = self;
+    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+        [weakSelf modelWillChangeContent];
+        
+        NSArray *onlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"online_ids"];
+        NSArray *offlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"offline_ids"];
+        
+        NSArray *onlineUsers = [_usersInternal filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"userId IN %@", onlineUserIndexes]];
+        
+        for (IQUser *user in onlineUsers) {
+            user.online = @(YES);
+            NSIndexPath *indexPath = [self indexPathOfObject:user];
+            [self modelDidChangeObject:user atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+        }
+        
+        NSArray *offlineUsers = [_usersInternal filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"userId IN %@", offlineUserIndexes]];
+        
+        for (IQUser *user in offlineUsers) {
+            user.online = @(NO);
+            NSIndexPath *indexPath = [self indexPathOfObject:user];
+            [self modelDidChangeObject:user atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+        }
+        
+        [[IQService sharedService].context saveToPersistentStore:nil];
+        [weakSelf modelDidChangeContent];
+    };
+    
+    _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
+                                                                              channelName:channel
+                                                                                    queue:nil
+                                                                               usingBlock:block];
+    _currentUserStatusChangedChannelName = channel;
+}
+
+- (void)unsubscribeToUserStatusChangedNotification {
+    if (_userStatusChangedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_userStatusChangedObserver];
+    }
 }
 
 @end
@@ -184,6 +248,7 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
         _email = @"All";
         _displayName = NSLocalizedString(_email, nil);
         _userId = @(NSIntegerMin);
+        _online = @(NO);
     }
     return self;
 }

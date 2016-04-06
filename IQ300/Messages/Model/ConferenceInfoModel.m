@@ -22,6 +22,9 @@
 #import "IQComment.h"
 #import "NSManagedObject+ActiveRecord.h"
 
+#import "IQChannel.h"
+#import "IQNotificationCenter.h"
+
 @interface NSObject(UserModelCells)
 
 + (CGFloat)heightForItem:(id)item detailTitle:(NSString*)detailTitle width:(CGFloat)width;
@@ -34,7 +37,11 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
 @interface ConferenceInfoModel() {
     NSArray * _admins;
     NSMutableArray * _members;
+    
     BOOL _isAdministrator;
+    
+    __weak id _userStatusChangedObserver;
+    NSString *_currentUserStatusChangedChannelName;
 }
 
 @end
@@ -130,6 +137,15 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
     return nil;
 }
 
+- (NSIndexPath *)indexPathOfObject:(IQConversationMember *)object {
+    if (object.isAdministrator.boolValue) {
+        return [NSIndexPath indexPathForRow:[_admins indexOfObject:object] inSection:1];
+    }
+    else {
+        return [NSIndexPath indexPathForRow:[_members indexOfObject:object] inSection:2];
+    }
+}
+
 - (NSString*)placeholderForItemAtIndexPath:(NSIndexPath *)indexPath {
     return (indexPath.section == 0 && indexPath.row == 0) ? NSLocalizedString(@"Group name", nil) : nil;
 }
@@ -155,6 +171,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
                                                   if (completion) {
                                                       completion(error);
                                                   }
+                                                  [self subscribeToUserNotifications];
                                               }];
 }
 
@@ -208,6 +225,7 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
                                              if (completion) {
                                                  completion(error);
                                              }
+                                             [self subscribeToUserNotifications];
                                          }];
 }
 
@@ -249,6 +267,68 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
                                                }];
 }
 
+#pragma mark - User subscrtiptions
+
+- (void)subscribeToUserNotifications {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *members = [[_admins arrayByAddingObjectsFromArray:_members] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId]];
+        if (members.count > 0) {
+            [[IQService sharedService] subscribeToUserStatusChangedNotification:[members valueForKey:@"userId"]
+                                                                        handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {
+                                                                            [self resubscribeToUserStatusChangedNotificationWithChannel:channel.name];
+                                                                        }];
+        }
+    });
+}
+
+- (void)resubscribeToUserStatusChangedNotificationWithChannel:(NSString *)channel {
+    [self unsubscribeToUserStatusChangedNotification];
+    
+    if (channel) {
+        __weak typeof(self) weakSelf = self;
+        void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+            [weakSelf modelWillChangeContent];
+            
+            NSArray *onlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"online_ids"];
+            NSArray *offlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"offline_ids"];
+            
+            NSArray *allMembers = [_admins arrayByAddingObjectsFromArray:_members];
+            NSArray *onlineUsersMembers = [allMembers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"userId IN %@", onlineUserIndexes]];
+            
+            for (IQConversationMember *member in  onlineUsersMembers) {
+                member.online = @(YES);
+                NSIndexPath *indexPath = [self indexPathOfObject:member];
+                [self modelDidChangeObject:member atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            
+            NSArray *offlineUsersMembers = [allMembers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"userId IN %@", offlineUserIndexes]];
+            
+            for (IQConversationMember *member in  offlineUsersMembers) {
+                member.online = @(NO);
+                NSIndexPath *indexPath = [self indexPathOfObject:member];
+                [self modelDidChangeObject:member atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            [[IQService sharedService].context saveToPersistentStore:nil];
+            
+            [weakSelf modelDidChangeContent];
+        };
+        
+        _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
+                                                                                  channelName:channel
+                                                                                        queue:nil
+                                                                                   usingBlock:block];
+        
+    }
+    _currentUserStatusChangedChannelName = channel;
+}
+
+- (void)unsubscribeToUserStatusChangedNotification {
+    if (_userStatusChangedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_userStatusChangedObserver];
+    }
+}
+
+
 #pragma mark - Private methods
 
 - (void)wrapUsersToMemebers:(NSArray*)users {
@@ -258,6 +338,10 @@ static NSString * UserReuseIdentifier = @"UserReuseIdentifier";
     }
     
     [_members sortUsingDescriptors:self.sortDescriptors];
+}
+
+- (void)dealloc {
+    [self unsubscribeToUserStatusChangedNotification];
 }
 
 @end

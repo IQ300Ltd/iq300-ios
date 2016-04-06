@@ -27,6 +27,7 @@
 #import "NSManagedObject+ActiveRecord.h"
 #import "SystemCommentCell.h"
 #import "SharingAttachment.h"
+#import "IQChannel.h"
 
 #define CACHE_FILE_NAME @"DiscussionModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -49,6 +50,9 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     NSDateFormatter * _dateFormatter;
     NSMutableDictionary * _expandedCells;
     NSMutableDictionary * _expandableCells;
+    
+    __weak id _userStatusChangedObserver;
+    NSString *_currentUserStatusChangedChannelName;
 }
 
 @end
@@ -242,6 +246,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                                    if(completion) {
                                                                        completion(error);
                                                                    }
+                                                                   [self subscribeToUserNotifications];
                                                                }
                                                            }];
         }];
@@ -270,6 +275,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                                            if(completion) {
                                                                                completion(error, [NSIndexPath indexPathForRow:addedRows inSection:addedSectionsCount]);
                                                                            }
+                                                                           [self subscribeToUserNotifications];
                                                                        }];
                                                                    }
                                                                    else if(completion) {
@@ -305,6 +311,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                                [self clearRemovedCommentsWithCompletion:nil];
                                                            }
                                                            [self modelDidChanged];
+                                                           [self subscribeToUserNotifications];
                                                        }];
 
                                                        if(completion) {
@@ -326,9 +333,11 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [self resubscribeToIQNotifications];
+        [self resubscribeToUserStatusChangedNotificationWithChannel:_currentUserStatusChangedChannelName];
     }
     else {
         [self unsubscribeFromIQNotification];
+        [self unsubscribeToUserStatusChangedNotification];
     }
 }
 
@@ -870,6 +879,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                                             NSLog(@"Mark discussion as read fail with error:%@", error);
                                                                         }
                                                                     }];
+                    [weakSelf subscribeToUserNotifications];
                 }
             }
             
@@ -1004,6 +1014,73 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     }
 }
 
+- (void)unsubscribeFromNewMessageNotification {
+    if(_newMessageObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver name:IQUserDidChangeStatusNotification channelName:_currentUserStatusChangedChannelName];
+    }
+}
+
+#pragma mark - User subscrtiptions
+
+- (void)subscribeToUserNotifications {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *indexes = [_fetchController.fetchedObjects valueForKeyPath:@"author.userId"];
+        if (indexes.count > 0) {
+            [[IQService sharedService] subscribeToUserStatusChangedNotification:indexes
+                                                                        handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {
+                                                                            [self resubscribeToUserStatusChangedNotificationWithChannel:channel.name];
+                                                                        }];
+        }
+    });
+}
+
+- (void)resubscribeToUserStatusChangedNotificationWithChannel:(NSString *)channel {
+    [self unsubscribeToUserStatusChangedNotification];
+    
+    if (channel) {
+        __weak typeof(self) weakSelf = self;
+        void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+            [weakSelf modelWillChangeContent];
+            
+            NSArray *onlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"online_ids"];
+            NSArray *offlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"offline_ids"];
+            
+            NSArray *onlineUsersComments = [_fetchController.fetchedObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"author.userId IN %@", onlineUserIndexes]];
+            
+            for (IQComment *comment in  onlineUsersComments) {
+                comment.author.online = @(YES);
+                NSIndexPath *indexPath = [self indexPathOfObject:comment];
+                [self modelDidChangeObject:comment atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            
+            NSArray *offlineUsersComments = [_fetchController.fetchedObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"author.userId IN %@", offlineUserIndexes]];
+            
+            for (IQComment *comment in  offlineUsersComments) {
+                comment.author.online = @(NO);
+                NSIndexPath *indexPath = [self indexPathOfObject:comment];
+                [self modelDidChangeObject:comment atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            [[IQService sharedService].context saveToPersistentStore:nil];
+            
+            [weakSelf modelDidChangeContent];
+        };
+        
+        _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
+                                                                                  channelName:channel
+                                                                                        queue:nil
+                                                                                   usingBlock:block];
+
+    }
+    _currentUserStatusChangedChannelName = channel;
+}
+
+- (void)unsubscribeToUserStatusChangedNotification {
+    if (_userStatusChangedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_userStatusChangedObserver];
+    }
+}
+
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController*)controller {
@@ -1121,6 +1198,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 - (void)dealloc {
     [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
     [[IQNotificationCenter defaultCenter] removeObserver:_messageViewedObserver];
+    [self unsubscribeToUserStatusChangedNotification];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

@@ -216,6 +216,14 @@ BOOL IsNetworUnreachableError(NSError * error) {
     }
 }
 
+- (void)subscribeToUserStatusChangedNotification:(NSArray *)userIndexes handler:(ObjectRequestCompletionHandler)handler {
+    NSDictionary *parameters = @{@"user_ids" : userIndexes};
+    [self postObject:nil
+                path:@"users/subscribe"
+          parameters:parameters
+             handler:handler];
+}
+
 #pragma mark - TCService override
 
 - (void)getObjectsAtPath:(NSString *)path
@@ -1142,6 +1150,14 @@ fileAttributeName:(NSString*)fileAttributeName
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQSubtasksHolder class]
                                                         method:RKRequestMethodGET
                                                    pathPattern:@"tasks/:id/children"
+                                                   fromKeyPath:nil
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQChannel class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"users/subscribe"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
     

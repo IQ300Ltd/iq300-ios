@@ -23,5 +23,6 @@
 @property (nonatomic, strong) NSString *email;
 @property (nonatomic, strong) NSString *displayName;
 @property (nonatomic, strong) NSNumber *userId;
+@property (nonatomic, strong) NSNumber *online;
 
 @end

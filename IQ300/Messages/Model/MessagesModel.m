@@ -19,6 +19,8 @@
 #import "NSManagedObject+ActiveRecord.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
 
+#import "IQChannel.h"
+
 #define CACHE_FILE_NAME @"ConversationModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
 #define LAST_REQUEST_DATE_KEY @"conversation_ids_request_date"
@@ -33,6 +35,9 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     __weak id _newMessageObserver;
     __weak id _conversationsChangedObserver;
     NSMutableSet * _filteredIds;
+    
+    __weak id _userStatusChangedObserver;
+    NSString *_currentUserStatusChangedChannelName;
 }
 
 @end
@@ -233,7 +238,9 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                        [self updateCounters];
                                                        if (isFilterEnabled) {
                                                            [self updateFilteredIdsWithArray:[conversations valueForKey:@"conversationId"]];
-                                                           [self reloadModelSourceControllerWithCompletion:nil];
+                                                           [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+                                                               [self subscribeToUserNotifications];
+                                                           }];
                                                        }
                                                        [[IQService sharedService] conversationsUnread:(!_loadUnreadOnly) ? @(YES) : nil
                                                                                                  page:@(1)
@@ -242,7 +249,9 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                                                                  sort:SORT_DIRECTION handler:nil];
                                                    }
                                                    
-                                                   [self reloadModelSourceControllerWithCompletion:nil];
+                                                   [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+                                                       [self subscribeToUserNotifications];
+                                                   }];
 
                                                    if(completion) {
                                                        completion(error);
@@ -276,6 +285,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                    if(completion) {
                                                        completion(error);
                                                    }
+                                                   [self subscribeToUserNotifications];
                                                }];
     }
 }
@@ -295,7 +305,12 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
                                                        [self updateCounters];
                                                        if (isFilterEnabled) {
                                                            [self updateFilteredIdsWithArray:[conversations valueForKey:@"conversationId"]];
-                                                           [self reloadModelSourceControllerWithCompletion:nil];
+                                                           [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
+                                                               [self subscribeToUserNotifications];
+                                                           }];
+                                                       }
+                                                       else {
+                                                           [self subscribeToUserNotifications];
                                                        }
                                                        
                                                        [[IQService sharedService] conversationsUnread:(!_loadUnreadOnly) ? @(YES) : nil
@@ -508,6 +523,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
     }
     else {
         [self unsubscribeFromIQNotification];
+        [self unsubscribeToUserStatusChangedNotification];
         [self clearModelData];
         [self modelDidChanged];
     }
@@ -540,6 +556,89 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         }
     }];
 }
+
+#pragma mark - User subscrtiptions
+
+- (void)subscribeToUserNotifications {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SUBQUERY(users, $user, $user.userId != %@).@count == 1", [IQSession defaultSession].userId];
+        NSArray *conversationsWithOneUser = [_fetchController.fetchedObjects filteredArrayUsingPredicate:predicate];
+        
+
+        
+        if (conversationsWithOneUser.count > 0) {
+            NSMutableSet *userIndexes = [[NSMutableSet alloc] initWithCapacity:conversationsWithOneUser.count + 1];
+
+            for (IQConversation *conversation in conversationsWithOneUser) {
+                [userIndexes unionSet:[conversation.users valueForKey:@"userId"]];
+            }
+            
+            [userIndexes removeObject:[IQSession defaultSession].userId];
+            
+            if (userIndexes.count > 0) {
+                [[IQService sharedService] subscribeToUserStatusChangedNotification:[userIndexes allObjects]
+                                                                            handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {
+                                                                                [self resubscribeToUserStatusChangedNotificationWithChannel:channel.name];
+                                                                            }];
+            }
+        }
+    });
+}
+
+- (void)resubscribeToUserStatusChangedNotificationWithChannel:(NSString *)channel {
+    [self unsubscribeToUserStatusChangedNotification];
+    
+    if (channel) {
+        __weak typeof(self) weakSelf = self;
+        void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+            [weakSelf modelWillChangeContent];
+            
+            NSArray *onlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"online_ids"];
+            NSArray *offlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"offline_ids"];
+            
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SUBQUERY(users, $user, $user.userId != %@).@count == 1 AND SUBQUERY(users, $user, $user.userId != %@ AND $user.userId IN %@).@count == 1", [IQSession defaultSession].userId,  [IQSession defaultSession].userId, onlineUserIndexes];
+            NSArray *onlineUsersConversations = [_fetchController.fetchedObjects filteredArrayUsingPredicate:predicate];
+            
+            NSPredicate *onlineUsersPredicate = [NSPredicate predicateWithFormat:@"userId IN %@", onlineUserIndexes];
+
+            for (IQConversation *conversation in  onlineUsersConversations) {
+                ((IQUser *)[conversation.users filteredSetUsingPredicate:onlineUsersPredicate].anyObject).online = @(YES);
+                NSIndexPath *indexPath = [self indexPathOfObject:conversation];
+                [self modelDidChangeObject:conversation atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            
+            NSPredicate *offlinePredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(users, $user, $user.userId != %@).@count == 1 AND SUBQUERY(users, $user, $user.userId != %@ AND $user.userId IN %@).@count == 1", [IQSession defaultSession].userId,  [IQSession defaultSession].userId, offlineUserIndexes];
+            NSArray *offlineUsersConversations = [_fetchController.fetchedObjects filteredArrayUsingPredicate:offlinePredicate];
+            
+            NSPredicate *offlineUsersPredicate = [NSPredicate predicateWithFormat:@"userId IN %@", offlineUserIndexes];
+            for (IQConversation *conversation in  offlineUsersConversations) {
+                ((IQUser *)[conversation.users filteredSetUsingPredicate:offlineUsersPredicate].anyObject).online = @(NO);
+                NSIndexPath *indexPath = [self indexPathOfObject:conversation];
+                [self modelDidChangeObject:conversation atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+        
+            [[IQService sharedService].context saveToPersistentStore:nil];
+            
+            [weakSelf modelDidChangeContent];
+        };
+        
+        _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
+                                                                                  channelName:channel
+                                                                                        queue:nil
+                                                                                   usingBlock:block];
+        
+    }
+    _currentUserStatusChangedChannelName = channel;
+}
+
+- (void)unsubscribeToUserStatusChangedNotification {
+    if (_userStatusChangedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_userStatusChangedObserver];
+    }
+}
+
 
 #pragma mark - Clear removed conversations
 
@@ -630,6 +729,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self unsubscribeFromIQNotification];
+    [self unsubscribeToUserStatusChangedNotification];
 }
 
 @end

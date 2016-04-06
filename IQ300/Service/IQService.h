@@ -49,6 +49,8 @@ extern BOOL IsNetworUnreachableError(NSError * error);
 
 - (void)userInfoWithHandler:(ObjectRequestCompletionHandler)handler;
 
+- (void)subscribeToUserStatusChangedNotification:(NSArray *)userIndexes handler:(ObjectRequestCompletionHandler)handler;
+
 - (void)registerDeviceForRemoteNotificationsWithToken:(NSString*)token handler:(RequestCompletionHandler)handler;
 
 - (void)createAttachmentWithAsset:(ALAsset*)asset fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler;

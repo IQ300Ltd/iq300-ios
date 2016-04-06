@@ -90,8 +90,7 @@
     
     self.textLabel.text = item.user.displayName;
     self.detailTextLabel.text = item.user.email;
-#pragma mark - add online
-//    _onlineIndicator.online = item.user.online;
+    _onlineIndicator.online = item.user.online.boolValue;
     
     if([item.user.thumbUrl length] > 0) {
         [self.imageView sd_setImageWithURL:[NSURL URLWithString:item.user.thumbUrl]

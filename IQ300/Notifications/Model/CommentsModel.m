@@ -21,6 +21,7 @@
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "CommentDeletedObjects.h"
 #import "NotificationsModel.h"
+#import "IQChannel.h"
 
 #define CACHE_FILE_NAME @"CommentsModelcache"
 #define SORT_DIRECTION IQSortDirectionDescending
@@ -36,7 +37,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
     NSMutableDictionary * _expandedCells;
     NSMutableDictionary * _expandableCells;
     __weak id _newMessageObserver;
+    
     __weak id _userStatusChangedObserver;
+    NSString *_currentUserStatusChangedChannelName;
 }
 
 @end
@@ -175,6 +178,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                        if(completion) {
                                                                            completion(error);
                                                                        }
+                                                                       [self subscribeToUserNotifications];
                                                                    }];
                 }];
             }
@@ -210,6 +214,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                                if(completion) {
                                                                                    completion(error, [NSIndexPath indexPathForRow:addedRows inSection:addedSectionsCount]);
                                                                                }
+                                                                               [self subscribeToUserNotifications];
                                                                            }];
                                                                        }
                                                                        else {
@@ -240,12 +245,13 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                        per:@(_portionLenght)
                                                       sort:SORT_DIRECTION
                                                    handler:^(BOOL success, NSArray * comments, NSData *responseData, NSError *error) {
-                                               
+                                                       
                                                        [self reloadModelSourceControllerWithCompletion:^(NSError *error) {
                                                            if(completion) {
                                                                completion(error);
                                                            }
                                                            [self modelDidChanged];
+                                                           [self subscribeToUserNotifications];
                                                        }];
                                                    }];
 }
@@ -263,9 +269,11 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)setSubscribedToNotifications:(BOOL)subscribed {
     if(subscribed) {
         [self resubscribeToNewMessageNotification];
+        [self resubscribeToUserStatusChangedNotificationWithChannel:_currentUserStatusChangedChannelName];
     }
     else {
         [self unsubscribeFromNewMessageNotification];
+        [self unsubscribeToUserStatusChangedNotification];
     }
 }
 
@@ -632,34 +640,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                         usingBlock:block];
 }
 
-- (void)resubscribeToUserStatusChangedNotificationWithChannel:(NSString *)channel {
-    [self unsubscribeToUserStatusChangedNotification];
-    
-    __weak typeof(self) weakSelf = self;
-    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        [weakSelf modelWillChangeContent];
-#warning add update
-        [weakSelf modelDidChangeContent];
-    };
-    
-    _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
-                                                                              channelName:channel
-                                                                                    queue:nil
-                                                                               usingBlock:block];
-}
-
-- (void)unsubscribeFromNewMessageNotification {
-    if(_newMessageObserver) {
-        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver];
-    }
-}
-
-- (void)unsubscribeToUserStatusChangedNotification {
-    if (_userStatusChangedObserver) {
-        [[IQNotificationCenter defaultCenter] removeObserver:_userStatusChangedObserver];
-    }
-}
-
 - (void)clearRemovedCommentsWithCompletion:(RequestCompletionHandler)handler{
     NSDate * lastRequestDate = [CommentsModel lastRequestDate];
     
@@ -726,6 +706,73 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 - (void)controllerDidChangeContent:(NSFetchedResultsController*)controller {
     [self modelDidChangeContent];
 }
+
+#pragma mark - User subscrtiptions
+
+- (void)subscribeToUserNotifications {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSArray *indexes = [_fetchController.fetchedObjects valueForKeyPath:@"author.userId"];
+        if (indexes.count > 0) {
+            [[IQService sharedService] subscribeToUserStatusChangedNotification:indexes
+                                                                        handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {
+                                                                            [self resubscribeToUserStatusChangedNotificationWithChannel:channel.name];
+                                                                        }];
+        }
+    });
+}
+
+- (void)resubscribeToUserStatusChangedNotificationWithChannel:(NSString *)channel {
+    [self unsubscribeToUserStatusChangedNotification];
+    
+    if (channel && channel.length > 0) {
+        __weak typeof(self) weakSelf = self;
+        void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+            [weakSelf modelWillChangeContent];
+            
+            NSArray *onlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"online_ids"];
+            NSArray *offlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"offline_ids"];
+            
+            NSArray *onlineUsersComments = [_fetchController.fetchedObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"author.userId IN %@", onlineUserIndexes]];
+            
+            for (IQComment *comment in  onlineUsersComments) {
+                comment.author.online = @(YES);
+                NSIndexPath *indexPath = [self indexPathOfObject:comment];
+                [self modelDidChangeObject:comment atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            
+            NSArray *offlineUsersComments = [_fetchController.fetchedObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"author.userId IN %@", offlineUserIndexes]];
+            
+            for (IQComment *comment in  offlineUsersComments) {
+                comment.author.online = @(NO);
+                NSIndexPath *indexPath = [self indexPathOfObject:comment];
+                [self modelDidChangeObject:comment atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            [[IQService sharedService].context saveToPersistentStore:nil];
+            
+            [weakSelf modelDidChangeContent];
+        };
+        
+        _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
+                                                                                  channelName:channel
+                                                                                        queue:nil
+                                                                                   usingBlock:block];
+    }
+
+    _currentUserStatusChangedChannelName = channel;
+}
+
+- (void)unsubscribeToUserStatusChangedNotification {
+    if (_userStatusChangedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_userStatusChangedObserver];
+    }
+}
+
+- (void)unsubscribeFromNewMessageNotification {
+    if(_newMessageObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_newMessageObserver name:IQUserDidChangeStatusNotification channelName:_currentUserStatusChangedChannelName];
+    }
+}
+
 
 #pragma mark - Delegate methods
 
@@ -796,6 +843,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self unsubscribeToUserStatusChangedNotification];
 }
 
 @end

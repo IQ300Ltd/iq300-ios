@@ -12,10 +12,15 @@
 #import "TaskExecutor.h"
 #import "IQService+Tasks.h"
 #import "TaskExecutorCell.h"
+#import "IQChannel.h"
+#import "IQNotificationCenter.h"
 
 @interface TaskExecutorsModel() {
     NSArray * _itemsInternal;
     NSMutableIndexSet * _selectedSections;
+    
+    __weak id _userStatusChangedObserver;
+    NSString *_currentUserStatusChangedChannelName;
 }
 
 @end
@@ -135,6 +140,7 @@
                                                   if (completion) {
                                                       completion(error);
                                                   }
+                                                  [self subscribeToUserNotifications];
                                               }];
 }
 
@@ -258,5 +264,86 @@
         _items = _itemsInternal;
     }
 }
+
+#pragma mark - User subscrtiptions
+
+- (void)subscribeToUserNotifications {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSMutableArray *executors = [[NSMutableArray alloc] init];
+        
+        NSArray *executorArrays = [_itemsInternal valueForKey:@"executors"];
+        for (NSArray *nestedExecutors in executorArrays) {
+            if (nestedExecutors.count > 0) {
+                [executors addObjectsFromArray:nestedExecutors];
+            }
+        }
+        
+        if (executors.count > 0) {
+            [[IQService sharedService] subscribeToUserStatusChangedNotification:[[executors filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"executorId != %@", [IQSession defaultSession].userId]] valueForKey:@"executorId"]
+                                                                        handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {
+                                                                            [self resubscribeToUserStatusChangedNotificationWithChannel:channel.name];
+                                                                        }];
+        }
+    });
+}
+
+- (void)resubscribeToUserStatusChangedNotificationWithChannel:(NSString *)channel {
+    [self unsubscribeToUserStatusChangedNotification];
+    
+    if (channel) {
+        __weak typeof(self) weakSelf = self;
+        void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+            [weakSelf modelWillChangeContent];
+            
+            NSMutableArray *executors = [[NSMutableArray alloc] init];
+            
+            NSArray *executorArrays = [_itemsInternal valueForKey:@"executors"];
+            for (NSArray *nestedExecutors in executorArrays) {
+                if (nestedExecutors.count > 0) {
+                    [executors addObjectsFromArray:nestedExecutors];
+                }
+            }
+            
+            NSArray *onlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"online_ids"];
+            NSArray *offlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"offline_ids"];
+            
+            NSArray *onlineExecutors = [executors filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"executorId IN %@", onlineUserIndexes]];
+            
+            for (TaskExecutor *executor in  onlineExecutors) {
+                executor.online = @(YES);
+                NSIndexPath *indexPath = [self indexPathOfObject:executor];
+                [self modelDidChangeObject:executor atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            
+            NSArray *offlineExecutors = [executors filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"executorId IN %@", offlineUserIndexes]];
+            
+            for (TaskExecutor *executor in  offlineExecutors) {
+                executor.online = @(NO);
+                NSIndexPath *indexPath = [self indexPathOfObject:executor];
+                [self modelDidChangeObject:executor atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            [[IQService sharedService].context saveToPersistentStore:nil];
+            
+            [weakSelf modelDidChangeContent];
+        };
+        
+        _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
+                                                                                  channelName:channel
+                                                                                        queue:nil
+                                                                                   usingBlock:block];
+        
+    }
+    _currentUserStatusChangedChannelName = channel;
+}
+
+- (void)unsubscribeToUserStatusChangedNotification {
+    if (_userStatusChangedObserver) {
+        [[IQNotificationCenter defaultCenter] removeObserver:_userStatusChangedObserver];
+    }
+}
+- (void)dealloc {
+    [self unsubscribeToUserStatusChangedNotification];
+}
+
 
 @end

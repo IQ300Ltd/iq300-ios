@@ -315,6 +315,7 @@
                           }];
     }
     else {
+        [self.delegate didCancelTaskFieldEditController:self];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
