@@ -128,7 +128,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 }
 
 - (NSIndexPath *)indexPathOfObject:(id)object {
-    return [_fetchController indexPathForObject:object];
+    NSIndexPath *indexPath = [_fetchController indexPathForObject:object];
+    NSUInteger section = [self numberOfSections] - indexPath.section - 1;
+    indexPath = [NSIndexPath indexPathForRow:[self numberOfItemsInSection:section] - indexPath.row - 1 inSection:section];
+    return indexPath;
 }
 
 - (Class)controllerClassForItemAtIndexPath:(NSIndexPath*)indexPath {
@@ -736,15 +739,16 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
             
             for (IQComment *comment in  onlineUsersComments) {
                 comment.author.online = @(YES);
-                NSIndexPath *indexPath = [self indexPathOfObject:comment];
+                NSIndexPath *indexPath = [_fetchController indexPathForObject:comment];
                 [self modelDidChangeObject:comment atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+                
             }
             
             NSArray *offlineUsersComments = [_fetchController.fetchedObjects filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"author.userId IN %@", offlineUserIndexes]];
             
             for (IQComment *comment in  offlineUsersComments) {
                 comment.author.online = @(NO);
-                NSIndexPath *indexPath = [self indexPathOfObject:comment];
+                NSIndexPath *indexPath = [_fetchController indexPathForObject:comment];
                 [self modelDidChangeObject:comment atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
             }
             [[IQService sharedService].context saveToPersistentStore:nil];
