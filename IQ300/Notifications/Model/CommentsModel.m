@@ -181,10 +181,10 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                        if(completion) {
                                                                            completion(error);
                                                                        }
-                                                                       [self subscribeToUserNotifications];
                                                                    }];
                 }];
             }
+            [self subscribeToUserNotifications];
         }
         else {
             if (completion) {
@@ -217,7 +217,6 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                                if(completion) {
                                                                                    completion(error, [NSIndexPath indexPathForRow:addedRows inSection:addedSectionsCount]);
                                                                                }
-                                                                               [self subscribeToUserNotifications];
                                                                            }];
                                                                        }
                                                                        else {
@@ -254,9 +253,9 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
                                                                completion(error);
                                                            }
                                                            [self modelDidChanged];
-                                                           [self subscribeToUserNotifications];
                                                        }];
                                                    }];
+    [self subscribeToUserNotifications];
 }
 
 - (void)clearModelData {
@@ -714,7 +713,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
 
 - (void)subscribeToUserNotifications {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSArray *indexes = [_fetchController.fetchedObjects valueForKeyPath:@"author.userId"];
+        NSArray *indexes = [[[_discussion.users filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId]] valueForKey:@"userId"] allObjects];
         if (indexes.count > 0) {
             [[IQService sharedService] subscribeToUserStatusChangedNotification:indexes
                                                                         handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {

@@ -249,9 +249,9 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                                    if(completion) {
                                                                        completion(error);
                                                                    }
-                                                                   [self subscribeToUserNotifications];
                                                                }
                                                            }];
+            [self subscribeToUserNotifications];
         }];
     }
 }
@@ -278,7 +278,6 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                                            if(completion) {
                                                                                completion(error, [NSIndexPath indexPathForRow:addedRows inSection:addedSectionsCount]);
                                                                            }
-                                                                           [self subscribeToUserNotifications];
                                                                        }];
                                                                    }
                                                                    else if(completion) {
@@ -314,13 +313,13 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                                [self clearRemovedCommentsWithCompletion:nil];
                                                            }
                                                            [self modelDidChanged];
-                                                           [self subscribeToUserNotifications];
                                                        }];
 
                                                        if(completion) {
                                                            completion(error);
                                                        }
                                                    }];
+    [self subscribeToUserNotifications];
 }
 
 - (void)clearModelData {
@@ -882,7 +881,6 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                                             NSLog(@"Mark discussion as read fail with error:%@", error);
                                                                         }
                                                                     }];
-                    [weakSelf subscribeToUserNotifications];
                 }
             }
             
@@ -907,6 +905,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                     }];
                 }
             }
+            [weakSelf subscribeToUserNotifications];
         }
     };
     
@@ -1027,7 +1026,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
 
 - (void)subscribeToUserNotifications {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSArray *indexes = [_fetchController.fetchedObjects valueForKeyPath:@"author.userId"];
+        NSArray *indexes = [[[_discussion.users filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"userId != %@", [IQSession defaultSession].userId]] valueForKey:@"userId"] allObjects];
         if (indexes.count > 0) {
             [[IQService sharedService] subscribeToUserStatusChangedNotification:indexes
                                                                         handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {
