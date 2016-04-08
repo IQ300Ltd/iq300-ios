@@ -41,6 +41,10 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
     
     AllUsersObject *allUsersObject = [[AllUsersObject alloc] init];
     _usersWithAll = [users arrayByAddingObject:allUsersObject];
+    
+    [self updateModelWithCompletion:^(NSError *error) {
+        [self modelDidChanged];
+    }];
 }
 
 - (NSUInteger)numberOfSections {

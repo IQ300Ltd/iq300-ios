@@ -252,6 +252,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
                                                                }
                                                            }];
             [self subscribeToUserNotifications];
+            [self modelMembersUpdated];
         }];
     }
 }
