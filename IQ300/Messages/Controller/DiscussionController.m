@@ -323,6 +323,10 @@
 
 - (void)modelMembersUpdated:(DiscussionModel *)model {
     _avalibleNicks = [[self.model.discussion.users allObjects] valueForKey:@"nickName"];
+    
+    if (_userPickerController) {
+        [_userPickerController.model setUsers:model.discussion.users.allObjects];
+    }
 }
 
 #pragma mark - Scroll Gesture Delegate
