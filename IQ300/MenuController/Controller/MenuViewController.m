@@ -223,11 +223,11 @@ CGFloat IQStatusBarHeight()
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return (!IS_IPAD) ? SECTION_HEIGHT : 0.0f;
+    return (!(IS_IPAD)) ? SECTION_HEIGHT : 0.0f;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return (!IS_IPAD) ? [self viewForHeaderInSection:section] : nil;
+    return (!(IS_IPAD)) ? [self viewForHeaderInSection:section] : nil;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

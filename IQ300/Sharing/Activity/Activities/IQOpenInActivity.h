@@ -18,6 +18,6 @@
 
 @protocol IQOpenInActivityDelegate <NSObject>
 
-- (BOOL)openInActivity:(IQOpenInActivity * _Nonnull)activity didCreateDocumentInteractionController:(UIDocumentInteractionController * _Nonnull)controller;
+- (BOOL)openInActivity:(IQOpenInActivity *)activity didCreateDocumentInteractionController:(UIDocumentInteractionController *)controller;
 
 @end

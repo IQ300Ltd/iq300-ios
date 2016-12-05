@@ -236,7 +236,7 @@
     [UIView setAnimationCurve:animationCurve];
     
     CGFloat inset = MIN(keyboardRect.size.height, keyboardRect.size.width);
-    if (!IS_IPAD) {
+    if (!(IS_IPAD)) {
         inset -= self.tabBarController.tabBar.frame.size.height;
     }
     [_feedbacksView setTableBottomMargin:down ? 0.0f : inset];
