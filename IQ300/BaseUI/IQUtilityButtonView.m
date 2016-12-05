@@ -5,7 +5,7 @@
 //  Created by Tayphoon on 22.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <SWUtilityButtonTapGestureRecognizer.h>
+#import <SWTableViewCell/SWUtilityButtonTapGestureRecognizer.h>
 
 #import "IQUtilityButtonView.h"
 

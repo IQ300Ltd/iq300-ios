@@ -133,11 +133,11 @@ static IQNotificationCenter * _defaultCenter = nil;
     self = [super init];
     
     if (self) {
-        NSString * authURLString = [NSString stringWithFormat:@"%@/%@", SERVICE_URL, @"api/v1/pusher/auth"];
+        NSString * authURLString = [NSString stringWithFormat:@"%@/%@", SERVICE_URL, @"api/v2/pusher/auth"];
         
         _key = key;
         _token = token;
-        _client = [PTPusher pusherWithKey:key delegate:self encrypted:YES];
+        _client = [PTPusher pusherWithKey:key delegate:self encrypted:YES cluster:@"eu"];
         _client.authorizationURL = [NSURL URLWithString:authURLString];
         _shouldReconnect = YES;
         _observers = [NSMutableDictionary dictionary];
@@ -437,9 +437,9 @@ static IQNotificationCenter * _defaultCenter = nil;
  This demonstrates how we can intercept the authorization request to configure it for our app's
  authentication/authorisation needs.
  */
-- (void)pusher:(PTPusher *)pusher willAuthorizeChannel:(PTPusherChannel *)channel withRequest:(NSMutableURLRequest *)request {
+- (void)pusher:(PTPusher *)pusher willAuthorizeChannel:(PTPusherChannel *)channel withAuthOperation:(PTPusherChannelAuthorizationOperation *)operation {
     DNSLog(@"[IQNotificationCenter-%@] Authorizing channel access...", pusher.connection.socketID);
-    [request setValue:_token forHTTPHeaderField:@"Authorization"];
+    [operation.mutableURLRequest setValue:_token forHTTPHeaderField:@"Authorization"];
 }
 
 - (void)pusher:(PTPusher *)pusher didReceiveEvent:(PTPusherEvent *)event {

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
 
-#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+#import <RestKit/NSManagedObjectContext+RKAdditions.h>
 #import <RestKit/RestKit.h>
 
 #import "ConferenceInfoModel.h"

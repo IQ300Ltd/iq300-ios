@@ -5,7 +5,7 @@
 //  Created by Tayphoon on 24.12.14.
 //  Copyright (c) 2014 Tayphoon. All rights reserved.
 //
-#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+#import <RestKit/NSManagedObjectContext+RKAdditions.h>
 #import <RestKit/RestKit.h>
 
 #import "CommentsModel.h"

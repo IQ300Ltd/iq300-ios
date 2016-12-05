@@ -62,7 +62,7 @@ static id _sharedService = nil;
         _session = session;
         
         _objectManager = [RKObjectManager managerWithBaseURL:[NSURL URLWithString:_serviceUrl]];
-        [_objectManager.HTTPClient setParameterEncoding:AFJSONParameterEncoding];
+        [_objectManager.HTTPClient setParameterEncoding:AFRKJSONParameterEncoding];
         [_objectManager setRequestSerializationMIMEType:RKMIMETypeJSON];
         [_objectManager setAcceptHeaderWithMIMEType:RKMIMETypeJSON];
         
@@ -70,7 +70,7 @@ static id _sharedService = nil;
        self.serviceReachabilityStatus = (TCServiceReachabilityStatus)_objectManager.HTTPClient.networkReachabilityStatus;
         
         __unsafe_unretained typeof(self) weakSelf = self;
-        [_objectManager.HTTPClient setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        [_objectManager.HTTPClient setReachabilityStatusChangeBlock:^(AFRKNetworkReachabilityStatus status) {
             weakSelf.serviceReachabilityStatus = (TCServiceReachabilityStatus)status;
             if (weakSelf.serviceReachabilityStatusBlock) {
                 weakSelf.serviceReachabilityStatusBlock(weakSelf.serviceReachabilityStatus);
@@ -346,7 +346,7 @@ fileAttributeName:(NSString*)fileAttributeName
         mimeType:(NSString*)mimeType
          handler:(ObjectRequestCompletionHandler)handler {
     
-    void(^dataBlock)(id<AFMultipartFormData> formData) = ^(id<AFMultipartFormData> formData) {
+    void(^dataBlock)(id<AFRKMultipartFormData> formData) = ^(id<AFRKMultipartFormData> formData) {
         [formData appendPartWithFileData:fileData
                                     name:fileAttributeName
                                 fileName:fileName
@@ -373,7 +373,7 @@ fileAttributeName:(NSString*)fileAttributeName
     ALAssetInputStream * stream = [[ALAssetInputStream alloc] initWithAsset:asset];
     
     
-    void(^dataBlock)(id<AFMultipartFormData> formData) = ^(id<AFMultipartFormData> formData) {
+    void(^dataBlock)(id<AFRKMultipartFormData> formData) = ^(id<AFRKMultipartFormData> formData) {
         [formData appendPartWithInputStream:stream
                                        name:fileAttributeName
                                    fileName:fileName
@@ -399,7 +399,7 @@ fileAttributeName:(NSString*)fileAttributeName
                handler:(ObjectRequestCompletionHandler)handler {
     
     __block NSError * error = nil;
-    void(^dataBlock)(id<AFMultipartFormData> formData) = ^(id<AFMultipartFormData> formData) {
+    void(^dataBlock)(id<AFRKMultipartFormData> formData) = ^(id<AFRKMultipartFormData> formData) {
         [formData appendPartWithFileURL:filePath
                                    name:fileAttributeName
                                fileName:fileName
@@ -419,7 +419,7 @@ fileAttributeName:(NSString*)fileAttributeName
 
 - (RKObjectRequestOperation *)createPostOperationAtPath:(NSString *)path
                                              parameters:(NSDictionary *)parameters
-                              constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+                              constructingBodyWithBlock:(void (^)(id <AFRKMultipartFormData> formData))block
                                                 handler:(ObjectRequestCompletionHandler)handler {
     NSMutableURLRequest * postRequest = [_objectManager multipartFormRequestWithObject:[self emptyResponse]
                                                                                 method:RKRequestMethodPOST

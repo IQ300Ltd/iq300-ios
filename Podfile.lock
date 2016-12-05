@@ -1,16 +1,15 @@
 PODS:
   - ActionSheetPicker-3.0 (1.5.1)
-  - AFNetworking (1.3.4)
   - CTAssetsPickerController (2.8.0)
   - GoogleAnalytics-iOS-SDK (3.11):
     - GoogleAnalytics-iOS-SDK/Core (= 3.11)
   - GoogleAnalytics-iOS-SDK/Core (3.11)
   - ISO8601DateFormatterValueTransformer (0.6.1):
     - RKValueTransformers (~> 1.1.0)
-  - libPusher (1.5):
-    - libPusher/Core (= 1.5)
-  - libPusher/Core (1.5):
-    - SocketRocket (= 0.3.1-beta2)
+  - libPusher (1.6.2):
+    - libPusher/Core (= 1.6.2)
+  - libPusher/Core (1.6.2):
+    - SocketRocket (= 0.5.1)
   - MBProgressHUD (0.9.1)
   - MMDrawerController (0.5.7):
     - MMDrawerController/Core (= 0.5.7)
@@ -25,35 +24,34 @@ PODS:
   - MMDrawerController/Subclass (0.5.7):
     - MMDrawerController/Core
   - Reachability (3.2)
-  - RestKit (0.25.0):
-    - RestKit/Core (= 0.25.0)
-  - RestKit/Core (0.25.0):
+  - RestKit (0.27.0):
+    - RestKit/Core (= 0.27.0)
+  - RestKit/Core (0.27.0):
     - RestKit/CoreData
     - RestKit/Network
     - RestKit/ObjectMapping
-  - RestKit/CoreData (0.25.0):
+  - RestKit/CoreData (0.27.0):
     - RestKit/ObjectMapping
-  - RestKit/Network (0.25.0):
-    - AFNetworking (~> 1.3.0)
+  - RestKit/Network (0.27.0):
     - RestKit/ObjectMapping
     - RestKit/Support
     - SOCKit
-  - RestKit/ObjectMapping (0.25.0):
+  - RestKit/ObjectMapping (0.27.0):
     - ISO8601DateFormatterValueTransformer (~> 0.6.1)
     - RestKit/Support
     - RKValueTransformers (~> 1.1.0)
-  - RestKit/Support (0.25.0):
-    - TransitionKit (~> 2.1.0)
-  - RKValueTransformers (1.1.2)
+  - RestKit/Support (0.27.0):
+    - TransitionKit (~> 2.2)
+  - RKValueTransformers (1.1.3)
   - SDWebImage (3.7.1):
     - SDWebImage/Core (= 3.7.1)
   - SDWebImage/Core (3.7.1)
-  - SocketRocket (0.3.1-beta2)
+  - SocketRocket (0.5.1)
   - SOCKit (1.1)
   - SSKeychain (1.2.2)
-  - SVPullToRefresh (HEAD based on 0.4.1)
+  - SVPullToRefresh (0.4.1)
   - SWTableViewCell (0.3.7)
-  - TransitionKit (2.1.1)
+  - TransitionKit (2.2.1)
 
 DEPENDENCIES:
   - ActionSheetPicker-3.0
@@ -63,30 +61,46 @@ DEPENDENCIES:
   - MBProgressHUD
   - MMDrawerController
   - Reachability
-  - RestKit (~> 0.25.0)
+  - RestKit (from `https://github.com/RestKit/RestKit.git`, commit `13d98d5a6a5e06656ad040013dcae149b7cf8b99`)
   - SDWebImage
   - SSKeychain
-  - SVPullToRefresh (HEAD)
+  - SVPullToRefresh (from `https://github.com/samvermette/SVPullToRefresh.git`)
   - SWTableViewCell
+
+EXTERNAL SOURCES:
+  RestKit:
+    :commit: 13d98d5a6a5e06656ad040013dcae149b7cf8b99
+    :git: https://github.com/RestKit/RestKit.git
+  SVPullToRefresh:
+    :git: https://github.com/samvermette/SVPullToRefresh.git
+
+CHECKOUT OPTIONS:
+  RestKit:
+    :commit: 13d98d5a6a5e06656ad040013dcae149b7cf8b99
+    :git: https://github.com/RestKit/RestKit.git
+  SVPullToRefresh:
+    :commit: a5f9dfee86a27c4e994d7edf93d0768c881d58bb
+    :git: https://github.com/samvermette/SVPullToRefresh.git
 
 SPEC CHECKSUMS:
   ActionSheetPicker-3.0: de0f71e30495ed0192f7d16d0fddcab6882a0ca3
-  AFNetworking: cf8e418e16f0c9c7e5c3150d019a3c679d015018
   CTAssetsPickerController: 22913b579bb752f3df0f64a08b52aceb010c3389
   GoogleAnalytics-iOS-SDK: fb15cc7e3d01d06d531653f37443fda90274d53d
   ISO8601DateFormatterValueTransformer: 52da467d6ec899d6aedda8e48280ac92e8ee97e6
-  libPusher: 62734f61cb5210dfb144b6706b93f29ddee7ba31
+  libPusher: 21c6209fa84a829e963f1b2fe5bff34722f3f3f4
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MMDrawerController: 7a4cf8e25596bf2434e03ce50d22a8608ddee6a1
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  RestKit: a4fcaf3d4bb2c204679856a46d596160bf208095
-  RKValueTransformers: 66ac5e4f077fdbe3496e792d89eeff4c3eb67701
+  RestKit: 9539fb2ca8cd53431a1fdc7f55bba4af3646cfa9
+  RKValueTransformers: e5ed67e3811229b616fe01bddeeafe3bb337b1b9
   SDWebImage: ed3095af2ff88b436426037444979b917f6c5575
-  SocketRocket: 7284ab9370a06c99aba92b2fe3a32aedd0f9a6fa
+  SocketRocket: d57c7159b83c3c6655745cd15302aa24b6bae531
   SOCKit: c7376ac262bea9115b8f749358f762522a47d392
   SSKeychain: 88767e903ee8d274ed380e364d96b7a101235286
   SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
   SWTableViewCell: 2a94aadc9d47b2b611fa064566bf57948b95b579
-  TransitionKit: 3a14b6acc7cf2d1dd3e454e24dbad1cfab9a1ef1
+  TransitionKit: 9ceccda4cd0cdc0a05ef85eb235e5a3292c3c250
 
-COCOAPODS: 0.38.2
+PODFILE CHECKSUM: 783672a1bcb6195dfe9009316e7e06b64999fdd7
+
+COCOAPODS: 1.1.0

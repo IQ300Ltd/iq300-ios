@@ -96,7 +96,7 @@ BOOL IsNetworUnreachableError(NSError * error) {
     self = [super initWithURL:url andSession:session];
     if (self) {
         self.responseClass = [IQServiceResponse class];
-        [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+        [AFRKNetworkActivityIndicatorManager sharedManager].enabled = YES;
     }
     return self;
 }

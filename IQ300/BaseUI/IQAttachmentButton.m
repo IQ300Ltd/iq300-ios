@@ -8,7 +8,7 @@
 
 #import "IQAttachmentButton.h"
 #import "IQManagedAttachment.h"
-#import <UIImageView+WebCache.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @implementation IQAttachmentButton
 

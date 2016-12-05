@@ -5,7 +5,7 @@
 //  Created by Tayphoon on 14.04.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
-#import <ActionSheetPicker-3.0/ActionSheetDatePicker.h>
+#import <ActionSheetPicker_3_0/ActionSheetPicker.h>
 
 #import "TaskController.h"
 #import "IQSession.h"

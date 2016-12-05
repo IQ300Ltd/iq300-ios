@@ -5,7 +5,8 @@
 //  Created by Tayphoon on 17.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
-#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+
+#import "NSManagedObjectContext+RKAdditions.h"
 
 #import "TaskTabController.h"
 

@@ -5,7 +5,7 @@
 //  Created by Tayphoon on 20.03.15.
 //  Copyright (c) 2015 Tayphoon. All rights reserved.
 //
-#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+#import <RestKit/NSManagedObjectContext+RKAdditions.h>
 
 #import "TaskAttachmentsModel.h"
 #import "IQManagedAttachment.h"

@@ -38,21 +38,21 @@ static DownloadManager * _sharedManager = nil;
 
 #pragma mark - Public
 
-- (AFHTTPRequestOperation*)downloadOperationWithRequest:(NSURLRequest *)request
-                                                success:(void (^)(AFHTTPRequestOperation *operation, NSData * responseData))success
-                                                failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
-    AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+- (AFRKHTTPRequestOperation*)downloadOperationWithRequest:(NSURLRequest *)request
+                                                success:(void (^)(AFRKHTTPRequestOperation *operation, NSData * responseData))success
+                                                failure:(void (^)(AFRKHTTPRequestOperation *operation, NSError *error))failure {
+    AFRKHTTPRequestOperation * operation = [[AFRKHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:success
                                      failure:failure];
     return operation;
 }
 
 
-- (AFHTTPRequestOperation*)downloadOperationWithRequest:(NSURLRequest *)request
-                                                success:(void (^)(AFHTTPRequestOperation *operation, NSData * responseData))success
-                                                failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+- (AFRKHTTPRequestOperation*)downloadOperationWithRequest:(NSURLRequest *)request
+                                                success:(void (^)(AFRKHTTPRequestOperation *operation, NSData * responseData))success
+                                                failure:(void (^)(AFRKHTTPRequestOperation *operation, NSError *error))failure
                                             andProgress:(void(^)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead))progress {
-    AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    AFRKHTTPRequestOperation * operation = [[AFRKHTTPRequestOperation alloc] initWithRequest:request];
     [operation setCompletionBlockWithSuccess:success
                                      failure:failure];
     [operation setDownloadProgressBlock: progress];
@@ -118,7 +118,7 @@ static DownloadManager * _sharedManager = nil;
         else {
             
             void(^successBlock)(NSOperation *operation, NSData *responseData) = ^(NSOperation *operation, NSData *responseData) {
-                [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
+                [[AFRKNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
                 if(responseData) {
                     if (hasFileExtension) {
                         [[FileStore sharedStore] storeData:responseData
@@ -146,7 +146,7 @@ static DownloadManager * _sharedManager = nil;
             };
             
             void(^failureBlock)(NSOperation *operation, NSError *error) = ^(NSOperation *operation, NSError *error) {
-                [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
+                [[AFRKNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
                 if(failure) {
                     failure(operation, error);
                 }
@@ -161,12 +161,12 @@ static DownloadManager * _sharedManager = nil;
             
             NSString * escapedUrl = [url stringByReplacingOccurrencesOfString:@"'" withString:@"%27"];
             NSURLRequest * request = [NSURLRequest requestWithURL:[NSURL URLWithString:escapedUrl]];
-            AFHTTPRequestOperation * operation = [self downloadOperationWithRequest:request
+            AFRKHTTPRequestOperation * operation = [self downloadOperationWithRequest:request
                                                                             success:successBlock
                                                                             failure:failureBlock
                                                                         andProgress:progressBlock];
             [self enqueueObjectRequestOperation:operation];
-            [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
+            [[AFRKNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
         }
     };
     
@@ -204,7 +204,7 @@ static DownloadManager * _sharedManager = nil;
 
 #pragma mark - Queue Management
 
-- (void)enqueueObjectRequestOperation:(AFHTTPRequestOperation *)objectRequestOperation {
+- (void)enqueueObjectRequestOperation:(AFRKHTTPRequestOperation *)objectRequestOperation {
     [self.operationQueue addOperation:objectRequestOperation];
 }
 

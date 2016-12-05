@@ -7,7 +7,7 @@
 //
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 #import <CTAssetsPickerController/CTAssetsPickerController.h>
-#import <RestKit/CoreData/NSManagedObjectContext+RKAdditions.h>
+#import <RestKit/NSManagedObjectContext+RKAdditions.h>
 
 #import "UIViewController+LeftMenu.h"
 #import "IQSession.h"
