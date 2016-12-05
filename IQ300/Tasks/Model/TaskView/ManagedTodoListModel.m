@@ -165,7 +165,7 @@ static NSString * TReuseIdentifier = @"TReuseIdentifier";
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                managedObjectContext:[IQService sharedService].context
                                                                  sectionNameKeyPath:nil
-                                                                          cacheName:CACHE_FILE_NAME];
+                                                                          cacheName:nil];
     }
     
     NSError * fetchError = nil;

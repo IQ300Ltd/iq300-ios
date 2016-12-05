@@ -782,7 +782,7 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                managedObjectContext:[IQService sharedService].context
                                                                  sectionNameKeyPath:@"createShortDate"
-                                                                          cacheName:CACHE_FILE_NAME];
+                                                                          cacheName:nil];
     }
     
     NSPredicate * predicate = [NSPredicate predicateWithFormat:@"discussionId == %@", _discussion.discussionId];

@@ -362,7 +362,7 @@ static NSString * MReuseIdentifier = @"MReuseIdentifier";
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                managedObjectContext:[IQService sharedService].context
                                                                  sectionNameKeyPath:nil
-                                                                          cacheName:CACHE_FILE_NAME];
+                                                                          cacheName:nil];
     }
     
     NSPredicate * predicate = [NSPredicate predicateWithFormat:@"ownerId == %@", [IQSession defaultSession].userId];

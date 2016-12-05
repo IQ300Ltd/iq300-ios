@@ -529,7 +529,7 @@ static NSString * CReuseIdentifier = @"CReuseIdentifier";
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                managedObjectContext:[IQService sharedService].context
                                                                  sectionNameKeyPath:nil
-                                                                          cacheName:CACHE_FILE_NAME];
+                                                                          cacheName:nil];
     }
     
     NSPredicate * predicate = [NSPredicate predicateWithFormat:@"discussionId == %@", _discussion.discussionId];

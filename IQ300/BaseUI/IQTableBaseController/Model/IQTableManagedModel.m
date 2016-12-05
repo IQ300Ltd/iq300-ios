@@ -101,7 +101,7 @@
         _fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                managedObjectContext:self.context
                                                                  sectionNameKeyPath:self.sectionNameKeyPath
-                                                                          cacheName:self.cacheFileName];
+                                                                          cacheName:nil];
     }
     
     NSPredicate * predicate = [self fetchPredicate];
