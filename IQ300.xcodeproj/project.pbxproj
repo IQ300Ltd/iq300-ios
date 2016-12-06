@@ -5071,6 +5071,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Shamil Hamadeev (DDMRH6LAJY)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Shamil Hamadeev (DDMRH6LAJY)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
+				DEVELOPMENT_TEAM = D3Q8V8UU4B;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5092,7 +5093,8 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobileHD;
 				PRODUCT_NAME = "IQ 300 HD";
-				PROVISIONING_PROFILE = "8d741ddf-88c7-43d6-a4e0-6e9d95da7274";
+				PROVISIONING_PROFILE = "ccab40cb-e276-4b42-9448-fd366f673419";
+				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Development HD";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -5289,7 +5291,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8fe79315-8c33-4a19-ba69-fc49de4cd157";
+				PROVISIONING_PROFILE = "1298883d-1fd9-4ee3-af43-47a228e99be6";
 				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Development";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
