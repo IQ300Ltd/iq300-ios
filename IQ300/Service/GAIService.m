@@ -26,21 +26,21 @@ NSString * const GAIOpenReadedNotificationEventAction = @"event_action_notificat
 @implementation GAIService
 
 + (void)initializeGoogleAnalytics {
-    [GAI sharedInstance].dispatchInterval = 20;
-    [[GAI sharedInstance] trackerWithTrackingId:@"UA-62928896-1"];
+//    [GAI sharedInstance].dispatchInterval = 20;
+//    [[GAI sharedInstance] trackerWithTrackingId:@"UA-62928896-1"];
 }
 
 + (void)sendEventForCategory:(NSString*)eventCategory action:(NSString*)action {
-    [GAIService sendEventForCategory:eventCategory action:action label:nil];
+//    [GAIService sendEventForCategory:eventCategory action:action label:nil];
 }
 
 + (void)sendEventForCategory:(NSString*)eventCategory action:(NSString*)action label:(NSString*)label {
-    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
-    
-    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:NSLocalizedStringFromTable(eventCategory, @"GAIEvents", nil)
-                                                          action:NSLocalizedStringFromTable(action, @"GAIEvents", nil)
-                                                           label:label
-                                                           value:nil] build]];
+//    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+//    
+//    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:NSLocalizedStringFromTable(eventCategory, @"GAIEvents", nil)
+//                                                          action:NSLocalizedStringFromTable(action, @"GAIEvents", nil)
+//                                                           label:label
+//                                                           value:nil] build]];
 }
 
 @end
