@@ -1377,6 +1377,7 @@
 		3D1D4AFD1CA55775001F0524 /* top_header_bg@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top_header_bg@3x.png"; sourceTree = "<group>"; };
 		3D21439A1C9E80DA00ACA554 /* MessagesMenuModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagesMenuModel.h; sourceTree = "<group>"; };
 		3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesMenuModel.m; sourceTree = "<group>"; };
+		3D57F5B91DF6B760001F909D /* IQ 300 HD.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "IQ 300 HD.entitlements"; path = "../IQ 300 HD.entitlements"; sourceTree = "<group>"; };
 		3D6A2BFD1CB4E81F004C7DD4 /* IQChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQChannel.h; sourceTree = "<group>"; };
 		3D6A2BFE1CB4E81F004C7DD4 /* IQChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQChannel.m; sourceTree = "<group>"; };
 		3DA1BFEB1CB384960053889D /* IQOnlineIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQOnlineIndicator.h; sourceTree = "<group>"; };
@@ -3045,6 +3046,7 @@
 		738CE1E31A0B3F4E0096B374 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3D57F5B91DF6B760001F909D /* IQ 300 HD.entitlements */,
 				3D0DFEF21DF5AC51002023F8 /* IQ 300.entitlements */,
 				736B6BDF1A0B668700034D9B /* IQ300-Prefix.pch */,
 				738CE1E41A0B3F4E0096B374 /* Info.plist */,
@@ -3681,6 +3683,11 @@
 				TargetAttributes = {
 					73840DB21B1C75A500BCEAFC = {
 						DevelopmentTeam = D3Q8V8UU4B;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					738CE1DF1A0B3F4E0096B374 = {
 						CreatedOnToolsVersion = 6.1;
@@ -5068,6 +5075,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = "IQ 300 HD.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Shamil Hamadeev (DDMRH6LAJY)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Shamil Hamadeev (DDMRH6LAJY)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
@@ -5106,6 +5114,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = "IQ 300 HD.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
@@ -5146,6 +5155,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = "IQ 300 HD.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
