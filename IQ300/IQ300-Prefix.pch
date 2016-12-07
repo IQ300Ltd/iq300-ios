@@ -35,12 +35,12 @@
 #import "GAIService.h"
 
 #ifdef PROD
-#define SERVICE_URL @"http://iq300.sumcap.ru"
-#define SERVER_URL @"http://iq300.sumcap.ru"
+#define SERVICE_URL @"https://iq300.sumcap.ru"
+#define SERVER_URL @"https://iq300.sumcap.ru"
 #define PUSHER_APP_KEY @"25c9e7c6f3e0becc7ce4"
 #else
-#define SERVICE_URL @"http://iq300.sumcap.ru"
-#define SERVER_URL @"http://iq300.sumcap.ru"
+#define SERVICE_URL @"https://iq300.sumcap.ru"
+#define SERVER_URL @"https://iq300.sumcap.ru"
 #define PUSHER_APP_KEY @"25c9e7c6f3e0becc7ce4"
 #endif
 
