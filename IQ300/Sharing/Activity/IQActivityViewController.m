@@ -35,32 +35,17 @@ NSString * const IQActivityTypeSaveVideo = @"ru.iq300.activity.savevideo";
 - (BOOL)openInActivity:(IQOpenInActivity * _Nonnull)activity didCreateDocumentInteractionController:(UIDocumentInteractionController * _Nonnull)controller {
     if (_delegate && [_delegate willShowDocumentInteractionController]) {
         
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-            UIActivityViewControllerCompletionWithItemsHandler handler = self.completionWithItemsHandler;
-            
-            __weak typeof(self) weakSelf = self;
-            self.completionWithItemsHandler = ^(NSString * __nullable activityType, BOOL completed, NSArray * __nullable returnedItems, NSError * __nullable activityError) {
-                if (weakSelf.delegate) {
-                    [weakSelf.delegate shouldShowDocumentInteractionController:controller fromRect:weakSelf.documentInteractionControllerRect];
-                }
-                if (handler) {
-                    handler(activityType, completed, returnedItems, activityError);
-                }
-            };
-        }
-        else {
-            UIActivityViewControllerCompletionHandler handler = self.completionHandler;
-            
-            __weak typeof(self) weakSelf = self;
-            self.completionHandler = ^ (NSString * __nullable activityType, BOOL completed) {
-                if (weakSelf.delegate) {
-                    [weakSelf.delegate shouldShowDocumentInteractionController:controller fromRect:weakSelf.documentInteractionControllerRect];
-                }
-                if (handler) {
-                    handler(activityType, completed);
-                }
-            };
-        }
+        UIActivityViewControllerCompletionWithItemsHandler handler = self.completionWithItemsHandler;
+        
+        __weak typeof(self) weakSelf = self;
+        self.completionWithItemsHandler = ^(NSString * __nullable activityType, BOOL completed, NSArray * __nullable returnedItems, NSError * __nullable activityError) {
+            if (weakSelf.delegate) {
+                [weakSelf.delegate shouldShowDocumentInteractionController:controller fromRect:weakSelf.documentInteractionControllerRect];
+            }
+            if (handler) {
+                handler(activityType, completed, returnedItems, activityError);
+            }
+        };
         
         return YES;
     }

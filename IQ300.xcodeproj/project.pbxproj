@@ -736,7 +736,6 @@
 		73840E0D1B1C75A500BCEAFC /* SubMenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D3DF271AF0FB14000DD34F /* SubMenuCell.m */; };
 		73840E0E1B1C75A500BCEAFC /* TInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1AF1ADE932700023120 /* TInfoController.m */; };
 		73840E101B1C75A500BCEAFC /* IQDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737DD2091A149C6900CC4443 /* IQDrawerController.m */; };
-		73840E111B1C75A500BCEAFC /* NSDate+CupertinoYankee.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C58C061A1F145200C83729 /* NSDate+CupertinoYankee.m */; };
 		73840E121B1C75A500BCEAFC /* NSError+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A949A11A3833C4008EC469 /* NSError+Extension.m */; };
 		73840E131B1C75A500BCEAFC /* TasksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BC61A0B5B7500034D9B /* TasksController.m */; };
 		73840E141B1C75A500BCEAFC /* TaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D7F1A01ADE92BC00023120 /* TaskController.m */; };
@@ -988,7 +987,6 @@
 		73C384C91A9725DA00B66D0F /* IQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C384C81A9725DA00B66D0F /* IQTask.m */; };
 		73C4A6821A3EFB4E003E1242 /* NSString+UUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C4A6811A3EFB4E003E1242 /* NSString+UUID.m */; };
 		73C58C021A1F074900C83729 /* NotificationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C58C011A1F074900C83729 /* NotificationCell.m */; };
-		73C58C071A1F145200C83729 /* NSDate+CupertinoYankee.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C58C061A1F145200C83729 /* NSDate+CupertinoYankee.m */; };
 		73C58C0A1A1F17FD00C83729 /* NSString+SizeWith.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C58C091A1F17FD00C83729 /* NSString+SizeWith.m */; };
 		73CB5B4A1B32D192005B688C /* IQStringValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CB5B491B32D192005B688C /* IQStringValidator.m */; };
 		73CB5B4D1B32D2D5005B688C /* IQPasswordValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CB5B4C1B32D2D5005B688C /* IQPasswordValidator.m */; };
@@ -1064,6 +1062,7 @@
 		CBEB63271C5F3A70005A11C2 /* SharingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63251C5F3A70005A11C2 /* SharingViewController.m */; };
 		CBEB632B1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */; };
 		CBEB632C1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */; };
+		FBC56E6A1E83F2A700B951FD /* NSDate+BoundaryDates.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC56E691E83F2A700B951FD /* NSDate+BoundaryDates.m */; };
 		FBC7CB491B57973C004E8382 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB481B57973C004E8382 /* DeletedObjects.m */; };
 		FBC7CB4C1B57979A004E8382 /* CommentDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4B1B57979A004E8382 /* CommentDeletedObjects.m */; };
 		FBC7CB4F1B579812004E8382 /* ConversationDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4E1B579812004E8382 /* ConversationDeletedObjects.m */; };
@@ -1843,8 +1842,6 @@
 		73C4A6811A3EFB4E003E1242 /* NSString+UUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+UUID.m"; sourceTree = "<group>"; };
 		73C58C001A1F074900C83729 /* NotificationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationCell.h; sourceTree = "<group>"; };
 		73C58C011A1F074900C83729 /* NotificationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationCell.m; sourceTree = "<group>"; };
-		73C58C051A1F145200C83729 /* NSDate+CupertinoYankee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+CupertinoYankee.h"; sourceTree = "<group>"; };
-		73C58C061A1F145200C83729 /* NSDate+CupertinoYankee.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+CupertinoYankee.m"; sourceTree = "<group>"; };
 		73C58C081A1F17FD00C83729 /* NSString+SizeWith.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SizeWith.h"; sourceTree = "<group>"; };
 		73C58C091A1F17FD00C83729 /* NSString+SizeWith.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SizeWith.m"; sourceTree = "<group>"; };
 		73C58C0D1A1F3B8000C83729 /* CGGeometry+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CGGeometry+Extensions.h"; sourceTree = "<group>"; };
@@ -1978,6 +1975,8 @@
 		E8AB06F05AD8DA204981B8A3 /* Pods_IQ_300.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IQ_300.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F100CE7AA8E15124A0A89637 /* Pods-IQ 300.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IQ 300.release.xcconfig"; path = "Pods/Target Support Files/Pods-IQ 300/Pods-IQ 300.release.xcconfig"; sourceTree = "<group>"; };
 		F2DF67CF2937A920BA137C76 /* Pods-IQ 300.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IQ 300.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IQ 300/Pods-IQ 300.debug.xcconfig"; sourceTree = "<group>"; };
+		FBC56E681E83F2A700B951FD /* NSDate+BoundaryDates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+BoundaryDates.h"; sourceTree = "<group>"; };
+		FBC56E691E83F2A700B951FD /* NSDate+BoundaryDates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+BoundaryDates.m"; sourceTree = "<group>"; };
 		FBC7CB471B57973C004E8382 /* DeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedObjects.h; sourceTree = "<group>"; };
 		FBC7CB481B57973C004E8382 /* DeletedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeletedObjects.m; sourceTree = "<group>"; };
 		FBC7CB4A1B57979A004E8382 /* CommentDeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentDeletedObjects.h; sourceTree = "<group>"; };
@@ -2804,8 +2803,6 @@
 				73882D891A24687300B8BE90 /* SuppressWarning.h */,
 				7383562E1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.h */,
 				7383562F1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m */,
-				73C58C051A1F145200C83729 /* NSDate+CupertinoYankee.h */,
-				73C58C061A1F145200C83729 /* NSDate+CupertinoYankee.m */,
 				736B6BE81A0BC09300034D9B /* UIColor+Extensions.h */,
 				736B6BE91A0BC09300034D9B /* UIColor+Extensions.m */,
 				73C58C0D1A1F3B8000C83729 /* CGGeometry+Extensions.h */,
@@ -2846,6 +2843,8 @@
 				73CB5B4F1B32D326005B688C /* IQEmailValidator.m */,
 				2D80E7F31C6B19B1009DD5A0 /* UIViewController+ErrorHandle.h */,
 				2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */,
+				FBC56E681E83F2A700B951FD /* NSDate+BoundaryDates.h */,
+				FBC56E691E83F2A700B951FD /* NSDate+BoundaryDates.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -4470,7 +4469,6 @@
 				731E5BC21B31549200DF56C7 /* IQTextContainer.m in Sources */,
 				73840E0E1B1C75A500BCEAFC /* TInfoController.m in Sources */,
 				73840E101B1C75A500BCEAFC /* IQDrawerController.m in Sources */,
-				73840E111B1C75A500BCEAFC /* NSDate+CupertinoYankee.m in Sources */,
 				73840E121B1C75A500BCEAFC /* NSError+Extension.m in Sources */,
 				73840E131B1C75A500BCEAFC /* TasksController.m in Sources */,
 				3DAE09A61C9152E900031479 /* IQTaskComplexityItem.m in Sources */,
@@ -4655,6 +4653,7 @@
 				738EA7A31A1DC91C0065D39F /* IQUser.m in Sources */,
 				738CE1E91A0B3F4E0096B374 /* AppDelegate.m in Sources */,
 				73D7F1CB1ADE93D600023120 /* ManagedTodoListModel.m in Sources */,
+				FBC56E6A1E83F2A700B951FD /* NSDate+BoundaryDates.m in Sources */,
 				739850BF1A2DB05400DB5B21 /* MessagesView.m in Sources */,
 				73A7983C1A35B96F006F5721 /* ALAssetInputStream.m in Sources */,
 				738356301A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m in Sources */,
@@ -4758,7 +4757,6 @@
 				73D7F1B91ADE932700023120 /* TInfoController.m in Sources */,
 				2DD5CB3C1C8435E5002CE8C0 /* TaskComplexityController.m in Sources */,
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,
-				73C58C071A1F145200C83729 /* NSDate+CupertinoYankee.m in Sources */,
 				73B1EF291B67B96D00960D7F /* IQContactsDeletedIds.m in Sources */,
 				730BE4011B3D298900E26994 /* IQFeedbacksHolder.m in Sources */,
 				73A949A21A3833C4008EC469 /* NSError+Extension.m in Sources */,
@@ -5060,6 +5058,46 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_CFLAGS = (
+					"-Wno-ambiguous-macro",
+					"$(inherited)",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ActionSheetPicker-3.0/ActionSheetPicker_3_0.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/CTAssetsPickerController/CTAssetsPickerController.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ISO8601DateFormatterValueTransformer/ISO8601DateFormatterValueTransformer.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/MBProgressHUD/MBProgressHUD.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/MMDrawerController/MMDrawerController.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/RKValueTransformers/RKValueTransformers.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Reachability/Reachability.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/RestKit/RestKit.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SDWebImage/SDWebImage.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SOCKit/SOCKit.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SSKeychain/SSKeychain.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SVPullToRefresh/SVPullToRefresh.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SWTableViewCell/SWTableViewCell.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SocketRocket/SocketRocket.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/TransitionKit/TransitionKit.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/libPusher/Pusher.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/GoogleAnalytics-iOS-SDK\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "ba9391e8-4e23-4e24-aa84-e87e8ab36936";
@@ -5299,6 +5337,46 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_CFLAGS = (
+					"-Wno-ambiguous-macro",
+					"$(inherited)",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ActionSheetPicker-3.0/ActionSheetPicker_3_0.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/CTAssetsPickerController/CTAssetsPickerController.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ISO8601DateFormatterValueTransformer/ISO8601DateFormatterValueTransformer.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/MBProgressHUD/MBProgressHUD.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/MMDrawerController/MMDrawerController.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/RKValueTransformers/RKValueTransformers.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Reachability/Reachability.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/RestKit/RestKit.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SDWebImage/SDWebImage.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SOCKit/SOCKit.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SSKeychain/SSKeychain.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SVPullToRefresh/SVPullToRefresh.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SWTableViewCell/SWTableViewCell.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SocketRocket/SocketRocket.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/TransitionKit/TransitionKit.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/libPusher/Pusher.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/GoogleAnalytics-iOS-SDK\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1298883d-1fd9-4ee3-af43-47a228e99be6";
@@ -5339,6 +5417,46 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_CFLAGS = (
+					"-Wno-ambiguous-macro",
+					"$(inherited)",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ActionSheetPicker-3.0/ActionSheetPicker_3_0.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/CTAssetsPickerController/CTAssetsPickerController.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ISO8601DateFormatterValueTransformer/ISO8601DateFormatterValueTransformer.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/MBProgressHUD/MBProgressHUD.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/MMDrawerController/MMDrawerController.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/RKValueTransformers/RKValueTransformers.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Reachability/Reachability.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/RestKit/RestKit.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SDWebImage/SDWebImage.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SOCKit/SOCKit.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SSKeychain/SSKeychain.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SVPullToRefresh/SVPullToRefresh.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SWTableViewCell/SWTableViewCell.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/SocketRocket/SocketRocket.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/TransitionKit/TransitionKit.framework/Headers\"",
+					"-iquote",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/libPusher/Pusher.framework/Headers\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"-isystem",
+					"\"${PODS_ROOT}/Headers/Public/GoogleAnalytics-iOS-SDK\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "ba9391e8-4e23-4e24-aa84-e87e8ab36936";

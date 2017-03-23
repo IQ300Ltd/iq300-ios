@@ -176,16 +176,8 @@
 
 - (void)backButtonAction:(UIButton*)sender {
 #ifdef IPAD
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        if (_popoverController) {
-            [_popoverController dismissPopoverAnimated:NO];
-            _popoverController = nil;
-        }
-    }
-    else {
-        if (self.presentedViewController) {
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
+    if (self.presentedViewController) {
+        [self dismissViewControllerAnimated:NO completion:nil];
     }
 #endif
     [self.navigationController popViewControllerAnimated:YES];
@@ -193,11 +185,7 @@
 
 - (void)shareAction:(id)sender {
 #ifdef IPAD
-    if (SYSTEM_VERSION_LESS_THAN(@"8.0") && _popoverController) {
-        [_popoverController dismissPopoverAnimated:YES];
-        _popoverController = nil;
-    }
-    else if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") && self.presentedViewController){
+    if (self.presentedViewController){
         [self dismissViewControllerAnimated:YES completion:nil];
     }
     else {
@@ -213,21 +201,12 @@
     controller.delegate = self;
     
 #ifdef IPAD
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-        UIPopoverPresentationController *popoverController = [controller popoverPresentationController];
-        popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
-        popoverController.barButtonItem = self.navigationItem.rightBarButtonItem;
-        [self presentViewController:controller animated:YES completion:nil];
-    }
-    else {
-        _popoverController = [[UIPopoverController alloc] initWithContentViewController:controller];
-        _popoverController.delegate = (id<UIPopoverControllerDelegate>)self;
-        [_popoverController presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-    }
-    
-#else
-    [self presentViewController:controller animated:YES completion:nil];
+    UIPopoverPresentationController *popoverController = [controller popoverPresentationController];
+    popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    popoverController.barButtonItem = self.navigationItem.rightBarButtonItem;
 #endif
+        
+    [self presentViewController:controller animated:YES completion:nil];
         
 #ifdef IPAD 
     }

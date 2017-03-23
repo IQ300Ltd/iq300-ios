@@ -20,7 +20,7 @@
 #import "TCObjectSerializator.h"
 #import "NSManagedObjectContext+AsyncFetch.h"
 #import "NSDate+IQFormater.h"
-#import "NSDate+CupertinoYankee.h"
+#import "NSDate+BoundaryDates.h"
 #import "DispatchAfterExecution.h"
 #import "CommentDeletedObjects.h"
 #import "IQConversation.h"

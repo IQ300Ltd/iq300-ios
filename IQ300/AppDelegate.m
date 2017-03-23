@@ -102,30 +102,18 @@
 }
 
 + (BOOL)pushNotificationsEnabled {
-    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-        return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
-    }
-    else {
-        return ([[UIApplication sharedApplication] enabledRemoteNotificationTypes] & UIRemoteNotificationTypeAlert);
-    }
+    return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
 }
 
 + (void)registerForRemoteNotifications {
 #if !(TARGET_IPHONE_SIMULATOR)
     if([IQSession defaultSession]) {
-        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-            UIUserNotificationType types = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
-            [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings
-                                                                                 settingsForTypes:types
-                                                                                 categories:nil]];
-            
-            [[UIApplication sharedApplication] registerForRemoteNotifications];
-        }
-        else {
-            [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
-                                                                                   UIRemoteNotificationTypeSound |
-                                                                                   UIRemoteNotificationTypeAlert)];
-        }
+        UIUserNotificationType types = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings
+                                                                             settingsForTypes:types
+                                                                             categories:nil]];
+        
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
     }
 #endif
 }

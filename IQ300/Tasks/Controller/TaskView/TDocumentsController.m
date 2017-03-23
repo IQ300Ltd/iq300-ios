@@ -333,24 +333,13 @@
     controller.documentInteractionControllerRect = rect;
     
 #ifdef IPAD
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-        UIPopoverPresentationController *popoverController = [controller popoverPresentationController];
-        popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
-        popoverController.sourceView = self.view;
-        popoverController.sourceRect = rect;
-        
-        [self presentViewController:controller animated:YES completion:nil];
-    }
-    else {
-        _popoverController = [[UIPopoverController alloc] initWithContentViewController:controller];
-        _popoverController.delegate = (id<UIPopoverControllerDelegate>)self;
-        [_popoverController presentPopoverFromRect:rect inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-    }
-    
-#else
-    [self presentViewController:controller animated:YES completion:nil];
+    UIPopoverPresentationController *popoverController = [controller popoverPresentationController];
+    popoverController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    popoverController.sourceView = self.view;
+    popoverController.sourceRect = rect;
 #endif
     
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 #ifdef IPAD

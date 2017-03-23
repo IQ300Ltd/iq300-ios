@@ -8,7 +8,7 @@
 #import <RestKit/RestKit.h>
 
 #import "IQComment.h"
-#import "NSDate+CupertinoYankee.h"
+#import "NSDate+BoundaryDates.h"
 
 @implementation IQComment
 
