@@ -235,7 +235,8 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
     else {
         [self clearRemovedCommentsWithCompletion:nil];
         
-        [[IQService sharedService] conversationWithId:_discussion.conversation.conversationId handler:^(BOOL success, IQConversation *object, NSData *responseData, NSError *error) {
+        [[IQService sharedService] conversationWithId:_discussion.conversation.conversationId
+                                              handler:^(BOOL success, IQConversation *object, NSData *responseData, NSError *error) {
             _discussion = object.discussion;
             [self modelConversationTitleDidChanged:object.title];
             

@@ -27,7 +27,7 @@
     
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
-        [self setBackgroundColor:[UIColor colorWithHexInt:0xf6f6f6]];
+        [self setBackgroundColor:IQ_FONT_WHITE_COLOR];
         
         _readFlagView = [[UIView alloc] init];
         [_readFlagView setBackgroundColor:READ_FLAG_COLOR];
@@ -76,13 +76,13 @@
             actionButton.layer.cornerRadius = 3.0f;
             if(!isPositiveAction) {
                 actionButton.layer.borderWidth = 0.5f;
-                actionButton.layer.borderColor = [UIColor colorWithHexInt:0xd0d0d0].CGColor;
-                [actionButton setTitleColor:[UIColor colorWithHexInt:0x338cae] forState:UIControlStateNormal];
+                actionButton.layer.borderColor = IQ_BUTTON_BORDER_COLOR.CGColor;
+                [actionButton setTitleColor:IQ_BLUE_COLOR forState:UIControlStateNormal];
                 [actionButton setBackgroundColor:[UIColor whiteColor]];
             }
             else {
                 [actionButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-                [actionButton setBackgroundColor:[UIColor colorWithHexInt:0x40b549]];
+                [actionButton setBackgroundColor:IQ_GREEN_COLOR];
             }
             
             actionButton.titleLabel.font = [UIFont fontWithName:IQ_HELVETICA size:10];

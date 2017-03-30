@@ -13,10 +13,11 @@
 #import "IQUser.h"
 #import "IQOnlineIndicator.h"
 
-#define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x2e4865]
-#define TEXT_COLOR [UIColor colorWithHexInt:0x2c74a4]
-#define DETAIL_TEXT_COLOR [UIColor colorWithHexInt:0x8e8d8e]
-#define SELECTED_TEXT_COLOR [UIColor whiteColor]
+#define TEXT_COLOR IQ_BLUE_COLOR
+#define DETAIL_TEXT_COLOR IQ_FONT_GRAY_COLOR
+
+#define SELECTED_TEXT_COLOR IQ_FONT_GRAY_COLOR
+#define SELECTED_BBACKGROUND_COLOR IQ_BACKGROUND_P1_COLOR
 
 @interface TMemberCell() {
     UIView * _selectedBackgroundView;
@@ -32,7 +33,7 @@
     if(self) {
         UIView * contentView = [super valueForKey:@"_contentCellView"];
         contentView.backgroundColor = [UIColor whiteColor];
-        self.backgroundColor = [UIColor colorWithHexInt:0x3b5b78];
+        self.backgroundColor = IQ_BACKGROUND_P1_COLOR;
         
         _selectedBackgroundView = [[UIView alloc] init];
         [_selectedBackgroundView setBackgroundColor:SELECTED_BBACKGROUND_COLOR];
@@ -41,12 +42,12 @@
         self.textLabel.font = [UIFont fontWithName:IQ_HELVETICA size:15];
         self.textLabel.textColor = TEXT_COLOR;
         self.textLabel.backgroundColor = [UIColor whiteColor];
-        self.textLabel.highlightedTextColor = [UIColor whiteColor];
+        self.textLabel.highlightedTextColor = TEXT_COLOR;
 
         self.detailTextLabel.font = [UIFont fontWithName:IQ_HELVETICA size:12];
         self.detailTextLabel.textColor = DETAIL_TEXT_COLOR;
         self.detailTextLabel.backgroundColor = [UIColor whiteColor];
-        self.detailTextLabel.highlightedTextColor = [UIColor whiteColor];
+        self.detailTextLabel.highlightedTextColor = DETAIL_TEXT_COLOR;
         
         CALayer *cellImageLayer = self.imageView.layer;
         [cellImageLayer setCornerRadius:17.5];
@@ -61,22 +62,52 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+
+//    _onlineIndicator.frame = CGRectMake(CGRectRight(self.textLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
+//                                        self.textLabel.frame.origin.y + (self.textLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
+//                                        ONLINE_INDICATOR_SIZE,
+//                                        ONLINE_INDICATOR_SIZE);
+    
+    CGRect bounds = self.contentView.bounds;
+    CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(0.f, 10.f, 0.f, 10.f));
+    
+    CGSize imageViewSize = CGSizeMake(35, 35);
+    self.imageView.frame = CGRectMake(actualBounds.origin.x,
+                                      actualBounds.origin.y + (actualBounds.size.height - imageViewSize.height) / 2.0f,
+                                      imageViewSize.width,
+                                      imageViewSize.height);
+    
+    CGFloat textlabelX = CGRectGetMaxX(self.imageView.frame) + 10.f;
+    CGFloat maxTextWidth = bounds.size.width - textlabelX - 10 - ONLINE_INDICATOR_LEFT_OFFSET - ONLINE_INDICATOR_SIZE;
+    CGSize textLabelSize = [self.textLabel sizeThatFits:CGSizeMake(maxTextWidth,
+                                                                   self.textLabel.frame.size.height)];
+    
+    self.textLabel.frame = CGRectMake(textlabelX,
+                                      self.textLabel.frame.origin.y,
+                                      textLabelSize.width,
+                                      textLabelSize.height);
     
     _onlineIndicator.frame = CGRectMake(CGRectRight(self.textLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
                                         self.textLabel.frame.origin.y + (self.textLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
                                         ONLINE_INDICATOR_SIZE,
                                         ONLINE_INDICATOR_SIZE);
-
+    
+    self.detailTextLabel.frame = CGRectMake(textlabelX,
+                                            CGRectGetMaxY(self.textLabel.frame) + 3.0f,
+                                            maxTextWidth,
+                                            self.detailTextLabel.frame.size.height);
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
+    
     self.textLabel.textColor = (selected) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
     self.detailTextLabel.textColor = (selected) ? SELECTED_TEXT_COLOR : DETAIL_TEXT_COLOR;
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
     [super setHighlighted:highlighted animated:animated];
+    
     self.textLabel.textColor = (highlighted) ? SELECTED_TEXT_COLOR : TEXT_COLOR;
     self.detailTextLabel.textColor = (highlighted) ? SELECTED_TEXT_COLOR : DETAIL_TEXT_COLOR;
 }
@@ -106,7 +137,7 @@
     
     NSMutableDictionary * attributes = @{
                                          NSParagraphStyleAttributeName  : paragraphStyle,
-                                         NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x9f9f9f],
+                                         NSForegroundColorAttributeName : IQ_FONT_GRAY_COLOR,
                                          NSFontAttributeName            : font
                                          }.mutableCopy ;
     
@@ -131,8 +162,8 @@
 - (void)prepareForReuse {
     [super prepareForReuse];
     
-    self.textLabel.highlightedTextColor = [UIColor whiteColor];
-    self.detailTextLabel.highlightedTextColor = [UIColor whiteColor];
+    self.textLabel.highlightedTextColor = TEXT_COLOR;
+    self.detailTextLabel.highlightedTextColor = DETAIL_TEXT_COLOR;
 
     [self hideUtilityButtonsAnimated:NO];
     [self setRightUtilityButtons:nil];
@@ -144,7 +175,7 @@
     NSMutableArray *rightUtilityButtons = [NSMutableArray array];
     if ([_availableActions containsObject:@"destroy"] ||
         [_availableActions containsObject:@"leave"]) {
-        [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithHexInt:0x3b5b78]
+        [rightUtilityButtons sw_addUtilityButtonWithColor:IQ_BACKGROUND_P1_COLOR
                                                      icon:[UIImage imageNamed:@"delete_ico.png"]];
     }
     [self setRightUtilityButtons:rightUtilityButtons WithButtonWidth:68.0f];

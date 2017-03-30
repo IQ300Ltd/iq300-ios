@@ -8,7 +8,8 @@
 
 #import "ExecutersGroupSection.h"
 
-#define ACCESSORY_VIEW_SIZE 14.0f
+#define ACCESSORY_VIEW_WIDHT  15.0f
+#define ACCESSORY_VIEW_HEIGHT 12.0f
 #define TITLE_OFFSET 10.0f
 #define CONTENT_INSETS 13.0f
 #define TITLE_FONT [UIFont fontWithName:IQ_HELVETICA_BOLD size:16]
@@ -28,7 +29,7 @@
     CGFloat height = CONTENT_INSETS * 2.0f;
     
     if([title length] > 0) {
-        CGFloat titleWidth = cellWidth - ACCESSORY_VIEW_SIZE - TITLE_OFFSET - CONTENT_INSETS * 2.0f;
+        CGFloat titleWidth = cellWidth - ACCESSORY_VIEW_WIDHT - TITLE_OFFSET - CONTENT_INSETS * 2.0f;
         CGSize titleSize = [title sizeWithFont:TITLE_FONT
                                   constrainedToSize:CGSizeMake(titleWidth, CGFLOAT_MAX)
                                       lineBreakMode:NSLineBreakByWordWrapping];
@@ -43,19 +44,19 @@
     self = [super initWithFrame:frame];
     if(self) {
         _contentInsets = UIEdgeInsetsMakeWithInset(13.0f);
-        self.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        self.backgroundColor = IQ_GRAY_LIGHT_COLOR;
         self.bottomLineColor = self.backgroundColor;
         self.bottomLineHeight = 0.5f;
         
         _showLeftView = YES;
         _leftView = [[UIView alloc] init];
-        _leftView.backgroundColor = [UIColor colorWithHexInt:0x4288a7];
+        _leftView.backgroundColor = IQ_BACKGROUND_P4_COLOR;
         _leftView.userInteractionEnabled = NO;
         [self addSubview:_leftView];
         
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:TITLE_FONT];
-        [_titleLabel setTextColor:[UIColor colorWithHexInt:0x272727]];
+        [_titleLabel setTextColor:IQ_FONT_BLACK_COLOR];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 0;
@@ -87,14 +88,14 @@
                                      actualBounds.size.height);
     }
     
-    CGSize accessorySize = CGSizeMake(ACCESSORY_VIEW_SIZE, ACCESSORY_VIEW_SIZE);
+    CGSize accessorySize = CGSizeMake(ACCESSORY_VIEW_WIDHT, ACCESSORY_VIEW_HEIGHT);
     _accessoryImageView.frame = CGRectMake(mainRect.origin.x + mainRect.size.width - accessorySize.width,
                                            mainRect.origin.y + (mainRect.size.height - accessorySize.height) / 2.0f,
                                            accessorySize.width,
                                            accessorySize.height);
 
     
-    CGFloat titleWidth = mainRect.size.width - ACCESSORY_VIEW_SIZE - TITLE_OFFSET;
+    CGFloat titleWidth = mainRect.size.width - ACCESSORY_VIEW_WIDHT - TITLE_OFFSET;
     _titleLabel.frame = CGRectMake(mainRect.origin.x,
                                    mainRect.origin.y,
                                    titleWidth,

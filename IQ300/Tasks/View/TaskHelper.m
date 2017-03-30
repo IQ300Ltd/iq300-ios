@@ -15,12 +15,12 @@
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
         _typeColors = @{
-                        @"new"       : [UIColor colorWithHexInt:0x00b54f],
+                        @"new"       : [UIColor colorWithHexInt:0x37b87a],
                         @"on_init"   : [UIColor colorWithHexInt:0x9f9f9f],
                         @"browsed"   : [UIColor colorWithHexInt:0x753bb7],
                         @"in_work"   : [UIColor colorWithHexInt:0xf8931f],
                         @"refused"   : [UIColor colorWithHexInt:0xe74545],
-                        @"completed" : IQ_CELADON_COLOR,
+                        @"completed" : [UIColor colorWithHexInt:0x376ea7],
                         @"accepted"  : [UIColor colorWithHexInt:0x7dc223],
                         @"declined"  : [UIColor colorWithHexInt:0xe976ba],
                         @"archived"  : [UIColor colorWithHexInt:0x272727],

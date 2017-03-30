@@ -23,7 +23,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         _searchBarContainer = [[BottomLineView alloc] init];
-        _searchBarContainer.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _searchBarContainer.backgroundColor = IQ_GRAY_LIGHT_COLOR;
         _searchBarContainer.bottomLineHeight = 0.5f;
         _searchBarContainer.bottomLineColor = [UIColor colorWithHexInt:0xcccccc];
         [self addSubview:_searchBarContainer];
@@ -66,7 +66,7 @@
         
         _noDataLabel = [[UILabel alloc] init];
         [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-        [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
+        [_noDataLabel setTextColor:IQ_NO_DATA_TEXT_COLOR];
         _noDataLabel.textAlignment = NSTextAlignmentCenter;
         _noDataLabel.backgroundColor = [UIColor clearColor];
         _noDataLabel.numberOfLines = 0;

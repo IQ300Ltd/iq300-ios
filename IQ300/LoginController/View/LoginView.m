@@ -10,7 +10,7 @@
 #import "BottomLineView.h"
 #import "IQTextContainer.h"
 
-#define LOGO_IMAGE_SIZE CGSizeMake(70, 30)
+#define LOGO_IMAGE_SIZE CGSizeMake(70, 45)
 #define LABEL_HEIGHT 25.0f
 #define LOGIN_WIDTH 450.0f
 
@@ -49,7 +49,7 @@
         _errorLabel = [[UILabel alloc] init];
         [_errorLabel setFont:[UIFont fontWithName:IQ_HELVETICA
                                              size:(IS_IPAD) ? 14.0f : 13.0f]];
-        [_errorLabel setTextColor:[UIColor colorWithHexInt:0xca301e]];
+        [_errorLabel setTextColor:IQ_FONT_RED_COLOR];
         _errorLabel.textAlignment = NSTextAlignmentLeft;
         _errorLabel.backgroundColor = [UIColor clearColor];
         _errorLabel.numberOfLines = 0;
@@ -108,7 +108,7 @@
     CGRect fieldsRect = UIEdgeInsetsInsetRect(bounds, _fieldsInsets);
     
     _emailContainer.frame = CGRectMake(fieldsRect.origin.x,
-                                      CGRectBottom(_logoImageView.frame) + 44,
+                                       CGRectBottom(_logoImageView.frame) + 44,
                                        fieldsRect.size.width,
                                        LABEL_HEIGHT);
     

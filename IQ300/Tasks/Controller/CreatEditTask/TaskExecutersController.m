@@ -20,7 +20,7 @@
 #import "IQTaskDataHolder.h"
 
 #define SEPARATOR_HEIGHT 0.5f
-#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
+#define SEPARATOR_COLOR IQ_SEPARATOR_LINE_LIGHT_COLOR
 #define BOTTOM_VIEW_HEIGHT 60
 #define HEADER_HEIGHT 50.0f
 
@@ -64,7 +64,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+    self.view.backgroundColor = IQ_GRAY_LIGHT_COLOR;
     self.tableView.tableFooterView = [UIView new];
     self.tableView.backgroundColor = [UIColor whiteColor];
     

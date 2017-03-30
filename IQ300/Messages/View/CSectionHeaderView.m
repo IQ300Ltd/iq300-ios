@@ -32,7 +32,7 @@
         
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
-        [_titleLabel setTextColor:[UIColor colorWithHexInt:0x9f9f9f]];
+        [_titleLabel setTextColor:IQ_FONT_GRAY_COLOR];
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         _titleLabel.backgroundColor = [UIColor whiteColor];
         _titleLabel.numberOfLines = 0;

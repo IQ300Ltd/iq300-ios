@@ -9,8 +9,8 @@
 #import "TodoListItemCell.h"
 #import "TodoItem.h"
 
-#define TEXT_COLOR [UIColor colorWithHexInt:0x272727]
-#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x9f9f9f]
+#define TEXT_COLOR IQ_FONT_BLACK_COLOR
+#define SELECTED_TEXT_COLOR IQ_FONT_GRAY_COLOR
 #define CONTENT_VERTICAL_INSETS 12
 #define CONTENT_HORIZONTAL_INSETS 13
 #define ACCESSORY_VIEW_SIZE 20.0f
@@ -158,7 +158,7 @@
     
     NSMutableArray *rightUtilityButtons = [NSMutableArray array];
     if ([_availableActions containsObject:@"edit"]) {
-        [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithHexInt:0x3b5b78]
+        [rightUtilityButtons sw_addUtilityButtonWithColor:IQ_BACKGROUND_P1_COLOR
                                                      icon:[UIImage imageNamed:@"edit_white_ico.png"]];
         
         if ([availableActions count] > 1) {
@@ -168,7 +168,7 @@
     }
     
     if ([_availableActions containsObject:@"delete"]) {
-        [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithHexInt:0x3b5b78]
+        [rightUtilityButtons sw_addUtilityButtonWithColor:IQ_BACKGROUND_P1_COLOR
                                                      icon:[UIImage imageNamed:@"delete_ico.png"]];
     }
     [self setRightUtilityButtons:rightUtilityButtons WithButtonWidth:68.0f];

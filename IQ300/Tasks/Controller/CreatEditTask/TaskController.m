@@ -36,7 +36,7 @@
 #import "IQEstimatedTimeCell.h"
 
 #define SEPARATOR_HEIGHT 0.5f
-#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
+#define SEPARATOR_COLOR IQ_SEPARATOR_LINE_LIGHT_COLOR
 #define BOTTOM_VIEW_HEIGHT 0
 
 @interface TaskController() <IQEstimatedTimeCellDelegate, IQMultipleCellsCellDelegate, IQEstimatedTimeCellDelegate, IQTextCellDelegate> {
@@ -69,7 +69,7 @@
     [super viewDidLoad];
 
     self.title = (self.model.task.taskId == nil) ? (self.model.task.parentTaskId == nil ? NSLocalizedString(@"Creating task", nil) :
-                                                                                        NSLocalizedString(@"Creating subtask", nil)) :
+                                                                                          NSLocalizedString(@"Creating subtask", nil)) :
                                                    NSLocalizedString(@"Editing task", nil);
 
     self.view.backgroundColor = [UIColor whiteColor];

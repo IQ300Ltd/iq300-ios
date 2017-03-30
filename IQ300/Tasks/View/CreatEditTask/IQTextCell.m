@@ -9,7 +9,7 @@
 #import "IQTextCell.h"
 #import "IQTextItem.h"
 
-#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x9f9f9f]
+#define SELECTED_TEXT_COLOR IQ_FONT_GRAY_COLOR
 #define ACCESSORY_VIEW_SIZE 17.0f
 #define TITLE_OFFSET 10.0f
 

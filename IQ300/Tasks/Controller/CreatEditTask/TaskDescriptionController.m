@@ -11,7 +11,7 @@
 #import "IQTaskDataHolder.h"
 
 #define SEPARATOR_HEIGHT 0.5f
-#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
+#define SEPARATOR_COLOR IQ_SEPARATOR_LINE_LIGHT_COLOR
 #define BOTTOM_VIEW_HEIGHT 65
 
 @interface TaskDescriptionController() <UITextViewDelegate> {
@@ -41,7 +41,7 @@
     
     _textView = [[PlaceholderTextView alloc] init];
     [_textView setFont:[UIFont fontWithName:IQ_HELVETICA size:16]];
-    [_textView setTextColor:[UIColor colorWithHexInt:0x20272a]];
+    [_textView setTextColor:IQ_FONT_BLACK_COLOR];
     _textView.textAlignment = NSTextAlignmentLeft;
     _textView.backgroundColor = [UIColor clearColor];
     _textView.textContainer.lineBreakMode = NSLineBreakByWordWrapping;

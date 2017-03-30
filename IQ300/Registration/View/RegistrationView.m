@@ -10,7 +10,7 @@
 #import "IQEmailValidator.h"
 #import "IQPasswordValidator.h"
 
-#define LOGO_IMAGE_SIZE CGSizeMake(70, 30)
+#define LOGO_IMAGE_SIZE CGSizeMake(70, 45)
 #define LABEL_HEIGHT 25.0f
 #define LOGIN_WIDTH 470.0f
 
@@ -86,7 +86,7 @@
         _errorLabel = [[UILabel alloc] init];
         [_errorLabel setFont:[UIFont fontWithName:IQ_HELVETICA
                                              size:(IS_IPAD) ? 14.0f : 13.0f]];
-        [_errorLabel setTextColor:[UIColor colorWithHexInt:0xca301e]];
+        [_errorLabel setTextColor:IQ_FONT_RED_COLOR];
         _errorLabel.textAlignment = NSTextAlignmentLeft;
         _errorLabel.backgroundColor = [UIColor clearColor];
         _errorLabel.numberOfLines = 0;
@@ -117,7 +117,7 @@
 //        _helpTextView = [[IQTextView alloc] init];
 //        [_helpTextView setFont:[UIFont fontWithName:IQ_HELVETICA
 //                                            size:(IS_IPAD) ? 16.0f : 15.0f]];
-//        [_helpTextView setTextColor:[UIColor colorWithHexInt:0x272727]];
+//        [_helpTextView setTextColor:IQ_FONT_BLACK_COLOR];
 //        _helpTextView.textAlignment = NSTextAlignmentCenter;
 //        _helpTextView.backgroundColor = [UIColor clearColor];
 //        _helpTextView.editable = NO;

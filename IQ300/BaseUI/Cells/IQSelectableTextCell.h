@@ -8,7 +8,7 @@
 
 #import "IQDetailsTextCell.h"
 
-#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x358bae]
+#define SELECTED_TEXT_COLOR IQ_BLUE_COLOR
 
 @interface IQSelectableTextCell : IQDetailsTextCell
 

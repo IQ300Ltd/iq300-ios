@@ -52,9 +52,7 @@
         self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
         
         IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
-        style.badgeTextColor = [UIColor whiteColor];
         style.badgeFrameColor = [UIColor whiteColor];
-        style.badgeInsetColor = [UIColor colorWithHexInt:0xe74545];
         style.badgeFrame = YES;
         
         IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];

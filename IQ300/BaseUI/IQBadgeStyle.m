@@ -13,7 +13,7 @@
 + (IQBadgeStyle*)defaultStyle {
     id instance = [[super alloc] init];
     [instance setBadgeTextColor:[UIColor whiteColor]];
-    [instance setBadgeInsetColor:[UIColor redColor]];
+    [instance setBadgeInsetColor:IQ_FONT_RED_COLOR];
     [instance setBadgeFrameColor:nil];
     [instance setBadgeFrame:NO];
     [instance setBadgeShadow:NO];

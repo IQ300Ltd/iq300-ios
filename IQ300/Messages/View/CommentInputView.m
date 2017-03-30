@@ -8,8 +8,8 @@
 
 #import "CommentInputView.h"
 
-#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
-#define BORDER_COLOR [UIColor colorWithHexInt:0xe0e1e2]
+#define SEPARATOR_COLOR IQ_SEPARATOR_LINE_LIGHT_COLOR
+#define BORDER_COLOR IQ_BUTTON_BORDER_COLOR
 
 @interface InputHolderView : UIView
 
@@ -60,7 +60,7 @@
     if (self) {
         
         _contentInsets = UIEdgeInsetsMakeWithInset(10.0f);
-        [self setBackgroundColor:[UIColor colorWithHexInt:0xf6f6f6]];
+        [self setBackgroundColor:IQ_GRAY_LIGHT_COLOR];
         
         _inputHolderView = [[InputHolderView alloc] init];
         
@@ -74,7 +74,7 @@
         _commentTextView = [[PlaceholderTextView alloc] init];
         [_commentTextView setBackgroundColor:[UIColor clearColor]];
         [_commentTextView setFont:[UIFont fontWithName:IQ_HELVETICA size:15.0f]];
-        [_commentTextView setTextColor:[UIColor colorWithHexInt:0x3d3d3d]];
+        [_commentTextView setTextColor:IQ_FONT_BLACK_COLOR];
         [_commentTextView setTextContainerInset:UIEdgeInsetsMake(5.0f, 2.0f, 5.0f, 2.0f)];
         [_inputHolderView addSubview:_commentTextView];
         
@@ -84,10 +84,10 @@
         [_sendButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
         [_sendButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
-        [_sendButton setBackgroundColor:IQ_CELADON_COLOR];
-        [_sendButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
-        [_sendButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
-        _sendButton.layer.borderColor = _sendButton.backgroundColor.CGColor;
+        [_sendButton setBackgroundColor:IQ_GREEN_BUTTON_NORMAL];
+        [_sendButton setBackgroundColor:IQ_GREEN_BUTTON_HIGHLIGHTED forState:UIControlStateHighlighted];
+        [_sendButton setBackgroundColor:IQ_GREEN_BUTTON_DISABLED forState:UIControlStateDisabled];
+        _sendButton.layer.borderColor = [UIColor clearColor].CGColor;
         [_sendButton setClipsToBounds:YES];
         [self addSubview:_sendButton];
     }

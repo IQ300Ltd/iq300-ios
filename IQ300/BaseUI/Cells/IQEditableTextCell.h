@@ -9,7 +9,7 @@
 #import "PlaceholderTextView.h"
 #import "IQTableCell.h"
 
-#define TEXT_COLOR [UIColor colorWithHexInt:0x272727]
+#define TEXT_COLOR IQ_FONT_BLACK_COLOR
 #define CONTENT_VERTICAL_INSETS 12
 #define CONTENT_HORIZONTAL_INSETS 13
 #define CELL_MIN_HEIGHT 50.0f

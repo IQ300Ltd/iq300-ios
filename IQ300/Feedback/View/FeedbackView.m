@@ -87,12 +87,12 @@
         _attachButtons = [NSMutableArray array];
         _contentInsets = UIEdgeInsetsMakeWithInset(VIEWS_INSET);
 
-        _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _dateLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                              font:LABELS_FONT
                                     localaizedKey:nil];
         [self addSubview:_dateLabel];
 
-        _statusLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _statusLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                                font:LABELS_FONT
                                       localaizedKey:nil];
         _statusLabel.textAlignment = NSTextAlignmentRight;
@@ -101,29 +101,29 @@
         _messagesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"message_blue_buble.png"]];
         [self addSubview:_messagesImageView];
         
-        _commentsCountLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+        _commentsCountLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                                       font:LABELS_FONT
                                              localaizedKey:nil];
         [self addSubview:_commentsCountLabel];
         
-        _feedbackTypeLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+        _feedbackTypeLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                                      font:TYPE_FONT
                                             localaizedKey:nil];
         [self addSubview:_feedbackTypeLabel];
 
-        _feedbackCategoryLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+        _feedbackCategoryLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                                          font:LABELS_FONT
                                                 localaizedKey:nil];
         [self addSubview:_feedbackCategoryLabel];
 
-        _authorLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _authorLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                                font:LABELS_FONT
                                       localaizedKey:nil];
         [self addSubview:_authorLabel];
 
         _descriptionTextView = [[IQTextView alloc] init];
         [_descriptionTextView setFont:LABELS_FONT];
-        [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x272727]];
+        [_descriptionTextView setTextColor:IQ_FONT_BLACK_COLOR];
         _descriptionTextView.textAlignment = NSTextAlignmentLeft;
         _descriptionTextView.backgroundColor = [UIColor clearColor];
         _descriptionTextView.editable = NO;

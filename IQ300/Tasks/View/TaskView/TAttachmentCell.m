@@ -11,8 +11,8 @@
 #import "IQAttachmentButton.h"
 
 #define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe0e0e0]
-#define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED [UIColor colorWithHexInt:0xe9faff]
-#define NEW_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
+#define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED IQ_BACKGROUND_P3_COLOR
+#define NEW_FLAG_COLOR IQ_BACKGROUND_P4_COLOR
 #define NEW_FLAG_WIDTH 4.0f
 
 @interface TAttachmentCell()
@@ -47,6 +47,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    
     [_button setFrame:self.bounds];
 }
 

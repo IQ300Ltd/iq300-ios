@@ -23,9 +23,9 @@
 #define COMMUNITY_ICO_SIZE 17.0f
 
 #define STATUS_FLAG_WIDTH 4.0f
-#define NEW_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
-#define OVERDUE_FLAG_COLOR [UIColor colorWithHexInt:0xe74545]
-#define CONTEN_BACKGROUND_COLOR_NEW [UIColor colorWithHexInt:0xe9faff]
+#define NEW_FLAG_COLOR IQ_GREEN_COLOR
+#define OVERDUE_FLAG_COLOR IQ_FONT_RED_COLOR
+#define CONTEN_BACKGROUND_COLOR_NEW IQ_BACKGROUND_P3_COLOR
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
 
 #ifdef IPAD
@@ -85,24 +85,24 @@
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
         [contentView addSubview:_contentBackgroundView];
 
-        _titleLabel = [self makeLabelWithTextColor:[UIColor blackColor]
-                                                 font:TITLE_FONT
-                                        localaizedKey:nil];
+        _titleLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
+                                              font:TITLE_FONT
+                                     localaizedKey:nil];
         [contentView addSubview:_titleLabel];
         
-        _taskIDLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                font:LABELS_FONT
-                       localaizedKey:nil];
+        _taskIDLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
+                                               font:LABELS_FONT
+                                      localaizedKey:nil];
         _taskIDLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_taskIDLabel];
         
-        _fromLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _fromLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                              font:LABELS_FONT
                                     localaizedKey:nil];
         _fromLabel.numberOfLines = 1;
         [contentView addSubview:_fromLabel];
         
-        _toLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _toLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                            font:LABELS_FONT
                                   localaizedKey:nil];
         _toLabel.numberOfLines = 1;
@@ -111,9 +111,9 @@
         _dueIconImageView = [[UIImageView alloc] init];
         [contentView addSubview:_dueIconImageView];
         
-        _dueDateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
-                                               font:LABELS_FONT
-                                      localaizedKey:nil];
+        _dueDateLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
+                                                font:LABELS_FONT
+                                       localaizedKey:nil];
         _dueDateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dueDateLabel];
         
@@ -122,22 +122,22 @@
         _communityImageView.clipsToBounds = YES;
         [contentView addSubview:_communityImageView];
         
-        _communityNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
-                                                         font:LABELS_FONT
-                                                localaizedKey:nil];
+        _communityNameLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
+                                                      font:LABELS_FONT
+                                             localaizedKey:nil];
         [contentView addSubview:_communityNameLabel];
         
         _messagesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"message_blue_buble.png"]];
         [contentView addSubview:_messagesImageView];
 
-        _commentsCountLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+        _commentsCountLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                                 font:LABELS_FONT
                                        localaizedKey:nil];
         [contentView addSubview:_commentsCountLabel];
         
-        _statusLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _statusLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                                font:LABELS_FONT
-                                             localaizedKey:nil];
+                                      localaizedKey:nil];
         _statusLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_statusLabel];
         
@@ -295,13 +295,13 @@
     BOOL isOutOfDate = ([_item.endDate compare:[NSDate date]] == NSOrderedAscending);
     if (_highlightTasks && isOutOfDate) {
         _dueIconImageView.image = [UIImage imageNamed:@"bell_red_ico.png"];
-        _dueDateLabel.textColor = [UIColor colorWithHexInt:0xca301e];
+        _dueDateLabel.textColor = IQ_FONT_RED_COLOR;
         _contentBackgroundInsets = UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0);
         [self setBackgroundColor:OVERDUE_FLAG_COLOR];
     }
     else {
         _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
-        _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
+        _dueDateLabel.textColor = IQ_FONT_BLACK_COLOR;
         _contentBackgroundInsets = (isStatusNew && _highlightTasks) ? UIEdgeInsetsMake(0, STATUS_FLAG_WIDTH, 0, 0) : UIEdgeInsetsZero;
         self.backgroundColor = (isStatusNew && _highlightTasks) ? NEW_FLAG_COLOR : CONTEN_BACKGROUND_COLOR;
     }
@@ -314,7 +314,7 @@
     
     _highlightTasks = YES;
     _dueIconImageView.image = [UIImage imageNamed:@"bell_ico.png"];
-    _dueDateLabel.textColor = [UIColor colorWithHexInt:0x272727];
+    _dueDateLabel.textColor = IQ_FONT_BLACK_COLOR;
     _contentBackgroundInsets = UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
     self.backgroundColor = CONTEN_BACKGROUND_COLOR;

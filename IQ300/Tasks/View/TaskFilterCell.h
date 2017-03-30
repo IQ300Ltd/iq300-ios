@@ -8,8 +8,8 @@
 
 #import "TaskFilterItem.h"
 
-#define TEXT_COLOR [UIColor colorWithHexInt:0x20272a]
-#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x358bae]
+#define TEXT_COLOR IQ_FONT_BLACK_COLOR
+#define SELECTED_TEXT_COLOR IQ_BLUE_COLOR
 
 @interface TaskFilterCell : UITableViewCell {
     UIEdgeInsets _contentInsets;

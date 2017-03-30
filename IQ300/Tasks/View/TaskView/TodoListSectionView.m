@@ -15,13 +15,13 @@
     if(self) {
         _contentInsets = UIEdgeInsetsHorizontalMake(13.0f);
         
-        self.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        self.backgroundColor = IQ_GRAY_LIGHT_COLOR;
         self.bottomLineHeight = 0.5f;
-        self.bottomLineColor = [UIColor colorWithHexInt:0xc0c0c0];
+        self.bottomLineColor = IQ_SEPARATOR_LINE_COLOR;
 
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-        [_titleLabel setTextColor:[UIColor colorWithHexInt:0x272727]];
+        [_titleLabel setTextColor:IQ_FONT_BLACK_COLOR];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 1;

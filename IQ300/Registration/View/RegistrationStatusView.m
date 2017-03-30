@@ -8,7 +8,7 @@
 
 #import "RegistrationStatusView.h"
 
-#define LOGO_IMAGE_SIZE CGSizeMake(70, 30)
+#define LOGO_IMAGE_SIZE CGSizeMake(70, 45)
 #define LOGIN_WIDTH 450.0f
 
 @interface RegistrationStatusView() {
@@ -48,7 +48,7 @@
         _statusTextView = [[IQTextView alloc] init];
         [_statusTextView setFont:[UIFont fontWithName:IQ_HELVETICA
                                                size:(IS_IPAD) ? 16.0f : 15.0f]];
-        [_statusTextView setTextColor:[UIColor colorWithHexInt:0x272727]];
+        [_statusTextView setTextColor:IQ_FONT_BLACK_COLOR];
         _statusTextView.textAlignment = NSTextAlignmentCenter;
         _statusTextView.backgroundColor = [UIColor clearColor];
         _statusTextView.editable = NO;

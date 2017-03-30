@@ -61,7 +61,7 @@
         IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
         style.badgeTextColor = [UIColor whiteColor];
         style.badgeFrameColor = [UIColor whiteColor];
-        style.badgeInsetColor = [UIColor colorWithHexInt:0xe74545];
+        style.badgeInsetColor = IQ_FONT_RED_COLOR;
         style.badgeFrame = YES;
         
         IQBadgeView * badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];

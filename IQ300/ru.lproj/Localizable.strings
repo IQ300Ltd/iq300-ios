@@ -223,3 +223,6 @@
 "Creating subtask" = "Создание подзадачи";
 "Access to parent" = "Доступ к родительской";
 "No subtasks" = "Подзадачи отсутствуют";
+
+//Resend message
+"Forward message" = "Переслать сообщение";

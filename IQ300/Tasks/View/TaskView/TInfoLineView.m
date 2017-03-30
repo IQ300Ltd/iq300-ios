@@ -10,7 +10,7 @@
 
 #define HORIZONTAL_PADDING 10
 #define VERTICAL_PADDING 0
-#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xc0c0c0]
+#define SEPARATOR_COLOR IQ_SEPARATOR_LINE_COLOR
 
 @implementation TInfoLineView
 
@@ -31,7 +31,7 @@
         _textLabel = [[UILabel alloc] init];
         _textLabel.font = [UIFont fontWithName:IQ_HELVETICA
                                           size:(IS_IPAD) ? 14.0f : 13.0f];
-        _textLabel.textColor = [UIColor colorWithHexInt:0x20272a];
+        _textLabel.textColor = IQ_BLACK_COLOR;
         _textLabel.textAlignment = NSTextAlignmentLeft;
         _textLabel.backgroundColor = [UIColor clearColor];
         _textLabel.numberOfLines = 0;

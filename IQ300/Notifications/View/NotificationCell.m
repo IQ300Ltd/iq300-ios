@@ -27,6 +27,12 @@
 #define VERTICAL_INSETS 5.0f
 #define DESCRIPTION_FONT [UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
 
+@interface NotificationCell () {
+    UIView *_readFlagView;
+}
+
+@end
+
 @implementation NotificationCell
 
 + (CGFloat)heightForItem:(IQNotification *)notification andCellWidth:(CGFloat)cellWidth {
@@ -56,56 +62,60 @@
     if(self) {
         UIView * contentView = [super valueForKey:@"_contentCellView"];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        [self setBackgroundColor:READ_FLAG_COLOR];
+        [self setBackgroundColor:IQ_BACKGROUND_P1_COLOR];
         
         _pinnedButton = [[UIButton alloc] init];
-        [_pinnedButton setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
+        [_pinnedButton setBackgroundColor:IQ_BACKGROUND_P1_COLOR];
         [_pinnedButton setImage:[UIImage imageNamed:@"pinned.png"] forState:UIControlStateNormal];
    
         _markAsReadedButton = [[UIButton alloc] init];
-        [_markAsReadedButton setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
+        [_markAsReadedButton setBackgroundColor:IQ_BACKGROUND_P1_COLOR];
         [_markAsReadedButton setImage:[UIImage imageNamed:@"check_mark_medium"] forState:UIControlStateNormal];
         
         _contentInsets = UIEdgeInsetsMake(VERTICAL_INSETS, HORIZONTAL_INSETS, VERTICAL_INSETS, HORIZONTAL_INSETS);
         _contentBackgroundInsets = UIEdgeInsetsZero;
         
+        _readFlagView = [[UIView alloc] init];
+        _readFlagView.backgroundColor = READ_FLAG_COLOR;
+        [contentView addSubview:_readFlagView];
+        
         _contentBackgroundView = [[UIView alloc] init];
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
         [contentView addSubview:_contentBackgroundView];
         
-        _typeLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
+        _typeLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                              font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                     localaizedKey:@"Project"];
         [contentView addSubview:_typeLabel];
         
-        _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
+        _dateLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                              font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
-        _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+        _titleLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                               font:TITLE_FONT
                                      localaizedKey:nil];
         _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_titleLabel];
         
-        _userNameLabel = [self makeLabelWithTextColor:[UIColor whiteColor]
+        _userNameLabel = [self makeLabelWithTextColor:IQ_FONT_WHITE_COLOR
                                                  font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                         localaizedKey:nil];
-        _userNameLabel.backgroundColor = [UIColor colorWithHexInt:0xcccccc];
+        _userNameLabel.backgroundColor = IQ_FONT_GRAY_COLOR;
         _userNameLabel.layer.cornerRadius = 3;
         _userNameLabel.textAlignment = NSTextAlignmentCenter;
         _userNameLabel.clipsToBounds = YES;
         [contentView addSubview:_userNameLabel];
         
-        _actionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+        _actionLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                                font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                       localaizedKey:nil];
         _actionLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_actionLabel];
         
-        _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9b9c9e]
+        _descriptionLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                                     font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                            localaizedKey:nil];
         _descriptionLabel.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -121,6 +131,11 @@
     CGRect bounds = self.contentView.bounds;
     CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
     CGFloat labelsOffset = 5.0f;
+    
+    _readFlagView.frame = CGRectMake(0.0f,
+                                     0.0f,
+                                     READ_FLAG_WIDTH,
+                                     bounds.size.height);
     
     CGRect contentBackgroundBounds = UIEdgeInsetsInsetRect(bounds, _contentBackgroundInsets);
     _contentBackgroundView.frame = contentBackgroundBounds;

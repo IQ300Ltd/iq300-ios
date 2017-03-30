@@ -20,8 +20,8 @@
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
 #define CONTEN_BACKGROUND_COLOR [UIColor whiteColor]
-#define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED [UIColor colorWithHexInt:0xe9faff]
-#define NEW_FLAG_COLOR [UIColor colorWithHexInt:0x005275]
+#define CONTEN_BACKGROUND_COLOR_HIGHLIGHTED IQ_BACKGROUND_P3_COLOR
+#define NEW_FLAG_COLOR IQ_BACKGROUND_P1_COLOR
 #define NEW_FLAG_WIDTH 4.0f
 
 #ifdef IPAD
@@ -119,18 +119,18 @@
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
         [contentView addSubview:_contentBackgroundView];
         
-        _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
+        _dateLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                              font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
-        _userNameLabel = [self makeLabelWithTextColor:[UIColor whiteColor]
+        _userNameLabel = [self makeLabelWithTextColor:IQ_FONT_WHITE_COLOR
                                                  font:[UIFont fontWithName:IQ_HELVETICA size:DEFAULT_FONT_SIZE]
                                         localaizedKey:nil];
         _userNameLabel.backgroundColor = [UIColor clearColor];
         _userNameLabel.textAlignment = NSTextAlignmentCenter;
-        _userNameLabel.backgroundColor = [UIColor colorWithHexInt:0x9f9f9f];
+        _userNameLabel.backgroundColor = IQ_GRAY_COLOR;
         _userNameLabel.layer.cornerRadius = 3;
         _userNameLabel.clipsToBounds = YES;
         [contentView addSubview:_userNameLabel];
@@ -143,7 +143,7 @@
 
         _descriptionTextView = [[IQTextView alloc] init];
         [_descriptionTextView setFont:DESCRIPTION_LABEL_FONT];
-        [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
+        [_descriptionTextView setTextColor:IQ_FONT_GRAY_DARK_COLOR];
         _descriptionTextView.textAlignment = NSTextAlignmentLeft;
         _descriptionTextView.backgroundColor = [UIColor clearColor];
         _descriptionTextView.editable = NO;
@@ -158,8 +158,8 @@
         [_descriptionTextView addGestureRecognizer:_singleTapGesture];
         [contentView addSubview:_descriptionTextView];
         
-        UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
-        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+        UIColor * titleColor = IQ_BLUE_COLOR;
+        UIColor * titleHighlightedColor = IQ_BAR_P2_COLOR;
         UIImage * bacgroundImage = [UIImage imageNamed:@"view_all_ico.png"];
         CGFloat expandFontSize = (IS_IPAD) ? 12 : 11.0f;
         _expandButton = [[UIButton alloc] init];
@@ -308,7 +308,7 @@
 
         if (minutesBetweenDates < 15) {
             NSMutableArray *rightUtilityButtons = [NSMutableArray array];
-            [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithHexInt:0x3b5b78]
+            [rightUtilityButtons sw_addUtilityButtonWithColor:IQ_BACKGROUND_P1_COLOR
                                                          icon:[UIImage imageNamed:@"delete_ico.png"]];
             
             [self setRightUtilityButtons:rightUtilityButtons WithButtonWidth:68.0f];
@@ -332,7 +332,7 @@
     _contentBackgroundView.backgroundColor = (_commentHighlighted) ? CONTEN_BACKGROUND_COLOR_HIGHLIGHTED :
                                                                      CONTEN_BACKGROUND_COLOR;
     _contentBackgroundInsets = UIEdgeInsetsMake(0, (_commentHighlighted) ? NEW_FLAG_WIDTH : 0, 0, 0);
-    self.backgroundColor = (_commentHighlighted) ? NEW_FLAG_COLOR : [UIColor colorWithHexInt:0x3b5b78];
+    self.backgroundColor = (_commentHighlighted) ? NEW_FLAG_COLOR : IQ_BACKGROUND_P1_COLOR;
 }
 
 - (void)prepareForReuse {
@@ -342,7 +342,7 @@
     _expandable = NO;
     _contentBackgroundInsets = UIEdgeInsetsZero;
     _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR;
-    self.backgroundColor = [UIColor colorWithHexInt:0x3b5b78];
+    self.backgroundColor = IQ_BACKGROUND_P1_COLOR;
     
     [self hideUtilityButtonsAnimated:NO];
     [self setRightUtilityButtons:nil];
@@ -351,7 +351,7 @@
     _descriptionTextView.selectable = NO;
     _descriptionTextView.text = nil;
     _descriptionTextView.selectable = YES;
-    [_descriptionTextView setTextColor:[UIColor colorWithHexInt:0x8b8b8b]];
+    [_descriptionTextView setTextColor:IQ_FONT_GRAY_DARK_COLOR];
 
     [_attachmentsView setItems:nil isMine:YES];
 
@@ -397,8 +397,8 @@
 
 - (void)setExpandButtonTitle:(NSString*)title {
     CGFloat expandFontSize = (IS_IPAD) ? 12 : 11.0f;
-    UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
-    UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+    UIColor * titleColor = IQ_BLUE_COLOR;
+    UIColor * titleHighlightedColor = IQ_BACKGROUND_P1_COLOR;
     NSDictionary *underlineAttribute = @{
                                          NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                                          NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),

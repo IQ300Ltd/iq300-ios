@@ -137,7 +137,7 @@
     if (_tabbarWidth != self.tabBar.frame.size.width) {
         _tabbarWidth = self.tabBar.frame.size.width;
         CGSize tabItemSize = CGSizeMake(_tabbarWidth / (float)[self.viewControllers count], self.tabBar.frame.size.height);
-        self.tabBar.selectionIndicatorImage = [UIImage imageWithColor:[UIColor colorWithHexInt:0x348dad]
+        self.tabBar.selectionIndicatorImage = [UIImage imageWithColor:IQ_BACKGROUND_P2_COLOR
                                                                  size:tabItemSize];
     }
 }

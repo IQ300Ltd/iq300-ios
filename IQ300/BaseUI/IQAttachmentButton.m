@@ -82,7 +82,10 @@
                                                    SDImageCacheType
                                                    cacheType,
                                                    NSURL *imageURL) {
-                                           [_customImageView setContentMode:UIViewContentModeScaleToFill];
+                                           
+                                           if (!error && image) {
+                                               [_customImageView setContentMode:UIViewContentModeScaleToFill];
+                                           }
                                            [weakSelf setNeedsLayout];
                                        }];
         }
@@ -116,6 +119,5 @@
     }
     return [super pointInside:point withEvent:event];
 }
-
 
 @end

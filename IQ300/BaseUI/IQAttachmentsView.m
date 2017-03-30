@@ -10,7 +10,6 @@
 #import "IQAttachmentButton.h"
 
 #define ITEM_SPACING 5.0f
-
 #define ITEM_WIDTH 85.0f
 
 @interface IQAttachmentsView()

@@ -866,7 +866,7 @@
     if([text length] > 0) {
         
         NSDictionary * attributes = @{
-                                      NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x8b8b8b],
+                                      NSForegroundColorAttributeName : IQ_FONT_GRAY_DARK_COLOR,
                                       NSFontAttributeName            : DESCRIPTION_LABEL_FONT
                                       };
         

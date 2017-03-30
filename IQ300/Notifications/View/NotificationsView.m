@@ -58,7 +58,7 @@ NSString * const NoUnreadNotificationFound = @"There are no unread notifications
         
         _noDataLabel = [[UILabel alloc] init];
         [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-        [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
+        [_noDataLabel setTextColor:IQ_FONT_GRAY_COLOR];
         _noDataLabel.textAlignment = NSTextAlignmentCenter;
         _noDataLabel.backgroundColor = [UIColor clearColor];
         _noDataLabel.numberOfLines = 0;

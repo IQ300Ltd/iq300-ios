@@ -8,7 +8,7 @@
 
 #import "IQEditableTextCell.h"
 
-#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x9f9f9f]
+#define SELECTED_TEXT_COLOR IQ_FONT_GRAY_COLOR
 
 @implementation IQEditableTextCell
 

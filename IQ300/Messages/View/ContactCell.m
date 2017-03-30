@@ -12,9 +12,9 @@
 #import "IQContact.h"
 #import "IQOnlineIndicator.h"
 
-#define SELECTED_BBACKGROUND_COLOR [UIColor colorWithHexInt:0x2e4865]
-#define CONTACT_NAME_COLOR [UIColor colorWithHexInt:0x2c74a4]
-#define DETAIL_TEXT_COLOR [UIColor colorWithHexInt:0x8e8d8e]
+#define SELECTED_BBACKGROUND_COLOR IQ_BACKGROUND_P1_COLOR
+#define CONTACT_NAME_COLOR IQ_BLUE_COLOR
+#define DETAIL_TEXT_COLOR IQ_GRAY_COLOR
 #define SELECTED_CONTACT_NAME_COLOR [UIColor whiteColor]
 
 @interface ContactCell() {

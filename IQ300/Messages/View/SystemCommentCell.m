@@ -60,7 +60,7 @@
         
         _timeLabel = [[UILabel alloc] init];
         [_timeLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 10.0f : 9.0f]];
-        [_timeLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
+        [_timeLabel setTextColor:IQ_NO_DATA_TEXT_COLOR];
         _timeLabel.textAlignment = NSTextAlignmentLeft;
         _timeLabel.backgroundColor = [UIColor clearColor];
         _timeLabel.numberOfLines = 0;

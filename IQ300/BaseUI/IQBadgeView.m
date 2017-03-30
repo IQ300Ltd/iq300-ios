@@ -24,8 +24,8 @@
 
 + (IQBadgeView*)customBadgeWithString:(NSString *)badgeString badgeMinSize:(CGFloat)badgeMinSize {
     IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
-    style.badgeTextColor = [UIColor colorWithHexInt:0x459dbe];
-    style.badgeFrameColor = [UIColor colorWithHexInt:0x338cae];
+    style.badgeTextColor = IQ_BACKGROUND_P4_COLOR;
+    style.badgeFrameColor = IQ_BACKGROUND_P4_COLOR;
     style.badgeInsetColor = [UIColor whiteColor];
     style.badgeFrame = YES;
     

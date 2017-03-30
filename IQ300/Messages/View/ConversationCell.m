@@ -21,7 +21,7 @@
 #define VERTICAL_PADDING 10
 #define DESCRIPTION_Y_OFFSET 3.0f
 #define CELL_HEADER_MIN_HEIGHT USER_ICON_SEZE
-#define CONTEN_BACKGROUND_COLOR [UIColor colorWithHexInt:0xe9faff]
+#define CONTEN_BACKGROUND_COLOR IQ_BACKGROUND_P3_COLOR
 #define CONTEN_BACKGROUND_COLOR_R [UIColor whiteColor]
 
 #ifdef IPAD
@@ -73,7 +73,7 @@
         
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
         
-        [self setBackgroundColor:[UIColor colorWithHexInt:0x005275]];
+        [self setBackgroundColor:IQ_BACKGROUND_P1_COLOR];
         
         _contentBackgroundView = [[UIView alloc] init];
         _contentBackgroundView.backgroundColor = CONTEN_BACKGROUND_COLOR_R;
@@ -85,27 +85,27 @@
         [_userImageView setClipsToBounds:YES];
         [contentView addSubview:_userImageView];
         
-        _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
+        _dateLabel = [self makeLabelWithTextColor:IQ_GRAY_COLOR
                                              font:LABELS_FONT
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentRight;
         [contentView addSubview:_dateLabel];
         
-        _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x358bae]
+        _titleLabel = [self makeLabelWithTextColor:IQ_BLUE_COLOR
                                                  font:LABELS_FONT
                                         localaizedKey:nil];
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         [contentView addSubview:_titleLabel];
                 
-        _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x8b8b8b]
+        _descriptionLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_DARK_COLOR
                                                     font:LABELS_FONT
                                            localaizedKey:nil];
         [contentView addSubview:_descriptionLabel];
         
         IQBadgeStyle * style = [IQBadgeStyle defaultStyle];
         style.badgeTextColor = [UIColor whiteColor];
-        style.badgeInsetColor = [UIColor colorWithHexInt:0x338cae];
+        style.badgeInsetColor = IQ_BACKGROUND_P2_COLOR;
      
         _badgeView = [IQBadgeView customBadgeWithString:nil withStyle:style];
         _badgeView.badgeMinSize = (IS_IPAD) ? 26 : 17;
@@ -118,8 +118,8 @@
         [_attachButton setImage:[UIImage imageNamed:@"attach_ico.png"] forState:UIControlStateDisabled];
         [_attachButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA
                                                           size:(IS_IPAD) ? 13 : 11]];
-        [_attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateNormal];
-        [_attachButton setTitleColor:[UIColor colorWithHexInt:0x358bae] forState:UIControlStateDisabled];
+        [_attachButton setTitleColor:IQ_BLUE_COLOR forState:UIControlStateNormal];
+        [_attachButton setTitleColor:IQ_BLUE_COLOR forState:UIControlStateDisabled];
         [_attachButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 5.0f, 0.0f, 0.0f)];
         _attachButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         [_attachButton setHidden:YES];

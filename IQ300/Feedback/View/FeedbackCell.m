@@ -62,17 +62,17 @@
         _typeImageView = [[UIImageView alloc] init];
         [contentView addSubview:_typeImageView];
 
-        _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+        _titleLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                               font:[UIFont fontWithName:IQ_HELVETICA_BOLD size:11]
                                      localaizedKey:nil];
         [contentView addSubview:_titleLabel];
         
-        _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+        _dateLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                               font:LABELS_FONT
                                      localaizedKey:nil];
         [contentView addSubview:_dateLabel];
         
-        _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+        _descriptionLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                                     font:LABELS_FONT
                                            localaizedKey:nil];
         [contentView addSubview:_descriptionLabel];
@@ -80,7 +80,7 @@
         _attachImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"attachment_img"]];
         [contentView addSubview:_attachImageView];
         
-        _authorLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _authorLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                                font:LABELS_FONT
                                       localaizedKey:nil];
         [contentView addSubview:_authorLabel];
@@ -88,12 +88,12 @@
         _messagesImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"message_blue_buble.png"]];
         [contentView addSubview:_messagesImageView];
         
-        _commentsCountLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x272727]
+        _commentsCountLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                                       font:LABELS_FONT
                                              localaizedKey:nil];
         [contentView addSubview:_commentsCountLabel];
         
-        _statusLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _statusLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                                font:LABELS_FONT
                                       localaizedKey:nil];
         _statusLabel.textAlignment = NSTextAlignmentRight;

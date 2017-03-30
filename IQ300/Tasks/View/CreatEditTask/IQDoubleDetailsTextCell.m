@@ -8,8 +8,8 @@
 
 #import "IQDoubleDetailsTextCell.h"
 
-#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xc0c0c0]
-#define TEXT_COLOR [UIColor colorWithHexInt:0x272727]
+#define SEPARATOR_COLOR IQ_SEPARATOR_LINE_COLOR
+#define TEXT_COLOR IQ_FONT_BLACK_COLOR
 #define CONTENT_VERTICAL_INSETS 12
 #define CONTENT_HORIZONTAL_INSETS 13
 #define CELL_MIN_HEIGHT 50.0f
@@ -23,7 +23,7 @@
 #define TEXT_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #endif
 
-#define SELECTED_TEXT_COLOR [UIColor colorWithHexInt:0x9f9f9f]
+#define SELECTED_TEXT_COLOR IQ_FONT_GRAY_COLOR
 
 @interface IQDoubleDetailsTextCell() {
     UIView * _separatorView;

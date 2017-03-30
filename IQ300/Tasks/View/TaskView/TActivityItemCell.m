@@ -59,27 +59,27 @@
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.backgroundColor = [UIColor whiteColor];
         
-        _dateLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _dateLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                              font:LABELS_FONT
                                     localaizedKey:nil];
         _dateLabel.textAlignment = NSTextAlignmentLeft;
         _dateLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_dateLabel];
         
-        _userNameLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _userNameLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                                  font:LABELS_FONT
                                         localaizedKey:nil];
         _userNameLabel.textAlignment = NSTextAlignmentRight;
         _dateLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_userNameLabel];
         
-        _actionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _actionLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                                font:LABELS_FONT
                                       localaizedKey:nil];
         _actionLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         [contentView addSubview:_actionLabel];
         
-        _descriptionLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x20272a]
+        _descriptionLabel = [self makeLabelWithTextColor:IQ_FONT_BLACK_COLOR
                                                     font:DESCRIPTION_FONT
                                            localaizedKey:nil];
         _descriptionLabel.lineBreakMode = NSLineBreakByTruncatingTail;

@@ -31,7 +31,7 @@ static const CGFloat HEADER_HEIGHT = 45.5f;
         _detailsTextLabel = [[UITextView alloc] init];
         [_detailsTextLabel setFont:[UIFont fontWithName:IQ_HELVETICA
                                                    size:(IS_IPAD) ? 14.0f : 13.0f]];
-        [_detailsTextLabel setTextColor:[UIColor colorWithHexInt:0x20272a]];
+        [_detailsTextLabel setTextColor:IQ_BLACK_COLOR];
         _detailsTextLabel.textAlignment = NSTextAlignmentLeft;
         _detailsTextLabel.backgroundColor = [UIColor clearColor];
         _detailsTextLabel.editable = NO;
@@ -41,9 +41,9 @@ static const CGFloat HEADER_HEIGHT = 45.5f;
         _detailsTextLabel.scrollEnabled = NO;
         _detailsTextLabel.dataDetectorTypes = UIDataDetectorTypePhoneNumber;
         _detailsTextLabel.linkTextAttributes = @{
-                                                    NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
-                                                    NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
-                                                    };
+                                                 NSForegroundColorAttributeName : IQ_BLUE_COLOR,
+                                                 NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle)
+                                                 };
         [self addSubview:_detailsTextLabel];
         
         _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapRecognized:)];
@@ -115,12 +115,12 @@ static const CGFloat HEADER_HEIGHT = 45.5f;
 - (void)updateUIForState {
     if (!_enabled) {
         self.imageView.image = [UIImage imageNamed:@"filter_gray_collapseed.png"];
-        self.textLabel.textColor = [UIColor colorWithHexInt:0x9f9f9f];
+        self.textLabel.textColor = IQ_FONT_GRAY_COLOR;
     }
     else {
         self.imageView.image = (_expanded) ? [UIImage imageNamed:@"filter_expanded.png"] :
                                              [UIImage imageNamed:@"filter_collapseed.png"];
-        self.textLabel.textColor = [UIColor colorWithHexInt:0x20272a];
+        self.textLabel.textColor = IQ_BLACK_COLOR;
     }
 }
 

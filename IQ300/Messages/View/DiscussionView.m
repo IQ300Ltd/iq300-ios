@@ -9,7 +9,7 @@
 
 #import "DiscussionView.h"
 
-#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xcccccc]
+#define SEPARATOR_COLOR IQ_SEPARATOR_LINE_LIGHT_COLOR
 
 @implementation DiscussionView
 

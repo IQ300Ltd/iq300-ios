@@ -271,7 +271,7 @@
     [paragraphStyle setAlignment:NSTextAlignmentCenter];
     
     NSMutableDictionary * attributes = @{
-                                         NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x272727],
+                                         NSForegroundColorAttributeName : IQ_FONT_BLACK_COLOR,
                                          NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:18],
                                          NSParagraphStyleAttributeName  : paragraphStyle
                                          }.mutableCopy;
@@ -296,7 +296,7 @@
         }
         else if (error) {
             NSDictionary * attributes = @{
-                                          NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x272727],
+                                          NSForegroundColorAttributeName : IQ_FONT_BLACK_COLOR,
                                           NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:18]
                                           }.mutableCopy;
             
@@ -312,7 +312,7 @@
             
             [attributes setValue:[UIFont fontWithName:IQ_HELVETICA size:15]
                           forKey:NSFontAttributeName];
-            [attributes setValue:[UIColor colorWithHexInt:0xca301e]
+            [attributes setValue:IQ_FONT_RED_COLOR
                           forKey:NSForegroundColorAttributeName];
 
             [statusMessage appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", errorDescription]
@@ -454,10 +454,12 @@
     [[UITabBar appearance] setShadowImage:[UIImage new]];
     
     [[UITabBarItem appearance] setTitleTextAttributes:@{
-                                                        NSForegroundColorAttributeName : [UIColor colorWithHexInt:0xc1c1c1],
+                                                        NSForegroundColorAttributeName : IQ_BAR_P2_COLOR,
                                                         NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:10]
                                                        }
                                              forState:UIControlStateNormal];
+    
+#warning уточнить цвет
     [[UITabBarItem appearance] setTitleTextAttributes:@{
                                                         NSForegroundColorAttributeName : [UIColor colorWithHexInt:0xf1f5f6],
                                                         NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:10]

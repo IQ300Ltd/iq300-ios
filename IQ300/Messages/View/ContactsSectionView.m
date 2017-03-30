@@ -36,18 +36,18 @@
     self = [super initWithFrame:frame];
     if(self) {
         _contentInsets = UIEdgeInsetsMakeWithInset(13.0f);
-        self.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        self.backgroundColor = IQ_GRAY_LIGHT_COLOR;
         self.bottomLineColor = self.backgroundColor;
         self.bottomLineHeight = 0.5f;
         
         _leftView = [[UIView alloc] init];
-        _leftView.backgroundColor = [UIColor colorWithHexInt:0x4288a7];
+        _leftView.backgroundColor = IQ_BACKGROUND_P4_COLOR;
         _leftView.userInteractionEnabled = NO;
         [self addSubview:_leftView];
         
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:TITLE_FONT];
-        [_titleLabel setTextColor:[UIColor colorWithHexInt:0x272727]];
+        [_titleLabel setTextColor:IQ_FONT_BLACK_COLOR];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 0;

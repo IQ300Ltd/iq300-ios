@@ -95,9 +95,9 @@
         
         if (task.parentTaskAccess.boolValue) {
             attributes = @{NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
-                           NSUnderlineColorAttributeName  : [UIColor colorWithHexInt:0x358bae],
+                           NSUnderlineColorAttributeName  : IQ_BLUE_COLOR,
                            NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE],
-                           NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x358bae],
+                           NSForegroundColorAttributeName : IQ_BLUE_COLOR,
                            };
         }
         else {
@@ -156,30 +156,30 @@
 
         _headerInsets = UIEdgeInsetsMake(HORIZONTAL_PADDING, CONTENT_LEFT_INSET, HORIZONTAL_PADDING, CONTENT_RIGHT_INSET);
         
-        _taskIDLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _taskIDLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                                font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
                                       localaizedKey:nil];
         _taskIDLabel.numberOfLines = 1;
         [self addSubview:_taskIDLabel];
         
-        _titleLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x20272a]
+        _titleLabel = [self makeLabelWithTextColor:IQ_BLACK_COLOR
                                               font:TITLE_FONT
                                      localaizedKey:nil];
         [self addSubview:_titleLabel];
 
-        _fromLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _fromLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                              font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
                                     localaizedKey:nil];
         _fromLabel.numberOfLines = 1;
         [self addSubview:_fromLabel];
         
-        _toLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _toLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                            font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
                                   localaizedKey:nil];
         _toLabel.numberOfLines = 1;
         [self addSubview:_toLabel];
         
-        _parentTaskLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0x9f9f9f]
+        _parentTaskLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                                    font:[UIFont fontWithName:IQ_HELVETICA size:LABEL_FONT_SIZE]
                                           localaizedKey:@"Parent task:"];
         [self addSubview:_parentTaskLabel];
@@ -189,32 +189,32 @@
         
         _descriptionView = [[TInfoExpandableLineView alloc] init];
         _descriptionView.detailsTextLabel.font = DESCRIPTION_FONT;
-        _descriptionView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _descriptionView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
         _descriptionView.drawTopSeparator = YES;
         _descriptionView.textLabel.text = NSLocalizedString(@"Description", nil);
         [self addSubview:_descriptionView];
 
         _statusView = [[TInfoLineView alloc] init];
-        _statusView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _statusView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
         _statusView.drawTopSeparator = YES;
         [_statusView.imageView setImage:[UIImage imageNamed:@"task_status_ico.png"]];
         [self addSubview:_statusView];
         
         _dueDateView = [[TInfoLineView alloc] init];
-        _dueDateView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _dueDateView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
         [_dueDateView.imageView setImage:[UIImage imageNamed:@"bell_ico.png"]];
         _dueDateView.drawTopSeparator = YES;
         _dueDateView.drawLeftSeparator = YES;
         [self addSubview:_dueDateView];
         
         _projectInfoView = [[TInfoLineView alloc] init];
-        _projectInfoView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _projectInfoView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
         [_projectInfoView.imageView setImage:[UIImage imageNamed:@"project_ico.png"]];
         [self addSubview:_projectInfoView];
 
         CGFloat icoSize = 17.0f;
         _communityInfoView = [[TInfoLineView alloc] init];
-        _communityInfoView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _communityInfoView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
         _communityInfoView.imageViewSize = CGSizeMake(icoSize, icoSize);
         _communityInfoView.imageView.layer.cornerRadius = icoSize / 2.0f;
         _communityInfoView.imageView.clipsToBounds = YES;
@@ -222,24 +222,24 @@
         [self addSubview:_communityInfoView];
         
         _reconciliationInfoView = [[TInfoLineView alloc] init];
-        _reconciliationInfoView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _reconciliationInfoView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
         [_reconciliationInfoView.imageView setImage:[UIImage imageNamed:@"marker-check.png"]];
         [self addSubview:_reconciliationInfoView];
         
         _buttonsHolder = [[BottomLineView alloc] init];
         _buttonsHolder.bottomLineHeight = 0.5f;
-        _buttonsHolder.bottomLineColor = [UIColor colorWithHexInt:0xc0c0c0];
+        _buttonsHolder.bottomLineColor = IQ_SEPARATOR_LINE_COLOR;
         [_buttonsHolder setBackgroundColor:[UIColor whiteColor]];
         [self addSubview:_buttonsHolder];
         
         _complexityInfoView = [[TInfoLineView alloc] init];
-        _complexityInfoView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _complexityInfoView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
         _complexityInfoView.drawTopSeparator = YES;
         [_complexityInfoView.imageView setImage:[UIImage imageNamed:@"complexity_icon.png"]];
         [self addSubview:_complexityInfoView];
         
         _estimatedTimeInfoView = [[TInfoLineView alloc] init];
-        _estimatedTimeInfoView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _estimatedTimeInfoView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
         [_estimatedTimeInfoView.imageView setImage:[UIImage imageNamed:@"estimated_time_icon.png"]];
         _estimatedTimeInfoView.drawTopSeparator = YES;
         _estimatedTimeInfoView.drawLeftSeparator = YES;
@@ -372,8 +372,8 @@
         actionButton.layer.cornerRadius = 3.0f;
         if(!isPositiveAction) {
             actionButton.layer.borderWidth = 0.5f;
-            actionButton.layer.borderColor = [UIColor colorWithHexInt:0xd0d0d0].CGColor;
-            [actionButton setTitleColor:[UIColor colorWithHexInt:0x338cae] forState:UIControlStateNormal];
+            actionButton.layer.borderColor = IQ_BUTTON_BORDER_COLOR.CGColor;
+            [actionButton setTitleColor:IQ_BLUE_COLOR forState:UIControlStateNormal];
             [actionButton setBackgroundColor:[UIColor whiteColor]];
             [actionButton setBackgroundColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
             [actionButton setBorderColor:IQ_CELADON_COLOR forState:UIControlStateHighlighted];

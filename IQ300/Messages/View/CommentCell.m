@@ -22,8 +22,8 @@
 #define ATTACHMENTS_VIEW_HEIGHT 120.0f
 
 #define DESCRIPTION_PADDING 7
-#define DESCRIPTION_LEFT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
-#define DESCRIPTION_RIGHT_TEXT_COLOR [UIColor colorWithHexInt:0x1d1d1d]
+#define DESCRIPTION_LEFT_TEXT_COLOR IQ_FONT_GRAY_COLOR
+#define DESCRIPTION_RIGHT_TEXT_COLOR IQ_FONT_WHITE_COLOR
 #define STATUS_IMAGE_SIZE 11
 #define TIME_LABEL_HEIGHT 7.0f
 #define CONTENT_OFFSET 5.0f
@@ -88,7 +88,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                           @(CommentCellStyleLeft)  : [[UIImage imageNamed:@"bubble_gray.png"] stretchableImageWithLeftCapWidth:5
                                                                                                                   topCapHeight:5],
                           @(CommentCellStyleRight) : [[UIImage imageNamed:@"bubble_blue.png"] stretchableImageWithLeftCapWidth:5
-                                                                                                                   topCapHeight:5]
+                                                                                                                  topCapHeight:5]
                           };
     });
     
@@ -177,7 +177,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
         _contentInsets = UIEdgeInsetsMake(0.0f, CONTENT_INSET, 0.0f, CONTENT_INSET);
         
-        _timeLabel = [self makeLabelWithTextColor:[UIColor colorWithHexInt:0xb3b3b3]
+        _timeLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
                                              font:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 10.0f : 9.0f]
                                     localaizedKey:nil];
         _timeLabel.textAlignment = NSTextAlignmentRight;
@@ -192,7 +192,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         [_userImageView setClipsToBounds:YES];
         [contentView addSubview:_userImageView];
         
-        _userNameLabel = [self makeLabelWithTextColor:DESCRIPTION_LEFT_TEXT_COLOR
+        _userNameLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_DARK_COLOR
                                              font:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 14.0f : 13.0f]
                                     localaizedKey:nil];
         [contentView addSubview:_userNameLabel];
@@ -221,15 +221,16 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _descriptionTextView.scrollEnabled = NO;
         _descriptionTextView.dataDetectorTypes = UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber;
         _descriptionTextView.linkTextAttributes = @{
-                                                    NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
-                                                    NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
+                                                    NSForegroundColorAttributeName : IQ_BLUE_COLOR,
+                                                    NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle)
                                                     };
+        
         [_descriptionTextView addGestureRecognizer:_singleTapGesture];
         [contentView addSubview:_descriptionTextView];
         
         CGFloat expendFontSize = (IS_IPAD) ? 12 : 11.0f;
-        UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
-        UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+        UIColor * titleColor = IQ_BLUE_COLOR;
+        UIColor * titleHighlightedColor = IQ_BAR_P2_COLOR;
         UIImage * bacgroundImage = [UIImage imageNamed:@"view_all_ico.png"];
         _expandButton = [[UIButton alloc] init];
         [_expandButton setImage:bacgroundImage forState:UIControlStateNormal];
@@ -506,8 +507,8 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 
 - (void)setExpandButtonTitle:(NSString*)title {
     CGFloat expandFontSize = (IS_IPAD) ? 12 : 11.0f;
-    UIColor * titleColor = [UIColor colorWithHexInt:0x4486a7];
-    UIColor * titleHighlightedColor = [UIColor colorWithHexInt:0x254759];
+    UIColor * titleColor = IQ_BLUE_COLOR;
+    UIColor * titleHighlightedColor = IQ_BAR_P2_COLOR;
     NSDictionary *underlineAttribute = @{
                                          NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                                          NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),
@@ -528,12 +529,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     
 }
 
-- (NSAttributedString*)formatedTextFromText:(NSString*)text {
+- (NSAttributedString *)formatedTextFromText:(NSString *)text {
     if([text length] > 0) {
         NSError * error = nil;
         
-        UIColor * textColor = (_commentIsMine) ? DESCRIPTION_LEFT_TEXT_COLOR :
-                                                 DESCRIPTION_RIGHT_TEXT_COLOR;
+        UIColor * textColor = (_commentIsMine) ? DESCRIPTION_RIGHT_TEXT_COLOR : DESCRIPTION_LEFT_TEXT_COLOR;
         NSDictionary * attributes = @{
                                       NSForegroundColorAttributeName : textColor,
                                       NSFontAttributeName            : DESCRIPTION_LABEL_FONT
@@ -554,17 +554,25 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                 wordRange.location = wordRange.location - 1;
                 wordRange.length = wordRange.length + 1;
                 
-                if (!isCurUserNick) {
-                    NSDictionary * highlightAttribute = @{ IQNikStrokeColorAttributeName : [UIColor colorWithHexInt:0x2c779d] };
-                    [aText addAttributes:@{ IQNikHighlightAttributeName : highlightAttribute,
-                                            NSForegroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] }
+                if (_commentIsMine) {
+                    NSDictionary * highlightAttribute = @{ IQNikStrokeColorAttributeName : IQ_BLUE_LIGHT_COLOR };
+                    [aText addAttributes:@{ IQNikHighlightAttributeName    : highlightAttribute,
+                                            NSForegroundColorAttributeName : IQ_BLUE_LIGHT_COLOR }
                                    range:wordRange];
                 }
                 else {
-                    NSDictionary * highlightAttribute = @{ IQNikBackgroundColorAttributeName : [UIColor colorWithHexInt:0x2c779d] };
-                    [aText addAttributes:@{ IQNikHighlightAttributeName : highlightAttribute,
-                                            NSForegroundColorAttributeName: [UIColor whiteColor] }
-                                   range:wordRange];
+                    if (isCurUserNick) {
+                        NSDictionary * highlightAttribute = @{ IQNikBackgroundColorAttributeName : IQ_BLUE_LIGHT_COLOR };
+                        [aText addAttributes:@{ IQNikHighlightAttributeName   : highlightAttribute,
+                                                NSForegroundColorAttributeName: IQ_BACKGROUND_P2_COLOR }
+                                       range:wordRange];
+                    }
+                    else {
+                        NSDictionary * highlightAttribute = @{ IQNikStrokeColorAttributeName : IQ_BACKGROUND_P2_COLOR };
+                        [aText addAttributes:@{ IQNikHighlightAttributeName    : highlightAttribute,
+                                                NSForegroundColorAttributeName : IQ_BACKGROUND_P2_COLOR }
+                                       range:wordRange];
+                    }
                 }
             }
         }

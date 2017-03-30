@@ -40,7 +40,7 @@ NSString * const NoTasksFound = @"There are no tasks";
         
         _titleLabel = [[UILabel alloc] init];
         [_titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-        [_titleLabel setTextColor:[UIColor colorWithHexInt:0x9f9f9f]];
+        [_titleLabel setTextColor:IQ_FONT_GRAY_COLOR];
         _titleLabel.textAlignment = NSTextAlignmentLeft;
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.numberOfLines = 0;
@@ -61,7 +61,7 @@ NSString * const NoTasksFound = @"There are no tasks";
         
         _noDataLabel = [[UILabel alloc] init];
         [_noDataLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:15]];
-        [_noDataLabel setTextColor:[UIColor colorWithHexInt:0xb3b3b3]];
+        [_noDataLabel setTextColor:IQ_FONT_GRAY_COLOR];
         _noDataLabel.textAlignment = NSTextAlignmentCenter;
         _noDataLabel.backgroundColor = [UIColor clearColor];
         _noDataLabel.numberOfLines = 0;

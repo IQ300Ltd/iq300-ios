@@ -14,7 +14,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
         self.badgeView.badgeStyle.badgeFrameColor = [UIColor whiteColor];
-        self.badgeView.badgeStyle.badgeInsetColor = [UIColor colorWithHexInt:0xe74545];
+        self.badgeView.badgeStyle.badgeInsetColor = IQ_FONT_RED_COLOR;
         self.badgeView.badgeStyle.badgeTextColor = [UIColor whiteColor];
     }
     return self;

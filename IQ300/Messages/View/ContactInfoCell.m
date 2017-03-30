@@ -26,7 +26,7 @@
         contentView.backgroundColor = [UIColor whiteColor];
         
         self.textLabel.font = [UIFont fontWithName:IQ_HELVETICA size:15];
-        self.textLabel.textColor = [UIColor colorWithHexInt:0x2c74a4];
+        self.textLabel.textColor = IQ_BLUE_COLOR;
         self.textLabel.backgroundColor = [UIColor whiteColor];
         self.textLabel.highlightedTextColor = [UIColor whiteColor];
         
@@ -44,14 +44,37 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGSize textLabelSize = [self.textLabel sizeThatFits:CGSizeMake(self.textLabel.bounds.size.width - ONLINE_INDICATOR_LEFT_OFFSET - ONLINE_INDICATOR_SIZE, self.textLabel.bounds.size.height)];
-    self.textLabel.frame = CGRectMake(self.textLabel.frame.origin.x, self.textLabel.frame.origin.y, textLabelSize.width, self.textLabel.bounds.size.height);
+//    CGSize textLabelSize = [self.textLabel sizeThatFits:CGSizeMake(self.textLabel.bounds.size.width - ONLINE_INDICATOR_LEFT_OFFSET - ONLINE_INDICATOR_SIZE, self.textLabel.bounds.size.height)];
+//    self.textLabel.frame = CGRectMake(self.textLabel.frame.origin.x, self.textLabel.frame.origin.y, textLabelSize.width, self.textLabel.bounds.size.height);
+//    
+//    _onlineIndicator.frame = CGRectMake(CGRectRight(self.textLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
+//                                        self.textLabel.frame.origin.y + (self.textLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
+//                                        ONLINE_INDICATOR_SIZE,
+//                                        ONLINE_INDICATOR_SIZE);
+    
+    CGRect bounds = self.contentView.bounds;
+    CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(0.f, 10.f, 0.f, 10.f));
+    
+    CGSize imageViewSize = CGSizeMake(35, 35);
+    self.imageView.frame = CGRectMake(actualBounds.origin.x,
+                                      actualBounds.origin.y + (actualBounds.size.height - imageViewSize.height) / 2.0f,
+                                      imageViewSize.width,
+                                      imageViewSize.height);
+    
+    CGFloat textlabelX = CGRectGetMaxX(self.imageView.frame) + 10.f;
+    CGFloat maxTextWidth = bounds.size.width - textlabelX - 10 - ONLINE_INDICATOR_LEFT_OFFSET - ONLINE_INDICATOR_SIZE;
+    CGSize textLabelSize = [self.textLabel sizeThatFits:CGSizeMake(maxTextWidth,
+                                                                   self.textLabel.frame.size.height)];
+    
+    self.textLabel.frame = CGRectMake(textlabelX,
+                                      (bounds.size.height - textLabelSize.height) / 2.f,
+                                      textLabelSize.width,
+                                      textLabelSize.height);
     
     _onlineIndicator.frame = CGRectMake(CGRectRight(self.textLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
                                         self.textLabel.frame.origin.y + (self.textLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
                                         ONLINE_INDICATOR_SIZE,
                                         ONLINE_INDICATOR_SIZE);
-
 }
 
 
@@ -74,7 +97,7 @@
 - (void)setDeleteEnabled:(BOOL)enabled {
     if (enabled) {
         NSMutableArray *rightUtilityButtons = [NSMutableArray array];
-        [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithHexInt:0x3b5b78]
+        [rightUtilityButtons sw_addUtilityButtonWithColor:IQ_BACKGROUND_P1_COLOR
                                                      icon:[UIImage imageNamed:@"delete_ico.png"]];
         [self setRightUtilityButtons:rightUtilityButtons WithButtonWidth:68.0f];
     }
