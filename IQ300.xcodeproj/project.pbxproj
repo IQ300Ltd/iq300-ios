@@ -3709,7 +3709,7 @@
 					738CE1DF1A0B3F4E0096B374 = {
 						CreatedOnToolsVersion = 6.1;
 						DevelopmentTeam = D3Q8V8UU4B;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -5061,10 +5061,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "IQ 300.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = D3Q8V8UU4B;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5126,8 +5126,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.summa.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "004b2d89-1f80-49df-be8d-67e104646bba";
+				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa iOS Development";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -5349,9 +5349,9 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "IQ 300.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = D3Q8V8UU4B;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5407,8 +5407,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.summa.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "004b2d89-1f80-49df-be8d-67e104646bba";
+				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa iOS Development";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -5422,10 +5422,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "IQ 300.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = D3Q8V8UU4B;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5487,8 +5487,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.summa.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "004b2d89-1f80-49df-be8d-67e104646bba";
+				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa iOS Development";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
