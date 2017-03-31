@@ -22,8 +22,8 @@
 #define ATTACHMENTS_VIEW_HEIGHT 120.0f
 
 #define DESCRIPTION_PADDING 7
-#define DESCRIPTION_LEFT_TEXT_COLOR IQ_FONT_GRAY_COLOR
-#define DESCRIPTION_RIGHT_TEXT_COLOR IQ_FONT_WHITE_COLOR
+#define DESCRIPTION_LEFT_TEXT_COLOR IQ_FONT_GRAY_DARK_COLOR
+#define DESCRIPTION_RIGHT_TEXT_COLOR IQ_FONT_GRAY_DARK_COLOR
 #define STATUS_IMAGE_SIZE 11
 #define TIME_LABEL_HEIGHT 7.0f
 #define CONTENT_OFFSET 5.0f
@@ -229,11 +229,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         [contentView addSubview:_descriptionTextView];
         
         CGFloat expendFontSize = (IS_IPAD) ? 12 : 11.0f;
-        UIColor * titleColor = IQ_BLUE_COLOR;
-        UIColor * titleHighlightedColor = IQ_BAR_P2_COLOR;
-        UIImage * bacgroundImage = [UIImage imageNamed:@"view_all_ico.png"];
+        UIColor * titleColor = IQ_CELADON_COLOR_HIGHLIGHTED;
+        UIColor * titleHighlightedColor = IQ_CELADON_COLOR;
         _expandButton = [[UIButton alloc] init];
-        [_expandButton setImage:bacgroundImage forState:UIControlStateNormal];
+        [_expandButton setImage:[UIImage imageNamed:@"view_all_ico.png"] forState:UIControlStateNormal];
+        [_expandButton setImage:[UIImage imageNamed:@"view_all_ico_highlighted.png"] forState:UIControlStateHighlighted];
         [_expandButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:expendFontSize]];
         [_expandButton setTitleColor:titleColor forState:UIControlStateNormal];
         [_expandButton setTitleColor:titleHighlightedColor forState:UIControlStateHighlighted];
@@ -507,8 +507,8 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 
 - (void)setExpandButtonTitle:(NSString*)title {
     CGFloat expandFontSize = (IS_IPAD) ? 12 : 11.0f;
-    UIColor * titleColor = IQ_BLUE_COLOR;
-    UIColor * titleHighlightedColor = IQ_BAR_P2_COLOR;
+    UIColor * titleColor = IQ_CELADON_COLOR_HIGHLIGHTED;
+    UIColor * titleHighlightedColor = IQ_CELADON_COLOR;
     NSDictionary *underlineAttribute = @{
                                          NSFontAttributeName            : [UIFont fontWithName:IQ_HELVETICA size:expandFontSize],
                                          NSUnderlineStyleAttributeName  : @(NSUnderlineStyleSingle),

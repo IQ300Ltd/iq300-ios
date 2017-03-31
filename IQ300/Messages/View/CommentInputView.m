@@ -84,9 +84,9 @@
         [_sendButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
         [_sendButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
-        [_sendButton setBackgroundColor:IQ_GREEN_BUTTON_NORMAL];
-        [_sendButton setBackgroundColor:IQ_GREEN_BUTTON_HIGHLIGHTED forState:UIControlStateHighlighted];
-        [_sendButton setBackgroundColor:IQ_GREEN_BUTTON_DISABLED forState:UIControlStateDisabled];
+        [_sendButton setBackgroundColor:IQ_CELADON_COLOR];
+        [_sendButton setBackgroundColor:IQ_CELADON_COLOR_HIGHLIGHTED forState:UIControlStateHighlighted];
+        [_sendButton setBackgroundColor:IQ_CELADON_COLOR_DISABLED forState:UIControlStateDisabled];
         _sendButton.layer.borderColor = [UIColor clearColor].CGColor;
         [_sendButton setClipsToBounds:YES];
         [self addSubview:_sendButton];
