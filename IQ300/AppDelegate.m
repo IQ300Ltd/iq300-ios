@@ -458,8 +458,6 @@
                                                         NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:10]
                                                        }
                                              forState:UIControlStateNormal];
-    
-#warning уточнить цвет
     [[UITabBarItem appearance] setTitleTextAttributes:@{
                                                         NSForegroundColorAttributeName : [UIColor colorWithHexInt:0xf1f5f6],
                                                         NSFontAttributeName : [UIFont fontWithName:IQ_HELVETICA size:10]

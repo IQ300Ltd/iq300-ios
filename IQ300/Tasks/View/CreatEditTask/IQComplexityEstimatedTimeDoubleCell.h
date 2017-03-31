@@ -18,7 +18,7 @@
 @property (nonatomic, strong) IQEstimatedTimeCell *estimatedCell;
 
 
-+ (CGFloat)heightForComplexity:(IQComplexity *)compexity estimatedTime:(NSNumber *)esimatedTime widht:(CGFloat)widht;
+//+ (CGFloat)heightForComplexity:(IQComplexity *)compexity estimatedTime:(NSNumber *)esimatedTime widht:(CGFloat)widht;
 
 - (void)setComplexity:(IQComplexity *)complexity estimatedTime:(NSNumber *)estimatedTime;
 
