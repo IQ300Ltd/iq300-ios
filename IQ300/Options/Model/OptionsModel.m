@@ -7,7 +7,6 @@
 //
 
 #import "OptionsModel.h"
-#import "IQService+Settings.h"
 #import "IQSettings.h"
 
 typedef NS_ENUM(NSUInteger, OptionsModelCellTypes) {

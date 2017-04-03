@@ -47,9 +47,11 @@
     self.tableView.tableFooterView = [[UIView alloc] init];
     
     self.model.enableInteraction = [AppDelegate pushNotificationsEnabled];
-    if (!self.model.enableInteraction) {
-        
-    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(willEnterForegroundNotification)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -60,6 +62,10 @@
             [self.tableView reloadData];
         }
     }];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -107,7 +113,24 @@
 }
 
 - (void)notificationsEnabledSwitchWasChanged:(UISwitch *)sender {
-    
+    BOOL prevState = !sender.isOn;
+    [[IQService sharedService] makePushNotificationsEnabled:sender.isOn handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+        if (!success) {
+            sender.on = prevState;
+        }
+    }];
+}
+
+- (void)willEnterForegroundNotification {
+    if (self.model.enableInteraction != [AppDelegate pushNotificationsEnabled]) {
+        self.model.enableInteraction = [AppDelegate pushNotificationsEnabled];
+        
+        [self.model updateModelWithCompletion:^(NSError *error) {
+            if (!error) {
+                [self.tableView reloadData];
+            }
+        }];
+    }
 }
 
 @end

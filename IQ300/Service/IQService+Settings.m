@@ -17,7 +17,11 @@
 }
 
 - (void)makePushNotificationsEnabled:(BOOL)enabled handler:(ObjectRequestCompletionHandler)handler {
-    
+    NSString *path = [NSString stringWithFormat:@"devices/%@", (enabled ? @"enable" : @"disable")];
+    [self putObject:nil
+               path:path
+         parameters:nil
+            handler:handler];
 }
 
 @end

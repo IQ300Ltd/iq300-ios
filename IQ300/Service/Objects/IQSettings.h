@@ -14,6 +14,6 @@
 
 @property (nonatomic, strong) NSNumber *pushEnabled;
 
-+ (RKObjectMapping*)objectMapping;
++ (RKObjectMapping *)objectMapping;
 
 @end

@@ -11,7 +11,7 @@
 
 @implementation IQSettings
 
-+ (RKObjectMapping*)objectMapping {
++ (RKObjectMapping *)objectMapping {
     RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"pushEnabled"  : @"notifications.push_enabled"

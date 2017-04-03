@@ -8,6 +8,7 @@
 
 #import "IQTableModel.h"
 #import "NotificationsOptionTableViewCell.h"
+#import "IQService+Settings.h"
 
 @interface OptionsModel : IQTableModel
 

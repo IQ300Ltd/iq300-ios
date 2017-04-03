@@ -1163,11 +1163,27 @@ fileAttributeName:(NSString*)fileAttributeName
     
     [self.objectManager addResponseDescriptor:descriptor];
     
-    descriptor = [IQServiceResponse responseDescriptorForClass:[IQSettings class]
-                                                        method:RKRequestMethodGET
-                                                   pathPattern:@"users/settings"
-                                                   fromKeyPath:@"settings"
-                                                         store:self.objectManager.managedObjectStore];
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQSettings objectMapping]
+                                                              method:RKRequestMethodGET
+                                                         pathPattern:@"users/settings"
+                                                             keyPath:@"settings"
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"devices/enable"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"devices/disable"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     [self.objectManager addResponseDescriptor:descriptor];
 }
