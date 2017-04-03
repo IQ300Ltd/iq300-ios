@@ -137,26 +137,35 @@ NSString const * UITabBarItemViewKey = @"UITabBarItemViewKey";
     CGFloat tabItemViewY = CGRectBottom(_logoImageView.frame);
     CGFloat itemsViewHeight = 64.0f;
     
-    //Exclude last item
-    NSUInteger itemsCount = ([_items count] > 1) ? [_items count] - 1 : [_items count];
+    NSInteger bootomItemsCount = 2;
+    
+    //Exclude last item (two last)
+    NSUInteger itemsCount = ([_items count] > bootomItemsCount) ? [_items count] - bootomItemsCount : [_items count];
     for (NSUInteger index = 0; index < itemsCount; index++) {
         UITabBarItem * item = _items[index];
         UIView * tabItemView = item.tabItemView;
         tabItemView.frame = CGRectMake(actualBounds.origin.x,
-                                tabItemViewY,
-                                actualBounds.size.width - 1.0f,
-                               itemsViewHeight);
+                                       tabItemViewY,
+                                       actualBounds.size.width - 1.0f,
+                                       itemsViewHeight);
         tabItemViewY += tabItemView.frame.size.height;
     }
     
-    //Move last item to bottom
-    if ([_items count] > 1) {
-        UITabBarItem * item = [_items lastObject];
-        UIView * tabItemView = item.tabItemView;
-        tabItemView.frame = CGRectMake(actualBounds.origin.x,
-                                       actualBounds.origin.y + actualBounds.size.height - itemsViewHeight,
+    //Move last item to bottom (two last)
+    if ([_items count] > bootomItemsCount) {
+        
+        CGRect commomRect = CGRectMake(actualBounds.origin.x,
+                                       actualBounds.origin.y + actualBounds.size.height,
                                        actualBounds.size.width - 1.0f,
                                        itemsViewHeight);
+        
+        for (NSUInteger index = ([_items count] -1); index >= itemsCount; index--) {
+            UITabBarItem *item = [_items objectAtIndex:index];
+            
+            UIView *tabItemView = item.tabItemView;
+            commomRect.origin.y -= itemsViewHeight;
+            tabItemView.frame = commomRect;
+        }
     }
 }
 

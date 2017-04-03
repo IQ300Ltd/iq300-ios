@@ -8,9 +8,12 @@
 
 #import "OptionsViewController.h"
 #import "AppDelegate.h"
+#import "DispatchAfterExecution.h"
+
+#define DISPATCH_DELAY 1.f
 
 @interface OptionsViewController () {
-    
+    dispatch_after_block _cancelBlock;
 }
 
 @end
@@ -25,6 +28,13 @@
         self.model = [[OptionsModel alloc] init];
         
         self.title = NSLocalizedString(@"Options", nil);
+        
+        float imageOffset = 6;
+        UIImage * barImage = [[UIImage imageNamed:@"settings_ico.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        UIImage * barImageSel = [[UIImage imageNamed:@"settings_ico_selected.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        
+        self.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:barImage selectedImage:barImageSel];
+        self.tabBarItem.imageInsets = UIEdgeInsetsMake(imageOffset, 0, -imageOffset, 0);
     }
     
     return self;
@@ -37,11 +47,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+#ifndef IPAD
     UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
                                                                        style:UIBarButtonItemStylePlain
                                                                       target:self
                                                                       action:@selector(backButtonAction:)];
     self.navigationItem.leftBarButtonItem = backBarButton;
+#endif
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [[UIView alloc] init];
@@ -52,16 +64,17 @@
                                              selector:@selector(willEnterForegroundNotification)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadModel)
+                                                 name:DeviceDidRegisterForPushesNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        if (!error) {
-            [self.tableView reloadData];
-        }
-    }];
+    [self reloadModel];
 }
 
 - (void)dealloc {
@@ -113,24 +126,60 @@
 }
 
 - (void)notificationsEnabledSwitchWasChanged:(UISwitch *)sender {
-    BOOL prevState = !sender.isOn;
-    [[IQService sharedService] makePushNotificationsEnabled:sender.isOn handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-        if (!success) {
-            sender.on = prevState;
+    if(_cancelBlock) {
+        cancel_dispatch_after_block(_cancelBlock);
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    BOOL enabled = sender.isOn;
+    _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
+        if (weakSelf.model.notificationsEnabeld != enabled) {
+            [[IQService sharedService] makePushNotificationsEnabled:sender.isOn
+                                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                                    if (!success) {
+                                                                        [sender setOn:!enabled animated:YES];
+                                                                        
+                                                                        [weakSelf showWarning];
+                                                                    }
+                                                                    else {
+                                                                        weakSelf.model.notificationsEnabeld = enabled;
+                                                                    }
+                                                                });
+                                                            }];
         }
-    }];
+    });
 }
 
 - (void)willEnterForegroundNotification {
     if (self.model.enableInteraction != [AppDelegate pushNotificationsEnabled]) {
         self.model.enableInteraction = [AppDelegate pushNotificationsEnabled];
         
-        [self.model updateModelWithCompletion:^(NSError *error) {
-            if (!error) {
-                [self.tableView reloadData];
-            }
-        }];
+        if (self.model.enableInteraction && ![[IQService sharedService] isRegisterDeviceForRemoteNotifications]) {
+            [AppDelegate registerForRemoteNotifications];
+        }
+        else {
+            [self reloadModel];
+        }
+        
+        
     }
+}
+
+- (void)reloadModel {
+    [self.model updateModelWithCompletion:^(NSError *error) {
+        if (!error) {
+            [self.tableView reloadData];
+        }
+    }];
+}
+
+- (void)showWarning {
+    [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
+                       message:NSLocalizedString(@"Setting could not be saved. Check your internet connection and try later", nil)
+             cancelButtonTitle:NSLocalizedString(@"OK", nil)
+             otherButtonTitles:nil
+                      tapBlock:nil];
 }
 
 @end

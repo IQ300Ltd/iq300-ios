@@ -75,9 +75,10 @@ static NSDictionary *_cellClasses = nil;
     [[IQService sharedService]
      pushNotificationsSettingsWithHandler:^(BOOL success, IQSettings *settings, NSData *responseData, NSError *error) {
         if (success && !error) {
+            _notificationsEnabeld = [settings.pushEnabled boolValue];
             _items = @[
-                       [NotificationsOptionItem  itemWithOnState:[settings.pushEnabled boolValue]
-                                                         enabled:_enableInteraction]
+                       [NotificationsOptionItem itemWithOnState:_notificationsEnabeld
+                                            enabledInteractions:_enableInteraction]
                        ];
         }
         
@@ -88,8 +89,9 @@ static NSDictionary *_cellClasses = nil;
 }
 
 - (void)clearModelData {
+    _notificationsEnabeld = NO;
     _items = @[
-               [NotificationsOptionItem itemWithEnabled:_enableInteraction]
+               [NotificationsOptionItem itemWithEnabledInteractions:_enableInteraction]
                ];
 }
 

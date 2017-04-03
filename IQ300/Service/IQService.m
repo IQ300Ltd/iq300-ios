@@ -15,6 +15,8 @@
 
 static const void *RKObjectRequestOperationBlock = &RKObjectRequestOperationBlock;
 
+static NSString *const IQDeviseRegistredForPushesKey = @"pushed_register_key";
+
 @interface RKObjectRequestOperation(OperationBlock)
 
 @property (nonatomic, copy) void (^operationBlock)(void);
@@ -209,11 +211,19 @@ BOOL IsNetworUnreachableError(NSError * error) {
                     path:@"devices"
               parameters:parameters
                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                     if (success) {
+                         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:IQDeviseRegistredForPushesKey];
+                     }
+                     
                      if(handler) {
                          handler(success, responseData, error);
                      }
                  }];
     }
+}
+
+- (BOOL)isRegisterDeviceForRemoteNotifications {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:IQDeviseRegistredForPushesKey];
 }
 
 - (void)subscribeToUserStatusChangedNotification:(NSArray *)userIndexes handler:(ObjectRequestCompletionHandler)handler {

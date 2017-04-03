@@ -227,3 +227,4 @@
 //Resend message
 "Forward message" = "Переслать сообщение";
 "Options" = "Настройки";
+"Setting could not be saved. Check your internet connection and try later" = "Не удалось сохранить настройки. Проверьте подключение к Интернету и повторите попытку позже";

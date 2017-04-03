@@ -12,9 +12,9 @@
 
 @property (nonatomic, strong) NSString *titleString;
 @property (nonatomic, assign) BOOL onState;
-@property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, assign) BOOL enabledInteractions;
 
-+ (instancetype)itemWithEnabled:(BOOL)enabled;
-+ (instancetype)itemWithOnState:(BOOL)onState enabled:(BOOL)enabled;
++ (instancetype)itemWithEnabledInteractions:(BOOL)enabled;
++ (instancetype)itemWithOnState:(BOOL)onState enabledInteractions:(BOOL)enabled;
 
 @end

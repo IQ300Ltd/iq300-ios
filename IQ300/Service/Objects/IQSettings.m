@@ -14,7 +14,7 @@
 + (RKObjectMapping *)objectMapping {
     RKObjectMapping * mapping = [RKObjectMapping mappingForClass:[self class]];
     [mapping addAttributeMappingsFromDictionary:@{
-                                                  @"pushEnabled"  : @"notifications.push_enabled"
+                                                  @"notifications.push_enabled"  : @"pushEnabled"
                                                   }];
     return mapping;
 }

@@ -39,7 +39,7 @@
     _titleLabel.text = item.titleString;
     
     _notificationsSwitch.on = item.onState;
-    _notificationsSwitch.enabled = item.enabled;
+    _notificationsSwitch.enabled = item.enabledInteractions;
 }
 
 - (void)layoutSubviews {

@@ -15,21 +15,19 @@
     if (self) {
         _titleString = NSLocalizedString(@"Notifications", nil);
         _onState = NO;
-        _enabled = YES;
+        _enabledInteractions = YES;
     }
     
     return self;
 }
 
-+ (instancetype)itemWithEnabled:(BOOL)enabled {
-    return [self itemWithOnState:NO
-                         enabled:enabled];
++ (instancetype)itemWithEnabledInteractions:(BOOL)enabled {
+    return [self itemWithOnState:NO enabledInteractions:enabled];
 }
-
-+ (instancetype)itemWithOnState:(BOOL)onState enabled:(BOOL)enabled {
++ (instancetype)itemWithOnState:(BOOL)onState enabledInteractions:(BOOL)enabled {
     NotificationsOptionItem *item = [[NotificationsOptionItem alloc] init];
     item.onState = onState;
-    item.enabled = enabled;
+    item.enabledInteractions = enabled;
     
     return item;
 }

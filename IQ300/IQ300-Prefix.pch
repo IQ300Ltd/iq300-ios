@@ -59,7 +59,7 @@ static NSString * AccountDidChangedNotification = @"AccountDidChangedNotificatio
 static NSString * CountersDidChangedNotification = @"CountersDidChangedNotification";
 static NSString * ChangedCounterNameUserInfoKey = @"ChangedCounterNameUserInfoKey";
 
-static NSString * NotificationsSettinsDidChangedNotification = @"NotificationsSettinsDidChangedNotification";
+static NSString * DeviceDidRegisterForPushesNotification = @"DeviceDidRegisterForPushesNotification";
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
 #import "NSString+SizeWith.h"

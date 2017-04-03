@@ -13,7 +13,11 @@
 - (void)pushNotificationsSettingsWithHandler:(ObjectRequestCompletionHandler)handler {
     [self getObjectsAtPath:@"users/settings"
                 parameters:nil
-                   handler:handler];
+                   handler:^(BOOL success, NSArray *object, NSData *responseData, NSError *error) {
+                       if (handler) {
+                           handler(success, object ? [object firstObject] : object, responseData, error);
+                       }
+                   }];
 }
 
 - (void)makePushNotificationsEnabled:(BOOL)enabled handler:(ObjectRequestCompletionHandler)handler {
