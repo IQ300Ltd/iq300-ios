@@ -1073,6 +1073,7 @@
 		FBC7CB501B579CB6004E8382 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB481B57973C004E8382 /* DeletedObjects.m */; };
 		FBC7CB511B579CBA004E8382 /* CommentDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4B1B57979A004E8382 /* CommentDeletedObjects.m */; };
 		FBC7CB521B579CBD004E8382 /* ConversationDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4E1B579812004E8382 /* ConversationDeletedObjects.m */; };
+		FBD57BAC1E923FBC00EDCB94 /* OptionsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C325F3B1E919F260015CAC0 /* OptionsModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -4554,6 +4555,7 @@
 				73840E3A1B1C75A500BCEAFC /* IQService.m in Sources */,
 				73840E3B1B1C75A500BCEAFC /* RMenuCell.m in Sources */,
 				737136311B539BBF0043B87B /* ContactsSectionView.m in Sources */,
+				FBD57BAC1E923FBC00EDCB94 /* OptionsModel.m in Sources */,
 				73840E3C1B1C75A500BCEAFC /* TaskPolicies.m in Sources */,
 				2DD5CB351C842BCD002CE8C0 /* TaskComplexityCell.m in Sources */,
 				73840E3D1B1C75A500BCEAFC /* IQLog.m in Sources */,
