@@ -15,6 +15,8 @@
 
 static const void *RKObjectRequestOperationBlock = &RKObjectRequestOperationBlock;
 
+static NSString *const IQDeviseRegistredForPushesKey = @"pushed_register_key";
+
 @interface RKObjectRequestOperation(OperationBlock)
 
 @property (nonatomic, copy) void (^operationBlock)(void);
@@ -209,11 +211,19 @@ BOOL IsNetworUnreachableError(NSError * error) {
                     path:@"devices"
               parameters:parameters
                  handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                     if (success) {
+                         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:IQDeviseRegistredForPushesKey];
+                     }
+                     
                      if(handler) {
                          handler(success, responseData, error);
                      }
                  }];
     }
+}
+
+- (BOOL)isRegisterDeviceForRemoteNotifications {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:IQDeviseRegistredForPushesKey];
 }
 
 - (void)subscribeToUserStatusChangedNotification:(NSArray *)userIndexes handler:(ObjectRequestCompletionHandler)handler {
@@ -1160,6 +1170,30 @@ fileAttributeName:(NSString*)fileAttributeName
                                                    pathPattern:@"users/subscribe"
                                                    fromKeyPath:nil
                                                          store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQSettings objectMapping]
+                                                              method:RKRequestMethodGET
+                                                         pathPattern:@"users/settings"
+                                                             keyPath:@"settings"
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"devices/enable"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [RKResponseDescriptor responseDescriptorWithMapping:[IQServiceResponse objectMapping]
+                                                              method:RKRequestMethodPUT
+                                                         pathPattern:@"devices/disable"
+                                                             keyPath:nil
+                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     [self.objectManager addResponseDescriptor:descriptor];
 }

@@ -37,6 +37,8 @@
 #import "FeedbacksController.h"
 #endif
 
+#import "OptionsViewController.h"
+
 @interface AppDelegate () {
     UIBackgroundTaskIdentifier _backgroundIdentifier;
 }
@@ -102,7 +104,10 @@
 }
 
 + (BOOL)pushNotificationsEnabled {
-    return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
+    BOOL enabled = [[UIApplication sharedApplication] isRegisteredForRemoteNotifications] &&
+    ([[UIApplication sharedApplication] currentUserNotificationSettings].types != UIUserNotificationTypeNone);
+    
+    return enabled;
 }
 
 + (void)registerForRemoteNotifications {
@@ -154,7 +159,11 @@
 #ifdef IPAD
     FeedbacksController * feedbacksController = [[FeedbacksController alloc] init];
     UINavigationController * feedbacksNav = [[navigationControllerClass alloc] initWithRootViewController:feedbacksController];
-    [center setViewControllers:@[notificationsNav, tasksNav, messagesNav, feedbacksNav]];
+    
+    OptionsViewController *optionsController = [[OptionsViewController alloc] init];
+    UINavigationController *optionsNav = [[navigationControllerClass alloc] initWithRootViewController:optionsController];
+    
+    [center setViewControllers:@[notificationsNav, tasksNav, messagesNav, optionsNav, feedbacksNav]];
 #else
     center.tabBar.layer.borderWidth = 0;
     [center setViewControllers:@[notificationsNav, tasksNav, messagesNav]];
@@ -357,8 +366,12 @@
 
         [[IQService sharedService] registerDeviceForRemoteNotificationsWithToken:newToken
                                                                          handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                             
                                                                              if(!success) {
                                                                                  NSLog(@"Failed registry device on server with error:%@", error);
+                                                                             }
+                                                                             else {
+                                                                                 [[NSNotificationCenter defaultCenter] postNotificationName:DeviceDidRegisterForPushesNotification object:nil];
                                                                              }
                                                                          }];
     }

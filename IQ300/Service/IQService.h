@@ -59,4 +59,6 @@ extern BOOL IsNetworUnreachableError(NSError * error);
 
 - (void)createAttachmentWithImage:(UIImage*)image fileName:(NSString*)fileName mimeType:(NSString *)mimeType handler:(ObjectRequestCompletionHandler)handler;
 
+- (BOOL)isRegisterDeviceForRemoteNotifications;
+
 @end

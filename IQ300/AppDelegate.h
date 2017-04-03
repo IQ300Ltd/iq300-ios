@@ -20,5 +20,7 @@
 + (void)setupNotificationCenter;
 + (void)registerForRemoteNotifications;
 
++ (BOOL)pushNotificationsEnabled;
+
 @end
 
