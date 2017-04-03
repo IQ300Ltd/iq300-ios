@@ -37,7 +37,9 @@
 
 - (void)setItem:(NotificationsOptionItem *)item {
     _titleLabel.text = item.titleString;
+    
     _notificationsSwitch.on = item.onState;
+    _notificationsSwitch.enabled = item.enabled;
 }
 
 - (void)layoutSubviews {

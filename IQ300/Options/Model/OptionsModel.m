@@ -47,7 +47,9 @@ static NSDictionary *_cellClasses = nil;
                                       };
         });
         
+        _enableInteraction = YES;
         _types = @[@(OptionsModelCellTypeNotications)];
+        
         [self clearModelData];
     }
     
@@ -75,7 +77,8 @@ static NSDictionary *_cellClasses = nil;
      pushNotificationsSettingsWithHandler:^(BOOL success, IQSettings *settings, NSData *responseData, NSError *error) {
         if (success && !error) {
             _items = @[
-                       [NotificationsOptionItem  itemWithOnState:[settings.pushEnabled boolValue]]
+                       [NotificationsOptionItem  itemWithOnState:[settings.pushEnabled boolValue]
+                                                         enabled:_enableInteraction]
                        ];
         }
         
@@ -83,15 +86,11 @@ static NSDictionary *_cellClasses = nil;
             completion(error);
         }
     }];
-//    
-//    if (completion) {
-//        completion(nil);
-//    }
 }
 
 - (void)clearModelData {
     _items = @[
-               [[NotificationsOptionItem alloc] init]
+               [NotificationsOptionItem itemWithEnabled:_enableInteraction]
                ];
 }
 

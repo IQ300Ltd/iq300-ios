@@ -14,15 +14,22 @@
     self = [super init];
     if (self) {
         _titleString = NSLocalizedString(@"Notifications", nil);
-        _onState = YES;
+        _onState = NO;
+        _enabled = YES;
     }
     
     return self;
 }
 
-+ (instancetype)itemWithOnState:(BOOL)onState {
++ (instancetype)itemWithEnabled:(BOOL)enabled {
+    return [self itemWithOnState:NO
+                         enabled:enabled];
+}
+
++ (instancetype)itemWithOnState:(BOOL)onState enabled:(BOOL)enabled {
     NotificationsOptionItem *item = [[NotificationsOptionItem alloc] init];
     item.onState = onState;
+    item.enabled = enabled;
     
     return item;
 }

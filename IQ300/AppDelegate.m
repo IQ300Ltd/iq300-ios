@@ -357,6 +357,7 @@
 
         [[IQService sharedService] registerDeviceForRemoteNotificationsWithToken:newToken
                                                                          handler:^(BOOL success, NSData *responseData, NSError *error) {
+                                                                             
                                                                              if(!success) {
                                                                                  NSLog(@"Failed registry device on server with error:%@", error);
                                                                              }

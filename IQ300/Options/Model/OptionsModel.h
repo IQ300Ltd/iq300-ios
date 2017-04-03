@@ -11,4 +11,6 @@
 
 @interface OptionsModel : IQTableModel
 
+@property (nonatomic, assign) BOOL enableInteraction;
+
 @end

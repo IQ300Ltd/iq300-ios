@@ -7,6 +7,7 @@
 //
 
 #import "OptionsViewController.h"
+#import "AppDelegate.h"
 
 @interface OptionsViewController () {
     
@@ -44,6 +45,11 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [[UIView alloc] init];
+    
+    self.model.enableInteraction = [AppDelegate pushNotificationsEnabled];
+    if (!self.model.enableInteraction) {
+        
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -74,6 +80,11 @@
     if ([cell conformsToProtocol:@protocol(IQTableCell)]) {
         ((id <IQTableCell>)cell).item = [self.model itemAtIndexPath:indexPath];
     }
+    if ([cell isKindOfClass:[NotificationsOptionTableViewCell class]]) {
+        [((NotificationsOptionTableViewCell *)cell).notificationsSwitch addTarget:self
+                                                                           action:@selector(notificationsEnabledSwitchWasChanged:)
+                                                                 forControlEvents:UIControlEventValueChanged];
+    }
     
     return cell;
 }
@@ -93,6 +104,10 @@
 
 - (void)backButtonAction:(UIButton*)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)notificationsEnabledSwitchWasChanged:(UISwitch *)sender {
+    
 }
 
 @end
