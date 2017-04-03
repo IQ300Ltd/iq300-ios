@@ -1162,6 +1162,14 @@ fileAttributeName:(NSString*)fileAttributeName
                                                          store:self.objectManager.managedObjectStore];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQSettings class]
+                                                        method:RKRequestMethodGET
+                                                   pathPattern:@"users/settings"
+                                                   fromKeyPath:@"settings"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 }
 
 @end

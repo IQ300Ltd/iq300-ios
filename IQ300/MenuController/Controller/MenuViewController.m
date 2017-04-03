@@ -28,6 +28,8 @@
 #import "MTableFooterView.h"
 #endif
 
+#import "OptionsViewController.h"
+
 #define SECTION_HEIGHT 39
 #define ACCOUNT_HEADER_HEIGHT 64.5
 #define TABLE_HEADER_HEIGHT 42.5
@@ -44,6 +46,7 @@ CGFloat IQStatusBarHeight()
     NSInteger _selectedSection;
 #ifndef IPAD
     MTableFooterView * _footerView;
+    MTableFooterView * _optionsFooterView;
 #endif
 }
 
@@ -96,8 +99,21 @@ CGFloat IQStatusBarHeight()
                                                  completion:nil];
     }];
     [self.view addSubview:_footerView];
+    
+    _optionsFooterView = [[MTableFooterView alloc] init];
+    _optionsFooterView.title = NSLocalizedString(@"Options", nil);
+    [_optionsFooterView setActionBlock:^(MTableFooterView *footerView) {
+        [weakSelf.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:nil];
+        
+        OptionsViewController *controller = [[OptionsViewController alloc] init];
+        UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+        [weakSelf.mm_drawerController presentViewController:navigationController
+                                                   animated:YES
+                                                 completion:nil];
+    }];
+    [self.view addSubview:_optionsFooterView];
 #endif
-
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUserAccount)
                                                  name:AccountDidChangedNotification
@@ -127,16 +143,21 @@ CGFloat IQStatusBarHeight()
                                   MIN(MENU_WIDTH, actualBounds.size.width),
                                   actualBounds.size.height - tableViewOffset);
 #else
-    CGFloat footerViewY = actualBounds.origin.y + actualBounds.size.height - MENU_ITEM_HEIGHT;
+    CGFloat footerViewY = actualBounds.origin.y + actualBounds.size.height - MENU_ITEM_HEIGHT * 2.f;
+    _optionsFooterView.frame = CGRectMake(actualBounds.origin.x,
+                                          footerViewY,
+                                          actualBounds.size.width,
+                                          MENU_ITEM_HEIGHT);
+    
     _footerView.frame = CGRectMake(actualBounds.origin.x,
-                                   footerViewY,
+                                   footerViewY + MENU_ITEM_HEIGHT,
                                    actualBounds.size.width,
                                    MENU_ITEM_HEIGHT);
     
     _tableView.frame = CGRectMake(actualBounds.origin.x,
                                   tableViewOffset,
                                   MIN(MENU_WIDTH, actualBounds.size.width),
-                                  actualBounds.size.height - tableViewOffset - MENU_ITEM_HEIGHT + 1.0f);
+                                  actualBounds.size.height - tableViewOffset - (MENU_ITEM_HEIGHT + 1.0f) * 2.f);
 #endif
 }
 
