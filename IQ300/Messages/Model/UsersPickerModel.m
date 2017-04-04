@@ -192,47 +192,55 @@ static NSString * UReuseIdentifier = @"UReuseIdentifier";
 - (void)subscribeToUserNotifications {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSArray *indexes = [_usersInternal valueForKey:@"userId"];
-        [[IQService sharedService] subscribeToUserStatusChangedNotification:indexes
-                                                                    handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {
-                                                                        [self resubscribeToUserStatusChangedNotificationWithChannel:channel.name];
-                                                                    }];
+        if (indexes && indexes.count) {
+            [[IQService sharedService] subscribeToUserStatusChangedNotification:indexes
+                                                                        handler:^(BOOL success,  IQChannel *channel, NSData *responseData, NSError *error) {
+                                                                            [self resubscribeToUserStatusChangedNotificationWithChannel:channel.name];
+                                                                        }];
+        }
+        else {
+            [self resubscribeToUserStatusChangedNotificationWithChannel:nil];
+        }
     });
 }
 
 - (void)resubscribeToUserStatusChangedNotificationWithChannel:(NSString *)channel {
     [self unsubscribeToUserStatusChangedNotification];
     
-    __weak typeof(self) weakSelf = self;
-    void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
-        [weakSelf modelWillChangeContent];
+    if (channel && channel.length > 0) {
+        __weak typeof(self) weakSelf = self;
+        void (^block)(IQCNotification * notf) = ^(IQCNotification * notf) {
+            [weakSelf modelWillChangeContent];
+            
+            NSArray *onlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"online_ids"];
+            NSArray *offlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"offline_ids"];
+            
+            NSArray *onlineUsers = [_usersInternal filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"userId IN %@", onlineUserIndexes]];
+            
+            for (IQUser *user in onlineUsers) {
+                user.online = @(YES);
+                NSIndexPath *indexPath = [self indexPathOfObject:user];
+                [self modelDidChangeObject:user atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            
+            NSArray *offlineUsers = [_usersInternal filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"userId IN %@", offlineUserIndexes]];
+            
+            for (IQUser *user in offlineUsers) {
+                user.online = @(NO);
+                NSIndexPath *indexPath = [self indexPathOfObject:user];
+                [self modelDidChangeObject:user atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
+            }
+            
+            [[IQService sharedService].context saveToPersistentStore:nil];
+            [weakSelf modelDidChangeContent];
+        };
         
-        NSArray *onlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"online_ids"];
-        NSArray *offlineUserIndexes = [notf.userInfo[IQNotificationDataKey] objectForKey:@"offline_ids"];
-        
-        NSArray *onlineUsers = [_usersInternal filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"userId IN %@", onlineUserIndexes]];
-        
-        for (IQUser *user in onlineUsers) {
-            user.online = @(YES);
-            NSIndexPath *indexPath = [self indexPathOfObject:user];
-            [self modelDidChangeObject:user atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
-        }
-        
-        NSArray *offlineUsers = [_usersInternal filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"userId IN %@", offlineUserIndexes]];
-        
-        for (IQUser *user in offlineUsers) {
-            user.online = @(NO);
-            NSIndexPath *indexPath = [self indexPathOfObject:user];
-            [self modelDidChangeObject:user atIndexPath:indexPath forChangeType:NSFetchedResultsChangeUpdate newIndexPath:nil];
-        }
-        
-        [[IQService sharedService].context saveToPersistentStore:nil];
-        [weakSelf modelDidChangeContent];
-    };
+        _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
+                                                                                  channelName:channel
+                                                                                        queue:nil
+                                                                                   usingBlock:block];
+    }
     
-    _userStatusChangedObserver = [[IQNotificationCenter defaultCenter] addObserverForName:IQUserDidChangeStatusNotification
-                                                                              channelName:channel
-                                                                                    queue:nil
-                                                                               usingBlock:block];
     _currentUserStatusChangedChannelName = channel;
 }
 
