@@ -37,13 +37,13 @@
 #define HEIGHT_DELTA 0.0f
 #define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 193.0f
 #define USER_INFO_HEIGHT 27.5f
-#define USER_ICON_SEZE 17.0f
+#define USER_ICON_SIZE 17.0f
 #else
 #define DESCRIPTION_LABEL_FONT [UIFont fontWithName:IQ_HELVETICA size:13]
 #define HEIGHT_DELTA 1.0f
 #define COLLAPSED_COMMENT_CELL_MAX_HEIGHT 182.0f
 #define USER_INFO_HEIGHT 25.5f
-#define USER_ICON_SEZE 16.0f
+#define USER_ICON_SIZE 16.0f
 #endif
 
 typedef NS_ENUM(NSInteger, CommentCellStyle) {
@@ -53,6 +53,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 
 @interface CommentCell() {
     BOOL _commentIsMine;
+    BOOL _commentIsForwarded;
     UIImageView * _bubbleImageView;
     UITapGestureRecognizer * _singleTapGesture;
     UIView * _separatorView;
@@ -104,7 +105,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     CGFloat bubbleWidth = ceilf((cellWidth - CONTENT_INSET * 2.0f) * BUBBLE_WIDTH_PERCENT);
     CGFloat descriptionWidth = bubbleWidth - DESCRIPTION_PADDING * 2.0f;
     CGFloat height = COMMENT_CELL_MIN_HEIGHT;
-  
+    
     CGFloat commentIsMine = ([item.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
     
     if([item.body length] > 0) {
@@ -143,7 +144,32 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         height += ATTACHMENTS_VIEW_HEIGHT + CONTENT_OFFSET;
     }
     
+    if (item.forwardedInfo && [item.type isEqualToString:@"forward"]) {
+        NSString *infoTitle = [self forwardedTitleWithDiscussableTitle:item.forwardedInfo.discussableTitle
+                                                       discussableType:item.forwardedInfo.discussableType];
+        
+        CGSize infoTitleSize = [infoTitle sizeWithFont:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 10.0f : 9.0f]];
+        infoTitleSize.height += infoTitleSize.width > descriptionWidth ? infoTitleSize.height : 0;
+        
+        height += infoTitleSize.height + 5.f;
+    }
+    
     return height;
+}
+
++ (NSString *)forwardedTitleWithDiscussableTitle:(NSString *)title discussableType:(NSString *)type {
+    NSString *from = @"from the task";
+    if ([type isEqualToString:@"dialog"]) {
+        from = @"from the dialogue";
+    }
+    else if ([type isEqualToString:@"conference"]) {
+        from = @"from the conference";
+    }
+    
+    return [NSString stringWithFormat:@"%@ %@: %@",
+            NSLocalizedString(@"Forwarded message", nil),
+            NSLocalizedString(from, nil),
+            title];
 }
 
 + (BOOL)cellNeedToBeExpandableForItem:(IQComment *)item сellWidth:(CGFloat)cellWidth {
@@ -186,8 +212,14 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         _bubbleImageView = [UIImageView new];
         [contentView addSubview:_bubbleImageView];
         
+        _forwardInfoLabel = [self makeLabelWithTextColor:IQ_FONT_GRAY_COLOR
+                                                    font:[UIFont fontWithName:IQ_HELVETICA size:(IS_IPAD) ? 10.0f : 9.0f]
+                                           localaizedKey:nil];
+        _forwardInfoLabel.numberOfLines = 0;
+        [contentView addSubview:_forwardInfoLabel];
+        
         _userImageView = [[UIImageView alloc] init];
-        _userImageView.layer.cornerRadius = USER_ICON_SEZE / 2.0f;
+        _userImageView.layer.cornerRadius = USER_ICON_SIZE / 2.0f;
         [_userImageView setImage:[UIImage imageNamed:@"user_icon.png"]];
         [_userImageView setClipsToBounds:YES];
         [contentView addSubview:_userImageView];
@@ -280,100 +312,127 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    BOOL hasDescription = ([_item.body length] > 0);
-    BOOL hasAttachment = ([_item.attachments count] > 0);
-    BOOL hasExpandView = (_expandable);
+    CGRect actualBounds = UIEdgeInsetsInsetRect(self.contentView.bounds, _contentInsets);
+    CGFloat maxContentWidth = ceilf(actualBounds.size.width * BUBBLE_WIDTH_PERCENT);
     
-    CGRect bounds = self.contentView.bounds;
-    CGRect actualBounds = UIEdgeInsetsInsetRect(bounds, _contentInsets);
-    CGFloat bubleOffset = 5.0f;
-    CGFloat bubbleWidth = ceilf(actualBounds.size.width * BUBBLE_WIDTH_PERCENT);
-
-    _timeLabel.frame = CGRectMake(actualBounds.origin.x,
-                                  actualBounds.origin.y,
-                                  actualBounds.size.width,
+    _timeLabel.frame = CGRectMake(CGRectGetMinX(actualBounds) + (!_commentIsMine ?: -3.f),
+                                  CGRectGetMinY(actualBounds),
+                                  CGRectGetWidth(actualBounds),
                                   TIME_LABEL_HEIGHT);
     
-    CGFloat bubdleImageY = CGRectBottom(_timeLabel.frame) + CONTENT_OFFSET;
-
-    if(_commentIsMine) {
-        _statusImageView.frame = CGRectMake(actualBounds.origin.x + actualBounds.size.width - CONTENT_OFFSET - bubbleWidth - STATUS_IMAGE_SIZE,
-                                            bubdleImageY + 10.0f,
+    CGPoint bubblePoint = CGPointMake(_commentIsMine ? CGRectGetMaxX(actualBounds) - maxContentWidth : CGRectGetMinX(actualBounds),
+                                      CGRectGetMaxY(_timeLabel.frame) + CONTENT_OFFSET);
+    
+    CGSize bubbleSize = CGSizeMake(maxContentWidth,
+                                   CGRectGetHeight(actualBounds) - bubblePoint.y - BUBBLE_BOTTOM_OFFSET);
+    
+    _bubbleImageView.frame = CGRectMake(bubblePoint.x,
+                                        bubblePoint.y,
+                                        bubbleSize.width,
+                                        bubbleSize.height);
+    
+    _statusImageView.frame = CGRectZero;
+    if (_commentIsMine) {
+        CGFloat statusCheckPadding = 8.f;
+        _statusImageView.frame = CGRectMake(bubblePoint.x - (STATUS_IMAGE_SIZE + CONTENT_OFFSET),
+                                            bubblePoint.y + statusCheckPadding,
                                             STATUS_IMAGE_SIZE,
                                             STATUS_IMAGE_SIZE);
     }
-    else {
-        _statusImageView.frame = CGRectZero;
+    
+    CGFloat tailWidth = 2.f;
+    CGFloat maxTextWidth = bubbleSize.width - DESCRIPTION_PADDING * 2.f - tailWidth;
+    
+    CGPoint contentPoint = CGPointMake(bubblePoint.x  + (!_commentIsMine ? tailWidth : 0) + DESCRIPTION_PADDING,
+                                       bubblePoint.y);
+    
+    _forwardInfoLabel.frame = CGRectZero;
+    if (_commentIsForwarded) {
+        CGSize infoTitleSize = [_forwardInfoLabel.text sizeWithFont:_forwardInfoLabel.font];
+        infoTitleSize.height += infoTitleSize.width > maxTextWidth ? infoTitleSize.height : 0.f;
+        infoTitleSize.width = maxTextWidth;
+        
+        _forwardInfoLabel.frame = CGRectMake(contentPoint.x,
+                                             contentPoint.y + CONTENT_OFFSET,
+                                             infoTitleSize.width,
+                                             infoTitleSize.height);
+        
+        contentPoint.y = CGRectGetMaxY(_forwardInfoLabel.frame);
     }
     
-    CGFloat bubdleImageX = (_commentIsMine) ? CGRectRight(_statusImageView.frame) + bubleOffset : actualBounds.origin.x;
-    _bubbleImageView.frame = CGRectMake(bubdleImageX,
-                                        bubdleImageY,
-                                        bubbleWidth,
-                                        actualBounds.size.height - bubdleImageY - BUBBLE_BOTTOM_OFFSET);
-    
-    
-    CGRect contentRect = _bubbleImageView.frame;
+    _userImageView.frame = CGRectZero;
+    _userNameLabel.frame = CGRectZero;
+    _onlineIndicator.frame = CGRectZero;
+    _separatorView.frame = CGRectZero;
     
     if (!_commentIsMine) {
-        CGSize userImageSize = CGSizeMake(USER_ICON_SEZE, USER_ICON_SEZE);
-        _userImageView.frame = CGRectMake(contentRect.origin.x + DESCRIPTION_PADDING,
-                                          contentRect.origin.y + (USER_INFO_HEIGHT - userImageSize.height - 2.0f) / 2.0f,
-                                          userImageSize.width,
-                                          userImageSize.height);
+        _userImageView.frame = CGRectMake(contentPoint.x,
+                                          contentPoint.y + (USER_INFO_HEIGHT / 2.f - USER_ICON_SIZE / 2.f),
+                                          USER_ICON_SIZE,
+                                          USER_ICON_SIZE);
         
-        CGFloat userNameX = CGRectRight(_userImageView.frame) + DESCRIPTION_PADDING;
-        CGSize userNameSize = [_userNameLabel sizeThatFits:CGSizeMake(contentRect.size.width - userNameX - DESCRIPTION_PADDING - ONLINE_INDICATOR_LEFT_OFFSET - ONLINE_INDICATOR_SIZE, CGFLOAT_MAX)];
+        CGFloat nameMinX = CGRectGetMaxX(_userImageView.frame) + DESCRIPTION_PADDING;
+        CGSize nameSize = [_userNameLabel sizeThatFits:CGSizeMake(bubbleSize.width - nameMinX - DESCRIPTION_PADDING - ONLINE_INDICATOR_LEFT_OFFSET - ONLINE_INDICATOR_SIZE,
+                                                                  CGFLOAT_MAX)];
         
-        _userNameLabel.frame = CGRectMake(CGRectRight(_userImageView.frame) + DESCRIPTION_PADDING,
-                                          _userImageView.frame.origin.y,
-                                          userNameSize.width,
-                                          _userImageView.frame.size.height);
+        _userNameLabel.frame = CGRectMake(nameMinX,
+                                          CGRectGetMidY(_userImageView.frame) - nameSize.height / 2.f,
+                                          nameSize.width,
+                                          nameSize.height);
         
-        _onlineIndicator.frame = CGRectMake(CGRectRight(_userNameLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
-                                            _userNameLabel.frame.origin.y + (_userNameLabel.bounds.size.height - ONLINE_INDICATOR_SIZE) / 2.0f,
+        _onlineIndicator.frame = CGRectMake(CGRectGetMaxX(_userNameLabel.frame) + ONLINE_INDICATOR_LEFT_OFFSET,
+                                            CGRectGetMidY(_userNameLabel.frame) - ONLINE_INDICATOR_SIZE / 2.f,
                                             ONLINE_INDICATOR_SIZE,
                                             ONLINE_INDICATOR_SIZE);
         
-        CGFloat separatorHeight = 2.0f;
-        _separatorView.frame = CGRectMake(contentRect.origin.x,
-                                          contentRect.origin.y + USER_INFO_HEIGHT - separatorHeight,
-                                          contentRect.size.width,
-                                          separatorHeight / [UIScreen mainScreen].scale);
+        CGFloat separatorHeight = 2.0f / [UIScreen mainScreen].scale;
+        _separatorView.frame = CGRectMake(bubblePoint.x,
+                                          contentPoint.y + USER_INFO_HEIGHT - separatorHeight,
+                                          bubbleSize.width,
+                                          separatorHeight);
         
-        contentRect.origin.y += USER_INFO_HEIGHT;
-        contentRect.size.height -= USER_INFO_HEIGHT;
+        contentPoint.y = CGRectGetMaxY(_separatorView.frame);
     }
     
-    CGFloat expandViewHeight = (hasExpandView) ? 15.0f + CONTENT_OFFSET : 0.0f;
-    CGFloat attachmentRectHeight = (hasAttachment) ? ATTACHMENTS_VIEW_HEIGHT + CONTENT_OFFSET : 0.0f;
-    CGFloat descriptioHeight =  (contentRect.size.height - DESCRIPTION_PADDING * 2) - attachmentRectHeight - expandViewHeight;
+    contentPoint.y += CONTENT_OFFSET;
     
-    _descriptionTextView.frame = CGRectMake(contentRect.origin.x + DESCRIPTION_PADDING,
-                                            contentRect.origin.y + DESCRIPTION_PADDING - 1,
-                                            contentRect.size.width - DESCRIPTION_PADDING * 2.0f,
-                                            (hasDescription) ? descriptioHeight : 0.0f);
+    CGSize expandRectSize = CGSizeMake((IS_IPAD) ? 100.0f : 90.0f,
+                                       _expandable ? 15.f + CONTENT_OFFSET : 0.f);
     
-    if(hasExpandView) {
-        _expandButton.frame = CGRectMake(_descriptionTextView.frame.origin.x + CONTENT_OFFSET,
-                                         CGRectBottom(_descriptionTextView.frame) + CONTENT_OFFSET,
-                                         (IS_IPAD) ? 100.0f : 90.0f,
-                                         15.0f);
+    BOOL showAttachments = [_item.attachments count] > 0;
+    CGSize attachmentRectSize = CGSizeMake(maxTextWidth,
+                                           showAttachments ? ATTACHMENTS_VIEW_HEIGHT + CONTENT_OFFSET : 0.f);
+    
+    BOOL showDescription = _descriptionTextView.text && _descriptionTextView.text.length;
+    _descriptionTextView.frame = CGRectZero;
+    if (showDescription) {
+        CGSize descriptionSize = CGSizeMake(maxTextWidth,
+                                            (bubbleSize.height - contentPoint.y) - expandRectSize.height - attachmentRectSize.height);
+        
+        _descriptionTextView.frame = CGRectMake(contentPoint.x,
+                                                contentPoint.y,
+                                                descriptionSize.width,
+                                                descriptionSize.height + 2.f);
+        
+        contentPoint.y = CGRectGetMaxY(_descriptionTextView.frame);
+    }
+
+    _expandButton.frame = CGRectZero;
+    if(_expandable) {
+        _expandButton.frame = CGRectMake(contentPoint.x,
+                                         contentPoint.y,
+                                         expandRectSize.width,
+                                         15.f);
+        
+        contentPoint.y = CGRectGetMaxY(_expandButton.frame) + CONTENT_OFFSET;
     }
     
-    if(hasAttachment) {
-        CGFloat attachmentX = _descriptionTextView.frame.origin.x;
-        CGFloat attachButtonY =  (hasDescription) ? CGRectBottom(_descriptionTextView.frame) + CONTENT_OFFSET :
-        contentRect.origin.y + CONTENT_OFFSET;
-        
-        if(hasExpandView) {
-            attachButtonY = CGRectBottom(_expandButton.frame) + CONTENT_OFFSET;
-        }
-        
-        [_attachmentsView setFrame:CGRectMake(attachmentX, attachButtonY, _descriptionTextView.frame.size.width, ATTACHMENTS_VIEW_HEIGHT)];
-    }
-    else {
-        [_attachmentsView setFrame:CGRectZero];
+    _attachmentsView.frame = CGRectZero;
+    if (showAttachments) {
+        _attachmentsView.frame = CGRectMake(contentPoint.x,
+                                            contentPoint.y,
+                                            attachmentRectSize.width,
+                                            ATTACHMENTS_VIEW_HEIGHT);
     }
 }
 
@@ -408,6 +467,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     _item = item;
     
     _commentIsMine = ([_item.author.userId isEqualToNumber:[IQSession defaultSession].userId]);
+    _commentIsForwarded = [item.type isEqualToString:@"forward"];
     
     _timeLabel.text = [_item.createDate dateToTimeString];
     _timeLabel.textAlignment = (_commentIsMine) ? NSTextAlignmentRight : NSTextAlignmentLeft;
@@ -426,6 +486,11 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         else {
             [_userImageView setImage:[UIImage imageNamed:@"user_icon.png"]];
         }
+    }
+    
+    if (_commentIsForwarded) {
+        _forwardInfoLabel.text = [CommentCell forwardedTitleWithDiscussableTitle:item.forwardedInfo.discussableTitle
+                                                                 discussableType:item.forwardedInfo.discussableType];
     }
     
     _descriptionTextView.attributedText = [self formatedTextFromText:_item.body];
