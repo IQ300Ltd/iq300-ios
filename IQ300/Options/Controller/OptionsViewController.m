@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import "DispatchAfterExecution.h"
 
-#define DISPATCH_DELAY 1.f
+#define DISPATCH_DELAY 0.5f
 
 @interface OptionsViewController () {
     dispatch_after_block _cancelBlock;
@@ -57,8 +57,6 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [[UIView alloc] init];
-    
-    self.model.enableInteraction = [AppDelegate pushNotificationsEnabled];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(willEnterForegroundNotification)
@@ -152,25 +150,18 @@
 }
 
 - (void)willEnterForegroundNotification {
-    if (self.model.enableInteraction != [AppDelegate pushNotificationsEnabled]) {
-        self.model.enableInteraction = [AppDelegate pushNotificationsEnabled];
-        
-        if (self.model.enableInteraction && ![[IQService sharedService] isRegisterDeviceForRemoteNotifications]) {
-            [AppDelegate registerForRemoteNotifications];
-        }
-        else {
-            [self reloadModel];
-        }
-        
-        
+    if ([AppDelegate pushNotificationsEnabled] && ![[IQService sharedService] isRegisterDeviceForRemoteNotifications]) {
+        [AppDelegate registerForRemoteNotifications];
+    }
+    else {
+        [self reloadModel];
     }
 }
 
 - (void)reloadModel {
+    self.model.enableInteraction = [AppDelegate pushNotificationsEnabled];
     [self.model updateModelWithCompletion:^(NSError *error) {
-        if (!error) {
-            [self.tableView reloadData];
-        }
+        [self.tableView reloadData];
     }];
 }
 
