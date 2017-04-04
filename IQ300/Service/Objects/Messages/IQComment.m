@@ -23,9 +23,11 @@
 @dynamic attachments;
 @dynamic commentStatus;
 @dynamic unread;
+@dynamic forwardedInfo;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store {
     RKEntityMapping * mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
+    
     [mapping setIdentificationAttributes:@[@"commentId"]];
     [mapping addAttributeMappingsFromDictionary:@{
                                                   @"id"            : @"commentId",
@@ -46,6 +48,12 @@
                                                          withMapping:[IQManagedAttachment objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:relation];
 
+    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"additional_data"
+                                                           toKeyPath:@"forwardedInfo"
+                                                         withMapping:[IQForwardInfo objectMappingForManagedObjectStore:store]];
+    
+    [mapping addPropertyMapping:relation];
+    
     return mapping;
 }
 
