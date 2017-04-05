@@ -8,8 +8,12 @@
 
 #import "IQTableBaseController.h"
 #import "MessagesModel.h"
+#import "MessagesView.h"
 
-@interface MessagesController : IQTableBaseController
+@interface MessagesController : IQTableBaseController {
+ @protected
+    MessagesView *_messagesView;
+}
 
 @property (nonatomic, strong) MessagesModel * model;
 

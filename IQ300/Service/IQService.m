@@ -1199,7 +1199,7 @@ fileAttributeName:(NSString*)fileAttributeName
     
     descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
                                                         method:RKRequestMethodPOST
-                                                   pathPattern:@"discussions/:id/forward_comment"
+                                                   pathPattern:@"discussions/:id/shares/forward_comment"
                                                    fromKeyPath:@"conversation"
                                                          store:self.objectManager.managedObjectStore];
     

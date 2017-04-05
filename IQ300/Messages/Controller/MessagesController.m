@@ -34,7 +34,7 @@
 #define DISPATCH_DELAY 0.7
 
 @interface MessagesController() <IQSelectionControllerDelegate> {
-    MessagesView * _messagesView;
+    //MessagesView * _messagesView;
     dispatch_after_block _cancelBlock;
     MessagesMenuModel * _menuModel;
 

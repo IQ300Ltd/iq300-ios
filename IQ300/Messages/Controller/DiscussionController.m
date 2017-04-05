@@ -40,7 +40,7 @@
 
 #define SECTION_HEIGHT 12
 
-@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate, IQActivityViewControllerDelegate, UserPickerControllerDelegate, ForwardMessagesTargetControllerDelegate> {
+@interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate, IQActivityViewControllerDelegate, UserPickerControllerDelegate> {
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachmentAsset;
@@ -183,7 +183,6 @@
                                       ForwardMessagesTargetController *targetController = [[ForwardMessagesTargetController alloc] init];
                                       targetController.hidesBottomBarWhenPushed = YES;
                                       targetController.forwardingComment = comment;
-                                      targetController.delegate = self;
                                       
                                       [self.navigationController pushViewController:targetController animated:YES];
                                   }
@@ -1097,17 +1096,6 @@
         }
         [self hideUserPickerController];
     }
-}
-
-#pragma mark - ForwardMessagesTargetControllerDelegate
-
-- (void)reloadDialogControllerWithModel:(DiscussionModel *)model withTitle:(NSString *)title {
-    self.model = model;
-    
-    [self updateModel];
-    [self updateTitle];
-    
-    [self.navigationController popToViewController:self animated:YES];
 }
 
 @end

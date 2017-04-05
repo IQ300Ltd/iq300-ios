@@ -16,7 +16,7 @@
 #import "DiscussionController.h"
 
 @interface ForwardMessagesTargetController () {
-    MessagesView *_messagesView;
+    //MessagesView *_messagesView;
 }
 
 @end
@@ -32,11 +32,6 @@
     }
     
     return self;
-}
-
-- (void)loadView {
-    _messagesView = [[MessagesView alloc] init];
-    self.view = _messagesView;
 }
 
 - (void)viewDidLoad {
@@ -65,10 +60,6 @@
 - (void)backButtonAction:(UIButton *)sender {
     [_messagesView.searchBar resignFirstResponder];
     [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (UITableView *)tableView {
-    return _messagesView.tableView;
 }
 
 - (BOOL)isLeftMenuEnabled {
@@ -104,8 +95,21 @@
                                    toConversationId:conversation.conversationId
                                             handler:^(BOOL success, IQConversation *targetConversation, NSData *responseData, NSError *error) {
                                                 if (success) {
-                                                    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:conversation.discussion];
-                                                    [self.delegate reloadDialogControllerWithModel:model withTitle:conversation.title];
+                                                    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:targetConversation.discussion];
+                                                    
+                                                    DiscussionController * controller = [[DiscussionController alloc] init];
+                                                    controller.hidesBottomBarWhenPushed = YES;
+                                                    controller.title = targetConversation.title;
+                                                    controller.model = model;
+                                                    
+                                                    [self.navigationController setViewControllers:@[[self.navigationController.viewControllers firstObject], controller] animated:YES];
+                                                    
+                                                    __weak typeof(self) weakSelf = self;
+                                                    [MessagesModel markConversationAsRead:targetConversation completion:^(NSError *error) {
+                                                        [weakSelf updateGlobalCounter];
+                                                    }];
+                                                    
+                                                    [MessagesModel reloadConversation:targetConversation completion:nil];
                                                 }
                                                 else {
                                                     [_messagesView.searchBar resignFirstResponder];

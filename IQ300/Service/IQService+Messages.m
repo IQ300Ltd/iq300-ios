@@ -303,7 +303,7 @@
                candidateKind:(NSString *)candidateKind
                      handler:(ObjectRequestCompletionHandler)handler {
     
-    NSString *path = [NSString stringWithFormat:@"discussions/%@/forward_comment", discussionId];
+    NSString *path = [NSString stringWithFormat:@"discussions/%@/shares/forward_comment", discussionId];
     NSDictionary *parameters = @{
                                  @"comment_id" : commentId,
                                  @"candidate"  : @{

@@ -9,17 +9,9 @@
 #import "MessagesController.h"
 
 @class IQComment;
-@class DiscussionModel;
-
-@protocol ForwardMessagesTargetControllerDelegate <NSObject>
-
-- (void)reloadDialogControllerWithModel:(DiscussionModel *)model withTitle:(NSString *)title;
-
-@end
 
 @interface ForwardMessagesTargetController : MessagesController
 
 @property (nonatomic, strong) IQComment *forwardingComment;
-@property (nonatomic, weak) id<ForwardMessagesTargetControllerDelegate> delegate;
 
 @end
