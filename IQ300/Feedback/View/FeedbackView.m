@@ -131,7 +131,7 @@
         _descriptionTextView.scrollEnabled = NO;
         _descriptionTextView.textContainer.lineFragmentPadding = 0;
         _descriptionTextView.linkTextAttributes = @{
-                                                    NSForegroundColorAttributeName: [UIColor colorWithHexInt:0x358bae],
+                                                    NSForegroundColorAttributeName: IQ_BLUE_COLOR,
                                                     NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)
                                                     };
         _descriptionTextView.dataDetectorTypes = UIDataDetectorTypePhoneNumber | UIDataDetectorTypeLink;
