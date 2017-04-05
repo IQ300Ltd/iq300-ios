@@ -89,4 +89,30 @@
 - (void)conversationsIdsDeletedAfter:(NSDate*)deletedAfter
                              handler:(ObjectRequestCompletionHandler)handler;
 
+/**
+ Forwarding a comment to conversation.
+ 
+ @param commentId Forwarded the comment identifier.
+ @param discussionId Forwarding comment source discussion identifier.
+ @param conversationId Target conversation (conference / dialog) identifier.
+ @param handler Handler block. Look `ObjectRequestCompletionHandler`.
+ */
+- (void)forwardCommentWithId:(NSNumber *)commentId
+            fromDiscussionId:(NSNumber *)discussionId
+            toConversationId:(NSNumber *)conversationId
+                     handler:(ObjectRequestCompletionHandler)handler;
+
+/**
+ Forwarding a comment to contact.
+ 
+ @param commentId Forwarded the comment identifier.
+ @param discussionId Forwarding comment source discussion identifier.
+ @param contactId Target contact identifier.
+ @param handler Handler block. Look `ObjectRequestCompletionHandler`.
+ */
+- (void)forwardCommentWithId:(NSNumber *)commentId
+            fromDiscussionId:(NSNumber *)discussionId
+                 toContactId:(NSNumber *)contactId
+                     handler:(ObjectRequestCompletionHandler)handler;
+
 @end

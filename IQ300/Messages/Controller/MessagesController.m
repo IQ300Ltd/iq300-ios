@@ -27,6 +27,10 @@
 #import "MessagesMenuModel.h"
 #import "IQMenuItem.h"
 
+#import "NSManagedObject+ActiveRecord.h"
+
+#import "IQService.h"
+
 #define DISPATCH_DELAY 0.7
 
 @interface MessagesController() <IQSelectionControllerDelegate> {
@@ -230,7 +234,6 @@
     }];
     
     [MessagesModel reloadConversation:conversation completion:nil];
-    
 }
 
 #pragma mark - IQTableModel Delegate

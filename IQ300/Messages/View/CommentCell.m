@@ -144,7 +144,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
         height += ATTACHMENTS_VIEW_HEIGHT + CONTENT_OFFSET;
     }
     
-    if (item.forwardedInfo && [item.type isEqualToString:@"forward"]) {
+    if (item.forwardedInfo && [[item.type lowercaseString] isEqualToString:@"forward"]) {
         NSString *infoTitle = [self forwardedTitleWithDiscussableTitle:item.forwardedInfo.discussableTitle
                                                        discussableType:item.forwardedInfo.discussableType];
         
@@ -158,11 +158,13 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 }
 
 + (NSString *)forwardedTitleWithDiscussableTitle:(NSString *)title discussableType:(NSString *)type {
-    NSString *from = @"from the task";
-    if ([type isEqualToString:@"dialog"]) {
-        from = @"from the dialogue";
+    NSString *adaptiveTypeString = [type lowercaseString];
+    
+    NSString *from = @"from the dialogue";
+    if ([adaptiveTypeString isEqualToString:@"tack"]) {
+        from = @"from the task";
     }
-    else if ([type isEqualToString:@"conference"]) {
+    else if ([adaptiveTypeString isEqualToString:@"conference"]) {
         from = @"from the conference";
     }
     
@@ -620,9 +622,9 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
                 wordRange.length = wordRange.length + 1;
                 
                 if (_commentIsMine) {
-                    NSDictionary * highlightAttribute = @{ IQNikStrokeColorAttributeName : IQ_BLUE_LIGHT_COLOR };
+                    NSDictionary * highlightAttribute = @{ IQNikStrokeColorAttributeName : IQ_BACKGROUND_P2_COLOR };
                     [aText addAttributes:@{ IQNikHighlightAttributeName    : highlightAttribute,
-                                            NSForegroundColorAttributeName : IQ_BLUE_LIGHT_COLOR }
+                                            NSForegroundColorAttributeName : IQ_BACKGROUND_P2_COLOR }
                                    range:wordRange];
                 }
                 else {

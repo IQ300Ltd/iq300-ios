@@ -1196,6 +1196,14 @@ fileAttributeName:(NSString*)fileAttributeName
                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     [self.objectManager addResponseDescriptor:descriptor];
+    
+    descriptor = [IQServiceResponse responseDescriptorForClass:[IQConversation class]
+                                                        method:RKRequestMethodPOST
+                                                   pathPattern:@"discussions/:id/forward_comment"
+                                                   fromKeyPath:@"conversation"
+                                                         store:self.objectManager.managedObjectStore];
+    
+    [self.objectManager addResponseDescriptor:descriptor];
 }
 
 @end

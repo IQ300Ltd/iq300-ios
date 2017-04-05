@@ -271,4 +271,50 @@
                    handler:handler];
 }
 
+#pragma mark - Forwarding
+
+- (void)forwardCommentWithId:(NSNumber *)commentId
+            fromDiscussionId:(NSNumber *)discussionId
+            toConversationId:(NSNumber *)conversationId
+                     handler:(ObjectRequestCompletionHandler)handler {
+    
+    [self forwardCommentWithId:commentId
+              fromDiscussionId:discussionId
+                 toCandidateId:conversationId
+                 candidateKind:@"Conversation"
+                       handler:handler];
+}
+
+- (void)forwardCommentWithId:(NSNumber *)commentId
+            fromDiscussionId:(NSNumber *)discussionId
+                 toContactId:(NSNumber *)contactId
+                     handler:(ObjectRequestCompletionHandler)handler {
+    
+    [self forwardCommentWithId:commentId
+              fromDiscussionId:discussionId
+                 toCandidateId:contactId
+                 candidateKind:@"Contact"
+                       handler:handler];
+}
+
+- (void)forwardCommentWithId:(NSNumber *)commentId
+            fromDiscussionId:(NSNumber *)discussionId
+               toCandidateId:(NSNumber *)candidateId
+               candidateKind:(NSString *)candidateKind
+                     handler:(ObjectRequestCompletionHandler)handler {
+    
+    NSString *path = [NSString stringWithFormat:@"discussions/%@/forward_comment", discussionId];
+    NSDictionary *parameters = @{
+                                 @"comment_id" : commentId,
+                                 @"candidate"  : @{
+                                                   @"id"   : candidateId,
+                                                   @"kind" : candidateKind
+                                                   }
+                                 };
+    [self postObject:nil
+               path:path
+         parameters:parameters
+            handler:handler];
+}
+
 @end
