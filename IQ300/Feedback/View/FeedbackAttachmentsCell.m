@@ -57,10 +57,10 @@
         _addButtonShown = NO;
         
         _titleView = [[UIView alloc] initWithFrame:CGRectZero];
-        _titleView.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _titleView.backgroundColor = IQ_GRAY_LIGHT_COLOR;
         [self.contentView addSubview:_titleView];
         
-        self.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        self.backgroundColor = IQ_GRAY_LIGHT_COLOR;
 
         
         _label = [[UILabel alloc] initWithFrame:CGRectZero];

@@ -36,7 +36,7 @@
     [super viewDidLoad];
     
     self.separatorHeight = 0.5f;
-    self.separatorColor = [UIColor colorWithHexInt:0xcccccc];
+    self.separatorColor = IQ_SEPARATOR_LINE_LIGHT_COLOR;
     self.separatorHidden = NO;
     
     UIBarButtonItem * backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
@@ -53,7 +53,7 @@
     if (_tabbarWidth != self.tabBar.frame.size.width) {
         _tabbarWidth = self.tabBar.frame.size.width;
         CGSize tabItemSize = CGSizeMake(_tabbarWidth / [self.viewControllers count], self.tabBar.frame.size.height);
-        self.tabBar.selectionIndicatorImage = [UIImage imageWithColor:[UIColor colorWithHexInt:0x348dad]
+        self.tabBar.selectionIndicatorImage = [UIImage imageWithColor:[UIColor colorWithHexInt:IQ_BACKGROUND_P2_COLOR]
                                                                  size:tabItemSize];
     }
 }

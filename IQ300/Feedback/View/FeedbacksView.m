@@ -23,9 +23,9 @@
     self = [super initWithFrame:frame];
     if (self) {
         _searchBarContainer = [[BottomLineView alloc] init];
-        _searchBarContainer.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        _searchBarContainer.backgroundColor = IQ_GRAY_LIGHT_COLOR;
         _searchBarContainer.bottomLineHeight = 0.5f;
-        _searchBarContainer.bottomLineColor = [UIColor colorWithHexInt:0xcccccc];
+        _searchBarContainer.bottomLineColor = IQ_SEPARATOR_LINE_COLOR;
         [self addSubview:_searchBarContainer];
         
         UIImage * searchImage = [UIImage imageNamed:@"search_icon.png"];

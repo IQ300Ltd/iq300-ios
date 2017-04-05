@@ -404,6 +404,10 @@
     BOOL isDiscussionOpen = (tabController.selectedIndex == messagesTab && [navController.topViewController isKindOfClass:[DiscussionController class]]);
     NSNumber * conversationId = (isDiscussionOpen) ? ((DiscussionController*)navController.topViewController).model.discussion.conversation.conversationId : nil;
 
+    if (navController.topViewController.presentedViewController) {
+        [navController.topViewController dismissViewControllerAnimated:YES completion:nil];
+    }
+    
     if([[objectType lowercaseString] isEqualToString:@"conversation"]) {
         if((isDiscussionOpen && ![conversationId isEqualToNumber:objectId]) || !isDiscussionOpen) {
             MessagesController * messagesController = navController.viewControllers[0];

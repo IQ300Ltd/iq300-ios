@@ -157,11 +157,11 @@
                                    boardRect.size.width,
                                    lineHeight);
     
-    CGContextSetFillColorWithColor(context, [UIColor colorWithHexInt:0xf6f6f6].CGColor);
+    CGContextSetFillColorWithColor(context, IQ_GRAY_LIGHT_COLOR.CGColor);
     CGContextFillRect(context, boardRect);
 
     //Draw top line
-    CGContextSetStrokeColorWithColor(context, [[UIColor colorWithHexInt:0xc0c0c0] CGColor]);
+    CGContextSetStrokeColorWithColor(context, [IQ_SEPARATOR_LINE_COLOR CGColor]);
     CGContextSetLineWidth(context, lineHeight);
     CGContextStrokeRect(context, toLineRect);
 }

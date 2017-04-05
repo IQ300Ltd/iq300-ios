@@ -56,7 +56,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     
     if(self) {
-        self.backgroundColor = [UIColor colorWithHexInt:0xf6f6f6];
+        self.backgroundColor = IQ_GRAY_LIGHT_COLOR;
         
         _enabled = YES;
         _contentInsets = UIEdgeInsetsMake(CONTENT_VERTICAL_INSETS, CONTENT_HORIZONTAL_INSETS, CONTENT_VERTICAL_INSETS, CONTENT_HORIZONTAL_INSETS);

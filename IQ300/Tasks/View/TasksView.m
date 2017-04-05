@@ -9,7 +9,7 @@
 #import "TasksView.h"
 
 #define HEADER_HEIGHT 52.0f
-#define SEPARATOR_COLOR [UIColor colorWithHexInt:0xc0c0c0]
+#define SEPARATOR_COLOR IQ_SEPARATOR_LINE_COLOR
 
 NSString * const NoTasksFound = @"There are no tasks";
 
@@ -31,7 +31,7 @@ NSString * const NoTasksFound = @"There are no tasks";
         _headerView = [[BottomLineView alloc] init];
         _headerView.bottomLineColor = SEPARATOR_COLOR;
         _headerView.bottomLineHeight = 0.5f;
-        [_headerView setBackgroundColor:[UIColor colorWithHexInt:0xf6f6f6]];
+        [_headerView setBackgroundColor:IQ_GRAY_LIGHT_COLOR];
         
         _filterButton = [[UIButton alloc] init];
         [_filterButton setImage:[UIImage imageNamed:@"next_header_button.png"] forState:UIControlStateNormal];
