@@ -36,9 +36,10 @@
 #define ATTACHMENT_VIEW_Y_OFFSET 7.0f
 #endif
 
-@interface CCommentCell() {
+@interface CCommentCell() <UIGestureRecognizerDelegate> {
     BOOL _commentIsMine;
     UITapGestureRecognizer * _singleTapGesture;
+    UILongPressGestureRecognizer *_longPressGesture;
 }
 
 @end
@@ -193,9 +194,27 @@
         
         _attachmentsView = [[IQAttachmentsView alloc] initWithFrame:CGRectZero];
         [contentView addSubview:_attachmentsView];
+        
+        _longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureAction:)];
+        _longPressGesture.minimumPressDuration = 1.f;
+        _longPressGesture.delegate = self;
+        [contentView addGestureRecognizer:_longPressGesture];
     }
     
     return self;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+- (void)longPressGestureAction:(UILongPressGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        UITableView *tableView = [self parentTableView];
+        if ([tableView.delegate conformsToProtocol:@protocol(IQContentForwardProtocol) ]) {
+            [tableView.delegate performSelector:@selector(shouldForwardContentAtIndexPath:) withObject:[tableView indexPathForCell:self]];
+        }
+    }
 }
 
 - (NSArray*)attachButtons {

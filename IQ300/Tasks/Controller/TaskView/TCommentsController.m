@@ -21,10 +21,13 @@
 #import "TaskTabController.h"
 #import "CommentsView.h"
 #import "TForwardMessagesTargetController.h"
+#import "IQComment.h"
 
 @interface TCommentsController () {
     __weak id _notfObserver;
     __weak id _usersObserver;
+    
+    UILongPressGestureRecognizer *_longPressGesture;
 }
 
 @property (nonatomic, assign) BOOL resetReadFlagAutomatically;
@@ -77,43 +80,38 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     CommentsView *commentsView = (CommentsView *)self.view;
     commentsView.titleLabelHidden = NO;
     commentsView.titleLabel.text = _taskTitle;
     [self.noDataLabel setText:NSLocalizedString(@"No comments", nil)];
-    
-    self.tableView.canCancelContentTouches = NO;
-    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self
-                                                                                                   action:@selector(handleLongPress:)];
-    longPressGesture.minimumPressDuration = 1.f;
-    [self.tableView addGestureRecognizer:longPressGesture];
 }
 
--(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
-    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+- (void)shouldForwardContentAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath) {
+        IQComment *comment = [self.model itemAtIndexPath:indexPath];
         
-        CGPoint location = [gestureRecognizer locationInView:self.tableView];
-        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-        if (indexPath) {
-            IQComment *comment = [self.model itemAtIndexPath:indexPath];
-            if (!comment) {
-                return;
-            }
+        if (!comment ||
+            !comment.commentId ||
+            [comment.commentStatus integerValue] == IQCommentStatusSendError ||
+            [[comment.type lowercaseString] isEqualToString:@"system"]) {
             
-            [UIAlertView showWithTitle:@""
-                               message:NSLocalizedString(@"Forward message", nil)
-                     cancelButtonTitle:NSLocalizedString(@"No", nil)
-                     otherButtonTitles:@[NSLocalizedString(@"Yes", nil)]
-                              tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                  if(buttonIndex == 1) {
-                                      TForwardMessagesTargetController *targetController = [[TForwardMessagesTargetController alloc] init];
-                                      targetController.hidesBottomBarWhenPushed = YES;
-                                      targetController.forwardingComment = comment;
-                                      
-                                      [self.navigationController pushViewController:targetController animated:YES];
-                                  }
-                              }];
+            return;
         }
+        
+        [UIAlertView showWithTitle:@""
+                           message:NSLocalizedString(@"Forward message", nil)
+                 cancelButtonTitle:NSLocalizedString(@"No", nil)
+                 otherButtonTitles:@[NSLocalizedString(@"Yes", nil)]
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                              if(buttonIndex == 1) {
+                                  TForwardMessagesTargetController *targetController = [[TForwardMessagesTargetController alloc] init];
+                                  targetController.hidesBottomBarWhenPushed = YES;
+                                  targetController.forwardingComment = comment;
+                                  
+                                  [self.navigationController pushViewController:targetController animated:YES];
+                              }
+                          }];
     }
 }
 

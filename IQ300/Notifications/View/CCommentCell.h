@@ -24,6 +24,12 @@
 @class IQAttachmentsView;
 @class IQOnlineIndicator;
 
+@protocol IQContentForwardProtocol <NSObject>
+
+- (void)shouldForwardContentAtIndexPath:(NSIndexPath *)indexPath;
+
+@end
+
 @interface CCommentCell : SWTableViewCell {
     UIEdgeInsets _contentInsets;
     UIEdgeInsets _contentBackgroundInsets;

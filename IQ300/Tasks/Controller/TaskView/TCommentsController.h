@@ -8,10 +8,11 @@
 
 #import "CommentsController.h"
 #import "TaskTabItemController.h"
+#import "CCommentCell.h"
 
 @class IQTask;
 
-@interface TCommentsController : CommentsController<TaskTabItemController>
+@interface TCommentsController : CommentsController<TaskTabItemController, IQContentForwardProtocol>
 
 @property (nonatomic, strong) NSString *taskTitle;
 @property (nonatomic, strong) NSNumber * taskId;

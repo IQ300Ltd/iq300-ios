@@ -160,6 +160,7 @@
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                                    action:@selector(handleLongPress:)];
     longPressGesture.minimumPressDuration = 1.f;
+    longPressGesture.allowableMovement = 20.f;
     [self.tableView addGestureRecognizer:longPressGesture];
 }
 
@@ -170,7 +171,12 @@
         NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
         if (indexPath) {
             IQComment *comment = [self.model itemAtIndexPath:indexPath];
-            if (!comment) {
+            
+            if (!comment ||
+                !comment.commentId ||
+                [comment.commentStatus integerValue] == IQCommentStatusSendError ||
+                [[comment.type lowercaseString] isEqualToString:@"system"]) {
+                
                 return;
             }
             
