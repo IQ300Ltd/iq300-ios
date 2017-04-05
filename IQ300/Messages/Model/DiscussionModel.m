@@ -1133,11 +1133,21 @@ NSString * const IQConferencesMemberDidRemovedEvent = @"conferences:member_remov
         
         if (indexPath) {
             NSUInteger section = [self numberOfSections] - indexPath.section - 1;
+            
+            if (section >= [self numberOfSections]) {
+                return ;
+            }
+            
             indexPath = [NSIndexPath indexPathForRow:[self numberOfItemsInSection:section] - indexPath.row - (type == NSFetchedResultsChangeDelete ? 0 : 1) inSection:section];
         }
         
         if (newIndexPath) {
             NSUInteger section = [self numberOfSections] - newIndexPath.section - 1;
+            
+            if (section >= [self numberOfSections]) {
+                return ;
+            }
+            
             newIndexPath = [NSIndexPath indexPathForRow:[self numberOfItemsInSection:section] - newIndexPath.row - 1 inSection:section];
         }
         
