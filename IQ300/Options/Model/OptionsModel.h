@@ -2,7 +2,7 @@
 //  OptionsModel.h
 //  IQ300
 //
-//  Created by Viktor Sabanov on 03.04.17.
+//  Created by Viktor Shabanov on 03.04.17.
 //  Copyright © 2017 Tayphoon. All rights reserved.
 //
 
@@ -12,7 +12,7 @@
 
 @interface OptionsModel : IQTableModel
 
-@property (nonatomic, assign) BOOL enableInteraction;
-@property (nonatomic, assign) BOOL notificationsEnabeld;
+- (void)updateModelWithInteractionEnable:(BOOL)enable
+                              completion:(void (^)(BOOL success, BOOL granted, NSError * error))completion;
 
 @end

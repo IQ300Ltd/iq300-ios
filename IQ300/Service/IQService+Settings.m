@@ -2,7 +2,7 @@
 //  IQService+Settings.m
 //  IQ300
 //
-//  Created by Viktor Sabanov on 03.04.17.
+//  Created by Viktor Shabanov on 03.04.17.
 //  Copyright © 2017 Tayphoon. All rights reserved.
 //
 

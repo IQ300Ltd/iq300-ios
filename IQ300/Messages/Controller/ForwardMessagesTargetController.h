@@ -2,7 +2,7 @@
 //  ForwardMessagesTargetController.h
 //  IQ300
 //
-//  Created by Viktor Sabanov on 05.04.17.
+//  Created by Viktor Shabanov on 05.04.17.
 //  Copyright © 2017 Tayphoon. All rights reserved.
 //
 

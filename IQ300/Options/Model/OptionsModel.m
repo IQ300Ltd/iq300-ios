@@ -2,7 +2,7 @@
 //  OptionsModel.m
 //  IQ300
 //
-//  Created by Viktor Sabanov on 03.04.17.
+//  Created by Viktor Shabanov on 03.04.17.
 //  Copyright © 2017 Tayphoon. All rights reserved.
 //
 
@@ -18,6 +18,9 @@ static NSDictionary *_cellClasses = nil;
 
 @interface OptionsModel() {
     NSArray *_types;
+    
+    BOOL _enabledInteraction;
+    BOOL _granted;
 }
 
 @property (nonatomic, readwrite) NSArray *items;
@@ -46,7 +49,6 @@ static NSDictionary *_cellClasses = nil;
                                       };
         });
         
-        _enableInteraction = YES;
         _types = @[@(OptionsModelCellTypeNotications)];
         
         [self clearModelData];
@@ -71,28 +73,37 @@ static NSDictionary *_cellClasses = nil;
     return 50.0f;
 }
 
-- (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
-    [[IQService sharedService]
-     pushNotificationsSettingsWithHandler:^(BOOL success, IQSettings *settings, NSData *responseData, NSError *error) {
-        if (success && !error) {
-            _notificationsEnabeld = [settings.pushEnabled boolValue];
-            _items = @[
-                       [NotificationsOptionItem itemWithOnState:_notificationsEnabeld
-                                            enabledInteractions:_enableInteraction]
-                       ];
-        }
+- (void)clearModelData {
+    _enabledInteraction = YES;
+    _items = @[ [NotificationsOptionItem itemWithEnabledInteractions:_enabledInteraction] ];
+}
+
+- (void)updateModelWithInteractionEnable:(BOOL)enable
+                              completion:(void (^)(BOOL success, BOOL granted, NSError * error))completion {
+    
+    _enabledInteraction = enable;
+    [self updateModelWithCompletion:^(NSError *error) {
+        NotificationsOptionItem *item = [_items firstObject];
         
         if (completion) {
-            completion(error);
+            completion(!error, item.onState, error);
         }
     }];
 }
 
-- (void)clearModelData {
-    _notificationsEnabeld = NO;
-    _items = @[
-               [NotificationsOptionItem itemWithEnabledInteractions:_enableInteraction]
-               ];
+- (void)updateModelWithCompletion:(void (^)(NSError * error))completion {
+    [[IQService sharedService] pushNotificationsSettingsWithHandler:^(BOOL success, IQSettings *settings, NSData *responseData, NSError *error) {
+         if (success && !error) {
+             _items = @[
+                        [NotificationsOptionItem itemWithOnState:[settings.pushEnabled boolValue]
+                                             enabledInteractions:success ? YES : _enabledInteraction]
+                        ];
+         }
+         
+         if (completion) {
+             completion(error);
+         }
+     }];
 }
 
 @end

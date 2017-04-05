@@ -2,7 +2,7 @@
 //  OptionsViewController.m
 //  IQ300
 //
-//  Created by Viktor Sabanov on 03.04.17.
+//  Created by Viktor Shabanov on 03.04.17.
 //  Copyright © 2017 Tayphoon. All rights reserved.
 //
 
@@ -60,7 +60,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(willEnterForegroundNotification)
-                                                 name:UIApplicationWillEnterForegroundNotification
+                                                 name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -129,23 +129,13 @@
     }
     
     __weak typeof(self) weakSelf = self;
-    BOOL enabled = sender.isOn;
     _cancelBlock = dispatch_after_delay(DISPATCH_DELAY, dispatch_get_main_queue(), ^{
-        if (weakSelf.model.notificationsEnabeld != enabled) {
-            [[IQService sharedService] makePushNotificationsEnabled:sender.isOn
-                                                            handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
-                                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                                    if (!success) {
-                                                                        [sender setOn:!enabled animated:YES];
-                                                                        
-                                                                        [weakSelf showWarning];
-                                                                    }
-                                                                    else {
-                                                                        weakSelf.model.notificationsEnabeld = enabled;
-                                                                    }
-                                                                });
-                                                            }];
-        }
+        [[IQService sharedService] makePushNotificationsEnabled:sender.isOn
+                                                        handler:^(BOOL success, id object, NSData *responseData, NSError *error) {
+                                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                                [weakSelf reloadModel];
+                                                            });
+                                                        }];
     });
 }
 
@@ -159,10 +149,14 @@
 }
 
 - (void)reloadModel {
-    self.model.enableInteraction = [AppDelegate pushNotificationsEnabled];
-    [self.model updateModelWithCompletion:^(NSError *error) {
-        [self.tableView reloadData];
-    }];
+    [self.model updateModelWithInteractionEnable:[AppDelegate pushNotificationsEnabled]
+                                      completion:^(BOOL success, BOOL granted, NSError *error) {
+                                          [self.tableView reloadData];
+                                          
+                                          if (!success) {
+                                              [self showWarning];
+                                          }
+                                      }];
 }
 
 - (void)showWarning {
