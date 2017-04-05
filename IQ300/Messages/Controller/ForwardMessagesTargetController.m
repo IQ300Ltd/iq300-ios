@@ -14,6 +14,10 @@
 #import "IQService+Messages.h"
 #import "DiscussionModel.h"
 #import "DiscussionController.h"
+#import "ContactPickerController.h"
+#import "ContactsModel.h"
+#import "IQDiscussion.h"
+#import "IQContact.h"
 
 @interface ForwardMessagesTargetController () {
     //MessagesView *_messagesView;
@@ -41,7 +45,11 @@
                                                     name:CountersDidChangedNotification
                                                   object:nil];
     
-    self.navigationItem.rightBarButtonItem = nil;
+    UIBarButtonItem * rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_user_icon.png"]
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(rightBarButtonAction:)];
+    self.navigationItem.rightBarButtonItem = rightBarButton;
     
     UIBarButtonItem *backBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backWhiteArrow.png"]
                                                                       style:UIBarButtonItemStylePlain
@@ -62,6 +70,18 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)rightBarButtonAction:(UIButton *)sender {
+    ContactsModel *model = [[ContactsModel alloc] init];
+    model.allowsMultipleSelection = NO;
+    model.allowsDeselection = YES;
+    
+    ContactPickerController * controller = [[ContactPickerController alloc] init];
+    controller.hidesBottomBarWhenPushed = YES;
+    controller.model = model;
+    controller.delegate = self;
+    [self.navigationController pushViewController:controller animated:YES];
+}
+
 - (BOOL)isLeftMenuEnabled {
     return NO;
 }
@@ -73,49 +93,91 @@
 #pragma mark - UITableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    __weak typeof(self) weakSelf = self;
+    [self showForwardСonfirmationWithSuccessBlock:^{
+        IQConversation *conversation = [self.model itemAtIndexPath:indexPath];
+        [weakSelf forwardMessageToConversation:conversation];
+    }];
+}
+
+#pragma mark - IQSelectionControllerDelegate
+
+- (void)selectionControllerController:(IQSelectionController *)controller didSelectItem:(IQContact *)item {
+    __weak typeof(self) weakSelf = self;
+    [self showForwardСonfirmationWithSuccessBlock:^{
+        [weakSelf forwardMessageToContact:item];
+    }];
+}
+
+#pragma mark - Private
+
+- (void)forwardMessageToConversation:(IQConversation *)conversation {
+    __weak typeof(self) weakSelf = self;
+    [[IQService sharedService] forwardCommentWithId:self.forwardingComment.commentId
+                                   fromDiscussionId:self.forwardingComment.discussionId
+                                   toConversationId:conversation.conversationId
+                                            handler:^(BOOL success, IQConversation *targetConversation, NSData *responseData, NSError *error) {
+                                                if (success) {
+                                                    [weakSelf moveToTargetConversation:targetConversation];
+                                                }
+                                                else {
+                                                    [_messagesView.searchBar resignFirstResponder];
+                                                    [weakSelf.navigationController popViewControllerAnimated:YES];
+                                                }
+                                            }];
+}
+
+- (void)forwardMessageToContact:(IQContact *)contact {
+    __weak typeof(self) weakSelf = self;
+    [[IQService sharedService] forwardCommentWithId:self.forwardingComment.commentId
+                                   fromDiscussionId:self.forwardingComment.discussionId
+                                        toContactId:contact.contactId
+                                            handler:^(BOOL success, IQConversation *targetConversation, NSData *responseData, NSError *error) {
+                                                if (success) {
+                                                    [weakSelf moveToTargetConversation:targetConversation];
+                                                }
+                                                else {
+                                                    [_messagesView.searchBar resignFirstResponder];
+                                                    [weakSelf.navigationController popViewControllerAnimated:YES];
+                                                }
+                                            }];
+}
+
+- (void)moveToTargetConversation:(IQConversation *)targetConversation {
+    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:targetConversation.discussion];
+    
+    DiscussionController * controller = [[DiscussionController alloc] init];
+    controller.hidesBottomBarWhenPushed = YES;
+    controller.title = targetConversation.title;
+    controller.model = model;
+    
+    [self.navigationController setViewControllers:@[[self.navigationController.viewControllers firstObject], controller] animated:YES];
+    
+    __weak typeof(self) weakSelf = self;
+    [MessagesModel markConversationAsRead:targetConversation completion:^(NSError *error) {
+        [weakSelf updateGlobalCounter];
+    }];
+    
+    [MessagesModel reloadConversation:targetConversation completion:nil];
+}
+
+- (void)showForwardСonfirmationWithSuccessBlock:(void (^)(void))successBlock {
+    __weak typeof(self) weakSelf = self;
     [UIAlertView showWithTitle:NSLocalizedString(@"Attention", nil)
                        message:NSLocalizedString(@"Do you really want to forward the message?", nil)
              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
              otherButtonTitles:@[NSLocalizedString(@"Yes", nil)]
                       tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                           if (buttonIndex) {
-                              IQConversation *conversation = [self.model itemAtIndexPath:indexPath];
-                              [self forwardMessageToConversation:conversation];
+                              if (successBlock) {
+                                  successBlock();
+                              }
                           }
                           else {
                               [_messagesView.searchBar resignFirstResponder];
-                              [self.navigationController popViewControllerAnimated:YES];
+                              [weakSelf.navigationController popViewControllerAnimated:YES];
                           }
                       }];
-}
-
-- (void)forwardMessageToConversation:(IQConversation *)conversation {
-    [[IQService sharedService] forwardCommentWithId:self.forwardingComment.commentId
-                                   fromDiscussionId:self.forwardingComment.discussionId
-                                   toConversationId:conversation.conversationId
-                                            handler:^(BOOL success, IQConversation *targetConversation, NSData *responseData, NSError *error) {
-                                                if (success) {
-                                                    DiscussionModel * model = [[DiscussionModel alloc] initWithDiscussion:targetConversation.discussion];
-                                                    
-                                                    DiscussionController * controller = [[DiscussionController alloc] init];
-                                                    controller.hidesBottomBarWhenPushed = YES;
-                                                    controller.title = targetConversation.title;
-                                                    controller.model = model;
-                                                    
-                                                    [self.navigationController setViewControllers:@[[self.navigationController.viewControllers firstObject], controller] animated:YES];
-                                                    
-                                                    __weak typeof(self) weakSelf = self;
-                                                    [MessagesModel markConversationAsRead:targetConversation completion:^(NSError *error) {
-                                                        [weakSelf updateGlobalCounter];
-                                                    }];
-                                                    
-                                                    [MessagesModel reloadConversation:targetConversation completion:nil];
-                                                }
-                                                else {
-                                                    [_messagesView.searchBar resignFirstResponder];
-                                                    [self.navigationController popViewControllerAnimated:YES];
-                                                }
-                                            }];
 }
 
 @end
