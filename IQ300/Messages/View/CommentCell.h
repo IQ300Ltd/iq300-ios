@@ -20,6 +20,7 @@
 }
 
 @property (nonatomic, readonly) UILabel * timeLabel;
+@property (nonatomic, readonly) UILabel *forwardInfoLabel;
 @property (nonatomic, readonly) UIImageView * userImageView;
 @property (nonatomic, readonly) UILabel * userNameLabel;
 @property (nonatomic, readonly) IQTextView * descriptionTextView;

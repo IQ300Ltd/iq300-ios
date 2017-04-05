@@ -36,6 +36,8 @@
 #import "UserPickerController.h"
 #import "IQLayoutManager.h"
 
+#import "ForwardMessagesTargetController.h"
+
 #define SECTION_HEIGHT 12
 
 @interface DiscussionController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextViewDelegate, DiscussionModelDelegate, IQActivityViewControllerDelegate, UserPickerControllerDelegate> {
@@ -154,6 +156,39 @@
     IQUser * curUser = [IQUser userWithId:[IQSession defaultSession].userId
                                 inContext:[IQService sharedService].context];
     _currentUserNick = curUser.nickName;
+    
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                                                   action:@selector(handleLongPress:)];
+    longPressGesture.minimumPressDuration = 1.f;
+    [self.tableView addGestureRecognizer:longPressGesture];
+}
+
+-(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        
+        CGPoint location = [gestureRecognizer locationInView:self.tableView];
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+        if (indexPath) {
+            IQComment *comment = [self.model itemAtIndexPath:indexPath];
+            if (!comment) {
+                return;
+            }
+            
+            [UIAlertView showWithTitle:@""
+                               message:NSLocalizedString(@"Forward message", nil)
+                     cancelButtonTitle:NSLocalizedString(@"No", nil)
+                     otherButtonTitles:@[NSLocalizedString(@"Yes", nil)]
+                              tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                  if(buttonIndex == 1) {
+                                      ForwardMessagesTargetController *targetController = [[ForwardMessagesTargetController alloc] init];
+                                      targetController.hidesBottomBarWhenPushed = YES;
+                                      targetController.forwardingComment = comment;
+                                      
+                                      [self.navigationController pushViewController:targetController animated:YES];
+                                  }
+                              }];
+        }
+    }
 }
 
 - (BOOL)isLeftMenuEnabled {

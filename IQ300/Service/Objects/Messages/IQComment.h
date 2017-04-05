@@ -8,6 +8,7 @@
 
 #import "IQUser.h"
 #import "IQManagedAttachment.h"
+#import "IQForwardInfo.h"
 
 @class RKObjectMapping;
 @class RKManagedObjectStore;
@@ -32,6 +33,7 @@ typedef NS_ENUM(NSUInteger, IQCommentStatus) {
 @property (nonatomic, strong) NSSet * attachments;
 @property (nonatomic, strong) NSNumber * commentStatus;
 @property (nonatomic, strong) NSNumber * unread;
+@property (nonatomic, strong) IQForwardInfo * forwardedInfo;
 
 + (RKObjectMapping*)objectMappingForManagedObjectStore:(RKManagedObjectStore*)store;
 

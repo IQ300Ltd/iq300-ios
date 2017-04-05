@@ -19,6 +19,10 @@
 		0C325F491E91BF540015CAC0 /* IQService+Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C325F471E91BF540015CAC0 /* IQService+Settings.m */; };
 		0C325F4C1E91CC030015CAC0 /* IQSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C325F4B1E91CC030015CAC0 /* IQSettings.m */; };
 		0C325F4D1E91CC030015CAC0 /* IQSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C325F4B1E91CC030015CAC0 /* IQSettings.m */; };
+		0C830A491E930719006CB92E /* IQForwardInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C830A481E930719006CB92E /* IQForwardInfo.m */; };
+		0C830A4A1E930719006CB92E /* IQForwardInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C830A481E930719006CB92E /* IQForwardInfo.m */; };
+		0CBB71DC1E944231007B78CA /* ForwardMessagesTargetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CBB71DB1E944231007B78CA /* ForwardMessagesTargetController.m */; };
+		0CBB71DD1E944231007B78CA /* ForwardMessagesTargetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CBB71DB1E944231007B78CA /* ForwardMessagesTargetController.m */; };
 		2D6AE2281C7308BB00A2B02D /* IQSaveVideoActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6AE2271C7308BB00A2B02D /* IQSaveVideoActivity.m */; };
 		2D6AE2291C7308BB00A2B02D /* IQSaveVideoActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6AE2271C7308BB00A2B02D /* IQSaveVideoActivity.m */; };
 		2D6AE2331C730DAE00A2B02D /* save_video_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D6AE2301C730DAE00A2B02D /* save_video_icon@2x.png */; };
@@ -1110,6 +1114,11 @@
 		0C325F471E91BF540015CAC0 /* IQService+Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IQService+Settings.m"; sourceTree = "<group>"; };
 		0C325F4A1E91CC030015CAC0 /* IQSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSettings.h; sourceTree = "<group>"; };
 		0C325F4B1E91CC030015CAC0 /* IQSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSettings.m; sourceTree = "<group>"; };
+		0C830A461E92FBF3006CB92E /* IQ300 v3.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "IQ300 v3.1.xcdatamodel"; sourceTree = "<group>"; };
+		0C830A471E930719006CB92E /* IQForwardInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQForwardInfo.h; sourceTree = "<group>"; };
+		0C830A481E930719006CB92E /* IQForwardInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQForwardInfo.m; sourceTree = "<group>"; };
+		0CBB71DA1E944231007B78CA /* ForwardMessagesTargetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForwardMessagesTargetController.h; sourceTree = "<group>"; };
+		0CBB71DB1E944231007B78CA /* ForwardMessagesTargetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForwardMessagesTargetController.m; sourceTree = "<group>"; };
 		2D6AE2261C7308BB00A2B02D /* IQSaveVideoActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSaveVideoActivity.h; sourceTree = "<group>"; };
 		2D6AE2271C7308BB00A2B02D /* IQSaveVideoActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSaveVideoActivity.m; sourceTree = "<group>"; };
 		2D6AE2301C730DAE00A2B02D /* save_video_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "save_video_icon@2x.png"; sourceTree = "<group>"; };
@@ -3268,6 +3277,8 @@
 				73ADA8D81A36DB8D0032C1FA /* ContactPickerController.m */,
 				73E425FE1AAEC6BF00CD2093 /* UserPickerController.h */,
 				73E425FF1AAEC6BF00CD2093 /* UserPickerController.m */,
+				0CBB71DA1E944231007B78CA /* ForwardMessagesTargetController.h */,
+				0CBB71DB1E944231007B78CA /* ForwardMessagesTargetController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -3338,6 +3349,8 @@
 				73AF73E01A3AFEBA001B8E42 /* CViewInfo.m */,
 				737136371B53C1430043B87B /* IQConversationMember.h */,
 				737136381B53C1430043B87B /* IQConversationMember.m */,
+				0C830A471E930719006CB92E /* IQForwardInfo.h */,
+				0C830A481E930719006CB92E /* IQForwardInfo.m */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -4624,6 +4637,7 @@
 				73840E211B1C75A500BCEAFC /* lcl.m in Sources */,
 				73840E221B1C75A500BCEAFC /* TaskExecutorsGroup.m in Sources */,
 				73EFAA031B43DD3B007FD5D7 /* IQEMultiLineTextCell.m in Sources */,
+				0C830A4A1E930719006CB92E /* IQForwardInfo.m in Sources */,
 				73840E231B1C75A500BCEAFC /* IQTableManagedModel.m in Sources */,
 				73840E241B1C75A500BCEAFC /* IQManagedAttachment.m in Sources */,
 				73840E251B1C75A500BCEAFC /* MessagesModel.m in Sources */,
@@ -4657,6 +4671,7 @@
 				73CCB6A41B4E739D000BF728 /* BottomLineView.m in Sources */,
 				73DA02EE1B1D9A5B00CA24E5 /* LeftSideTabBar.m in Sources */,
 				73840E371B1C75A500BCEAFC /* IQUtilityButtonView.m in Sources */,
+				0CBB71DD1E944231007B78CA /* ForwardMessagesTargetController.m in Sources */,
 				2D80E7EA1C6B17C2009DD5A0 /* TCCollectionModel.m in Sources */,
 				739CFFA21B397FC000B4AED0 /* FeedbacksController.m in Sources */,
 				73B5615D1B4286E200A883DC /* FeedbackView.m in Sources */,
@@ -4780,6 +4795,7 @@
 				73D7F1E61ADE94B400023120 /* TInfoHeaderView.m in Sources */,
 				739850DC1A2DD35C00DB5B21 /* IQDiscussion.m in Sources */,
 				738EA7A31A1DC91C0065D39F /* IQUser.m in Sources */,
+				0C830A491E930719006CB92E /* IQForwardInfo.m in Sources */,
 				738CE1E91A0B3F4E0096B374 /* AppDelegate.m in Sources */,
 				73D7F1CB1ADE93D600023120 /* ManagedTodoListModel.m in Sources */,
 				FBC56E6A1E83F2A700B951FD /* NSDate+BoundaryDates.m in Sources */,
@@ -4892,6 +4908,7 @@
 				737DD20A1A149C6900CC4443 /* IQDrawerController.m in Sources */,
 				73B1EF291B67B96D00960D7F /* IQContactsDeletedIds.m in Sources */,
 				730BE4011B3D298900E26994 /* IQFeedbacksHolder.m in Sources */,
+				0CBB71DC1E944231007B78CA /* ForwardMessagesTargetController.m in Sources */,
 				73A949A21A3833C4008EC469 /* NSError+Extension.m in Sources */,
 				730BE42E1B3D8FA400E26994 /* FeedbackTypeCell.m in Sources */,
 				73506ED61A137D070071B4CB /* TasksController.m in Sources */,
@@ -5770,11 +5787,12 @@
 		73F90CF81A1B981C00225255 /* IQ300.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				0C830A461E92FBF3006CB92E /* IQ300 v3.1.xcdatamodel */,
 				3DA1BFEF1CB3B6330053889D /* IQ300 v3.0.xcdatamodel */,
 				730BE3FE1B3D263A00E26994 /* IQ300 v2.0.xcdatamodel */,
 				73F90CF91A1B981C00225255 /* IQ300.xcdatamodel */,
 			);
-			currentVersion = 3DA1BFEF1CB3B6330053889D /* IQ300 v3.0.xcdatamodel */;
+			currentVersion = 0C830A461E92FBF3006CB92E /* IQ300 v3.1.xcdatamodel */;
 			path = IQ300.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -228,3 +228,8 @@
 "Forward message" = "Переслать сообщение";
 "Options" = "Настройки";
 "Setting could not be saved. Check your internet connection and try later" = "Не удалось сохранить настройки. Проверьте подключение к Интернету и повторите попытку позже";
+"Forwarded message" = "Пересланное сообщение";
+"from the task" = "из задачи";
+"from the dialogue" = "из диалога";
+"from the conference" = "из конференции";
+"Do you really want to forward the message?" = "Вы действительно хотите переслать сообщение?";
