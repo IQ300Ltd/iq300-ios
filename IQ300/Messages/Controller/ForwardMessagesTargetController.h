@@ -14,4 +14,7 @@
 
 @property (nonatomic, strong) IQComment *forwardingComment;
 
+- (NSArray *)showableViewControllersStackFromCurrentStack:(NSArray *)currentStack
+                                  forTargetViewController:(UIViewController *)viewController;
+
 @end

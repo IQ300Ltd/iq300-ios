@@ -1083,6 +1083,8 @@
 		FBBBC2871E8EA4300062E98D /* view_all_ico_highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBBC2841E8EA4300062E98D /* view_all_ico_highlighted.png */; };
 		FBBBC2881E8EA4300062E98D /* view_all_ico_highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBBC2851E8EA4300062E98D /* view_all_ico_highlighted@2x.png */; };
 		FBBBC2891E8EA4300062E98D /* view_all_ico_highlighted@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBBC2861E8EA4300062E98D /* view_all_ico_highlighted@3x.png */; };
+		FBBD89571E94F88500CB1EEA /* TForwardMessagesTargetController.m in Sources */ = {isa = PBXBuildFile; fileRef = FBBD89561E94F88500CB1EEA /* TForwardMessagesTargetController.m */; };
+		FBBD89581E94F88500CB1EEA /* TForwardMessagesTargetController.m in Sources */ = {isa = PBXBuildFile; fileRef = FBBD89561E94F88500CB1EEA /* TForwardMessagesTargetController.m */; };
 		FBC56E6A1E83F2A700B951FD /* NSDate+BoundaryDates.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC56E691E83F2A700B951FD /* NSDate+BoundaryDates.m */; };
 		FBC7CB491B57973C004E8382 /* DeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB481B57973C004E8382 /* DeletedObjects.m */; };
 		FBC7CB4C1B57979A004E8382 /* CommentDeletedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC7CB4B1B57979A004E8382 /* CommentDeletedObjects.m */; };
@@ -2027,6 +2029,8 @@
 		FBBBC2841E8EA4300062E98D /* view_all_ico_highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = view_all_ico_highlighted.png; sourceTree = "<group>"; };
 		FBBBC2851E8EA4300062E98D /* view_all_ico_highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "view_all_ico_highlighted@2x.png"; sourceTree = "<group>"; };
 		FBBBC2861E8EA4300062E98D /* view_all_ico_highlighted@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "view_all_ico_highlighted@3x.png"; sourceTree = "<group>"; };
+		FBBD89551E94F88500CB1EEA /* TForwardMessagesTargetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TForwardMessagesTargetController.h; sourceTree = "<group>"; };
+		FBBD89561E94F88500CB1EEA /* TForwardMessagesTargetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TForwardMessagesTargetController.m; sourceTree = "<group>"; };
 		FBC56E681E83F2A700B951FD /* NSDate+BoundaryDates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+BoundaryDates.h"; sourceTree = "<group>"; };
 		FBC56E691E83F2A700B951FD /* NSDate+BoundaryDates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+BoundaryDates.m"; sourceTree = "<group>"; };
 		FBC7CB471B57973C004E8382 /* DeletedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeletedObjects.h; sourceTree = "<group>"; };
@@ -3584,6 +3588,8 @@
 				73D7F1B31ADE932700023120 /* TTodoItemsController.m */,
 				3D1D466F1CA10BC5001F0524 /* TSubtasksController.h */,
 				3D1D46701CA10BC5001F0524 /* TSubtasksController.m */,
+				FBBD89551E94F88500CB1EEA /* TForwardMessagesTargetController.h */,
+				FBBD89561E94F88500CB1EEA /* TForwardMessagesTargetController.m */,
 			);
 			path = TaskView;
 			sourceTree = "<group>";
@@ -4727,6 +4733,7 @@
 				73840E591B1C75A500BCEAFC /* TCService.m in Sources */,
 				73CB5B521B32D32A005B688C /* IQStringValidator.m in Sources */,
 				73840E5A1B1C75A500BCEAFC /* CommentsView.m in Sources */,
+				FBBD89581E94F88500CB1EEA /* TForwardMessagesTargetController.m in Sources */,
 				73840E5B1B1C75A500BCEAFC /* MenuCell.m in Sources */,
 				73840E5C1B1C75A500BCEAFC /* IQTaskMember.m in Sources */,
 				3D1D46861CA2C883001F0524 /* IQSubtasksHolder.m in Sources */,
@@ -4842,6 +4849,7 @@
 				73FE0A381AC0294A007176A1 /* TChangesCounter.m in Sources */,
 				2DAF33771C609AC500554211 /* SharingAttachment.m in Sources */,
 				3D21439C1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */,
+				FBBD89571E94F88500CB1EEA /* TForwardMessagesTargetController.m in Sources */,
 				73C384C91A9725DA00B66D0F /* IQTask.m in Sources */,
 				73176CA11B3ADDD700E6AC60 /* IQEditableTextCell.m in Sources */,
 				738EF82A1A9CA95600894755 /* IQManagedTodoItem.m in Sources */,

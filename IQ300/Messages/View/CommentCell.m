@@ -161,7 +161,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     NSString *adaptiveTypeString = [type lowercaseString];
     
     NSString *from = @"from the dialogue";
-    if ([adaptiveTypeString isEqualToString:@"tack"]) {
+    if ([adaptiveTypeString isEqualToString:@"base_task"]) {
         from = @"from the task";
     }
     else if ([adaptiveTypeString isEqualToString:@"conference"]) {

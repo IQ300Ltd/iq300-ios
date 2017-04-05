@@ -20,6 +20,7 @@
 #import "IQDiscussion.h"
 #import "TaskTabController.h"
 #import "CommentsView.h"
+#import "TForwardMessagesTargetController.h"
 
 @interface TCommentsController () {
     __weak id _notfObserver;
@@ -80,6 +81,40 @@
     commentsView.titleLabelHidden = NO;
     commentsView.titleLabel.text = _taskTitle;
     [self.noDataLabel setText:NSLocalizedString(@"No comments", nil)];
+    
+    self.tableView.canCancelContentTouches = NO;
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                                                   action:@selector(handleLongPress:)];
+    longPressGesture.minimumPressDuration = 1.f;
+    [self.tableView addGestureRecognizer:longPressGesture];
+}
+
+-(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        
+        CGPoint location = [gestureRecognizer locationInView:self.tableView];
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+        if (indexPath) {
+            IQComment *comment = [self.model itemAtIndexPath:indexPath];
+            if (!comment) {
+                return;
+            }
+            
+            [UIAlertView showWithTitle:@""
+                               message:NSLocalizedString(@"Forward message", nil)
+                     cancelButtonTitle:NSLocalizedString(@"No", nil)
+                     otherButtonTitles:@[NSLocalizedString(@"Yes", nil)]
+                              tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                  if(buttonIndex == 1) {
+                                      TForwardMessagesTargetController *targetController = [[TForwardMessagesTargetController alloc] init];
+                                      targetController.hidesBottomBarWhenPushed = YES;
+                                      targetController.forwardingComment = comment;
+                                      
+                                      [self.navigationController pushViewController:targetController animated:YES];
+                                  }
+                              }];
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {

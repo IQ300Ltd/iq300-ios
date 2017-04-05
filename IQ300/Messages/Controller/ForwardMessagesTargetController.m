@@ -151,7 +151,10 @@
     controller.title = targetConversation.title;
     controller.model = model;
     
-    [self.navigationController setViewControllers:@[[self.navigationController.viewControllers firstObject], controller] animated:YES];
+    NSArray *viewControllers = [self showableViewControllersStackFromCurrentStack:self.navigationController.viewControllers
+                                                          forTargetViewController:controller];
+    
+    [self.navigationController setViewControllers:viewControllers animated:YES];
     
     __weak typeof(self) weakSelf = self;
     [MessagesModel markConversationAsRead:targetConversation completion:^(NSError *error) {
@@ -159,6 +162,17 @@
     }];
     
     [MessagesModel reloadConversation:targetConversation completion:nil];
+}
+
+- (NSArray *)showableViewControllersStackFromCurrentStack:(NSArray *)currentStack
+                                  forTargetViewController:(UIViewController *)viewController {
+    return @[[currentStack firstObject], viewController];
+}
+
+- (NSArray *)viewControllersStackToPresetTargetForwardConversation {
+    return @[
+             [self.navigationController.viewControllers firstObject]
+             ];
 }
 
 - (void)showForwardСonfirmationWithSuccessBlock:(void (^)(void))successBlock {
