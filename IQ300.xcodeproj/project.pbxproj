@@ -521,6 +521,7 @@
 		3D1D4CC71CA6B012001F0524 /* top_header_bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3D1D4AFD1CA55775001F0524 /* top_header_bg@3x.png */; };
 		3D21439C1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */; };
 		3D21439D1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D21439B1C9E80DA00ACA554 /* MessagesMenuModel.m */; };
+		3D4C1F831E9618CC0093B95A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 736B6BCF1A0B5C0800034D9B /* Images.xcassets */; };
 		3D6A2BFF1CB4E81F004C7DD4 /* IQChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6A2BFE1CB4E81F004C7DD4 /* IQChannel.m */; };
 		3D6A2C001CB4E81F004C7DD4 /* IQChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6A2BFE1CB4E81F004C7DD4 /* IQChannel.m */; };
 		3DA1BFED1CB384960053889D /* IQOnlineIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DA1BFEC1CB384960053889D /* IQOnlineIndicator.m */; };
@@ -630,7 +631,6 @@
 		735D49041AE51FA400F6A753 /* TaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49031AE51FA400F6A753 /* TaskExecutor.m */; };
 		735D49071AE5283600F6A753 /* TaskExecutorsGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 735D49061AE5283500F6A753 /* TaskExecutorsGroup.m */; };
 		736110651B0A1827005ACEB5 /* GAIService.m in Sources */ = {isa = PBXBuildFile; fileRef = 736110641B0A1827005ACEB5 /* GAIService.m */; };
-		736B6BD01A0B5C0800034D9B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 736B6BCF1A0B5C0800034D9B /* Images.xcassets */; };
 		736B6BD31A0B5C1E00034D9B /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BD21A0B5C1E00034D9B /* MenuViewController.m */; };
 		736B6BDB1A0B5F1D00034D9B /* MenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BDA1A0B5F1D00034D9B /* MenuCell.m */; };
 		736B6BE61A0B83D600034D9B /* ExpandableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B6BE51A0B83D600034D9B /* ExpandableTableView.m */; };
@@ -1637,7 +1637,7 @@
 		7382CA941A4566BD00D5EE1F /* CSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSectionHeaderView.m; sourceTree = "<group>"; };
 		7383562E1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SafelyRemoveObserver.h"; sourceTree = "<group>"; };
 		7383562F1A65424E00ACF210 /* NSObject+SafelyRemoveObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SafelyRemoveObserver.m"; sourceTree = "<group>"; };
-		73840F0F1B1C75A500BCEAFC /* IQ 300 HD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IQ 300 HD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		73840F0F1B1C75A500BCEAFC /* IQ 300.Summa HD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IQ 300.Summa HD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		73840F121B1C762600BCEAFC /* IQ300_HD-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "IQ300_HD-Info.plist"; sourceTree = "<group>"; };
 		73841B6B1AB9A78A00B079BA /* TaskHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskHelper.h; sourceTree = "<group>"; };
 		73841B6C1AB9A78A00B079BA /* TaskHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskHelper.m; sourceTree = "<group>"; };
@@ -1671,7 +1671,7 @@
 		73891FF11A2C4F40008D8885 /* DispatchAfterExecution.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DispatchAfterExecution.h; sourceTree = "<group>"; };
 		73891FF31A2C97ED008D8885 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
 		73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
-		738CE1E01A0B3F4E0096B374 /* IQ 300.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IQ 300.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		738CE1E01A0B3F4E0096B374 /* IQ 300.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "IQ 300.app"; path = "IQ 300.Summa.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		738CE1E41A0B3F4E0096B374 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		738CE1E51A0B3F4E0096B374 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		738CE1E71A0B3F4E0096B374 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -3126,7 +3126,7 @@
 			isa = PBXGroup;
 			children = (
 				738CE1E01A0B3F4E0096B374 /* IQ 300.app */,
-				73840F0F1B1C75A500BCEAFC /* IQ 300 HD.app */,
+				73840F0F1B1C75A500BCEAFC /* IQ 300.Summa HD.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3773,7 +3773,7 @@
 			);
 			name = "IQ 300 HD";
 			productName = IQ300;
-			productReference = 73840F0F1B1C75A500BCEAFC /* IQ 300 HD.app */;
+			productReference = 73840F0F1B1C75A500BCEAFC /* IQ 300.Summa HD.app */;
 			productType = "com.apple.product-type.application";
 		};
 		738CE1DF1A0B3F4E0096B374 /* IQ 300 */ = {
@@ -3808,6 +3808,7 @@
 				TargetAttributes = {
 					73840DB21B1C75A500BCEAFC = {
 						DevelopmentTeam = D3Q8V8UU4B;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Push = {
 								enabled = 1;
@@ -4149,7 +4150,6 @@
 				73CB5B571B32D7EC005B688C /* IQValidatorLocalization.strings in Resources */,
 				3D1D4B781CA55775001F0524 /* notif_tab.png in Resources */,
 				3D1D4BB41CA55775001F0524 /* gray_checkbox.png in Resources */,
-				736B6BD01A0B5C0800034D9B /* Images.xcassets in Resources */,
 				3D1D4B1C1CA55775001F0524 /* hide_keyboard_ico.png in Resources */,
 				3D1D4AFE1CA55775001F0524 /* add_attachment_icon.png in Resources */,
 				3D1D4B391CA55775001F0524 /* attachment_add_img.png in Resources */,
@@ -4345,6 +4345,7 @@
 				3D1D4B351CA55775001F0524 /* add_user_icon@3x.png in Resources */,
 				3D1D4BDD1CA55775001F0524 /* task_status_ico@3x.png in Resources */,
 				3D1D4B871CA55775001F0524 /* asc_sort_ico.png in Resources */,
+				3D4C1F831E9618CC0093B95A /* Images.xcassets in Resources */,
 				3D1D4B371CA55775001F0524 /* attach_ico@2x.png in Resources */,
 				3D1D4B2C1CA55775001F0524 /* tasks_menu.plist in Resources */,
 				3D1D4B8C1CA55775001F0524 /* bell_ico@3x.png in Resources */,
@@ -5268,9 +5269,9 @@
 					"\"${PODS_ROOT}/Headers/Public/GoogleAnalytics-iOS-SDK\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.summa.mobile;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "5896f7b6-a401-445a-8f18-bf52d830b57d";
-				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa iOS AdHoc";
+				PRODUCT_NAME = "$(TARGET_NAME).Summa";
+				PROVISIONING_PROFILE = "9f2998c8-851e-4519-a877-1204336f4c86";
+				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa Distribution";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -5284,7 +5285,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "IQ 300 HD.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				DEVELOPMENT_TEAM = D3Q8V8UU4B;
 				ENABLE_BITCODE = NO;
@@ -5346,7 +5347,7 @@
 					"\"${PODS_ROOT}/Headers/Public/GoogleAnalytics-iOS-SDK\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.summa.mobileHD;
-				PRODUCT_NAME = "IQ 300 HD";
+				PRODUCT_NAME = "IQ 300.Summa HD";
 				PROVISIONING_PROFILE = "f298304e-e105-4b45-bbbc-637f46d342a2";
 				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa HD iOS Development";
 				SDKROOT = iphoneos;
@@ -5362,7 +5363,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "IQ 300 HD.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = D3Q8V8UU4B;
@@ -5427,7 +5428,7 @@
 					"\"${PODS_ROOT}/Headers/Public/GoogleAnalytics-iOS-SDK\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.summa.mobileHD;
-				PRODUCT_NAME = "IQ 300 HD";
+				PRODUCT_NAME = "IQ 300.Summa HD";
 				PROVISIONING_PROFILE = "5739f402-fd56-472b-8a10-64fa7a6256e6";
 				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa HD iOS AdHoc";
 				SDKROOT = iphoneos;
@@ -5443,7 +5444,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "IQ 300 HD.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: IQ 300 OOO (D3Q8V8UU4B)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = D3Q8V8UU4B;
@@ -5508,9 +5509,9 @@
 					"\"${PODS_ROOT}/Headers/Public/GoogleAnalytics-iOS-SDK\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.summa.mobileHD;
-				PRODUCT_NAME = "IQ 300 HD";
-				PROVISIONING_PROFILE = "5739f402-fd56-472b-8a10-64fa7a6256e6";
-				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa HD iOS AdHoc";
+				PRODUCT_NAME = "IQ 300.Summa HD";
+				PROVISIONING_PROFILE = "fadff9b4-5783-4f58-afcd-12d7da6a4acc";
+				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa HD Distribution";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -5610,8 +5611,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "IQ 300.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Vladislav Grigoriev (LLY2QGVLGH)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vladislav Grigoriev (LLY2QGVLGH)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				DEVELOPMENT_TEAM = D3Q8V8UU4B;
 				ENABLE_BITCODE = NO;
@@ -5668,7 +5669,7 @@
 					"\"${PODS_ROOT}/Headers/Public/GoogleAnalytics-iOS-SDK\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.summa.mobile;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME).Summa";
 				PROVISIONING_PROFILE = "5740a36f-4409-44a9-bf9f-55bdae911d08";
 				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa iOS Development";
 				SDKROOT = iphoneos;
@@ -5748,7 +5749,7 @@
 					"\"${PODS_ROOT}/Headers/Public/GoogleAnalytics-iOS-SDK\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.iq300.summa.mobile;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME).Summa";
 				PROVISIONING_PROFILE = "5896f7b6-a401-445a-8f18-bf52d830b57d";
 				PROVISIONING_PROFILE_SPECIFIER = "IQ300 Summa iOS AdHoc";
 				SDKROOT = iphoneos;

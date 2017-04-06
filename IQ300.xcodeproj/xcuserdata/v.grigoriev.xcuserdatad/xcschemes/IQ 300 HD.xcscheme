@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "73840DB21B1C75A500BCEAFC"
-               BuildableName = "IQ 300 HD.app"
+               BuildableName = "IQ 300.Summa HD.app"
                BlueprintName = "IQ 300 HD"
                ReferencedContainer = "container:IQ300.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "73840DB21B1C75A500BCEAFC"
-            BuildableName = "IQ 300 HD.app"
+            BuildableName = "IQ 300.Summa HD.app"
             BlueprintName = "IQ 300 HD"
             ReferencedContainer = "container:IQ300.xcodeproj">
          </BuildableReference>
@@ -56,7 +56,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "73840DB21B1C75A500BCEAFC"
-            BuildableName = "IQ 300 HD.app"
+            BuildableName = "IQ 300.Summa HD.app"
             BlueprintName = "IQ 300 HD"
             ReferencedContainer = "container:IQ300.xcodeproj">
          </BuildableReference>
@@ -75,7 +75,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "73840DB21B1C75A500BCEAFC"
-            BuildableName = "IQ 300 HD.app"
+            BuildableName = "IQ 300.Summa HD.app"
             BlueprintName = "IQ 300 HD"
             ReferencedContainer = "container:IQ300.xcodeproj">
          </BuildableReference>
