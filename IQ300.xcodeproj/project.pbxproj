@@ -1671,7 +1671,7 @@
 		73891FF11A2C4F40008D8885 /* DispatchAfterExecution.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DispatchAfterExecution.h; sourceTree = "<group>"; };
 		73891FF31A2C97ED008D8885 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
 		73891FF41A2C97ED008D8885 /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
-		738CE1E01A0B3F4E0096B374 /* IQ 300.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "IQ 300.app"; path = "IQ 300.Summa.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		738CE1E01A0B3F4E0096B374 /* IQ 300.Summa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IQ 300.Summa.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		738CE1E41A0B3F4E0096B374 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		738CE1E51A0B3F4E0096B374 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		738CE1E71A0B3F4E0096B374 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -3125,7 +3125,7 @@
 		738CE1E11A0B3F4E0096B374 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				738CE1E01A0B3F4E0096B374 /* IQ 300.app */,
+				738CE1E01A0B3F4E0096B374 /* IQ 300.Summa.app */,
 				73840F0F1B1C75A500BCEAFC /* IQ 300.Summa HD.app */,
 			);
 			name = Products;
@@ -3794,7 +3794,7 @@
 			);
 			name = "IQ 300";
 			productName = IQ300;
-			productReference = 738CE1E01A0B3F4E0096B374 /* IQ 300.app */;
+			productReference = 738CE1E01A0B3F4E0096B374 /* IQ 300.Summa.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -5611,8 +5611,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = "IQ 300.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Vladislav Grigoriev (LLY2QGVLGH)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vladislav Grigoriev (LLY2QGVLGH)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Viktor Shabanov (X33RJF7HW5)";
 				CODE_SIGN_RESOURCE_RULES_PATH = "$(SDKROOT)/ResourceRules.plist";
 				DEVELOPMENT_TEAM = D3Q8V8UU4B;
 				ENABLE_BITCODE = NO;
