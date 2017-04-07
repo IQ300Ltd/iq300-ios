@@ -289,7 +289,7 @@
     _statusView.textLabel.textColor = [TaskHelper colorForTaskType:task.status];
     _statusView.textLabel.text = NSLocalizedString(task.status, nil);
 
-    _dueDateView.textLabel.text = [task.endDate dateToDayString];
+    _dueDateView.textLabel.text = [task.endDate dateToDayTimeString];
     
     _complexityInfoView.textLabel.text = task.complexity.displayName;
     

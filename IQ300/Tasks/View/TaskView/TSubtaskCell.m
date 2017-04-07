@@ -241,7 +241,7 @@
     
     _taskIDLabel.text = [NSString stringWithFormat:@"#%@", _item.subtaskId];
     _titleLabel.text = _item.title;
-    _dueDateLabel.text = [_item.endDate dateToDayString];
+    _dueDateLabel.text = [_item.endDate dateToDayTimeString];
     _fromLabel.text = _item.customer.displayName;
     _toLabel.text = [NSString stringWithFormat:@"> %@", _item.executor.displayName];
     

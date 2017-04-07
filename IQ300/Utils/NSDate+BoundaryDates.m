@@ -37,7 +37,6 @@ static NSCalendarUnit const WeekBoundarySignificantUnits  = MonthBoundarySignifi
 
 - (NSDate *)endOfWorkDay {
     return [[NSCalendar currentCalendar] dateBySettingHour:18 minute:0 second:0 ofDate:self options:0];
-
 }
 
 #pragma mark - Week
