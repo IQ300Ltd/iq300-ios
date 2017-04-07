@@ -25,4 +25,7 @@
 - (NSDate *)beginningOfYear;
 - (NSDate *)endOfYear;
 
+- (NSDate *)beginningOfWorkDay;
+- (NSDate *)endOfWorkDay;
+
 @end

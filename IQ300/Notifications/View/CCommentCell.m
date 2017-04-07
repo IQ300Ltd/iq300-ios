@@ -197,6 +197,7 @@
         
         _longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureAction:)];
         _longPressGesture.minimumPressDuration = 1.f;
+        _longPressGesture.allowableMovement = 20.f;
         _longPressGesture.delegate = self;
         [contentView addGestureRecognizer:_longPressGesture];
     }

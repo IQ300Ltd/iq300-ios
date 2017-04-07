@@ -109,8 +109,8 @@ static NSString * IQTextCellReuseIdentifier = @"IQTextCellReuseIdentifier";
 - (IQTaskDataHolder*)createTask {
     NSDate * today = [NSDate date];
     IQTaskDataHolder * task = [[IQTaskDataHolder alloc] init];
-    task.startDate = [today beginningOfDay];
-    task.endDate = [today endOfDay];
+    task.startDate = [today beginningOfWorkDay];
+    task.endDate = [today endOfWorkDay];
     task.community = self.defaultCommunity;
     return task;
 }
