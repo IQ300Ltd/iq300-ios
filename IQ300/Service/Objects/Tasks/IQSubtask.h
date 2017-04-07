@@ -14,7 +14,6 @@
 @class IQReconciliation;
 @class RKObjectMapping;
 @class RKManagedObjectStore;
-@class IQComplexity;
 
 @interface IQSubtask : NSManagedObject
 
@@ -31,6 +30,7 @@
 @property (nonatomic, strong) NSNumber    * parentId;
 
 @property (nonatomic, strong) NSNumber    * hasAccess;
+@property (nonatomic, strong) NSNumber    * priority;
 
 @property (nonatomic, strong) IQUser      * customer;
 @property (nonatomic, strong) IQUser      * executor;

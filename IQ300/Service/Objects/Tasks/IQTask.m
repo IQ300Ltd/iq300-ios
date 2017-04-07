@@ -14,7 +14,6 @@
 #import "IQCommunity.h"
 #import "IQManagedTodoItem.h"
 #import "IQReconciliation.h"
-#import "IQComplexity.h"
 
 @implementation IQTask
 
@@ -38,7 +37,7 @@
 @dynamic commentsCount;
 @dynamic availableActions;
 @dynamic availableFeatures;
-@dynamic complexity;
+@dynamic priority;
 @dynamic estimatedTime;
 
 @dynamic customer;
@@ -97,6 +96,7 @@
                                                   @"parent.start_date"                        : @"parentStartDate",
                                                   @"parent.end_date"                          : @"parentEndDate",
                                                   @"executor_restrictions.parent_task_access" : @"parentTaskAccessRestriction",
+                                                  @"priority"                                 : @"priority"
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"customer"
@@ -132,11 +132,6 @@
     relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"reconciliation_decisions_stat"
                                                            toKeyPath:@"reconciliation"
                                                          withMapping:[IQReconciliation objectMappingForManagedObjectStore:store]];
-    [mapping addPropertyMapping:relation];
-    
-    relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"complexity"
-                                                           toKeyPath:@"complexity"
-                                                         withMapping:[IQComplexity objectMappingForManagedObjectStore:store]];
     [mapping addPropertyMapping:relation];
     
     return mapping;

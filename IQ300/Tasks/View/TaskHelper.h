@@ -16,4 +16,6 @@
 
 + (BOOL)isPositiveActionWithType:(NSString*)type;
 
++ (NSString *)priorityNameForValue:(NSNumber *)value;
+
 @end

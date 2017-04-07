@@ -18,14 +18,12 @@
 #import "TaskExecutersController.h"
 #import "IQCommunity.h"
 #import "NSDate+BoundaryDates.h"
-#import "TaskComplexityController.h"
 #import "IQEstimatedTimeCell.h"
 #import "IQTask.h"
 #import "IQTaskParentAccessItem.h"
 
 #ifdef IPAD
 #import "IQDoubleDetailsTextCell.h"
-#import "IQComplexityEstimatedTimeDoubleCell.h"
 #endif
 
 #import "IQTextCell.h"
@@ -34,6 +32,8 @@
 #import "IQTaskItems.h"
 #import "IQMultipleCellsCell.h"
 #import "IQEstimatedTimeCell.h"
+
+#import "UIActionSheet+Blocks.h"
 
 #define SEPARATOR_HEIGHT 0.5f
 #define SEPARATOR_COLOR IQ_SEPARATOR_LINE_LIGHT_COLOR
@@ -196,7 +196,9 @@
                      [item isKindOfClass:[IQTaskEndDateItem class]]){
                 [self showDataPicker];
             }
-
+            else if ([item isKindOfClass:[IQTaskPriorityItem class]]) {
+                [self showPriorityActionSheet];
+            }
         }
     }
 }
@@ -479,8 +481,7 @@
                          NSStringFromClass([IQTaskDescriptionItem class]) : [TaskDescriptionController class],
 #endif
                          NSStringFromClass([IQTaskCommunityItem class]) : [CommunitiesController class],
-                         NSStringFromClass([IQTaskExecutorsItem class]) : [TaskExecutersController class],
-                         NSStringFromClass([IQTaskComplexityItem class]) : [TaskComplexityController class]
+                         NSStringFromClass([IQTaskExecutorsItem class]) : [TaskExecutersController class]
                          };
     });
     return  [_controllers objectForKey:NSStringFromClass([item class])];
@@ -562,6 +563,28 @@
                                                             target:nil
                                                             action:nil]];
     [picker showActionSheetPicker];
+}
+
+- (void)showPriorityActionSheet {
+    UIActionSheet *priorityActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Importance", nil)
+                                                                     delegate:nil
+                                                            cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                       destructiveButtonTitle:nil
+                                                            otherButtonTitles:NSLocalizedString(@"High", nil),
+                                                                              NSLocalizedString(@"Normal", nil), nil];
+    
+    __weak typeof (self) weakSelf = self;
+    [priorityActionSheet setDidDismissBlock:^(UIActionSheet * __nonnull actionSheet, NSInteger buttonIndex) {
+        if (buttonIndex != actionSheet.cancelButtonIndex) {
+            [weakSelf.model updateItem:_editingItem atIndexPath:_editingIndexPath withValue:@(!buttonIndex)];
+        }
+        
+        _editingItem = nil;
+        _editingIndexPath = nil;
+        _editingCell = nil;
+    }];
+    
+    [priorityActionSheet showInView:self.view];
 }
 
 @end

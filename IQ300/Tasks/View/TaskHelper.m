@@ -72,4 +72,8 @@
     return [_positiveActionTypes containsObject:type];
 }
 
++ (NSString *)priorityNameForValue:(NSNumber *)value {
+    return NSLocalizedString(value.boolValue ? @"High" : @"Normal", nil);
+}
+
 @end

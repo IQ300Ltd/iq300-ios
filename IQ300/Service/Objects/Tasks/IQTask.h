@@ -14,7 +14,6 @@
 @class IQReconciliation;
 @class RKObjectMapping;
 @class RKManagedObjectStore;
-@class IQComplexity;
 
 @interface IQTask : NSManagedObject
 
@@ -41,6 +40,7 @@
 @property (nonatomic, strong) NSString         * parentTitle;
 @property (nonatomic, strong) NSNumber         * parentTaskAccess;
 @property (nonatomic, strong) NSNumber         * parentTaskAccessRestriction;
+@property (nonatomic, strong) NSNumber         * priority;
 
 @property (nonatomic, strong) NSDate           * parentStartDate;
 @property (nonatomic, strong) NSDate           * parentEndDate;
@@ -50,7 +50,6 @@
 @property (nonatomic, strong) IQCommunity      * community;
 @property (nonatomic, strong) IQProject        * project;
 @property (nonatomic, strong) IQReconciliation * reconciliation;
-@property (nonatomic, strong) IQComplexity     * complexity;
 
 @property (nonatomic, strong) NSSet            * childIds;
 @property (nonatomic, strong) NSOrderedSet     * availableActions;

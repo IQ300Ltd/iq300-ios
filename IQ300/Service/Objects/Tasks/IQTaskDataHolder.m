@@ -11,7 +11,6 @@
 #import "IQTask.h"
 #import "IQCommunity.h"
 #import "IQUser.h"
-#import "IQComplexity.h"
 #import "TaskExecutor.h"
 
 @implementation IQTaskDataHolder
@@ -33,7 +32,7 @@
     }
     
     holder.estimatedTimeSeconds = task.estimatedTime;
-    holder.complexity = task.complexity;
+    holder.priority = task.priority;
     holder.parentTaskAccess = task.parentTaskAccessRestriction;
     holder.parentTaskId = task.parentId;
     
@@ -52,10 +51,10 @@
                                                   @"start_date"                               : @"startDate",
                                                   @"end_date"                                 : @"endDate",
                                                   @"description"                              : @"taskDescription",
-                                                  @"complexity"                               : @"complexity.value",
                                                   @"estimated_time"                           : @"estimatedTimeSeconds",
                                                   @"parent_id"                                : @"parentTaskId",
                                                   @"executor_restrictions.parent_task_access" : @"parentTaskAccess",
+                                                  @"priority"                                 : @"priority"
                                                   }];
     
     return [mapping inverseMapping];
@@ -69,15 +68,13 @@
                                                   @"start_date"     : @"startDate",
                                                   @"end_date"       : @"endDate",
                                                   @"description"    : @"taskDescription",
-                                                  @"complexity"     : @"complexity.value",
                                                   @"estimated_time" : @"estimatedTimeSeconds",
                                                   @"executor_restrictions.parent_task_access" : @"parentTaskAccess",
+                                                  @"priority"       : @"priority"
                                                   }];
     
     return [mapping inverseMapping];
 }
-
-
 
 - (id)copyWithZone:(NSZone *)zone {
     IQTaskDataHolder * copy = [[[self class] allocWithZone:zone] init];
@@ -91,7 +88,7 @@
         copy.taskDescription = [self.taskDescription copyWithZone:zone];
         copy.executors = [self.executors copyWithZone:zone];
         copy.estimatedTimeSeconds = [self.estimatedTimeSeconds copyWithZone:zone];
-        copy.complexity = self.complexity;
+        copy.priority = self.priority;
         copy.parentTaskId = self.parentTaskId;
         copy.parentTaskAccess = self.parentTaskAccess;
         copy.parentEndDate = self.parentEndDate;

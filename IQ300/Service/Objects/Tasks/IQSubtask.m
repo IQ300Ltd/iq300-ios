@@ -16,7 +16,6 @@
 #import "IQCommunity.h"
 #import "IQManagedTodoItem.h"
 #import "IQReconciliation.h"
-#import "IQComplexity.h"
 
 @implementation IQSubtask
 
@@ -32,6 +31,7 @@
 @dynamic updatedDate;
 
 @dynamic parentId;
+@dynamic priority;
 
 @dynamic customer;
 @dynamic executor;
@@ -54,6 +54,7 @@
                                                   @"updated_at"   : @"updatedDate",
                                                   @"parent_id"    : @"parentId",
                                                   @"has_access"   : @"hasAccess",
+                                                  @"priority"     : @"priority"
                                                   }];
     
     RKRelationshipMapping * relation = [RKRelationshipMapping relationshipMappingFromKeyPath:@"customer"

@@ -13,7 +13,7 @@
 #import "IQTaskDescriptionItem.h"
 #import "IQTaskCommunityItem.h"
 #import "IQTaskExecutorsItem.h"
-#import "IQTaskComplexityItem.h"
+#import "IQTaskPriorityItem.h"
 #import "IQTaskEstimatedTimeItem.h"
 #import "IQTaskStartDateItem.h"
 #import "IQTaskEndDateItem.h"

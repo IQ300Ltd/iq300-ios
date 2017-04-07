@@ -38,7 +38,7 @@
 @property (nonatomic, readonly) TInfoLineView * communityInfoView;
 @property (nonatomic, readonly) TInfoLineView * reconciliationInfoView;
 
-@property (nonatomic, readonly) TInfoLineView *complexityInfoView;
+@property (nonatomic, readonly) TInfoLineView *priorityInfoView;
 @property (nonatomic, readonly) TInfoLineView *estimatedTimeInfoView;
 
 @property (nonatomic, weak) id<TInfoHeaderViewDelegate> delegate;

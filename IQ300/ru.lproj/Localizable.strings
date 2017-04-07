@@ -205,10 +205,11 @@
 "Disapprove" = "Отозвать согласование";
 "Are you sure you want to mismatched task?" = "Вы действительно хотите рассогласовать задачу?";
 
-//Complexity
+//Importance
 "Normal" = "Обычная";
-"Complexity" = "Сложность";
 "0:00" = "Плановое время выполнения: 0:00 или 0.00 или 0,00";
+"High" = "Высокая";
+"Importance" = "Важность";
 
 //Estimated time
 "Estimated time" = "Плановое время выполнения";

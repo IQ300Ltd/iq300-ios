@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16D32" minimumToolsVersion="Xcode 4.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+    <entity name="CViewInfo" representedClassName="CViewInfo" syncable="YES">
+        <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="viewDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="discussions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="userViews" inverseEntity="IQDiscussion" syncable="YES"/>
+    </entity>
+    <entity name="IQComment" representedClassName="IQComment" syncable="YES">
+        <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="commentId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="commentStatus" optional="YES" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="createShortDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unread" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="IQManagedAttachment" inverseName="comments" inverseEntity="IQManagedAttachment" syncable="YES"/>
+        <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="comments" inverseEntity="IQUser" syncable="YES"/>
+        <relationship name="conversation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="lastComment" inverseEntity="IQConversation" syncable="YES"/>
+        <relationship name="forwardedInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="IQForwardInfo" inverseName="source" inverseEntity="IQForwardInfo" syncable="YES"/>
+    </entity>
+    <entity name="IQCommunity" representedClassName="IQCommunity" syncable="YES">
+        <attribute name="communityId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="mediumUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="normalUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sortOrder" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="thumbUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="subtasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQSubtask" inverseName="community" inverseEntity="IQSubtask" syncable="YES"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="community" inverseEntity="IQTask" syncable="YES"/>
+    </entity>
+    <entity name="IQContact" representedClassName="IQContact" syncable="YES">
+        <attribute name="contactId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="contacts" inverseEntity="IQUser" syncable="YES"/>
+    </entity>
+    <entity name="IQConversation" representedClassName="IQConversation" syncable="YES">
+        <attribute name="adminId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="conversationId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="creatorId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="locked" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalCommentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unread" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="unreadCommentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="discussion" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="IQDiscussion" inverseName="conversation" inverseEntity="IQDiscussion" syncable="YES"/>
+        <relationship name="lastComment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQComment" inverseName="conversation" inverseEntity="IQComment" syncable="YES"/>
+        <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQUser" inverseName="onversations" inverseEntity="IQUser" syncable="YES"/>
+    </entity>
+    <entity name="IQDiscussion" representedClassName="IQDiscussion" syncable="YES">
+        <attribute name="createDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="pusherChannel" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updateDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="conversation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="discussion" inverseEntity="IQConversation" syncable="YES"/>
+        <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQUser" inverseName="discussions" inverseEntity="IQUser" syncable="YES"/>
+        <relationship name="userViews" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CViewInfo" inverseName="discussions" inverseEntity="CViewInfo" syncable="YES"/>
+    </entity>
+    <entity name="IQFeedbackCategory" representedClassName="IQFeedbackCategory" syncable="YES">
+        <attribute name="categoryId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="feedbacks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQManagedFeedback" inverseName="category" inverseEntity="IQManagedFeedback" syncable="YES"/>
+    </entity>
+    <entity name="IQFeedbackType" representedClassName="IQFeedbackType" syncable="YES">
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="typeId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="feedbacks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQManagedFeedback" inverseName="feedbackType" inverseEntity="IQManagedFeedback" syncable="YES"/>
+    </entity>
+    <entity name="IQForwardInfo" representedClassName="IQForwardInfo" syncable="YES">
+        <attribute name="authorId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="authorName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="discussableClass" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="discussableId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discussableTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="discussableType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="forwardCommentId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="source" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQComment" inverseName="forwardedInfo" inverseEntity="IQComment" syncable="YES"/>
+    </entity>
+    <entity name="IQManagedAttachment" representedClassName="IQManagedAttachment" syncable="YES">
+        <attribute name="atDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attachmentId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="contentType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="localURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="originalURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="previewURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unifiedContentType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unread" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQComment" inverseName="attachments" inverseEntity="IQComment" syncable="YES"/>
+        <relationship name="feedbacks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQManagedFeedback" inverseName="attachments" inverseEntity="IQManagedFeedback" syncable="YES"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="attachments" inverseEntity="IQTask" syncable="YES"/>
+    </entity>
+    <entity name="IQManagedFeedback" representedClassName="IQManagedFeedback" syncable="YES">
+        <attribute name="commentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="feedbackDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="feedbackId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQManagedAttachment" inverseName="feedbacks" inverseEntity="IQManagedAttachment" syncable="YES"/>
+        <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="feedbacks" inverseEntity="IQUser" syncable="YES"/>
+        <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQFeedbackCategory" inverseName="feedbacks" inverseEntity="IQFeedbackCategory" syncable="YES"/>
+        <relationship name="feedbackType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQFeedbackType" inverseName="feedbacks" inverseEntity="IQFeedbackType" syncable="YES"/>
+    </entity>
+    <entity name="IQManagedTodoItem" representedClassName="IQManagedTodoItem" syncable="YES">
+        <attribute name="completed" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="destroy" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="itemId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="position" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="taskId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="todoItems" inverseEntity="IQTask" syncable="YES"/>
+    </entity>
+    <entity name="IQNotificable" representedClassName="IQNotificable" syncable="YES">
+        <attribute name="notificableId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="translatedType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="notifications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQNotification" inverseName="notificable" inverseEntity="IQNotification" syncable="YES"/>
+    </entity>
+    <entity name="IQNotification" representedClassName="IQNotification" syncable="YES">
+        <attribute name="additionalDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="availableActions" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
+        <attribute name="commentId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hasActions" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hasDiscussion" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="isPinned" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="mainDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notificationId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="readed" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="notificable" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQNotificable" inverseName="notifications" inverseEntity="IQNotificable" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="notifications" inverseEntity="IQUser" syncable="YES"/>
+    </entity>
+    <entity name="IQProject" representedClassName="IQProject" syncable="YES">
+        <attribute name="projectId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="subtasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQSubtask" inverseName="project" inverseEntity="IQSubtask" syncable="YES"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="project" inverseEntity="IQTask" syncable="YES"/>
+    </entity>
+    <entity name="IQReconciliation" representedClassName="IQReconciliation" syncable="YES">
+        <attribute name="approvedCount" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="reconciliationId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="totalCount" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="waitingCount" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQTask" inverseName="reconciliation" inverseEntity="IQTask" syncable="YES"/>
+    </entity>
+    <entity name="IQSubtask" representedClassName="IQTask" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hasAccess" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ownerType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="parentId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="parentTaskAccess" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="parentTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="priority" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="recipientId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="subtaskId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="community" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQCommunity" inverseName="subtasks" inverseEntity="IQCommunity" syncable="YES"/>
+        <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="subtaskCustomers" inverseEntity="IQUser" syncable="YES"/>
+        <relationship name="executor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="subtaskExecutors" inverseEntity="IQUser" syncable="YES"/>
+        <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQProject" inverseName="subtasks" inverseEntity="IQProject" syncable="YES"/>
+    </entity>
+    <entity name="IQTask" representedClassName="IQTask" syncable="YES">
+        <attribute name="availableActions" optional="YES" attributeType="Transformable" valueTransformerName="OrderedArrayTransformer" syncable="YES"/>
+        <attribute name="availableFeatures" optional="YES" attributeType="Transformable" valueTransformerName="OrderedArrayTransformer" syncable="YES"/>
+        <attribute name="childIds" optional="YES" attributeType="Transformable" valueTransformerName="ArrayTransformer" syncable="YES"/>
+        <attribute name="commentsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discussionId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="estimatedTime" optional="YES" attributeType="Integer 64" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ownerType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="parentEndDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="parentId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="parentStartDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="parentTaskAccess" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="parentTaskAccessRestriction" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="parentTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="position" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="priority" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="recipientId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="reconciliationActions" optional="YES" attributeType="Transformable" valueTransformerName="OrderedArrayTransformer" syncable="YES"/>
+        <attribute name="reconciliationActionsCount" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="reconciliationState" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="templateId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQManagedAttachment" inverseName="tasks" inverseEntity="IQManagedAttachment" syncable="YES"/>
+        <relationship name="community" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQCommunity" inverseName="tasks" inverseEntity="IQCommunity" syncable="YES"/>
+        <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="taskCustomers" inverseEntity="IQUser" syncable="YES"/>
+        <relationship name="executor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="taskExecutors" inverseEntity="IQUser" syncable="YES"/>
+        <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQProject" inverseName="tasks" inverseEntity="IQProject" syncable="YES"/>
+        <relationship name="reconciliation" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="IQReconciliation" inverseName="task" inverseEntity="IQReconciliation" syncable="YES"/>
+        <relationship name="todoItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="IQManagedTodoItem" inverseName="tasks" inverseEntity="IQManagedTodoItem" syncable="YES"/>
+    </entity>
+    <entity name="IQTaskActivityItem" representedClassName="IQTaskActivityItem" syncable="YES">
+        <attribute name="authorId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="authorName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="changes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="event" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="itemId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="taskId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="IQTaskMember" representedClassName="IQTaskMember" syncable="YES">
+        <attribute name="communityRole" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="communityRoleName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="memberId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="taskRole" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskRoleName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IQUser" inverseName="tasksMember" inverseEntity="IQUser" syncable="YES"/>
+    </entity>
+    <entity name="IQUser" representedClassName="IQUser" syncable="YES">
+        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mediumUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nickName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="normalUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="online" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="pusherChannel" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thumbUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQComment" inverseName="author" inverseEntity="IQComment" syncable="YES"/>
+        <relationship name="contacts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQContact" inverseName="user" inverseEntity="IQContact" syncable="YES"/>
+        <relationship name="discussions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQDiscussion" inverseName="users" inverseEntity="IQDiscussion" syncable="YES"/>
+        <relationship name="feedbacks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQManagedFeedback" inverseName="author" inverseEntity="IQManagedFeedback" syncable="YES"/>
+        <relationship name="notifications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQNotification" inverseName="user" inverseEntity="IQNotification" syncable="YES"/>
+        <relationship name="onversations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQConversation" inverseName="users" inverseEntity="IQConversation" syncable="YES"/>
+        <relationship name="subtaskCustomers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQSubtask" inverseName="customer" inverseEntity="IQSubtask" syncable="YES"/>
+        <relationship name="subtaskExecutors" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQSubtask" inverseName="executor" inverseEntity="IQSubtask" syncable="YES"/>
+        <relationship name="taskCustomers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="customer" inverseEntity="IQTask" syncable="YES"/>
+        <relationship name="taskExecutors" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTask" inverseName="executor" inverseEntity="IQTask" syncable="YES"/>
+        <relationship name="tasksMember" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IQTaskMember" inverseName="user" inverseEntity="IQTaskMember" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="CViewInfo" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="IQComment" positionX="0" positionY="0" width="128" height="240"/>
+        <element name="IQCommunity" positionX="0" positionY="0" width="128" height="180"/>
+        <element name="IQContact" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="IQConversation" positionX="0" positionY="0" width="128" height="255"/>
+        <element name="IQDiscussion" positionX="0" positionY="0" width="128" height="150"/>
+        <element name="IQFeedbackCategory" positionX="0" positionY="0" width="128" height="90"/>
+        <element name="IQFeedbackType" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="IQForwardInfo" positionX="18" positionY="162" width="128" height="165"/>
+        <element name="IQManagedAttachment" positionX="0" positionY="0" width="128" height="270"/>
+        <element name="IQManagedFeedback" positionX="0" positionY="0" width="128" height="225"/>
+        <element name="IQManagedTodoItem" positionX="0" positionY="0" width="128" height="180"/>
+        <element name="IQNotificable" positionX="0" positionY="0" width="128" height="120"/>
+        <element name="IQNotification" positionX="0" positionY="0" width="128" height="270"/>
+        <element name="IQProject" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="IQReconciliation" positionX="0" positionY="0" width="128" height="120"/>
+        <element name="IQSubtask" positionX="9" positionY="153" width="128" height="345"/>
+        <element name="IQTask" positionX="0" positionY="0" width="128" height="615"/>
+        <element name="IQTaskActivityItem" positionX="0" positionY="0" width="128" height="165"/>
+        <element name="IQTaskMember" positionX="0" positionY="0" width="128" height="195"/>
+        <element name="IQUser" positionX="0" positionY="0" width="128" height="30"/>
+    </elements>
+</model>

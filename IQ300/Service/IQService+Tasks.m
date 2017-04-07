@@ -393,11 +393,6 @@
             handler:handler];
 }
 
-- (void)complexityKindsWithHadnler:(ObjectRequestCompletionHandler)handler {
-    [self getObjectsAtPath:@"tasks/complexity_kinds" parameters:nil handler:handler];
-}
-
-
 - (void)subtasksForTaskWithId:(NSNumber *)taskId updatedAfter:(NSDate*)date page:(NSNumber *)page per:(NSNumber *)per handler:(ObjectRequestCompletionHandler)handler {
     NSDictionary * parameters = IQParametersExcludeEmpty(@{
                                                            @"updated_at_after" : NSObjectNullForNil(date),

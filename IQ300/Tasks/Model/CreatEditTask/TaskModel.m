@@ -21,8 +21,6 @@
 #import "TaskCommunityCell.h"
 #import "IQEMultiLineTextCell.h"
 
-#import "TaskComplexityCell.h"
-
 #import "IQTextCell.h"
 #import "IQTaskItems.h"
 
@@ -33,12 +31,11 @@
 #ifdef IPAD
 #import "IQCommunityExecutorCell.h"
 #import "IQDoubleDateTextCell.h"
-#import "IQComplexityEstimatedTimeDoubleCell.h"
 #endif
 
 NSString * const TaskModelTextEditAction   = @"TaskModelTextEditAction";
 NSString * const TaskModelDataPickerAction = @"TaskModelDataPickerAction";
-NSString * const TaskModelComplexityAction = @"TaskModelComplexityAction";
+NSString * const TaskModelPriorityAction   = @"TaskModelPriorityAction";
 NSString * const TaskModelCommunityAction  = @"TaskModelCommunityAction";
 NSString * const TaskModelExecutorsAction  = @"TaskModelExecutorsAction";
 
@@ -139,14 +136,14 @@ static NSString * IQTextCellReuseIdentifier = @"IQTextCellReuseIdentifier";
         [mutableItems addObject:[[IQTaskParentAccessItem alloc] initWithTask:_task]];
     }
 #ifdef IPAD
-    [mutableItems addObject:@[[[IQTaskComplexityItem alloc] initWithTask:_task],
+    [mutableItems addObject:@[[[IQTaskPriorityItem alloc] initWithTask:_task],
                               [[IQTaskEstimatedTimeItem alloc] initWithTask:_task]
                               ]];
     [mutableItems addObject:@[[[IQTaskStartDateItem alloc] initWithTask:_task],
                               [[IQTaskEndDateItem alloc] initWithTask:_task]
                               ]];
 #else
-    [mutableItems addObject:[[IQTaskComplexityItem alloc] initWithTask:_task]];
+    [mutableItems addObject:[[IQTaskPriorityItem alloc] initWithTask:_task]];
     [mutableItems addObject:[[IQTaskEstimatedTimeItem alloc] initWithTask:_task]];
     [mutableItems addObject:[[IQTaskStartDateItem alloc] initWithTask:_task]];
     [mutableItems addObject:[[IQTaskEndDateItem alloc] initWithTask:_task]];
@@ -256,9 +253,9 @@ static NSString * IQTextCellReuseIdentifier = @"IQTextCellReuseIdentifier";
         else if (![item editable]) {
             [self modelWillChangeContent];
             [self modelDidChangeObject:nil
-                                           atIndexPath:indexPath
-                                         forChangeType:NSFetchedResultsChangeUpdate
-                                          newIndexPath:nil];
+                           atIndexPath:indexPath
+                         forChangeType:NSFetchedResultsChangeUpdate
+                          newIndexPath:nil];
             [self modelDidChangeContent];
         }
     }

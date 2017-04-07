@@ -17,7 +17,6 @@
 #import "TaskHelper.h"
 #import "ExtendedButton.h"
 #import "IQReconciliation.h"
-#import "IQComplexity.h"
 
 #define LINE_HEIGHT 45.5f
 #define CONTENT_LEFT_INSET 10.0f
@@ -232,11 +231,11 @@
         [_buttonsHolder setBackgroundColor:[UIColor whiteColor]];
         [self addSubview:_buttonsHolder];
         
-        _complexityInfoView = [[TInfoLineView alloc] init];
-        _complexityInfoView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
-        _complexityInfoView.drawTopSeparator = YES;
-        [_complexityInfoView.imageView setImage:[UIImage imageNamed:@"complexity_icon.png"]];
-        [self addSubview:_complexityInfoView];
+        _priorityInfoView = [[TInfoLineView alloc] init];
+        _priorityInfoView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
+        _priorityInfoView.drawTopSeparator = YES;
+        [_priorityInfoView.imageView setImage:[UIImage imageNamed:@"complexity_icon.png"]];
+        [self addSubview:_priorityInfoView];
         
         _estimatedTimeInfoView = [[TInfoLineView alloc] init];
         _estimatedTimeInfoView.backgroundColor = IQ_BACKGROUND_TASK_INFO_ROW_COLOR;
@@ -291,8 +290,7 @@
 
     _dueDateView.textLabel.text = [task.endDate dateToDayTimeString];
     
-    _complexityInfoView.textLabel.text = task.complexity.displayName;
-    
+    _priorityInfoView.textLabel.text = [TaskHelper priorityNameForValue:task.priority];
     
     if (task.estimatedTime && task.estimatedTime.integerValue != 0) {
         NSMutableString *estimatedTimeString = [[NSMutableString alloc] init];
@@ -319,8 +317,6 @@
     else {
         _estimatedTimeInfoView.hidden = YES;
     }
-    
-
     
     NSMutableParagraphStyle * paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.maximumLineHeight = [_communityInfoView.textLabel.font pointSize];
@@ -503,25 +499,25 @@
                                     halfWidhtLineSize.width,
                                     halfWidhtLineSize.height);
     
-    _complexityInfoView.frame = CGRectMake(bounds.origin.x,
-                                           CGRectBottom(_statusView.frame),
-                                           _estimatedTimeInfoView.hidden ? bounds.size.width : halfWidhtLineSize.width,
-                                           halfWidhtLineSize.height);
+    _priorityInfoView.frame = CGRectMake(bounds.origin.x,
+                                         CGRectBottom(_statusView.frame),
+                                         _estimatedTimeInfoView.hidden ? bounds.size.width : halfWidhtLineSize.width,
+                                         halfWidhtLineSize.height);
     
-    _estimatedTimeInfoView.frame = CGRectMake(CGRectRight(_complexityInfoView.frame),
-                                              _complexityInfoView.frame.origin.y,
+    _estimatedTimeInfoView.frame = CGRectMake(CGRectRight(_priorityInfoView.frame),
+                                              _priorityInfoView.frame.origin.y,
                                               halfWidhtLineSize.width,
                                               halfWidhtLineSize.height);
 
     if ([_projectInfoView.textLabel.text length] > 0) {
         _projectInfoView.frame = CGRectMake(bounds.origin.x,
-                                            CGRectBottom(_complexityInfoView.frame),
+                                            CGRectBottom(_priorityInfoView.frame),
                                             bounds.size.width,
                                             LINE_HEIGHT);
     }
     else {
         _projectInfoView.frame = CGRectMake(bounds.origin.x,
-                                            CGRectBottom(_complexityInfoView.frame),
+                                            CGRectBottom(_priorityInfoView.frame),
                                             bounds.size.width,
                                             0.0f);
     }
