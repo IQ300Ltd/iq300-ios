@@ -20,6 +20,8 @@
 #import "FileStore.h"
 #import "UIViewController+ScreenActivityIndicator.h"
 
+#import "NavigationControllerSubstitutedDelegate.h"
+
 #define BOTTOM_VIEW_HEIGHT 0
 
 @interface CreateFeedbackController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>{
@@ -29,6 +31,8 @@
     FeedbackTypesModel * _typesModel;
     
     CGPoint _tableContentOffset;
+    
+    NavigationControllerSubstitutedDelegate *_pickerSubstitutedDelegate;
 }
 
 @end
@@ -365,6 +369,12 @@
             picker.showsCancelButton = YES;
             picker.delegate = (id<CTAssetsPickerControllerDelegate>)self;
             picker.showsNumberOfAssets = NO;
+            
+            //Dlegate substitution
+            _pickerSubstitutedDelegate = [[NavigationControllerSubstitutedDelegate alloc] init];
+            _pickerSubstitutedDelegate.defaultDelegate = picker.childNavigationController.delegate;
+            picker.childNavigationController.delegate = _pickerSubstitutedDelegate;
+            
             [self presentViewController:picker animated:YES completion:nil];
         }
     }];
@@ -489,6 +499,11 @@
             [self.model updateFieldAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] withValue:attachment];
         }];
     }
+    
+    //Return delegate back
+    picker.childNavigationController.delegate = _pickerSubstitutedDelegate.defaultDelegate;
+    _pickerSubstitutedDelegate.defaultDelegate = nil;
+    _pickerSubstitutedDelegate = nil;
     
     [picker dismissViewControllerAnimated:YES completion:nil];
 }

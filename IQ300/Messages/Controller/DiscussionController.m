@@ -37,6 +37,7 @@
 #import "IQLayoutManager.h"
 
 #import "ForwardMessagesTargetController.h"
+#import "NavigationControllerSubstitutedDelegate.h"
 
 #define SECTION_HEIGHT 12
 
@@ -57,6 +58,8 @@
     
     NSArray *_avalibleNicks;
     NSString *_currentUserNick;
+    
+    NavigationControllerSubstitutedDelegate *_pickerSubstitutedDelegate;
 }
 
 @end
@@ -581,6 +584,12 @@
             picker.showsCancelButton = YES;
             picker.delegate = (id<CTAssetsPickerControllerDelegate>)self;
             picker.showsNumberOfAssets = NO;
+            
+            //Dlegate substitution
+            _pickerSubstitutedDelegate = [[NavigationControllerSubstitutedDelegate alloc] init];
+            _pickerSubstitutedDelegate.defaultDelegate = picker.childNavigationController.delegate;
+            picker.childNavigationController.delegate = _pickerSubstitutedDelegate;
+            
             [self presentViewController:picker animated:YES completion:nil];
         }
     }];
@@ -650,7 +659,8 @@
     if (![attachment.contentType hasPrefix:@"video"]) {
         [excludedActivityes addObject:IQActivityTypeSaveVideo];
     }
-    controller.excludedActivityTypes = [excludedActivityes copy];    controller.delegate = self;
+    controller.excludedActivityTypes = [excludedActivityes copy];
+    controller.delegate = self;
     controller.documentInteractionControllerRect = rect;
 
 #ifdef IPAD
@@ -895,6 +905,12 @@
         [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                           forState:UIControlStateNormal];
     }
+    
+    //Return delegate back
+    picker.childNavigationController.delegate = _pickerSubstitutedDelegate.defaultDelegate;
+    _pickerSubstitutedDelegate.defaultDelegate = nil;
+    _pickerSubstitutedDelegate = nil;
+    
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 

@@ -34,6 +34,8 @@
 #import "IQActivityViewController.h"
 #import "SharingAttachment.h"
 
+#import "NavigationControllerSubstitutedDelegate.h"
+
 #define DISPATCH_DELAY 1.0f
 
 @interface CommentsController() <UserPickerControllerDelegate, SWTableViewCellDelegate, UIImagePickerControllerDelegate,
@@ -53,6 +55,8 @@
 #ifdef IPAD
     UIPopoverController *_popoverController;
 #endif
+    
+    NavigationControllerSubstitutedDelegate *_pickerSubstitutedDelegate;
 }
 
 @end
@@ -488,6 +492,12 @@
             picker.showsCancelButton = YES;
             picker.delegate = (id<CTAssetsPickerControllerDelegate>)self;
             picker.showsNumberOfAssets = NO;
+            
+            //Dlegate substitution
+            _pickerSubstitutedDelegate = [[NavigationControllerSubstitutedDelegate alloc] init];
+            _pickerSubstitutedDelegate.defaultDelegate = picker.childNavigationController.delegate;
+            picker.childNavigationController.delegate = _pickerSubstitutedDelegate;
+            
             [self presentViewController:picker animated:YES completion:nil];
         }
     }];
@@ -769,6 +779,12 @@
         [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                           forState:UIControlStateNormal];
     }
+    
+    //Return delegate back
+    picker.childNavigationController.delegate = _pickerSubstitutedDelegate.defaultDelegate;
+    _pickerSubstitutedDelegate.defaultDelegate = nil;
+    _pickerSubstitutedDelegate = nil;
+    
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 

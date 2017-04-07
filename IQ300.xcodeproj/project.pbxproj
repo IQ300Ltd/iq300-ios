@@ -1079,6 +1079,8 @@
 		CBEB632C1C5F417D005A11C2 /* SharingDiscussionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEB63291C5F417D005A11C2 /* SharingDiscussionController.m */; };
 		FB7973231E938B07008BF0C0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FB7973261E938B07008BF0C0 /* InfoPlist.strings */; };
 		FB7973241E938B07008BF0C0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FB7973261E938B07008BF0C0 /* InfoPlist.strings */; };
+		FBB8C12A1E9790D30000B7E5 /* NavigationControllerSubstitutedDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FBB8C1291E9790D30000B7E5 /* NavigationControllerSubstitutedDelegate.m */; };
+		FBB8C12B1E9790D30000B7E5 /* NavigationControllerSubstitutedDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FBB8C1291E9790D30000B7E5 /* NavigationControllerSubstitutedDelegate.m */; };
 		FBBBC2831E8E9B020062E98D /* NSDate+BoundaryDates.m in Sources */ = {isa = PBXBuildFile; fileRef = FBC56E691E83F2A700B951FD /* NSDate+BoundaryDates.m */; };
 		FBBBC2871E8EA4300062E98D /* view_all_ico_highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBBC2841E8EA4300062E98D /* view_all_ico_highlighted.png */; };
 		FBBBC2881E8EA4300062E98D /* view_all_ico_highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBBC2851E8EA4300062E98D /* view_all_ico_highlighted@2x.png */; };
@@ -2026,6 +2028,8 @@
 		F2DF67CF2937A920BA137C76 /* Pods-IQ 300.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IQ 300.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IQ 300/Pods-IQ 300.debug.xcconfig"; sourceTree = "<group>"; };
 		FB7973251E938B07008BF0C0 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FB7973271E938B0B008BF0C0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FBB8C1281E9790D30000B7E5 /* NavigationControllerSubstitutedDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationControllerSubstitutedDelegate.h; sourceTree = "<group>"; };
+		FBB8C1291E9790D30000B7E5 /* NavigationControllerSubstitutedDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationControllerSubstitutedDelegate.m; sourceTree = "<group>"; };
 		FBBBC2841E8EA4300062E98D /* view_all_ico_highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = view_all_ico_highlighted.png; sourceTree = "<group>"; };
 		FBBBC2851E8EA4300062E98D /* view_all_ico_highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "view_all_ico_highlighted@2x.png"; sourceTree = "<group>"; };
 		FBBBC2861E8EA4300062E98D /* view_all_ico_highlighted@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "view_all_ico_highlighted@3x.png"; sourceTree = "<group>"; };
@@ -2955,6 +2959,8 @@
 				2D80E7F41C6B19B1009DD5A0 /* UIViewController+ErrorHandle.m */,
 				FBC56E681E83F2A700B951FD /* NSDate+BoundaryDates.h */,
 				FBC56E691E83F2A700B951FD /* NSDate+BoundaryDates.m */,
+				FBB8C1281E9790D30000B7E5 /* NavigationControllerSubstitutedDelegate.h */,
+				FBB8C1291E9790D30000B7E5 /* NavigationControllerSubstitutedDelegate.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -4562,6 +4568,7 @@
 				73060D571B41345D001AE08E /* UITextView+Validation.m in Sources */,
 				73840DEA1B1C75A500BCEAFC /* MessagesController.m in Sources */,
 				73840DEC1B1C75A500BCEAFC /* TodoListModel.m in Sources */,
+				FBB8C12B1E9790D30000B7E5 /* NavigationControllerSubstitutedDelegate.m in Sources */,
 				73840DED1B1C75A500BCEAFC /* IQMenuItem.m in Sources */,
 				0C325F4D1E91CC030015CAC0 /* IQSettings.m in Sources */,
 				3D21439D1C9E80DA00ACA554 /* MessagesMenuModel.m in Sources */,
@@ -4895,6 +4902,7 @@
 				0C325F381E919EB30015CAC0 /* OptionsViewController.m in Sources */,
 				73DBC6AA1B5E34C300D02AD5 /* IQCEditableTextCell.m in Sources */,
 				0C325F431E91A6370015CAC0 /* NotificationsOptionItem.m in Sources */,
+				FBB8C12A1E9790D30000B7E5 /* NavigationControllerSubstitutedDelegate.m in Sources */,
 				73D7F1CC1ADE93D600023120 /* TaskActivitiesModel.m in Sources */,
 				73C4A6821A3EFB4E003E1242 /* NSString+UUID.m in Sources */,
 				2DAF33651C6087C600554211 /* IQOpenInActivity.m in Sources */,
