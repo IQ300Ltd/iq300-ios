@@ -81,7 +81,7 @@
         _sendButton = [[ExtendedButton alloc] init];
         _sendButton.layer.cornerRadius = 4.0f;
         _sendButton.layer.borderWidth = 0.5f;
-        [_sendButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
+        [_sendButton setImage:[UIImage imageNamed:@"paper_plane.png"] forState:UIControlStateNormal];
         [_sendButton.titleLabel setFont:[UIFont fontWithName:IQ_HELVETICA size:12]];
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
         [_sendButton setBackgroundColor:IQ_CELADON_COLOR];
