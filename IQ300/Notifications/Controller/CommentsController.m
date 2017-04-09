@@ -586,6 +586,7 @@
     if(cell) {
         NSIndexPath * cellIndexPath = [self.tableView indexPathForCell:cell];
         BOOL isExpanded = [self.model isItemExpandedAtIndexPath:cellIndexPath];
+        cell.expanded = !isExpanded;
         [self.model setItemExpanded:!isExpanded atIndexPath:cellIndexPath];
     }
 }

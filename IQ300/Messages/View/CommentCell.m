@@ -441,6 +441,7 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
 - (void)setExpandable:(BOOL)expandable {
     if(_expandable != expandable) {
         _expandable = expandable;
+        
         [_expandButton setHidden:!_expandable];
         [self setNeedsDisplay];
     }
@@ -572,8 +573,8 @@ typedef NS_ENUM(NSInteger, CommentCellStyle) {
     return nil;
 }
 
-- (void)setExpandButtonTitle:(NSString*)title {
-    CGFloat expandFontSize = (IS_IPAD) ? 12 : 11.0f;
+- (void)setExpandButtonTitle:(NSString *)title {
+    CGFloat expandFontSize = (IS_IPAD) ? 12.f : 11.f;
     UIColor * titleColor = IQ_CELADON_COLOR_HIGHLIGHTED;
     UIColor * titleHighlightedColor = IQ_CELADON_COLOR;
     NSDictionary *underlineAttribute = @{
