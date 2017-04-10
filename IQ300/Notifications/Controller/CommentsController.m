@@ -43,7 +43,11 @@
     CommentsView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachmentAsset;
+                                     
     UIImage * _attachmentImage;
+    NSString *_attachmentImageOriginalFileName;
+    NSString *_attachmentImageOriginalMIMEType;
+                                     
     UIDocumentInteractionController * _documentController;
     UISwipeGestureRecognizer * _tableGesture;
     UserPickerController * _userPickerController;
@@ -350,6 +354,9 @@
                 
                 if (_attachmentImage != nil) {
                     _attachmentAsset = nil;
+                    _attachmentImageOriginalFileName = @"IMG.png";
+                    _attachmentImageOriginalMIMEType = @"image/png";
+                    
                     [_mainView.inputView.sendButton setEnabled:YES];
                     [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                                       forState:UIControlStateNormal];
@@ -419,8 +426,8 @@
         [_mainView.inputView.commentTextView setEditable:NO];
         [_mainView.inputView.commentTextView resignFirstResponder];
         
-        NSString * fileName = (_attachmentAsset != nil) ? [_attachmentAsset fileName] : @"IMG.png";
-        NSString * mimeType = (_attachmentAsset != nil) ? [_attachmentAsset MIMEType] : @"image/png";
+        NSString * fileName = (_attachmentAsset != nil) ? [_attachmentAsset fileName] : _attachmentImageOriginalFileName;
+        NSString * mimeType = (_attachmentAsset != nil) ? [_attachmentAsset MIMEType] : _attachmentImageOriginalMIMEType;
         id attachment = (_attachmentAsset != nil) ? _attachmentAsset : _attachmentImage;
 
         [self.model sendComment:_mainView.inputView.commentTextView.text
@@ -438,6 +445,9 @@
                                                            forState:UIControlStateNormal];
                          _attachmentAsset = nil;
                          _attachmentImage = nil;
+                         _attachmentImageOriginalFileName = @"IMG.png";
+                         _attachmentImageOriginalMIMEType = @"image/png";
+                         
                          [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                      }
                      else {
@@ -773,9 +783,20 @@
 }
 
 - (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
-    _attachmentAsset = asset;
-    if (_attachmentAsset != nil) {
+    if ([[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo]) {
+        _attachmentAsset = asset;
         _attachmentImage = nil;
+    }
+    else {
+        ALAssetRepresentation *representation = [asset defaultRepresentation];
+        _attachmentImage = [UIImage imageWithCGImage:[representation fullScreenImage]];
+        _attachmentImageOriginalFileName = [asset fileName];
+        _attachmentImageOriginalMIMEType = [asset MIMEType];
+        
+        _attachmentAsset= nil;
+    }
+    
+    if (_attachmentImage || _attachmentAsset) {
         [_mainView.inputView.sendButton setEnabled:YES];
         [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                           forState:UIControlStateNormal];

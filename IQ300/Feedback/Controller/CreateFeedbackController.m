@@ -485,19 +485,33 @@
 - (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
     if (asset) {
         ALAssetRepresentation *representation = [asset defaultRepresentation];
-        Byte *buffer = (Byte *)malloc((size_t)representation.size);
-        NSUInteger buffered = [representation getBytes:buffer fromOffset:0 length:(NSUInteger)representation.size error:nil];
-        NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
         NSString* MIMEType = (__bridge_transfer NSString*)UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)[representation UTI], kUTTagClassMIMEType);
+        NSData *data = nil;
+        
+        BOOL isPNG = [[MIMEType lowercaseString] isEqualToString:@"image/png"];
+        BOOL isJPEG = [[MIMEType lowercaseString] isEqualToString:@"image/jpeg"];
+        
+        if (isPNG || isJPEG) {
+            UIImage *image = [UIImage imageWithCGImage:[representation fullScreenImage]];
+            data = isPNG ? UIImagePNGRepresentation(image) : UIImageJPEGRepresentation(image, 1.0f);
+        }
+        else {
+            Byte *buffer = (Byte *)malloc((size_t)representation.size);
+            NSUInteger buffered = [representation getBytes:buffer fromOffset:0 length:(NSUInteger)representation.size error:nil];
+            data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+        }
 
-        [[FileStore sharedStore] storeData:data forKey:[NSUUID UUID].UUIDString MIMEType:MIMEType done:^(NSString *fileName, NSError *error) {
-            IQAttachment *attachment = [[IQAttachment alloc] init];
-            
-            attachment.displayName = representation.filename;
-            attachment.originalURL = attachment.localURL = attachment.previewURL = [[FileStore sharedStore] filePathURLForFileName:fileName].path;
-            attachment.contentType = MIMEType;
-            [self.model updateFieldAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] withValue:attachment];
-        }];
+        [[FileStore sharedStore] storeData:data
+                                    forKey:[NSUUID UUID].UUIDString
+                                  MIMEType:MIMEType
+                                      done:^(NSString *fileName, NSError *error) {
+                                          IQAttachment *attachment = [[IQAttachment alloc] init];
+                                          
+                                          attachment.displayName = representation.filename;
+                                          attachment.originalURL = attachment.localURL = attachment.previewURL = [[FileStore sharedStore] filePathURLForFileName:fileName].path;
+                                          attachment.contentType = MIMEType;
+                                          [self.model updateFieldAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0] withValue:attachment];
+                                      }];
     }
     
     //Return delegate back

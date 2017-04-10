@@ -45,7 +45,11 @@
     DiscussionView * _mainView;
     BOOL _enterCommentProcessing;
     ALAsset * _attachmentAsset;
+    
     UIImage * _attachmentImage;
+    NSString *_attachmentImageOriginalFileName;
+    NSString *_attachmentImageOriginalMIMEType;
+    
     UIDocumentInteractionController * _documentController;
     UISwipeGestureRecognizer * _tableGesture;
     CGPoint _tableContentOffset;
@@ -159,6 +163,9 @@
     IQUser * curUser = [IQUser userWithId:[IQSession defaultSession].userId
                                 inContext:[IQService sharedService].context];
     _currentUserNick = curUser.nickName;
+    
+    _attachmentImageOriginalFileName = @"IMG.png";
+    _attachmentImageOriginalMIMEType = @"image/png";
     
     UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                                    action:@selector(handleLongPress:)];
@@ -518,8 +525,8 @@
         [_mainView.inputView.commentTextView setEditable:NO];
         [_mainView.inputView.commentTextView resignFirstResponder];
         
-        NSString * fileName = (_attachmentAsset != nil) ? [_attachmentAsset fileName] : @"IMG.png";
-        NSString * mimeType = (_attachmentAsset != nil) ? [_attachmentAsset MIMEType] : @"image/png";
+        NSString * fileName = (_attachmentAsset != nil) ? [_attachmentAsset fileName] : _attachmentImageOriginalFileName;
+        NSString * mimeType = (_attachmentAsset != nil) ? [_attachmentAsset MIMEType] : _attachmentImageOriginalMIMEType;
         id attachment = (_attachmentAsset != nil) ? _attachmentAsset : _attachmentImage;
 
         [self.model sendComment:_mainView.inputView.commentTextView.text
@@ -533,6 +540,9 @@
                                                            forState:UIControlStateNormal];
                          _attachmentAsset = nil;
                          _attachmentImage = nil;
+                         _attachmentImageOriginalFileName = @"IMG.png";
+                         _attachmentImageOriginalMIMEType = @"image/png";
+                         
                          [_mainView setInputHeight:MIN_INPUT_VIEW_HEIGHT];
                      }
                      else {
@@ -873,6 +883,9 @@
                 
                 if (_attachmentImage != nil) {
                     _attachmentAsset = nil;
+                    _attachmentImageOriginalFileName = @"IMG.png";
+                    _attachmentImageOriginalMIMEType = @"image/png";
+                    
                     [_mainView.inputView.sendButton setEnabled:YES];
                     [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                                       forState:UIControlStateNormal];
@@ -899,9 +912,20 @@
 }
 
 - (void)assetsPickerController:(CTAssetsPickerController *)picker didSelectAsset:(ALAsset *)asset {
-    _attachmentAsset = asset;
-    if (_attachmentAsset != nil) {
+    if ([[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypeVideo]) {
+        _attachmentAsset = asset;
         _attachmentImage = nil;
+    }
+    else {
+        ALAssetRepresentation *representation = [asset defaultRepresentation];
+        _attachmentImage = [UIImage imageWithCGImage:[representation fullScreenImage]];
+        _attachmentImageOriginalFileName = [asset fileName];
+        _attachmentImageOriginalMIMEType = [asset MIMEType];
+        
+        _attachmentAsset= nil;
+    }
+    
+    if (_attachmentImage || _attachmentAsset) {
         [_mainView.inputView.sendButton setEnabled:YES];
         [_mainView.inputView.attachButton setImage:[UIImage imageNamed:ATTACHMENT_ADD_IMG]
                                           forState:UIControlStateNormal];
@@ -915,6 +939,12 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (UIImage *)imageFromAsset:(ALAsset *)asset {
+    ALAssetRepresentation *representation = [asset defaultRepresentation];
+    return [UIImage imageWithCGImage:representation.fullResolutionImage
+                               scale:[representation scale]
+                         orientation:(UIImageOrientation)[representation orientation]];
+}
 
 - (UITableViewCell<IQCommentCell>*)cellForView:(UIView*)view {
     BOOL superIsCommentCell = [view.superview isKindOfClass:[UITableViewCell class]] &&
