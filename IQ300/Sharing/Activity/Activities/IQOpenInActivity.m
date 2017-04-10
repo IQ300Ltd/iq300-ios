@@ -43,6 +43,11 @@
     SharingAttachment *attachment = activityItems.firstObject;
     NSString *fileURL = [[attachment.localURL stringByDeletingLastPathComponent] stringByAppendingString:[NSString stringWithFormat:@"/%@", attachment.displayName]];
     NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    if ([fileManager fileExistsAtPath:fileURL]) {
+        [fileManager removeItemAtPath:fileURL error:nil];
+    }
+    
     [fileManager copyItemAtPath:attachment.localURL toPath:fileURL error:nil];
     _documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:fileURL]];
 }
