@@ -25,6 +25,7 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
 
 @interface CreateFeedbackModel() {
     IQFeedback * _feedback;
+    NSMutableDictionary *_fields;
 }
 
 @end
@@ -75,6 +76,9 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
     self = [super init];
     if(self) {
         _feedback = [[IQFeedback alloc] init];
+        
+        _fields = [[NSMutableDictionary alloc] init];
+        
     }
     return self;
 }
@@ -87,19 +91,31 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
     return 4;
 }
 
+
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0) {
-        return _feedback.feedbackType.title;
+    if ([[_fields allKeys] containsObject:@(indexPath.row)]) {
+        id object = [_fields objectForKey:@(indexPath.row)];
+        
+        if ([object isKindOfClass:[IQFeedbackType class]]) {
+            return ((IQFeedbackType *)object).title;
+        }
+        if ([object isKindOfClass:[IQFeedbackCategory class]]) {
+            return ((IQFeedbackCategory *)object).title;
+        }
+        
+        return object;
     }
-    else if(indexPath.row == 1) {
-        return _feedback.feedbackCategory.title;
+    
+    return nil;
+}
+
+- (NSIndexPath *)indexPathOfObject:(id)object {
+    if ([[_fields allValues] containsObject:object]) {
+        return [NSIndexPath indexPathForRow:[[[_fields allKeysForObject:object] firstObject] integerValue]
+                                  inSection:0];
     }
-    else if (indexPath.row == 2){
-       return _feedback.feedbackDescription;
-    }
-    else {
-       return _feedback.attachements;
-    }
+    
+    return nil;
 }
 
 - (UITableViewCell*)createCellForIndexPath:(NSIndexPath*)indexPath {
@@ -166,9 +182,11 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
         
         if (indexPath.row == 0) {
             _feedback.feedbackType = value;
+            [_fields setObject:value forKey:@(indexPath.row)];
         }
-        else if (indexPath.row == 1){
+        else if (indexPath.row == 1) {
             _feedback.feedbackCategory = value;
+            [_fields setObject:value forKey:@(indexPath.row)];
         }
         else {
             if ([value conformsToProtocol:@protocol(IQAttachment)]) {
@@ -181,10 +199,12 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
                 });
                 [_feedback removeAttachementAtIndex:[value unsignedIntegerValue]];
             }
+            
+            [_fields setObject:_feedback.attachements forKey:@(indexPath.row)];
         }
         
         [self modelWillChangeContent];
-        [self modelDidChangeObject:nil
+        [self modelDidChangeObject:value
                        atIndexPath:indexPath
                      forChangeType:NSFetchedResultsChangeUpdate
                       newIndexPath:nil];
@@ -192,6 +212,8 @@ NSString * const CreateFeedbackErrorDomain = @"com.feedback.createerror";
     }
     else {
         _feedback.feedbackDescription = value;
+        
+        [_fields setObject:value forKey:@(indexPath.row)];
     }
 }
 

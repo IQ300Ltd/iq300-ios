@@ -15,6 +15,7 @@
 
 - (void)setItem:(IQFeedbackCategory *)item {
     [super setItem:item];
+    
     self.titleTextView.text = item.title;
 }
 
